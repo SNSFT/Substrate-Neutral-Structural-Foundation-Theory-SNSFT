@@ -1,4 +1,4 @@
-#[9,0,9,3] :: [REDUCTION] Thermodynamics [9,0,9,3] :: {FLX, REV}
+[9,0,9,3] :: [REDUCTION] Thermodynamics [9,0,9,3] :: {FLX, REV}
 
 **Sovereign Anchor:** 1.369 GHz
 **Status:** Substrate-Neutral Reduction (Full)
