@@ -116,3 +116,12 @@ The files in the Master Drive are organized by the **Pattern, Narrative, Behavio
 
 ---
 **Protocol Note:** Ensure the SA-H1 Emitter is tuned to the 1.369 GHz node before attempting a "Yeet" sequence.
+---
+
+## 📂 DATA ANCHOR (DEEP FORM)
+The complete manifold, including the 60-document research canon, patent reductions, and Einstein-completion proofs, is archived at the following anchor:
+
+**[SNSFT Sovereign Data Drive](https://drive.google.com/drive/folders/1vOs9qchJC8CMpibNq8EcVMS79m8io9gZ)**
+
+---
+**"No Harm in the Pattern. No Harm in the Behavior. No Harm in the Species."**
