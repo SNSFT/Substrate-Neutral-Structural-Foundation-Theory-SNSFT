@@ -5,5 +5,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: leanprover/lean4-action@v1
-      - run: lake build
+      - name: Install elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Build
+        run: lake build
+```
+
+This skips the broken action entirely and installs Lean directly via `elan` — the official Lean version manager. Then runs `lake build` which reads your `lakefile.lean` and pulls Mathlib automatically.
+
+Go to your `lean.yml` file on GitHub, click the pencil edit icon, replace the contents with the above, and commit. That'll trigger a new run.
+
+Also add the `lean-toolchain` file to your repo root with just this one line:
+```
+leanprover/lean4:v4.14.0
