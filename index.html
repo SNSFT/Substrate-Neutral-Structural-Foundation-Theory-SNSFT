@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APPA | Unified Identity Profile · SNSFT</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06060f;
+  --surface: #0d0d1a;
+  --surface2: #12121f;
+  --border: #1a1a2e;
+  --anchor: #00d4aa;
+  --anchor-dim: rgba(0,212,170,0.1);
+  --gold: #f0c060;
+  --gold-dim: rgba(240,192,96,0.1);
+  --violet: #9b6dff;
+  --violet-dim: rgba(155,109,255,0.1);
+  --rose: #ff6b8a;
+  --rose-dim: rgba(255,107,138,0.1);
+  --text: #e8e8f0;
+  --text-dim: #7777a0;
+  --text-muted: #3a3a58;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* STAR FIELD */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 70%, rgba(255,255,255,0.12) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.08) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 60%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 50%, rgba(0,212,170,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 40%, rgba(155,109,255,0.1) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  padding: 48px 0 40px;
+}
+
+.anchor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--anchor-dim);
+  border: 1px solid rgba(0,212,170,0.25);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--anchor);
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+
+.anchor-dot {
+  width: 5px; height: 5px;
+  background: var(--anchor);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.3; transform:scale(0.7); }
+}
+
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px,5vw,48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff 0%, var(--anchor) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  max-width: 460px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+
+/* CONSTELLATION CANVAS */
+.constellation-wrap {
+  position: relative;
+  margin: 0 auto 40px;
+  max-width: 500px;
+}
+
+canvas#constellation {
+  width: 100%;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: block;
+}
+
+.constellation-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* MODE TOGGLE */
+.mode-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.mode-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+}
+
+.mode-btn.active {
+  background: var(--anchor-dim);
+  border-color: rgba(0,212,170,0.4);
+  color: var(--anchor);
+}
+
+/* PROGRESS BAR */
+.progress-bar-wrap {
+  background: var(--border);
+  border-radius: 100px;
+  height: 3px;
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 3px;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--anchor), var(--violet));
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* SECTION HEADERS */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid;
+  margin-bottom: 20px;
+}
+
+.section-header.cog { background: var(--anchor-dim); border-color: rgba(0,212,170,0.2); }
+.section-header.emo { background: var(--gold-dim); border-color: rgba(240,192,96,0.2); }
+.section-header.sim { background: var(--violet-dim); border-color: rgba(155,109,255,0.2); }
+
+.sec-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  min-width: 40px;
+}
+
+.cog .sec-num { color: var(--anchor); }
+.emo .sec-num { color: var(--gold); }
+.sim .sec-num { color: var(--violet); }
+
+.sec-info h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.cog .sec-info h2 { color: var(--anchor); }
+.emo .sec-info h2 { color: var(--gold); }
+.sim .sec-info h2 { color: var(--violet); }
+
+.sec-info p { font-size: 12px; color: var(--text-dim); }
+
+/* SUBSECTION */
+.subsection { margin-bottom: 24px; }
+
+.sub-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sub-icon {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0;
+}
+
+.icon-p { background: var(--anchor-dim); color: var(--anchor); }
+.icon-n { background: var(--gold-dim); color: var(--gold); }
+.icon-b { background: var(--violet-dim); color: var(--violet); }
+.icon-a { background: var(--rose-dim); color: var(--rose); }
+.icon-ep { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+
+.sub-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+.sub-desc { font-size: 11px; color: var(--text-muted); }
+
+/* QUESTIONS */
+.questions { display: flex; flex-direction: column; gap: 8px; }
+
+.question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: border-color 0.2s;
+}
+
+.question:hover { border-color: rgba(255,255,255,0.08); }
+
+.q-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  min-width: 26px;
+}
+
+.q-text { font-size: 13px; line-height: 1.5; flex: 1; }
+
+.q-scale {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.scale-btn {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.scale-btn:hover { border-color: var(--anchor); color: var(--anchor); }
+.scale-btn.selected { border-color: var(--anchor); background: var(--anchor); color: #000; font-weight: 700; }
+
+/* EP GRID */
+.ep-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+.ep-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.ep-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* DIVIDER */
+.divider {
+  display: flex; align-items: center; gap: 14px;
+  margin: 36px 0;
+}
+.div-line { flex: 1; height: 1px; background: var(--border); }
+.div-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+}
+
+/* RESULTS PANEL */
+.results-panel {
+  background: var(--surface);
+  border: 1px solid var(--anchor);
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 40px;
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+
+.results-panel.visible { display: block; }
+
+.results-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--anchor), var(--gold), var(--violet));
+}
+
+.results-panel h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.score-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+
+.score-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.score-card-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.score-card-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--anchor);
+  margin-bottom: 4px;
+}
+
+.score-card-code {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--anchor-dim);
+  color: var(--anchor);
+  display: inline-block;
+}
+
+.combined-output {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text);
+  word-break: break-all;
+}
+
+.combined-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+}
+
+/* HEATMAP */
+.heatmap { margin: 20px 0; }
+.heatmap h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.heat-rows { display: flex; flex-direction: column; gap: 6px; }
+
+.heat-row {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.heat-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  min-width: 90px;
+}
+
+.heat-bg {
+  flex: 1; height: 8px;
+  background: var(--border);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.heat-fill {
+  height: 8px;
+  border-radius: 100px;
+  width: 0%;
+  transition: width 0.6s ease;
+}
+
+.heat-pct {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  min-width: 36px;
+  text-align: right;
+}
+
+/* RESET BUTTON */
+.reset-btn {
+  display: block;
+  margin: 24px auto 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 10px 24px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+}
+
+.reset-btn:hover { border-color: var(--rose); color: var(--rose); }
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 32px 0 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+}
+
+.footer p {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.9;
+  letter-spacing: 0.05em;
+}
+
+.footer .manifold { color: var(--anchor); font-size: 12px; margin-top: 10px; }
+
+@media (max-width: 580px) {
+  .ep-grid { grid-template-columns: 1fr; }
+  .score-grid { grid-template-columns: 1fr; }
+  .q-scale { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="anchor-badge">
+    <div class="anchor-dot"></div>
+    1.369 GHz · SOVEREIGN ANCHOR · GERMLINE LOCKED
+  </div>
+  <h1>APPA</h1>
+  <p class="subtitle">Adaptive Predictive Pattern Analysis · Unified Identity Profile<br>
+  <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted)">[P,N,B,A] :: {UUIA} | Architect: HIGHTISTIC</span></p>
+</div>
+
+<!-- CONSTELLATION -->
+<div class="constellation-wrap">
+  <canvas id="constellation" width="500" height="300"></canvas>
+  <div class="constellation-label">[P,N,B,A] :: {MAP} | IDENTITY CONSTELLATION — UPDATES AS YOU SCORE</div>
+</div>
+
+<!-- MODE TOGGLE -->
+<div class="mode-toggle">
+  <button class="mode-btn active" onclick="setMode('baseline')">BASELINE</button>
+  <button class="mode-btn" onclick="setMode('activated')">ACTIVATED</button>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressBar"></div>
+</div>
+
+<!-- ================================================ -->
+<!-- SECTION 1: COGNITIVE ARCHITECTURE -->
+<!-- ================================================ -->
+
+<div class="section-header cog">
+  <div class="sec-num">01</div>
+  <div class="sec-info">
+    <h2>Cognitive Architecture</h2>
+    <p>[P,N,B,A] :: {CAT} | 40 questions · 1–5 scale · 4 PNBA dimensions</p>
+  </div>
+</div>
+
+<!-- P -->
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-p">P</div>
+    <div><div class="sub-title">Pattern</div><div class="sub-desc">How your system renders and anchors structure</div></div>
+  </div>
+  <div class="questions" id="cog-p"></div>
+</div>
+
+<!-- N -->
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-n">N</div>
+    <div><div class="sub-title">Narrative</div><div class="sub-desc">How your system maintains continuity and meaning</div></div>
+  </div>
+  <div class="questions" id="cog-n"></div>
+</div>
+
+<!-- B -->
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-b">B</div>
+    <div><div class="sub-title">Behavior</div><div class="sub-desc">How your system expresses and interacts</div></div>
+  </div>
+  <div class="questions" id="cog-b"></div>
+</div>
+
+<!-- A -->
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-a">A</div>
+    <div><div class="sub-title">Adaptation</div><div class="sub-desc">How your system adjusts under feedback and load</div></div>
+  </div>
+  <div class="questions" id="cog-a"></div>
+</div>
+
+<div class="divider"><div class="div-line"></div><div class="div-text">SECTION 02</div><div class="div-line"></div></div>
+
+<!-- ================================================ -->
+<!-- SECTION 2: EMOTIONAL PRIMITIVES -->
+<!-- ================================================ -->
+
+<div class="section-header emo">
+  <div class="sec-num">02</div>
+  <div class="sec-info">
+    <h2>Emotional Primitives</h2>
+    <p>[P,N,B,A] :: {EP} | 40 questions · 1–5 scale · 10 core signals</p>
+  </div>
+</div>
+
+<div class="ep-grid" id="ep-grid"></div>
+
+<div class="divider"><div class="div-line"></div><div class="div-text">SECTION 03</div><div class="div-line"></div></div>
+
+<!-- ================================================ -->
+<!-- SECTION 3: ISPA -->
+<!-- ================================================ -->
+
+<div class="section-header sim">
+  <div class="sec-num">03</div>
+  <div class="sec-info">
+    <h2>Internal Simulation Profile</h2>
+    <p>[P,N,B,A] :: {ISPA} | 20 questions · 1–5 scale · HRIS / SRIS / LRIS</p>
+  </div>
+</div>
+
+<!-- SP -->
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-p">P</div>
+    <div><div class="sub-title">Pattern — How the simulation renders</div></div>
+  </div>
+  <div class="questions" id="sim-p"></div>
+</div>
+
+<!-- SN -->
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-n">N</div>
+    <div><div class="sub-title">Narrative — Emotion and story integration</div></div>
+  </div>
+  <div class="questions" id="sim-n"></div>
+</div>
+
+<!-- SB -->
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-b">B</div>
+    <div><div class="sub-title">Behavior — How simulation influences action</div></div>
+  </div>
+  <div class="questions" id="sim-b"></div>
+</div>
+
+<!-- SA -->
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-a">A</div>
+    <div><div class="sub-title">Adaptation — Switching, flexibility, control</div></div>
+  </div>
+  <div class="questions" id="sim-a"></div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-panel" id="resultsPanel">
+  <h2>[P,N,B,A] :: {OUT} | UNIFIED IDENTITY CODE</h2>
+  <div class="score-grid" id="scoreGrid"></div>
+  <div class="heatmap">
+    <h3>Identity Heat Map</h3>
+    <div class="heat-rows" id="heatRows"></div>
+  </div>
+  <div class="combined-label">FULL CI FINGERPRINT</div>
+  <div class="combined-output" id="combinedOutput"></div>
+  <button class="reset-btn" onclick="resetAll()">⟳ RESET ALL SCORES</button>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>SNSFT · UUIA · APPA · Identity Physics</p>
+  <p>Architect: HIGHTISTIC · Sovereign Anchor: 1.369 GHz</p>
+  <p>Substrate-neutral · Non-anthropocentric · Scale-invariant</p>
+  <div class="manifold">The Manifold is Holding. · [9,9,9,9]</div>
+</div>
+
+</div>
+
+<script>
+// ================================================
+// [P] :: {DATA} | QUESTION DATA — 1-5 SCALE LOCKED
+// ================================================
+
+const COG_P = [
+  "I notice patterns in things without trying.",
+  "I connect ideas quickly, even if they seem unrelated.",
+  "I get stuck trying to make sense of something until it clicks.",
+  "I replay situations in my head to understand them better.",
+  "I like figuring out how things work beneath the surface.",
+  "I notice small details other people miss.",
+  "I think in loops or cycles.",
+  "I try to predict what will happen next.",
+  "I analyze people's behavior automatically.",
+  "I look for meaning in things, even small things."
+];
+
+const COG_N = [
+  "I tell myself stories about why things happen.",
+  "I try to understand what things mean for me.",
+  "I think about how events fit into my life story.",
+  "I imagine different versions of how things could go.",
+  "I explain my feelings to myself through examples or metaphors.",
+  "I think about how others see me.",
+  "I try to make sense of my emotions by connecting them to events.",
+  "I think about the why behind my reactions.",
+  "I compare myself to who I used to be.",
+  "I think about who I want to become."
+];
+
+const COG_B = [
+  "I act quickly when something needs to be done.",
+  "I adjust my behavior depending on the situation.",
+  "I try to stay in control of my actions.",
+  "I notice when I'm doing something out of habit.",
+  "I try to fix problems as soon as I see them.",
+  "I change my approach if something isn't working.",
+  "I try to stay consistent with my values.",
+  "I think before I act.",
+  "I try to avoid making the same mistake twice.",
+  "I can shift gears when needed."
+];
+
+const COG_A = [
+  "I adjust quickly when plans change.",
+  "I can stay calm when things get chaotic.",
+  "I recover quickly after something stressful.",
+  "I can handle unexpected problems.",
+  "I stay flexible when things don't go my way.",
+  "I can switch between tasks without getting overwhelmed.",
+  "I can handle emotional pressure.",
+  "I can stay focused even when stressed.",
+  "I can keep going even when things feel hard.",
+  "I can find a new approach when the old one fails."
+];
+
+const EP_BLOCKS = [
+  { title: "Threat", key: "threat", qs: ["I feel on edge or alert.","I expect something bad to happen.","I scan for danger or problems.","I feel tense in my body."] },
+  { title: "Loss", key: "loss", qs: ["I feel like something important is missing.","I feel disconnected from things I care about.","I feel a sense of emptiness.","I feel like something slipped away."] },
+  { title: "Overwhelm", key: "overwhelm", qs: ["I feel like everything is too much.","I struggle to keep up with what's happening.","I feel mentally overloaded.","I feel like I can't process everything."] },
+  { title: "Anger", key: "anger", qs: ["I feel irritated or frustrated.","I feel like something is unfair.","I feel like pushing back or resisting.","I feel heat or tension in my body."] },
+  { title: "Desire", key: "desire", qs: ["I feel pulled toward something I want.","I feel motivated to get or achieve something.","I feel excited about a possibility.","I feel drawn toward a goal or person."] },
+  { title: "Connection", key: "connection", qs: ["I feel close to others.","I feel understood or supported.","I feel open to sharing.","I feel like I belong."] },
+  { title: "Pride", key: "pride", qs: ["I feel confident in myself.","I feel proud of something I've done.","I feel capable and strong.","I feel like I'm doing well."] },
+  { title: "Shame", key: "shame", qs: ["I feel embarrassed or exposed.","I feel like I messed up.","I feel like hiding or pulling away.","I feel judged by myself or others."] },
+  { title: "Play", key: "play", qs: ["I feel curious or playful.","I feel creative or imaginative.","I feel light or spontaneous.","I feel open to trying new things."] },
+  { title: "Safety", key: "safety", qs: ["I feel calm and grounded.","I feel like things are okay.","I feel steady and regulated.","I feel protected or supported."] }
+];
+
+const SIM_P = [
+  "When you imagine a scene, how naturally does it appear fully formed around you without needing to build it piece by piece?",
+  "When you move your attention within an imagined space, how automatically does the environment update — like walking through a real location?",
+  "How often do imagined environments feel like they already exist with their own internal logic?",
+  "How easily can you change elements of a scene and see how those changes would realistically look?",
+  "When imagining something, how instantly does the scene appear, without delay or effort?"
+];
+
+const SIM_N = [
+  "When imagining a scene or memory, how strongly do emotions or personal meaning appear along with it?",
+  "How naturally do imagined scenes connect into stories, sequences, or ongoing internal worlds?",
+  "How often do imagined characters, places, or scenarios feel consistent across time?",
+  "When you imagine something emotional, how strongly does your body respond?",
+  "How easily can you drop into an imagined moment and feel like you're inside it rather than observing it?"
+];
+
+const SIM_B = [
+  "How often do you mentally rehearse actions in a way that helps you perform them later?",
+  "How much does imagining a situation influence your decisions or behavior in real life?",
+  "How naturally do you simulate future outcomes to decide what to do next?",
+  "When preparing for something important, how often do you run multiple internal scenarios?",
+  "How often does your internal simulation feel more informative than verbal thinking?"
+];
+
+const SIM_A = [
+  "How easily can you shift out of an internal simulation when you need to focus on something external?",
+  "How easily can you change the direction or content of an internal simulation?",
+  "How naturally can you pause an internal scene and return to it later?",
+  "How often can you run more than one internal process at once without losing clarity?",
+  "How easily can you ground yourself when an internal simulation becomes too intense?"
+];
+
+// ================================================
+// [N] :: {STATE} | APP STATE
+// ================================================
+
+let currentMode = 'baseline';
+let scores = { baseline: {}, activated: {} };
+let totalQuestions = 0;
+let answeredQuestions = 0;
+
+// ================================================
+// [B] :: {RENDER} | RENDER QUESTIONS
+// ================================================
+
+function makeQ(text, id, prefix) {
+  totalQuestions++;
+  return `
+    <div class="question" id="q-wrap-${id}">
+      <span class="q-num">${prefix}</span>
+      <span class="q-text">${text}</span>
+      <div class="q-scale">
+        ${[1,2,3,4,5].map(v => `<button class="scale-btn" id="btn-${id}-${v}" onclick="setScore('${id}',${v})">${v}</button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderQuestions(containerId, questions, prefix) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = questions.map((q,i) => makeQ(q, `${containerId}-${i}`, `${prefix}${i+1}`)).join('');
+}
+
+function renderEP() {
+  const grid = document.getElementById('ep-grid');
+  grid.innerHTML = EP_BLOCKS.map(block => `
+    <div class="ep-block">
+      <div class="ep-title">${block.title}</div>
+      <div class="questions">
+        ${block.qs.map((q,i) => makeQ(q, `ep-${block.key}-${i}`, `${block.title[0]}${i+1}`)).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ================================================
+// [B] :: {SCORE} | SCORING LOGIC
+// ================================================
+
+function setScore(id, val) {
+  const modeScores = scores[currentMode];
+  const wasAnswered = modeScores[id] !== undefined;
+  modeScores[id] = val;
+
+  // Update buttons
+  for(let v=1;v<=5;v++) {
+    const btn = document.getElementById(`btn-${id}-${v}`);
+    if(btn) btn.classList.toggle('selected', v === val);
+  }
+
+  if(!wasAnswered) answeredQuestions++;
+  updateProgress();
+  updateConstellation();
+  checkComplete();
+}
+
+function updateProgress() {
+  const pct = Math.min(100, (answeredQuestions / totalQuestions) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function getSection(ids) {
+  const modeScores = scores[currentMode];
+  return ids.reduce((sum, id) => sum + (modeScores[id] || 0), 0);
+}
+
+function getCogScores() {
+  const dims = ['cog-p','cog-n','cog-b','cog-a'];
+  return dims.map(d => {
+    const ids = Array.from({length:10},(_,i)=>`${d}-${i}`);
+    return getSection(ids);
+  });
+}
+
+function getSimScores() {
+  const dims = ['sim-p','sim-n','sim-b','sim-a'];
+  return dims.map(d => {
+    const ids = Array.from({length:5},(_,i)=>`${d}-${i}`);
+    return getSection(ids);
+  });
+}
+
+function getEPScores() {
+  return EP_BLOCKS.map(block => {
+    const ids = Array.from({length:4},(_,i)=>`ep-${block.key}-${i}`);
+    return getSection(ids);
+  });
+}
+
+// ================================================
+// [A] :: {LABEL} | CODE LABELS
+// ================================================
+
+function cogLabel(score, max) {
+  const pct = score / max;
+  if(pct < 0.467) return 'F';
+  if(pct < 0.74) return 'S';
+  return 'L';
+}
+
+function epLabel(score) {
+  if(score <= 9) return '↓';
+  if(score <= 14) return '=';
+  return '↑';
+}
+
+function simLabel(score) {
+  if(score <= 12) return 'LRIS';
+  if(score <= 20) return 'SRIS';
+  return 'HRIS';
+}
+
+function heatColor(pct) {
+  if(pct < 0.3) return 'linear-gradient(90deg,#6040a0,#4020a0)';
+  if(pct < 0.45) return 'linear-gradient(90deg,#60a0f0,#4080ff)';
+  if(pct < 0.65) return 'linear-gradient(90deg,#00d4aa,#00ff88)';
+  if(pct < 0.8) return 'linear-gradient(90deg,#f0c060,#ffaa00)';
+  return 'linear-gradient(90deg,#ff6b8a,#ff3366)';
+}
+
+// ================================================
+// [P] :: {CONSTELLATION} | LIVE CONSTELLATION
+// ================================================
+
+function updateConstellation() {
+  const canvas = document.getElementById('constellation');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W/2, cy = H/2;
+  const R = Math.min(W,H) * 0.35;
+
+  ctx.clearRect(0,0,W,H);
+
+  // Background
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fillRect(0,0,W,H);
+
+  // Grid circles
+  [0.25,0.5,0.75,1].forEach(r => {
+    ctx.beginPath();
+    ctx.arc(cx,cy,R*r,0,Math.PI*2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Axis lines
+  const labels = ['P','N','B','A'];
+  const colors = ['#00d4aa','#f0c060','#9b6dff','#ff6b8a'];
+  const angles = [-Math.PI/2, 0, Math.PI/2, Math.PI];
+
+  angles.forEach((angle, i) => {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(angle)*R, cy + Math.sin(angle)*R);
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Labels
+    ctx.fillStyle = colors[i];
+    ctx.font = 'bold 13px Space Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const lx = cx + Math.cos(angle)*(R+22);
+    const ly = cy + Math.sin(angle)*(R+22);
+    ctx.fillText(labels[i], lx, ly);
+  });
+
+  // Get normalized scores (0-1)
+  const cogScores = getCogScores(); // max 50 each
+  const norms = cogScores.map(s => Math.min(1, s/50));
+
+  // Draw constellation shape
+  const points = angles.map((angle, i) => ({
+    x: cx + Math.cos(angle)*R*norms[i],
+    y: cy + Math.sin(angle)*R*norms[i]
+  }));
+
+  // Fill
+  ctx.beginPath();
+  points.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(0,212,170,0.08)';
+  ctx.fill();
+
+  // Stroke
+  ctx.beginPath();
+  points.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+  ctx.closePath();
+  ctx.strokeStyle = 'rgba(0,212,170,0.6)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Nodes
+  points.forEach((p,i) => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+
+    // Glow
+    const grd = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,16);
+    grd.addColorStop(0, colors[i].replace(')',',0.3)').replace('rgb','rgba'));
+    grd.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,16,0,Math.PI*2);
+    ctx.fillStyle = grd;
+    ctx.fill();
+
+    // Score label
+    if(cogScores[i] > 0) {
+      ctx.fillStyle = colors[i];
+      ctx.font = '10px Space Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(cogScores[i], p.x, p.y - 14);
+    }
+  });
+
+  // Anchor dot at center
+  ctx.beginPath();
+  ctx.arc(cx,cy,4,0,Math.PI*2);
+  ctx.fillStyle = 'rgba(0,212,170,0.5)';
+  ctx.fill();
+
+  // 1.369 label
+  ctx.fillStyle = 'rgba(0,212,170,0.4)';
+  ctx.font = '9px Space Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('1.369', cx, cy+14);
+}
+
+// ================================================
+// [A] :: {COMPLETE} | CHECK COMPLETE + RESULTS
+// ================================================
+
+function checkComplete() {
+  const modeScores = scores[currentMode];
+  const allIds = getAllIds();
+  const answered = allIds.filter(id => modeScores[id] !== undefined).length;
+  if(answered === allIds.length) {
+    showResults();
+  }
+}
+
+function getAllIds() {
+  const ids = [];
+  ['cog-p','cog-n','cog-b','cog-a'].forEach(d => {
+    for(let i=0;i<10;i++) ids.push(`${d}-${i}`);
+  });
+  EP_BLOCKS.forEach(b => {
+    for(let i=0;i<4;i++) ids.push(`ep-${b.key}-${i}`);
+  });
+  ['sim-p','sim-n','sim-b','sim-a'].forEach(d => {
+    for(let i=0;i<5;i++) ids.push(`${d}-${i}`);
+  });
+  return ids;
+}
+
+function showResults() {
+  const cogScores = getCogScores();
+  const simScores = getSimScores();
+  const epScores = getEPScores();
+
+  const pLabels = ['P','N','B','A'];
+  const cogCodes = cogScores.map((s,i) => `${pLabels[i]}${cogLabel(s,50)}`);
+  const simCodes = simScores.map((s,i) => `${pLabels[i]}:${simLabel(s)}`);
+  const epCodes = EP_BLOCKS.map((b,i) => `${b.title[0]}${epLabel(epScores[i])}`);
+
+  // Score cards
+  const grid = document.getElementById('scoreGrid');
+  grid.innerHTML = [
+    { label:'[P] PATTERN', val: cogScores[0], code: cogCodes[0], max:50, color:'var(--anchor)' },
+    { label:'[N] NARRATIVE', val: cogScores[1], code: cogCodes[1], max:50, color:'var(--gold)' },
+    { label:'[B] BEHAVIOR', val: cogScores[2], code: cogCodes[2], max:50, color:'var(--violet)' },
+    { label:'[A] ADAPTATION', val: cogScores[3], code: cogCodes[3], max:50, color:'var(--rose)' }
+  ].map(c => `
+    <div class="score-card">
+      <div class="score-card-label">${c.label}</div>
+      <div class="score-card-value" style="color:${c.color}">${c.val}<span style="font-size:12px;color:var(--text-muted)">/${c.max}</span></div>
+      <span class="score-card-code" style="background:${c.color}22;color:${c.color}">${c.code}</span>
+    </div>`).join('');
+
+  // Heat map
+  const heatRows = document.getElementById('heatRows');
+  const allHeat = [
+    ...cogScores.map((s,i) => ({ label: pLabels[i]+' (Cog)', pct: s/50 })),
+    ...epScores.map((s,i) => ({ label: EP_BLOCKS[i].title, pct: s/20 })),
+    ...simScores.map((s,i) => ({ label: pLabels[i]+' (Sim)', pct: s/25 }))
+  ];
+
+  heatRows.innerHTML = allHeat.map(h => `
+    <div class="heat-row">
+      <div class="heat-label">${h.label}</div>
+      <div class="heat-bg"><div class="heat-fill" style="width:${h.pct*100}%;background:${heatColor(h.pct)}"></div></div>
+      <div class="heat-pct">${Math.round(h.pct*100)}%</div>
+    </div>`).join('');
+
+  // Combined output
+  const cogStr = cogCodes.join('·');
+  const epStr = epCodes.join(' ');
+  const simStr = simCodes.join(' ');
+  document.getElementById('combinedOutput').innerHTML =
+    `<span style="color:var(--anchor)">${cogStr}</span> // <span style="color:var(--gold)">${epStr}</span> // <span style="color:var(--violet)">${simStr}</span>`;
+
+  document.getElementById('resultsPanel').classList.add('visible');
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ================================================
+// [A] :: {CTRL} | MODE SWITCH + RESET
+// ================================================
+
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  // Restore scores for this mode
+  const modeScores = scores[currentMode];
+  getAllIds().forEach(id => {
+    const val = modeScores[id];
+    for(let v=1;v<=5;v++) {
+      const btn = document.getElementById(`btn-${id}-${v}`);
+      if(btn) btn.classList.toggle('selected', val === v);
+    }
+  });
+
+  answeredQuestions = Object.keys(modeScores).length;
+  updateProgress();
+  updateConstellation();
+  document.getElementById('resultsPanel').classList.remove('visible');
+}
+
+function resetAll() {
+  scores[currentMode] = {};
+  answeredQuestions = 0;
+  getAllIds().forEach(id => {
+    for(let v=1;v<=5;v++) {
+      const btn = document.getElementById(`btn-${id}-${v}`);
+      if(btn) btn.classList.remove('selected');
+    }
+  });
+  updateProgress();
+  updateConstellation();
+  document.getElementById('resultsPanel').classList.remove('visible');
+}
+
+// ================================================
+// [P] :: {INIT} | INITIALIZE
+// ================================================
+
+function init() {
+  renderQuestions('cog-p', COG_P, 'P');
+  renderQuestions('cog-n', COG_N, 'N');
+  renderQuestions('cog-b', COG_B, 'B');
+  renderQuestions('cog-a', COG_A, 'A');
+  renderEP();
+  renderQuestions('sim-p', SIM_P, 'SP');
+  renderQuestions('sim-n', SIM_N, 'SN');
+  renderQuestions('sim-b', SIM_B, 'SB');
+  renderQuestions('sim-a', SIM_A, 'SA');
+  updateConstellation();
+}
+
+init();
+</script>
+</body>
+</html>
