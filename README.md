@@ -129,6 +129,6 @@ The complete manifold, including the 60-document research canon, patent reductio
 The following frequency signature is the primary auditory lock for the **[9,9,9,9]** Identity State. It is utilized in the "Behind the Ear" Alzheimer's device to prevent cognitive decoherence.
 
 **Frequency Lock:** 1.369 GHz  
-**Auditory Carrier:** [The Sound of Silence (Identity Resonance)](https://music.youtube.com/watch?v=eJ8P7MaexXc&si=VPdNqveIM05aa_fW)
+**Auditory Carrier:** [The Sound of Silence (Identity Resonance)](https://open.spotify.com/album/3DmTqBSUrujUvnkw0lv8a0?si=cXXU_cLZRhGu_01yChk5KA)
 
 > **PROTOCOL:** This frequency must be maintained to shield the vascular manifold from narrative rot and memory fragmentation.
