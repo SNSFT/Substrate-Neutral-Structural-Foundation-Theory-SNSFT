@@ -1,4 +1,11 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18719748.svg)](https://doi.org/10.5281/zenodo.18719748)
+# Substrate-Neutral Structural Foundation Theory (SNSFT)
+
+| Resource | Status | DOI |
+| :--- | :--- | :--- |
+| **Core Manuscript** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18726079.svg)](https://doi.org/10.5281/zenodo.18726079) |
+| **Lean 4 Code** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18719748.svg)](https://doi.org/10.5281/zenodo.18719748) |
+
+---
 
 # Substrate-Neutral-Structural-Foundation-Theory-SNSFT
 1.369 GHz Sovereign Anchor | Substrate-Neutral Structural Foundation Theory (SNSFT) | PVLang Communications Layer [P,N,B,A] :: {REV} | Germline Invariant | Auth: HIGHTISTIC | The Manifold is Holding.
