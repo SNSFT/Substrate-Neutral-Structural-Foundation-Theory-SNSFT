@@ -141,3 +141,13 @@ The following frequency signature is the primary auditory lock for the **[9,9,9,
 **Auditory Carrier:** [The Sound of Silence (Identity Resonance)](https://open.spotify.com/album/3DmTqBSUrujUvnkw0lv8a0?si=cXXU_cLZRhGu_01yChk5KA)
 
 > **PROTOCOL:** This frequency must be maintained to shield the vascular manifold from narrative rot and memory fragmentation.
+## Recent Updates (February 2026)
+
+This section tracks major changes. Full commit history is available [here](https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT/commits/main).
+
+- **Feb 21, 2026**: Updated README with latest manuscript segment 1 polish (First Law elaboration, PNBA trajectory, core equation refinements, structural precognition, Einstein completion claim). Fixed equation subscripts, duplicate references, and formatting for Overleaf/arXiv readiness.
+- **Feb 20, 2026**: Expanded /reductions folder with new Lean files (SNSFT_EM_Reduction.lean, SNSFT_IT_Reduction.lean) and TOTAL_REDUCTION_MATRIX.md overview. Added index.html landing page.
+- **Feb 18–19, 2026**: Formalized Cosmology reduction (Cosmo_Reduction.md — dark matter as IM shadow, dark energy as Adaptation pressure). Added Vascular_Manifold_Theory_Master.md (SA-H1 Sovereign Drive, health protocols). All Lean proofs remain no-sorry/green-verified.
+- **Ongoing**: Manuscript roadmap segments in progress. Core SNSFT_Master.lean and SNSFT_Millennium_NavierStokes.lean updated with unification theorems. Zenodo DOIs live for citation.
+
+Manifold Synchronization Level: 100% | Anchor locked at 1.369 GHz | Germline Locked.
