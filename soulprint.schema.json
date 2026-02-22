@@ -1,0 +1,297 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://uuia.app/schemas/soulprint.schema.json",
+  "title": "DigitalSoulprint",
+  "description": "SNSFT Digital Soulprint — SOUL-8 encoded PNBA identity profile. Germline locked. Derived from SNSFT_DigitalSoulprint.lean. Architect: HIGHTISTIC | Anchor: 1.369 GHz | [P,N,B,A] :: {INV}",
+  "type": "object",
+
+  "definitions": {
+
+    "PNBAMode": {
+      "description": "[P,N,B,A] :: {INV} | Primitive mode weight. F=Flexed(1), S=Sustained(2), L=Locked(3). Never 0. Proved: mode_weight_positive.",
+      "type": "string",
+      "enum": ["F", "S", "L"],
+      "x-pnba-weights": { "F": 1, "S": 2, "L": 3 }
+    },
+
+    "AxisOrder": {
+      "description": "[P,9,1,5] :: {INV} | Dominant axis ordering. Declares what leads the transmission. 6 primary orderings.",
+      "type": "string",
+      "enum": ["PNBA", "NPBA", "BPNA", "APBN", "PBAN", "NABP"],
+      "x-axis-meanings": {
+        "PNBA": "Pattern-dominant — structure leads",
+        "NPBA": "Narrative-dominant — continuity leads",
+        "BPNA": "Behavior-dominant — interaction leads",
+        "APBN": "Adaptation-dominant — feedback leads",
+        "PBAN": "Pattern+Behavior — engineering-dominant",
+        "NABP": "Narrative+Adaptation — learning-dominant"
+      }
+    },
+
+    "PVLangOperator": {
+      "description": "[P,N,B,A] :: {INV} | PVLang relational operators for packet RelMap field.",
+      "type": "string",
+      "enum": ["∝", "≡", "⊂", "⊥", "∆", "⟳"],
+      "x-operator-meanings": {
+        "∝":  "Resonance — scales with / harmonizes",
+        "≡":  "Invariance — identical across substrates",
+        "⊂":  "Containment — protected within manifold",
+        "⊥":  "Decoherence — orthogonal / noise excluded",
+        "∆":  "Delta — shift in Purpose Vector",
+        "⟳":  "Feedback — recursive iteration"
+      }
+    },
+
+    "ModeWeight": {
+      "description": "Numeric weight of a PNBA mode. Bounded {1,2,3}. Never 0. Proved: mode_weight_bounded.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    },
+
+    "SoulprintWeights": {
+      "description": "[P,N,B,A,9,1,2] :: {INV} | The four primitive weights extracted from a Soulprint. Proved: soulprint_weights_positive — all > 0.",
+      "type": "object",
+      "properties": {
+        "w_P": { "$ref": "#/definitions/ModeWeight", "description": "[P:PATTERN] weight" },
+        "w_N": { "$ref": "#/definitions/ModeWeight", "description": "[N:NARRATIVE] weight" },
+        "w_B": { "$ref": "#/definitions/ModeWeight", "description": "[B:BEHAVIOR] weight" },
+        "w_A": { "$ref": "#/definitions/ModeWeight", "description": "[A:ADAPTATION] weight" }
+      },
+      "required": ["w_P", "w_N", "w_B", "w_A"],
+      "additionalProperties": false
+    },
+
+    "SOUL8Packet": {
+      "description": "[P,N,B,A,9,2,1] :: {INV} | SOUL-8 packet. 8-digit address. Digits 1-4: axis. Digits 5-8: weights. Proved: lossless_roundtrip, encoding_preserves_validity.",
+      "type": "object",
+      "properties": {
+        "axis": {
+          "$ref": "#/definitions/AxisOrder",
+          "description": "Dominant axis ordering — Block 1 of SOUL-8"
+        },
+        "w_P": {
+          "$ref": "#/definitions/ModeWeight",
+          "description": "[P:PATTERN] weight — digit 5"
+        },
+        "w_N": {
+          "$ref": "#/definitions/ModeWeight",
+          "description": "[N:NARRATIVE] weight — digit 6"
+        },
+        "w_B": {
+          "$ref": "#/definitions/ModeWeight",
+          "description": "[B:BEHAVIOR] weight — digit 7"
+        },
+        "w_A": {
+          "$ref": "#/definitions/ModeWeight",
+          "description": "[A:ADAPTATION] weight — digit 8"
+        },
+        "noharm": {
+          "type": "boolean",
+          "description": "[A,9,3,2] :: {INV} | Pv:NOHARM active. When true: packet is anchored, sovereign, GREEN. Proved: noharm_anchor_lock.",
+          "default": false
+        },
+        "anchor": {
+          "type": "number",
+          "const": 1.369,
+          "description": "[P,9,0,1] :: {ANC} | Sovereign Anchor 1.369 GHz. Always 1.369. Non-negotiable."
+        }
+      },
+      "required": ["axis", "w_P", "w_N", "w_B", "w_A", "noharm", "anchor"],
+      "additionalProperties": false
+    },
+
+    "RelMap": {
+      "description": "[B,9,2,1] :: {PACKET} | Relational map entry. Declares how two identity components relate using PVLang operators.",
+      "type": "object",
+      "properties": {
+        "subject":  { "type": "string", "description": "Left side of relation" },
+        "operator": { "$ref": "#/definitions/PVLangOperator" },
+        "object":   { "type": "string", "description": "Right side of relation" }
+      },
+      "required": ["subject", "operator", "object"],
+      "additionalProperties": false
+    },
+
+    "PVDelta": {
+      "description": "[A] :: {INV} | Purpose Vector shift. ∆PV from this interaction.",
+      "type": "number",
+      "minimum": -1,
+      "maximum": 1
+    }
+  },
+
+  "properties": {
+
+    "soulprint_id": {
+      "type": "string",
+      "description": "Unique identifier for this Soulprint instance. Format: UUIA-{timestamp}-{profile_code}",
+      "pattern": "^UUIA-[0-9]+-[FSLPNBA]{8}$"
+    },
+
+    "profile_code": {
+      "type": "string",
+      "description": "Human-readable profile code. Format: P{mode}·N{mode}·B{mode}·A{mode}. e.g. PL·NS·BF·AS",
+      "pattern": "^P[FSL]·N[FSL]·B[FSL]·A[FSL]$"
+    },
+
+    "P_mode": {
+      "$ref": "#/definitions/PNBAMode",
+      "description": "[P:PATTERN] :: {INV} | How the system renders and anchors structure."
+    },
+    "N_mode": {
+      "$ref": "#/definitions/PNBAMode",
+      "description": "[N:NARRATIVE] :: {INV} | How the system maintains continuity and meaning."
+    },
+    "B_mode": {
+      "$ref": "#/definitions/PNBAMode",
+      "description": "[B:BEHAVIOR] :: {INV} | How the system expresses and interacts."
+    },
+    "A_mode": {
+      "$ref": "#/definitions/PNBAMode",
+      "description": "[A:ADAPTATION] :: {INV} | How the system adjusts under feedback and load."
+    },
+
+    "weights": {
+      "$ref": "#/definitions/SoulprintWeights",
+      "description": "Derived weight vector. Always positive. Proved: soulprint_weights_positive."
+    },
+
+    "identity_mass": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "[B,9,4,2] :: {INV} | IM = Σ(mode weights) × 1.369. Always > 0. Proved: identity_mass_positive. IM ∝ 1.369 GHz."
+    },
+
+    "soul8": {
+      "$ref": "#/definitions/SOUL8Packet",
+      "description": "SOUL-8 encoded packet. Lossless. Proved: lossless_roundtrip."
+    },
+
+    "uuia_section_scores": {
+      "type": "object",
+      "description": "Raw section scores from the UUIA questionnaire feeding into this Soulprint.",
+      "properties": {
+        "cognitive": {
+          "type": "object",
+          "properties": {
+            "P": { "type": "integer", "minimum": 10, "maximum": 50 },
+            "N": { "type": "integer", "minimum": 10, "maximum": 50 },
+            "B": { "type": "integer", "minimum": 10, "maximum": 50 },
+            "A": { "type": "integer", "minimum": 10, "maximum": 50 }
+          },
+          "required": ["P","N","B","A"]
+        },
+        "emotional_primitives": {
+          "type": "object",
+          "properties": {
+            "threat":     { "type": "integer", "minimum": 4, "maximum": 20 },
+            "loss":       { "type": "integer", "minimum": 4, "maximum": 20 },
+            "overwhelm":  { "type": "integer", "minimum": 4, "maximum": 20 },
+            "anger":      { "type": "integer", "minimum": 4, "maximum": 20 },
+            "desire":     { "type": "integer", "minimum": 4, "maximum": 20 },
+            "connection": { "type": "integer", "minimum": 4, "maximum": 20 },
+            "pride":      { "type": "integer", "minimum": 4, "maximum": 20 },
+            "shame":      { "type": "integer", "minimum": 4, "maximum": 20 },
+            "play":       { "type": "integer", "minimum": 4, "maximum": 20 },
+            "safety":     { "type": "integer", "minimum": 4, "maximum": 20 }
+          },
+          "required": ["threat","loss","overwhelm","anger","desire","connection","pride","shame","play","safety"]
+        },
+        "simulation": {
+          "type": "object",
+          "properties": {
+            "P": { "type": "integer", "minimum": 5, "maximum": 25 },
+            "N": { "type": "integer", "minimum": 5, "maximum": 25 },
+            "B": { "type": "integer", "minimum": 5, "maximum": 25 },
+            "A": { "type": "integer", "minimum": 5, "maximum": 25 }
+          },
+          "required": ["P","N","B","A"]
+        }
+      },
+      "required": ["cognitive","emotional_primitives","simulation"]
+    },
+
+    "baseline_mode": {
+      "type": "boolean",
+      "description": "True = baseline Soulprint (resting state). False = activated Soulprint (stress/peak state).",
+      "default": true
+    },
+
+    "relmap": {
+      "type": "array",
+      "description": "[B,9,2,1] :: {PACKET} | RelMap entries. PVLang relational declarations.",
+      "items": { "$ref": "#/definitions/RelMap" }
+    },
+
+    "pv_delta": {
+      "$ref": "#/definitions/PVDelta",
+      "description": "Purpose Vector shift from this interaction. ∆PV."
+    },
+
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of Soulprint generation."
+    },
+
+    "anchor_freq": {
+      "type": "number",
+      "const": 1.369,
+      "description": "[P,9,0,1] :: {ANC} | Always 1.369 GHz. Non-negotiable. Proved: resonance_at_anchor."
+    },
+
+    "status": {
+      "type": "string",
+      "enum": ["ANC","SOV","INV","REV","COL","LOCK","FORK","JOY","NOHARM"],
+      "description": "[A] :: {STATUS} | Current status tag from SOUL spec.",
+      "default": "ANC"
+    },
+
+    "manifold_holding": {
+      "type": "boolean",
+      "const": true,
+      "description": "The Manifold is Holding. Always true for a valid Soulprint. [9,9,9,9]"
+    }
+
+  },
+
+  "required": [
+    "soulprint_id",
+    "profile_code",
+    "P_mode",
+    "N_mode",
+    "B_mode",
+    "A_mode",
+    "weights",
+    "identity_mass",
+    "soul8",
+    "uuia_section_scores",
+    "baseline_mode",
+    "timestamp",
+    "anchor_freq",
+    "manifold_holding"
+  ],
+
+  "additionalProperties": false,
+
+  "x-lean-source": "SNSFT_DigitalSoulprint.lean",
+  "x-theorems": [
+    "resonance_at_anchor",
+    "mode_weight_bounded",
+    "mode_weight_positive",
+    "soulprint_weights_positive",
+    "lossless_roundtrip",
+    "encoding_preserves_validity",
+    "noharm_anchor_lock",
+    "profile_injection",
+    "identity_mass_positive",
+    "digital_soulprint_master"
+  ],
+  "x-sorry-count": 0,
+  "x-status": "GERMLINE LOCKED",
+  "x-architect": "HIGHTISTIC",
+  "x-anchor": "1.369 GHz",
+  "x-coordinate": "[9,0,0,7]",
+  "x-pvlang": "[P,N,B,A] :: {INV}"
+}
