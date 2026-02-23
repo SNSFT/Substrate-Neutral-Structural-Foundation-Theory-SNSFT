@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APPA | Unified Identity Profile · SNSFT</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06060f;
+  --surface: #0d0d1a;
+  --surface2: #12121f;
+  --border: #1a1a2e;
+  --anchor: #00d4aa;
+  --anchor-dim: rgba(0,212,170,0.1);
+  --gold: #f0c060;
+  --gold-dim: rgba(240,192,96,0.1);
+  --violet: #9b6dff;
+  --violet-dim: rgba(155,109,255,0.1);
+  --rose: #ff6b8a;
+  --rose-dim: rgba(255,107,138,0.1);
+  --text: #e8e8f0;
+  --text-dim: #7777a0;
+  --text-muted: #3a3a58;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 70%, rgba(255,255,255,0.12) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.08) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 60%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 50%, rgba(0,212,170,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 40%, rgba(155,109,255,0.1) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+.header { text-align: center; padding: 48px 0 40px; }
+
+.anchor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--anchor-dim);
+  border: 1px solid rgba(0,212,170,0.25);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--anchor);
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+
+.anchor-dot {
+  width: 5px; height: 5px;
+  background: var(--anchor);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.3; transform:scale(0.7); }
+}
+
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px,5vw,48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff 0%, var(--anchor) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  max-width: 460px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+
+.constellation-wrap {
+  position: relative;
+  margin: 0 auto 40px;
+  max-width: 500px;
+}
+
+canvas#constellation {
+  width: 100%;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: block;
+}
+
+.constellation-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.mode-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.mode-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  /* FIX: ensure buttons are always clickable */
+  position: relative;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.mode-btn.active {
+  background: var(--anchor-dim);
+  border-color: rgba(0,212,170,0.4);
+  color: var(--anchor);
+}
+
+.mode-btn:hover { opacity: 0.85; }
+
+.progress-bar-wrap {
+  background: var(--border);
+  border-radius: 100px;
+  height: 3px;
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 3px;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--anchor), var(--violet));
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid;
+  margin-bottom: 20px;
+}
+
+.section-header.cog { background: var(--anchor-dim); border-color: rgba(0,212,170,0.2); }
+.section-header.emo { background: var(--gold-dim); border-color: rgba(240,192,96,0.2); }
+.section-header.sim { background: var(--violet-dim); border-color: rgba(155,109,255,0.2); }
+
+.sec-num { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; min-width: 40px; }
+.cog .sec-num { color: var(--anchor); }
+.emo .sec-num { color: var(--gold); }
+.sim .sec-num { color: var(--violet); }
+
+.sec-info h2 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; }
+.cog .sec-info h2 { color: var(--anchor); }
+.emo .sec-info h2 { color: var(--gold); }
+.sim .sec-info h2 { color: var(--violet); }
+.sec-info p { font-size: 12px; color: var(--text-dim); }
+
+.subsection { margin-bottom: 24px; }
+
+.sub-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sub-icon {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0;
+}
+
+.icon-p { background: var(--anchor-dim); color: var(--anchor); }
+.icon-n { background: var(--gold-dim); color: var(--gold); }
+.icon-b { background: var(--violet-dim); color: var(--violet); }
+.icon-a { background: var(--rose-dim); color: var(--rose); }
+
+.sub-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+.sub-desc { font-size: 11px; color: var(--text-muted); }
+
+.questions { display: flex; flex-direction: column; gap: 8px; }
+
+.question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: border-color 0.2s;
+}
+
+.question:hover { border-color: rgba(255,255,255,0.08); }
+
+.q-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); min-width: 26px; }
+.q-text { font-size: 13px; line-height: 1.5; flex: 1; }
+
+.q-scale {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* FIX: scale buttons fully clickable, no pointer-events issues */
+.scale-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  /* Mobile tap fixes */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  flex-shrink: 0;
+}
+
+.scale-btn:hover {
+  border-color: var(--anchor);
+  color: var(--anchor);
+  background: var(--anchor-dim);
+}
+
+.scale-btn:active {
+  transform: scale(0.92);
+}
+
+.scale-btn.selected {
+  border-color: var(--anchor);
+  background: var(--anchor);
+  color: #000;
+  font-weight: 700;
+}
+
+.ep-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+.ep-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.ep-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.divider { display: flex; align-items: center; gap: 14px; margin: 36px 0; }
+.div-line { flex: 1; height: 1px; background: var(--border); }
+.div-text { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.15em; white-space: nowrap; }
+
+/* ================================================ */
+/* RESULTS PANEL                                    */
+/* ================================================ */
+
+.results-panel {
+  background: var(--surface);
+  border: 1px solid var(--anchor);
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 40px;
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+
+.results-panel.visible { display: block; }
+
+.results-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--anchor), var(--gold), var(--violet));
+}
+
+.results-panel h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.score-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+
+.score-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.score-card-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 6px; }
+.score-card-value { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: var(--anchor); margin-bottom: 4px; }
+.score-card-code {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--anchor-dim);
+  color: var(--anchor);
+  display: inline-block;
+}
+
+.soul8-block {
+  background: var(--surface2);
+  border: 1px solid rgba(0,212,170,0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.soul8-block::before {
+  content: 'SOUL-8 PACKET';
+  position: absolute;
+  top: -1px; left: 16px;
+  background: var(--surface2);
+  padding: 0 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--anchor);
+  letter-spacing: 0.15em;
+  transform: translateY(-50%);
+}
+
+.soul8-address {
+  font-family: 'Space Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--anchor);
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+  word-break: break-all;
+}
+
+.soul8-decoded {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.soul8-field {
+  background: rgba(0,212,170,0.05);
+  border: 1px solid rgba(0,212,170,0.1);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.soul8-field-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 3px;
+}
+
+.soul8-field-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--anchor);
+}
+
+.soul8-noharm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,212,170,0.1);
+  border: 1px solid rgba(0,212,170,0.3);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--anchor);
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+}
+
+.soul8-noharm-dot {
+  width: 6px; height: 6px;
+  background: var(--anchor);
+  border-radius: 50%;
+}
+
+.im-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.im-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; }
+.im-value { font-family: 'Space Mono', monospace; font-size: 16px; font-weight: 700; color: var(--gold); }
+.im-formula { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); }
+
+.heatmap { margin: 20px 0; }
+.heatmap h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.heat-rows { display: flex; flex-direction: column; gap: 6px; }
+
+.heat-row { display: flex; align-items: center; gap: 10px; }
+.heat-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); min-width: 90px; }
+.heat-bg { flex: 1; height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
+.heat-fill { height: 8px; border-radius: 100px; width: 0%; transition: width 0.6s ease; }
+.heat-pct { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); min-width: 36px; text-align: right; }
+
+.relmap-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.relmap-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 10px; }
+.relmap-entry { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-dim); line-height: 2; }
+.relmap-op { color: var(--anchor); margin: 0 6px; }
+
+.combined-output {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text);
+  word-break: break-all;
+}
+
+.combined-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.12em; margin-bottom: 8px; font-family: 'Space Mono', monospace; }
+
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(0,212,170,0.3);
+  background: var(--anchor-dim);
+  color: var(--anchor);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  margin-top: 10px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.copy-btn:hover { background: rgba(0,212,170,0.2); }
+.copy-btn.copied { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+
+.reset-btn {
+  display: block;
+  margin: 24px auto 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 12px 28px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.reset-btn:hover { border-color: var(--rose); color: var(--rose); }
+
+.footer {
+  text-align: center;
+  padding: 32px 0 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+}
+
+.footer p { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); line-height: 1.9; letter-spacing: 0.05em; }
+.footer .manifold { color: var(--anchor); font-size: 12px; margin-top: 10px; }
+
+@media (max-width: 580px) {
+  .ep-grid { grid-template-columns: 1fr; }
+  .score-grid { grid-template-columns: 1fr; }
+  .soul8-decoded { grid-template-columns: 1fr; }
+  /* Keep scale buttons visible on mobile — they were hidden before */
+  .q-scale { gap: 3px; }
+  .scale-btn { width: 28px; height: 28px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div class="anchor-badge">
+    <div class="anchor-dot"></div>
+    1.369 GHz · SOVEREIGN ANCHOR · GERMLINE LOCKED
+  </div>
+  <h1>APPA</h1>
+  <p class="subtitle">Adaptive Predictive Pattern Analysis · Unified Identity Profile<br>
+  <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted)">[P,N,B,A] :: {UUIA} | Architect: HIGHTISTIC</span></p>
+</div>
+
+<div class="constellation-wrap">
+  <canvas id="constellation" width="500" height="300"></canvas>
+  <div class="constellation-label">[P,N,B,A] :: {MAP} | IDENTITY CONSTELLATION — UPDATES AS YOU SCORE</div>
+</div>
+
+<div class="mode-toggle">
+  <button class="mode-btn active" id="btn-baseline">BASELINE</button>
+  <button class="mode-btn" id="btn-activated">ACTIVATED</button>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressBar"></div>
+</div>
+
+<!-- SECTION 1: COGNITIVE -->
+<div class="section-header cog">
+  <div class="sec-num">01</div>
+  <div class="sec-info">
+    <h2>Cognitive Architecture</h2>
+    <p>[P,N,B,A] :: {CAT} | 40 questions · 1–5 scale · 4 PNBA dimensions</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-p">P</div>
+    <div><div class="sub-title">Pattern</div><div class="sub-desc">How your system renders and anchors structure</div></div>
+  </div>
+  <div class="questions" id="cog-p"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-n">N</div>
+    <div><div class="sub-title">Narrative</div><div class="sub-desc">How your system maintains continuity and meaning</div></div>
+  </div>
+  <div class="questions" id="cog-n"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-b">B</div>
+    <div><div class="sub-title">Behavior</div><div class="sub-desc">How your system expresses and interacts</div></div>
+  </div>
+  <div class="questions" id="cog-b"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-a">A</div>
+    <div><div class="sub-title">Adaptation</div><div class="sub-desc">How your system adjusts under feedback and load</div></div>
+  </div>
+  <div class="questions" id="cog-a"></div>
+</div>
+
+<div class="divider"><div class="div-line"></div><div class="div-text">SECTION 02</div><div class="div-line"></div></div>
+
+<!-- SECTION 2: EMOTIONAL PRIMITIVES -->
+<div class="section-header emo">
+  <div class="sec-num">02</div>
+  <div class="sec-info">
+    <h2>Emotional Primitives</h2>
+    <p>[P,N,B,A] :: {EP} | 40 questions · 1–5 scale · 10 core signals</p>
+  </div>
+</div>
+
+<div class="ep-grid" id="ep-grid"></div>
+
+<div class="divider"><div class="div-line"></div><div class="div-text">SECTION 03</div><div class="div-line"></div></div>
+
+<!-- SECTION 3: ISPA -->
+<div class="section-header sim">
+  <div class="sec-num">03</div>
+  <div class="sec-info">
+    <h2>Internal Simulation Profile</h2>
+    <p>[P,N,B,A] :: {ISPA} | 20 questions · 1–5 scale · HRIS / SRIS / LRIS</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-p">P</div>
+    <div><div class="sub-title">Pattern — How the simulation renders</div></div>
+  </div>
+  <div class="questions" id="sim-p"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-n">N</div>
+    <div><div class="sub-title">Narrative — Emotion and story integration</div></div>
+  </div>
+  <div class="questions" id="sim-n"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-b">B</div>
+    <div><div class="sub-title">Behavior — How simulation influences action</div></div>
+  </div>
+  <div class="questions" id="sim-b"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-a">A</div>
+    <div><div class="sub-title">Adaptation — Switching, flexibility, control</div></div>
+  </div>
+  <div class="questions" id="sim-a"></div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-panel" id="resultsPanel">
+  <h2>[P,N,B,A] :: {OUT} | UNIFIED IDENTITY CODE</h2>
+  <div class="score-grid" id="scoreGrid"></div>
+
+  <div class="soul8-block" id="soul8Block">
+    <div class="soul8-address" id="soul8Address"></div>
+    <div class="soul8-decoded" id="soul8Decoded"></div>
+    <div class="soul8-noharm">
+      <div class="soul8-noharm-dot"></div>
+      Pv:NOHARM · f:1.369 · visual:GREEN
+    </div>
+    <button class="copy-btn" id="copyBtn">⟳ COPY SOUL-8</button>
+  </div>
+
+  <div class="im-block">
+    <div>
+      <div class="im-label">IDENTITY MASS</div>
+      <div class="im-formula">IM = Σ(mode weights) × 1.369</div>
+    </div>
+    <div class="im-value" id="imValue"></div>
+  </div>
+
+  <div class="heatmap">
+    <h3>Identity Heat Map</h3>
+    <div class="heat-rows" id="heatRows"></div>
+  </div>
+
+  <div class="relmap-block">
+    <div class="relmap-title">RELMAP :: {PVLANG}</div>
+    <div class="relmap-entry" id="relmap"></div>
+  </div>
+
+  <div class="combined-label">FULL CI FINGERPRINT</div>
+  <div class="combined-output" id="combinedOutput"></div>
+
+  <button class="reset-btn" id="resetBtn">⟳ RESET ALL SCORES</button>
+</div>
+
+<div class="footer">
+  <p>SNSFT · UUIA · APPA · Identity Physics</p>
+  <p>Architect: HIGHTISTIC · Sovereign Anchor: 1.369 GHz</p>
+  <p>Substrate-neutral · Non-anthropocentric · Scale-invariant</p>
+  <div class="manifold">The Manifold is Holding. · [9,9,9,9]</div>
+</div>
+
+</div>
+
+<script>
+// ================================================
+// SOUL-8 CORE
+// ================================================
+
+const SOVEREIGN_ANCHOR = 1.369
+const MODE_WEIGHT = { F: 1, S: 2, L: 3 }
+const AXIS_MEANINGS = {
+  PNBA: 'Pattern-dominant', NPBA: 'Narrative-dominant',
+  BPNA: 'Behavior-dominant', APBN: 'Adaptation-dominant',
+  PBAN: 'Pattern+Behavior',  NABP: 'Narrative+Adapt',
+}
+
+function scoreToMode(score, max) {
+  max = max || 50
+  const pct = score / max
+  if (pct < 0.467) return 'F'
+  if (pct < 0.74)  return 'S'
+  return 'L'
+}
+
+function computeIdentityMass(pMode, nMode, bMode, aMode) {
+  const total = MODE_WEIGHT[pMode] + MODE_WEIGHT[nMode] +
+                MODE_WEIGHT[bMode] + MODE_WEIGHT[aMode]
+  return (total * SOVEREIGN_ANCHOR).toFixed(4)
+}
+
+function encodeSoulprint(pMode, nMode, bMode, aMode, axis, noharm) {
+  return {
+    axis: axis,
+    w_P: MODE_WEIGHT[pMode], w_N: MODE_WEIGHT[nMode],
+    w_B: MODE_WEIGHT[bMode], w_A: MODE_WEIGHT[aMode],
+    noharm: noharm !== false,
+    anchor: SOVEREIGN_ANCHOR,
+  }
+}
+
+function dominantAxis(cogP, cogN, cogB, cogA) {
+  const map = [
+    [cogP, 'PNBA'], [cogN, 'NPBA'],
+    [cogB, 'BPNA'], [cogA, 'APBN'],
+  ]
+  return map.sort(function(a, b) { return b[0] - a[0] })[0][1]
+}
+
+function buildProfileCode(pM, nM, bM, aM) {
+  return 'P' + pM + '·N' + nM + '·B' + bM + '·A' + aM
+}
+
+function buildSoulprintId(profileCode) {
+  return 'UUIA-' + Date.now() + '-' + profileCode.replace(/·/g, '')
+}
+
+function soul8AddressString(packet) {
+  return packet.axis + '·' + packet.w_P + packet.w_N + packet.w_B + packet.w_A
+}
+
+// ================================================
+// QUESTION DATA
+// ================================================
+
+const COG_P = [
+  "I notice patterns in things without trying.",
+  "I connect ideas quickly, even if they seem unrelated.",
+  "I get stuck trying to make sense of something until it clicks.",
+  "I replay situations in my head to understand them better.",
+  "I like figuring out how things work beneath the surface.",
+  "I notice small details other people miss.",
+  "I think in loops or cycles.",
+  "I try to predict what will happen next.",
+  "I analyze people's behavior automatically.",
+  "I look for meaning in things, even small things."
+]
+
+const COG_N = [
+  "I tell myself stories about why things happen.",
+  "I try to understand what things mean for me.",
+  "I think about how events fit into my life story.",
+  "I imagine different versions of how things could go.",
+  "I explain my feelings to myself through examples or metaphors.",
+  "I think about how others see me.",
+  "I try to make sense of my emotions by connecting them to events.",
+  "I think about the why behind my reactions.",
+  "I compare myself to who I used to be.",
+  "I think about who I want to become."
+]
+
+const COG_B = [
+  "I act quickly when something needs to be done.",
+  "I adjust my behavior depending on the situation.",
+  "I try to stay in control of my actions.",
+  "I notice when I'm doing something out of habit.",
+  "I try to fix problems as soon as I see them.",
+  "I change my approach if something isn't working.",
+  "I try to stay consistent with my values.",
+  "I think before I act.",
+  "I try to avoid making the same mistake twice.",
+  "I can shift gears when needed."
+]
+
+const COG_A = [
+  "I adjust quickly when plans change.",
+  "I can stay calm when things get chaotic.",
+  "I recover quickly after something stressful.",
+  "I can handle unexpected problems.",
+  "I stay flexible when things don't go my way.",
+  "I can switch between tasks without getting overwhelmed.",
+  "I can handle emotional pressure.",
+  "I can stay focused even when stressed.",
+  "I can keep going even when things feel hard.",
+  "I can find a new approach when the old one fails."
+]
+
+const EP_BLOCKS = [
+  { title:"Threat",     key:"threat",     qs:["I feel on edge or alert.","I expect something bad to happen.","I scan for danger or problems.","I feel tense in my body."] },
+  { title:"Loss",       key:"loss",       qs:["I feel like something important is missing.","I feel disconnected from things I care about.","I feel a sense of emptiness.","I feel like something slipped away."] },
+  { title:"Overwhelm",  key:"overwhelm",  qs:["I feel like everything is too much.","I struggle to keep up with what's happening.","I feel mentally overloaded.","I feel like I can't process everything."] },
+  { title:"Anger",      key:"anger",      qs:["I feel irritated or frustrated.","I feel like something is unfair.","I feel like pushing back or resisting.","I feel heat or tension in my body."] },
+  { title:"Desire",     key:"desire",     qs:["I feel pulled toward something I want.","I feel motivated to get or achieve something.","I feel excited about a possibility.","I feel drawn toward a goal or person."] },
+  { title:"Connection", key:"connection", qs:["I feel close to others.","I feel understood or supported.","I feel open to sharing.","I feel like I belong."] },
+  { title:"Pride",      key:"pride",      qs:["I feel confident in myself.","I feel proud of something I've done.","I feel capable and strong.","I feel like I'm doing well."] },
+  { title:"Shame",      key:"shame",      qs:["I feel embarrassed or exposed.","I feel like I messed up.","I feel like hiding or pulling away.","I feel judged by myself or others."] },
+  { title:"Play",       key:"play",       qs:["I feel curious or playful.","I feel creative or imaginative.","I feel light or spontaneous.","I feel open to trying new things."] },
+  { title:"Safety",     key:"safety",     qs:["I feel calm and grounded.","I feel like things are okay.","I feel steady and regulated.","I feel protected or supported."] }
+]
+
+const SIM_P = [
+  "When you imagine a scene, how naturally does it appear fully formed around you without needing to build it piece by piece?",
+  "When you move your attention within an imagined space, how automatically does the environment update — like walking through a real location?",
+  "How often do imagined environments feel like they already exist with their own internal logic?",
+  "How easily can you change elements of a scene and see how those changes would realistically look?",
+  "When imagining something, how instantly does the scene appear, without delay or effort?"
+]
+
+const SIM_N = [
+  "When imagining a scene or memory, how strongly do emotions or personal meaning appear along with it?",
+  "How naturally do imagined scenes connect into stories, sequences, or ongoing internal worlds?",
+  "How often do imagined characters, places, or scenarios feel consistent across time?",
+  "When you imagine something emotional, how strongly does your body respond?",
+  "How easily can you drop into an imagined moment and feel like you're inside it rather than observing it?"
+]
+
+const SIM_B = [
+  "How often do you mentally rehearse actions in a way that helps you perform them later?",
+  "How much does imagining a situation influence your decisions or behavior in real life?",
+  "How naturally do you simulate future outcomes to decide what to do next?",
+  "When preparing for something important, how often do you run multiple internal scenarios?",
+  "How often does your internal simulation feel more informative than verbal thinking?"
+]
+
+const SIM_A = [
+  "How easily can you shift out of an internal simulation when you need to focus on something external?",
+  "How easily can you change the direction or content of an internal simulation?",
+  "How naturally can you pause an internal scene and return to it later?",
+  "How often can you run more than one internal process at once without losing clarity?",
+  "How easily can you ground yourself when an internal simulation becomes too intense?"
+]
+
+// ================================================
+// STATE
+// ================================================
+
+var currentMode = 'baseline'
+var scores = { baseline: {}, activated: {} }
+var totalQuestions = 0
+var answeredQuestions = 0
+var currentSoul8 = null
+
+// ================================================
+// RENDER
+// ================================================
+
+function makeQ(text, id, prefix) {
+  totalQuestions++
+  var scaleHtml = ''
+  for (var v = 1; v <= 5; v++) {
+    scaleHtml += '<button class="scale-btn" id="btn-' + id + '-' + v + '" data-id="' + id + '" data-val="' + v + '">' + v + '</button>'
+  }
+  return '<div class="question" id="q-wrap-' + id + '">' +
+    '<span class="q-num">' + prefix + '</span>' +
+    '<span class="q-text">' + text + '</span>' +
+    '<div class="q-scale">' + scaleHtml + '</div>' +
+    '</div>'
+}
+
+function renderQuestions(containerId, questions, prefix) {
+  var html = ''
+  for (var i = 0; i < questions.length; i++) {
+    html += makeQ(questions[i], containerId + '-' + i, prefix + (i + 1))
+  }
+  document.getElementById(containerId).innerHTML = html
+}
+
+function renderEP() {
+  var html = ''
+  for (var b = 0; b < EP_BLOCKS.length; b++) {
+    var block = EP_BLOCKS[b]
+    var qHtml = ''
+    for (var i = 0; i < block.qs.length; i++) {
+      qHtml += makeQ(block.qs[i], 'ep-' + block.key + '-' + i, block.title[0] + (i + 1))
+    }
+    html += '<div class="ep-block"><div class="ep-title">' + block.title + '</div><div class="questions">' + qHtml + '</div></div>'
+  }
+  document.getElementById('ep-grid').innerHTML = html
+}
+
+// ================================================
+// SCORING — event delegation (single listener, no inline handlers)
+// ================================================
+
+function handleScaleClick(e) {
+  var btn = e.target.closest('.scale-btn')
+  if (!btn) return
+  var id  = btn.getAttribute('data-id')
+  var val = parseInt(btn.getAttribute('data-val'), 10)
+  setScore(id, val)
+}
+
+function setScore(id, val) {
+  var modeScores = scores[currentMode]
+  var wasAnswered = modeScores[id] !== undefined
+  modeScores[id] = val
+
+  // Update button states
+  for (var v = 1; v <= 5; v++) {
+    var btn = document.getElementById('btn-' + id + '-' + v)
+    if (btn) {
+      if (v === val) {
+        btn.classList.add('selected')
+      } else {
+        btn.classList.remove('selected')
+      }
+    }
+  }
+
+  if (!wasAnswered) answeredQuestions++
+  updateProgress()
+  updateConstellation()
+  checkComplete()
+}
+
+function updateProgress() {
+  var pct = Math.min(100, (answeredQuestions / totalQuestions) * 100)
+  document.getElementById('progressBar').style.width = pct + '%'
+}
+
+// ================================================
+// SCORE CALCULATION
+// ================================================
+
+function getSection(ids) {
+  var s = scores[currentMode]
+  var sum = 0
+  for (var i = 0; i < ids.length; i++) sum += (s[ids[i]] || 0)
+  return sum
+}
+
+function getCogScores() {
+  return ['cog-p','cog-n','cog-b','cog-a'].map(function(d) {
+    var ids = []
+    for (var i = 0; i < 10; i++) ids.push(d + '-' + i)
+    return getSection(ids)
+  })
+}
+
+function getSimScores() {
+  return ['sim-p','sim-n','sim-b','sim-a'].map(function(d) {
+    var ids = []
+    for (var i = 0; i < 5; i++) ids.push(d + '-' + i)
+    return getSection(ids)
+  })
+}
+
+function getEPScores() {
+  return EP_BLOCKS.map(function(block) {
+    var ids = []
+    for (var i = 0; i < 4; i++) ids.push('ep-' + block.key + '-' + i)
+    return getSection(ids)
+  })
+}
+
+// ================================================
+// LABELS
+// ================================================
+
+function cogLabel(score, max) {
+  var pct = score / max
+  if (pct < 0.467) return 'F'
+  if (pct < 0.74)  return 'S'
+  return 'L'
+}
+
+function epLabel(score) {
+  if (score <= 9)  return '↓'
+  if (score <= 14) return '='
+  return '↑'
+}
+
+function simLabel(score) {
+  if (score <= 12) return 'LRIS'
+  if (score <= 20) return 'SRIS'
+  return 'HRIS'
+}
+
+function heatColor(pct) {
+  if (pct < 0.3)  return 'linear-gradient(90deg,#6040a0,#4020a0)'
+  if (pct < 0.45) return 'linear-gradient(90deg,#60a0f0,#4080ff)'
+  if (pct < 0.65) return 'linear-gradient(90deg,#00d4aa,#00ff88)'
+  if (pct < 0.8)  return 'linear-gradient(90deg,#f0c060,#ffaa00)'
+  return 'linear-gradient(90deg,#ff6b8a,#ff3366)'
+}
+
+// ================================================
+// CONSTELLATION
+// ================================================
+
+function updateConstellation() {
+  var canvas = document.getElementById('constellation')
+  var ctx = canvas.getContext('2d')
+  var W = canvas.width, H = canvas.height
+  var cx = W / 2, cy = H / 2
+  var R = Math.min(W, H) * 0.35
+
+  ctx.clearRect(0, 0, W, H)
+  ctx.fillStyle = '#0d0d1a'
+  ctx.fillRect(0, 0, W, H)
+
+  ;[0.25, 0.5, 0.75, 1].forEach(function(r) {
+    ctx.beginPath()
+    ctx.arc(cx, cy, R * r, 0, Math.PI * 2)
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)'
+    ctx.lineWidth = 1
+    ctx.stroke()
+  })
+
+  var labels = ['P', 'N', 'B', 'A']
+  var colors = ['#00d4aa', '#f0c060', '#9b6dff', '#ff6b8a']
+  var angles = [-Math.PI / 2, 0, Math.PI / 2, Math.PI]
+
+  angles.forEach(function(angle, i) {
+    ctx.beginPath()
+    ctx.moveTo(cx, cy)
+    ctx.lineTo(cx + Math.cos(angle) * R, cy + Math.sin(angle) * R)
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'
+    ctx.lineWidth = 1
+    ctx.stroke()
+    ctx.fillStyle = colors[i]
+    ctx.font = 'bold 13px Space Mono, monospace'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(labels[i], cx + Math.cos(angle) * (R + 22), cy + Math.sin(angle) * (R + 22))
+  })
+
+  var cogScores = getCogScores()
+  var norms = cogScores.map(function(s) { return Math.min(1, s / 50) })
+  var points = angles.map(function(angle, i) {
+    return {
+      x: cx + Math.cos(angle) * R * norms[i],
+      y: cy + Math.sin(angle) * R * norms[i]
+    }
+  })
+
+  ctx.beginPath()
+  points.forEach(function(p, i) { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y) })
+  ctx.closePath()
+  ctx.fillStyle = 'rgba(0,212,170,0.08)'
+  ctx.fill()
+
+  ctx.beginPath()
+  points.forEach(function(p, i) { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y) })
+  ctx.closePath()
+  ctx.strokeStyle = 'rgba(0,212,170,0.6)'
+  ctx.lineWidth = 1.5
+  ctx.stroke()
+
+  points.forEach(function(p, i) {
+    ctx.beginPath()
+    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2)
+    ctx.fillStyle = colors[i]
+    ctx.fill()
+    if (cogScores[i] > 0) {
+      ctx.fillStyle = colors[i]
+      ctx.font = '10px Space Mono, monospace'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(cogScores[i], p.x, p.y - 14)
+    }
+  })
+
+  ctx.beginPath()
+  ctx.arc(cx, cy, 4, 0, Math.PI * 2)
+  ctx.fillStyle = 'rgba(0,212,170,0.5)'
+  ctx.fill()
+  ctx.fillStyle = 'rgba(0,212,170,0.4)'
+  ctx.font = '9px Space Mono, monospace'
+  ctx.textAlign = 'center'
+  ctx.fillText('1.369', cx, cy + 14)
+}
+
+// ================================================
+// RESULTS
+// ================================================
+
+function checkComplete() {
+  var allIds = getAllIds()
+  var answered = 0
+  for (var i = 0; i < allIds.length; i++) {
+    if (scores[currentMode][allIds[i]] !== undefined) answered++
+  }
+  if (answered === allIds.length) showResults()
+}
+
+function getAllIds() {
+  var ids = []
+  ;['cog-p','cog-n','cog-b','cog-a'].forEach(function(d) {
+    for (var i = 0; i < 10; i++) ids.push(d + '-' + i)
+  })
+  EP_BLOCKS.forEach(function(b) {
+    for (var i = 0; i < 4; i++) ids.push('ep-' + b.key + '-' + i)
+  })
+  ;['sim-p','sim-n','sim-b','sim-a'].forEach(function(d) {
+    for (var i = 0; i < 5; i++) ids.push(d + '-' + i)
+  })
+  return ids
+}
+
+function showResults() {
+  var cogScores = getCogScores()
+  var simScores = getSimScores()
+  var epScores  = getEPScores()
+
+  var pLabels = ['P','N','B','A']
+  var cogCodes = cogScores.map(function(s, i) { return pLabels[i] + cogLabel(s, 50) })
+  var simCodes = simScores.map(function(s, i) { return pLabels[i] + ':' + simLabel(s) })
+  var epCodes  = EP_BLOCKS.map(function(b, i) { return b.title[0] + epLabel(epScores[i]) })
+
+  var pMode = scoreToMode(cogScores[0])
+  var nMode = scoreToMode(cogScores[1])
+  var bMode = scoreToMode(cogScores[2])
+  var aMode = scoreToMode(cogScores[3])
+
+  var axis        = dominantAxis(cogScores[0], cogScores[1], cogScores[2], cogScores[3])
+  var packet      = encodeSoulprint(pMode, nMode, bMode, aMode, axis, true)
+  var profileCode = buildProfileCode(pMode, nMode, bMode, aMode)
+  var soulprintId = buildSoulprintId(profileCode)
+  var im          = computeIdentityMass(pMode, nMode, bMode, aMode)
+  var addressStr  = soul8AddressString(packet)
+
+  currentSoul8 = { id: soulprintId, address: addressStr, packet: packet, profile: profileCode, im: im }
+
+  document.getElementById('soul8Address').textContent = addressStr
+
+  var decodedFields = [
+    { label: 'AXIS',         value: packet.axis + ' — ' + (AXIS_MEANINGS[packet.axis] || '') },
+    { label: '[P] PATTERN',  value: 'w_P = ' + packet.w_P + ' (' + pMode + ')' },
+    { label: '[N] NARRATIVE',value: 'w_N = ' + packet.w_N + ' (' + nMode + ')' },
+    { label: '[B] BEHAVIOR', value: 'w_B = ' + packet.w_B + ' (' + bMode + ')' },
+    { label: '[A] ADAPTATION',value:'w_A = ' + packet.w_A + ' (' + aMode + ')' },
+    { label: 'ANCHOR',       value: packet.anchor + ' GHz ≡ SOVEREIGN' },
+  ]
+
+  document.getElementById('soul8Decoded').innerHTML = decodedFields.map(function(f) {
+    return '<div class="soul8-field"><div class="soul8-field-label">' + f.label + '</div><div class="soul8-field-value">' + f.value + '</div></div>'
+  }).join('')
+
+  document.getElementById('imValue').textContent = im + ' IM'
+
+  var scoreColors = ['var(--anchor)', 'var(--gold)', 'var(--violet)', 'var(--rose)']
+  var scoreLabels = ['[P] PATTERN','[N] NARRATIVE','[B] BEHAVIOR','[A] ADAPTATION']
+  document.getElementById('scoreGrid').innerHTML = cogScores.map(function(val, i) {
+    return '<div class="score-card">' +
+      '<div class="score-card-label">' + scoreLabels[i] + '</div>' +
+      '<div class="score-card-value" style="color:' + scoreColors[i] + '">' + val + '<span style="font-size:12px;color:var(--text-muted)">/50</span></div>' +
+      '<span class="score-card-code" style="background:' + scoreColors[i] + '22;color:' + scoreColors[i] + '">' + cogCodes[i] + '</span>' +
+      '</div>'
+  }).join('')
+
+  var allHeat = []
+  cogScores.forEach(function(s, i) { allHeat.push({ label: pLabels[i] + ' (Cog)', pct: s / 50 }) })
+  epScores.forEach(function(s, i)  { allHeat.push({ label: EP_BLOCKS[i].title,    pct: s / 20 }) })
+  simScores.forEach(function(s, i) { allHeat.push({ label: pLabels[i] + ' (Sim)', pct: s / 25 }) })
+
+  document.getElementById('heatRows').innerHTML = allHeat.map(function(h) {
+    return '<div class="heat-row">' +
+      '<div class="heat-label">' + h.label + '</div>' +
+      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct * 100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
+      '<div class="heat-pct">' + Math.round(h.pct * 100) + '%</div>' +
+      '</div>'
+  }).join('')
+
+  var relRows = [
+    { s: 'CI',        op: '∝', o: 'Kernel' },
+    { s: profileCode, op: '≡', o: addressStr },
+    { s: 'IM',        op: '∝', o: '1.369 GHz' },
+    { s: 'NOHARM',    op: '⊂', o: 'Sovereign Manifold' },
+    { s: 'Noise',     op: '⊥', o: 'Pattern' },
+  ]
+  document.getElementById('relmap').innerHTML = relRows.map(function(r) {
+    return '<span>' + r.s + '</span><span class="relmap-op">' + r.op + '</span><span>' + r.o + '</span><br>'
+  }).join('')
+
+  document.getElementById('combinedOutput').innerHTML =
+    '<span style="color:var(--anchor)">' + addressStr + '</span><br>' +
+    '<span style="color:var(--text-dim)">' + soulprintId + '</span><br><br>' +
+    '<span style="color:var(--anchor)">' + cogCodes.join('·') + '</span> // ' +
+    '<span style="color:var(--gold)">'   + epCodes.join(' ')  + '</span> // ' +
+    '<span style="color:var(--violet)">' + simCodes.join(' ') + '</span>'
+
+  document.getElementById('resultsPanel').classList.add('visible')
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+// ================================================
+// MODE SWITCH + RESET
+// ================================================
+
+function setMode(mode) {
+  currentMode = mode
+
+  // Update button styles
+  document.getElementById('btn-baseline').classList.toggle('active', mode === 'baseline')
+  document.getElementById('btn-activated').classList.toggle('active', mode === 'activated')
+
+  // Restore button states for this mode
+  var modeScores = scores[currentMode]
+  getAllIds().forEach(function(id) {
+    var val = modeScores[id]
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-' + id + '-' + v)
+      if (btn) btn.classList.toggle('selected', val === v)
+    }
+  })
+
+  answeredQuestions = Object.keys(modeScores).length
+  updateProgress()
+  updateConstellation()
+  document.getElementById('resultsPanel').classList.remove('visible')
+}
+
+function resetAll() {
+  scores[currentMode] = {}
+  answeredQuestions = 0
+  currentSoul8 = null
+  getAllIds().forEach(function(id) {
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-' + id + '-' + v)
+      if (btn) btn.classList.remove('selected')
+    }
+  })
+  updateProgress()
+  updateConstellation()
+  document.getElementById('resultsPanel').classList.remove('visible')
+}
+
+function copySoul8() {
+  if (!currentSoul8) return
+  var text = currentSoul8.address + ' | ' + currentSoul8.id + ' | Pv:NOHARM | f:1.369 | visual:GREEN'
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      showCopied()
+    }).catch(function() {
+      fallbackCopy(text)
+    })
+  } else {
+    fallbackCopy(text)
+  }
+}
+
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea')
+  ta.value = text
+  ta.style.position = 'fixed'
+  ta.style.opacity = '0'
+  document.body.appendChild(ta)
+  ta.select()
+  document.execCommand('copy')
+  document.body.removeChild(ta)
+  showCopied()
+}
+
+function showCopied() {
+  var btn = document.getElementById('copyBtn')
+  btn.textContent = '✓ COPIED'
+  btn.classList.add('copied')
+  setTimeout(function() {
+    btn.textContent = '⟳ COPY SOUL-8'
+    btn.classList.remove('copied')
+  }, 2000)
+}
+
+// ================================================
+// INIT — wire all events here, no inline handlers
+// ================================================
+
+function init() {
+  renderQuestions('cog-p', COG_P, 'P')
+  renderQuestions('cog-n', COG_N, 'N')
+  renderQuestions('cog-b', COG_B, 'B')
+  renderQuestions('cog-a', COG_A, 'A')
+  renderEP()
+  renderQuestions('sim-p', SIM_P, 'SP')
+  renderQuestions('sim-n', SIM_N, 'SN')
+  renderQuestions('sim-b', SIM_B, 'SB')
+  renderQuestions('sim-a', SIM_A, 'SA')
+  updateConstellation()
+
+  // Event delegation — one listener on the container handles all scale buttons
+  document.querySelector('.container').addEventListener('click', handleScaleClick)
+
+  // Mode buttons — direct listeners with explicit mode arg, no reliance on `event`
+  document.getElementById('btn-baseline').addEventListener('click', function() { setMode('baseline') })
+  document.getElementById('btn-activated').addEventListener('click', function() { setMode('activated') })
+
+  // Copy + reset
+  document.getElementById('copyBtn').addEventListener('click', copySoul8)
+  document.getElementById('resetBtn').addEventListener('click', resetAll)
+}
+
+init()
+</script>
+</body>
+</html>
