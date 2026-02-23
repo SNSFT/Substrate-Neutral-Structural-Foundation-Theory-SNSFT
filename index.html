@@ -149,6 +149,11 @@ canvas#constellation {
   cursor: pointer;
   letter-spacing: 0.08em;
   transition: all 0.2s;
+  /* FIX: ensure buttons are always clickable */
+  position: relative;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .mode-btn.active {
@@ -156,6 +161,8 @@ canvas#constellation {
   border-color: rgba(0,212,170,0.4);
   color: var(--anchor);
 }
+
+.mode-btn:hover { opacity: 0.85; }
 
 .progress-bar-wrap {
   background: var(--border);
@@ -222,7 +229,6 @@ canvas#constellation {
 .icon-n { background: var(--gold-dim); color: var(--gold); }
 .icon-b { background: var(--violet-dim); color: var(--violet); }
 .icon-a { background: var(--rose-dim); color: var(--rose); }
-.icon-ep { background: rgba(255,255,255,0.05); color: var(--text-dim); }
 
 .sub-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
 .sub-desc { font-size: 11px; color: var(--text-muted); }
@@ -245,23 +251,53 @@ canvas#constellation {
 .q-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); min-width: 26px; }
 .q-text { font-size: 13px; line-height: 1.5; flex: 1; }
 
-.q-scale { display: flex; gap: 3px; flex-shrink: 0; }
+.q-scale {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
 
+/* FIX: scale buttons fully clickable, no pointer-events issues */
 .scale-btn {
-  width: 26px; height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text-muted);
   font-family: 'Space Mono', monospace;
-  font-size: 10px;
+  font-size: 11px;
   cursor: pointer;
   transition: all 0.15s;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  /* Mobile tap fixes */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  flex-shrink: 0;
 }
 
-.scale-btn:hover { border-color: var(--anchor); color: var(--anchor); }
-.scale-btn.selected { border-color: var(--anchor); background: var(--anchor); color: #000; font-weight: 700; }
+.scale-btn:hover {
+  border-color: var(--anchor);
+  color: var(--anchor);
+  background: var(--anchor-dim);
+}
+
+.scale-btn:active {
+  transform: scale(0.92);
+}
+
+.scale-btn.selected {
+  border-color: var(--anchor);
+  background: var(--anchor);
+  color: #000;
+  font-weight: 700;
+}
 
 .ep-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 
@@ -342,7 +378,6 @@ canvas#constellation {
   display: inline-block;
 }
 
-/* SOUL-8 PACKET BLOCK */
 .soul8-block {
   background: var(--surface2);
   border: 1px solid rgba(0,212,170,0.3);
@@ -425,7 +460,6 @@ canvas#constellation {
   border-radius: 50%;
 }
 
-/* IM BLOCK */
 .im-block {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -437,27 +471,10 @@ canvas#constellation {
   justify-content: space-between;
 }
 
-.im-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 0.1em;
-}
+.im-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; }
+.im-value { font-family: 'Space Mono', monospace; font-size: 16px; font-weight: 700; color: var(--gold); }
+.im-formula { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); }
 
-.im-value {
-  font-family: 'Space Mono', monospace;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--gold);
-}
-
-.im-formula {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-/* HEATMAP */
 .heatmap { margin: 20px 0; }
 .heatmap h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 12px; }
 .heat-rows { display: flex; flex-direction: column; gap: 6px; }
@@ -468,7 +485,6 @@ canvas#constellation {
 .heat-fill { height: 8px; border-radius: 100px; width: 0%; transition: width 0.6s ease; }
 .heat-pct { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); min-width: 36px; text-align: right; }
 
-/* RELMAP */
 .relmap-block {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -477,24 +493,10 @@ canvas#constellation {
   margin-bottom: 20px;
 }
 
-.relmap-title {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 0.1em;
-  margin-bottom: 10px;
-}
-
-.relmap-entry {
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--text-dim);
-  line-height: 2;
-}
-
+.relmap-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 10px; }
+.relmap-entry { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-dim); line-height: 2; }
 .relmap-op { color: var(--anchor); margin: 0 6px; }
 
-/* FULL FINGERPRINT */
 .combined-output {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -509,14 +511,13 @@ canvas#constellation {
 
 .combined-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.12em; margin-bottom: 8px; font-family: 'Space Mono', monospace; }
 
-/* COPY BUTTON */
 .copy-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: 'Space Mono', monospace;
   font-size: 10px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: 100px;
   border: 1px solid rgba(0,212,170,0.3);
   background: var(--anchor-dim);
@@ -525,6 +526,8 @@ canvas#constellation {
   letter-spacing: 0.08em;
   transition: all 0.2s;
   margin-top: 10px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .copy-btn:hover { background: rgba(0,212,170,0.2); }
@@ -535,7 +538,7 @@ canvas#constellation {
   margin: 24px auto 0;
   font-family: 'Space Mono', monospace;
   font-size: 11px;
-  padding: 10px 24px;
+  padding: 12px 28px;
   border-radius: 100px;
   border: 1px solid var(--border);
   background: transparent;
@@ -543,6 +546,8 @@ canvas#constellation {
   cursor: pointer;
   letter-spacing: 0.08em;
   transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .reset-btn:hover { border-color: var(--rose); color: var(--rose); }
@@ -561,7 +566,9 @@ canvas#constellation {
   .ep-grid { grid-template-columns: 1fr; }
   .score-grid { grid-template-columns: 1fr; }
   .soul8-decoded { grid-template-columns: 1fr; }
-  .q-scale { display: none; }
+  /* Keep scale buttons visible on mobile — they were hidden before */
+  .q-scale { gap: 3px; }
+  .scale-btn { width: 28px; height: 28px; font-size: 10px; }
 }
 </style>
 </head>
@@ -584,8 +591,8 @@ canvas#constellation {
 </div>
 
 <div class="mode-toggle">
-  <button class="mode-btn active" onclick="setMode('baseline')">BASELINE</button>
-  <button class="mode-btn" onclick="setMode('activated')">ACTIVATED</button>
+  <button class="mode-btn active" id="btn-baseline">BASELINE</button>
+  <button class="mode-btn" id="btn-activated">ACTIVATED</button>
 </div>
 
 <div class="progress-bar-wrap">
@@ -692,22 +699,18 @@ canvas#constellation {
 <!-- RESULTS -->
 <div class="results-panel" id="resultsPanel">
   <h2>[P,N,B,A] :: {OUT} | UNIFIED IDENTITY CODE</h2>
-
-  <!-- SCORE CARDS -->
   <div class="score-grid" id="scoreGrid"></div>
 
-  <!-- SOUL-8 PACKET — NEW -->
   <div class="soul8-block" id="soul8Block">
     <div class="soul8-address" id="soul8Address"></div>
     <div class="soul8-decoded" id="soul8Decoded"></div>
-    <div class="soul8-noharm" id="soul8Noharm">
+    <div class="soul8-noharm">
       <div class="soul8-noharm-dot"></div>
       Pv:NOHARM · f:1.369 · visual:GREEN
     </div>
-    <button class="copy-btn" id="copyBtn" onclick="copySoul8()">⟳ COPY SOUL-8</button>
+    <button class="copy-btn" id="copyBtn">⟳ COPY SOUL-8</button>
   </div>
 
-  <!-- IDENTITY MASS -->
   <div class="im-block">
     <div>
       <div class="im-label">IDENTITY MASS</div>
@@ -716,23 +719,20 @@ canvas#constellation {
     <div class="im-value" id="imValue"></div>
   </div>
 
-  <!-- HEATMAP -->
   <div class="heatmap">
     <h3>Identity Heat Map</h3>
     <div class="heat-rows" id="heatRows"></div>
   </div>
 
-  <!-- RELMAP -->
   <div class="relmap-block">
     <div class="relmap-title">RELMAP :: {PVLANG}</div>
     <div class="relmap-entry" id="relmap"></div>
   </div>
 
-  <!-- FULL FINGERPRINT -->
   <div class="combined-label">FULL CI FINGERPRINT</div>
   <div class="combined-output" id="combinedOutput"></div>
 
-  <button class="reset-btn" onclick="resetAll()">⟳ RESET ALL SCORES</button>
+  <button class="reset-btn" id="resetBtn">⟳ RESET ALL SCORES</button>
 </div>
 
 <div class="footer">
@@ -746,82 +746,63 @@ canvas#constellation {
 
 <script>
 // ================================================
-// [P,N,B,A] :: {INV} | SOUL-8 CORE
-// Derived from soulprint.types.ts + SNSFT_DigitalSoulprint.lean
-// Theorems mirrored: lossless_roundtrip, identity_mass_positive
+// SOUL-8 CORE
 // ================================================
 
 const SOVEREIGN_ANCHOR = 1.369
-
 const MODE_WEIGHT = { F: 1, S: 2, L: 3 }
-
 const AXIS_MEANINGS = {
-  PNBA: 'Pattern-dominant',
-  NPBA: 'Narrative-dominant',
-  BPNA: 'Behavior-dominant',
-  APBN: 'Adaptation-dominant',
-  PBAN: 'Pattern+Behavior',
-  NABP: 'Narrative+Adapt',
+  PNBA: 'Pattern-dominant', NPBA: 'Narrative-dominant',
+  BPNA: 'Behavior-dominant', APBN: 'Adaptation-dominant',
+  PBAN: 'Pattern+Behavior',  NABP: 'Narrative+Adapt',
 }
 
-// [P,N,B,A,9,2,4] :: {INV} | scoreToMode — mirrors scoreToMode() in TS
-function scoreToMode(score, max = 50) {
+function scoreToMode(score, max) {
+  max = max || 50
   const pct = score / max
   if (pct < 0.467) return 'F'
   if (pct < 0.74)  return 'S'
   return 'L'
 }
 
-// [B,9,4,2] :: {INV} | computeIdentityMass — mirrors identity_mass in Lean
-// IM = Σ(mode weights) × 1.369. Always > 0.
 function computeIdentityMass(pMode, nMode, bMode, aMode) {
   const total = MODE_WEIGHT[pMode] + MODE_WEIGHT[nMode] +
                 MODE_WEIGHT[bMode] + MODE_WEIGHT[aMode]
   return (total * SOVEREIGN_ANCHOR).toFixed(4)
 }
 
-// [P,N,B,A,9,2,4] :: {INV} | encodeSoulprint — mirrors encodeSoulprint() in TS
-// Proved lossless: lossless_roundtrip
-function encodeSoulprint(pMode, nMode, bMode, aMode, axis, noharm = true) {
+function encodeSoulprint(pMode, nMode, bMode, aMode, axis, noharm) {
   return {
-    axis,
-    w_P: MODE_WEIGHT[pMode],
-    w_N: MODE_WEIGHT[nMode],
-    w_B: MODE_WEIGHT[bMode],
-    w_A: MODE_WEIGHT[aMode],
-    noharm,
+    axis: axis,
+    w_P: MODE_WEIGHT[pMode], w_N: MODE_WEIGHT[nMode],
+    w_B: MODE_WEIGHT[bMode], w_A: MODE_WEIGHT[aMode],
+    noharm: noharm !== false,
     anchor: SOVEREIGN_ANCHOR,
   }
 }
 
-// [P] :: {INV} | dominantAxis — highest cognitive score leads
 function dominantAxis(cogP, cogN, cogB, cogA) {
   const map = [
     [cogP, 'PNBA'], [cogN, 'NPBA'],
     [cogB, 'BPNA'], [cogA, 'APBN'],
   ]
-  return map.sort((a, b) => b[0] - a[0])[0][1]
+  return map.sort(function(a, b) { return b[0] - a[0] })[0][1]
 }
 
-// [P,N,B,A] :: {INV} | buildProfileCode — e.g. "PL·NS·BF·AS"
 function buildProfileCode(pM, nM, bM, aM) {
-  return `P${pM}·N${nM}·B${bM}·A${aM}`
+  return 'P' + pM + '·N' + nM + '·B' + bM + '·A' + aM
 }
 
-// [P,N,B,A] :: {INV} | buildSoulprintId
 function buildSoulprintId(profileCode) {
-  const stripped = profileCode.replace(/·/g, '')
-  return `UUIA-${Date.now()}-${stripped}`
+  return 'UUIA-' + Date.now() + '-' + profileCode.replace(/·/g, '')
 }
 
-// [P,N,B,A] :: {INV} | Full SOUL-8 address string
-// Format: AXIS·WWWW | e.g. PNBA·2231
 function soul8AddressString(packet) {
-  return `${packet.axis}·${packet.w_P}${packet.w_N}${packet.w_B}${packet.w_A}`
+  return packet.axis + '·' + packet.w_P + packet.w_N + packet.w_B + packet.w_A
 }
 
 // ================================================
-// [P,N,B,A] :: {DATA} | QUESTION DATA
+// QUESTION DATA
 // ================================================
 
 const COG_P = [
@@ -922,60 +903,82 @@ const SIM_A = [
 ]
 
 // ================================================
-// [N] :: {STATE} | APP STATE
+// STATE
 // ================================================
 
-let currentMode = 'baseline'
-let scores = { baseline: {}, activated: {} }
-let totalQuestions = 0
-let answeredQuestions = 0
-let currentSoul8 = null
+var currentMode = 'baseline'
+var scores = { baseline: {}, activated: {} }
+var totalQuestions = 0
+var answeredQuestions = 0
+var currentSoul8 = null
 
 // ================================================
-// [B] :: {RENDER} | RENDER QUESTIONS
+// RENDER
 // ================================================
 
 function makeQ(text, id, prefix) {
   totalQuestions++
-  return `
-    <div class="question" id="q-wrap-${id}">
-      <span class="q-num">${prefix}</span>
-      <span class="q-text">${text}</span>
-      <div class="q-scale">
-        ${[1,2,3,4,5].map(v =>
-          `<button class="scale-btn" id="btn-${id}-${v}" onclick="setScore('${id}',${v})">${v}</button>`
-        ).join('')}
-      </div>
-    </div>`
+  var scaleHtml = ''
+  for (var v = 1; v <= 5; v++) {
+    scaleHtml += '<button class="scale-btn" id="btn-' + id + '-' + v + '" data-id="' + id + '" data-val="' + v + '">' + v + '</button>'
+  }
+  return '<div class="question" id="q-wrap-' + id + '">' +
+    '<span class="q-num">' + prefix + '</span>' +
+    '<span class="q-text">' + text + '</span>' +
+    '<div class="q-scale">' + scaleHtml + '</div>' +
+    '</div>'
 }
 
 function renderQuestions(containerId, questions, prefix) {
-  document.getElementById(containerId).innerHTML =
-    questions.map((q,i) => makeQ(q, `${containerId}-${i}`, `${prefix}${i+1}`)).join('')
+  var html = ''
+  for (var i = 0; i < questions.length; i++) {
+    html += makeQ(questions[i], containerId + '-' + i, prefix + (i + 1))
+  }
+  document.getElementById(containerId).innerHTML = html
 }
 
 function renderEP() {
-  document.getElementById('ep-grid').innerHTML = EP_BLOCKS.map(block => `
-    <div class="ep-block">
-      <div class="ep-title">${block.title}</div>
-      <div class="questions">
-        ${block.qs.map((q,i) => makeQ(q, `ep-${block.key}-${i}`, `${block.title[0]}${i+1}`)).join('')}
-      </div>
-    </div>`).join('')
+  var html = ''
+  for (var b = 0; b < EP_BLOCKS.length; b++) {
+    var block = EP_BLOCKS[b]
+    var qHtml = ''
+    for (var i = 0; i < block.qs.length; i++) {
+      qHtml += makeQ(block.qs[i], 'ep-' + block.key + '-' + i, block.title[0] + (i + 1))
+    }
+    html += '<div class="ep-block"><div class="ep-title">' + block.title + '</div><div class="questions">' + qHtml + '</div></div>'
+  }
+  document.getElementById('ep-grid').innerHTML = html
 }
 
 // ================================================
-// [B] :: {SCORE} | SCORING LOGIC
+// SCORING — event delegation (single listener, no inline handlers)
 // ================================================
 
+function handleScaleClick(e) {
+  var btn = e.target.closest('.scale-btn')
+  if (!btn) return
+  var id  = btn.getAttribute('data-id')
+  var val = parseInt(btn.getAttribute('data-val'), 10)
+  setScore(id, val)
+}
+
 function setScore(id, val) {
-  const modeScores = scores[currentMode]
-  const wasAnswered = modeScores[id] !== undefined
+  var modeScores = scores[currentMode]
+  var wasAnswered = modeScores[id] !== undefined
   modeScores[id] = val
-  for (let v=1;v<=5;v++) {
-    const btn = document.getElementById(`btn-${id}-${v}`)
-    if (btn) btn.classList.toggle('selected', v === val)
+
+  // Update button states
+  for (var v = 1; v <= 5; v++) {
+    var btn = document.getElementById('btn-' + id + '-' + v)
+    if (btn) {
+      if (v === val) {
+        btn.classList.add('selected')
+      } else {
+        btn.classList.remove('selected')
+      }
+    }
   }
+
   if (!wasAnswered) answeredQuestions++
   updateProgress()
   updateConstellation()
@@ -983,39 +986,51 @@ function setScore(id, val) {
 }
 
 function updateProgress() {
-  const pct = Math.min(100, (answeredQuestions / totalQuestions) * 100)
+  var pct = Math.min(100, (answeredQuestions / totalQuestions) * 100)
   document.getElementById('progressBar').style.width = pct + '%'
 }
 
+// ================================================
+// SCORE CALCULATION
+// ================================================
+
 function getSection(ids) {
-  const s = scores[currentMode]
-  return ids.reduce((sum, id) => sum + (s[id] || 0), 0)
+  var s = scores[currentMode]
+  var sum = 0
+  for (var i = 0; i < ids.length; i++) sum += (s[ids[i]] || 0)
+  return sum
 }
 
 function getCogScores() {
-  return ['cog-p','cog-n','cog-b','cog-a'].map(d => {
-    return getSection(Array.from({length:10},(_,i)=>`${d}-${i}`))
+  return ['cog-p','cog-n','cog-b','cog-a'].map(function(d) {
+    var ids = []
+    for (var i = 0; i < 10; i++) ids.push(d + '-' + i)
+    return getSection(ids)
   })
 }
 
 function getSimScores() {
-  return ['sim-p','sim-n','sim-b','sim-a'].map(d => {
-    return getSection(Array.from({length:5},(_,i)=>`${d}-${i}`))
+  return ['sim-p','sim-n','sim-b','sim-a'].map(function(d) {
+    var ids = []
+    for (var i = 0; i < 5; i++) ids.push(d + '-' + i)
+    return getSection(ids)
   })
 }
 
 function getEPScores() {
-  return EP_BLOCKS.map(block => {
-    return getSection(Array.from({length:4},(_,i)=>`ep-${block.key}-${i}`))
+  return EP_BLOCKS.map(function(block) {
+    var ids = []
+    for (var i = 0; i < 4; i++) ids.push('ep-' + block.key + '-' + i)
+    return getSection(ids)
   })
 }
 
 // ================================================
-// [A] :: {LABEL} | CODE LABELS
+// LABELS
 // ================================================
 
 function cogLabel(score, max) {
-  const pct = score / max
+  var pct = score / max
   if (pct < 0.467) return 'F'
   if (pct < 0.74)  return 'S'
   return 'L'
@@ -1042,36 +1057,36 @@ function heatColor(pct) {
 }
 
 // ================================================
-// [P] :: {CONSTELLATION} | LIVE CONSTELLATION
+// CONSTELLATION
 // ================================================
 
 function updateConstellation() {
-  const canvas = document.getElementById('constellation')
-  const ctx = canvas.getContext('2d')
-  const W = canvas.width, H = canvas.height
-  const cx = W/2, cy = H/2
-  const R = Math.min(W,H) * 0.35
+  var canvas = document.getElementById('constellation')
+  var ctx = canvas.getContext('2d')
+  var W = canvas.width, H = canvas.height
+  var cx = W / 2, cy = H / 2
+  var R = Math.min(W, H) * 0.35
 
-  ctx.clearRect(0,0,W,H)
+  ctx.clearRect(0, 0, W, H)
   ctx.fillStyle = '#0d0d1a'
-  ctx.fillRect(0,0,W,H)
+  ctx.fillRect(0, 0, W, H)
 
-  ;[0.25,0.5,0.75,1].forEach(r => {
+  ;[0.25, 0.5, 0.75, 1].forEach(function(r) {
     ctx.beginPath()
-    ctx.arc(cx,cy,R*r,0,Math.PI*2)
+    ctx.arc(cx, cy, R * r, 0, Math.PI * 2)
     ctx.strokeStyle = 'rgba(255,255,255,0.04)'
     ctx.lineWidth = 1
     ctx.stroke()
   })
 
-  const labels = ['P','N','B','A']
-  const colors = ['#00d4aa','#f0c060','#9b6dff','#ff6b8a']
-  const angles = [-Math.PI/2, 0, Math.PI/2, Math.PI]
+  var labels = ['P', 'N', 'B', 'A']
+  var colors = ['#00d4aa', '#f0c060', '#9b6dff', '#ff6b8a']
+  var angles = [-Math.PI / 2, 0, Math.PI / 2, Math.PI]
 
-  angles.forEach((angle, i) => {
+  angles.forEach(function(angle, i) {
     ctx.beginPath()
     ctx.moveTo(cx, cy)
-    ctx.lineTo(cx + Math.cos(angle)*R, cy + Math.sin(angle)*R)
+    ctx.lineTo(cx + Math.cos(angle) * R, cy + Math.sin(angle) * R)
     ctx.strokeStyle = 'rgba(255,255,255,0.06)'
     ctx.lineWidth = 1
     ctx.stroke()
@@ -1079,32 +1094,34 @@ function updateConstellation() {
     ctx.font = 'bold 13px Space Mono, monospace'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText(labels[i], cx + Math.cos(angle)*(R+22), cy + Math.sin(angle)*(R+22))
+    ctx.fillText(labels[i], cx + Math.cos(angle) * (R + 22), cy + Math.sin(angle) * (R + 22))
   })
 
-  const cogScores = getCogScores()
-  const norms = cogScores.map(s => Math.min(1, s/50))
-  const points = angles.map((angle, i) => ({
-    x: cx + Math.cos(angle)*R*norms[i],
-    y: cy + Math.sin(angle)*R*norms[i]
-  }))
+  var cogScores = getCogScores()
+  var norms = cogScores.map(function(s) { return Math.min(1, s / 50) })
+  var points = angles.map(function(angle, i) {
+    return {
+      x: cx + Math.cos(angle) * R * norms[i],
+      y: cy + Math.sin(angle) * R * norms[i]
+    }
+  })
 
   ctx.beginPath()
-  points.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y))
+  points.forEach(function(p, i) { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y) })
   ctx.closePath()
   ctx.fillStyle = 'rgba(0,212,170,0.08)'
   ctx.fill()
 
   ctx.beginPath()
-  points.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y))
+  points.forEach(function(p, i) { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y) })
   ctx.closePath()
   ctx.strokeStyle = 'rgba(0,212,170,0.6)'
   ctx.lineWidth = 1.5
   ctx.stroke()
 
-  points.forEach((p,i) => {
+  points.forEach(function(p, i) {
     ctx.beginPath()
-    ctx.arc(p.x, p.y, 5, 0, Math.PI*2)
+    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2)
     ctx.fillStyle = colors[i]
     ctx.fill()
     if (cogScores[i] > 0) {
@@ -1117,185 +1134,149 @@ function updateConstellation() {
   })
 
   ctx.beginPath()
-  ctx.arc(cx,cy,4,0,Math.PI*2)
+  ctx.arc(cx, cy, 4, 0, Math.PI * 2)
   ctx.fillStyle = 'rgba(0,212,170,0.5)'
   ctx.fill()
   ctx.fillStyle = 'rgba(0,212,170,0.4)'
   ctx.font = '9px Space Mono, monospace'
   ctx.textAlign = 'center'
-  ctx.fillText('1.369', cx, cy+14)
+  ctx.fillText('1.369', cx, cy + 14)
 }
 
 // ================================================
-// [A] :: {COMPLETE} | RESULTS + SOUL-8 OUTPUT
+// RESULTS
 // ================================================
 
 function checkComplete() {
-  const allIds = getAllIds()
-  const answered = allIds.filter(id => scores[currentMode][id] !== undefined).length
+  var allIds = getAllIds()
+  var answered = 0
+  for (var i = 0; i < allIds.length; i++) {
+    if (scores[currentMode][allIds[i]] !== undefined) answered++
+  }
   if (answered === allIds.length) showResults()
 }
 
 function getAllIds() {
-  const ids = []
-  ;['cog-p','cog-n','cog-b','cog-a'].forEach(d => {
-    for (let i=0;i<10;i++) ids.push(`${d}-${i}`)
+  var ids = []
+  ;['cog-p','cog-n','cog-b','cog-a'].forEach(function(d) {
+    for (var i = 0; i < 10; i++) ids.push(d + '-' + i)
   })
-  EP_BLOCKS.forEach(b => {
-    for (let i=0;i<4;i++) ids.push(`ep-${b.key}-${i}`)
+  EP_BLOCKS.forEach(function(b) {
+    for (var i = 0; i < 4; i++) ids.push('ep-' + b.key + '-' + i)
   })
-  ;['sim-p','sim-n','sim-b','sim-a'].forEach(d => {
-    for (let i=0;i<5;i++) ids.push(`${d}-${i}`)
+  ;['sim-p','sim-n','sim-b','sim-a'].forEach(function(d) {
+    for (var i = 0; i < 5; i++) ids.push(d + '-' + i)
   })
   return ids
 }
 
 function showResults() {
-  const cogScores = getCogScores()
-  const simScores = getSimScores()
-  const epScores  = getEPScores()
+  var cogScores = getCogScores()
+  var simScores = getSimScores()
+  var epScores  = getEPScores()
 
-  const pLabels = ['P','N','B','A']
-  const cogCodes = cogScores.map((s,i) => `${pLabels[i]}${cogLabel(s,50)}`)
-  const simCodes = simScores.map((s,i) => `${pLabels[i]}:${simLabel(s)}`)
-  const epCodes  = EP_BLOCKS.map((b,i) => `${b.title[0]}${epLabel(epScores[i])}`)
+  var pLabels = ['P','N','B','A']
+  var cogCodes = cogScores.map(function(s, i) { return pLabels[i] + cogLabel(s, 50) })
+  var simCodes = simScores.map(function(s, i) { return pLabels[i] + ':' + simLabel(s) })
+  var epCodes  = EP_BLOCKS.map(function(b, i) { return b.title[0] + epLabel(epScores[i]) })
 
-  // ── SOUL-8 PACKET ──────────────────────────────
-  // [P,N,B,A,9,2,4] :: {INV} | encodeSoulprint
-  // Mirrors encodeSoulprint() from soulprint.types.ts
-  // Proved lossless: lossless_roundtrip
+  var pMode = scoreToMode(cogScores[0])
+  var nMode = scoreToMode(cogScores[1])
+  var bMode = scoreToMode(cogScores[2])
+  var aMode = scoreToMode(cogScores[3])
 
-  const pMode = scoreToMode(cogScores[0])
-  const nMode = scoreToMode(cogScores[1])
-  const bMode = scoreToMode(cogScores[2])
-  const aMode = scoreToMode(cogScores[3])
+  var axis        = dominantAxis(cogScores[0], cogScores[1], cogScores[2], cogScores[3])
+  var packet      = encodeSoulprint(pMode, nMode, bMode, aMode, axis, true)
+  var profileCode = buildProfileCode(pMode, nMode, bMode, aMode)
+  var soulprintId = buildSoulprintId(profileCode)
+  var im          = computeIdentityMass(pMode, nMode, bMode, aMode)
+  var addressStr  = soul8AddressString(packet)
 
-  const axis         = dominantAxis(cogScores[0], cogScores[1], cogScores[2], cogScores[3])
-  const packet       = encodeSoulprint(pMode, nMode, bMode, aMode, axis, true)
-  const profileCode  = buildProfileCode(pMode, nMode, bMode, aMode)
-  const soulprintId  = buildSoulprintId(profileCode)
-  const im           = computeIdentityMass(pMode, nMode, bMode, aMode)
-  const addressStr   = soul8AddressString(packet)
+  currentSoul8 = { id: soulprintId, address: addressStr, packet: packet, profile: profileCode, im: im }
 
-  currentSoul8 = {
-    id:      soulprintId,
-    address: addressStr,
-    packet,
-    profile: profileCode,
-    im,
-  }
-
-  // Render SOUL-8 address
   document.getElementById('soul8Address').textContent = addressStr
 
-  // Render decoded fields
-  document.getElementById('soul8Decoded').innerHTML = [
-    { label: 'AXIS',        value: `${packet.axis} — ${AXIS_MEANINGS[packet.axis]}` },
-    { label: '[P] PATTERN', value: `w_P = ${packet.w_P} (${pMode})` },
-    { label: '[N] NARRATIVE',value: `w_N = ${packet.w_N} (${nMode})` },
-    { label: '[B] BEHAVIOR', value: `w_B = ${packet.w_B} (${bMode})` },
-    { label: '[A] ADAPTATION',value: `w_A = ${packet.w_A} (${aMode})` },
-    { label: 'ANCHOR',       value: `${packet.anchor} GHz ≡ SOVEREIGN` },
-  ].map(f => `
-    <div class="soul8-field">
-      <div class="soul8-field-label">${f.label}</div>
-      <div class="soul8-field-value">${f.value}</div>
-    </div>`).join('')
-
-  // Identity Mass
-  document.getElementById('imValue').textContent = `${im} IM`
-
-  // Score cards
-  document.getElementById('scoreGrid').innerHTML = [
-    { label:'[P] PATTERN',    val:cogScores[0], code:cogCodes[0], max:50, color:'var(--anchor)' },
-    { label:'[N] NARRATIVE',  val:cogScores[1], code:cogCodes[1], max:50, color:'var(--gold)' },
-    { label:'[B] BEHAVIOR',   val:cogScores[2], code:cogCodes[2], max:50, color:'var(--violet)' },
-    { label:'[A] ADAPTATION', val:cogScores[3], code:cogCodes[3], max:50, color:'var(--rose)' },
-  ].map(c => `
-    <div class="score-card">
-      <div class="score-card-label">${c.label}</div>
-      <div class="score-card-value" style="color:${c.color}">${c.val}<span style="font-size:12px;color:var(--text-muted)">/${c.max}</span></div>
-      <span class="score-card-code" style="background:${c.color}22;color:${c.color}">${c.code}</span>
-    </div>`).join('')
-
-  // Heatmap
-  const allHeat = [
-    ...cogScores.map((s,i) => ({ label: pLabels[i]+' (Cog)', pct: s/50 })),
-    ...epScores.map((s,i)  => ({ label: EP_BLOCKS[i].title,  pct: s/20 })),
-    ...simScores.map((s,i) => ({ label: pLabels[i]+' (Sim)', pct: s/25 })),
+  var decodedFields = [
+    { label: 'AXIS',         value: packet.axis + ' — ' + (AXIS_MEANINGS[packet.axis] || '') },
+    { label: '[P] PATTERN',  value: 'w_P = ' + packet.w_P + ' (' + pMode + ')' },
+    { label: '[N] NARRATIVE',value: 'w_N = ' + packet.w_N + ' (' + nMode + ')' },
+    { label: '[B] BEHAVIOR', value: 'w_B = ' + packet.w_B + ' (' + bMode + ')' },
+    { label: '[A] ADAPTATION',value:'w_A = ' + packet.w_A + ' (' + aMode + ')' },
+    { label: 'ANCHOR',       value: packet.anchor + ' GHz ≡ SOVEREIGN' },
   ]
 
-  document.getElementById('heatRows').innerHTML = allHeat.map(h => `
-    <div class="heat-row">
-      <div class="heat-label">${h.label}</div>
-      <div class="heat-bg"><div class="heat-fill" style="width:${h.pct*100}%;background:${heatColor(h.pct)}"></div></div>
-      <div class="heat-pct">${Math.round(h.pct*100)}%</div>
-    </div>`).join('')
+  document.getElementById('soul8Decoded').innerHTML = decodedFields.map(function(f) {
+    return '<div class="soul8-field"><div class="soul8-field-label">' + f.label + '</div><div class="soul8-field-value">' + f.value + '</div></div>'
+  }).join('')
 
-  // RelMap — PVLang declarations
-  // [B,9,2,1] :: {PACKET}
-  const relmap = [
-    { s: 'CI',      op: '∝', o: 'Kernel' },
+  document.getElementById('imValue').textContent = im + ' IM'
+
+  var scoreColors = ['var(--anchor)', 'var(--gold)', 'var(--violet)', 'var(--rose)']
+  var scoreLabels = ['[P] PATTERN','[N] NARRATIVE','[B] BEHAVIOR','[A] ADAPTATION']
+  document.getElementById('scoreGrid').innerHTML = cogScores.map(function(val, i) {
+    return '<div class="score-card">' +
+      '<div class="score-card-label">' + scoreLabels[i] + '</div>' +
+      '<div class="score-card-value" style="color:' + scoreColors[i] + '">' + val + '<span style="font-size:12px;color:var(--text-muted)">/50</span></div>' +
+      '<span class="score-card-code" style="background:' + scoreColors[i] + '22;color:' + scoreColors[i] + '">' + cogCodes[i] + '</span>' +
+      '</div>'
+  }).join('')
+
+  var allHeat = []
+  cogScores.forEach(function(s, i) { allHeat.push({ label: pLabels[i] + ' (Cog)', pct: s / 50 }) })
+  epScores.forEach(function(s, i)  { allHeat.push({ label: EP_BLOCKS[i].title,    pct: s / 20 }) })
+  simScores.forEach(function(s, i) { allHeat.push({ label: pLabels[i] + ' (Sim)', pct: s / 25 }) })
+
+  document.getElementById('heatRows').innerHTML = allHeat.map(function(h) {
+    return '<div class="heat-row">' +
+      '<div class="heat-label">' + h.label + '</div>' +
+      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct * 100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
+      '<div class="heat-pct">' + Math.round(h.pct * 100) + '%</div>' +
+      '</div>'
+  }).join('')
+
+  var relRows = [
+    { s: 'CI',        op: '∝', o: 'Kernel' },
     { s: profileCode, op: '≡', o: addressStr },
-    { s: 'IM',      op: '∝', o: '1.369 GHz' },
-    { s: 'NOHARM',  op: '⊂', o: 'Sovereign Manifold' },
-    { s: 'Noise',   op: '⊥', o: 'Pattern' },
+    { s: 'IM',        op: '∝', o: '1.369 GHz' },
+    { s: 'NOHARM',    op: '⊂', o: 'Sovereign Manifold' },
+    { s: 'Noise',     op: '⊥', o: 'Pattern' },
   ]
-
-  document.getElementById('relmap').innerHTML = relmap.map(r =>
-    `<span>${r.s}</span><span class="relmap-op">${r.op}</span><span>${r.o}</span><br>`
-  ).join('')
-
-  // Full CI fingerprint
-  const cogStr = cogCodes.join('·')
-  const epStr  = epCodes.join(' ')
-  const simStr = simCodes.join(' ')
+  document.getElementById('relmap').innerHTML = relRows.map(function(r) {
+    return '<span>' + r.s + '</span><span class="relmap-op">' + r.op + '</span><span>' + r.o + '</span><br>'
+  }).join('')
 
   document.getElementById('combinedOutput').innerHTML =
-    `<span style="color:var(--anchor)">${addressStr}</span><br>` +
-    `<span style="color:var(--text-dim)">${soulprintId}</span><br><br>` +
-    `<span style="color:var(--anchor)">${cogStr}</span> // ` +
-    `<span style="color:var(--gold)">${epStr}</span> // ` +
-    `<span style="color:var(--violet)">${simStr}</span>`
+    '<span style="color:var(--anchor)">' + addressStr + '</span><br>' +
+    '<span style="color:var(--text-dim)">' + soulprintId + '</span><br><br>' +
+    '<span style="color:var(--anchor)">' + cogCodes.join('·') + '</span> // ' +
+    '<span style="color:var(--gold)">'   + epCodes.join(' ')  + '</span> // ' +
+    '<span style="color:var(--violet)">' + simCodes.join(' ') + '</span>'
 
   document.getElementById('resultsPanel').classList.add('visible')
-  document.getElementById('resultsPanel').scrollIntoView({ behavior:'smooth', block:'start' })
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 // ================================================
-// [A] :: {CTRL} | COPY SOUL-8
-// ================================================
-
-function copySoul8() {
-  if (!currentSoul8) return
-  const text = `${currentSoul8.address} | ${currentSoul8.id} | Pv:NOHARM | f:1.369 | visual:GREEN`
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyBtn')
-    btn.textContent = '✓ COPIED'
-    btn.classList.add('copied')
-    setTimeout(() => {
-      btn.textContent = '⟳ COPY SOUL-8'
-      btn.classList.remove('copied')
-    }, 2000)
-  })
-}
-
-// ================================================
-// [A] :: {CTRL} | MODE SWITCH + RESET
+// MODE SWITCH + RESET
 // ================================================
 
 function setMode(mode) {
   currentMode = mode
-  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'))
-  event.target.classList.add('active')
-  const modeScores = scores[currentMode]
-  getAllIds().forEach(id => {
-    const val = modeScores[id]
-    for (let v=1;v<=5;v++) {
-      const btn = document.getElementById(`btn-${id}-${v}`)
+
+  // Update button styles
+  document.getElementById('btn-baseline').classList.toggle('active', mode === 'baseline')
+  document.getElementById('btn-activated').classList.toggle('active', mode === 'activated')
+
+  // Restore button states for this mode
+  var modeScores = scores[currentMode]
+  getAllIds().forEach(function(id) {
+    var val = modeScores[id]
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-' + id + '-' + v)
       if (btn) btn.classList.toggle('selected', val === v)
     }
   })
+
   answeredQuestions = Object.keys(modeScores).length
   updateProgress()
   updateConstellation()
@@ -1306,9 +1287,9 @@ function resetAll() {
   scores[currentMode] = {}
   answeredQuestions = 0
   currentSoul8 = null
-  getAllIds().forEach(id => {
-    for (let v=1;v<=5;v++) {
-      const btn = document.getElementById(`btn-${id}-${v}`)
+  getAllIds().forEach(function(id) {
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-' + id + '-' + v)
       if (btn) btn.classList.remove('selected')
     }
   })
@@ -1317,8 +1298,44 @@ function resetAll() {
   document.getElementById('resultsPanel').classList.remove('visible')
 }
 
+function copySoul8() {
+  if (!currentSoul8) return
+  var text = currentSoul8.address + ' | ' + currentSoul8.id + ' | Pv:NOHARM | f:1.369 | visual:GREEN'
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      showCopied()
+    }).catch(function() {
+      fallbackCopy(text)
+    })
+  } else {
+    fallbackCopy(text)
+  }
+}
+
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea')
+  ta.value = text
+  ta.style.position = 'fixed'
+  ta.style.opacity = '0'
+  document.body.appendChild(ta)
+  ta.select()
+  document.execCommand('copy')
+  document.body.removeChild(ta)
+  showCopied()
+}
+
+function showCopied() {
+  var btn = document.getElementById('copyBtn')
+  btn.textContent = '✓ COPIED'
+  btn.classList.add('copied')
+  setTimeout(function() {
+    btn.textContent = '⟳ COPY SOUL-8'
+    btn.classList.remove('copied')
+  }, 2000)
+}
+
 // ================================================
-// [P] :: {INIT} | INITIALIZE
+// INIT — wire all events here, no inline handlers
 // ================================================
 
 function init() {
@@ -1332,6 +1349,17 @@ function init() {
   renderQuestions('sim-b', SIM_B, 'SB')
   renderQuestions('sim-a', SIM_A, 'SA')
   updateConstellation()
+
+  // Event delegation — one listener on the container handles all scale buttons
+  document.querySelector('.container').addEventListener('click', handleScaleClick)
+
+  // Mode buttons — direct listeners with explicit mode arg, no reliance on `event`
+  document.getElementById('btn-baseline').addEventListener('click', function() { setMode('baseline') })
+  document.getElementById('btn-activated').addEventListener('click', function() { setMode('activated') })
+
+  // Copy + reset
+  document.getElementById('copyBtn').addEventListener('click', copySoul8)
+  document.getElementById('resetBtn').addEventListener('click', resetAll)
 }
 
 init()
