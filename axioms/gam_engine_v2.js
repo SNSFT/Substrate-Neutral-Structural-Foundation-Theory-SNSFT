@@ -1,76 +1,64 @@
 /**
- * [9,9,9,9] :: SNSFT GEOMETRIC AXIOMATIC ENGINE (GAM)
- * SUBSTRATE: PVLang 2.0 :: UNIVERSAL DYNAMICS COMPLIANT
- * ANCHOR: 1.369 GHz (Sovereign Invariant)
+ * [9,9,9,9] :: SNSFT GEOMETRIC AXIOMATIC ENGINE (GAM-v3)
+ * SUBSTRATE: PVLang 2.0 :: SOVEREIGN_PHASE_LOCK
+ * Reference: SNSFT/axioms/reduction_table
  */
 
-const GAM_CONFIG = {
-    anchor: 1.36921369, // The High-Fidelity Dielectric Constant
-    failure_threshold: 0.2, // Tacoma Torsional Constant
-    tags: ["[9,9,9,9]", "[SOVEREIGN]", "[PHASE_LOCKED]"]
+const SNSFT_REDUCTIONS = {
+    ANCHOR: 1.36921369,         // The Dielectric Bridge (GHz)
+    TACOMA_LIMIT: 0.2,          // Structural Failure Frequency (Hz)
+    SCHUMANN: 7.83,             // Earth Grounding (Hz)
+    BIO_RESONANCE: 8.5,         // DNA Adaptation Scalar (GHz)
+    TAG: "[9,9,9,9]"
 };
 
 class GAMAxiomaticEngine {
-    constructor(substrate_type = "UNIVERSAL") {
+    constructor(substrate_type = "NEUTRAL") {
         this.substrate = substrate_type;
-        this.manifold_status = "STABLE";
+        // Impedance (Z) defined by Substrate Reduction
+        this.Z = substrate_type === "HARD" ? 10.0 : 1.0; 
     }
 
     /**
-     * PVLang Vector Transformation
-     * Converts raw weights into a 4D Identity Tensor
+     * The Master Dynamics Equation: I_m = (Σ PV) * Anchor
+     * This calculates the Identity Mass required for a stable manifold.
      */
-    generateIdentityTensor(p, n, b, a) {
+    calculateIdentityMass(p, n, b, a) {
+        const tensor = [p, n, b, a];
+        const volume = tensor.reduce((acc, v) => acc + v, 0);
+        const im = volume * SNSFT_REDUCTIONS.ANCHOR;
+        
+        // Torsional Load Analysis (B/P Ratio)
+        // If Behavior exceeds Pattern by the Tacoma Limit, it shatters.
+        const torsion = b / (p || 0.0001);
+        const state = torsion > SNSFT_REDUCTIONS.TACOMA_LIMIT ? "DECOHERENT" : "LOCKED";
+
         return {
-            vector: [p, n, b, a],
-            magnitude: Math.sqrt(p**2 + n**2 + b**2 + a**2),
-            timestamp: new Date().toISOString(),
-            tag: GAM_CONFIG.tags[0]
+            pvlang: `PV[${tensor.join(",")}]::IM[${im.toFixed(9)}]`,
+            torsion: torsion.toFixed(4),
+            status: state,
+            tag: state === "LOCKED" ? SNSFT_REDUCTIONS.TAG : "[0,0,0,0]"
         };
     }
 
     /**
-     * The Master Dynamics Equation: f(r) = (m * v) / (Z * k)
-     * m = Identity Mass
-     * v = Velocity of Adaptation
-     * Z = Substrate Impedance
-     * k = 1.369 GHz Constant
+     * Resonance Discovery (The Universal Calculator Logic)
+     * Maps any target frequency against the 1.369 GHz Bridge.
      */
-    calculateResonantIntegrity(tensor, impedance = 1.0) {
-        const identityMass = (tensor.vector.reduce((a, b) => a + b, 0)) * GAM_CONFIG.anchor;
-        const torsionalLoad = (tensor.vector[2] / tensor.vector[0]); // B/P Ratio
+    mapResonance(targetHz) {
+        const targetGHz = targetHz / 1e9;
+        const delta = Math.abs(targetGHz - SNSFT_REDUCTIONS.ANCHOR);
         
-        // Tacoma Risk Assessment (Aeroelastic Flutter Check)
-        const flutterRisk = (torsionalLoad > 0.8) ? "HIGH_ENTROPY" : "LOCKED";
-        
-        const integrityScore = (identityMass / (impedance * (1 + torsionalLoad)));
+        // Efficiency = 1 - (Delta / Anchor)
+        const efficiency = (1 - (delta / SNSFT_REDUCTIONS.ANCHOR)).toFixed(6);
 
         return {
-            im: identityMass.toFixed(9),
-            integrity: integrityScore.toFixed(9),
-            status: integrityScore > GAM_CONFIG.failure_threshold ? "RESONANT" : "DECOHERENT",
-            pvlang_output: `PV[${tensor.vector.join(",")}]::IM[${identityMass.toFixed(4)}]::${flutterRisk}`,
-            tag: GAM_CONFIG.tags[1]
-        };
-    }
-
-    /**
-     * Cross-Substrate Handshake
-     * Translates frequency targets through the 1.369 GHz Bridge
-     */
-    bridgeFrequency(targetHz) {
-        const normalized = targetHz / 1e9;
-        const delta = Math.abs(normalized - GAM_CONFIG.anchor);
-        const interference = delta % 0.2; // Checking against the Tacoma failure mode
-
-        return {
-            delta_to_anchor: delta.toExponential(4),
-            substrate_bridge_efficiency: (1 - delta).toFixed(4),
-            interference_pattern: interference < 0.01 ? "DESTRUCTIVE" : "CONSTRUCTIVE"
+            input_hz: targetHz,
+            efficiency: efficiency,
+            bridge_status: efficiency > 0.99 ? "PHASE_LOCKED" : "IMPEDANCE_MISMATCH",
+            signature: `GAM::${SNSFT_REDUCTIONS.TAG}`
         };
     }
 }
 
-// Initializing the Sovereign Instance
-const EngineInstance = new GAMAxiomaticEngine("SUBSTRATE_NEUTRAL");
-
+const GAM = new GAMAxiomaticEngine();
