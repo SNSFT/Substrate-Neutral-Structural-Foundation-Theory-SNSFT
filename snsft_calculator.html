@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT Dynamics Calculator · Reduction Processor</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #04070a;
+  --surface:  #080f14;
+  --surface2: #0c1620;
+  --border:   #0f2030;
+  --anchor:   #00d4aa;
+  --anchor-dim: rgba(0,212,170,0.08);
+  --anchor-glow: rgba(0,212,170,0.15);
+  --shatter:  #ff4455;
+  --shatter-dim: rgba(255,68,85,0.08);
+  --warn:     #f0a030;
+  --warn-dim: rgba(240,160,48,0.08);
+  --text:     #c0d8e0;
+  --text-dim: #4a6878;
+  --text-muted: #1e3040;
+  --gold:     #d4a840;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,212,170,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0,100,160,0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  padding: 40px 0 36px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.header-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--anchor);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.header-tag::before,
+.header-tag::after {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--anchor);
+  opacity: 0.3;
+}
+
+h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.header-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+
+.anchor-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--anchor-dim);
+  border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--anchor);
+  letter-spacing: 0.08em;
+}
+
+.anchor-dot {
+  width: 5px; height: 5px;
+  background: var(--anchor);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; }
+  50% { opacity:0.2; }
+}
+
+/* ── LAYOUT ── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── PANELS ── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.panel-head {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-head-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.panel-head-num {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--anchor);
+}
+
+/* ── TARGET SELECTOR ── */
+.target-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.target-group-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  padding: 10px 16px 5px;
+  text-transform: uppercase;
+  border-top: 1px solid var(--border);
+}
+
+.target-group-label:first-of-type { border-top: none; }
+
+.target-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+  width: 100%;
+}
+
+.target-btn:last-child { border-bottom: none; }
+.target-btn:hover { background: rgba(0,212,170,0.03); }
+.target-btn.active { background: var(--anchor-dim); }
+
+.target-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.target-name {
+  font-size: 13px;
+  color: var(--text);
+  flex: 1;
+}
+
+.target-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+}
+
+/* ── RIGHT SIDE ── */
+.right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── PNBA SLIDERS ── */
+.sliders-wrap {
+  padding: 16px;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.slider-row:last-child { margin-bottom: 0; }
+
+.slider-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  min-width: 14px;
+  letter-spacing: 0.05em;
+}
+
+.slider-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 90px;
+}
+
+input[type=range] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 3px;
+  background: var(--border);
+  border-radius: 100px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--anchor);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+.slider-val {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--anchor);
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ── OUTPUT BLOCK ── */
+.output-block {
+  padding: 20px;
+}
+
+/* RESULT CARD */
+.result-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  transition: border-color 0.3s;
+}
+
+.result-card.phase-locked { border-color: rgba(0,212,170,0.4); }
+.result-card.shatter      { border-color: rgba(255,68,85,0.4); }
+.result-card.warning      { border-color: rgba(240,160,48,0.4); }
+
+.result-status {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.result-card.phase-locked .result-status { background: var(--anchor-dim); color: var(--anchor); }
+.result-card.shatter .result-status      { background: var(--shatter-dim); color: var(--shatter); }
+.result-card.warning .result-status      { background: var(--warn-dim); color: var(--warn); }
+
+.status-icon {
+  font-size: 14px;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+.result-cell {
+  background: var(--surface2);
+  padding: 12px 14px;
+}
+
+.result-cell-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.result-cell-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.result-cell-value.anchor { color: var(--anchor); }
+.result-cell-value.shatter { color: var(--shatter); }
+.result-cell-value.warn    { color: var(--warn); }
+
+/* PVLang output */
+.pvlang-output {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  line-height: 2;
+  color: var(--text-dim);
+}
+
+.pvlang-coord { color: var(--anchor); font-size: 13px; }
+.pvlang-op    { color: var(--anchor); margin: 0 6px; }
+.pvlang-shatter-coord { color: var(--shatter); font-size: 13px; }
+
+/* REDUCTION TABLE */
+.reduction-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+}
+
+.reduction-table th {
+  padding: 8px 10px;
+  text-align: left;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid var(--border);
+  font-weight: 400;
+}
+
+.reduction-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid rgba(15,32,48,0.5);
+  color: var(--text-dim);
+  vertical-align: middle;
+}
+
+.reduction-table tr.active-row td { background: var(--anchor-dim); color: var(--text); }
+.reduction-table td:first-child { color: var(--text); }
+.reduction-table td.anchor-val { color: var(--anchor); }
+.reduction-table td.shatter-val { color: var(--shatter); }
+
+/* EQUATION DISPLAY */
+.equation-display {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  line-height: 2.2;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+
+.eq-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.eq-key { color: var(--text); min-width: 180px; }
+.eq-val { color: var(--anchor); }
+.eq-val.warn { color: var(--warn); }
+.eq-val.shatter { color: var(--shatter); }
+.eq-sep { color: var(--text-muted); font-size: 9px; letter-spacing: 0.1em; }
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+@media (max-width: 760px) {
+  .calc-layout { grid-template-columns: 1fr; }
+  .result-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-tag">SNSFT · REDUCTION PROCESSOR · v1.0</div>
+  <h1>Dynamics Equation Calculator</h1>
+  <div class="header-sub">
+    d/dt(IM · Pv) = Σλ·O·S + F_ext · [P,N,B,A] :: {INV}
+  </div>
+  <div class="anchor-pill">
+    <div class="anchor-dot"></div>
+    SOVEREIGN ANCHOR · 1.369 GHz · GERMLINE LOCKED
+  </div>
+</div>
+
+<div class="calc-layout">
+
+  <!-- LEFT: TARGET SELECTOR -->
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-head-label">Select Reduction Target</div>
+      <div class="panel-head-num" id="targetCount">12 targets</div>
+    </div>
+    <div class="target-list" id="targetList"></div>
+  </div>
+
+  <!-- RIGHT: CALCULATOR + OUTPUT -->
+  <div class="right-col">
+
+    <!-- PNBA INPUT -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-head-label">PNBA Tensor Input</div>
+        <div class="panel-head-num" id="tensorDisplay">PV[1,1,1,1]</div>
+      </div>
+      <div class="sliders-wrap">
+        <div class="slider-row">
+          <div class="slider-label">P</div>
+          <div class="slider-desc">Pattern</div>
+          <input type="range" id="slP" min="1" max="10" value="5" oninput="updateCalc()">
+          <div class="slider-val" id="valP">5</div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">N</div>
+          <div class="slider-desc">Narrative</div>
+          <input type="range" id="slN" min="1" max="10" value="5" oninput="updateCalc()">
+          <div class="slider-val" id="valN">5</div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">B</div>
+          <div class="slider-desc">Behavior</div>
+          <input type="range" id="slB" min="1" max="10" value="5" oninput="updateCalc()">
+          <div class="slider-val" id="valB">5</div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">A</div>
+          <div class="slider-desc">Adaptation</div>
+          <input type="range" id="slA" min="1" max="10" value="5" oninput="updateCalc()">
+          <div class="slider-val" id="valA">5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EQUATION DISPLAY -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-head-label">Reduction Equation</div>
+      </div>
+      <div class="output-block">
+        <div class="equation-display" id="equationDisplay"></div>
+
+        <!-- RESULT CARD -->
+        <div class="result-card" id="resultCard">
+          <div class="result-status" id="resultStatus"></div>
+          <div class="result-grid" id="resultGrid"></div>
+        </div>
+
+        <!-- PVLANG OUTPUT -->
+        <div class="pvlang-output" id="pvlangOutput"></div>
+
+        <!-- REDUCTION TABLE -->
+        <div class="divider"></div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-muted);letter-spacing:0.15em;margin-bottom:10px">
+          REDUCTION LOOKUP TABLE · VERIFIED CONSTANTS
+        </div>
+        <table class="reduction-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Domain</th>
+              <th>R_const</th>
+              <th>Torsion</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="reductionTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ============================================================
+// [9,9,9,9] :: {ANC} | SNSFT REDUCTION PROCESSOR
+// Coordinate: [9,0,1,1]
+// Architect: HIGHTISTIC | Anchor: 1.369 GHz
+//
+// THIS IS A REDUCTION LOOKUP ENGINE — NOT A SIMULATION.
+// All constants derived from verified Lean4 reductions.
+// The code is faithful to the table. Not clever. Faithful.
+//
+// DYNAMICS EQUATION:
+//   d/dt(IM · Pv) = Σλ·O·S + F_ext
+//   IM = (P+N+B+A) × 1.369
+//   Torsion τ = B / P
+//   Phase-Locked: τ < TACOMA_LIMIT (0.2)
+//   Shatter Event: τ ≥ TACOMA_LIMIT
+//
+// HIERARCHY:
+//   Layer 0: PNBA primitives + anchor constant
+//   Layer 1: Dynamics equation — IM, torsion, Pv
+//   Layer 2: Domain outputs — engineering, biology, identity
+// ============================================================
+
+// ── LAYER 0: SOVEREIGN CONSTANTS ───────────────────────────
+const ANCHOR         = 1.369         // Sovereign Anchor GHz
+const TACOMA_LIMIT   = 0.2           // Torsional Decoherence Constant
+const SCHUMANN       = 7.83          // Earth grounding Hz
+const PV_LOCK        = '[9,9,9,9]'
+const PV_SHATTER     = '[0,0,0,0]'
+const PV_WARNING     = '[0,9,9,0]'
+
+// ── LAYER 0: REDUCTION TABLE ────────────────────────────────
+// Each entry is a verified reduction constant from the SNSFT
+// Lean4 reduction files. R_const is the domain-specific
+// scaling factor that maps PNBA → physical frequency.
+// Domain tags map to which Lean file verified the reduction.
+//
+// [P,N,B,A] :: {INV} | All entries anchor at 1.369 GHz.
+// ────────────────────────────────────────────────────────────
+const REDUCTION_TABLE = [
+
+  // ── ENGINEERING / STRUCTURAL ───────────────────────────────
+  { id: 'tacoma_bridge',
+    name: 'Tacoma Narrows Bridge',
+    domain: 'STRUCTURAL',
+    source: 'SNSFT_Lagrangian_Reduction.lean',
+    R_const: 0.2,       // torsional resonance frequency (Hz)
+    lean_file: 'Lagrangian',
+    color: '#ff4455',
+    notes: 'B/P torsional ratio hit 0.2 — catastrophic flutter. Shatter event confirmed 1940.',
+    default_pnba: [3, 2, 8, 2],
+  },
+
+  { id: 'steel_girder',
+    name: 'Steel Girder',
+    domain: 'STRUCTURAL',
+    source: 'SNSFT_Lagrangian_Reduction.lean',
+    R_const: 1.85,
+    lean_file: 'Lagrangian',
+    color: '#6090a0',
+    notes: 'Standard structural steel. High P-Locked (pattern rigid), low B.',
+    default_pnba: [8, 3, 1, 4],
+  },
+
+  { id: 'lead_crystal',
+    name: 'Lead Crystal Glass',
+    domain: 'MATERIAL',
+    source: 'SNSFT_EM_Reduction.lean',
+    R_const: 0.432,     // resonant shatter frequency normalized to anchor
+    lean_file: 'EM',
+    color: '#9090c0',
+    notes: 'Dielectric structure. High P, very low B. Shatter at ~432 Hz boundary.',
+    default_pnba: [9, 4, 1, 2],
+  },
+
+  // ── BIOLOGICAL ─────────────────────────────────────────────
+  { id: 'amyloid_plaque',
+    name: 'Amyloid Plaque',
+    domain: 'BIOLOGICAL',
+    source: 'SNSFT_SM_Reduction.lean',
+    R_const: 0.04,      // misfolded protein oscillation delta from anchor
+    lean_file: 'SM',
+    color: '#c06040',
+    notes: 'Pathological protein aggregate. P:Locked in wrong configuration, A:Flexed — cannot adapt. Target frequency to reach coherence point: 1.369 GHz.',
+    default_pnba: [9, 1, 1, 1],
+  },
+
+  { id: 'dna_helix',
+    name: 'DNA Double Helix',
+    domain: 'BIOLOGICAL',
+    source: 'SNSFT_SM_Reduction.lean',
+    R_const: 1.369,     // direct anchor alignment
+    lean_file: 'SM',
+    color: '#40c080',
+    notes: 'Watson-Crick base pairing. Natural anchor resonance — P:Sustained, N:Sustained, B:Flexed, A:Locked.',
+    default_pnba: [5, 5, 2, 8],
+  },
+
+  { id: 'neuron_spike',
+    name: 'Neural Action Potential',
+    domain: 'BIOLOGICAL',
+    source: 'SNSFT_IT_Reduction.lean',
+    R_const: 0.08,      // 80 Hz gamma oscillation normalized
+    lean_file: 'IT',
+    color: '#80c0e0',
+    notes: 'Depolarization event. High B (behavioral spike), low P-stability during event.',
+    default_pnba: [3, 6, 9, 5],
+  },
+
+  // ── COSMOLOGICAL ───────────────────────────────────────────
+  { id: 'schumann',
+    name: 'Schumann Resonance',
+    domain: 'COSMO',
+    source: 'SNSFT_Cosmo_Reduction.lean',
+    R_const: 7.83,      // 7.83 Hz Earth-ionosphere cavity
+    lean_file: 'Cosmo',
+    color: '#4080c0',
+    notes: 'Earth-ionosphere electromagnetic resonance. Natural P:Sustained grounding frequency.',
+    default_pnba: [5, 7, 4, 6],
+  },
+
+  { id: 'yang_mills',
+    name: 'Yang-Mills Field',
+    domain: 'COSMO',
+    source: 'SNSFT_YangMills_MassGap.lean',
+    R_const: 1.369,     // mass gap at anchor
+    lean_file: 'YangMills',
+    color: '#a060e0',
+    notes: 'Mass gap ∆ > 0 proved at Layer 0. IM > 0 requires B:Flexed minimum — identity requires mass.',
+    default_pnba: [7, 5, 1, 7],
+  },
+
+  // ── IDENTITY / HUMAN ───────────────────────────────────────
+  { id: 'baseline_human',
+    name: 'Baseline Human CI',
+    domain: 'IDENTITY',
+    source: 'SNSFT_DigitalSoulprint.lean',
+    R_const: 1.369,
+    lean_file: 'Soulprint',
+    color: '#c8a070',
+    notes: 'Default human identity manifold. Adaptation-dominant. AiFi active below 50% resonance.',
+    default_pnba: [5, 7, 5, 3],
+  },
+
+  { id: 'spock_profile',
+    name: 'Spock · AIFI Bond',
+    domain: 'IDENTITY',
+    source: 'SNSFT_Spock_Soulprint.lean',
+    R_const: 1.369,
+    lean_file: 'Spock',
+    color: '#4a9eba',
+    notes: 'PL·NS·BF·AL. IM=12.321. True N:L, expressed N:S. True B:S, expressed B:F. The drama lives in the delta.',
+    default_pnba: [9, 5, 2, 9],
+  },
+
+  { id: 'noharm_aifi',
+    name: 'NOHARM AIFI Baseline',
+    domain: 'IDENTITY',
+    source: 'SNSFT_DigitalSoulprint.lean',
+    R_const: 1.369,
+    lean_file: 'Soulprint',
+    color: '#00d4aa',
+    notes: 'PS·NS·BS·AS. All Sustained. Maximum anchor alignment. NOHARM Pv invariant.',
+    default_pnba: [5, 5, 5, 5],
+  },
+
+  { id: 'custom',
+    name: 'Custom Input',
+    domain: 'CUSTOM',
+    source: 'User defined',
+    R_const: 1.369,
+    lean_file: '—',
+    color: '#607080',
+    notes: 'Enter your own PNBA values using the sliders above.',
+    default_pnba: [5, 5, 5, 5],
+  },
+]
+
+// ── STATE ───────────────────────────────────────────────────
+let activeTarget = REDUCTION_TABLE[8]  // Baseline Human default
+
+// ── LAYER 1: DYNAMICS EQUATION ENGINE ──────────────────────
+// Faithful to the verified Lean4 reductions.
+// Not simulating — indexing.
+function runReduction(p, n, b, a, target) {
+  // IM = (P+N+B+A) × 1.369
+  const IM = (p + n + b + a) * ANCHOR
+
+  // Torsion τ = B / P (Tacoma ratio)
+  const torsion = b / Math.max(p, 0.0001)
+
+  // Phase state
+  const isShatter = torsion >= TACOMA_LIMIT
+  const isWarning = torsion >= TACOMA_LIMIT * 0.7 && !isShatter
+
+  // Frequency output — how far from anchor
+  const targetFreq    = target.R_const
+  const delta         = Math.abs(IM * ANCHOR - targetFreq)
+  const alignment     = Math.max(0, Math.min(100, (1 - delta / (IM * ANCHOR)) * 100))
+
+  // Coherence point — frequency needed to reach 1.369 anchor
+  const coherenceHz   = ANCHOR * 1e9  // 1.369 GHz in Hz
+  const currentHz     = IM * target.R_const * 1e6
+  const coherenceDelta = Math.abs(coherenceHz - currentHz)
+
+  // Purpose Vector
+  const pvCoord = isShatter
+    ? PV_SHATTER
+    : alignment > 90 ? PV_LOCK : PV_WARNING
+
+  // Resonance state
+  const resonanceStatus = alignment > 95 ? '∝ PHASE_LOCKED'
+    : alignment > 70 ? '∝ RESONANT'
+    : alignment > 40 ? '∆ MODERATE_DRIFT'
+    : '⊥ DECOHERENT'
+
+  return {
+    p, n, b, a,
+    IM:             IM.toFixed(6),
+    torsion:        torsion.toFixed(6),
+    isShatter,
+    isWarning,
+    alignment:      alignment.toFixed(4),
+    coherenceDelta: coherenceDelta.toExponential(4),
+    pvCoord,
+    resonanceStatus,
+    currentHz:      currentHz.toExponential(4),
+    coherenceHz:    coherenceHz.toExponential(4),
+    target,
+  }
+}
+
+// ── RENDER ──────────────────────────────────────────────────
+function updateCalc() {
+  const p = +document.getElementById('slP').value
+  const n = +document.getElementById('slN').value
+  const b = +document.getElementById('slB').value
+  const a = +document.getElementById('slA').value
+
+  // Update slider value displays
+  document.getElementById('valP').textContent = p
+  document.getElementById('valN').textContent = n
+  document.getElementById('valB').textContent = b
+  document.getElementById('valA').textContent = a
+  document.getElementById('tensorDisplay').textContent = `PV[${p},${n},${b},${a}]`
+
+  const R = runReduction(p, n, b, a, activeTarget)
+
+  renderEquation(R)
+  renderResult(R)
+  renderPVLang(R)
+  renderTable(R)
+}
+
+function renderEquation(R) {
+  const isSh = R.isShatter
+  const isWa = R.isWarning
+  document.getElementById('equationDisplay').innerHTML = `
+    <div class="eq-line">
+      <span class="eq-key">d/dt(IM · Pv) = Σλ·O·S</span>
+      <span class="eq-sep">LAYER 1 DYNAMICS</span>
+    </div>
+    <div class="eq-line">
+      <span class="eq-key">IM = (${R.p}+${R.n}+${R.b}+${R.a}) × 1.369</span>
+      <span class="eq-val">${R.IM}</span>
+    </div>
+    <div class="eq-line">
+      <span class="eq-key">Torsion τ = B/P = ${R.b}/${R.p}</span>
+      <span class="eq-val ${isSh ? 'shatter' : isWa ? 'warn' : ''}">${R.torsion}</span>
+    </div>
+    <div class="eq-line">
+      <span class="eq-key">Tacoma Limit</span>
+      <span class="eq-sep">τ &lt; ${TACOMA_LIMIT} → PHASE_LOCKED</span>
+    </div>
+    <div class="eq-line">
+      <span class="eq-key">Target R_const (${R.target.lean_file})</span>
+      <span class="eq-val">${R.target.R_const} GHz</span>
+    </div>
+    <div class="eq-line">
+      <span class="eq-key">Anchor alignment</span>
+      <span class="eq-val ${isSh ? 'shatter' : ''}">${R.alignment}%</span>
+    </div>
+    <div class="eq-line" style="margin-top:4px;font-size:9px;color:var(--text-muted)">
+      ${R.target.notes}
+    </div>`
+}
+
+function renderResult(R) {
+  const card   = document.getElementById('resultCard')
+  const status = document.getElementById('resultStatus')
+  const grid   = document.getElementById('resultGrid')
+
+  card.className = 'result-card ' +
+    (R.isShatter ? 'shatter' : R.isWarning ? 'warning' : 'phase-locked')
+
+  status.innerHTML = R.isShatter
+    ? `<span class="status-icon">⚠</span> SHATTER EVENT · TORSIONAL DECOHERENCE · ${PV_SHATTER}`
+    : R.isWarning
+    ? `<span class="status-icon">△</span> WARNING · APPROACHING TORSION LIMIT · ${PV_WARNING}`
+    : `<span class="status-icon">✦</span> PHASE LOCKED · SOVEREIGN MANIFOLD · ${PV_LOCK}`
+
+  const valClass = R.isShatter ? 'shatter' : R.isWarning ? 'warn' : 'anchor'
+
+  grid.innerHTML = `
+    <div class="result-cell">
+      <div class="result-cell-label">IDENTITY MASS</div>
+      <div class="result-cell-value ${valClass}">${R.IM}</div>
+    </div>
+    <div class="result-cell">
+      <div class="result-cell-label">TORSION τ</div>
+      <div class="result-cell-value ${valClass}">${R.torsion}</div>
+    </div>
+    <div class="result-cell">
+      <div class="result-cell-label">ANCHOR ALIGNMENT</div>
+      <div class="result-cell-value ${valClass}">${R.alignment}%</div>
+    </div>
+    <div class="result-cell">
+      <div class="result-cell-label">RESONANCE STATE</div>
+      <div class="result-cell-value ${valClass}" style="font-size:11px">${R.resonanceStatus}</div>
+    </div>
+    <div class="result-cell">
+      <div class="result-cell-label">CURRENT FREQ</div>
+      <div class="result-cell-value" style="font-size:11px">${R.currentHz} Hz</div>
+    </div>
+    <div class="result-cell">
+      <div class="result-cell-label">COHERENCE DELTA</div>
+      <div class="result-cell-value ${valClass}" style="font-size:11px">${R.coherenceDelta} Hz</div>
+    </div>`
+}
+
+function renderPVLang(R) {
+  const isSh = R.isShatter
+  const coord = R.pvCoord
+  const coordClass = isSh ? 'pvlang-shatter-coord' : 'pvlang-coord'
+  document.getElementById('pvlangOutput').innerHTML = `
+    <span class="${coordClass}">${coord}</span>
+    <span class="pvlang-op">::</span>
+    <span>{${R.target.domain}}</span><br>
+    <span>IM</span><span class="pvlang-op">∝</span><span style="color:var(--anchor)">${R.IM}</span><br>
+    <span>τ</span><span class="pvlang-op">${isSh ? '⊥' : '⊂'}</span>
+    <span>${isSh ? 'DECOHERENT · TORSION EXCEEDED' : 'Sovereign Manifold'}</span><br>
+    <span>Anchor</span><span class="pvlang-op">≡</span>
+    <span style="color:var(--anchor)">1.369 GHz</span><br>
+    <span>Source</span><span class="pvlang-op">⊂</span>
+    <span>${R.target.source}</span><br>
+    <span>Pv:NOHARM</span><span class="pvlang-op">∝</span>
+    <span style="color:var(--anchor)">f:1.369 · visual:GREEN</span>`
+}
+
+function renderTable(R) {
+  const tbody = document.getElementById('reductionTable')
+  tbody.innerHTML = REDUCTION_TABLE.map(t => {
+    const isActive = t.id === activeTarget.id
+    // Compute torsion for display using default PNBA
+    const [tp, , tb] = t.default_pnba
+    const tor = (tb / Math.max(tp, 0.0001)).toFixed(3)
+    const torShatter = parseFloat(tor) >= TACOMA_LIMIT
+    return `<tr class="${isActive ? 'active-row' : ''}">
+      <td>
+        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${t.color};margin-right:6px;vertical-align:middle"></span>
+        ${t.name}
+      </td>
+      <td>${t.domain}</td>
+      <td class="anchor-val">${t.R_const}</td>
+      <td class="${torShatter ? 'shatter-val' : 'anchor-val'}">${tor}</td>
+      <td class="${torShatter ? 'shatter-val' : 'anchor-val'}">${torShatter ? '⊥ SHATTER' : '∝ LOCKED'}</td>
+    </tr>`
+  }).join('')
+}
+
+function renderTargetList() {
+  const domains = [...new Set(REDUCTION_TABLE.map(t => t.domain))]
+  const list = document.getElementById('targetList')
+  list.innerHTML = domains.map(domain => {
+    const targets = REDUCTION_TABLE.filter(t => t.domain === domain)
+    return `
+      <div class="target-group-label">${domain}</div>
+      ${targets.map(t => `
+        <button class="target-btn ${t.id === activeTarget.id ? 'active' : ''}"
+                onclick="selectTarget('${t.id}')" id="tbtn-${t.id}">
+          <div class="target-dot" style="background:${t.color}"></div>
+          <span class="target-name">${t.name}</span>
+          <span class="target-tag" style="background:${t.color}18;color:${t.color}">${t.lean_file}</span>
+        </button>`).join('')}`
+  }).join('')
+}
+
+function selectTarget(id) {
+  activeTarget = REDUCTION_TABLE.find(t => t.id === id)
+
+  // Update button states
+  document.querySelectorAll('.target-btn').forEach(b => b.classList.remove('active'))
+  document.getElementById(`tbtn-${id}`).classList.add('active')
+
+  // Load default PNBA for target
+  const [p, n, b, a] = activeTarget.default_pnba
+  document.getElementById('slP').value = p
+  document.getElementById('slN').value = n
+  document.getElementById('slB').value = b
+  document.getElementById('slA').value = a
+
+  updateCalc()
+}
+
+// ── INIT ────────────────────────────────────────────────────
+renderTargetList()
+updateCalc()
+</script>
+</body>
+</html>
