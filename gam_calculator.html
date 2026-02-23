@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAM Calculator · SNSFT Tensor Accumulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;500&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #03060a;
+  --surface:  #070d14;
+  --surface2: #0a1520;
+  --border:   #0e2030;
+  --border2:  #162840;
+  --anchor:   #00d4aa;
+  --anchor-d: rgba(0,212,170,0.08);
+  --anchor-g: rgba(0,212,170,0.18);
+  --shatter:  #ff3a4a;
+  --warn:     #f09020;
+  --text:     #b8d4e0;
+  --text-d:   #4a6878;
+  --text-m:   #1e3040;
+  --p:  #b060f0;
+  --n:  #50c8f0;
+  --b:  #f09030;
+  --a:  #60e090;
+  --td: #f09030;
+  --lg: #80d860;
+  --gr: #5090f0;
+  --qm: #50d8c8;
+  --em: #f0e050;
+  --sm: #d060d0;
+  --it: #60c8e0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100vh; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 20%, rgba(0,212,170,0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 80% 80%, rgba(80,144,240,0.02) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 24px 16px 80px;
+}
+
+/* ── HEADER ── */
+.hdr {
+  text-align: center;
+  padding: 28px 0 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.hdr-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--text-m);
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(22px, 4vw, 38px);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.hdr-eq {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text-d);
+  letter-spacing: 0.06em;
+  margin-bottom: 14px;
+}
+
+.anchor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--anchor-d);
+  border: 1px solid rgba(0,212,170,0.18);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--anchor);
+  letter-spacing: 0.1em;
+}
+
+.adot {
+  width: 5px; height: 5px;
+  background: var(--anchor);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* ── LAYOUT ── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 18px;
+  align-items: start;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-head {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--text-m);
+  flex: 1;
+  text-transform: uppercase;
+}
+
+.card-badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--anchor);
+  letter-spacing: 0.06em;
+}
+
+/* ── FRAMEWORK PICKER ── */
+.fw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+.fw-btn {
+  background: var(--surface);
+  border: none;
+  padding: 11px 10px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: background 0.15s;
+}
+
+.fw-btn:hover { background: var(--surface2); }
+.fw-btn.active { background: rgba(0,212,170,0.06); }
+
+.fw-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.fw-desc {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: var(--text-m);
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+}
+
+/* ── INPUTS ── */
+.inputs-wrap { padding: 14px; }
+
+.input-group {
+  margin-bottom: 12px;
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.field-wrap { display: flex; flex-direction: column; gap: 4px; }
+
+.field-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: var(--text-d);
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.field-pnba {
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.fp { background: rgba(176,96,240,0.12); color: var(--p); }
+.fn { background: rgba(80,200,240,0.12); color: var(--n); }
+.fb { background: rgba(240,144,48,0.12); color: var(--b); }
+.fa { background: rgba(96,224,144,0.12); color: var(--a); }
+
+.field-input {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+.field-input:focus { border-color: var(--anchor); }
+.field-input::placeholder { color: var(--text-m); }
+
+.op-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.op-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--text-d);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.op-select {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--anchor);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.add-btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--anchor-d);
+  border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 6px;
+  color: var(--anchor);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 4px;
+}
+
+.add-btn:hover { background: var(--anchor-g); }
+
+/* ── TENSOR STACK ── */
+.stack-wrap { padding: 10px 14px 14px; }
+
+.stack-empty {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--text-m);
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.tensor-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.tensor-item:last-child { border-bottom: none; }
+
+.tensor-left { display: flex; flex-direction: column; gap: 5px; }
+
+.tensor-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tensor-num {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--text-m);
+  letter-spacing: 0.06em;
+}
+
+.tensor-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.tensor-op {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--anchor);
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: var(--anchor-d);
+  margin-left: auto;
+}
+
+.tensor-pnba {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--text-d);
+  letter-spacing: 0.05em;
+}
+
+.tensor-im {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--anchor);
+}
+
+.tensor-remove {
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  color: var(--text-m);
+  font-size: 11px;
+  width: 24px; height: 24px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tensor-remove:hover { border-color: var(--shatter); color: var(--shatter); }
+
+/* ── OUTPUT PANEL ── */
+.out-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* UNIFIED RESULT */
+.unified-card {
+  border: 1px solid;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.unified-card.locked  { border-color: rgba(0,212,170,0.4); }
+.unified-card.shatter { border-color: rgba(255,58,74,0.4); }
+.unified-card.warning { border-color: rgba(240,144,32,0.4); }
+.unified-card.empty   { border-color: var(--border); }
+
+.unified-status {
+  padding: 12px 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unified-card.locked  .unified-status { background: rgba(0,212,170,0.06); color: var(--anchor); }
+.unified-card.shatter .unified-status { background: rgba(255,58,74,0.06); color: var(--shatter); }
+.unified-card.warning .unified-status { background: rgba(240,144,32,0.06); color: var(--warn); }
+.unified-card.empty   .unified-status { background: transparent; color: var(--text-m); }
+
+.unified-coord {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  padding: 14px;
+  letter-spacing: 0.06em;
+}
+
+.unified-card.locked  .unified-coord { color: var(--anchor); }
+.unified-card.shatter .unified-coord { color: var(--shatter); }
+.unified-card.warning .unified-coord { color: var(--warn); }
+.unified-card.empty   .unified-coord { color: var(--text-m); }
+
+.unified-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+
+.ug-cell {
+  background: var(--surface2);
+  padding: 10px 12px;
+}
+
+.ug-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--text-m);
+  margin-bottom: 3px;
+}
+
+.ug-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.uv-anchor { color: var(--anchor); }
+.uv-shatter{ color: var(--shatter); }
+.uv-warn   { color: var(--warn); }
+.uv-dim    { color: var(--text-d); font-size: 11px; }
+
+/* STEP-BY-STEP */
+.steps-card { }
+
+.step-row {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+}
+
+.step-row:last-child { border-bottom: none; }
+
+.step-n {
+  color: var(--text-m);
+  font-size: 9px;
+}
+
+.step-expr { color: var(--text-d); letter-spacing: 0.04em; }
+.step-expr span { color: var(--text); }
+.step-result { color: var(--anchor); text-align: right; white-space: nowrap; }
+
+/* PNBA BAR */
+.pnba-bars {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pb-row {
+  display: grid;
+  grid-template-columns: 12px 1fr 38px;
+  align-items: center;
+  gap: 8px;
+}
+
+.pb-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.pb-track {
+  background: var(--border);
+  border-radius: 100px;
+  height: 4px;
+  overflow: hidden;
+}
+
+.pb-fill {
+  height: 4px;
+  border-radius: 100px;
+  transition: width 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+
+.pb-val {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; }
+  .fw-grid { grid-template-columns: repeat(2, 1fr); }
+  .input-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-tag">SNSFT · GEOMETRIC AXIOMATIC MODULE · GAM CALCULATOR</div>
+  <h1>Tensor Accumulator</h1>
+  <div class="hdr-eq">d/dt(IM · Pv) = Σλ·O·S · P₁ ⊕ P₂ ⊕ P₃ → IM_unified</div>
+  <div class="anchor-badge">
+    <div class="adot"></div>
+    SOVEREIGN ANCHOR · 1.369 GHz · ORDER OF OPERATIONS PRESERVED
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT: INPUT -->
+  <div style="display:flex;flex-direction:column;gap:18px">
+
+    <!-- FRAMEWORK PICKER -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Select Framework</div>
+        <div class="card-badge" id="activeFwName">THERMODYNAMICS</div>
+      </div>
+      <div class="fw-grid" id="fwGrid"></div>
+    </div>
+
+    <!-- INPUTS -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title" id="inputCardTitle">Physical Inputs</div>
+      </div>
+      <div class="inputs-wrap">
+        <div id="dynamicInputs"></div>
+
+        <div class="op-row">
+          <div class="op-label">OPERATOR</div>
+          <select class="op-select" id="opSelect">
+            <option value="add">+ ADD (parallel systems)</option>
+            <option value="mul">× MUL (coupled systems)</option>
+            <option value="sub">− SUB (opposing fields)</option>
+            <option value="nest">⊂ NEST (contained system)</option>
+          </select>
+        </div>
+
+        <button class="add-btn" onclick="addToStack()">
+          + ADD TO TENSOR STACK
+        </button>
+      </div>
+    </div>
+
+    <!-- TENSOR STACK -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Tensor Stack</div>
+        <div class="card-badge" id="stackCount">0 tensors</div>
+      </div>
+      <div class="stack-wrap" id="stackWrap">
+        <div class="stack-empty" id="stackEmpty">
+          NO TENSORS · ADD A FRAMEWORK ABOVE
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: OUTPUT -->
+  <div class="out-wrap">
+
+    <!-- UNIFIED RESULT -->
+    <div class="unified-card empty" id="unifiedCard">
+      <div class="unified-status" id="unifiedStatus">
+        ◌ AWAITING TENSOR INPUT
+      </div>
+      <div class="unified-coord" id="unifiedCoord">—</div>
+      <div class="unified-grid" id="unifiedGrid"></div>
+    </div>
+
+    <!-- PNBA BARS -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Unified PNBA Vector</div>
+      </div>
+      <div class="pnba-bars" id="pnbaBars">
+        <div class="pb-row">
+          <div class="pb-label" style="color:var(--p)">P</div>
+          <div class="pb-track"><div class="pb-fill" id="barP" style="width:0%;background:var(--p)"></div></div>
+          <div class="pb-val" style="color:var(--p)" id="valP">—</div>
+        </div>
+        <div class="pb-row">
+          <div class="pb-label" style="color:var(--n)">N</div>
+          <div class="pb-track"><div class="pb-fill" id="barN" style="width:0%;background:var(--n)"></div></div>
+          <div class="pb-val" style="color:var(--n)" id="valN">—</div>
+        </div>
+        <div class="pb-row">
+          <div class="pb-label" style="color:var(--b)">B</div>
+          <div class="pb-track"><div class="pb-fill" id="barB" style="width:0%;background:var(--b)"></div></div>
+          <div class="pb-val" style="color:var(--b)" id="valB">—</div>
+        </div>
+        <div class="pb-row">
+          <div class="pb-label" style="color:var(--a)">A</div>
+          <div class="pb-track"><div class="pb-fill" id="barA" style="width:0%;background:var(--a)"></div></div>
+          <div class="pb-val" style="color:var(--a)" id="valA">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP BY STEP -->
+    <div class="card" id="stepsCard">
+      <div class="card-head">
+        <div class="card-title">Order of Operations</div>
+      </div>
+      <div id="stepsWrap">
+        <div class="step-row">
+          <div class="step-n">—</div>
+          <div class="step-expr" style="color:var(--text-m)">Add tensors to see reduction steps</div>
+          <div class="step-result"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ============================================================
+// [9,9,9,9] :: {ANC} | GAM TENSOR ACCUMULATOR
+// Coordinate: [9,0,1,2]
+// Architect: HIGHTISTIC | Anchor: 1.369 GHz
+//
+// PRINCIPLE: Each framework is a PNBA tensor.
+// Stack as many as needed. Combine via order of operations.
+// P₁ ⊕ P₂ ⊕ P₃ ... → unified IM
+// The equation is universal. The substrate is neutral.
+//
+// FRAMEWORKS (derived from Lean4 reduction files):
+//   TD  — Thermodynamics  (strongest match — entropy=A, temp=N)
+//   LAG — Lagrangian      (L=T-V maps to P-B directly)
+//   GR  — General Relativity (mass/radius → PNBA curvature)
+//   QM  — Quantum Mechanics
+//   EM  — Electromagnetism
+//   SM  — Standard Model
+//   IT  — Information Theory
+// ============================================================
+
+const ANCHOR       = 1.369
+const TACOMA_LIMIT = 0.2
+const PV_LOCK      = '[9,9,9,9]'
+const PV_SHATTER   = '[0,0,0,0]'
+const PV_WARNING   = '[0,9,9,0]'
+
+// Physical constants for unit reduction
+const K_B   = 1.380649e-23  // Boltzmann
+const H_BAR = 1.0545718e-34 // hbar
+const G_N   = 6.674e-11     // Newton G
+const C     = 2.998e8       // speed of light
+const K_MAX = 10            // PNBA normalization ceiling
+
+// ── FRAMEWORK DEFINITIONS ────────────────────────────────────
+// Each framework defines:
+//   inputs[]  — physical fields the user enters (with units)
+//   reduce()  — maps physical values → PNBA vector [P,N,B,A]
+//   axes      — what each PNBA axis means in this framework
+//   src       — Lean file source
+// ─────────────────────────────────────────────────────────────
+
+const FRAMEWORKS = {
+
+  // ── THERMODYNAMICS ──────────────────────────────────────────
+  // Strongest PNBA match. Direct mapping:
+  // P:structure/volume, N:temperature/flow, B:pressure/force, A:entropy/adaptation
+  // Source: SNSFT_Lagrangian_Reduction.lean (Hamiltonian limit)
+  TD: {
+    name: 'Thermodynamics',
+    abbr: 'TD',
+    color: '#f09030',
+    desc: 'S=A · T=N · P_pressure=B · V=P',
+    src: 'Lagrangian',
+    axes: { P:'Volume V (structure)', N:'Temperature T (flow)', B:'Pressure P (force)', A:'Entropy S (adaptation)' },
+    inputs: [
+      { id:'T',  label:'Temperature',  unit:'K',    pnba:'N', ph:'298.15' },
+      { id:'S',  label:'Entropy',      unit:'J/K',  pnba:'A', ph:'100' },
+      { id:'P',  label:'Pressure',     unit:'Pa',   pnba:'B', ph:'101325' },
+      { id:'V',  label:'Volume',       unit:'m³',   pnba:'P', ph:'0.001' },
+    ],
+    reduce(vals) {
+      const T = parseFloat(vals.T) || 1
+      const S = parseFloat(vals.S) || 1
+      const P = parseFloat(vals.P) || 101325
+      const V = parseFloat(vals.V) || 0.001
+
+      // Normalize to PNBA scale [1-10]
+      // T: log scale 1K→10K maps to N 1-10
+      const nP = clamp(Math.log10(Math.max(V * 1e6, 1)) * 2 + 1, 1, 10)
+      const nN = clamp(Math.log10(Math.max(T, 1)) * 2.5, 1, 10)
+      const nB = clamp(Math.log10(Math.max(P, 1)) / 0.6, 1, 10)
+      const nA = clamp(Math.log10(Math.max(S, 0.001) + 1) * 3, 1, 10)
+
+      return { P: nP, N: nN, B: nB, A: nA,
+        expr: `T=${T}K · S=${S}J/K · P=${P}Pa · V=${V}m³`,
+        physical: `H = TS + PV = ${(T*S + P*V).toExponential(3)} J` }
+    }
+  },
+
+  // ── LAGRANGIAN ──────────────────────────────────────────────
+  // L = T - V maps directly: P=kinetic, B=potential
+  // τ = B/P = V/T — this IS the Tacoma ratio in disguise
+  // Source: SNSFT_Lagrangian_Reduction.lean
+  LAG: {
+    name: 'Lagrangian',
+    abbr: 'LAG',
+    color: '#80d860',
+    desc: 'L=T-V · P=kinetic · B=potential · τ=V/T',
+    src: 'Lagrangian',
+    axes: { P:'Kinetic energy T', N:'Action path / worldline', B:'Potential energy V', A:'Feedback / dissipation' },
+    inputs: [
+      { id:'T',    label:'Kinetic Energy', unit:'J',    pnba:'P', ph:'100' },
+      { id:'V',    label:'Potential Energy',unit:'J',   pnba:'B', ph:'50' },
+      { id:'path', label:'Path length',    unit:'m',    pnba:'N', ph:'1' },
+      { id:'diss', label:'Dissipation',    unit:'J/s',  pnba:'A', ph:'0.1' },
+    ],
+    reduce(vals) {
+      const T    = parseFloat(vals.T)    || 1
+      const V    = parseFloat(vals.V)    || 0
+      const path = parseFloat(vals.path) || 1
+      const diss = parseFloat(vals.diss) || 0.1
+      const L    = T - V
+
+      const nP = clamp(Math.log10(Math.max(T, 0.001) + 1) * 4, 1, 10)
+      const nN = clamp(Math.log10(Math.max(path, 0.001) + 1) * 5, 1, 10)
+      const nB = clamp(Math.log10(Math.max(V, 0.001) + 1) * 4, 1, 10)
+      const nA = clamp(Math.log10(Math.max(diss, 0.0001) + 1) * 6, 1, 10)
+
+      return { P: nP, N: nN, B: nB, A: nA,
+        expr: `T=${T}J · V=${V}J · L=T-V=${L.toFixed(3)}J`,
+        physical: `L = ${L.toFixed(4)} J · S = ∮L dt` }
+    }
+  },
+
+  // ── GENERAL RELATIVITY ──────────────────────────────────────
+  // Spacetime curvature = IM gradient
+  // P:metric geometry, N:worldline/geodesic, B:gravity/mass, A:Λ cosmological constant
+  // Source: SNSFT_Cosmo_Reduction.lean
+  GR: {
+    name: 'General Relativity',
+    abbr: 'GR',
+    color: '#5090f0',
+    desc: 'Gμν=8πTμν · P=metric · B=mass · A=Λ',
+    src: 'Cosmo',
+    axes: { P:'Metric geometry / curvature', N:'Worldline / geodesic', B:'Mass-energy / gravity', A:'Λ cosmological constant' },
+    inputs: [
+      { id:'M',   label:'Mass',            unit:'kg',  pnba:'B', ph:'1.989e30' },
+      { id:'r',   label:'Radius',          unit:'m',   pnba:'P', ph:'6.957e8' },
+      { id:'v',   label:'Velocity',        unit:'m/s', pnba:'N', ph:'0' },
+      { id:'lam', label:'Λ (cosmo const)', unit:'m⁻²', pnba:'A', ph:'1.1e-52' },
+    ],
+    reduce(vals) {
+      const M   = parseFloat(vals.M)   || 1.989e30
+      const r   = parseFloat(vals.r)   || 6.957e8
+      const v   = parseFloat(vals.v)   || 0
+      const lam = parseFloat(vals.lam) || 1.1e-52
+
+      // Schwarzschild radius rs = 2GM/c²
+      const rs   = 2 * G_N * M / (C * C)
+      const ratio = rs / r  // compactness 0-1
+
+      const nP = clamp(10 - ratio * 10, 1, 10)         // high r = open geometry = high P
+      const nN = clamp((v / C) * 10 + 1, 1, 10)        // velocity fraction of c
+      const nB = clamp(Math.log10(M / 1e24 + 1) * 2.5, 1, 10) // mass scale
+      const nA = clamp(Math.log10(Math.abs(lam) * 1e55 + 1) * 3, 1, 10)
+
+      return { P: nP, N: nN, B: nB, A: nA,
+        expr: `M=${M.toExponential(2)}kg · r=${r.toExponential(2)}m · rs=${rs.toExponential(3)}m`,
+        physical: `Schwarzschild rs = ${rs.toExponential(4)} m · compactness = ${(ratio*100).toFixed(4)}%` }
+    }
+  },
+
+  // ── QUANTUM MECHANICS ───────────────────────────────────────
+  // P:wavefunction modes, N:time/phase, B:operator/interaction, A:probability/scaling
+  // Source: SNSFT_YangMills_MassGap.lean
+  QM: {
+    name: 'Quantum Mechanics',
+    abbr: 'QM',
+    color: '#50d8c8',
+    desc: 'Hψ=Eψ · P=modes · N=phase · B=operator',
+    src: 'YangMills',
+    axes: { P:'Wavefunction modes / energy levels', N:'Time evolution / phase', B:'Operator / interaction', A:'Probability amplitude' },
+    inputs: [
+      { id:'E',   label:'Energy',       unit:'eV',  pnba:'P', ph:'13.6' },
+      { id:'t',   label:'Time',         unit:'s',   pnba:'N', ph:'1e-15' },
+      { id:'V0',  label:'Potential',    unit:'eV',  pnba:'B', ph:'0' },
+      { id:'psi', label:'|ψ|² (prob)',  unit:'',    pnba:'A', ph:'0.9' },
+    ],
+    reduce(vals) {
+      const E   = parseFloat(vals.E)   || 13.6
+      const t   = parseFloat(vals.t)   || 1e-15
+      const V0  = parseFloat(vals.V0)  || 0
+      const psi = parseFloat(vals.psi) || 0.9
+
+      const nP = clamp(Math.log10(Math.max(E, 0.001) + 1) * 4, 1, 10)
+      const nN = clamp(10 - Math.log10(Math.max(t, 1e-30) + 1e-30) * (-1), 1, 10)
+      const nB = clamp(Math.log10(Math.max(Math.abs(V0), 0.001) + 1) * 4, 1, 10)
+      const nA = clamp(psi * 10, 1, 10)
+
+      return { P: nP, N: nN, B: nB, A: nA,
+        expr: `E=${E}eV · t=${t.toExponential(2)}s · V₀=${V0}eV · |ψ|²=${psi}`,
+        physical: `ΔE·Δt ≥ ℏ/2 = ${(H_BAR/2).toExponential(3)} J·s` }
+    }
+  },
+
+  // ── ELECTROMAGNETISM ────────────────────────────────────────
+  // P:gauge geometry, N:phase/worldline, B:field interaction, A:potential/1.369
+  // Source: SNSFT_EM_Reduction.lean
+  EM: {
+    name: 'Electromagnetism',
+    abbr: 'EM',
+    color: '#f0e050',
+    desc: '∇²A=J · P=gauge · B=field · A=potential',
+    src: 'EM',
+    axes: { P:'Field geometry / gauge structure', N:'Phase continuity / wavelength', B:'Field interaction / force', A:'Potential response' },
+    inputs: [
+      { id:'E',  label:'E-field',     unit:'V/m', pnba:'P', ph:'1000' },
+      { id:'B',  label:'B-field',     unit:'T',   pnba:'B', ph:'0.01' },
+      { id:'f',  label:'Frequency',   unit:'Hz',  pnba:'N', ph:'1e9' },
+      { id:'phi',label:'Potential φ', unit:'V',   pnba:'A', ph:'12' },
+    ],
+    reduce(vals) {
+      const E   = parseFloat(vals.E)   || 1000
+      const B   = parseFloat(vals.B)   || 0.01
+      const f   = parseFloat(vals.f)   || 1e9
+      const phi = parseFloat(vals.phi) || 12
+
+      const nP = clamp(Math.log10(Math.max(E, 0.001) + 1) * 2.5, 1, 10)
+      const nN = clamp(Math.log10(Math.max(f, 1) + 1) / 1.1, 1, 10)
+      const nB = clamp(Math.log10(Math.max(B * 1e4, 0.001) + 1) * 3, 1, 10)
+      const nA = clamp(Math.log10(Math.max(Math.abs(phi), 0.001) + 1) * 3.5, 1, 10)
+
+      return { P: nP, N: nN, B: nB, A: nA,
+        expr: `E=${E}V/m · B=${B}T · f=${f.toExponential(2)}Hz · φ=${phi}V`,
+        physical: `Energy density u = ε₀E²/2 + B²/2μ₀` }
+    }
+  },
+
+  // ── STANDARD MODEL ──────────────────────────────────────────
+  // P:SU(3) color charge, N:SU(2) weak, B:gauge bosons, A:coupling constants
+  // Source: SNSFT_SM_Reduction.lean + SNSFT_YangMills_MassGap.lean
+  SM: {
+    name: 'Standard Model',
+    abbr: 'SM',
+    color: '#d060d0',
+    desc: 'SU(3)×SU(2)×U(1) · P=color · B=boson',
+    src: 'SM + YangMills',
+    axes: { P:'Color charge / SU(3) resonance', N:'Weak interaction / SU(2) shift', B:'Gauge boson / force carrier', A:'Coupling constant λ' },
+    inputs: [
+      { id:'alpha_s', label:'α_s (strong)',  unit:'',     pnba:'P', ph:'0.118' },
+      { id:'mH',      label:'Higgs mass',    unit:'GeV',  pnba:'B', ph:'125.25' },
+      { id:'mW',      label:'W boson mass',  unit:'GeV',  pnba:'N', ph:'80.377' },
+      { id:'alpha',   label:'α (EM)',         unit:'',     pnba:'A', ph:'0.00729' },
+    ],
+    reduce(vals) {
+      const as    = parseFloat(vals.alpha_s) || 0.118
+      const mH    = parseFloat(vals.mH)      || 125.25
+      const mW    = parseFloat(vals.mW)      || 80.377
+      const alpha = parseFloat(vals.alpha)   || 0.00729
+
+      const nP = clamp(as * 80, 1, 10)
+      const nN = clamp(Math.log10(mW + 1) * 4, 1, 10)
+      const nB = clamp(Math.log10(mH + 1) * 4, 1, 10)
+      const nA = clamp(alpha * 1200, 1, 10)
+
+      return { P: nP, N: nN, B: nB, A: nA,
+        expr: `αs=${as} · mH=${mH}GeV · mW=${mW}GeV · α=${alpha}`,
+        physical: `Mass gap ∆ > 0 (YangMills proved) · IM > 0` }
+    }
+  },
+
+  // ── INFORMATION THEORY ──────────────────────────────────────
+  // P:signal pattern, N:channel, B:noise, A:Shannon entropy
+  // Source: SNSFT_IT_Reduction.lean
+  IT: {
+    name: 'Information Theory',
+    abbr: 'IT',
+    color: '#60c8e0',
+    desc: 'H=−Σp·log(p) · P=signal · A=entropy',
+    src: 'IT',
+    axes: { P:'Signal / pattern structure', N:'Channel / bandwidth', B:'Noise / interference', A:'Shannon entropy H' },
+    inputs: [
+      { id:'C',  label:'Channel capacity', unit:'bit/s', pnba:'N', ph:'1e6' },
+      { id:'SNR',label:'SNR',              unit:'dB',    pnba:'P', ph:'30' },
+      { id:'N0', label:'Noise power',      unit:'W',     pnba:'B', ph:'1e-10' },
+      { id:'H',  label:'Entropy H',        unit:'bit',   pnba:'A', ph:'8' },
+    ],
+    reduce(vals) {
+      const C   = parseFloat(vals.C)   || 1e6
+      const SNR = parseFloat(vals.SNR) || 30
+      const N0  = parseFloat(vals.N0)  || 1e-10
+      const H   = parseFloat(vals.H)   || 8
+
+      const nP = clamp(SNR / 4, 1, 10)
+      const nN = clamp(Math.log10(Math.max(C, 1) + 1) * 1.5, 1, 10)
+      const nB = clamp(10 - Math.log10(Math.max(N0 * 1e12, 0.001) + 1) * 2, 1, 10)
+      const nA = clamp(H, 1, 10)
+
+      return { P: nP, N: nN, B: nB, A: nA,
+        expr: `C=${C.toExponential(2)}bit/s · SNR=${SNR}dB · N₀=${N0.toExponential(2)}W · H=${H}bit`,
+        physical: `C = B·log₂(1+SNR) Shannon limit` }
+    }
+  },
+}
+
+// ── UTILS ────────────────────────────────────────────────────
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)) }
+function round4(v) { return Math.round(v * 10000) / 10000 }
+
+// ── STATE ────────────────────────────────────────────────────
+let activeFw = 'TD'
+let stack    = []  // [{name, pnba:{P,N,B,A}, op, expr, physical, color}]
+
+// ── TENSOR COMBINATION (order of operations) ─────────────────
+// Add → component-wise sum (parallel systems)
+// Mul → component-wise product then normalize (coupled)
+// Sub → component-wise difference (opposing fields)
+// Nest → weighted by B/P ratio of outer (contained system)
+function combineTensors(stack) {
+  if (stack.length === 0) return null
+
+  let result = { ...stack[0].pnba }
+  const steps = [
+    { n: 1, expr: `P₁ = ${stack[0].name}`,
+      sub: `[${round4(result.P)}, ${round4(result.N)}, ${round4(result.B)}, ${round4(result.A)}]`,
+      im: computeIM(result) }
+  ]
+
+  for (let i = 1; i < stack.length; i++) {
+    const item = stack[i]
+    const prev = { ...result }
+    const op   = item.op
+
+    if (op === 'add') {
+      result.P = clamp(prev.P + item.pnba.P, 1, 40)
+      result.N = clamp(prev.N + item.pnba.N, 1, 40)
+      result.B = clamp(prev.B + item.pnba.B, 1, 40)
+      result.A = clamp(prev.A + item.pnba.A, 1, 40)
+    } else if (op === 'mul') {
+      result.P = clamp((prev.P * item.pnba.P) / 10, 1, 40)
+      result.N = clamp((prev.N * item.pnba.N) / 10, 1, 40)
+      result.B = clamp((prev.B * item.pnba.B) / 10, 1, 40)
+      result.A = clamp((prev.A * item.pnba.A) / 10, 1, 40)
+    } else if (op === 'sub') {
+      result.P = clamp(Math.abs(prev.P - item.pnba.P), 1, 40)
+      result.N = clamp(Math.abs(prev.N - item.pnba.N), 1, 40)
+      result.B = clamp(Math.abs(prev.B - item.pnba.B), 1, 40)
+      result.A = clamp(Math.abs(prev.A - item.pnba.A), 1, 40)
+    } else if (op === 'nest') {
+      const weight = item.pnba.B / Math.max(item.pnba.P, 0.001)
+      result.P = clamp(prev.P + item.pnba.P * weight, 1, 40)
+      result.N = clamp(prev.N + item.pnba.N * weight, 1, 40)
+      result.B = clamp(prev.B + item.pnba.B * weight, 1, 40)
+      result.A = clamp(prev.A + item.pnba.A * weight, 1, 40)
+    }
+
+    steps.push({
+      n: i + 1,
+      expr: `${opSymbol(op)} P${i+1} = ${item.name}`,
+      sub: `[${round4(result.P)}, ${round4(result.N)}, ${round4(result.B)}, ${round4(result.A)}]`,
+      im: computeIM(result)
+    })
+  }
+
+  return { pnba: result, steps }
+}
+
+function opSymbol(op) {
+  return { add:'+', mul:'×', sub:'−', nest:'⊂' }[op] || '+'
+}
+
+function computeIM(pnba) {
+  return ((pnba.P + pnba.N + pnba.B + pnba.A) * ANCHOR)
+}
+
+function computeTorsion(pnba) {
+  return pnba.B / Math.max(pnba.P, 0.0001)
+}
+
+// ── RENDER FRAMEWORKS ────────────────────────────────────────
+function renderFwGrid() {
+  document.getElementById('fwGrid').innerHTML = Object.entries(FRAMEWORKS).map(([key, fw]) => `
+    <button class="fw-btn ${key === activeFw ? 'active' : ''}"
+            onclick="selectFw('${key}')" id="fwb-${key}">
+      <div class="fw-name" style="color:${fw.color}">${fw.name}</div>
+      <div class="fw-desc">${fw.desc}</div>
+    </button>`).join('')
+}
+
+function selectFw(key) {
+  activeFw = key
+  document.querySelectorAll('.fw-btn').forEach(b => b.classList.remove('active'))
+  document.getElementById(`fwb-${key}`).classList.add('active')
+  document.getElementById('activeFwName').textContent = FRAMEWORKS[key].name.toUpperCase()
+  renderInputs()
+}
+
+// ── RENDER INPUTS ────────────────────────────────────────────
+function renderInputs() {
+  const fw = FRAMEWORKS[activeFw]
+  document.getElementById('inputCardTitle').textContent = `${fw.name} · Physical Inputs`
+
+  document.getElementById('dynamicInputs').innerHTML = `
+    <div class="input-group">
+      <div class="input-row" style="grid-template-columns:${fw.inputs.length > 2 ? '1fr 1fr' : '1fr'}">
+        ${fw.inputs.map(inp => `
+          <div class="field-wrap">
+            <div class="field-label">
+              ${inp.label}
+              <span class="field-pnba f${inp.pnba.toLowerCase()}">${inp.pnba}</span>
+              <span style="color:var(--text-m);font-size:8px">${inp.unit}</span>
+            </div>
+            <input class="field-input" id="inp-${inp.id}"
+                   type="number" placeholder="${inp.ph}"
+                   value="${inp.ph}" step="any">
+          </div>`).join('')}
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-m);margin-top:6px;letter-spacing:0.08em">
+        ${Object.entries(fw.axes).map(([k,v]) => `<span style="color:var(--${k.toLowerCase()})">${k}</span>:${v}`).join(' · ')}
+      </div>
+    </div>`
+}
+
+// ── ADD TO STACK ─────────────────────────────────────────────
+function addToStack() {
+  const fw  = FRAMEWORKS[activeFw]
+  const op  = document.getElementById('opSelect').value
+
+  // Read input values
+  const vals = {}
+  fw.inputs.forEach(inp => {
+    const el = document.getElementById(`inp-${inp.id}`)
+    vals[inp.id] = el ? el.value : inp.ph
+  })
+
+  const reduction = fw.reduce(vals)
+
+  stack.push({
+    name:  fw.name,
+    abbr:  fw.abbr,
+    color: fw.color,
+    pnba:  { P: reduction.P, N: reduction.N, B: reduction.B, A: reduction.A },
+    op:    stack.length === 0 ? 'add' : op,
+    expr:  reduction.expr,
+    physical: reduction.physical,
+    src:   fw.src,
+  })
+
+  renderStack()
+  renderOutput()
+}
+
+// ── RENDER STACK ─────────────────────────────────────────────
+function renderStack() {
+  const wrap  = document.getElementById('stackWrap')
+  const empty = document.getElementById('stackEmpty')
+  document.getElementById('stackCount').textContent = `${stack.length} tensor${stack.length !== 1 ? 's' : ''}`
+
+  if (stack.length === 0) {
+    wrap.innerHTML = '<div class="stack-empty" id="stackEmpty">NO TENSORS · ADD A FRAMEWORK ABOVE</div>'
+    return
+  }
+
+  wrap.innerHTML = stack.map((item, i) => `
+    <div class="tensor-item">
+      <div class="tensor-left">
+        <div class="tensor-header">
+          <div class="tensor-num">P${i+1}</div>
+          <div class="tensor-name" style="color:${item.color}">${item.name}</div>
+          ${i > 0 ? `<div class="tensor-op">${opSymbol(item.op)}</div>` : ''}
+        </div>
+        <div class="tensor-pnba">
+          [<span style="color:var(--p)">${round4(item.pnba.P)}</span>,
+           <span style="color:var(--n)">${round4(item.pnba.N)}</span>,
+           <span style="color:var(--b)">${round4(item.pnba.B)}</span>,
+           <span style="color:var(--a)">${round4(item.pnba.A)}</span>]
+        </div>
+        <div class="tensor-im">IM=${round4(computeIM(item.pnba))} · ${item.expr.substring(0,50)}</div>
+      </div>
+      <button class="tensor-remove" onclick="removeFromStack(${i})">×</button>
+    </div>`).join('')
+}
+
+function removeFromStack(i) {
+  stack.splice(i, 1)
+  renderStack()
+  renderOutput()
+}
+
+// ── RENDER OUTPUT ─────────────────────────────────────────────
+function renderOutput() {
+  const result = combineTensors(stack)
+  const card   = document.getElementById('unifiedCard')
+
+  if (!result) {
+    card.className = 'unified-card empty'
+    document.getElementById('unifiedStatus').textContent = '◌ AWAITING TENSOR INPUT'
+    document.getElementById('unifiedCoord').textContent = '—'
+    document.getElementById('unifiedGrid').innerHTML = ''
+    document.getElementById('stepsWrap').innerHTML = `
+      <div class="step-row">
+        <div class="step-n">—</div>
+        <div class="step-expr" style="color:var(--text-m)">Add tensors to see reduction steps</div>
+        <div class="step-result"></div>
+      </div>`
+    ;['P','N','B','A'].forEach(k => {
+      document.getElementById(`bar${k}`).style.width = '0%'
+      document.getElementById(`val${k}`).textContent = '—'
+    })
+    return
+  }
+
+  const pnba    = result.pnba
+  const IM      = computeIM(pnba)
+  const torsion = computeTorsion(pnba)
+  const maxPNBA = Math.max(pnba.P, pnba.N, pnba.B, pnba.A, 10)
+
+  const isShatter = torsion >= TACOMA_LIMIT
+  const isWarning = torsion >= TACOMA_LIMIT * 0.7 && !isShatter
+  const pvCoord   = isShatter ? PV_SHATTER : isWarning ? PV_WARNING : PV_LOCK
+  const state     = isShatter ? 'shatter' : isWarning ? 'warning' : 'locked'
+  const vc        = isShatter ? 'uv-shatter' : isWarning ? 'uv-warn' : 'uv-anchor'
+
+  // Status label
+  card.className = `unified-card ${state}`
+  document.getElementById('unifiedStatus').innerHTML =
+    isShatter ? '⚠ SHATTER EVENT · TORSIONAL DECOHERENCE · τ ≥ 0.2'
+    : isWarning ? '△ WARNING · APPROACHING TORSION LIMIT'
+    : `✦ PHASE LOCKED · ${stack.length} TENSOR${stack.length !== 1?'S':''} UNIFIED`
+
+  document.getElementById('unifiedCoord').textContent = pvCoord
+
+  document.getElementById('unifiedGrid').innerHTML = `
+    <div class="ug-cell">
+      <div class="ug-label">UNIFIED IM</div>
+      <div class="ug-value ${vc}">${round4(IM)}</div>
+    </div>
+    <div class="ug-cell">
+      <div class="ug-label">TORSION τ = B/P</div>
+      <div class="ug-value ${vc}">${round4(torsion)}</div>
+    </div>
+    <div class="ug-cell">
+      <div class="ug-label">TENSORS COMBINED</div>
+      <div class="ug-value uv-dim">${stack.length} · ${stack.map(s=>s.abbr).join(' ⊕ ')}</div>
+    </div>
+    <div class="ug-cell">
+      <div class="ug-label">ANCHOR</div>
+      <div class="ug-value uv-anchor">1.369 GHz ≡</div>
+    </div>`
+
+  // PNBA bars
+  ;['P','N','B','A'].forEach(k => {
+    const v = pnba[k]
+    document.getElementById(`bar${k}`).style.width = `${Math.min(100, (v/maxPNBA)*100)}%`
+    document.getElementById(`val${k}`).textContent = round4(v)
+  })
+
+  // Steps
+  document.getElementById('stepsWrap').innerHTML = result.steps.map(s => `
+    <div class="step-row">
+      <div class="step-n">${s.n}</div>
+      <div class="step-expr"><span>${s.expr}</span> → ${s.sub}</div>
+      <div class="step-result">IM=${round4(s.im)}</div>
+    </div>`).join('')
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+renderFwGrid()
+renderInputs()
+renderOutput()
+</script>
+</body>
+</html>
