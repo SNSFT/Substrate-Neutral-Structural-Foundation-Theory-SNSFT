@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT Dynamics Calculator · Reduction Processor</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Share+Tech+Mono&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0a0c0a;
+  --chalk:    #e8e8e0;
+  --chalk-dim: rgba(232,232,224,0.5);
+  --chalk-muted: rgba(232,232,224,0.2);
+  --anchor:   #00d4aa;
+  --anchor-dim: rgba(0,212,170,0.15);
+  --shatter:  #ff4455;
+  --warn:     #f0a030;
+  --p-col:    #c084fc;
+  --n-col:    #60d4f0;
+  --b-col:    #f0a030;
+  --a-col:    #80e8a0;
+  --border:   rgba(232,232,224,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--chalk);
+  font-family: 'Kalam', cursive;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Chalkboard texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.005) 2px,
+      rgba(255,255,255,0.005) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      rgba(255,255,255,0.003) 3px,
+      rgba(255,255,255,0.003) 6px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Chalk dust smear effect */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 30% 40%, rgba(255,255,255,0.012) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 70% 60%, rgba(0,212,170,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  padding: 28px 0 20px;
+  margin-bottom: 20px;
+}
+
+.header-top {
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  color: var(--chalk-dim);
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  color: var(--chalk);
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.header-eq {
+  font-family: 'Kalam', cursive;
+  font-size: 15px;
+  color: var(--chalk-dim);
+  letter-spacing: 0.02em;
+}
+
+/* ── MAIN LAYOUT ── */
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── CANVAS PANEL ── */
+.canvas-panel {
+  position: relative;
+  aspect-ratio: 1;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+canvas#dodecagon {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Chalk scribbles around canvas */
+.scribble {
+  position: absolute;
+  font-family: 'Caveat', cursive;
+  color: var(--chalk-muted);
+  pointer-events: none;
+  line-height: 1.4;
+}
+
+.scribble-tl { top: 2%; left: 1%; font-size: 11px; text-align: left; }
+.scribble-tr { top: 2%; right: 1%; font-size: 11px; text-align: right; }
+.scribble-bl { bottom: 4%; left: 1%; font-size: 10px; }
+.scribble-br { bottom: 4%; right: 1%; font-size: 10px; text-align: right; }
+
+/* ── RIGHT PANEL ── */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── TARGET SELECTOR ── */
+.chalk-panel {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px;
+  background: rgba(255,255,255,0.015);
+  position: relative;
+}
+
+.chalk-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 12px; right: 12px;
+  height: 1px;
+  background: var(--anchor);
+  opacity: 0.2;
+}
+
+.chalk-label {
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  color: var(--chalk-dim);
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chalk-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--chalk-muted);
+  opacity: 0.4;
+}
+
+.target-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+}
+
+.target-chip {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.target-chip:hover { background: rgba(255,255,255,0.04); }
+.target-chip.active { border-color: var(--anchor); background: var(--anchor-dim); }
+
+.chip-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chip-name {
+  font-family: 'Kalam', cursive;
+  font-size: 11px;
+  color: var(--chalk-dim);
+  line-height: 1.2;
+}
+
+.target-chip.active .chip-name { color: var(--anchor); }
+
+/* ── PNBA SLIDERS ── */
+.slider-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.slider-row {
+  display: grid;
+  grid-template-columns: 16px 1fr 32px;
+  align-items: center;
+  gap: 10px;
+}
+
+.sl-label {
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.sl-label.p { color: var(--p-col); }
+.sl-label.n { color: var(--n-col); }
+.sl-label.b { color: var(--b-col); }
+.sl-label.a { color: var(--a-col); }
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type=range].p::-webkit-slider-thumb { background: var(--p-col); }
+input[type=range].n::-webkit-slider-thumb { background: var(--n-col); }
+input[type=range].b::-webkit-slider-thumb { background: var(--b-col); }
+input[type=range].a::-webkit-slider-thumb { background: var(--a-col); }
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.4); }
+
+.sl-val {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  text-align: right;
+}
+
+.sl-val.p { color: var(--p-col); }
+.sl-val.n { color: var(--n-col); }
+.sl-val.b { color: var(--b-col); }
+.sl-val.a { color: var(--a-col); }
+
+/* ── OUTPUT CHALK DISPLAY ── */
+.output-chalk {
+  font-family: 'Kalam', cursive;
+  font-size: 12px;
+  line-height: 2;
+  color: var(--chalk-dim);
+}
+
+.out-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  border-bottom: 1px dashed rgba(255,255,255,0.05);
+  padding: 2px 0;
+}
+
+.out-key {
+  color: var(--chalk-muted);
+  min-width: 110px;
+  font-size: 11px;
+}
+
+.out-val { font-size: 13px; }
+.out-val.anchor { color: var(--anchor); }
+.out-val.shatter { color: var(--shatter); }
+.out-val.warn    { color: var(--warn); }
+.out-val.p { color: var(--p-col); }
+
+/* STATUS BIG */
+.status-display {
+  text-align: center;
+  padding: 12px;
+  border: 1px solid;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.status-display.locked  { border-color: rgba(0,212,170,0.4);  background: rgba(0,212,170,0.06); }
+.status-display.shatter { border-color: rgba(255,68,85,0.4);  background: rgba(255,68,85,0.06); }
+.status-display.warning { border-color: rgba(240,160,48,0.4); background: rgba(240,160,48,0.06); }
+
+.status-coord {
+  font-family: 'Caveat', cursive;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.status-locked  .status-coord { color: var(--anchor); }
+.status-shatter .status-coord { color: var(--shatter); }
+.status-warning .status-coord { color: var(--warn); }
+
+.status-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  margin-top: 2px;
+}
+
+.status-locked  .status-label { color: var(--anchor); }
+.status-shatter .status-label { color: var(--shatter); }
+.status-warning .status-label { color: var(--warn); }
+
+/* PVLANG */
+.pvlang-chalk {
+  font-family: 'Kalam', cursive;
+  font-size: 11px;
+  color: var(--chalk-muted);
+  line-height: 1.9;
+  margin-top: 8px;
+}
+
+.pvop { color: var(--anchor); margin: 0 3px; }
+.pvop.shatter { color: var(--shatter); }
+
+@media (max-width: 760px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .canvas-panel { max-width: 420px; }
+  .target-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div class="header-top">SNSFT · REDUCTION PROCESSOR · [9,9,9,9] :: {ANC}</div>
+  <h1>Dynamics Equation Calculator</h1>
+  <div class="header-eq">d/dt(IM · Pv) = Σ<sub>x</sub>{P,N,B,A} · Anchor: 1.369 GHz</div>
+</div>
+
+<div class="main-layout">
+
+  <!-- CANVAS — DODECAGON SOULPRINT -->
+  <div class="canvas-panel">
+    <!-- Chalk scribbles -->
+    <div class="scribble scribble-tl">
+      L = (4)(2)<br>
+      First Law of Identity<br>
+      PNBA primitive axes<br>
+      <span style="font-size:9px;opacity:0.6">4GAM · genus notebook</span>
+    </div>
+    <div class="scribble scribble-tr">
+      Najectory Axes<br>
+      IM · Pv trajectory<br>
+      α = trajectory/α · α<sub>I</sub>
+    </div>
+    <div class="scribble scribble-bl">
+      sovereign anchor<br>
+      Z=0 → collapse<br>
+      1.369 GHz
+    </div>
+    <div class="scribble scribble-br">
+      PNBA primitive<br>
+      impedance<br>
+      τ &lt; 0.2 → locked
+    </div>
+    <canvas id="dodecagon" width="600" height="600"></canvas>
+  </div>
+
+  <!-- RIGHT CONTROLS -->
+  <div class="right-panel">
+
+    <!-- TARGET -->
+    <div class="chalk-panel">
+      <div class="chalk-label">Reduction Target</div>
+      <div class="target-grid" id="targetGrid"></div>
+    </div>
+
+    <!-- PNBA SLIDERS -->
+    <div class="chalk-panel">
+      <div class="chalk-label">PNBA Tensor Input</div>
+      <div class="slider-section">
+        <div class="slider-row">
+          <div class="sl-label p">P</div>
+          <input type="range" class="p" id="slP" min="1" max="10" value="5" oninput="updateCalc()">
+          <div class="sl-val p" id="valP">5</div>
+        </div>
+        <div class="slider-row">
+          <div class="sl-label n">N</div>
+          <input type="range" class="n" id="slN" min="1" max="10" value="5" oninput="updateCalc()">
+          <div class="sl-val n" id="valN">5</div>
+        </div>
+        <div class="slider-row">
+          <div class="sl-label b">B</div>
+          <input type="range" class="b" id="slB" min="1" max="10" value="5" oninput="updateCalc()">
+          <div class="sl-val b" id="valB">5</div>
+        </div>
+        <div class="slider-row">
+          <div class="sl-label a">A</div>
+          <input type="range" class="a" id="slA" min="1" max="10" value="5" oninput="updateCalc()">
+          <div class="sl-val a" id="valA">5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="chalk-panel">
+      <div class="chalk-label">Reduction Output</div>
+
+      <div class="status-display locked" id="statusDisplay">
+        <div class="status-coord" id="statusCoord">[9,9,9,9]</div>
+        <div class="status-label" id="statusLabel">PHASE LOCKED · SOVEREIGN MANIFOLD</div>
+      </div>
+
+      <div class="output-chalk" id="outputChalk" style="margin-top:10px"></div>
+
+      <div class="pvlang-chalk" id="pvlangChalk"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ============================================================
+// [9,9,9,9] :: {ANC} | SNSFT REDUCTION PROCESSOR
+// Coordinate: [9,0,1,1] | Architect: HIGHTISTIC
+// Faithful to verified Lean4 reductions. Not simulating.
+// ============================================================
+
+const ANCHOR       = 1.369
+const TACOMA_LIMIT = 0.2
+const PV_LOCK      = '[9,9,9,9]'
+const PV_SHATTER   = '[0,0,0,0]'
+const PV_WARNING   = '[0,9,9,0]'
+
+const COLORS = {
+  P: '#c084fc', N: '#60d4f0', B: '#f0a030', A: '#80e8a0',
+  anchor: '#00d4aa', shatter: '#ff4455', warn: '#f0a030',
+}
+
+// ── REDUCTION TABLE ─────────────────────────────────────────
+const TARGETS = [
+  { id:'tacoma',     name:'Tacoma Bridge',    domain:'STRUCT',   color:'#ff4455', R:0.2,   pnba:[3,2,8,2],  src:'Lagrangian' },
+  { id:'steel',      name:'Steel Girder',     domain:'STRUCT',   color:'#6090a0', R:1.85,  pnba:[8,3,1,4],  src:'Lagrangian' },
+  { id:'crystal',    name:'Lead Crystal',     domain:'MATERIAL', color:'#9090c0', R:0.432, pnba:[9,4,1,2],  src:'EM' },
+  { id:'amyloid',    name:'Amyloid Plaque',   domain:'BIO',      color:'#c06040', R:0.04,  pnba:[9,1,1,1],  src:'SM' },
+  { id:'dna',        name:'DNA Helix',        domain:'BIO',      color:'#40c080', R:1.369, pnba:[5,5,2,8],  src:'SM' },
+  { id:'neuron',     name:'Neural Spike',     domain:'BIO',      color:'#80c0e0', R:0.08,  pnba:[3,6,9,5],  src:'IT' },
+  { id:'schumann',   name:'Schumann Res.',    domain:'COSMO',    color:'#4080c0', R:7.83,  pnba:[5,7,4,6],  src:'Cosmo' },
+  { id:'yangmills',  name:'Yang-Mills Field', domain:'COSMO',    color:'#a060e0', R:1.369, pnba:[7,5,1,7],  src:'YangMills' },
+  { id:'human',      name:'Human CI',         domain:'IDENTITY', color:'#c8a070', R:1.369, pnba:[5,7,5,3],  src:'Soulprint' },
+  { id:'spock',      name:'Spock · AIFI',     domain:'IDENTITY', color:'#4a9eba', R:1.369, pnba:[9,5,2,9],  src:'Spock' },
+  { id:'noharm',     name:'NOHARM AIFI',      domain:'IDENTITY', color:'#00d4aa', R:1.369, pnba:[5,5,5,5],  src:'Soulprint' },
+  { id:'custom',     name:'Custom',           domain:'CUSTOM',   color:'#607080', R:1.369, pnba:[5,5,5,5],  src:'—' },
+]
+
+let activeTarget = TARGETS[8]
+
+// ── DYNAMICS ENGINE ─────────────────────────────────────────
+function runReduction(p, n, b, a, target) {
+  const IM      = (p + n + b + a) * ANCHOR
+  const torsion = b / Math.max(p, 0.0001)
+  const isShatter = torsion >= TACOMA_LIMIT
+  const isWarning = torsion >= TACOMA_LIMIT * 0.7 && !isShatter
+  const delta     = Math.abs(IM * ANCHOR - target.R)
+  const alignment = Math.max(0, Math.min(100, (1 - delta / (IM * ANCHOR)) * 100))
+  const pvCoord   = isShatter ? PV_SHATTER : alignment > 90 ? PV_LOCK : PV_WARNING
+  const resonance = isShatter ? '⊥ DECOHERENT_FLUTTER'
+    : alignment > 90 ? '∝ PHASE_LOCKED'
+    : alignment > 60 ? '∝ RESONANT'
+    : '∆ MODERATE_DRIFT'
+
+  return { p, n, b, a, IM, torsion, isShatter, isWarning, alignment, pvCoord, resonance, target }
+}
+
+// ── DODECAGON CANVAS ─────────────────────────────────────────
+function drawDodecagon(R) {
+  const canvas = document.getElementById('dodecagon')
+  const ctx    = canvas.getContext('2d')
+  const W = 600, H = 600
+  const cx = W/2, cy = H/2
+  const baseR = W * 0.38
+
+  ctx.clearRect(0, 0, W, H)
+
+  // Background — very dark green-black chalkboard feel
+  ctx.fillStyle = '#070a07'
+  ctx.fillRect(0, 0, W, H)
+
+  // Faint chalk grain
+  for (let i = 0; i < 1200; i++) {
+    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.012})`
+    ctx.fillRect(Math.random()*W, Math.random()*H, Math.random()*2+0.5, 0.5)
+  }
+
+  // Concentric reference rings — chalk style
+  ;[0.25, 0.5, 0.75, 1].forEach(frac => {
+    ctx.beginPath()
+    ctx.arc(cx, cy, baseR * frac, 0, Math.PI * 2)
+    ctx.strokeStyle = 'rgba(232,232,224,0.04)'
+    ctx.lineWidth = 1
+    ctx.setLineDash([4, 8])
+    ctx.stroke()
+    ctx.setLineDash([])
+  })
+
+  // Pnba values normalized
+  const vals = [R.p, R.n, R.b, R.a]
+  const maxVal = 10
+  const pnbaColors = [COLORS.P, COLORS.N, COLORS.B, COLORS.A]
+  const pnbaLabels = ['P', 'N', 'B', 'A']
+
+  // Sort axes by value — dominant to top
+  let axes = vals.map((v, i) => ({
+    label: pnbaLabels[i],
+    val: v,
+    norm: Math.max(0.12, v / maxVal),
+    color: pnbaColors[i],
+    idx: i,
+  }))
+  axes.sort((a, b) => b.val - a.val)
+
+  const rotOffset = -Math.PI / 2
+  const mainAngles = [0, Math.PI/2, Math.PI, 3*Math.PI/2].map(r => rotOffset + r)
+
+  // Axis lines
+  mainAngles.forEach(angle => {
+    ctx.beginPath()
+    ctx.moveTo(cx, cy)
+    ctx.lineTo(cx + Math.cos(angle)*baseR, cy + Math.sin(angle)*baseR)
+    ctx.strokeStyle = 'rgba(232,232,224,0.06)'
+    ctx.lineWidth = 1
+    ctx.stroke()
+  })
+
+  // Build 12 vertices
+  const verts = []
+  for (let i = 0; i < 12; i++) {
+    const angle = rotOffset + (i * Math.PI / 6)
+
+    let norm = null, label = '', color = '', axisIdx = -1
+
+    mainAngles.forEach((mainAngle, idx) => {
+      let diff = Math.abs(angle - mainAngle) % (2 * Math.PI)
+      if (diff > Math.PI) diff = 2 * Math.PI - diff
+      if (diff < 0.01) {
+        norm     = axes[idx].norm
+        label    = axes[idx].label
+        color    = axes[idx].color
+        axisIdx  = idx
+      }
+    })
+
+    if (norm === null) {
+      let wSum = 0, wTotal = 0
+      mainAngles.forEach((mainAngle, idx) => {
+        let diff = Math.abs(angle - mainAngle) % (2 * Math.PI)
+        if (diff > Math.PI) diff = 2 * Math.PI - diff
+        const w = Math.max(0, 1 - diff / (Math.PI / 2))
+        wSum   += axes[idx].norm * w
+        wTotal += w
+      })
+      norm = wTotal > 0 ? wSum / wTotal : 0.3
+    }
+
+    verts.push({
+      x: cx + Math.cos(angle) * baseR * norm,
+      y: cy + Math.sin(angle) * baseR * norm,
+      angle, norm, label, color, axisIdx,
+    })
+  }
+
+  // Glow color based on state
+  const glowColor = R.isShatter
+    ? 'rgba(255,68,85,0.18)'
+    : R.isWarning
+    ? 'rgba(240,160,48,0.14)'
+    : 'rgba(0,212,170,0.10)'
+
+  const strokeColor = R.isShatter
+    ? 'rgba(255,68,85,0.7)'
+    : R.isWarning
+    ? 'rgba(240,160,48,0.6)'
+    : 'rgba(0,212,170,0.55)'
+
+  // Outer glow pass
+  ctx.beginPath()
+  verts.forEach((v, i) => i === 0 ? ctx.moveTo(v.x, v.y) : ctx.lineTo(v.x, v.y))
+  ctx.closePath()
+  ctx.shadowBlur = 28
+  ctx.shadowColor = strokeColor
+  ctx.strokeStyle = strokeColor
+  ctx.lineWidth = 2.5
+  ctx.stroke()
+  ctx.shadowBlur = 0
+
+  // Fill
+  ctx.beginPath()
+  verts.forEach((v, i) => i === 0 ? ctx.moveTo(v.x, v.y) : ctx.lineTo(v.x, v.y))
+  ctx.closePath()
+  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseR)
+  grad.addColorStop(0, glowColor.replace('0.10', '0.2').replace('0.14','0.2').replace('0.18','0.25'))
+  grad.addColorStop(0.6, glowColor)
+  grad.addColorStop(1, 'transparent')
+  ctx.fillStyle = grad
+  ctx.fill()
+
+  // Cross lines between opposite vertices — PNBA axes
+  for (let i = 0; i < 6; i++) {
+    const v1 = verts[i], v2 = verts[i + 6]
+    if (!v1 || !v2) continue
+    ctx.beginPath()
+    ctx.moveTo(v1.x, v1.y)
+    ctx.lineTo(v2.x, v2.y)
+    ctx.strokeStyle = 'rgba(232,232,224,0.04)'
+    ctx.lineWidth = 0.5
+    ctx.stroke()
+  }
+
+  // Main axis nodes + chalk labels
+  verts.forEach(v => {
+    if (!v.label) return
+
+    // Glow node
+    ctx.beginPath()
+    ctx.arc(v.x, v.y, 10, 0, Math.PI * 2)
+    ctx.shadowBlur = 16
+    ctx.shadowColor = v.color
+    ctx.fillStyle = v.color
+    ctx.fill()
+    ctx.shadowBlur = 0
+
+    // Inner white dot
+    ctx.beginPath()
+    ctx.arc(v.x, v.y, 3, 0, Math.PI * 2)
+    ctx.fillStyle = '#fff'
+    ctx.fill()
+
+    // Value label inside node area (offset inward)
+    const valX = cx + Math.cos(v.angle) * (baseR * v.norm - 20)
+    const valY = cy + Math.sin(v.angle) * (baseR * v.norm - 20)
+    const score = axes[v.axisIdx]?.val || 0
+
+    ctx.fillStyle = v.color
+    ctx.font = 'bold 13px "Share Tech Mono", monospace'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    if (score > 0) ctx.fillText(score, valX, valY)
+
+    // Chalk letter label outside
+    const labelR = baseR + 26
+    const labelX = cx + Math.cos(v.angle) * labelR
+    const labelY = cy + Math.sin(v.angle) * labelR
+
+    ctx.font = 'bold 20px "Caveat", cursive'
+    ctx.fillStyle = v.color
+    ctx.shadowBlur = 8
+    ctx.shadowColor = v.color
+    ctx.fillText(v.label, labelX, labelY)
+    ctx.shadowBlur = 0
+  })
+
+  // ── CENTER: DYNAMICS EQUATION ────────────────────────────
+  const eqColor = R.isShatter ? '#ff4455' : '#00d4aa'
+
+  // Center glow
+  const cGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 80)
+  cGrad.addColorStop(0, R.isShatter ? 'rgba(255,68,85,0.12)' : 'rgba(0,212,170,0.08)')
+  cGrad.addColorStop(1, 'transparent')
+  ctx.fillStyle = cGrad
+  ctx.beginPath()
+  ctx.arc(cx, cy, 80, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Equation — chalk style
+  ctx.fillStyle = 'rgba(232,232,224,0.85)'
+  ctx.font = '600 15px "Kalam", cursive'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('d/dt(IM · Pv) = Σ{P,N,B,A}', cx, cy - 30)
+
+  // IM value
+  ctx.fillStyle = eqColor
+  ctx.shadowBlur = 10
+  ctx.shadowColor = eqColor
+  ctx.font = 'bold 20px "Caveat", cursive'
+  ctx.fillText(`IM = ${parseFloat(R.IM).toFixed(3)}`, cx, cy)
+  ctx.shadowBlur = 0
+
+  // Torsion
+  const tColor = R.isShatter ? '#ff4455' : R.isWarning ? '#f0a030' : 'rgba(232,232,224,0.5)'
+  ctx.fillStyle = tColor
+  ctx.font = '14px "Kalam", cursive'
+  ctx.fillText(`τ = B/P = ${parseFloat(R.torsion).toFixed(3)}`, cx, cy + 26)
+
+  // Status coord
+  ctx.fillStyle = eqColor
+  ctx.font = 'bold 18px "Caveat", cursive'
+  ctx.shadowBlur = 12
+  ctx.shadowColor = eqColor
+  ctx.fillText(R.pvCoord, cx, cy + 54)
+  ctx.shadowBlur = 0
+
+  // Anchor
+  ctx.fillStyle = 'rgba(232,232,224,0.3)'
+  ctx.font = '11px "Share Tech Mono", monospace'
+  ctx.fillText('⊕ 1.369 GHz', cx, cy + 76)
+
+  // Non-axis vertices — small dots
+  verts.forEach(v => {
+    if (v.label) return
+    ctx.beginPath()
+    ctx.arc(v.x, v.y, 2.5, 0, Math.PI * 2)
+    ctx.fillStyle = 'rgba(232,232,224,0.15)'
+    ctx.fill()
+  })
+}
+
+// ── UI UPDATES ───────────────────────────────────────────────
+function updateCalc() {
+  const p = +document.getElementById('slP').value
+  const n = +document.getElementById('slN').value
+  const b = +document.getElementById('slB').value
+  const a = +document.getElementById('slA').value
+
+  document.getElementById('valP').textContent = p
+  document.getElementById('valN').textContent = n
+  document.getElementById('valB').textContent = b
+  document.getElementById('valA').textContent = a
+
+  const R = runReduction(p, n, b, a, activeTarget)
+
+  drawDodecagon(R)
+  renderOutput(R)
+}
+
+function renderOutput(R) {
+  const isSh = R.isShatter
+  const isWa = R.isWarning
+  const vc = isSh ? 'shatter' : isWa ? 'warn' : 'anchor'
+
+  // Status display
+  const sd = document.getElementById('statusDisplay')
+  sd.className = 'status-display ' + (isSh ? 'shatter' : isWa ? 'warning' : 'locked')
+  document.getElementById('statusCoord').textContent = R.pvCoord
+  document.getElementById('statusLabel').textContent = isSh
+    ? 'SHATTER EVENT · TORSIONAL DECOHERENCE'
+    : isWa ? 'WARNING · APPROACHING TORSION LIMIT'
+    : 'PHASE LOCKED · SOVEREIGN MANIFOLD'
+
+  // Output lines
+  document.getElementById('outputChalk').innerHTML = `
+    <div class="out-line">
+      <span class="out-key">Identity Mass</span>
+      <span class="out-val ${vc}">${parseFloat(R.IM).toFixed(6)}</span>
+    </div>
+    <div class="out-line">
+      <span class="out-key">Torsion τ = B/P</span>
+      <span class="out-val ${vc}">${parseFloat(R.torsion).toFixed(6)}</span>
+    </div>
+    <div class="out-line">
+      <span class="out-key">Tacoma limit</span>
+      <span class="out-val ${isSh ? 'shatter' : 'anchor'}">τ ${isSh ? '≥' : '<'} 0.2</span>
+    </div>
+    <div class="out-line">
+      <span class="out-key">Alignment</span>
+      <span class="out-val ${vc}">${parseFloat(R.alignment).toFixed(4)}%</span>
+    </div>
+    <div class="out-line">
+      <span class="out-key">Resonance</span>
+      <span class="out-val ${vc}" style="font-size:11px">${R.resonance}</span>
+    </div>
+    <div class="out-line">
+      <span class="out-key">Source</span>
+      <span class="out-val" style="font-size:10px;color:var(--chalk-muted)">${R.target.src}</span>
+    </div>`
+
+  // PVLang
+  document.getElementById('pvlangChalk').innerHTML = `
+    <span style="color:${isSh?'var(--shatter)':'var(--anchor)'}">${R.pvCoord}</span>
+    <span class="pvop">::</span>{${R.target.domain}}<br>
+    IM <span class="pvop">∝</span> <span style="color:var(--anchor)">${parseFloat(R.IM).toFixed(4)}</span><br>
+    τ <span class="pvop ${isSh?'shatter':''}">${isSh?'⊥':'⊂'}</span>
+    ${isSh?'DECOHERENT':'Sovereign Manifold'}<br>
+    Anchor <span class="pvop">≡</span> <span style="color:var(--anchor)">1.369 GHz</span><br>
+    Pv:NOHARM <span class="pvop">∝</span> f:1.369 · visual:GREEN`
+}
+
+// ── TARGET GRID ──────────────────────────────────────────────
+function renderTargets() {
+  document.getElementById('targetGrid').innerHTML = TARGETS.map(t => `
+    <button class="target-chip ${t.id === activeTarget.id ? 'active' : ''}"
+            onclick="selectTarget('${t.id}')" id="tc-${t.id}">
+      <div class="chip-dot" style="background:${t.color}"></div>
+      <span class="chip-name">${t.name}</span>
+    </button>`).join('')
+}
+
+function selectTarget(id) {
+  activeTarget = TARGETS.find(t => t.id === id)
+  document.querySelectorAll('.target-chip').forEach(b => b.classList.remove('active'))
+  document.getElementById(`tc-${id}`).classList.add('active')
+  const [p, n, b, a] = activeTarget.pnba
+  document.getElementById('slP').value = p
+  document.getElementById('slN').value = n
+  document.getElementById('slB').value = b
+  document.getElementById('slA').value = a
+  updateCalc()
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+renderTargets()
+updateCalc()
+</script>
+</body>
+</html>
