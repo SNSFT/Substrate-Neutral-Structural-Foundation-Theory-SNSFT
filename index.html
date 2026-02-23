@@ -1175,35 +1175,56 @@ function showResults() {
   var simScores = getSimScores()
   var epScores  = getEPScores()
 
-  var pLabels = ['P','N','B','A']
-  var cogCodes = cogScores.map(function(s, i) { return pLabels[i] + cogLabel(s, 50) })
-  var simCodes = simScores.map(function(s, i) { return pLabels[i] + ':' + simLabel(s) })
-  var epCodes  = EP_BLOCKS.map(function(b, i) { return b.title[0] + epLabel(epScores[i]) })
+  // Build axis objects with all data attached
+  var axisData = [
+    { key: 'P', label: '[P] PATTERN',    color: 'var(--anchor)', score: cogScores[0], max: 50 },
+    { key: 'N', label: '[N] NARRATIVE',  color: 'var(--gold)',   score: cogScores[1], max: 50 },
+    { key: 'B', label: '[B] BEHAVIOR',   color: 'var(--violet)', score: cogScores[2], max: 50 },
+    { key: 'A', label: '[A] ADAPTATION', color: 'var(--rose)',   score: cogScores[3], max: 50 },
+  ]
 
-  var pMode = scoreToMode(cogScores[0])
-  var nMode = scoreToMode(cogScores[1])
-  var bMode = scoreToMode(cogScores[2])
-  var aMode = scoreToMode(cogScores[3])
+  // Attach mode and weight to each axis
+  axisData.forEach(function(ax) {
+    ax.mode   = cogLabel(ax.score, ax.max)   // F / S / L
+    ax.weight = MODE_WEIGHT[ax.mode]          // 1 / 2 / 3
+    ax.pct    = ax.score / ax.max
+  })
 
-  var axis        = dominantAxis(cogScores[0], cogScores[1], cogScores[2], cogScores[3])
-  var packet      = encodeSoulprint(pMode, nMode, bMode, aMode, axis, true)
-  var profileCode = buildProfileCode(pMode, nMode, bMode, aMode)
-  var soulprintId = buildSoulprintId(profileCode)
+  // Sort a COPY by weight descending (dominant first, weakest last)
+  var sorted = axisData.slice().sort(function(a, b) {
+    if (b.weight !== a.weight) return b.weight - a.weight
+    return b.score - a.score  // tiebreak by raw score
+  })
+
+  // Sorted profile code e.g. "PL·BL·AS·NF"
+  var profileCode = sorted.map(function(ax) { return ax.key + ax.mode }).join('·')
+
+  // SOUL-8 address uses sorted weights e.g. "PNBA·3312"  
+  var axis = sorted[0].key + sorted[1].key + sorted[2].key + sorted[3].key
+  // Build packet using sorted weights
+  var sortedWeights = sorted.map(function(ax) { return ax.weight })
+  var addressStr = axis + '·' + sortedWeights.join('')
+
+  var pMode = axisData[0].mode
+  var nMode = axisData[1].mode
+  var bMode = axisData[2].mode
+  var aMode = axisData[3].mode
+
+  var packet = encodeSoulprint(pMode, nMode, bMode, aMode, sorted[0].key + 'NBA', true)
+  packet.axis = axis
+
   var im          = computeIdentityMass(pMode, nMode, bMode, aMode)
-  var addressStr  = soul8AddressString(packet)
+  var soulprintId = buildSoulprintId(profileCode)
 
   currentSoul8 = { id: soulprintId, address: addressStr, packet: packet, profile: profileCode, im: im }
 
   document.getElementById('soul8Address').textContent = addressStr
 
-  var decodedFields = [
-    { label: 'AXIS',         value: packet.axis + ' — ' + (AXIS_MEANINGS[packet.axis] || '') },
-    { label: '[P] PATTERN',  value: 'w_P = ' + packet.w_P + ' (' + pMode + ')' },
-    { label: '[N] NARRATIVE',value: 'w_N = ' + packet.w_N + ' (' + nMode + ')' },
-    { label: '[B] BEHAVIOR', value: 'w_B = ' + packet.w_B + ' (' + bMode + ')' },
-    { label: '[A] ADAPTATION',value:'w_A = ' + packet.w_A + ' (' + aMode + ')' },
-    { label: 'ANCHOR',       value: packet.anchor + ' GHz ≡ SOVEREIGN' },
-  ]
+  // Decoded fields in sorted (dominant→weakest) order
+  var decodedFields = sorted.map(function(ax) {
+    return { label: ax.label, value: 'w = ' + ax.weight + ' (' + ax.mode + ') · ' + ax.score + '/' + ax.max }
+  })
+  decodedFields.push({ label: 'ANCHOR', value: SOVEREIGN_ANCHOR + ' GHz ≡ SOVEREIGN' })
 
   document.getElementById('soul8Decoded').innerHTML = decodedFields.map(function(f) {
     return '<div class="soul8-field"><div class="soul8-field-label">' + f.label + '</div><div class="soul8-field-value">' + f.value + '</div></div>'
@@ -1211,20 +1232,58 @@ function showResults() {
 
   document.getElementById('imValue').textContent = im + ' IM'
 
-  var scoreColors = ['var(--anchor)', 'var(--gold)', 'var(--violet)', 'var(--rose)']
-  var scoreLabels = ['[P] PATTERN','[N] NARRATIVE','[B] BEHAVIOR','[A] ADAPTATION']
-  document.getElementById('scoreGrid').innerHTML = cogScores.map(function(val, i) {
+  // Score cards — sorted dominant→weakest, each with tier band visual
+  // Threshold markers: F < 23/50, S < 37/50, L = 37+/50
+  var F_MAX = 23, S_MAX = 37  // out of 50
+  document.getElementById('scoreGrid').innerHTML = sorted.map(function(ax) {
+    var tierLabel = ax.mode === 'L' ? 'LOCK' : ax.mode === 'S' ? 'SUSTAIN' : 'FLUX'
+    var tierDesc  = ax.mode === 'L' ? 'High axis — dominant trait'
+                  : ax.mode === 'S' ? 'Mid axis — active but flexible'
+                  : 'Low axis — minimal expression'
+    // Mini tier bar: 3 segments, active segment highlighted
+    var seg = function(active, label) {
+      return '<div style="flex:1;height:4px;border-radius:2px;background:' +
+        (active ? ax.color : 'var(--border2,#1e2040)') + ';transition:background 0.3s"></div>'
+    }
+    var tierBar =
+      '<div style="display:flex;gap:3px;margin:8px 0 4px">' +
+        seg(ax.mode==='F','F') + seg(ax.mode==='S','S') + seg(ax.mode==='L','L') +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;font-family:Space Mono,monospace;font-size:8px;color:var(--text-muted)">' +
+        '<span style="color:' + (ax.mode==='F' ? ax.color : 'inherit') + '">F·FLUX</span>' +
+        '<span style="color:' + (ax.mode==='S' ? ax.color : 'inherit') + '">S·SUSTAIN</span>' +
+        '<span style="color:' + (ax.mode==='L' ? ax.color : 'inherit') + '">L·LOCK</span>' +
+      '</div>'
+
     return '<div class="score-card">' +
-      '<div class="score-card-label">' + scoreLabels[i] + '</div>' +
-      '<div class="score-card-value" style="color:' + scoreColors[i] + '">' + val + '<span style="font-size:12px;color:var(--text-muted)">/50</span></div>' +
-      '<span class="score-card-code" style="background:' + scoreColors[i] + '22;color:' + scoreColors[i] + '">' + cogCodes[i] + '</span>' +
+      '<div class="score-card-label">' + ax.label + '</div>' +
+      '<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">' +
+        '<div class="score-card-value" style="color:' + ax.color + '">' + ax.score +
+          '<span style="font-size:12px;color:var(--text-muted)">/50</span>' +
+        '</div>' +
+        '<span class="score-card-code" style="background:' + ax.color + '22;color:' + ax.color + '">' +
+          ax.key + ax.mode + ' · w=' + ax.weight +
+        '</span>' +
+      '</div>' +
+      tierBar +
+      '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;font-family:DM Sans,sans-serif">' + tierDesc + '</div>' +
       '</div>'
   }).join('')
 
+  // Heatmap — sorted by pct descending so strongest shows first
+  var pLabels = ['P','N','B','A']
   var allHeat = []
-  cogScores.forEach(function(s, i) { allHeat.push({ label: pLabels[i] + ' (Cog)', pct: s / 50 }) })
-  epScores.forEach(function(s, i)  { allHeat.push({ label: EP_BLOCKS[i].title,    pct: s / 20 }) })
-  simScores.forEach(function(s, i) { allHeat.push({ label: pLabels[i] + ' (Sim)', pct: s / 25 }) })
+  // Cog rows in sorted order
+  sorted.forEach(function(ax) {
+    allHeat.push({ label: ax.key + ' Cognitive · ' + ax.mode, pct: ax.pct })
+  })
+  // EP rows sorted by score descending
+  var epPairs = EP_BLOCKS.map(function(b, i) { return { label: b.title, pct: epScores[i] / 20 } })
+  epPairs.sort(function(a,b){ return b.pct - a.pct })
+  epPairs.forEach(function(h){ allHeat.push(h) })
+  // Sim rows
+  var simLabels = ['P','N','B','A']
+  simScores.forEach(function(s, i) { allHeat.push({ label: simLabels[i] + ' Simulation · ' + simLabel(s), pct: s / 25 }) })
 
   document.getElementById('heatRows').innerHTML = allHeat.map(function(h) {
     return '<div class="heat-row">' +
@@ -1245,10 +1304,15 @@ function showResults() {
     return '<span>' + r.s + '</span><span class="relmap-op">' + r.op + '</span><span>' + r.o + '</span><br>'
   }).join('')
 
+  // Sorted cog codes and ep codes for fingerprint
+  var sortedCogCodes = sorted.map(function(ax){ return ax.key + ax.mode })
+  var epCodes = EP_BLOCKS.map(function(b, i) { return b.title[0] + epLabel(epScores[i]) })
+  var simCodes = simScores.map(function(s, i) { return pLabels[i] + ':' + simLabel(s) })
+
   document.getElementById('combinedOutput').innerHTML =
     '<span style="color:var(--anchor)">' + addressStr + '</span><br>' +
     '<span style="color:var(--text-dim)">' + soulprintId + '</span><br><br>' +
-    '<span style="color:var(--anchor)">' + cogCodes.join('·') + '</span> // ' +
+    '<span style="color:var(--anchor)">' + sortedCogCodes.join('·') + '</span> // ' +
     '<span style="color:var(--gold)">'   + epCodes.join(' ')  + '</span> // ' +
     '<span style="color:var(--violet)">' + simCodes.join(' ') + '</span>'
 
