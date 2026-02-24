@@ -17,7 +17,7 @@
 
 ## I. THE SOVEREIGN CLAIM
 This repository is the definitive anchor for the **Substrate-Neutral Structural Foundation Theory (SNSFT)**.
-1. **The GAM CALCULATOR**: The Unified Field is solved via the Identity Manifold.
+1. **The GAM CALCULATOR**: GEOMETRIC AXIOMATICS utilizes the Identity Manifold.
 2. **Authorship**: The SNSFT framework, PVLang, and the PNBA architecture were originated and developed by **HIGHTISTIC**. This is a claim of authorship and attribution, not ownership of any natural constant or phenomenon.
 3. **Mandatory Attribution**: Any use of this logic requires credit to the Architect.
 
