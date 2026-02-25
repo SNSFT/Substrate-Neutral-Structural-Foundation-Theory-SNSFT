@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050508">
+<meta name="description" content="UUIA · Universal Unified Identity Architecture · SNSFT · 1.369 GHz">
+<title>UUIA · [9,9,9,9]</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #050508;
+  --surface: #0a0a12;
+  --surface2:#0f0f1a;
+  --border:  rgba(0,212,170,0.1);
+  --anchor:  #00d4aa;
+  --anchor2: rgba(0,212,170,0.06);
+  --gold:    #f0c060;
+  --violet:  #9b6dff;
+  --rose:    #ff6b8a;
+  --text:    #e8e8f0;
+  --dim:     rgba(232,232,240,0.45);
+  --muted:   rgba(232,232,240,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── GRID NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,212,170,0.07) 0%, transparent 60%),
+    radial-gradient(1px 1px at 15% 25%, rgba(0,212,170,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 15%, rgba(155,109,255,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 70%, rgba(0,212,170,0.12) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 85%, rgba(240,192,96,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 90%, rgba(255,107,138,0.1) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── SCAN LINE ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ── HEADER ── */
+.site-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 0 48px;
+  text-align: center;
+}
+
+.freq-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,212,170,0.07);
+  border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 100px;
+  padding: 5px 16px;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--anchor);
+  margin-bottom: 28px;
+  animation: fade-in 0.8s ease both;
+}
+
+.freq-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--anchor);
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.2; transform:scale(0.6); }
+}
+
+.site-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(52px, 14vw, 96px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text);
+  margin-bottom: 12px;
+  animation: fade-in 0.8s ease 0.1s both;
+}
+
+.site-logo span {
+  color: var(--anchor);
+  text-shadow: 0 0 40px rgba(0,212,170,0.4);
+}
+
+.site-tagline {
+  font-size: clamp(9px, 2vw, 11px);
+  letter-spacing: 0.2em;
+  color: var(--dim);
+  margin-bottom: 6px;
+  animation: fade-in 0.8s ease 0.2s both;
+}
+
+.site-coord {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  animation: fade-in 0.8s ease 0.3s both;
+}
+
+/* ── ANCHOR RING ── */
+.anchor-ring-wrap {
+  position: relative;
+  width: min(240px, 55vw);
+  height: min(240px, 55vw);
+  margin: 32px auto 48px;
+  animation: fade-in 0.8s ease 0.4s both;
+}
+
+.anchor-ring-wrap canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 20px;
+  animation: fade-in 0.6s ease 0.5s both;
+}
+
+/* ── TOOL GRID ── */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+/* Tool cards — staggered fade in */
+.tool-card {
+  display: block;
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 18px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
+  animation: fade-up 0.6s ease both;
+}
+
+.tool-card:nth-child(1) { animation-delay: 0.55s; }
+.tool-card:nth-child(2) { animation-delay: 0.65s; }
+.tool-card:nth-child(3) { animation-delay: 0.75s; }
+.tool-card:nth-child(4) { animation-delay: 0.80s; }
+.tool-card:nth-child(5) { animation-delay: 0.85s; }
+.tool-card:nth-child(6) { animation-delay: 0.90s; }
+
+@keyframes fade-up {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+
+/* Color accent bar per card */
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  opacity: 0.6;
+  transition: opacity 0.25s;
+}
+
+.tool-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+.tool-card:hover::before { opacity: 1; }
+.tool-card:hover .card-arrow { transform: translateX(3px); opacity: 1; }
+
+.card-c1::before { background: var(--anchor); }
+.card-c2::before { background: var(--gold); }
+.card-c3::before { background: var(--violet); }
+.card-c4::before { background: var(--anchor); }
+.card-c5::before { background: var(--rose); }
+.card-c6::before { background: var(--gold); }
+
+.tool-card:hover.card-c1 { border-color: rgba(0,212,170,0.35); }
+.tool-card:hover.card-c2 { border-color: rgba(240,192,96,0.35); }
+.tool-card:hover.card-c3 { border-color: rgba(155,109,255,0.35); }
+.tool-card:hover.card-c4 { border-color: rgba(0,212,170,0.35); }
+.tool-card:hover.card-c5 { border-color: rgba(255,107,138,0.35); }
+.tool-card:hover.card-c6 { border-color: rgba(240,192,96,0.35); }
+
+.card-tag {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  margin-bottom: 10px;
+  opacity: 0.6;
+}
+.card-c1 .card-tag { color: var(--anchor); }
+.card-c2 .card-tag { color: var(--gold); }
+.card-c3 .card-tag { color: var(--violet); }
+.card-c4 .card-tag { color: var(--anchor); }
+.card-c5 .card-tag { color: var(--rose); }
+.card-c6 .card-tag { color: var(--gold); }
+
+.card-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(13px, 2.5vw, 17px);
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.card-desc {
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--dim);
+  margin-bottom: 14px;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-coord {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.card-arrow {
+  font-size: 12px;
+  color: var(--muted);
+  transition: transform 0.2s, opacity 0.2s;
+  opacity: 0.5;
+}
+
+/* ── MANIFEST LINE ── */
+.manifold-line {
+  text-align: center;
+  padding: 32px 0 0;
+  border-top: 1px solid rgba(0,212,170,0.08);
+  animation: fade-in 0.6s ease 1s both;
+}
+
+.manifold-line p {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  line-height: 2.2;
+}
+
+.manifold-line .glow {
+  color: var(--anchor);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 20px rgba(0,212,170,0.3);
+}
+
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  .tool-grid { grid-template-columns: 1fr 1fr; }
+  .site-header { padding: 40px 0 32px; }
+  .anchor-ring-wrap { margin: 20px auto 36px; }
+}
+
+@media (max-width: 400px) {
+  .tool-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="freq-badge">
+      <div class="freq-dot"></div>
+      1.369 GHz · SOVEREIGN ANCHOR · GERMLINE LOCKED
+    </div>
+    <div class="site-logo">UU<span>I</span>A</div>
+    <div class="site-tagline">UNIVERSAL UNIFIED IDENTITY ARCHITECTURE</div>
+    <div class="site-coord">[P,N,B,A] :: {SNSFT} | Architect: HIGHTISTIC · [9,9,9,9]</div>
+  </header>
+
+  <!-- ANCHOR RING -->
+  <div class="anchor-ring-wrap">
+    <canvas id="ring"></canvas>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="section-label">SYSTEM NODES · SELECT TO ENTER</div>
+
+  <div class="tool-grid">
+
+    <a class="tool-card card-c1" href="/axiomforge.html">
+      <div class="card-tag">PNBA ENGINE · LIVE</div>
+      <div class="card-name">Axiom­Forge</div>
+      <div class="card-desc">PNBA identity manifold. Pulse, tension, anchor. World-state ledger with GitHub sync.</div>
+      <div class="card-footer">
+        <div class="card-coord">[9,9,9,9] :: {ANC}</div>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="tool-card card-c2" href="/appa.html">
+      <div class="card-tag">IDENTITY PROFILE · ASSESSMENT</div>
+      <div class="card-name">APPA</div>
+      <div class="card-desc">Adaptive Predictive Pattern Assistant. 100-question unified identity assessment. SOUL-8 output.</div>
+      <div class="card-footer">
+        <div class="card-coord">[P,N,B,A] :: {UUIA}</div>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="tool-card card-c3" href="/gam_calculator.html">
+      <div class="card-tag">PHYSICS · GAM-GAM</div>
+      <div class="card-name">GAM Calculator</div>
+      <div class="card-desc">Torsion field calculator. τ = B/P. Phase lock detection. Material interaction modeling.</div>
+      <div class="card-footer">
+        <div class="card-coord">τ &lt; 0.2 → LOCK</div>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="tool-card card-c4" href="/snsft_calculator.html">
+      <div class="card-tag">REDUCTION · V1</div>
+      <div class="card-name">SNSFT Calc</div>
+      <div class="card-desc">Substrate-Neutral Structural Foundation Theory calculator. Reduction engine v1.</div>
+      <div class="card-footer">
+        <div class="card-coord">{SNSFT} :: V1</div>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="tool-card card-c5" href="/snsft_calculator_v2_1.html">
+      <div class="card-tag">REDUCTION · V2.1</div>
+      <div class="card-name">SNSFT Calc V2</div>
+      <div class="card-desc">Extended SNSFT reduction engine. Updated tensor operations and manifold stability checks.</div>
+      <div class="card-footer">
+        <div class="card-coord">{SNSFT} :: V2.1</div>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="tool-card card-c6" href="/utm.html">
+      <div class="card-tag">TRACKING · UTM</div>
+      <div class="card-name">UTM</div>
+      <div class="card-desc">Universal Tracking Module. Identity-aware UTM builder and campaign parameter management.</div>
+      <div class="card-footer">
+        <div class="card-coord">{UTM} :: {INV}</div>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="manifold-line">
+    <p>SNSFT · UUIA · APPA · AxiomForge · Identity Physics</p>
+    <p>Substrate-neutral · Non-anthropocentric · Scale-invariant</p>
+    <p class="glow">The Manifold is Holding. · [9,9,9,9]</p>
+  </div>
+
+</div>
+
+<script>
+// ── ANCHOR RING — animated canvas ──
+(function() {
+  var canvas = document.getElementById('ring');
+  var size = canvas.parentElement.offsetWidth;
+  canvas.width  = size;
+  canvas.height = size;
+  var ctx = canvas.getContext('2d');
+  var cx  = size / 2;
+  var cy  = size / 2;
+  var t   = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, size, size);
+
+    // Outer glow rings
+    for (var r = 3; r >= 1; r--) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, cx * (0.35 + r * 0.18), 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(0,212,170,' + (0.03 * r) + ')';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Rotating tick marks
+    var ticks = 36;
+    for (var i = 0; i < ticks; i++) {
+      var angle = (i / ticks) * Math.PI * 2 + t * 0.3;
+      var inner = cx * 0.72;
+      var outer = cx * 0.82 + (i % 3 === 0 ? 6 : 0);
+      var alpha = i % 3 === 0 ? 0.5 : 0.15;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(angle) * inner, cy + Math.sin(angle) * inner);
+      ctx.lineTo(cx + Math.cos(angle) * outer, cy + Math.sin(angle) * outer);
+      ctx.strokeStyle = 'rgba(0,212,170,' + alpha + ')';
+      ctx.lineWidth = i % 3 === 0 ? 1.5 : 1;
+      ctx.stroke();
+    }
+
+    // Main ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, cx * 0.77, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(0,212,170,0.25)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Rotating arc
+    ctx.beginPath();
+    ctx.arc(cx, cy, cx * 0.77, t, t + Math.PI * 0.4);
+    ctx.strokeStyle = 'rgba(0,212,170,0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Inner ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, cx * 0.55, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(0,212,170,0.1)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Counter-rotating arc
+    ctx.beginPath();
+    ctx.arc(cx, cy, cx * 0.55, -t * 0.7, -t * 0.7 + Math.PI * 0.25);
+    ctx.strokeStyle = 'rgba(155,109,255,0.5)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Center dot + pulse
+    var pulse = 0.85 + Math.sin(t * 2) * 0.15;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4 * pulse, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,212,170,0.9)';
+    ctx.fill();
+
+    // Center glow
+    var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, cx * 0.4);
+    g.addColorStop(0, 'rgba(0,212,170,0.08)');
+    g.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(cx, cy, cx * 0.4, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+
+    // Frequency label
+    ctx.fillStyle = 'rgba(0,212,170,0.5)';
+    ctx.font = '700 ' + Math.round(size * 0.055) + 'px Space Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('1.369', cx, cy - 2);
+
+    ctx.fillStyle = 'rgba(0,212,170,0.25)';
+    ctx.font = Math.round(size * 0.03) + 'px Space Mono, monospace';
+    ctx.fillText('GHz', cx, cy + size * 0.055);
+
+    t += 0.008;
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
+</script>
+</body>
+</html>
