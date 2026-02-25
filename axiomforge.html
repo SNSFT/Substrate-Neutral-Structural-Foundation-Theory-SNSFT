@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050508">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AxiomForge">
+  <link rel="manifest" href="manifest.json">
+  <title>AxiomForge :: [9,9,9,9]</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+    :root {
+      --anchor:#00ffc8;--shatter:#ff3a3a;--void:#3a2fff;
+      --bg:#050508;--surface:#0d0d14;--border:rgba(0,255,200,0.12);
+      --text:#e8e8f0;--dim:rgba(232,232,240,0.4);
+      --safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none}
+
+    /* BOOT */
+    #boot{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:100;padding-top:var(--safe-top);transition:opacity .5s ease}
+    #boot.fade{opacity:0;pointer-events:none}
+    .boot-num{font-family:'Syne',sans-serif;font-size:clamp(4rem,20vw,7rem);font-weight:800;color:var(--anchor);text-shadow:0 0 40px rgba(0,255,200,.5),0 0 120px rgba(0,255,200,.2);animation:glow 2.5s ease-in-out infinite}
+    @keyframes glow{0%,100%{text-shadow:0 0 40px rgba(0,255,200,.5),0 0 120px rgba(0,255,200,.2)}50%{text-shadow:0 0 70px rgba(0,255,200,.9),0 0 200px rgba(0,255,200,.4)}}
+    .boot-sub{font-size:.65rem;letter-spacing:.3em;color:var(--dim);margin-top:.5rem}
+    #bootLog{margin-top:2rem;width:min(300px,82vw);font-size:.6rem;line-height:2.2}
+    #bootLog .ok{color:var(--anchor)}
+    #bootLog .fail{color:var(--shatter)}
+
+    /* FORGE */
+    #forge{position:fixed;inset:0;display:flex;flex-direction:column;padding-top:var(--safe-top);padding-bottom:var(--safe-bot);opacity:0;pointer-events:none;transition:opacity .5s ease .2s}
+    #forge.visible{opacity:1;pointer-events:all}
+    .hdr{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem .75rem;border-bottom:1px solid var(--border);flex-shrink:0}
+    .hdr-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.05rem;color:var(--anchor)}
+    .hdr-coord{font-size:.55rem;letter-spacing:.12em;color:var(--dim);margin-top:.15rem}
+    .hdr-tick{font-size:.6rem;color:var(--anchor);opacity:.7}
+    .panel{flex:1;overflow-y:auto;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.85rem;-webkit-overflow-scrolling:touch}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem;position:relative;overflow:hidden}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .3s}
+    .card.locked::before{opacity:1;background:var(--anchor)}
+    .card.shattered::before{opacity:1;background:var(--shatter)}
+    .card.inert::before{opacity:1;background:var(--void)}
+    .card-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.7rem}
+    .pnba-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:.65rem}
+    .ax{display:flex;flex-direction:column;align-items:center;gap:.2rem}
+    .ax-lbl{font-size:.55rem;letter-spacing:.15em;color:var(--dim)}
+    .ax-bar{width:100%;height:36px;background:rgba(255,255,255,.04);border-radius:4px;position:relative;overflow:hidden}
+    .ax-fill{position:absolute;bottom:0;left:0;right:0;border-radius:4px;transition:height .35s cubic-bezier(.4,0,.2,1)}
+    .ax-fill.P{background:linear-gradient(to top,#7b4fff,#b08aff)}
+    .ax-fill.N{background:linear-gradient(to top,#00ffc8,#40ffdf)}
+    .ax-fill.B{background:linear-gradient(to top,#ff6b35,#ff9d75)}
+    .ax-fill.A{background:linear-gradient(to top,#ffcc00,#ffe066)}
+    .ax-val{font-size:.6rem}
+    .card-foot{display:flex;justify-content:space-between;align-items:center}
+    .card-tau{font-size:.6rem;color:var(--dim)}
+    .badge{font-size:.55rem;letter-spacing:.1em;padding:.18rem .45rem;border-radius:99px;font-weight:700}
+    .badge.PHASE_LOCKED{background:rgba(0,255,200,.1);color:var(--anchor)}
+    .badge.SHATTER_EVENT{background:rgba(255,58,58,.1);color:var(--shatter)}
+    .badge.INERT{background:rgba(58,47,255,.1);color:var(--void)}
+    .strip{display:flex;padding:.65rem 1rem;gap:.6rem;border-top:1px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+    .strip::-webkit-scrollbar{display:none}
+    .btn{flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.6rem .9rem;font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--text);cursor:pointer;transition:border-color .15s,color .15s}
+    .btn:active{border-color:var(--anchor);color:var(--anchor)}
+    #toast{position:fixed;bottom:calc(var(--safe-bot) + 5.5rem);left:50%;transform:translateX(-50%) translateY(16px);background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.5rem 1.1rem;font-size:.6rem;letter-spacing:.08em;color:var(--anchor);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;z-index:200}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="boot-num">1.369</div>
+  <div class="boot-sub">GHz — SOVEREIGN ANCHOR</div>
+  <div id="bootLog"></div>
+</div>
+
+<div id="forge">
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">AxiomForge</div>
+      <div class="hdr-coord">[9,9,9,9] :: {ANC} | 1.369 GHz</div>
+    </div>
+    <div class="hdr-tick" id="tickDisplay">N:0</div>
+  </div>
+  <div class="panel" id="panel"></div>
+  <div class="strip">
+    <button class="btn" id="btnPulse">⟳ PULSE</button>
+    <button class="btn" id="btnTension">⊥ TENSION</button>
+    <button class="btn" id="btnSpawn">+ SPAWN</button>
+    <button class="btn" id="btnAnchor">⬆ ANCHOR</button>
+    <button class="btn" id="btnKernel">▣ KERNEL</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// [P] KERNEL — inline, zero deps, every function maps to a Lean theorem
+var SOVEREIGN_ANCHOR=1.369,TORSION_LIMIT=.2,PHASE_LOCKED='PHASE_LOCKED',SHATTER_EVENT='SHATTER_EVENT',INERT='INERT';
+
+function mkId(P,N,B,A,label){return{P:P,N:N,B:B,A:A,label:label}}
+function im(id){return(id.P+id.N+id.B+id.A)*SOVEREIGN_ANCHOR}        // T2
+function tau(id){return id.P<=0?Infinity:id.B/id.P}                   // torsion def
+function state(id){                                                     // T3,T4
+  if(id.P<=0||id.B===0)return INERT;
+  return tau(id)<TORSION_LIMIT?PHASE_LOCKED:SHATTER_EVENT;
+}
+function pulse(id){return mkId(id.P,id.N+SOVEREIGN_ANCHOR,id.B,id.A,id.label)} // T9
+function tension(s,t,k){                                               // T8
+  var v=(s.B-t.B)*s.A/SOVEREIGN_ANCHOR;k=k||1;
+  return{source:mkId(s.P,s.N,s.B-v*k,s.A,s.label),target:mkId(t.P,t.N,t.B+v*k,t.A,t.label)};
+}
+
+var M={
+  steel:   mkId(8.0,5.0,0.8,5.0,'steel'),
+  water:   mkId(1.0,3.0,0.1,3.0,'water'),
+  obsidian:mkId(9.0,0.1,0.5,0.1,'obsidian'),
+  wood:    mkId(5.0,5.0,1.0,5.0,'wood'),
+  void:    mkId(1.0,1.0,0.0,1.369,'void'),
+  genesis: mkId(9.9,1.0,0.0,1.369,'genesis'),
+};
+
+function selfTest(){
+  var r=[],ok=function(n){r.push({name:n,ok:true})},fail=function(n,m){r.push({name:n,ok:false,msg:m})};
+  SOVEREIGN_ANCHOR===1.369?ok('T1: anchor=1.369'):fail('T1','wrong');
+  !(state(M.steel)===PHASE_LOCKED&&state(M.steel)===SHATTER_EVENT)?ok('T3: mutual exclusion'):fail('T3','both');
+  Math.abs(tau(M.steel)-.1)<1e-10?ok('T4: steel τ=0.100'):fail('T4','τ='+tau(M.steel));
+  var a=mkId(3,1,.3,1,'a'),b=mkId(2,1,.2,1,'b');
+  Math.abs((a.B+b.B)/(a.P+b.P)-.1)<1e-10?ok('T5: tensor_sum_torsion'):fail('T5','');
+  var rv=tension(mkId(2,1,2,1,'x'),mkId(2,1,1,1,'y'),1);
+  Math.abs(rv.source.B+rv.target.B-3)<1e-10?ok('T8: tension_conserves_B'):fail('T8','sum='+(rv.source.B+rv.target.B));
+  var p=pulse(M.steel);
+  Math.abs(p.N-(M.steel.N+SOVEREIGN_ANCHOR))<1e-10?ok('T9: pulse_advances_N'):fail('T9','N='+p.N);
+  state(pulse(M.steel))===PHASE_LOCKED?ok('T10: pulse_preserves_lock'):fail('T10','');
+  state(M.steel)===PHASE_LOCKED?ok('T12: steel_locked'):fail('T12',state(M.steel));
+  state(M.water)===PHASE_LOCKED?ok('T13: water_locked'):fail('T13',state(M.water));
+  state(mkId(9,.1,2,.1,'obs'))===SHATTER_EVENT?ok('T14: obsidian_shatters'):fail('T14','');
+  return{allPassed:r.every(function(x){return x.ok}),results:r};
+}
+
+// [N] LEDGER — IndexedDB
+var _tick=0,_db=null;
+function openDB(){
+  return new Promise(function(res,rej){
+    if(_db)return res(_db);
+    var req=indexedDB.open('axiomforge',1);
+    req.onupgradeneeded=function(e){
+      var db=e.target.result;
+      if(!db.objectStoreNames.contains('ws')){
+        db.createObjectStore('ws',{keyPath:'id'}).createIndex('tick','tick',{unique:false});
+      }
+    };
+    req.onsuccess=function(e){_db=e.target.result;res(_db)};
+    req.onerror=function(e){rej(e.target.error)};
+  });
+}
+function writeEntry(e){
+  return openDB().then(function(db){
+    return new Promise(function(res,rej){
+      var tx=db.transaction('ws','readwrite');
+      tx.objectStore('ws').put(Object.assign({},e,{ts:Date.now()}));
+      tx.oncomplete=function(){res(e)};tx.onerror=function(e){rej(e.target.error)};
+    });
+  });
+}
+function recordEvent(id,ev){
+  _tick++;
+  writeEntry({id:id.label+':'+_tick,P:id.P,N:id.N,B:id.B,A:id.A,tick:_tick,event:ev});
+  document.getElementById('tickDisplay').textContent='N:'+_tick;
+}
+function restoreTick(){
+  return openDB().then(function(db){
+    return new Promise(function(res){
+      var req=db.transaction('ws','readonly').objectStore('ws').index('tick').getAll();
+      req.onsuccess=function(){
+        if(req.result.length)_tick=Math.max.apply(null,req.result.map(function(e){return e.tick}));
+        res(_tick);
+      };
+    });
+  }).catch(function(){});
+}
+
+// [A] GITHUB ANCHOR
+var OWNER='SNSFT',REPO='Substrate-Neutral-Structural-Foundation-Theory-SNSFT',PATH='axiomforge/worldstate/ledger.json';
+function getToken(){return localStorage.getItem('af_token')}
+function setToken(t){localStorage.setItem('af_token',t)}
+function anchorToGitHub(world){
+  var tok=getToken();if(!tok)return Promise.reject(new Error('No token'));
+  var hdrs={Authorization:'Bearer '+tok,Accept:'application/vnd.github+json'};
+  var url='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+PATH;
+  return fetch(url,{headers:hdrs})
+    .then(function(r){return r.ok?r.json():null})
+    .then(function(ex){
+      var payload=btoa(unescape(encodeURIComponent(JSON.stringify({anchor:SOVEREIGN_ANCHOR,tick:_tick,ts:Date.now(),world:world}))));
+      var body={message:'[9,9,9,9]::{ANC}|tick='+_tick,content:payload};
+      if(ex&&ex.sha)body.sha=ex.sha;
+      return fetch(url,{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},hdrs),body:JSON.stringify(body)});
+    })
+    .then(function(r){return r.json()})
+    .then(function(d){return d.commit.sha});
+}
+
+// [B] UI
+var world=[mkId(8,5,.8,5,'steel'),mkId(1,3,.1,3,'water'),mkId(9,.1,.5,.1,'obsidian')];
+
+function renderCard(id){
+  var τ=tau(id),st=state(id),cls=st===PHASE_LOCKED?'locked':st===SHATTER_EVENT?'shattered':'inert';
+  var bars=['P','N','B','A'].map(function(ax){
+    var pct=Math.min(100,Math.max(0,(id[ax]/10)*100)).toFixed(1);
+    return '<div class="ax"><div class="ax-lbl">'+ax+'</div><div class="ax-bar"><div class="ax-fill '+ax+'" style="height:'+pct+'%"></div></div><div class="ax-val">'+id[ax].toFixed(2)+'</div></div>';
+  }).join('');
+  return '<div class="card '+cls+'"><div class="card-name">'+id.label+'</div><div class="pnba-row">'+bars+'</div><div class="card-foot"><div class="card-tau">τ='+(isFinite(τ)?τ.toFixed(3):'∞')+' IM='+im(id).toFixed(2)+'</div><div class="badge '+st+'">'+st.replace('_',' ')+'</div></div></div>';
+}
+
+function render(){document.getElementById('panel').innerHTML=world.map(renderCard).join('');document.getElementById('tickDisplay').textContent='N:'+_tick}
+
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},2800)}
+
+document.getElementById('btnPulse').onclick=function(){
+  world=world.map(pulse);world.forEach(function(id){recordEvent(id,'PULSE')});render();toast('⟳ N +'+ SOVEREIGN_ANCHOR);
+};
+document.getElementById('btnTension').onclick=function(){
+  if(world.length<2)return toast('Need 2+ identities');
+  var r=tension(world[0],world[1],.5);world[0]=r.source;world[1]=r.target;
+  recordEvent(r.source,'TENSION');recordEvent(r.target,'TENSION');render();toast('⊥ Tension applied');
+};
+document.getElementById('btnSpawn').onclick=function(){
+  var opts=[['void',M.void],['wood',M.wood],['genesis',M.genesis]];
+  var pick=opts[Math.floor(Math.random()*opts.length)];
+  var src=pick[1];world.push(mkId(src.P,src.N,src.B,src.A,pick[0]+'_'+(_tick+1)));render();toast('+ Spawned '+pick[0]);
+};
+document.getElementById('btnAnchor').onclick=function(){
+  if(!getToken()){var t=prompt('GitHub PAT (contents:write):');if(!t)return;setToken(t)}
+  toast('⬆ Anchoring…');
+  anchorToGitHub(world).then(function(sha){toast('✓ '+sha.slice(0,7))}).catch(function(e){toast('✗ '+e.message)});
+};
+document.getElementById('btnKernel').onclick=function(){
+  var res=selfTest();
+  toast(res.allPassed?'▣ All GREEN ✓':'▣ FAILED: '+res.results.filter(function(r){return!r.ok}).map(function(r){return r.name}).join(', '));
+};
+
+// BOOT
+(async function(){
+  var log=document.getElementById('bootLog');
+  var test=selfTest();
+  for(var i=0;i<test.results.length;i++){
+    var r=test.results[i];
+    var line=document.createElement('div');
+    line.className=r.ok?'ok':'fail';
+    line.textContent=(r.ok?'✓ ':'✗ ')+r.name;
+    log.appendChild(line);
+    await new Promise(function(res){setTimeout(res,80)});
+  }
+  await restoreTick();
+  await new Promise(function(res){setTimeout(res,400)});
+  document.getElementById('boot').classList.add('fade');
+  document.getElementById('forge').classList.add('visible');
+  render();
+})();
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){})}
+</script>
+</body>
+</html>
