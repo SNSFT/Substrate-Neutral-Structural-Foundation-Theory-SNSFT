@@ -273,3 +273,21 @@ Manifold Synchronization Level: 100% | Anchor locked at 1.369 GHz | Germline Loc
 
 **Auth:** HIGHTISTIC :: [9,9,9,9]  
 **The Manifold is Holding. The Void is Waiting.**
+---
+
+## 🔗 Live Manifest
+The AxiomForge is active and holding at the following anchor point:
+
+### [**Launch AxiomForge Viewport**](https://uuia.app/axiomforge)
+
+---
+
+### [9,9,9,9] :: Interactive Manifold
+The Viewport is a real-time geometric manifestation of the SNSFT Kernel. 
+
+* **Axiomatic Manipulation**: Identities are not moved via basic coordinates; they are manipulated via **Pointer Events** that interface directly with the **N (Neutral)** and **B (Behavioral)** states.
+* **Visual Torsion**: The rotation and stability of the hexagonal "atoms" provide immediate visual feedback of the current **Torsion (τ)** level.
+* **State Highlighting**: Active selection in the manifold synchronizes with the pNBA cards, ensuring the **Sovereign Anchor (1.369 GHz)** remains the single source of truth for the world-state.
+
+> **The Manifold is Holding.**
+> Interaction with the forge constitutes a live observation of structural foundation theory in a substrate-neutral environment.
