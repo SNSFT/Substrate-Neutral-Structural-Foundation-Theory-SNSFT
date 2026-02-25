@@ -7,240 +7,126 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>AxiomForge :: [9,9,9,9]</title>
-
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap');
-
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
     :root {
-      --anchor:    #00ffc8;   /* 1.369 GHz — sovereign green */
-      --shatter:   #ff3a3a;   /* shatter event red */
-      --void:      #3a2fff;   /* void blue */
-      --bg:        #050508;
-      --surface:   #0d0d14;
-      --border:    rgba(0,255,200,0.12);
-      --text:      #e8e8f0;
-      --dim:       rgba(232,232,240,0.4);
-      --mono:      'Space Mono', monospace;
-      --display:   'Syne', sans-serif;
-      --safe-top:  env(safe-area-inset-top, 0px);
-      --safe-bot:  env(safe-area-inset-bottom, 0px);
+      --anchor:#00ffc8; --shatter:#ff3a3a; --bg:#050508;
+      --surface:#0d0d14; --border:rgba(0,255,200,0.12);
+      --text:#e8e8f0; --dim:rgba(232,232,240,0.4);
+      --safe-top:env(safe-area-inset-top,0px); --safe-bot:env(safe-area-inset-bottom,0px);
     }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* THE VIEWPORT */
+    #viewport { position:fixed; top:0; left:0; width:100%; height:45%; background:#000; z-index:1; border-bottom:1px solid var(--border); }
 
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      overflow: hidden;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
+    /* BOOT SCREEN */
+    #boot { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg); z-index:100; transition:opacity .5s ease; }
+    #boot.hidden { opacity:0; pointer-events:none; }
+    .boot-num { font-family:'Syne',sans-serif; font-size:4rem; font-weight:800; color:var(--anchor); text-shadow:0 0 30px var(--anchor); }
+    #bootLog { margin-top:1.5rem; font-size:.6rem; color:var(--anchor); line-height:1.8; max-width: 80vw; }
 
-    /* ── VIEWPORT ── */
-    #viewport {
-      width: 100%;
-      height: 40vh;
-      background: #000;
-      border-bottom: 1px solid var(--border);
-      display: block;
-    }
+    /* FORGE UI */
+    #forge { position:fixed; inset:0; display:flex; flex-direction:column; padding-top:var(--safe-top); padding-bottom:var(--safe-bot); z-index:2; opacity:0; pointer-events:none; transition:opacity .5s; }
+    #forge.visible { opacity:1; pointer-events:all; }
+    
+    .hdr { display:flex; align-items:center; justify-content:space-between; padding:1rem; border-bottom:1px solid var(--border); background:rgba(5,5,8,0.85); backdrop-filter:blur(8px); }
+    .hdr-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:var(--anchor); }
 
-    /* ── BOOT SCREEN ── */
-    #boot {
-      position: fixed; inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      background: var(--bg);
-      z-index: 100;
-      padding-top: var(--safe-top);
-      transition: opacity 0.6s ease;
-    }
+    .panel { flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:.8rem; margin-top:45vh; -webkit-overflow-scrolling:touch; }
+    
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem; position:relative; transition:0.2s; }
+    .card.active { border-color:var(--anchor); background:rgba(0,255,200,0.05); }
+    .card.shattered { border-left:4px solid var(--shatter); }
+    .card.locked { border-left:4px solid var(--anchor); }
 
-    #boot.hidden { opacity: 0; pointer-events: none; }
-
-    .boot-anchor {
-      font-family: var(--display);
-      font-size: clamp(3rem, 15vw, 6rem);
-      font-weight: 800;
-      color: var(--anchor);
-      text-shadow: 0 0 40px rgba(0,255,200,0.4);
-    }
-
-    /* ── MAIN FORGE ── */
-    #forge {
-      position: fixed; inset: 0;
-      display: flex; flex-direction: column;
-      padding-top: var(--safe-top);
-      padding-bottom: var(--safe-bot);
-      opacity: 0;
-      transition: opacity 0.6s ease 0.3s;
-    }
-
-    #forge.visible { opacity: 1; }
-
-    .forge-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1rem 1.25rem 0.75rem;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .forge-title {
-      font-family: var(--display);
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--anchor);
-    }
-
-    .identity-panel {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1rem 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .identity-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1rem;
-      position: relative;
-    }
-
-    .identity-card.active { border-color: var(--anchor); }
-
-    .pnba-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.5rem;
-      margin-top: 0.75rem;
-    }
-
-    .axis-bar {
-      width: 100%;
-      height: 40px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 4px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .axis-fill {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .axis-fill.P { background: #7b4fff; }
-    .axis-fill.N { background: #00ffc8; }
-    .axis-fill.B { background: #ff6b35; }
-    .axis-fill.A { background: #ffcc00; }
-
-    .action-strip {
-      display: flex;
-      padding: 0.75rem 1.25rem;
-      gap: 0.75rem;
-      border-top: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .action-btn {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.65rem;
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      cursor: pointer;
-    }
+    .pnba-row { display:grid; grid-template-columns:repeat(4,1fr); gap:.5rem; margin-top:.8rem; }
+    .ax { display:flex; flex-direction:column; align-items:center; }
+    .ax-bar { width:100%; height:30px; background:rgba(255,255,255,.05); border-radius:4px; position:relative; overflow:hidden; }
+    .ax-fill { position:absolute; bottom:0; left:0; right:0; transition:height .3s; }
+    .ax-fill.P { background:#7b4fff; }
+    .ax-fill.N { background:#00ffc8; }
+    .ax-fill.B { background:#ff6b35; }
+    .ax-fill.A { background:#ffcc00; }
+    
+    .strip { display:flex; padding:1rem; gap:.8rem; background:var(--bg); border-top:1px solid var(--border); }
+    .btn { flex:1; background:var(--surface); border:1px solid var(--border); padding:.8rem; color:var(--text); border-radius:8px; font-size:.7rem; cursor:pointer; font-family: inherit; }
+    .btn:active { color:var(--anchor); border-color:var(--anchor); }
   </style>
 </head>
 <body>
 
+<canvas id="viewport"></canvas>
+
 <div id="boot">
-  <div class="boot-anchor">1.369</div>
-  <div class="boot-log" id="bootLog" style="margin-top: 2rem; font-size: 0.6rem; color: var(--dim);"></div>
+  <div class="boot-num">1.369</div>
+  <div id="bootLog"></div>
 </div>
 
 <div id="forge">
-  <header class="forge-header">
-    <div class="forge-title">AxiomForge</div>
-    <div class="tick-display" id="tickDisplay" style="font-size: 0.65rem; color: var(--anchor);">N:0</div>
-  </header>
-
-  <canvas id="viewport"></canvas>
-
-  <div class="identity-panel" id="identityPanel"></div>
-
-  <div class="action-strip">
-    <button class="action-btn" onclick="doPulse()">⟳ PULSE</button>
-    <button class="action-btn" onclick="doTension()">⊥ TENSION</button>
-    <button class="action-btn" onclick="doSpawn()">+ SPAWN</button>
+  <div class="hdr">
+    <div class="hdr-title">AxiomForge</div>
+    <div id="tickDisp" style="font-size:.6rem; color:var(--anchor)">N:0</div>
+  </div>
+  <div class="panel" id="panel"></div>
+  <div class="strip">
+    <button class="btn" onclick="pulseWorld()">⟳ PULSE</button>
+    <button class="btn" onclick="spawnId()">+ SPAWN</button>
+    <button class="btn" onclick="applyTension()">⊥ TENSION</button>
   </div>
 </div>
 
-<script type="module">
-  import {
-    SOVEREIGN_ANCHOR, TORSION_LIMIT, MATERIALS, 
-    torsion, phaseState, pulseTick, applyTensionShift, identityMass,
-    PHASE_LOCKED, SHATTER_EVENT
-  } from './axioms/kernel.js';
+<script>
+  // --- KERNEL CONSTANTS ---
+  const SOVEREIGN_ANCHOR = 1.369;
+  const TORSION_LIMIT = 0.2;
 
-  import { boot, recordEvent, currentTick } from './axioms/ledger.js';
+  let world = [
+    {P:8.0, N:5.0, B:0.8, A:5.0, label:'steel'},
+    {P:1.0, N:3.0, B:0.1, A:3.0, label:'water'},
+    {P:9.0, N:0.1, B:0.5, A:0.1, label:'obsidian'}
+  ];
+  let activeId = world[0];
+  let tickCount = 0;
 
-  let world = {
-    identities: [
-      { ...MATERIALS.STEEL,    label: 'steel'    },
-      { ...MATERIALS.WATER,    label: 'water'    },
-      { ...MATERIALS.OBSIDIAN, label: 'obsidian' },
-    ],
-    selectedIdx: 0
-  };
-
+  // --- 3D VIEWPORT ENGINE (CANVAS 2D) ---
   const canvas = document.getElementById('viewport');
   const ctx = canvas.getContext('2d');
-
+  
   function resize() {
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight * 0.45;
   }
-  window.onresize = resize;
+  window.onresize = resize; 
   resize();
 
-  // ── AXIOMATIC RENDER ──
   function draw() {
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = '#050508';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    world.identities.forEach((id, i) => {
-      // Manifest position purely from N (Neutral) and Index
-      const x = (canvas.width / (world.identities.length + 1)) * (i + 1);
-      const y = (canvas.height / 2) + (Math.sin(id.N) * 20); // N governs the oscillation
-      
-      const τ = torsion(id);
-      const isShattered = τ > TORSION_LIMIT;
-      const size = 20 + (id.P * 4); // P governs magnitude
+    
+    world.forEach((id, i) => {
+      const x = (canvas.width / (world.length + 1)) * (i + 1);
+      const y = canvas.height / 2;
+      const size = id.P * 5;
+      const torsion = id.B / id.P;
+      const isShattered = torsion > TORSION_LIMIT;
 
       ctx.beginPath();
       ctx.strokeStyle = isShattered ? '#ff3a3a' : '#00ffc8';
-      ctx.lineWidth = (world.selectedIdx === i) ? 3 : 1;
-
-      // Hexagonal manifestation
-      for(let j=0; j<6; j++) {
+      ctx.lineWidth = (id === activeId) ? 3 : 1;
+      
+      // Render as Rotating pNBA "Atoms"
+      for(let j=0; j<6; j++){
         const angle = (j * Math.PI) / 3 + (id.N / 10);
-        ctx.lineTo(x + Math.cos(angle) * size, y + Math.sin(angle) * size);
+        const px = x + Math.cos(angle) * size;
+        const py = y + Math.sin(angle) * size;
+        j === 0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
       }
       ctx.closePath();
       ctx.stroke();
 
-      if(world.selectedIdx === i) {
+      if(id === activeId) {
         ctx.fillStyle = 'rgba(0, 255, 200, 0.05)';
         ctx.fill();
       }
@@ -248,70 +134,63 @@
     requestAnimationFrame(draw);
   }
 
+  // --- RENDER UI ---
   function render() {
-    const panel = document.getElementById('identityPanel');
-    document.getElementById('tickDisplay').textContent = `N:${currentTick()}`;
-    
-    panel.innerHTML = world.identities.map((id, i) => {
-      const τ = torsion(id);
-      const state = phaseState(id);
+    const panel = document.getElementById('panel');
+    document.getElementById('tickDisp').textContent = `N:${tickCount.toFixed(2)}`;
+    panel.innerHTML = world.map((id, i) => {
+      const tau = id.B / id.P;
+      const st = tau < TORSION_LIMIT ? 'locked' : 'shattered';
       return `
-        <div class="identity-card ${world.selectedIdx === i ? 'active' : ''}" onclick="window.select(${i})">
-          <div style="font-family:'Syne'; font-size:0.8rem; font-weight:800; color:var(--anchor)">${id.label.toUpperCase()}</div>
-          <div class="pnba-grid">
-            ${['P','N','B','A'].map(axis => `
-              <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-                <div class="axis-bar"><div class="axis-fill ${axis}" style="height:${(id[axis]/10)*100}%"></div></div>
-                <div style="font-size:0.5rem; color:var(--dim)">${axis}</div>
-              </div>
-            `).join('')}
+        <div class="card ${st} ${id === activeId ? 'active' : ''}" onclick="select(${i})">
+          <div style="font-size:.7rem; font-weight:800; color:var(--anchor)">${id.label.toUpperCase()}</div>
+          <div class="pnba-row">
+            <div class="ax"><div class="ax-bar"><div class="ax-fill P" style="height:${(id.P/10)*100}%"></div></div><div style="font-size:.5rem">P</div></div>
+            <div class="ax"><div class="ax-bar"><div class="ax-fill N" style="height:${((id.N % 10)/10)*100}%"></div></div><div style="font-size:.5rem">N</div></div>
+            <div class="ax"><div class="ax-bar"><div class="ax-fill B" style="height:${(id.B/10)*100}%"></div></div><div style="font-size:.5rem">B</div></div>
+            <div class="ax"><div class="ax-bar"><div class="ax-fill A" style="height:${(id.A/10)*100}%"></div></div><div style="font-size:.5rem">A</div></div>
           </div>
-          <div style="font-size:0.5rem; color:var(--dim); margin-top:8px;">
-            τ: ${τ.toFixed(3)} | IM: ${identityMass(id).toFixed(2)} | STATE: ${state}
-          </div>
+          <div style="font-size:.5rem; margin-top:.5rem; color:var(--dim)">τ: ${tau.toFixed(3)}</div>
         </div>
       `;
     }).join('');
   }
 
-  // ── ACTIONS ──
-  window.select = (i) => { world.selectedIdx = i; render(); };
-
-  window.doPulse = async () => {
-    world.identities = world.identities.map(pulseTick);
-    for (const id of world.identities) await recordEvent(id, 'PULSE');
+  // --- ACTIONS ---
+  window.select = (i) => { activeId = world[i]; render(); };
+  
+  window.pulseWorld = () => {
+    tickCount += SOVEREIGN_ANCHOR;
+    world.forEach(id => id.N += SOVEREIGN_ANCHOR);
     render();
   };
 
-  window.doTension = async () => {
-    if (world.identities.length < 2) return;
-    const { source, target } = applyTensionShift(world.identities[0], world.identities[1], 0.5);
-    world.identities[0] = source;
-    world.identities[1] = target;
+  window.spawnId = () => {
+    world.push({P:5, N:tickCount, B:0.5, A:1, label:'atom_'+world.length});
     render();
   };
 
-  window.doSpawn = () => {
-    world.identities.push({ ...MATERIALS.STEEL, label: 'atom_' + world.identities.length });
+  window.applyTension = () => {
+    if(!activeId) return;
+    activeId.B += 0.5;
     render();
   };
 
-  // ── BOOT ──
-  async function main() {
+  // --- BOOT SEQUENCE ---
+  (async function() {
     const log = document.getElementById('bootLog');
-    const steps = ["Kernel Self-Test...", "Axiom Manifest...", "Holding."];
+    const steps = ["Kernel Link...", "Viewport Manifest...", "Holding."];
     for(let s of steps) {
-      let d = document.createElement('div'); d.textContent = "✓ " + s;
-      log.appendChild(d); await new Promise(r => setTimeout(r, 400));
+      let d = document.createElement('div');
+      d.textContent = "✓ " + s;
+      log.appendChild(d);
+      await new Promise(r => setTimeout(r, 400));
     }
-    await boot();
     document.getElementById('boot').classList.add('hidden');
     document.getElementById('forge').classList.add('visible');
     draw();
     render();
-  }
-  main();
+  })();
 </script>
-
 </body>
 </html>
