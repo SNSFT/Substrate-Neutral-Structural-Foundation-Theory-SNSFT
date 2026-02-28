@@ -2,144 +2,271 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AxiomForge Minimal pNBA Test — 2026 Open Interop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050508">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>AxiomForge Dev :: [9,9,9,9]</title>
   <style>
-    body { margin:0; background:#050508; color:#e8e8f0; font-family:monospace; overflow:hidden; }
-    canvas { display:block; width:100vw; height:100vh; }
-    #info { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:4px; font-size:12px; }
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+    :root {
+      --anchor:#00ffc8; --shatter:#ff3a3a; --bg:#050508;
+      --surface:#0d0d14; --border:rgba(0,255,200,0.12);
+      --text:#e8e8f0; --dim:rgba(232,232,240,0.4);
+      --safe-top:env(safe-area-inset-top,0px); --safe-bot:env(safe-area-inset-bottom,0px);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none}
+
+    #viewport { position:fixed; top:0; left:0; width:100%; height:45%; background:#000; z-index:1; border-bottom:1px solid var(--border); touch-action: none; }
+
+    #boot { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg); z-index:100; transition:opacity .5s ease; }
+    #boot.hidden { opacity:0; pointer-events:none; }
+    .boot-num { font-family:'Syne',sans-serif; font-size:4rem; font-weight:800; color:var(--anchor); text-shadow:0 0 30px var(--anchor); }
+    #bootLog { margin-top:1.5rem; font-size:.6rem; color:var(--anchor); line-height:1.8; max-width: 80vw; }
+
+    #forge { position:fixed; inset:0; display:flex; flex-direction:column; padding-top:var(--safe-top); padding-bottom:var(--safe-bot); z-index:2; opacity:0; pointer-events:none; transition:opacity .5s; }
+    #forge.visible { opacity:1; pointer-events:all; }
+    
+    .hdr { display:flex; align-items:center; justify-content:space-between; padding:1rem; border-bottom:1px solid var(--border); background:rgba(5,5,8,0.85); backdrop-filter:blur(8px); }
+    .hdr-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:var(--anchor); }
+
+    .panel { flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:.8rem; margin-top:45vh; -webkit-overflow-scrolling:touch; }
+    
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem; position:relative; transition:0.2s; }
+    .card.active { border-color:var(--anchor); background:rgba(0,255,200,0.05); }
+    .card.shattered { border-left:4px solid var(--shatter); }
+
+    .pnba-row { display:grid; grid-template-columns:repeat(4,1fr); gap:.5rem; margin-top:.8rem; }
+    .ax { display:flex; flex-direction:column; align-items:center; }
+    .ax-bar { width:100%; height:30px; background:rgba(255,255,255,.05); border-radius:4px; position:relative; overflow:hidden; }
+    .ax-fill { position:absolute; bottom:0; left:0; right:0; transition:height 0.3s; }
+    .ax-fill.P { background:#7b4fff; }
+    .ax-fill.N { background:#00ffc8; }
+    .ax-fill.B { background:#ff6b35; }
+    .ax-fill.A { background:#ffcc00; }
+    
+    .strip { display:flex; padding:1rem; gap:.8rem; background:var(--bg); border-top:1px solid var(--border); }
+    .btn { flex:1; background:var(--surface); border:1px solid var(--border); padding:.8rem; color:var(--text); border-radius:8px; font-size:.7rem; cursor:pointer; font-family: inherit; }
+    .btn:active { color:var(--anchor); border-color:var(--anchor); }
   </style>
 </head>
 <body>
 
-<canvas id="canvas"></canvas>
-<div id="info">pNBA Test — Drag points • Click Pulse • Right-click Tension • Export JSON</div>
+<canvas id="viewport"></canvas>
+
+<div id="boot">
+  <div class="boot-num">1.369</div>
+  <div id="bootLog"></div>
+</div>
+
+<div id="forge">
+  <div class="hdr">
+    <div class="hdr-title">AxiomForge Dev</div>
+    <div id="tickDisp" style="font-size:.6rem; color:var(--anchor)">N:0</div>
+  </div>
+  <div class="panel" id="panel"></div>
+  <div class="strip">
+    <button class="btn" onclick="pulseWorld()">⟳ PULSE</button>
+    <button class="btn" onclick="spawnId()">+ SPAWN</button>
+    <button class="btn" onclick="applyTension()">⊥ TENSION</button>
+    <button class="btn" onclick="exportPNBA()">↓ EXPORT JSON</button>
+    <button class="btn" onclick="document.getElementById('importFile').click()">↑ IMPORT JSON</button>
+    <input type="file" id="importFile" style="display:none" accept=".json">
+  </div>
+</div>
 
 <script>
 // ====================== pNBA CORE ======================
-// Each point is a pure pNBA vector: {P, N, B, A, x, y}
 let points = [];
-let activePoint = null;
+let activeId = null;
+let tickCount = 0;
+let isDragging = false;
 
-const canvas = document.getElementById('canvas');
+const canvas = document.getElementById('viewport');
 const ctx = canvas.getContext('2d');
+
+// WebGPU fallback detection
+let gpuDevice = null;
+let useWebGPU = false;
+if (navigator.gpu) {
+  navigator.gpu.requestAdapter().then(adapter => {
+    if (adapter) {
+      adapter.requestDevice().then(device => {
+        gpuDevice = device;
+        useWebGPU = true;
+        console.log('WebGPU enabled');
+      });
+    }
+  });
+}
 
 function resize() {
   canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.height = window.innerHeight * 0.45;
 }
 window.addEventListener('resize', resize);
 resize();
 
-// Initialize test points (pNBA data)
+// Initialize test points
 function initPoints() {
   points = [
-    {P: 8.0, N: 5.0, B: 0.8, A: 5.0, x: 300, y: 300, label: 'metal'},
-    {P: 1.0, N: 3.0, B: 0.1, A: 3.0, x: 500, y: 400, label: 'flesh'},
-    {P: 9.0, N: 0.1, B: 0.5, A: 0.1, x: 700, y: 300, label: 'obsidian'},
-    {P: 4.0, N: 7.0, B: 0.3, A: 6.0, x: 400, y: 500, label: 'water'}
+    {P:8.0, N:5.0, B:0.8, A:5.0, label:'steel', x:canvas.width*0.3, y:canvas.height*0.5},
+    {P:1.0, N:3.0, B:0.1, A:3.0, label:'water', x:canvas.width*0.5, y:canvas.height*0.6},
+    {P:9.0, N:0.1, B:0.5, A:0.1, label:'obsidian', x:canvas.width*0.7, y:canvas.height*0.5}
   ];
 }
 
-// Render loop
-function draw() {
-  ctx.fillStyle = '#050508';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  points.forEach(p => {
-    const size = p.P * 8;
-    const torsion = p.B / p.P;
-    const color = torsion > 0.2 ? '#ff3a3a' : '#00ffc8';
-
-    ctx.beginPath();
-    ctx.fillStyle = color;
-    ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Label
-    ctx.fillStyle = '#e8e8f0';
-    ctx.font = '10px monospace';
-    ctx.fillText(p.label, p.x - 20, p.y + size + 15);
-  });
-
-  requestAnimationFrame(draw);
-}
-
-// Mouse / Touch interaction
-let isDragging = false;
-
+// Touch/mouse handling
 canvas.addEventListener('pointerdown', e => {
   const rect = canvas.getBoundingClientRect();
   const mx = e.clientX - rect.left;
   const my = e.clientY - rect.top;
 
-  activePoint = points.find(p => {
+  activeId = points.find(p => {
     const dx = mx - p.x;
     const dy = my - p.y;
-    return Math.sqrt(dx*dx + dy*dy) < 40;
+    return Math.hypot(dx, dy) < 40;
   });
 
-  if (activePoint) isDragging = true;
+  if (activeId) {
+    isDragging = true;
+    if (navigator.vibrate) navigator.vibrate(10); // light haptic
+  }
 });
 
-canvas.addEventListener('pointermove', e => {
-  if (!isDragging || !activePoint) return;
+window.addEventListener('pointermove', e => {
+  if (!isDragging || !activeId) return;
   const rect = canvas.getBoundingClientRect();
-  activePoint.x = e.clientX - rect.left;
-  activePoint.y = e.clientY - rect.top;
+  activeId.x = e.clientX - rect.left;
+  activeId.y = e.clientY - rect.top;
+  // Density haptic feedback (stronger vibration for higher B)
+  if (navigator.vibrate) {
+    const intensity = Math.min(100, activeId.B * 200);
+    navigator.vibrate(intensity);
+  }
 });
 
-canvas.addEventListener('pointerup', () => { isDragging = false; });
+window.addEventListener('pointerup', () => { isDragging = false; });
 
-// Pulse (sovereign frequency simulation)
-window.pulse = () => {
-  points.forEach(p => {
-    p.N += 1.369;        // Sovereign anchor pulse
-    p.B = Math.max(0, p.B + (Math.random() - 0.5) * 0.1);
-  });
+// Pulse (sovereign frequency)
+window.pulseWorld = () => {
+  tickCount += 1.369;
+  points.forEach(id => id.N += 1.369);
+  if (navigator.vibrate) navigator.vibrate(20); // pulse haptic
+  render();
 };
 
-// Tension application (right click on point)
-canvas.addEventListener('contextmenu', e => {
-  e.preventDefault();
-  const rect = canvas.getBoundingClientRect();
-  const mx = e.clientX - rect.left;
-  const my = e.clientY - rect.top;
-
-  const target = points.find(p => {
-    const dx = mx - p.x;
-    const dy = my - p.y;
-    return Math.sqrt(dx*dx + dy*dy) < 40;
+// Spawn new point
+window.spawnId = () => {
+  points.push({
+    P:5, N:tickCount, B:0.5, A:1,
+    label:'atom_'+points.length,
+    x: canvas.width/2 + Math.random()*200 - 100,
+    y: canvas.height/2 + Math.random()*200 - 100
   });
+  render();
+};
 
-  if (target) target.B += 0.5; // Increase tension
-});
+// Apply tension
+window.applyTension = () => {
+  if (!activeId) return;
+  activeId.B += 0.5;
+  if (navigator.vibrate) navigator.vibrate(30); // tension haptic
+  render();
+};
 
-// Export as pNBA JSON (interoperable data)
+// Export pNBA JSON
 window.exportPNBA = () => {
   const data = points.map(p => ({
-    P: p.P, N: p.N, B: p.B, A: p.A,
-    label: p.label
+    P: p.P, N: p.N, B: p.B, A: p.A, label: p.label
   }));
   const json = JSON.stringify(data, null, 2);
   const blob = new Blob([json], {type: 'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'pnba-test.json';
+  a.download = 'pnba-export.json';
   a.click();
 };
 
-// Init
-initPoints();
-draw();
-
-// Keyboard shortcuts for testing
-document.addEventListener('keydown', e => {
-  if (e.key === 'p') pulse();
-  if (e.key === 'e') exportPNBA();
+// Import pNBA JSON
+document.getElementById('importFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = event => {
+    try {
+      const imported = JSON.parse(event.target.result);
+      points = imported.map(p => ({...p, x: canvas.width/2, y: canvas.height/2}));
+      render();
+    } catch (err) {
+      alert('Invalid JSON');
+    }
+  };
+  reader.readAsText(file);
 });
-</script>
 
+// Render (2D fallback, WebGPU later)
+function render() {
+  ctx.fillStyle = '#050508';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  points.forEach((id, i) => {
+    if (id.x === undefined) {
+      id.x = (canvas.width / (points.length + 1)) * (i + 1);
+      id.y = canvas.height / 2;
+    }
+
+    const size = id.P * 8;
+    const torsion = id.B / id.P;
+    const color = torsion > 0.2 ? '#ff3a3a' : '#00ffc8';
+
+    ctx.beginPath();
+    ctx.fillStyle = color;
+    ctx.arc(id.x, id.y, size, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#e8e8f0';
+    ctx.font = '10px monospace';
+    ctx.fillText(id.label, id.x - 20, id.y + size + 15);
+  });
+
+  document.getElementById('tickDisp').textContent = `N:${tickCount.toFixed(2)}`;
+  document.getElementById('panel').innerHTML = points.map((id, i) => {
+    const tau = id.B / id.P;
+    const st = tau < 0.2 ? 'locked' : 'shattered';
+    return `
+      <div class="card ${st} \( {id === activeId ? 'active' : ''}" onclick="select( \){i})">
+        <div style="font-size:.7rem; font-weight:800; color:var(--anchor)">${id.label.toUpperCase()}</div>
+        <div class="pnba-row">
+          <div class="ax"><div class="ax-bar"><div class="ax-fill P" style="height:${(id.P/10)*100}%"></div></div><div>P</div></div>
+          <div class="ax"><div class="ax-bar"><div class="ax-fill N" style="height:${(id.N % 10)/10*100}%"></div></div><div>N</div></div>
+          <div class="ax"><div class="ax-bar"><div class="ax-fill B" style="height:${(id.B/10)*100}%"></div></div><div>B</div></div>
+          <div class="ax"><div class="ax-bar"><div class="ax-fill A" style="height:${(id.A/10)*100}%"></div></div><div>A</div></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.select = i => { activeId = points[i]; render(); };
+
+// Boot sequence
+(async () => {
+  const log = document.getElementById('bootLog');
+  const steps = ["Kernel Link...", "Viewport Manifest...", "Holding."];
+  for (let s of steps) {
+    let d = document.createElement('div');
+    d.textContent = "✓ " + s;
+    log.appendChild(d);
+    await new Promise(r => setTimeout(r, 400));
+  }
+  document.getElementById('boot').classList.add('hidden');
+  document.getElementById('forge').classList.add('visible');
+  initPoints();
+  render();
+})();
+</script>
 </body>
 </html>
