@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AxiomForge Minimal pNBA Test — 2026 Open Interop</title>
+  <style>
+    body { margin:0; background:#050508; color:#e8e8f0; font-family:monospace; overflow:hidden; }
+    canvas { display:block; width:100vw; height:100vh; }
+    #info { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:4px; font-size:12px; }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+<div id="info">pNBA Test — Drag points • Click Pulse • Right-click Tension • Export JSON</div>
+
+<script>
+// ====================== pNBA CORE ======================
+// Each point is a pure pNBA vector: {P, N, B, A, x, y}
+let points = [];
+let activePoint = null;
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Initialize test points (pNBA data)
+function initPoints() {
+  points = [
+    {P: 8.0, N: 5.0, B: 0.8, A: 5.0, x: 300, y: 300, label: 'metal'},
+    {P: 1.0, N: 3.0, B: 0.1, A: 3.0, x: 500, y: 400, label: 'flesh'},
+    {P: 9.0, N: 0.1, B: 0.5, A: 0.1, x: 700, y: 300, label: 'obsidian'},
+    {P: 4.0, N: 7.0, B: 0.3, A: 6.0, x: 400, y: 500, label: 'water'}
+  ];
+}
+
+// Render loop
+function draw() {
+  ctx.fillStyle = '#050508';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  points.forEach(p => {
+    const size = p.P * 8;
+    const torsion = p.B / p.P;
+    const color = torsion > 0.2 ? '#ff3a3a' : '#00ffc8';
+
+    ctx.beginPath();
+    ctx.fillStyle = color;
+    ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Label
+    ctx.fillStyle = '#e8e8f0';
+    ctx.font = '10px monospace';
+    ctx.fillText(p.label, p.x - 20, p.y + size + 15);
+  });
+
+  requestAnimationFrame(draw);
+}
+
+// Mouse / Touch interaction
+let isDragging = false;
+
+canvas.addEventListener('pointerdown', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  activePoint = points.find(p => {
+    const dx = mx - p.x;
+    const dy = my - p.y;
+    return Math.sqrt(dx*dx + dy*dy) < 40;
+  });
+
+  if (activePoint) isDragging = true;
+});
+
+canvas.addEventListener('pointermove', e => {
+  if (!isDragging || !activePoint) return;
+  const rect = canvas.getBoundingClientRect();
+  activePoint.x = e.clientX - rect.left;
+  activePoint.y = e.clientY - rect.top;
+});
+
+canvas.addEventListener('pointerup', () => { isDragging = false; });
+
+// Pulse (sovereign frequency simulation)
+window.pulse = () => {
+  points.forEach(p => {
+    p.N += 1.369;        // Sovereign anchor pulse
+    p.B = Math.max(0, p.B + (Math.random() - 0.5) * 0.1);
+  });
+};
+
+// Tension application (right click on point)
+canvas.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  const target = points.find(p => {
+    const dx = mx - p.x;
+    const dy = my - p.y;
+    return Math.sqrt(dx*dx + dy*dy) < 40;
+  });
+
+  if (target) target.B += 0.5; // Increase tension
+});
+
+// Export as pNBA JSON (interoperable data)
+window.exportPNBA = () => {
+  const data = points.map(p => ({
+    P: p.P, N: p.N, B: p.B, A: p.A,
+    label: p.label
+  }));
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'pnba-test.json';
+  a.click();
+};
+
+// Init
+initPoints();
+draw();
+
+// Keyboard shortcuts for testing
+document.addEventListener('keydown', e => {
+  if (e.key === 'p') pulse();
+  if (e.key === 'e') exportPNBA();
+});
+</script>
+
+</body>
+</html>
