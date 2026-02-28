@@ -46,8 +46,8 @@
     .ax-fill.B { background:#ff6b35; }
     .ax-fill.A { background:#ffcc00; }
     
-    .strip { display:flex; padding:1rem; gap:.8rem; background:var(--bg); border-top:1px solid var(--border); }
-    .btn { flex:1; background:var(--surface); border:1px solid var(--border); padding:.8rem; color:var(--text); border-radius:8px; font-size:.7rem; cursor:pointer; font-family: inherit; }
+    .strip { display:flex; flex-wrap:wrap; padding:1rem; gap:.8rem; background:var(--bg); border-top:1px solid var(--border); }
+    .btn { flex:1 1 30%; background:var(--surface); border:1px solid var(--border); padding:.8rem; color:var(--text); border-radius:8px; font-size:.7rem; cursor:pointer; font-family: inherit; text-align:center; }
     .btn:active { color:var(--anchor); border-color:var(--anchor); }
   </style>
 </head>
@@ -86,7 +86,7 @@ let isDragging = false;
 const canvas = document.getElementById('viewport');
 const ctx = canvas.getContext('2d');
 
-// WebGPU fallback detection
+// WebGPU detection (optional future upgrade)
 let gpuDevice = null;
 let useWebGPU = false;
 if (navigator.gpu) {
@@ -117,47 +117,62 @@ function initPoints() {
   ];
 }
 
-// Touch/mouse handling
-canvas.addEventListener('pointerdown', e => {
+// Get pointer/touch position
+function getPointerPos(e) {
+  e.preventDefault(); // Prevent scroll/pinch
   const rect = canvas.getBoundingClientRect();
-  const mx = e.clientX - rect.left;
-  const my = e.clientY - rect.top;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return {
+    x: clientX - rect.left,
+    y: clientY - rect.top
+  };
+}
 
+// Touch/mouse down
+canvas.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  const pos = getPointerPos(e);
   activeId = points.find(p => {
-    const dx = mx - p.x;
-    const dy = my - p.y;
-    return Math.hypot(dx, dy) < 40;
+    const dx = pos.x - p.x;
+    const dy = pos.y - p.y;
+    return Math.hypot(dx, dy) < 60; // Larger radius for fingers
   });
-
   if (activeId) {
     isDragging = true;
-    if (navigator.vibrate) navigator.vibrate(10); // light haptic
+    if (navigator.vibrate) navigator.vibrate(10);
   }
 });
 
+// Touch/mouse move
 window.addEventListener('pointermove', e => {
   if (!isDragging || !activeId) return;
-  const rect = canvas.getBoundingClientRect();
-  activeId.x = e.clientX - rect.left;
-  activeId.y = e.clientY - rect.top;
-  // Density haptic feedback (stronger vibration for higher B)
+  e.preventDefault();
+  const pos = getPointerPos(e);
+  activeId.x = pos.x;
+  activeId.y = pos.y;
+  // Haptic feedback based on B density
   if (navigator.vibrate) {
     const intensity = Math.min(100, activeId.B * 200);
     navigator.vibrate(intensity);
   }
 });
 
-window.addEventListener('pointerup', () => { isDragging = false; });
+// Touch/mouse up
+window.addEventListener('pointerup', e => {
+  e.preventDefault();
+  isDragging = false;
+});
 
-// Pulse (sovereign frequency)
+// Pulse
 window.pulseWorld = () => {
   tickCount += 1.369;
   points.forEach(id => id.N += 1.369);
-  if (navigator.vibrate) navigator.vibrate(20); // pulse haptic
+  if (navigator.vibrate) navigator.vibrate(20);
   render();
 };
 
-// Spawn new point
+// Spawn
 window.spawnId = () => {
   points.push({
     P:5, N:tickCount, B:0.5, A:1,
@@ -168,15 +183,15 @@ window.spawnId = () => {
   render();
 };
 
-// Apply tension
+// Tension
 window.applyTension = () => {
   if (!activeId) return;
   activeId.B += 0.5;
-  if (navigator.vibrate) navigator.vibrate(30); // tension haptic
+  if (navigator.vibrate) navigator.vibrate(30);
   render();
 };
 
-// Export pNBA JSON
+// Export
 window.exportPNBA = () => {
   const data = points.map(p => ({
     P: p.P, N: p.N, B: p.B, A: p.A, label: p.label
@@ -190,7 +205,7 @@ window.exportPNBA = () => {
   a.click();
 };
 
-// Import pNBA JSON
+// Import
 document.getElementById('importFile').addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;
@@ -207,7 +222,7 @@ document.getElementById('importFile').addEventListener('change', e => {
   reader.readAsText(file);
 });
 
-// Render (2D fallback, WebGPU later)
+// Render
 function render() {
   ctx.fillStyle = '#050508';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
