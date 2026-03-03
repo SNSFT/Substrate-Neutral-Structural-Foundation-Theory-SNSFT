@@ -96,9 +96,9 @@ if (navigator.gpu) {
         gpuDevice = device;
         useWebGPU = true;
         console.log('WebGPU enabled');
-      });
+      }).catch(err => console.error('WebGPU device request failed:', err));
     }
-  });
+  }).catch(err => console.error('WebGPU adapter request failed:', err));
 }
 
 function resize() {
@@ -203,6 +203,7 @@ window.exportPNBA = () => {
   a.href = url;
   a.download = 'pnba-export.json';
   a.click();
+  URL.revokeObjectURL(url); // Clean up
 };
 
 // Import
@@ -216,7 +217,8 @@ document.getElementById('importFile').addEventListener('change', e => {
       points = imported.map(p => ({...p, x: canvas.width/2, y: canvas.height/2}));
       render();
     } catch (err) {
-      alert('Invalid JSON');
+      console.error('Import failed:', err);
+      alert('Invalid JSON – check file format');
     }
   };
   reader.readAsText(file);
@@ -256,7 +258,7 @@ function render() {
         <div style="font-size:.7rem; font-weight:800; color:var(--anchor)">${id.label.toUpperCase()}</div>
         <div class="pnba-row">
           <div class="ax"><div class="ax-bar"><div class="ax-fill P" style="height:${(id.P/10)*100}%"></div></div><div>P</div></div>
-          <div class="ax"><div class="ax-bar"><div class="ax-fill N" style="height:${(id.N % 10)/10*100}%"></div></div><div>N</div></div>
+          <div class="ax"><div class="ax-bar"><div class="ax-fill N" style="height:${((id.N % 10)/10)*100}%"></div></div><div>N</div></div>
           <div class="ax"><div class="ax-bar"><div class="ax-fill B" style="height:${(id.B/10)*100}%"></div></div><div>B</div></div>
           <div class="ax"><div class="ax-bar"><div class="ax-fill A" style="height:${(id.A/10)*100}%"></div></div><div>A</div></div>
         </div>
@@ -265,7 +267,10 @@ function render() {
   }).join('');
 }
 
-window.select = i => { activeId = points[i]; render(); };
+window.select = i => { 
+  activeId = points[i]; 
+  render(); 
+};
 
 // Boot sequence
 (async () => {
