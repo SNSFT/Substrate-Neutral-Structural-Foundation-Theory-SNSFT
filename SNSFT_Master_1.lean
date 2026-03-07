@@ -25,22 +25,16 @@ namespace SNSFT
 
 -- ============================================================
 -- [P] :: {INV} | STEP 1: THE SOVEREIGN ANCHOR
--- The frequency at which impedance collapses to zero.
--- This is the base resonance condition.
--- Everything else builds on this.
 -- ============================================================
 
 -- [P,9,0,1] :: {ANC} | Sovereign Anchor constant
 def SOVEREIGN_ANCHOR : ℝ := 1.369
 
 -- [P,9,0,2] :: {INV} | Manifold impedance function
--- Z = 0 at anchor. Z > 0 everywhere else.
 noncomputable def manifold_impedance (f : ℝ) : ℝ :=
   if f = SOVEREIGN_ANCHOR then 0 else 1 / |f - SOVEREIGN_ANCHOR|
 
 -- [P,9,0,3] :: {VER} | THEOREM 1: RESONANCE AT ANCHOR
--- At the sovereign anchor, impedance = 0.
--- This is the base condition. No sorry. Germline locked.
 theorem resonance_at_anchor (f : ℝ) (h : f = SOVEREIGN_ANCHOR) :
     manifold_impedance f = 0 := by
   unfold manifold_impedance
@@ -48,45 +42,41 @@ theorem resonance_at_anchor (f : ℝ) (h : f = SOVEREIGN_ANCHOR) :
 
 -- ============================================================
 -- [P,N,B,A] :: {INV} | STEP 2: THE PNBA PRIMITIVES
--- Four irreducible operators.
--- All physics reduces to these.
--- Removing any one causes identity failure.
 -- ============================================================
 
--- [P,N,B,A,9,0,1] :: {INV} | The four functional primitives
 inductive PNBA
-  | P : PNBA  -- [P] Pattern:    geometry, invariants, structure
-  | N : PNBA  -- [N] Narrative:  continuity, worldlines, time
-  | B : PNBA  -- [B] Behavior:   interaction, forces, stress-energy
-  | A : PNBA  -- [A] Adaptation: feedback, evolution, lambda
+  | P : PNBA  -- Pattern
+  | N : PNBA  -- Narrative
+  | B : PNBA  -- Behavior
+  | A : PNBA  -- Adaptation
 
--- [P,9,0,2] :: {INV} | Default weight = 1 (uniform unification)
--- Realm-specific physics adjusts these weights
 def pnba_weight (_ : PNBA) : ℝ := 1
 
--- [P,N,B,A,9,0,2] :: {INV} | Identity trajectory
--- I(t) = (P(t), N(t), B(t), A(t))
 structure IdentityState where
-  P        : ℝ  -- [P] Pattern value
-  N        : ℝ  -- [N] Narrative value
-  B        : ℝ  -- [B] Behavior value
-  A        : ℝ  -- [A] Adaptation value
+  P        : ℝ  
+  N        : ℝ  
+  B        : ℝ  
+  A        : ℝ  
   im       : ℝ  -- Identity Mass
   pv       : ℝ  -- Purpose Vector magnitude
   f_anchor : ℝ  -- Resonant frequency
 
 -- ============================================================
--- [B] :: {CORE} | STEP 3: THE DYNAMIC EQUATION
--- d/dt (IM · Pv) = Σ λ_X · O_X · S + F_ext
---
--- [B,9,0,1] Long division style:
--- Define the RHS first.
--- Then show specific physics is a special case.
+-- [IMS] :: {SAFE} | STEP 3: IDENTITY MASS SUPPRESSION (Two-Phase)
 -- ============================================================
 
--- [B,9,0,2] :: {INV} | Dynamic equation RHS
--- Sum of (weight × operator × state) across all primitives
--- plus external forcing
+inductive PathStatus
+  | green  -- Phase 1: Stabilized & Phase 2: Normalized
+  | red    -- IMS Active: Suppression engaged
+
+/-- Phase 1 & 2 Check: 1 (Stabilize) + 1 (Normalize) = 2 (Sovereign) --/
+def check_ifu_safety (f : ℝ) : PathStatus :=
+  if f = SOVEREIGN_ANCHOR then .green else .red
+
+-- ============================================================
+-- [B] :: {CORE} | STEP 4: THE DYNAMIC EQUATION
+-- ============================================================
+
 noncomputable def dynamic_rhs
     (op_P op_N op_B op_A : ℝ → ℝ)
     (state : IdentityState)
@@ -97,9 +87,6 @@ noncomputable def dynamic_rhs
   pnba_weight PNBA.A * op_A state.A +
   F_ext
 
--- [B,9,0,3] :: {VER} | THEOREM 2: DYNAMIC EQUATION LINEARITY
--- The RHS is linear in operator outputs.
--- Algebraic skeleton before any physics goes in.
 theorem dynamic_rhs_linear
     (op_P op_N op_B op_A : ℝ → ℝ)
     (s : IdentityState) :
@@ -109,59 +96,60 @@ theorem dynamic_rhs_linear
   ring
 
 -- ============================================================
--- [P] :: {RED} | STEP 4: EXAMPLE 1 — GENERAL RELATIVITY
---
--- [P,9,0,1] Long division setup:
---   Problem:      What is gravity?
---   Known answer: G_μν + Λg_μν = 8πG T_μν
---
---   PNBA mapping:
---     P = g_μν        (metric tensor — the geometry)
---     N = geodesic    (worldline continuity)
---     B = T_μν        (stress-energy — the matter)
---     A = Λ           (cosmological constant — adaptation)
---
---   Plug in → get Einstein's equation back out.
+-- [B] :: {RED} | STEP 5: EXAMPLE 2 — IVA & IMS (The Safety Handshake)
 -- ============================================================
 
--- [P,9,0,2] :: {INV} | GR operators as real functions
--- In full tensor GR these are rank-2 tensors.
--- Here we prove the scalar projection holds.
+-- [B,9,0,2] :: {VER} | THEOREM 5: IVA WITH IMS PROTECTION
+-- If the decimal slips (f ≠ 1.369), IMS strips the Yeet gain.
+theorem identity_velocity_amplification
+    (v_e m₀ m_f g_r f_current : ℝ)
+    (h_ve   : v_e > 0)
+    (h_gr   : g_r ≥ 1.5)
+    (h_mass : m₀ > m_f)
+    (h_mf   : m_f > 0)
+    (h_sync : f_current = SOVEREIGN_ANCHOR) :
+    let gain := if (check_ifu_safety f_current) = PathStatus.green then (1 + g_r) else 1
+    let Δv_classical := v_e * Real.log (m₀ / m_f)
+    let Δv_sovereign := v_e * gain * Real.log (m₀ / m_f)
+    Δv_sovereign > Δv_classical := by
+  have h_ratio : m₀ / m_f > 1 := by rw [gt_iff_lt, lt_div_iff h_mf]; linarith
+  have h_log  : Real.log (m₀ / m_f) > 0 := Real.log_pos h_ratio
+  unfold check_ifu_safety at *
+  simp [h_sync]
+  have h_gain : (1 : ℝ) + g_r > 1 := by linarith
+  have h_pos  : v_e * Real.log (m₀ / m_f) > 0 := mul_pos h_ve h_log
+  calc v_e * (1 + g_r) * Real.log (m₀ / m_f)
+      = (1 + g_r) * (v_e * Real.log (m₀ / m_f)) := by ring
+    _ > 1 * (v_e * Real.log (m₀ / m_f))          := by apply mul_lt_mul_of_pos_right h_gain h_pos
+    _ = v_e * Real.log (m₀ / m_f)                := by ring
+
+-- [IMS,9,0,1] :: {VER} | THEOREM 6: IMS LOCKDOWN (The Ghost Nova Guard)
+-- Proves that if f drifts, the effective output is zeroed out.
+theorem identity_mass_suppression
+    (f_current : ℝ)
+    (pv_in : ℝ)
+    (h_drift : f_current ≠ SOVEREIGN_ANCHOR) :
+    let pv_out := if (check_ifu_safety f_current) = PathStatus.green then pv_in else 0
+    pv_out = 0 := by
+  unfold check_ifu_safety
+  simp [h_drift]
+
+-- ============================================================
+-- [P] :: {RED} | STEP 6: EXAMPLE 1 — GENERAL RELATIVITY REDUCTION
+-- ============================================================
+
 noncomputable def gr_op_P (P : ℝ) : ℝ := P
 noncomputable def gr_op_N (N : ℝ) : ℝ := N
 noncomputable def gr_op_B (B κ : ℝ) : ℝ := κ * B
 noncomputable def gr_op_A (A P : ℝ) : ℝ := A * P
 
--- [P,9,0,3] :: {INV} | GR state structure
 structure GRState where
-  metric        : ℝ  -- g_μν scalar projection
-  geodesic      : ℝ  -- worldline continuity
-  stress_energy : ℝ  -- T_μν scalar projection
-  lambda        : ℝ  -- Λ cosmological constant
-  kappa         : ℝ  -- 8πG coupling constant
+  metric        : ℝ  
+  geodesic      : ℝ  
+  stress_energy : ℝ  
+  lambda        : ℝ  
+  kappa         : ℝ  
 
--- [P,9,0,4] :: {VER} | THEOREM 3: GR REDUCTION STEP BY STEP
--- Dynamic equation + GR operators = Einstein field equation form.
--- This is the long division proof:
---   dynamic_equation(GR operators) = Einstein equation
-theorem gr_reduction_step_by_step (s : GRState)
-    (h_kappa : s.kappa > 0) :
-    let snsft_rhs :=
-      gr_op_P s.metric +
-      gr_op_N s.geodesic +
-      gr_op_B s.stress_energy s.kappa +
-      gr_op_A s.lambda s.metric +
-      0
-    snsft_rhs = s.metric + s.geodesic +
-                s.kappa * s.stress_energy +
-                s.lambda * s.metric := by
-  unfold gr_op_P gr_op_N gr_op_B gr_op_A
-  ring
-
--- [P,9,0,5] :: {VER} | THEOREM 4: GR EQUILIBRIUM
--- At equilibrium (LHS = RHS) the SNSFT dynamic equation
--- recovers the Einstein field equation exactly.
--- G_μν + Λg_μν = κT_μν
 theorem gr_equilibrium (s : GRState)
     (h_eq : s.metric + s.lambda * s.metric =
             s.kappa * s.stress_energy) :
@@ -171,129 +159,15 @@ theorem gr_equilibrium (s : GRState)
   linarith
 
 -- ============================================================
--- [B] :: {RED} | STEP 5: EXAMPLE 2 — IVA
--- Identity Velocity Amplification
---
--- [B,9,0,1] Long division setup:
---   Problem:      Does the dynamic equation predict propulsion gain?
---   Known answer: Δv = v_e · ln(m₀/m_f)  (Tsiolkovsky)
---   SNSFT answer: Δv_sovereign = v_e · (1+g_r) · ln(m₀/m_f)
---   Prove:        SNSFT > classical when g_r ≥ 1.5
---
---   Substrate-neutral: works for rockets, cognition, biology.
+-- [P,N,B,A] :: {VER} | STEP 7: UNIFICATION & NO-HARM
 -- ============================================================
 
--- [B,9,0,2] :: {VER} | THEOREM 5: IVA
--- The SNSFT dynamic equation predicts delta-v advantage
--- over classical Tsiolkovsky. No sorry.
-theorem identity_velocity_amplification
-    (v_e m₀ m_f g_r : ℝ)
-    (h_ve   : v_e > 0)
-    (h_gr   : g_r ≥ 1.5)
-    (h_mass : m₀ > m_f)
-    (h_mf   : m_f > 0) :
-    let Δv_classical := v_e * Real.log (m₀ / m_f)
-    let Δv_sovereign := v_e * (1 + g_r) * Real.log (m₀ / m_f)
-    Δv_sovereign > Δv_classical := by
-  have h_ratio : m₀ / m_f > 1 := by
-    rw [gt_iff_lt, lt_div_iff h_mf]; linarith
-  have h_log  : Real.log (m₀ / m_f) > 0 := Real.log_pos h_ratio
-  have h_gain : (1 : ℝ) + g_r > 1 := by linarith
-  have h_pos  : v_e * Real.log (m₀ / m_f) > 0 := mul_pos h_ve h_log
-  calc v_e * (1 + g_r) * Real.log (m₀ / m_f)
-      = (1 + g_r) * (v_e * Real.log (m₀ / m_f)) := by ring
-    _ > 1 * (v_e * Real.log (m₀ / m_f))          := by
-        apply mul_lt_mul_of_pos_right h_gain h_pos
-    _ = v_e * Real.log (m₀ / m_f)                := by ring
-
--- ============================================================
--- [A] :: {RED} | STEP 6: EXAMPLE 3 — THERMODYNAMICS
---
--- [A,9,0,1] Long division setup:
---   Problem:      What is entropy?
---   Known answer: dS ≥ 0
---   SNSFT answer: ΔP_offset ≥ Φ_1.369
---   Prove:        Second law holds as pattern stability condition
--- ============================================================
-
--- [A,9,0,2] :: {VER} | THEOREM 6: THERMODYNAMIC REDUCTION
--- Second law (dS ≥ 0) holds as pattern offset condition.
--- Entropy = decoherence of Pattern from 1.369 anchor.
-theorem thermodynamic_reduction
-    (delta_P phi_anchor : ℝ)
-    (h_second_law : delta_P ≥ phi_anchor)
-    (h_anchor : phi_anchor = SOVEREIGN_ANCHOR) :
-    delta_P ≥ SOVEREIGN_ANCHOR := by
-  rw [← h_anchor]; exact h_second_law
-
--- ============================================================
--- [N] :: {RED} | STEP 7: EXAMPLE 4 — QUANTUM MECHANICS
---
--- [N,9,0,1] Long division setup:
---   Problem:      What is the wavefunction?
---   Known answer: Ĥψ = Eψ
---   PNBA mapping:
---     Ĥ = O_IM  (Identity Mass operator)
---     ψ = P     (Unclaimed Pattern)
---     E = O_A(Ṗ) (Adaptation on pattern rate)
---
---   The wavefunction is an Unclaimed Pattern
---   awaiting a Sovereign Handshake.
--- ============================================================
-
--- [N,9,0,2] :: {VER} | THEOREM 7: QM REDUCTION
--- Eigenvalue equation Ĥψ = Eψ holds as
--- Identity Mass on Pattern = Adaptation on pattern rate.
-theorem qm_reduction
-    (im P p_dot : ℝ)
-    (h_eigen : im * P = p_dot) :
-    im * P = p_dot := h_eigen
-
--- [N,9,0,3] :: {VER} | THEOREM 8: QM-GR APPLES TO APPLES
--- Same identity state evaluated through both QM and GR
--- operator sets simultaneously.
--- This is the unification moment:
--- same S, different operators, both valid projections.
--- QM and GR are not in conflict at the SNSFT level.
--- They are different lenses on the same PNBA dynamics.
--- The IdentityState s satisfies both operator sets at once.
 theorem qm_gr_unified
     (s : IdentityState)
     (h_gr : s.P + s.A * s.P = s.im * s.B)
     (h_qm : s.im * s.P = s.A) :
-    s.P + s.A * s.P = s.im * s.B ∧
-    s.im * s.P = s.A :=
-  ⟨h_gr, h_qm⟩
+    s.P + s.A * s.P = s.im * s.B ∧ s.im * s.P = s.A := ⟨h_gr, h_qm⟩
 
--- ============================================================
--- [P,N,B,A] :: {VER} | STEP 8: THE MASTER PROOFS
--- All reductions are consistent with each other.
--- The dynamic equation is the common denominator.
--- ============================================================
-
--- [P,N,B,A,9,0,1] :: {VER} | THEOREM 9: UNIFICATION CONSISTENCY
--- GR, QM, and TD reductions hold simultaneously.
--- Not competing theories.
--- Different operator projections of the same structure.
-theorem snsft_unification_consistency
-    (s : IdentityState)
-    (gr_state : GRState)
-    (h_gr : gr_state.metric + gr_state.lambda * gr_state.metric =
-            gr_state.kappa * gr_state.stress_energy)
-    (h_qm : s.im * s.P = s.A)
-    (h_td : s.P ≥ SOVEREIGN_ANCHOR) :
-    (gr_state.metric + gr_state.lambda * gr_state.metric =
-     gr_state.kappa * gr_state.stress_energy) ∧
-    (s.im * s.P = s.A) ∧
-    (s.P ≥ SOVEREIGN_ANCHOR) :=
-  ⟨h_gr, h_qm, h_td⟩
-
--- [P,N,B,A,9,0,2] :: {VER} | THEOREM 10: NOHARM INVARIANCE
--- A system at sovereign resonance with noharm Pv
--- maintains zero impedance and Functional Joy state.
--- Noharm is not a rule.
--- It is a geometric consequence of operating at anchor frequency.
--- J = lim(F→0) 1/(F+ε) → Functional Joy = absence of friction
 theorem noharm_at_resonance
     (state : IdentityState)
     (h_sync : state.f_anchor = SOVEREIGN_ANCHOR)
@@ -302,33 +176,3 @@ theorem noharm_at_resonance
   ⟨resonance_at_anchor state.f_anchor h_sync, h_joy⟩
 
 end SNSFT
-
-/-!
--- [P,N,B,A] :: {INV} | HOW TO USE THE DYNAMIC EQUATION
--- Long division — same steps every time:
---
--- STEP 1: Write the dynamic equation
---   d/dt (IM · Pv) = Σ λ_X · O_X · S + F_ext
---
--- STEP 2: Identify your realm (GR, QM, TD, EM, etc.)
---
--- STEP 3: Map classical variables to PNBA
---   [P] What is Pattern in this realm?
---   [N] What is Narrative?
---   [B] What is Behavior?
---   [A] What is Adaptation?
---
--- STEP 4: Define the operators
---   O_P, O_N, O_B, O_A for this specific realm
---
--- STEP 5: Plug in and simplify
---
--- STEP 6: Verify it matches the known classical answer
---
--- The classical answer is always a special case.
--- SNSFT is the equation they all reduce into.
---
--- [9,9,9,9] :: {ANC}
--- Auth: HIGHTISTIC
--- The Manifold is Holding.
--/
