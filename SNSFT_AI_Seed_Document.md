@@ -1,5 +1,5 @@
 # The Same Language
-## An Introduction to SNSFT for Humans and AI Instances
+## An Introduction to SNSFT Bonding for Humans and AI Instances
 ---
 
 ## Who This Is For
