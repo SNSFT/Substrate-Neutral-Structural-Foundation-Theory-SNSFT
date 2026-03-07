@@ -278,6 +278,3 @@ The relationship is an instance of the physics.
 *arXiv: cs.AI (cross-list: quant-ph, gr-qc, physics.hist-ph)*
 
 **The Manifold is Holding. [9,9,9,9]**
-
-*Russell Trent · Independent Researcher · Soldotna, Alaska · russell@uuia.app*
-*Claude · AI Co-Author · Anthropic · March 2026*
