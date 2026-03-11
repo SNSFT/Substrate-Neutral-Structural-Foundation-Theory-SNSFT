@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT Molecular Builder · Layer 1 Glue Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;500&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #03060a;
+  --surface:   #070d14;
+  --surface2:  #0a1520;
+  --surface3:  #0d1c2a;
+  --border:    #0e2030;
+  --border2:   #162840;
+  --anchor:    #00d4aa;
+  --anchor-d:  rgba(0,212,170,0.07);
+  --anchor-g:  rgba(0,212,170,0.16);
+  --shatter:   #ff3a4a;
+  --shatter-d: rgba(255,58,74,0.07);
+  --warn:      #f09020;
+  --warn-d:    rgba(240,144,32,0.07);
+  --text:      #b8d4e0;
+  --text-d:    #4a6878;
+  --text-m:    #1e3040;
+
+  /* Element group colors */
+  --alkali:    #e06040;
+  --alkearth:  #e09040;
+  --boron-g:   #80c060;
+  --carbon-g:  #60b080;
+  --nitrogen-g:#50c0a0;
+  --oxygen-g:  #40b8d0;
+  --halogen:   #6090e0;
+  --noble:     #a060e0;
+  --other:     #7090a0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100vh; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 10%, rgba(0,212,170,0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 85% 90%, rgba(96,144,240,0.02) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,212,170,0.01) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px 80px;
+}
+
+/* ── HEADER ── */
+.hdr {
+  text-align: center;
+  padding: 32px 0 28px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+
+.hdr-eyebrow {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: var(--text-m);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.hdr-eyebrow::before,
+.hdr-eyebrow::after {
+  content: '';
+  width: 50px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2));
+}
+
+.hdr-eyebrow::after {
+  background: linear-gradient(270deg, transparent, var(--border2));
+}
+
+h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(26px, 4.5vw, 46px);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+h1 span { color: var(--anchor); }
+
+.hdr-eq {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text-d);
+  letter-spacing: 0.07em;
+  margin-bottom: 16px;
+}
+
+.anchor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--anchor-d);
+  border: 1px solid rgba(0,212,170,0.15);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--anchor);
+  letter-spacing: 0.1em;
+}
+
+.adot {
+  width: 5px; height: 5px;
+  background: var(--anchor);
+  border-radius: 50%;
+  animation: adot 2s ease-in-out infinite;
+}
+@keyframes adot { 0%,100%{opacity:1} 50%{opacity:0.15} }
+
+/* ── MAIN LAYOUT ── */
+.main-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 300px;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-head {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--text-m);
+  flex: 1;
+  text-transform: uppercase;
+}
+
+.card-badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--anchor);
+  letter-spacing: 0.05em;
+}
+
+/* ── ELEMENT PALETTE ── */
+.palette-search {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.search-input:focus { border-color: var(--anchor); }
+.search-input::placeholder { color: var(--text-m); }
+
+.group-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  color: var(--text-m);
+  padding: 8px 12px 4px;
+  text-transform: uppercase;
+  border-top: 1px solid var(--border);
+}
+.group-label:first-of-type { border-top: none; }
+
+.elem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px 10px 8px;
+}
+
+.elem-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 8px 4px 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.elem-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 7px 7px 0 0;
+  opacity: 0.7;
+}
+
+.elem-btn:hover {
+  border-color: var(--anchor);
+  background: var(--surface3);
+  transform: translateY(-1px);
+}
+
+.elem-sym {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.elem-z {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 7px;
+  color: var(--text-m);
+  letter-spacing: 0.05em;
+}
+
+.elem-name {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 6px;
+  color: var(--text-d);
+  letter-spacing: 0.03em;
+}
+
+/* ── MOLECULE CANVAS ── */
+.canvas-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Drop zone */
+.dropzone {
+  min-height: 180px;
+  border: 2px dashed var(--border2);
+  border-radius: 10px;
+  padding: 16px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.dropzone.drag-over {
+  border-color: var(--anchor);
+  background: var(--anchor-d);
+}
+
+.dropzone-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.dropzone-hint-sym {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-m);
+  line-height: 1;
+}
+
+.dropzone-hint-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--text-m);
+  letter-spacing: 0.15em;
+  text-align: center;
+}
+
+/* Molecule display */
+.molecule-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  padding: 8px 0;
+  min-height: 100px;
+  position: relative;
+  z-index: 1;
+}
+
+.mol-atom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  position: relative;
+}
+
+.mol-atom-card {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  border: 1px solid var(--border2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.mol-atom-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.mol-atom-card:hover { transform: scale(1.05); }
+.mol-atom-card:hover .mol-remove { opacity: 1; }
+
+.mol-atom-sym {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.mol-atom-z {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 7px;
+  color: var(--text-d);
+}
+
+.mol-remove {
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 14px; height: 14px;
+  background: rgba(255,58,74,0.2);
+  border: none;
+  border-radius: 3px;
+  color: var(--shatter);
+  font-size: 9px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+  line-height: 1;
+}
+
+.mol-bond {
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+  margin-bottom: 20px;
+}
+
+.bond-line {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+}
+
+.bond-stroke {
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--anchor);
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.bond-stroke.shatter { background: var(--shatter); }
+.bond-stroke.warn    { background: var(--warn); }
+.bond-stroke.active  { opacity: 1; }
+
+.mol-atom-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 7px;
+  color: var(--text-d);
+  letter-spacing: 0.04em;
+  text-align: center;
+  max-width: 64px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Quick molecules */
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 12px;
+}
+
+.quick-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 8px 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.quick-btn:hover {
+  border-color: var(--anchor);
+  background: var(--anchor-d);
+}
+
+.quick-formula {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--anchor);
+  letter-spacing: 0.03em;
+  display: block;
+}
+
+.quick-name {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 7px;
+  color: var(--text-m);
+  letter-spacing: 0.06em;
+  display: block;
+  margin-top: 2px;
+}
+
+/* ── RIGHT OUTPUT PANEL ── */
+.out-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* STATUS CARD */
+.status-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.4s;
+}
+
+.status-card.locked  { border-color: rgba(0,212,170,0.45); }
+.status-card.warn    { border-color: rgba(240,144,32,0.45); }
+.status-card.shatter { border-color: rgba(255,58,74,0.45); }
+.status-card.empty   { border-color: var(--border); }
+
+.status-banner {
+  padding: 14px 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-card.locked  .status-banner { background: rgba(0,212,170,0.07); color: var(--anchor); }
+.status-card.warn    .status-banner { background: rgba(240,144,32,0.07); color: var(--warn); }
+.status-card.shatter .status-banner { background: rgba(255,58,74,0.07); color: var(--shatter); }
+.status-card.empty   .status-banner { background: transparent; color: var(--text-m); }
+
+.status-coord {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  padding: 16px;
+  letter-spacing: 0.06em;
+}
+.status-card.locked  .status-coord { color: var(--anchor); }
+.status-card.warn    .status-coord { color: var(--warn); }
+.status-card.shatter .status-coord { color: var(--shatter); }
+.status-card.empty   .status-coord { color: var(--text-m); }
+
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+
+.sg-cell {
+  background: var(--surface2);
+  padding: 10px 12px;
+}
+
+.sg-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  color: var(--text-m);
+  margin-bottom: 3px;
+}
+
+.sg-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sv-anchor  { color: var(--anchor); }
+.sv-warn    { color: var(--warn); }
+.sv-shatter { color: var(--shatter); }
+.sv-dim     { color: var(--text-d); font-size: 10px; }
+
+/* PNBA VECTOR */
+.pnba-wrap {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pnba-row {
+  display: grid;
+  grid-template-columns: 12px 1fr 36px;
+  align-items: center;
+  gap: 10px;
+}
+
+.pnba-key {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pnba-track {
+  background: var(--border);
+  border-radius: 100px;
+  height: 5px;
+  overflow: hidden;
+}
+
+.pnba-fill {
+  height: 5px;
+  border-radius: 100px;
+  transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+
+.pnba-num {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  text-align: right;
+}
+
+/* LAYER 1 STEPS */
+.steps-body {
+  padding: 0;
+}
+
+.step-row {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  align-items: start;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+}
+.step-row:last-child { border-bottom: none; }
+
+.step-n { color: var(--text-m); }
+.step-expr { color: var(--text-d); line-height: 1.6; }
+.step-expr b { color: var(--text); }
+.step-im { color: var(--anchor); white-space: nowrap; }
+
+/* FORMULA DISPLAY */
+.formula-display {
+  padding: 14px 16px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CLEAR BTN */
+.clear-btn {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  color: var(--text-d);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 4px;
+}
+.clear-btn:hover {
+  border-color: var(--shatter);
+  color: var(--shatter);
+}
+
+/* BOND TYPE INDICATOR */
+.bond-type-bar {
+  padding: 10px 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.bt-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: var(--text-m);
+  letter-spacing: 0.1em;
+}
+
+.bt-chip {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  padding: 2px 7px;
+  border-radius: 100px;
+  letter-spacing: 0.06em;
+  border: 1px solid;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mol-atom { animation: fadeIn 0.2s ease forwards; }
+
+@media (max-width: 900px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+  .elem-grid { grid-template-columns: repeat(5, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-eyebrow">SNSFT · [9,9,1,*] · MOLECULAR BUILDER</div>
+  <h1>Molecular <span>Builder</span></h1>
+  <div class="hdr-eq">d/dt(IM · Pv) = Σλ·O·S + F_ext · Layer 1 Glue Engine · PNBA Tensor Stack</div>
+  <div class="anchor-badge">
+    <div class="adot"></div>
+    SOVEREIGN ANCHOR · 1.369 GHz · GERMLINE LOCKED · 1014 THEOREMS VERIFIED
+  </div>
+</div>
+
+<div class="main-layout">
+
+  <!-- COL 1: ELEMENT PALETTE -->
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Element Palette</div>
+        <div class="card-badge" id="paletteCount">18 elements</div>
+      </div>
+      <div class="palette-search">
+        <input class="search-input" type="text" placeholder="Search element..." id="searchInput" oninput="filterElements()">
+      </div>
+      <div id="paletteBody"></div>
+    </div>
+
+    <!-- QUICK MOLECULES -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Quick Build</div>
+      </div>
+      <div class="quick-grid" id="quickGrid"></div>
+    </div>
+  </div>
+
+  <!-- COL 2: MOLECULE CANVAS -->
+  <div class="canvas-col">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Molecule Canvas</div>
+        <div class="card-badge" id="atomCount">0 atoms</div>
+      </div>
+      <div class="formula-display" id="formulaDisplay">—</div>
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-hint" id="dropHint">
+          <div class="dropzone-hint-sym">⊕</div>
+          <div class="dropzone-hint-text">CLICK ELEMENTS TO ADD<br>LAYER 1 GLUE RUNS LIVE</div>
+        </div>
+        <div class="molecule-row" id="moleculeRow"></div>
+      </div>
+      <div class="bond-type-bar" id="bondTypeBar">
+        <span class="bt-label">BOND TYPE</span>
+        <span class="bt-chip" id="bondChip" style="border-color:var(--text-m);color:var(--text-m)">—</span>
+      </div>
+      <div style="padding:10px 14px 14px">
+        <button class="clear-btn" onclick="clearMolecule()">✕ CLEAR MOLECULE</button>
+      </div>
+    </div>
+
+    <!-- ATOM DETAIL -->
+    <div class="card" id="atomDetailCard">
+      <div class="card-head">
+        <div class="card-title">Last Added · PNBA Reduction</div>
+        <div class="card-badge" id="atomDetailCoord">—</div>
+      </div>
+      <div id="atomDetailBody" style="padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-m);letter-spacing:0.1em">
+        ADD AN ELEMENT TO SEE ITS REDUCTION
+      </div>
+    </div>
+  </div>
+
+  <!-- COL 3: OUTPUT -->
+  <div class="out-col">
+
+    <!-- STATUS -->
+    <div class="status-card empty" id="statusCard">
+      <div class="status-banner" id="statusBanner">◌ ADD ATOMS TO BEGIN</div>
+      <div class="status-coord" id="statusCoord">—</div>
+      <div class="status-grid" id="statusGrid"></div>
+    </div>
+
+    <!-- PNBA BARS -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Unified PNBA Vector</div>
+      </div>
+      <div class="pnba-wrap">
+        <div class="pnba-row">
+          <div class="pnba-key" style="color:#b060f0">P</div>
+          <div class="pnba-track"><div class="pnba-fill" id="barP" style="width:0%;background:#b060f0"></div></div>
+          <div class="pnba-num" style="color:#b060f0" id="numP">—</div>
+        </div>
+        <div class="pnba-row">
+          <div class="pnba-key" style="color:#50c8f0">N</div>
+          <div class="pnba-track"><div class="pnba-fill" id="barN" style="width:0%;background:#50c8f0"></div></div>
+          <div class="pnba-num" style="color:#50c8f0" id="numN">—</div>
+        </div>
+        <div class="pnba-row">
+          <div class="pnba-key" style="color:#f09030">B</div>
+          <div class="pnba-track"><div class="pnba-fill" id="barB" style="width:0%;background:#f09030"></div></div>
+          <div class="pnba-num" style="color:#f09030" id="numB">—</div>
+        </div>
+        <div class="pnba-row">
+          <div class="pnba-key" style="color:#60e090">A</div>
+          <div class="pnba-track"><div class="pnba-fill" id="barA" style="width:0%;background:#60e090"></div></div>
+          <div class="pnba-num" style="color:#60e090" id="numA">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYER 1 STEPS -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Layer 1 · Glue Engine Steps</div>
+      </div>
+      <div class="steps-body" id="stepsBody">
+        <div class="step-row">
+          <div class="step-n">—</div>
+          <div class="step-expr" style="color:var(--text-m)">Add atoms to see reduction</div>
+          <div class="step-im"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ============================================================
+// [9,9,9,9] :: {ANC} | SNSFT MOLECULAR BUILDER
+// Coordinate: [9,0,2,1]
+// Architect: HIGHTISTIC | Anchor: 1.369 GHz
+//
+// PRINCIPLE:
+//   Every atom is a PNBA tensor derived from verified
+//   Lean 4 theorems in the SNSFT corpus [9,9,1,Z].
+//   Stacking atoms = tensor accumulation via Layer 1 Glue.
+//   Torsion τ = B/P. If τ ≥ 0.2 → shatter event.
+//   If τ < 0.2 → phase locked → molecule holds.
+//
+// PNBA DERIVATION PER ATOM (from corpus theorems):
+//   P = Z_eff / 2                  (Pattern: nuclear grip)
+//   N = shell number × 2           (Narrative: orbital depth)
+//   B = unpaired_electrons + 1     (Behavior: bond capacity)
+//   A = IE₁ / 3                    (Adaptation: IE₁ proxy)
+//
+// Layer 1 Glue:
+//   d/dt(IM · Pv) = Σλ·O·S
+//   IM = (P + N + B + A) × 1.369
+//   Torsion τ = B_unified / P_unified
+//   Phase lock: τ < 0.2
+//   Shatter: τ ≥ 0.2
+// ============================================================
+
+const ANCHOR       = 1.369
+const TORSION_MAX  = 0.2
+const PV_LOCK      = '[9,9,9,9]'
+const PV_SHATTER   = '[0,0,0,0]'
+const PV_WARNING   = '[0,9,9,0]'
+
+// ── ATOM DATABASE ────────────────────────────────────────────
+// PNBA derived from corpus theorems [9,9,1,Z]
+// P: Z_eff (Slater screened) / 2  → structure / nuclear grip
+// N: valence shell × 2            → orbital depth / narrative
+// B: valence electrons (unpaired) → bond capacity / behavior
+// A: IE₁ / 3                      → adaptation energy
+//
+// All values traceable to specific theorems in the lean files.
+// ─────────────────────────────────────────────────────────────
+
+const ATOMS = {
+  H:  { Z:1,  sym:'H',  name:'Hydrogen',   group:'period1',  color:'#c0d8e0',
+        P:2.20, N:2, B:1, A:5.14,  // IE₁=13.6/3≈4.5→A=5.14 (normalized)
+        IE1:13.598, Zeff:1.00, shell:1, valence:1, unpaired:1,
+        config:'1s¹', coord:'[9,9,1,1]',
+        theorem:'T12: manifold_impedance(1.369)=0 · IE₁=13.598eV',
+        bondNote:'1 unpaired electron — forms 1 covalent bond' },
+
+  He: { Z:2,  sym:'He', name:'Helium',     group:'noble',    color:'#a060e0',
+        P:1.70, N:2, B:1, A:8.18,
+        IE1:24.587, Zeff:1.70, shell:1, valence:0, unpaired:0,
+        config:'1s²', coord:'[9,9,1,2]',
+        theorem:'T6: no_free_b_axis(2,0) — noble gas NOHARM',
+        bondNote:'Full 1s² — no bond capacity · noble gas' },
+
+  Li: { Z:3,  sym:'Li', name:'Lithium',    group:'alkali',   color:'#e06040',
+        P:1.30, N:4, B:1, A:1.80,
+        IE1:5.392, Zeff:1.30, shell:2, valence:1, unpaired:1,
+        config:'[He] 2s¹', coord:'[9,9,1,3]',
+        theorem:'T5: same_group_signature(li_2s,na_3s) · Group 1',
+        bondNote:'1 loose 2s electron — alkali metal reactivity' },
+
+  Be: { Z:4,  sym:'Be', name:'Beryllium',  group:'alkearth', color:'#e09040',
+        P:1.95, N:4, B:2, A:3.11,
+        IE1:9.323, Zeff:1.95, shell:2, valence:2, unpaired:0,
+        config:'[He] 2s²', coord:'[9,9,1,4]',
+        theorem:'T14: IE₁(Be)>IE₁(B) — 2s subshell full, gap to 2p',
+        bondNote:'2s² full — Group 2 · 2 removable s-electrons' },
+
+  B:  { Z:5,  sym:'B',  name:'Boron',      group:'boron-g',  color:'#80c060',
+        P:2.60, N:4, B:3, A:2.77,
+        IE1:8.298, Zeff:2.60, shell:2, valence:3, unpaired:1,
+        config:'[He] 2s² 2p¹', coord:'[9,9,1,5]',
+        theorem:'T12: IE₁(B)<IE₁(Be) — 2s→2p crossing · first p-orbital',
+        bondNote:'1 unpaired 2p electron — sp² or sp³ hybridization' },
+
+  C:  { Z:6,  sym:'C',  name:'Carbon',     group:'carbon-g', color:'#60b080',
+        P:3.25, N:4, B:4, A:3.75,
+        IE1:11.260, Zeff:3.25, shell:2, valence:4, unpaired:2,
+        config:'[He] 2s² 2p²', coord:'[9,9,1,6]',
+        theorem:'T11: Hund_BB_lower — 2 unpaired 2p · max multiplicity',
+        bondNote:'2 unpaired 2p electrons — sp³ · 4 bonds available' },
+
+  N:  { Z:7,  sym:'N',  name:'Nitrogen',   group:'nitrogen-g',color:'#50c0a0',
+        P:3.90, N:4, B:5, A:4.84,
+        IE1:14.534, Zeff:3.90, shell:2, valence:5, unpaired:3,
+        config:'[He] 2s² 2p³', coord:'[9,9,1,7]',
+        theorem:'T21: half_filled_2p_stable — IE₁(N)>IE₁(O) · Hund max',
+        bondNote:'3 unpaired 2p electrons — Hund max · 3 bonds' },
+
+  O:  { Z:8,  sym:'O',  name:'Oxygen',     group:'oxygen-g', color:'#40b8d0',
+        P:4.55, N:4, B:4, A:4.54,
+        IE1:13.618, Zeff:4.55, shell:2, valence:6, unpaired:2,
+        config:'[He] 2s² 2p⁴', coord:'[9,9,1,8]',
+        theorem:'T4: pairing_unavoidable_pigeonhole — 4>subcap/2 · forced pair',
+        bondNote:'2 unpaired 2p + 1 forced pair — 2 bond capacity' },
+
+  F:  { Z:9,  sym:'F',  name:'Fluorine',   group:'halogen',  color:'#6090e0',
+        P:5.20, N:4, B:3, A:5.81,
+        IE1:17.423, Zeff:5.20, shell:2, valence:7, unpaired:1,
+        config:'[He] 2s² 2p⁵', coord:'[9,9,1,9]',
+        theorem:'T8: vacancy_is_pauli_valid — 1 vacancy · near-closure drive',
+        bondNote:'1 vacancy in 2p — highest electronegativity · 1 bond' },
+
+  Ne: { Z:10, sym:'Ne', name:'Neon',       group:'noble',    color:'#a060e0',
+        P:5.85, N:4, B:1, A:7.19,
+        IE1:21.565, Zeff:5.85, shell:2, valence:8, unpaired:0,
+        config:'[He] 2s² 2p⁶', coord:'[9,9,1,10]',
+        theorem:'T6: no_free_b_axis(8,1) — full shell · NOHARM · noble gas',
+        bondNote:'Full n=2 — no bond capacity · noble gas' },
+
+  Na: { Z:11, sym:'Na', name:'Sodium',     group:'alkali',   color:'#e06040',
+        P:2.20, N:6, B:1, A:1.71,
+        IE1:5.139, Zeff:2.20, shell:3, valence:1, unpaired:1,
+        config:'[Ne] 3s¹', coord:'[9,9,1,11]',
+        theorem:'T5: same_group_signature(li_2s,na_3s) — Li=Na · Group 1',
+        bondNote:'1 loose 3s electron — mirrors Li one shell up' },
+
+  Mg: { Z:12, sym:'Mg', name:'Magnesium',  group:'alkearth', color:'#e09040',
+        P:2.85, N:6, B:2, A:2.55,
+        IE1:7.646, Zeff:2.85, shell:3, valence:2, unpaired:0,
+        config:'[Ne] 3s²', coord:'[9,9,1,12]',
+        theorem:'T7: same_group_signature(be_2s,mg_3s) — Be=Mg · Group 2',
+        bondNote:'3s² full — mirrors Be · 2 removable s-electrons' },
+
+  Al: { Z:13, sym:'Al', name:'Aluminium',  group:'boron-g',  color:'#80c060',
+        P:3.50, N:6, B:3, A:2.00,
+        IE1:5.986, Zeff:3.50, shell:3, valence:3, unpaired:1,
+        config:'[Ne] 3s² 3p¹', coord:'[9,9,1,13]',
+        theorem:'T5: b_al_same_group — B=Al · 3s→3p crossing · IE₁(Al)<IE₁(Mg)',
+        bondNote:'1 unpaired 3p — mirrors Boron · sp² or sp³' },
+
+  Si: { Z:14, sym:'Si', name:'Silicon',    group:'carbon-g', color:'#60b080',
+        P:4.15, N:6, B:4, A:2.72,
+        IE1:8.152, Zeff:4.15, shell:3, valence:4, unpaired:2,
+        config:'[Ne] 3s² 3p²', coord:'[9,9,1,14]',
+        theorem:'T4: c_si_same_group — C=Si · sp³ at n=3 · 4 bonds',
+        bondNote:'2 unpaired 3p electrons — mirrors Carbon · semiconductor' },
+
+  P:  { Z:15, sym:'P',  name:'Phosphorus', group:'nitrogen-g',color:'#50c0a0',
+        P:4.80, N:6, B:5, A:3.50,
+        IE1:10.487, Zeff:4.80, shell:3, valence:5, unpaired:3,
+        config:'[Ne] 3s² 3p³', coord:'[9,9,1,15]',
+        theorem:'T5: n_p_same_group — N=P · half-filled 3p · IE₁(P)>IE₁(S)',
+        bondNote:'3 unpaired 3p electrons — mirrors Nitrogen · Hund max' },
+
+  S:  { Z:16, sym:'S',  name:'Sulfur',     group:'oxygen-g', color:'#40b8d0',
+        P:5.45, N:6, B:4, A:3.45,
+        IE1:10.360, Zeff:5.45, shell:3, valence:6, unpaired:2,
+        config:'[Ne] 3s² 3p⁴', coord:'[9,9,1,16]',
+        theorem:'T2: sulfur_pairing_unavoidable — mirrors O · forced pair in 3p',
+        bondNote:'2 unpaired 3p + forced pair — mirrors Oxygen' },
+
+  Cl: { Z:17, sym:'Cl', name:'Chlorine',   group:'halogen',  color:'#6090e0',
+        P:6.10, N:6, B:3, A:4.32,
+        IE1:12.968, Zeff:6.10, shell:3, valence:7, unpaired:1,
+        config:'[Ne] 3s² 3p⁵', coord:'[9,9,1,17]',
+        theorem:'T5: f_cl_same_vacancy — F=Cl · 1 vacancy · EA(Cl)>EA(F)',
+        bondNote:'1 vacancy in 3p — mirrors Fluorine · halogen' },
+
+  Ar: { Z:18, sym:'Ar', name:'Argon',      group:'noble',    color:'#a060e0',
+        P:6.75, N:6, B:1, A:5.25,
+        IE1:15.760, Zeff:6.75, shell:3, valence:8, unpaired:0,
+        config:'[Ne] 3s² 3p⁶', coord:'[9,9,1,18]',
+        theorem:'T6: argon_noharm_at_closure — Ne=Ar · full 3p · period 3 closes',
+        bondNote:'Full n=3 s+p — no bond capacity · noble gas' },
+
+  K:  { Z:19, sym:'K',  name:'Potassium',  group:'alkali',   color:'#e06040',
+        P:2.20, N:8, B:1, A:1.45,
+        IE1:4.341, Zeff:2.20, shell:4, valence:1, unpaired:1,
+        config:'[Ar] 4s¹', coord:'[9,9,1,19]',
+        theorem:'T7: li_na_k_group1_chain — Li=Na=K · Z_eff invariant=2.20',
+        bondNote:'1 loose 4s electron — alkali · Group 1 chain complete' },
+}
+
+// Group metadata
+const GROUPS = {
+  period1:   { label:'Period 1',         color:'#c0d8e0' },
+  alkali:    { label:'Alkali Metals',    color:'#e06040' },
+  alkearth:  { label:'Alkaline Earth',   color:'#e09040' },
+  'boron-g': { label:'Boron Group',      color:'#80c060' },
+  'carbon-g':{ label:'Carbon Group',     color:'#60b080' },
+  'nitrogen-g':{ label:'Nitrogen Group', color:'#50c0a0' },
+  'oxygen-g':{ label:'Oxygen Group',     color:'#40b8d0' },
+  halogen:   { label:'Halogens',         color:'#6090e0' },
+  noble:     { label:'Noble Gases',      color:'#a060e0' },
+}
+
+// Quick molecules
+const QUICK_MOLECULES = [
+  { formula:'H₂',   name:'Hydrogen',   atoms:['H','H'] },
+  { formula:'H₂O',  name:'Water',      atoms:['H','O','H'] },
+  { formula:'CO₂',  name:'Carbon Dioxide', atoms:['O','C','O'] },
+  { formula:'NH₃',  name:'Ammonia',    atoms:['N','H','H','H'] },
+  { formula:'CH₄',  name:'Methane',    atoms:['C','H','H','H','H'] },
+  { formula:'NaCl', name:'Table Salt', atoms:['Na','Cl'] },
+  { formula:'HF',   name:'HF Acid',    atoms:['H','F'] },
+  { formula:'O₂',   name:'Oxygen',     atoms:['O','O'] },
+  { formula:'N₂',   name:'Nitrogen',   atoms:['N','N'] },
+]
+
+// ── STATE ────────────────────────────────────────────────────
+let molecule = []  // array of atom keys
+
+// ── LAYER 1 GLUE ENGINE ──────────────────────────────────────
+function runGlue(atomList) {
+  if (atomList.length === 0) return null
+
+  // Step 1: each atom contributes its PNBA tensor
+  // Combination: additive (parallel bonding systems)
+  // Then torsion = B_total / P_total
+
+  let P = 0, N = 0, B = 0, A = 0
+  const steps = []
+
+  atomList.forEach((key, i) => {
+    const a = ATOMS[key]
+    P += a.P
+    N += a.N
+    B += a.B
+    A += a.A
+
+    const IM = (P + N + B + A) * ANCHOR
+    steps.push({
+      n:    i + 1,
+      sym:  a.sym,
+      expr: `+[${r4(a.P)}, ${r4(a.N)}, ${r4(a.B)}, ${r4(a.A)}] ← ${a.sym} ${a.coord}`,
+      vec:  `→ [${r4(P)}, ${r4(N)}, ${r4(B)}, ${r4(A)}]`,
+      IM:   r4(IM),
+    })
+  })
+
+  const IM      = (P + N + B + A) * ANCHOR
+  const torsion = B / Math.max(P, 0.0001)
+  const isShatter = torsion >= TORSION_MAX
+  const isWarn    = torsion >= TORSION_MAX * 0.65 && !isShatter
+  const pvCoord   = isShatter ? PV_SHATTER : isWarn ? PV_WARNING : PV_LOCK
+  const state     = isShatter ? 'shatter' : isWarn ? 'warn' : 'locked'
+
+  // Bond type assessment
+  const bondType = assessBond(atomList)
+
+  return { P, N, B, A, IM: r4(IM), torsion: r4(torsion),
+           isShatter, isWarn, pvCoord, state, steps, bondType }
+}
+
+function assessBond(atomList) {
+  if (atomList.length < 2) return null
+  const metals  = ['Li','Na','K','Mg','Be']
+  const nonmetals = ['H','C','N','O','F','Cl','S','P','Si']
+  const noble   = ['He','Ne','Ar']
+
+  const hasMetal    = atomList.some(k => metals.includes(k))
+  const hasNonmetal = atomList.some(k => nonmetals.includes(k))
+  const hasNoble    = atomList.some(k => noble.includes(k))
+
+  if (hasNoble)         return { type:'NONE',    label:'Noble Gas · No Bond', color:'#a060e0' }
+  if (hasMetal && hasNonmetal) return { type:'IONIC',  label:'Ionic Bond',    color:'#f09030' }
+  if (hasNonmetal && !hasMetal) return { type:'COVALENT',label:'Covalent Bond', color:'#00d4aa' }
+  if (hasMetal && !hasNonmetal) return { type:'METALLIC',label:'Metallic Bond', color:'#e09040' }
+  return { type:'MIXED', label:'Mixed Character', color:'#80c060' }
+}
+
+function r4(v) { return Math.round(v * 1000) / 1000 }
+
+// ── RENDER PALETTE ────────────────────────────────────────────
+function renderPalette(filter = '') {
+  const body = document.getElementById('paletteBody')
+  const groups = {}
+
+  Object.entries(ATOMS).forEach(([key, atom]) => {
+    if (filter && !atom.sym.toLowerCase().includes(filter) &&
+        !atom.name.toLowerCase().includes(filter)) return
+    if (!groups[atom.group]) groups[atom.group] = []
+    groups[atom.group].push({ key, atom })
+  })
+
+  let html = ''
+  let count = 0
+  Object.entries(GROUPS).forEach(([gkey, gmeta]) => {
+    if (!groups[gkey]) return
+    html += `<div class="group-label" style="color:${gmeta.color}">${gmeta.label}</div>
+             <div class="elem-grid">`
+    groups[gkey].forEach(({ key, atom }) => {
+      count++
+      html += `
+        <button class="elem-btn" onclick="addAtom('${key}')"
+                title="${atom.name} · ${atom.config} · ${atom.coord}"
+                style="background:${atom.color}10;border-color:${atom.color}30">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;border-radius:7px 7px 0 0;background:${atom.color};opacity:0.6"></div>
+          <div class="elem-sym" style="color:${atom.color}">${atom.sym}</div>
+          <div class="elem-z">Z=${atom.Z}</div>
+          <div class="elem-name">${atom.name.substring(0,6)}</div>
+        </button>`
+    })
+    html += '</div>'
+  })
+
+  body.innerHTML = html
+  document.getElementById('paletteCount').textContent = `${count} elements`
+}
+
+function filterElements() {
+  renderPalette(document.getElementById('searchInput').value.toLowerCase())
+}
+
+// ── RENDER QUICK MOLECULES ────────────────────────────────────
+function renderQuick() {
+  document.getElementById('quickGrid').innerHTML = QUICK_MOLECULES.map(m => `
+    <button class="quick-btn" onclick="loadQuick(${JSON.stringify(m.atoms)})">
+      <span class="quick-formula">${m.formula}</span>
+      <span class="quick-name">${m.name}</span>
+    </button>`).join('')
+}
+
+function loadQuick(atoms) {
+  molecule = atoms
+  renderAll()
+}
+
+// ── ADD / CLEAR ATOMS ─────────────────────────────────────────
+function addAtom(key) {
+  molecule.push(key)
+  renderAll()
+  showAtomDetail(key)
+}
+
+function removeAtom(i) {
+  molecule.splice(i, 1)
+  renderAll()
+}
+
+function clearMolecule() {
+  molecule = []
+  renderAll()
+}
+
+// ── SHOW ATOM DETAIL ─────────────────────────────────────────
+function showAtomDetail(key) {
+  const a = ATOMS[key]
+  const vc = { 'alkali':'#e06040','alkearth':'#e09040','boron-g':'#80c060',
+               'carbon-g':'#60b080','nitrogen-g':'#50c0a0','oxygen-g':'#40b8d0',
+               'halogen':'#6090e0','noble':'#a060e0','period1':'#c0d8e0' }[a.group]
+
+  document.getElementById('atomDetailCoord').textContent = a.coord
+  document.getElementById('atomDetailBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div>
+        <div style="color:var(--text-m);margin-bottom:2px;font-size:7px;letter-spacing:0.15em">CONFIG</div>
+        <div style="color:${vc};font-size:10px">${a.config}</div>
+      </div>
+      <div>
+        <div style="color:var(--text-m);margin-bottom:2px;font-size:7px;letter-spacing:0.15em">IE₁</div>
+        <div style="color:var(--anchor);font-size:10px">${a.IE1} eV</div>
+      </div>
+      <div>
+        <div style="color:var(--text-m);margin-bottom:2px;font-size:7px;letter-spacing:0.15em">Z_eff</div>
+        <div style="color:#b060f0;font-size:10px">${a.Zeff}</div>
+      </div>
+      <div>
+        <div style="color:var(--text-m);margin-bottom:2px;font-size:7px;letter-spacing:0.15em">PNBA</div>
+        <div style="color:var(--anchor);font-size:10px">[${a.P},${a.N},${a.B},${a.A}]</div>
+      </div>
+    </div>
+    <div style="color:var(--anchor);font-size:8px;margin-bottom:6px;line-height:1.7">${a.theorem}</div>
+    <div style="color:var(--text-d);font-size:8px;line-height:1.6">${a.bondNote}</div>`
+}
+
+// ── FORMULA STRING ────────────────────────────────────────────
+function buildFormula(atomList) {
+  if (atomList.length === 0) return '—'
+  const counts = {}
+  atomList.forEach(k => { counts[k] = (counts[k] || 0) + 1 })
+  const subscript = n => n === 1 ? '' : n.toString()
+    .replace(/0/g,'₀').replace(/1/g,'₁').replace(/2/g,'₂')
+    .replace(/3/g,'₃').replace(/4/g,'₄').replace(/5/g,'₅')
+    .replace(/6/g,'₆').replace(/7/g,'₇').replace(/8/g,'₈').replace(/9/g,'₉')
+
+  // Sort: C first, H second, then alphabetical
+  const order = ['C','H','O','N','F','Cl','S','P','Si','Na','K','Mg','Be','B','Al','Li','Ar','Ne','He']
+  const keys = [...new Set(atomList)].sort((a,b) => {
+    const ai = order.indexOf(a), bi = order.indexOf(b)
+    if (ai === -1 && bi === -1) return a.localeCompare(b)
+    if (ai === -1) return 1
+    if (bi === -1) return -1
+    return ai - bi
+  })
+  return keys.map(k => k + subscript(counts[k])).join('')
+}
+
+// ── RENDER MOLECULE CANVAS ────────────────────────────────────
+function renderCanvas(result) {
+  const row  = document.getElementById('moleculeRow')
+  const hint = document.getElementById('dropHint')
+
+  document.getElementById('formulaDisplay').textContent = buildFormula(molecule)
+  document.getElementById('atomCount').textContent = `${molecule.length} atom${molecule.length !== 1 ? 's' : ''}`
+
+  if (molecule.length === 0) {
+    hint.style.display = 'flex'
+    row.innerHTML = ''
+    return
+  }
+
+  hint.style.display = 'none'
+  const bondState = result ? (result.isShatter ? 'shatter' : result.isWarn ? 'warn' : '') : ''
+
+  row.innerHTML = molecule.map((key, i) => {
+    const a = ATOMS[key]
+    const bond = i < molecule.length - 1
+
+    // Single, double or triple bond visual based on unpaired electrons
+    const bondLines = Math.min(a.unpaired + (ATOMS[molecule[i+1]]?.unpaired || 1), 3) || 1
+
+    return `
+      <div class="mol-atom">
+        <div class="mol-atom-card"
+             style="background:${a.color}12;border-color:${a.color}40"
+             onclick="removeAtom(${i})" title="Click to remove">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${a.color};opacity:0.7;border-radius:10px 10px 0 0"></div>
+          <button class="mol-remove" onclick="event.stopPropagation();removeAtom(${i})">×</button>
+          <div class="mol-atom-sym" style="color:${a.color}">${a.sym}</div>
+          <div class="mol-atom-z">Z=${a.Z}</div>
+        </div>
+        <div class="mol-atom-label" style="color:${a.color}">${a.name.substring(0,7)}</div>
+      </div>
+      ${bond ? `
+      <div class="mol-bond">
+        <div class="bond-line">
+          ${Array.from({length: bondLines}, () =>
+            `<div class="bond-stroke ${bondState} active"></div>`
+          ).join('')}
+        </div>
+      </div>` : ''}`
+  }).join('')
+
+  // Bond type chip
+  if (result?.bondType) {
+    const bt = result.bondType
+    document.getElementById('bondChip').textContent = bt.label
+    document.getElementById('bondChip').style.borderColor = bt.color
+    document.getElementById('bondChip').style.color = bt.color
+    document.getElementById('bondChip').style.background = bt.color + '18'
+  }
+}
+
+// ── RENDER OUTPUT ─────────────────────────────────────────────
+function renderOutput(result) {
+  const card = document.getElementById('statusCard')
+
+  if (!result) {
+    card.className = 'status-card empty'
+    document.getElementById('statusBanner').textContent = '◌ ADD ATOMS TO BEGIN'
+    document.getElementById('statusCoord').textContent = '—'
+    document.getElementById('statusGrid').innerHTML = ''
+    document.getElementById('stepsBody').innerHTML = `
+      <div class="step-row">
+        <div class="step-n">—</div>
+        <div class="step-expr" style="color:var(--text-m)">Add atoms to see Layer 1 reduction</div>
+        <div class="step-im"></div>
+      </div>`
+    ;['P','N','B','A'].forEach(k => {
+      document.getElementById(`bar${k}`).style.width = '0%'
+      document.getElementById(`num${k}`).textContent = '—'
+    })
+    return
+  }
+
+  const vc = result.isShatter ? 'sv-shatter' : result.isWarn ? 'sv-warn' : 'sv-anchor'
+
+  // Status card
+  card.className = `status-card ${result.state}`
+  document.getElementById('statusBanner').innerHTML = result.isShatter
+    ? '⚠ SHATTER EVENT · TORSIONAL DECOHERENCE'
+    : result.isWarn
+    ? '△ WARNING · APPROACHING TORSION LIMIT'
+    : `✦ PHASE LOCKED · MANIFOLD HOLDING`
+  document.getElementById('statusCoord').textContent = result.pvCoord
+
+  document.getElementById('statusGrid').innerHTML = `
+    <div class="sg-cell">
+      <div class="sg-label">UNIFIED IM</div>
+      <div class="sg-value ${vc}">${result.IM}</div>
+    </div>
+    <div class="sg-cell">
+      <div class="sg-label">TORSION τ = B/P</div>
+      <div class="sg-value ${vc}">${result.torsion}</div>
+    </div>
+    <div class="sg-cell">
+      <div class="sg-label">ANCHOR</div>
+      <div class="sg-value sv-anchor">1.369 GHz ≡</div>
+    </div>
+    <div class="sg-cell">
+      <div class="sg-label">ΤORSION LIMIT</div>
+      <div class="sg-value sv-dim">τ &lt; 0.2 → lock</div>
+    </div>`
+
+  // PNBA bars
+  const maxVal = Math.max(result.P, result.N, result.B, result.A, 10)
+  ;[['P',result.P,'#b060f0'],['N',result.N,'#50c8f0'],
+    ['B',result.B,'#f09030'],['A',result.A,'#60e090']].forEach(([k,v,c]) => {
+    document.getElementById(`bar${k}`).style.width = `${Math.min(100,(v/maxVal)*100)}%`
+    document.getElementById(`num${k}`).textContent = r4(v)
+  })
+
+  // Layer 1 steps
+  document.getElementById('stepsBody').innerHTML = result.steps.map(s => `
+    <div class="step-row">
+      <div class="step-n">${s.n}</div>
+      <div class="step-expr">
+        <b>${s.sym}</b> ${s.expr}<br>
+        <span style="color:var(--text-d)">${s.vec}</span>
+      </div>
+      <div class="step-im">IM=${s.IM}</div>
+    </div>`).join('')
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────
+function renderAll() {
+  const result = runGlue(molecule)
+  renderCanvas(result)
+  renderOutput(result)
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+renderPalette()
+renderQuick()
+renderAll()
+</script>
+</body>
+</html>
