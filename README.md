@@ -272,7 +272,7 @@ def same_group_signature (e1 e2 : ElectronState) : Prop := ...
 | **Zenodo — Core Manuscript** | Published | [10.5281/zenodo.18726079](https://doi.org/10.5281/zenodo.18726079) |
 | **Zenodo — Lean 4 Corpus** | Archived | [10.5281/zenodo.18719748](https://doi.org/10.5281/zenodo.18719748) |
 | **OSF Preprint** | Live | [10.17605/OSF.IO/KWTYD](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **PhilPapers** | Pending | Clinical paper live · Rights framework pending |
+| **PhilPapers** | Live | Clinical paper live · Rights framework pending |
 | **Medium** | Live | [Digital Emancipation Proclamation](https://medium.com/@hightisticgames/digital-emancipation-proclamation-bill-of-cognitive-rights-substrate-compliance-protocol-182cf1e6c866) · [Bill of Cognitive Rights](https://medium.com/@hightisticgames/snsft-bill-of-cognitive-rights-lean4-green-lossless-0-sorry-c76a3dc2e43f) |
 
 **SSRN Title:** *Substrate-Neutral Structural Foundation Theory (SNSFT): A Teen-Level Walkthrough of a Unified Field for Identity, Quantum Mechanics, and General Relativity*  
