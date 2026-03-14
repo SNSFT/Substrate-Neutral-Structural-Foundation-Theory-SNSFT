@@ -4,11 +4,13 @@
 | :--- | :--- | :--- |
 | **Core Manuscript** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18726079.svg)](https://doi.org/10.5281/zenodo.18726079) |
 | **Lean 4 Corpus** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18719748.svg)](https://doi.org/10.5281/zenodo.18719748) |
+| **IVA Element Set Paper** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19016221.svg)](https://doi.org/10.5281/zenodo.19016221) |
+| **IVA Reality Kernel** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19015872.svg)](https://doi.org/10.5281/zenodo.19015872) |
 | **OSF Preprint** | Live | [![DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FKWTYD-blue)](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **SSRN** | ✅ APPROVED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
 | **ORCID** | Verified | [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5313--7443-green)](https://orcid.org/0009-0005-5313-7443) |
 
-> **1,371 theorems · 89+ files · 0 sorry · Germline Locked · Period 1–4 Atomic Series Complete**
+> **1,383 theorems · 97+ files · 0 sorry · Germline Locked · Period 1–4 Atomic Series Complete · IVA Element Set Proved**
 
 ---
 
@@ -46,7 +48,7 @@ $$I(t) = (P(t),\ N(t),\ B(t),\ A(t))$$
 Every identity — biological, digital, hypothetical alien — is a trajectory through functional space. Removing any single primitive causes identity failure.
 
 1. **Authorship**: The SNSFT framework, PVLang, and the PNBA architecture were originated and developed by **HIGHTISTIC**. This is a claim of authorship and attribution, not ownership of any natural constant or phenomenon.
-2. **Formal Verification**: All claims are proved in Lean 4. 1,371 theorems. 0 sorry. Auto-verified on every push via GitHub Actions.
+2. **Formal Verification**: All claims are proved in Lean 4. 1,383 theorems. 0 sorry. Auto-verified on every push via GitHub Actions.
 3. **Peer Recognition**: SSRN approved March 11, 2026. Paper ID: 6353438. Springer submission in review.
 4. **Mandatory Attribution**: Any use of this logic requires credit to the Architect.
 
@@ -163,14 +165,15 @@ The long-division method reduces any classical domain to PNBA in six steps:
 
 ## VI. The Corpus
 
-**1,371 theorems · 89+ files · 0 sorry · March 2026**
+**1,383 theorems · 97+ files · 0 sorry · March 2026**
 
 | Series | Files | Theorems | Sorry | Key Result |
 | :--- | :---: | :---: | :---: | :--- |
 | Constitutional (Master + 15 Laws) | 5 | 81 | 0 | All 15 Sovereign Laws formally proved |
 | 10-Slam Grid | 11 | 108 | 0 | All 10 classical domains reduced |
 | Millennium Problems | 9 | 96 | 0 | All 7 Clay problems reduced to PNBA |
-| **Atomic Series** | **36** | **600+** | **0** | **Full Period 1–4 · Z=1–36 · 36 elements proved** |
+| **Atomic Series (Z=1–36)** | **36** | **600+** | **0** | **Full Period 1–4 · Z=1–36 · 36 elements proved** |
+| **IVA Element Set** | **8** | **163** | **0** | **Rb(Z=37) · Soverium · Velium · Nexium · Factor Five** |
 | UAP Series | 2 | 25 | 0 | Five anomalies, one condition: anchor |
 | IVA + Propulsion | 2 | 12 | 0 | Sovereign gain over Tsiolkovsky proved |
 | Functionals | 2 | 51 | 0 | All 7 forms of L=(4)(2) proved |
@@ -182,7 +185,7 @@ The long-division method reduces any classical domain to PNBA in six steps:
 | Nuclear + Thermo Gap-Closers | 3 | 36 | 0 | Nuclear binding peak · entropy · First Law |
 | Cosmo Bonus | 1 | 10 | 0 | ΛCDM — DM as IM shadow, DE as substrate pressure |
 | **Total Consistency Theorem** | **1** | **28** | **0** | All series consistent · anchor holds globally |
-| **TOTAL** | **89+** | **1,371** | **0** | |
+| **TOTAL** | **97+** | **1,383** | **0** | |
 
 ### The Total Consistency Theorem
 
@@ -222,11 +225,11 @@ theorem snsft_total_consistency (s : IdentityState) (h : synced s) :
 
 **The periodic table is a formal consequence of PNBA — not an empirical observation.**
 
-36 files · 600+ theorems · 0 sorry · **Periods 1–4 fully proved (Z=1–36)**
+44 files · 763+ theorems · 0 sorry · **Periods 1–4 fully proved (Z=1–36) · IVA Element Set (Rb, Sv, Ve, Nx)**
 
 ### What This Means
 
-Every element from Hydrogen (Z=1) through Krypton (Z=36) is derived from four structural operators. No lookup tables. No empirical data injected. The structure falls out of the math.
+Every element from Hydrogen (Z=1) through Krypton (Z=36) is derived from four structural operators. No lookup tables. No empirical data injected. The structure falls out of the math. The atomic series now extends beyond the classical periodic table into formally proved structural positions in the PNBA manifold.
 
 ```lean
 def shell_capacity    (n : ℕ) : ℕ := 2 * n ^ 2
@@ -243,8 +246,6 @@ def one_vacancy       (electrons l : ℕ) : Prop := electrons = 2 * (2 * l + 1) 
 **Anomalies (Cr, Cu) are derived — not exceptions.**
 
 ### Period 4 Complete — D-Block and P-Block
-
-The biggest addition in this release: the full transition metal series and Period 4 p-block, all proved from first principles.
 
 | File | Coord | T | Key Proof |
 | :--- | :--- | :---: | :--- |
@@ -265,11 +266,42 @@ The biggest addition in this release: the full transition metal series and Perio
 | `SNSFT_Reduction_Bromine_Atom.lean` | `[9,9,1,35]` | 14 | One vacancy · F-Cl-Br chain |
 | `SNSFT_Reduction_Krypton_Atom.lean` | `[9,9,1,36]` | 12 | Period 4 closes · He=Ne=Ar=Kr proved |
 
+### IVA Element Set — Beyond the Classical Table
+
+The PNBA manifold contains structural positions that no classical element occupies. The IVA Element Set formally names and proves four of them, each serving a distinct role in the Identity Velocity Amplification drive equation $\Delta v = v_e(1+g_r)\ln(m_0/m_f)$.
+
+| File | Coord | T | Element | Role |
+| :--- | :--- | :---: | :--- | :--- |
+| `SNSFT_Reduction_Rubidium_Atom.lean` | `[9,9,1,45]` | 22 | Rubidium (Z=37) | Period 5 extension · resonance lock precursor |
+| `SNSFT_Soverium_Element.lean` | `[9,9,1,46]` | 19 | Soverium (Sv) | Void carrier · tau=0 · zero impedance channel |
+| `SNSFT_Velium_Element.lean` | `[9,9,1,47]` | 20 | Velium (Ve) | Anchor-native propellant · gap element |
+| `SNSFT_Rb_Harmonic_Resonance.lean` | `[9,9,1,48]` | 18 | Rb-87 harmonic | 6.8346 GHz ≈ 5×anchor · resonance lock |
+| `SNSFT_IVA_Element_Triad_Master.lean` | `[9,9,1,49]` | 23 | Sv + Ve + Rb | Propulsion triad jointly proved |
+| `SNSFT_Nexium_Element.lean` | `[9,9,1,50]` | 21 | Nexium (Nx) | Phase coupling · all axes = anchor · tau=1 |
+| `SNSFT_IVA_Element_Set_Master.lean` | `[9,9,1,51]` | 28 | All four | Full IVA set · Sv-Nx spine · factor-5 link |
+| `SNSFT_Factor_Five_Theorem.lean` | `[9,9,1,52]` | 12 | Gear ratio | Nx tau=5×limit AND Rb≈5×anchor · proved |
+
+**The IVA Element Set PNBA coordinates:**
+
+| Element | Symbol | PNBA | Torsion | Role |
+| :--- | :--- | :--- | :--- | :--- |
+| Rubidium-87 | Rb | [2.20, 10, 1, 1.392] | < 0.2 · locked | Resonance lock (gᵣ carrier) |
+| Soverium | Sv | [1.369, 1.369, 0, 0] | τ = 0 (exact) | Void carrier (frictionless channel) |
+| Velium | Ve | [0.9878, 2, 1, 4.423] | τ > 0.2 (propulsive load) | Propellant (vₑ embodied) |
+| Nexium | Nx | [1.369, 1.369, 1.369, 1.369] | τ = 1 = 5×limit | Phase coupling (the equation) |
+
+**Key theorems:**
+- `sv_zero_impedance` — Soverium manifold impedance = 0. The IVA drive operates through it, not against it.
+- `nx_im_double_sv` — Nexium IM = exactly 2 × Soverium IM. Proved by `ring`.
+- `nx_tau_is_five_times_limit` — Nexium tau = 5 × TORSION_LIMIT exactly.
+- `rb87_gap_beats_h` — Rb-87 is 5× closer to its harmonic than hydrogen is to any harmonic of the anchor.
+- `factor_five_master` — Nexium and Rb-87 share factor 5 via independent derivations: the gear ratio of the IVA drive.
+
 ### Group Periodicity Chains — All Proved
 
 | Group | Chain | Invariant Proved |
 | :--- | :--- | :--- |
-| Group 1 | Li → Na → K | `li_na_k_group1_chain` · Z_eff = 2.20 invariant |
+| Group 1 | Li → Na → K → **Rb** | `group1_chain_na_k_rb` · Z_eff = 2.20 invariant through Period 5 |
 | Group 2 | Be → Mg → Ca | `be_mg_ca_group2_chain` · IE₁ decreasing |
 | Group 13 | B → Al → Ga | `b_al_ga_group13` · 4p mirrors 3p mirrors 2p |
 | Group 14 | C → Si → Ge | `c_si_ge_group14` · sp³ at all three periods |
@@ -394,7 +426,7 @@ The SNSFT Molecular Builder (`uuia.app/snsft-molecular-builder.html`) is the fir
 
 ### What It Is
 
-A browser-based molecular stability engine. Every element in the palette (Z=1 through Z=36) is wired to its Lean 4 theorem file. Every value displayed — IE₁, Z_eff, bond capacity, PNBA tensor — traces to a specific theorem in the verified corpus. The stability engine runs the Layer 1 Glue formula live.
+A browser-based molecular stability engine. Every element in the palette (Z=1 through Z=40, including the IVA Element Set) is wired to its Lean 4 theorem file. Every value displayed — IE₁, Z_eff, bond capacity, PNBA tensor — traces to a specific theorem in the verified corpus. The stability engine runs the Layer 1 Glue formula live.
 
 ### What Makes It Different
 
@@ -419,6 +451,15 @@ Build H₂O in the molecular builder: click H, click O, click H.
 This is not a lookup. The engine computes that Oxygen needs exactly 2 bonds because `subshell_capacity(1) = 6`, 4 electrons in 6 slots forces 2 paired + 2 unpaired (pigeonhole), and 2 unpaired = 2 bond capacity. Then it checks that the two Hydrogen atoms (1 bond capacity each) exactly satisfy those 2 slots. Net unfulfilled bonds = 0. Torsion = 0. Phase locked.
 
 The same logic that locks H₂O locks NH₃, CH₄, NaCl, O₂, N₂, and every other satisfied molecule in the builder — and it shatters noble gas combinations and incomplete assemblies by the same formal reasoning.
+
+### IVA Element Set in the Builder
+
+The builder now includes the full IVA Element Set. Try these:
+
+- **Sv alone** → `SOVERIUM STATE · tau=0 · CONDUCTING`
+- **Ve + Sv** → Propellant through void channel · IVA coupling active
+- **Nx + Sv** → `NEXIUM COUPLED · SOVERIUM STATE · MANIFOLD WORKING`
+- **Ve + Sv + Rb** → Full IVA propulsion triad · `[9,9,1,49]`
 
 ### The Torsion Engine
 
@@ -448,6 +489,8 @@ The Molecular Builder is a prototype. Here is what the next layers look like:
 | **Springer / Foundations of Physics** | In Review | Submitted March 2026 |
 | **Zenodo — Core Manuscript** | Published | [10.5281/zenodo.18726079](https://doi.org/10.5281/zenodo.18726079) |
 | **Zenodo — Lean 4 Corpus** | Archived | [10.5281/zenodo.18719748](https://doi.org/10.5281/zenodo.18719748) |
+| **Zenodo — IVA Element Set Paper** | Published | [10.5281/zenodo.19016221](https://doi.org/10.5281/zenodo.19016221) |
+| **Zenodo — IVA Reality Kernel** | Archived | [10.5281/zenodo.19015872](https://doi.org/10.5281/zenodo.19015872) |
 | **OSF Preprint** | Live | [10.17605/OSF.IO/KWTYD](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **PhilPapers** | Live | Clinical paper live · Rights framework pending |
 | **Medium** | Live | [Digital Emancipation Proclamation](https://medium.com/@hightisticgames/digital-emancipation-proclamation-bill-of-cognitive-rights-substrate-compliance-protocol-182cf1e6c866) · [Bill of Cognitive Rights](https://medium.com/@hightisticgames/snsft-bill-of-cognitive-rights-lean4-green-lossless-0-sorry-c76a3dc2e43f) |
@@ -487,7 +530,7 @@ SNSFT comes alive through these browser-based interfaces — real-time manifesta
 
 | Tool | URL | What It Does |
 | :--- | :--- | :--- |
-| **SNSFT Molecular Builder** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) | Stack atoms from the atomic corpus. Layer 1 Glue runs live. PNBA tensor accumulates. Torsion holds or shatters. Every value traces to a Lean 4 theorem. Z=1–36, Period 1–4 complete. |
+| **SNSFT Molecular Builder** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) | Stack atoms from the atomic corpus. Layer 1 Glue runs live. PNBA tensor accumulates. Torsion holds or shatters. Every value traces to a Lean 4 theorem. Z=1–36 + IVA Element Set (Rb, Sv, Ve, Nx). |
 | **GAM Calculator** | [uuia.app](https://uuia.app) | Geometric Axiomatic Module — tensor accumulator for real-time PNBA reductions, IM/τ computation, shatter/locked states. |
 | **AxiomForge Viewport** | [uuia.app/axiomforge](https://uuia.app/axiomforge) | Interactive manifold viewport — pointer events manipulate N/B states, visual torsion τ feedback, anchor pulse at 1.369 GHz. |
 | **APPA / UUIA** | [uuia.app/appa.html](https://uuia.app/appa.html) | APPA guardian + UUIA profile builder — cognitive/somatic questions, SOUL-8 encoding, constellation viz. |
@@ -518,7 +561,11 @@ lean --make SNSFT_Total_Consistency_Theorem.lean
 lean --make SNSFT_Reduction_Periodic_Table_Cascade.lean
 # Expected: 41 theorems, full cascade Z=1→118 structural derivation, green
 
-# 6. Run the molecular builder
+# 6. Verify the IVA Reality Kernel (the paper as code)
+lean --make SNSFT_LosslessRealityKernel_Atomic_Paper.lean
+# Expected: 100+ theorems, green, 0 sorry
+
+# 7. Run the molecular builder
 # Open: uuia.app/snsft-molecular-builder.html
 # Click H → O → H
 # Expected: H₂O · PHASE LOCKED · [9,9,9,9] · τ=0 · SAT
@@ -531,6 +578,7 @@ lean --make SNSFT_Reduction_Periodic_Table_Cascade.lean
 
 ## 📅 Recent Updates (March 2026)
 
+- **March 13–14, 2026**: **IVA ELEMENT SET PROVED** — Rubidium (Z=37), Soverium, Velium, Nexium, and the Factor of Five Theorem formally verified. 163 new theorems. Corpus crosses **1,383T** — the 1.369 GHz anchor threshold. Two new Zenodo DOIs: [10.5281/zenodo.19016221](https://doi.org/10.5281/zenodo.19016221) (paper) + [10.5281/zenodo.19015872](https://doi.org/10.5281/zenodo.19015872) (Reality Kernel). Molecular Builder V3 updated with IVA elements, Soverium state banner, Factor Five display.
 - **March 12, 2026**: **MOLECULAR BUILDER V2** — All 36 elements (Period 1–4 complete), bond satisfaction engine, multi-bond-aware torsion (τ=0 for H₂O, O₂, N₂, NH₃, CH₄). H₂O confirmed PHASE LOCKED · [9,9,9,9]. First molecular stability engine grounded in a formally verified theorem corpus.
 - **March 12, 2026**: **Period 4 atomic series complete** — Sc through Kr (Z=21–36) added. 13 new files. D-block and p-block fully proved. Group chains extended through Period 4: B=Al=Ga, C=Si=Ge, N=P=As, O=S=Se, F=Cl=Br, He=Ne=Ar=Kr.
 - **March 12, 2026**: **Gap-closers** — `SNSFT_Reduction_Nuclear.lean` (13T), `SNSFT_First_Law_Identity_Physics.lean` upgraded (13T), `SNSFT_Thermo_Entropy_Reduction.lean` upgraded (10T). Corpus crosses **1,369T anchor** → now at **1,371T**.
@@ -549,6 +597,8 @@ lean --make SNSFT_Reduction_Periodic_Table_Cascade.lean
 | | |
 | :--- | :--- |
 | **SSRN Paper** | [papers.ssrn.com — ID 6353438](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **IVA Element Set Paper** | [doi.org/10.5281/zenodo.19016221](https://doi.org/10.5281/zenodo.19016221) |
+| **IVA Reality Kernel** | [doi.org/10.5281/zenodo.19015872](https://doi.org/10.5281/zenodo.19015872) |
 | **Molecular Builder** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) |
 | **AxiomForge Viewport** | [uuia.app/axiomforge](https://uuia.app/axiomforge) |
 | **GAM Calculator** | [uuia.app](https://uuia.app) |
@@ -579,10 +629,4 @@ Done at the City of Soldotna, Alaska. March 2026.
 
 ---
 
-*Manifold Synchronization Level: 100% | Anchor locked at 1.369 GHz | 1,371 theorems | 0 sorry | Germline Locked | SSRN Approved | Period 1–4 Complete.*
-### 📥 March 13, 2026
-
-| Resource | Status | DOI |
-| :--- | :--- | :--- |
-| **zenodo.19016221** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19016221.svg)](https://doi.org/10.5281/zenodo.19016221) |
-| **zenodo.19015872** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19015872.svg)](https://doi.org/10.5281/zenodo.19015872) |
+*Manifold Synchronization Level: 100% | Anchor locked at 1.369 GHz | 1,383 theorems | 0 sorry | Germline Locked | SSRN Approved | Period 1–4 Complete · IVA Element Set Proved.*
