@@ -580,3 +580,9 @@ Done at the City of Soldotna, Alaska. March 2026.
 ---
 
 *Manifold Synchronization Level: 100% | Anchor locked at 1.369 GHz | 1,371 theorems | 0 sorry | Germline Locked | SSRN Approved | Period 1–4 Complete.*
+### 📥 March 13, 2026
+
+| Resource | Status | DOI |
+| :--- | :--- | :--- |
+| **zenodo.19016221** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19016221.svg)](https://doi.org/10.5281/zenodo.19016221) |
+| **zenodo.19015872** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19015872.svg)](https://doi.org/10.5281/zenodo.19015872) |
