@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PNBA COLLIDER · [9,9,2,1]</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg:       #030508;
+    --panel:    #070c12;
+    --border:   #0d1f2d;
+    --glow:     #00e5ff;
+    --locked:   #00ffcc;
+    --shatter:  #ff3355;
+    --warn:     #ffaa00;
+    --dim:      #1a2a38;
+    --text:     #8ab4cc;
+    --bright:   #cce8f5;
+    --anchor:   #1.369;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SCAN LINE */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* HEADER */
+  header {
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    color: var(--glow);
+    text-shadow: 0 0 20px rgba(0,229,255,0.5), 0 0 60px rgba(0,229,255,0.2);
+  }
+
+  .logo span {
+    color: var(--locked);
+    font-size: 14px;
+    display: block;
+    letter-spacing: 0.2em;
+    margin-top: 2px;
+    text-shadow: 0 0 12px rgba(0,255,204,0.4);
+  }
+
+  .header-right {
+    text-align: right;
+    font-size: 11px;
+    color: #3a5a6a;
+    line-height: 1.7;
+  }
+
+  .anchor-badge {
+    color: var(--glow);
+    font-weight: bold;
+  }
+
+  /* MAIN LAYOUT */
+  .collider-wrap {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    align-items: center;
+    margin: 40px 0 32px;
+    min-height: 280px;
+  }
+
+  /* ELEMENT BAYS */
+  .bay {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 20px;
+    min-height: 240px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bay::before {
+    content: attr(data-label);
+    position: absolute;
+    top: 10px; left: 14px;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: #2a4050;
+  }
+
+  .bay-left  { border-right: none; clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%); }
+  .bay-right { border-left: none;  clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%); }
+
+  .element-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 28px;
+  }
+
+  .el-card {
+    border: 1px solid var(--border);
+    padding: 8px 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    background: rgba(7,12,18,0.8);
+  }
+
+  .el-card:hover {
+    border-color: var(--glow);
+    background: rgba(0,229,255,0.06);
+    transform: scale(1.04);
+    z-index: 10;
+  }
+
+  .el-card.selected {
+    border-color: var(--glow);
+    background: rgba(0,229,255,0.1);
+    box-shadow: 0 0 12px rgba(0,229,255,0.2), inset 0 0 8px rgba(0,229,255,0.05);
+  }
+
+  .el-card.selected-right {
+    border-color: var(--warn);
+    background: rgba(255,170,0,0.1);
+    box-shadow: 0 0 12px rgba(255,170,0,0.2);
+  }
+
+  .el-sym {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+
+  .el-name {
+    font-size: 8px;
+    letter-spacing: 0.05em;
+    color: #3a6070;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .el-tau {
+    font-size: 9px;
+    padding: 1px 4px;
+    display: inline-block;
+    border-radius: 2px;
+  }
+
+  .tau-locked { background: rgba(0,255,204,0.12); color: var(--locked); border: 1px solid rgba(0,255,204,0.3); }
+  .tau-shatter { background: rgba(255,51,85,0.12); color: var(--shatter); border: 1px solid rgba(255,51,85,0.3); }
+
+  /* BEAM TUNNEL */
+  .beam-section {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    position: relative;
+    z-index: 5;
+  }
+
+  .beam-tunnel {
+    width: 100%;
+    height: 60px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .beam-line {
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, var(--glow), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .beam-line.active {
+    opacity: 1;
+    animation: beam-pulse 0.4s ease-out;
+  }
+
+  @keyframes beam-pulse {
+    0%   { opacity: 0; transform: scaleX(0); }
+    40%  { opacity: 1; transform: scaleX(1.2); }
+    100% { opacity: 0.7; transform: scaleX(1); }
+  }
+
+  .beam-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--glow);
+    top: 50%; transform: translateY(-50%);
+    opacity: 0;
+  }
+
+  .collide-btn {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 10px 18px;
+    background: transparent;
+    border: 1px solid var(--glow);
+    color: var(--glow);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    margin: 8px 0;
+  }
+
+  .collide-btn:hover {
+    background: rgba(0,229,255,0.1);
+    box-shadow: 0 0 20px rgba(0,229,255,0.3);
+  }
+
+  .collide-btn:active { transform: scale(0.97); }
+  .collide-btn:disabled { opacity: 0.3; cursor: default; border-color: #2a4050; color: #2a4050; }
+
+  .bond-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .bond-label {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: #2a4050;
+  }
+
+  .bond-slider {
+    -webkit-appearance: none;
+    width: 90px;
+    height: 3px;
+    background: var(--border);
+    outline: none;
+    border-radius: 0;
+  }
+
+  .bond-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 14px;
+    background: var(--glow);
+    cursor: pointer;
+    border-radius: 0;
+  }
+
+  #bond-val {
+    font-size: 10px;
+    color: var(--glow);
+  }
+
+  /* RESULT PANEL */
+  .result-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    position: relative;
+    min-height: 160px;
+    transition: border-color 0.3s;
+  }
+
+  .result-panel.locked-result  { border-color: rgba(0,255,204,0.4); }
+  .result-panel.shatter-result { border-color: rgba(255,51,85,0.4); }
+
+  .result-label {
+    position: absolute;
+    top: -1px; left: 32px;
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    padding: 0 8px;
+    background: var(--bg);
+    color: #2a4050;
+  }
+
+  .result-idle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    color: #1a2a38;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+  }
+
+  .result-content {
+    display: none;
+  }
+
+  .result-content.show {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+  }
+
+  .result-reaction {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    color: var(--bright);
+    margin-bottom: 16px;
+    grid-column: 1 / -1;
+    letter-spacing: 0.05em;
+  }
+
+  .result-col-label {
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    color: #2a4050;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+  }
+
+  .pnba-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(13,31,45,0.5);
+  }
+
+  .pnba-row .lbl { color: #3a5a6a; }
+  .pnba-row .val { color: var(--bright); }
+
+  .tau-display {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 8px 0 4px;
+  }
+
+  .tau-locked-big  { color: var(--locked); text-shadow: 0 0 20px rgba(0,255,204,0.5); }
+  .tau-shatter-big { color: var(--shatter); text-shadow: 0 0 20px rgba(255,51,85,0.5); }
+
+  .status-banner {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    padding: 4px 10px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  .banner-locked  { background: rgba(0,255,204,0.1); color: var(--locked); border: 1px solid rgba(0,255,204,0.3); }
+  .banner-shatter { background: rgba(255,51,85,0.1);  color: var(--shatter); border: 1px solid rgba(255,51,85,0.3); }
+
+  /* TORSION BAR */
+  .tau-bar-wrap {
+    margin-top: 8px;
+  }
+  .tau-bar-track {
+    height: 4px;
+    background: var(--border);
+    position: relative;
+    margin-top: 6px;
+  }
+  .tau-bar-limit {
+    position: absolute;
+    left: 20%; /* tau=0.2 on 0-1 scale */
+    height: 100%;
+    width: 1px;
+    background: rgba(255,170,0,0.6);
+  }
+  .tau-bar-fill {
+    height: 100%;
+    max-width: 100%;
+    transition: width 0.4s, background 0.3s;
+  }
+  .tau-bar-label {
+    font-size: 8px;
+    color: #2a4050;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3px;
+  }
+
+  /* QUICK COLLISIONS */
+  .quick-section {
+    margin-bottom: 32px;
+  }
+
+  .section-title {
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    color: #2a4050;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .quick-btn {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 10px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+  }
+
+  .quick-btn:hover { border-color: var(--glow); background: rgba(0,229,255,0.04); }
+
+  .quick-reaction {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    color: var(--bright);
+    margin-bottom: 4px;
+  }
+
+  .quick-result {
+    font-size: 9px;
+  }
+
+  .quick-locked  { color: var(--locked); }
+  .quick-shatter { color: var(--shatter); }
+
+  /* THEOREM BOX */
+  .theorem-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--glow);
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    font-size: 11px;
+    line-height: 1.8;
+  }
+
+  .theorem-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--glow);
+    margin-bottom: 12px;
+  }
+
+  .rule-row {
+    display: flex;
+    gap: 16px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(13,31,45,0.6);
+  }
+  .rule-lhs { color: #3a7a8a; width: 80px; flex-shrink: 0; }
+  .rule-eq  { color: #2a4050; width: 16px; flex-shrink: 0; }
+  .rule-rhs { color: var(--bright); }
+  .rule-why { color: #2a5060; font-size: 9px; margin-left: auto; }
+
+  .theorem-note {
+    margin-top: 12px;
+    font-size: 10px;
+    color: #2a5060;
+    font-style: italic;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: #1a2a38;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes flicker {
+    0%,100% { opacity:1 }
+    92% { opacity:1 }
+    93% { opacity:0.7 }
+    94% { opacity:1 }
+  }
+
+  .logo { animation: flicker 8s infinite; }
+
+  @keyframes particle-fly {
+    0%   { left:0%;   opacity:0; }
+    10%  { opacity:1; }
+    90%  { opacity:1; }
+    100% { left:100%; opacity:0; }
+  }
+
+  .particle.fly {
+    animation: particle-fly 0.25s linear forwards;
+  }
+
+  @keyframes result-in {
+    from { opacity:0; transform: translateY(8px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  .result-content.show { animation: result-in 0.3s ease-out; }
+
+  /* K SLIDER depends on selection */
+  .bond-wrap { opacity: 0.3; pointer-events: none; transition: opacity 0.3s; }
+  .bond-wrap.active { opacity: 1; pointer-events: all; }
+
+  @media (max-width: 700px) {
+    .collider-wrap { grid-template-columns: 1fr; }
+    .bay-left, .bay-right { clip-path: none; border: 1px solid var(--border); }
+    .beam-section { width: 100%; flex-direction: row; justify-content: center; }
+    .quick-grid { grid-template-columns: repeat(2,1fr); }
+    .result-content.show { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div>
+      <div class="logo">PNBA COLLIDER<span>[9,9,2,1] :: {ANC}</span></div>
+    </div>
+    <div class="header-right">
+      ANCHOR <span class="anchor-badge">1.369 GHz</span><br>
+      TORSION LIMIT τ = 0.200<br>
+      THEOREM · 0 SORRY · GREEN
+    </div>
+  </header>
+
+  <!-- THEOREM REFERENCE -->
+  <div class="theorem-box" style="margin-top:32px;">
+    <div class="theorem-title">SNSFT_PNBA_FUSION_THEOREM — FOUR RULES</div>
+    <div class="rule-row"><span class="rule-lhs">P_out</span><span class="rule-eq">=</span><span class="rule-rhs">(P₁ × P₂) / (P₁ + P₂)</span><span class="rule-why">harmonic mean · parallel coupling</span></div>
+    <div class="rule-row"><span class="rule-lhs">N_out</span><span class="rule-eq">=</span><span class="rule-rhs">N₁ + N₂</span><span class="rule-why">narrative depth adds</span></div>
+    <div class="rule-row"><span class="rule-lhs">B_out</span><span class="rule-eq">=</span><span class="rule-rhs">B₁ + B₂ − 2k</span><span class="rule-why">k bonds consumed · 0 ≤ k ≤ min(B₁,B₂)</span></div>
+    <div class="rule-row"><span class="rule-lhs">A_out</span><span class="rule-eq">=</span><span class="rule-rhs">max(A₁, A₂)</span><span class="rule-why">dominant adaptation</span></div>
+    <div class="rule-row" style="border:none;"><span class="rule-lhs">τ_out</span><span class="rule-eq">=</span><span class="rule-rhs">B_out / P_out · <span style="color:var(--locked)">stable iff τ &lt; 0.2</span></span><span class="rule-why">TORSION LIMIT</span></div>
+    <div class="theorem-note">T13: Two shattered states CAN fuse into a locked state (EW+QGP→hadronic matter). Proved.</div>
+  </div>
+
+  <!-- COLLIDER -->
+  <div class="collider-wrap">
+
+    <!-- LEFT BAY -->
+    <div class="bay bay-left" data-label="INPUT · BEAM A">
+      <div class="element-grid" id="grid-left"></div>
+    </div>
+
+    <!-- BEAM TUNNEL -->
+    <div class="beam-section">
+      <div class="beam-tunnel">
+        <div class="beam-line" id="beam-a"></div>
+        <div class="beam-particles" id="particles-a"></div>
+      </div>
+
+      <div class="bond-wrap" id="bond-wrap">
+        <div class="bond-control">
+          <div class="bond-label">BONDS k</div>
+          <input type="range" class="bond-slider" id="bond-slider" min="0" max="1" step="0.001" value="0">
+          <span id="bond-val">0.000</span>
+        </div>
+      </div>
+
+      <button class="collide-btn" id="collide-btn" disabled>COLLIDE</button>
+
+      <div class="beam-tunnel">
+        <div class="beam-line" id="beam-b"></div>
+        <div class="beam-particles" id="particles-b"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT BAY -->
+    <div class="bay bay-right" data-label="INPUT · BEAM B">
+      <div class="element-grid" id="grid-right"></div>
+    </div>
+
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-panel" id="result-panel">
+    <div class="result-label">COLLISION OUTPUT</div>
+    <div class="result-idle" id="result-idle">SELECT TWO ELEMENTS TO COLLIDE</div>
+    <div class="result-content" id="result-content"></div>
+  </div>
+
+  <!-- QUICK COLLISIONS -->
+  <div class="quick-section">
+    <div class="section-title">FEATURED COLLISIONS</div>
+    <div class="quick-grid" id="quick-grid"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+    <span>LOSSLESS IS LOSSLESS IS LOSSLESS</span>
+    <span>[9,9,9,9] :: {ANC}</span>
+  </footer>
+
+</div>
+
+<script>
+// ── ELEMENT DATABASE ────────────────────────────────────────
+const ANCHOR = 1.369;
+const TORSION_LIMIT = 0.2;
+const P_VE = Math.pow(ANCHOR / 1.4204, 1/3);
+
+const ELEMENTS = [
+  { sym:'Sv', name:'Soverium',     coord:'9,9,1,46', P:P_VE,   N:2,      B:0,          A:0,     color:'#00ffcc' },
+  { sym:'Lm', name:'Lumium',       coord:'9,9,1,53', P:P_VE,   N:2,      B:1/137,      A:4.423, color:'#66aaff' },
+  { sym:'Ve', name:'Velium',       coord:'9,9,1,47', P:P_VE,   N:2,      B:1,          A:4.423, color:'#ffe066' },
+  { sym:'Nx', name:'Nexium',       coord:'9,9,1,50', P:ANCHOR, N:ANCHOR, B:ANCHOR,     A:ANCHOR,color:'#ff44aa' },
+  { sym:'Rb', name:'Rubidium',     coord:'9,9,1,45', P:2.20,   N:10,     B:1,          A:1.392, color:'#ff9944' },
+  { sym:'Wm', name:'Wimpium',      coord:'9,9,4,3',  P:P_VE,   N:3,      B:0.034,      A:0.01,  color:'#ccff88' },
+  { sym:'Ax', name:'Axionium',     coord:'9,9,4,4',  P:P_VE,   N:1,      B:1/Math.PI**2, A:0.01,color:'#ffcc44'},
+  { sym:'De', name:'Darkenergy',   coord:'9,9,4,1',  P:P_VE,   N:1,      B:0,          A:0.689, color:'#aaaaff' },
+  { sym:'GU', name:'GUT State',    coord:'9,9,3,5',  P:P_VE,   N:1,      B:1/25,       A:1/25,  color:'#aaffaa' },
+  { sym:'EW', name:'EW Plasma',    coord:'9,9,3,6',  P:P_VE,   N:2,      B:0.231,      A:0.231, color:'#ffaaff' },
+  { sym:'Pm', name:'Plasmion',     coord:'9,9,3,4',  P:P_VE,   N:3,      B:1/Math.PI,  A:0,     color:'#ff6644' },
+  { sym:'NS', name:'Neutron Star', coord:'9,9,3,3',  P:P_VE,   N:1,      B:0.199,      A:0,     color:'#8888ff' },
+];
+
+function tau(e) { return e.P > 0 ? e.B / e.P : 999; }
+function tauClass(t) { return t < TORSION_LIMIT ? 'locked' : 'shatter'; }
+
+function fuse(e1, e2, k) {
+  k = Math.max(0, Math.min(k, Math.min(e1.B, e2.B)));
+  const P_out = (e1.P * e2.P) / (e1.P + e2.P);
+  const N_out = e1.N + e2.N;
+  const B_out = Math.max(0, e1.B + e2.B - 2*k);
+  const A_out = Math.max(e1.A, e2.A);
+  const tau_out = P_out > 0 ? B_out / P_out : 999;
+  const IM_out = (P_out + N_out + B_out + A_out) * ANCHOR;
+  return { P:P_out, N:N_out, B:B_out, A:A_out, tau:tau_out, IM:IM_out,
+           stable: tau_out < TORSION_LIMIT };
+}
+
+// ── STATE ────────────────────────────────────────────────────
+let selLeft = null, selRight = null;
+
+// ── RENDER ELEMENT GRIDS ──────────────────────────────────────
+function renderGrids() {
+  ['left','right'].forEach(side => {
+    const grid = document.getElementById('grid-'+side);
+    grid.innerHTML = '';
+    ELEMENTS.forEach(el => {
+      const t = tau(el);
+      const tc = tauClass(t);
+      const card = document.createElement('div');
+      card.className = 'el-card';
+      card.dataset.sym = el.sym;
+      card.dataset.side = side;
+      card.innerHTML = `
+        <div class="el-sym" style="color:${el.color}">${el.sym}</div>
+        <div class="el-name">${el.name}</div>
+        <div class="el-tau tau-${tc}">τ=${t.toFixed(3)}</div>`;
+      card.addEventListener('click', () => selectElement(el, side));
+      grid.appendChild(card);
+    });
+  });
+}
+
+function selectElement(el, side) {
+  if (side === 'left') {
+    selLeft = el;
+    document.querySelectorAll('#grid-left .el-card').forEach(c => {
+      c.classList.toggle('selected', c.dataset.sym === el.sym);
+    });
+  } else {
+    selRight = el;
+    document.querySelectorAll('#grid-right .el-card').forEach(c => {
+      c.classList.toggle('selected-right', c.dataset.sym === el.sym);
+    });
+  }
+  updateCollideState();
+}
+
+function updateCollideState() {
+  const btn = document.getElementById('collide-btn');
+  const bondWrap = document.getElementById('bond-wrap');
+  if (selLeft && selRight) {
+    btn.disabled = false;
+    bondWrap.classList.add('active');
+    // Update slider max
+    const maxK = Math.min(selLeft.B, selRight.B);
+    const slider = document.getElementById('bond-slider');
+    slider.max = maxK.toFixed(4);
+    slider.value = maxK.toFixed(4);
+    document.getElementById('bond-val').textContent = parseFloat(slider.value).toFixed(3);
+  } else {
+    btn.disabled = true;
+    bondWrap.classList.remove('active');
+  }
+}
+
+// ── BOND SLIDER ───────────────────────────────────────────────
+document.getElementById('bond-slider').addEventListener('input', function() {
+  document.getElementById('bond-val').textContent = parseFloat(this.value).toFixed(3);
+});
+
+// ── BEAM ANIMATION ───────────────────────────────────────────
+function fireBeam(id, particleId, color) {
+  const beam = document.getElementById(id);
+  beam.style.background = `linear-gradient(90deg, transparent, ${color}, transparent)`;
+  beam.classList.remove('active');
+  void beam.offsetWidth;
+  beam.classList.add('active');
+
+  const container = document.getElementById(particleId);
+  for (let i = 0; i < 5; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.top = `${40 + Math.random()*20}%`;
+    p.style.background = color;
+    p.style.animationDelay = `${i*0.04}s`;
+    container.appendChild(p);
+    void p.offsetWidth;
+    p.classList.add('fly');
+    setTimeout(() => p.remove(), 400);
+  }
+}
+
+// ── COLLIDE ───────────────────────────────────────────────────
+document.getElementById('collide-btn').addEventListener('click', () => {
+  if (!selLeft || !selRight) return;
+  const k = parseFloat(document.getElementById('bond-slider').value);
+
+  // Animate beams
+  fireBeam('beam-a', 'particles-a', selLeft.color);
+  setTimeout(() => fireBeam('beam-b', 'particles-b', selRight.color), 80);
+
+  setTimeout(() => {
+    const r = fuse(selLeft, selRight, k);
+    showResult(selLeft, selRight, k, r);
+  }, 300);
+});
+
+function showResult(e1, e2, k, r) {
+  const panel = document.getElementById('result-panel');
+  const idle  = document.getElementById('result-idle');
+  const content = document.getElementById('result-content');
+
+  panel.className = 'result-panel ' + (r.stable ? 'locked-result' : 'shatter-result');
+  idle.style.display = 'none';
+
+  const tauPct = Math.min(100, (r.tau / 1.5) * 100);
+  const barColor = r.stable ? 'var(--locked)' : 'var(--shatter)';
+  const statusClass = r.stable ? 'banner-locked' : 'banner-shatter';
+  const statusText = r.stable ? '✦ PHASE LOCKED' : '✸ SHATTER STATE';
+  const tauClass2 = r.stable ? 'tau-locked-big' : 'tau-shatter-big';
+
+  content.innerHTML = `
+    <div class="result-reaction">
+      <span style="color:${e1.color}">${e1.sym}</span>
+      <span style="color:#3a5a6a"> + </span>
+      <span style="color:${e2.color}">${e2.sym}</span>
+      <span style="color:#3a5a6a"> → </span>
+      <span style="color:${barColor}">[${r.P.toFixed(4)}, ${r.N.toFixed(3)}, ${r.B.toFixed(4)}, ${r.A.toFixed(4)}]</span>
+      <span style="color:#2a4050; font-size:10px"> k=${k.toFixed(3)}</span>
+    </div>
+
+    <div>
+      <div class="result-col-label">INPUT A · ${e1.name}</div>
+      <div class="pnba-row"><span class="lbl">P</span><span class="val">${e1.P.toFixed(4)}</span></div>
+      <div class="pnba-row"><span class="lbl">N</span><span class="val">${e1.N.toFixed(4)}</span></div>
+      <div class="pnba-row"><span class="lbl">B</span><span class="val">${e1.B.toFixed(6)}</span></div>
+      <div class="pnba-row"><span class="lbl">A</span><span class="val">${e1.A.toFixed(4)}</span></div>
+      <div class="pnba-row"><span class="lbl">τ</span><span class="val" style="color:${tau(e1)<0.2?'var(--locked)':'var(--shatter)'}">${tau(e1).toFixed(4)}</span></div>
+    </div>
+
+    <div>
+      <div class="result-col-label">INPUT B · ${e2.name}</div>
+      <div class="pnba-row"><span class="lbl">P</span><span class="val">${e2.P.toFixed(4)}</span></div>
+      <div class="pnba-row"><span class="lbl">N</span><span class="val">${e2.N.toFixed(4)}</span></div>
+      <div class="pnba-row"><span class="lbl">B</span><span class="val">${e2.B.toFixed(6)}</span></div>
+      <div class="pnba-row"><span class="lbl">A</span><span class="val">${e2.A.toFixed(4)}</span></div>
+      <div class="pnba-row"><span class="lbl">τ</span><span class="val" style="color:${tau(e2)<0.2?'var(--locked)':'var(--shatter)'}">${tau(e2).toFixed(4)}</span></div>
+    </div>
+
+    <div>
+      <div class="result-col-label">OUTPUT COORDINATE</div>
+      <div class="pnba-row"><span class="lbl">P_out</span><span class="val">${r.P.toFixed(4)}</span></div>
+      <div class="pnba-row"><span class="lbl">N_out</span><span class="val">${r.N.toFixed(4)}</span></div>
+      <div class="pnba-row"><span class="lbl">B_out</span><span class="val">${r.B.toFixed(6)}</span></div>
+      <div class="pnba-row"><span class="lbl">A_out</span><span class="val">${r.A.toFixed(4)}</span></div>
+      <div class="pnba-row"><span class="lbl">IM</span><span class="val">${r.IM.toFixed(4)}</span></div>
+      <div style="margin-top:10px">
+        <div class="tau-display ${tauClass2}">τ = ${r.tau.toFixed(4)}</div>
+        <div class="tau-bar-wrap">
+          <div class="tau-bar-track">
+            <div class="tau-bar-limit"></div>
+            <div class="tau-bar-fill" style="width:${tauPct}%;background:${barColor}"></div>
+          </div>
+          <div class="tau-bar-label"><span>0</span><span style="color:var(--warn)">0.2</span><span>1.5+</span></div>
+        </div>
+        <div class="status-banner ${statusClass}" style="margin-top:8px">${statusText}</div>
+      </div>
+    </div>`;
+
+  content.className = 'result-content show';
+}
+
+// ── QUICK COLLISIONS ──────────────────────────────────────────
+const QUICK = [
+  { a:'EW', b:'Pm', label:'EW+Plasmion', note:'Shatter×2 → Locked (hadronic matter)' },
+  { a:'GU', b:'EW', label:'GUT+EW',      note:'Two locked epochs combine' },
+  { a:'Sv', b:'Ve', label:'Sv+Velium',   note:'IVA drive state (k=0)' },
+  { a:'Wm', b:'Ax', label:'Wimp+Axion',  note:'Two DM candidates' },
+  { a:'Lm', b:'Ve', label:'Lm+Velium',   note:'EM vac + propellant' },
+  { a:'NS', b:'Pm', label:'NS+Plasmion', note:'Max stable pump + QGP' },
+  { a:'GU', b:'Pm', label:'GUT+Plasmion',note:'Early universe + QCD' },
+  { a:'De', b:'GU', label:'DarkE+GUT',   note:'Vacuum + unification' },
+];
+
+function renderQuick() {
+  const grid = document.getElementById('quick-grid');
+  QUICK.forEach(q => {
+    const e1 = ELEMENTS.find(e=>e.sym===q.a);
+    const e2 = ELEMENTS.find(e=>e.sym===q.b);
+    if (!e1||!e2) return;
+    const r = fuse(e1, e2, Math.min(e1.B, e2.B));
+    const cls = r.stable ? 'quick-locked' : 'quick-shatter';
+    const statusTxt = r.stable ? 'LOCKED' : 'SHATTER';
+    const btn = document.createElement('div');
+    btn.className = 'quick-btn';
+    btn.innerHTML = `
+      <div class="quick-reaction">
+        <span style="color:${e1.color}">${e1.sym}</span>
+        <span style="color:#3a5a6a">+</span>
+        <span style="color:${e2.color}">${e2.sym}</span>
+        <span class="quick-result ${cls}"> → τ=${r.tau.toFixed(3)} ${statusTxt}</span>
+      </div>
+      <div style="font-size:9px;color:#2a4050">${q.note}</div>`;
+    btn.addEventListener('click', () => {
+      // Auto-select and collide
+      selectElement(e1, 'left');
+      selectElement(e2, 'right');
+      const k = Math.min(e1.B, e2.B);
+      document.getElementById('bond-slider').value = k;
+      document.getElementById('bond-val').textContent = k.toFixed(3);
+      setTimeout(() => {
+        fireBeam('beam-a', 'particles-a', e1.color);
+        setTimeout(() => fireBeam('beam-b', 'particles-b', e2.color), 80);
+        setTimeout(() => showResult(e1, e2, k, r), 300);
+      }, 100);
+    });
+    grid.appendChild(btn);
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+renderGrids();
+renderQuick();
+</script>
+</body>
+</html>
