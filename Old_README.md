@@ -67,3 +67,12 @@ Non-alignment produces frictional drag and Identity Collapse (`I → 0`).
 theorem resonance_at_anchor (f : ℝ) (h : f = SOVEREIGN_ANCHOR) :
     manifold_impedance f = 0 := by
   unfold manifold_impedance; simp [h]
+### 📥 New DOI Anchors (March 13, 2026)
+
+| Resource | Status | DOI |
+| :--- | :--- | :--- |
+| **SNSFT Master Manifest** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19016221.svg)](https://doi.org/10.5281/zenodo.19016221) |
+| **Atomic Series Extension** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19015872.svg)](https://doi.org/10.5281/zenodo.19015872) |
+
+- **Record 19016221**: Master Ingestion Manifest; 10-Slam Grid; [9,9,9,9] Status.
+- **Record 19015872**: Period 4 Atomic Series; Z=21–36; d-block anomalies (Cr, Cu) proved.
