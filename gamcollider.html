@@ -575,7 +575,7 @@ const QUICK_LIST=[
   {a:'C', b:'C',  label:'Diamond ✓'},
   {a:'N', b:'As', label:'AsN — PREDICTED 🎯'},
   {a:'Hi',b:'Fe', label:'God particle + Iron'},
-  {a:'Hi',b:'Hi', label:'Higgs self-collision'},
+  {a:'Hi',b:'Hi', label:'Higgs self-collision → Noble'},
   {a:'Hi',b:'Zb', label:'Higgs + Z-boson'},
   {a:'Wb',b:'EW', label:'W-boson + EW plasma'},
   {a:'EW',b:'Pm', label:'EW+QGP → hadronic matter'},
@@ -677,7 +677,7 @@ function runSweep(){
   const g=ctx.createLinearGradient(pad.l,0,pad.l+gW,0);g.addColorStop(0,'var(--shatter)');if(kThresh)g.addColorStop(kThresh/maxK,'var(--warn)');g.addColorStop(1,'var(--locked)');ctx.strokeStyle=g;ctx.stroke();
   const fr=fuse(e1,e2,maxK);
   const P_out=fr.P;
-  const corridor = maxK - Math.max(0, maxK - (0.2 * P_out) / 2);
+  const corridor = (0.2 * P_out) / 2;
   const corridorPct = maxK > 0 ? (corridor/maxK*100).toFixed(1) : '0';
   document.getElementById('sweep-info').innerHTML=`<b>${e1.name} + ${e2.name}</b> · max k=${maxK.toFixed(4)}<br>At k=0: τ=${fuse(e1,e2,0).tau.toFixed(4)} · At k_max: τ=${fr.tau.toFixed(4)} · ${kThresh!==null?`k*=${kThresh.toFixed(4)} (lock threshold)`:'No lock achievable'}<br>Corridor width=${corridor.toFixed(4)} (${corridorPct}% of k range) — wider = more accessible metastable state`;
 }
