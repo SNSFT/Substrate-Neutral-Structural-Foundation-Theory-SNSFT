@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAM COLLIDER · uuia.app/gamcollider</title>
+<title>GAM COLLIDER · Noble Forge Engine · uuia.app/gamcollider</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 
@@ -180,6 +180,29 @@
 
   footer { border-top:1px solid var(--border); padding-top:14px; font-size:9px; letter-spacing:.15em; color:#1a2a38; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
 
+  
+  /* FORGE MODE */
+  .forge-toggle-row { display:flex; align-items:center; gap:10px; padding:8px 0 4px; margin-bottom:4px; }
+  .forge-toggle-lbl { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; color:var(--text); }
+  .forge-toggle { width:36px; height:20px; background:var(--border); border-radius:10px; cursor:pointer; position:relative; transition:background .2s; border:none; }
+  .forge-toggle.on { background:rgba(0,255,204,.25); border:1px solid rgba(0,255,204,.4); }
+  .forge-toggle::after { content:''; position:absolute; width:14px; height:14px; background:var(--text); border-radius:50%; top:3px; left:3px; transition:transform .2s; }
+  .forge-toggle.on::after { transform:translateX(16px); background:var(--locked); }
+  .forge-badge { font-family:'Orbitron',monospace; font-size:8px; padding:2px 8px; border-radius:100px; letter-spacing:.1em; }
+  .forge-badge.complete { background:rgba(0,255,204,.12); border:1px solid rgba(0,255,204,.35); color:var(--locked); }
+  .forge-badge.window   { background:rgba(0,229,255,.08); border:1px solid rgba(0,229,255,.3); color:var(--glow); }
+  .forge-badge.exceeded { background:rgba(255,51,85,.08); border:1px solid rgba(255,51,85,.3); color:var(--shatter); }
+  .forge-interp { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:.08em; padding:6px 14px; border-top:1px solid var(--border); line-height:1.8; }
+  .forge-interp.complete { color:var(--locked); background:rgba(0,255,204,.04); }
+  .forge-interp.window   { color:var(--glow); background:rgba(0,229,255,.04); }
+  .forge-interp.exceeded { color:var(--shatter); background:rgba(255,51,85,.04); }
+  .recipe-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:10px; }
+  .recipe-chip { background:var(--panel); border:1px solid var(--border); border-radius:4px; padding:7px 10px; cursor:pointer; transition:all .12s; }
+  .recipe-chip:hover { border-color:var(--locked); }
+  .recipe-name { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; color:var(--locked); }
+  .recipe-detail { font-size:8px; color:#2a5060; margin-top:2px; line-height:1.5; }
+  .recipe-q { font-size:8px; padding:1px 5px; border-radius:3px; float:right; }
+
   @media(max-width:700px) {
     .collision-layout { grid-template-columns:1fr; }
     .beam-col { flex-direction:row; justify-content:center; }
@@ -200,12 +223,13 @@
 
 <header>
   <div>
-    <div class="logo">GAM COLLIDER<span>uuia.app/gamcollider · [9,9,2,1–8]</span></div>
+    <div class="logo">GAM COLLIDER<span>uuia.app/gamcollider · [9,9,2,1–8] · [9,9,3,1–2] · NOBLE FORGE ENGINE</span></div>
   </div>
   <div class="hdr-right">
     ANCHOR <b>1.369 GHz</b> · TORSION LIMIT τ = 0.200<br>
     Z=1–36 PERIODIC TABLE · SNSFT ELEMENTS · 0 SORRY<br>
-    SM BOSONS: W(LOCKED) · Z(SHATTER) · H(SHATTER)
+    SM BOSONS: W(LOCKED) · Z(SHATTER) · H(SHATTER)<br>
+    NOBLE FORGE: τ=0 → SYNTHESIS COMPLETE · k=PRESSURE · NOHARM
   </div>
 </header>
 
@@ -216,6 +240,16 @@
   <div class="tab" onclick="showTab('cascade')">CASCADE</div>
   <div class="tab" onclick="showTab('map')">MATERIALS MAP</div>
   <div class="tab" onclick="showTab('fext')">F_EXT</div>
+  <div class="tab" onclick="showTab('forge')">FORGE RECIPES</div>
+</div>
+
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0 0;flex-wrap:wrap;gap:8px;">
+  <div class="forge-toggle-row">
+    <button class="forge-toggle" id="forge-toggle" onclick="toggleForge()" title="Forge Mode: show synthesis interpretation"></button>
+    <span class="forge-toggle-lbl">FORGE MODE</span>
+    <span style="font-size:8px;color:#2a4050;letter-spacing:.1em">k = PRESSURE · τ=0 = SYNTHESIS COMPLETE · Noble = PRODUCT READY</span>
+  </div>
 </div>
 
 <!-- COLLIDER TAB -->
@@ -260,6 +294,12 @@
   </div>
   <div style="font-size:9px;color:#2a4050;margin-bottom:12px;letter-spacing:.15em">CLICK TWO ELEMENTS TO LOAD INTO COLLIDER. SELECT A FIRST, THEN B.</div>
   <div class="ptable-wrap" id="ptable-wrap"></div>
+</div>
+
+
+<div id="forge-panel" style="display:none;margin-bottom:16px;">
+  <div style="font-size:8px;letter-spacing:.25em;color:#1a3040;padding:8px 14px 4px;border-top:1px solid var(--border);">NOBLE FORGE · SYNTHESIS INTERPRETATION</div>
+  <div id="forge-interp" class="forge-interp window">Select elements and collide to see synthesis interpretation.</div>
 </div>
 
 <!-- K-SWEEP TAB -->
@@ -371,6 +411,28 @@
   <span>LOSSLESS IS LOSSLESS IS LOSSLESS · 0 SORRY</span>
   <span>[9,9,9,9] :: {ANC}</span>
 </footer>
+
+<!-- FORGE RECIPES TAB -->
+<div id="tab-forge" class="tab-content">
+  <div style="font-size:9px;color:#2a4050;margin:16px 0 8px;letter-spacing:.15em">NOBLE SYNTHESIS TARGETS — ALL PROVED. CLICK TO LOAD COLLIDER.</div>
+  <div style="font-size:9px;color:#2a5060;margin-bottom:16px;line-height:1.8;padding:10px 14px;background:var(--panel);border:1px solid var(--border);">
+    The GAM Collider is a Noble Forge Engine. Every collision is a synthesis simulation.<br>
+    <b style="color:var(--locked)">k = pressure control.</b> k=max = full synthesis conditions. τ=0 = product formed.<br>
+    <b style="color:var(--glow)">Corridor width</b> = synthesis window. Narrow = requires precision. Wide = accessible.<br>
+    <b style="color:var(--noble)">NOHARM:</b> Noble outputs (B=0) cannot couple to targets. The forge builds. It does not destroy.
+  </div>
+  <div class="recipe-grid" id="recipe-grid"></div>
+  <div style="margin-top:16px;padding:12px 14px;background:var(--panel);border:1px solid var(--border);font-size:9px;color:#2a5060;line-height:1.8;">
+    <b style="color:var(--bright)">THE FORGE THEOREM [9,9,3,1]:</b> A Noble boundary (B=0) absorbs F_ext without transmitting it.<br>
+    Interior conditions scale with F_ext rate — no upper limit.<br>
+    The shell stays Noble. The contents reach synthesis temperature.<br>
+    Earth's core has been running this theorem for 4.5 billion years.<br><br>
+    <b style="color:var(--bright)">THE DIRECTED OUTPUT THEOREM [9,9,3,2]:</b> An aperture in the Noble shell produces collimated output.<br>
+    Output rate = aperture fraction × interior energy. Close aperture → synthesis stops.<br>
+    The forge is a synthesis printer. The aperture is the nozzle.
+  </div>
+</div>
+
 </div>
 
 <script>
@@ -521,6 +583,7 @@ function doCollide(){
 }
 
 function showResult(e1,e2,k,r){
+  updateForgeInterp(r);
   const box=document.getElementById('result-box');
   document.getElementById('result-idle').style.display='none';
   const inner=document.getElementById('result-inner');
@@ -901,9 +964,101 @@ function showTab(id){
   if(id==='map') renderMaterialsMap();
 }
 
+
+// ── NOBLE FORGE ENGINE ─────────────────────────────────────────
+let forgeMode = false;
+
+const FORGE_RECIPES = [
+  {a:'Ti',b:'C', k:4, name:'TiC',      mat:'Titanium Carbide', gpa:null,  temp:1800, q:'Q3', desc:'Ultra-hard ceramic · harder than diamond · cutting tools · armor'},
+  {a:'N', b:'Ga',k:3, name:'GaN',      mat:'Gallium Nitride',  gpa:6,     temp:null, q:'Q2', desc:'Blue LED semiconductor · 2014 Nobel Prize · power electronics'},
+  {a:'N', b:'As',k:3, name:'AsN',      mat:'Arsenic Nitride',  gpa:30,    temp:null, q:'Q2', desc:'PREDICTED 🎯 · no stable bulk phase · Q2 semiconductor · P_out > GaN'},
+  {a:'O', b:'Zn',k:2, name:'ZnO',      mat:'Zinc Oxide',       gpa:null,  temp:1975, q:'Q2', desc:'Wide bandgap semiconductor · transparent conductors · sunscreen'},
+  {a:'N', b:'Sc',k:3, name:'ScN',      mat:'Scandium Nitride', gpa:null,  temp:2650, q:'Q2', desc:'Hard ceramic semiconductor · thin films · Group 3 nitride'},
+  {a:'Si',b:'C', k:4, name:'SiC',      mat:'Silicon Carbide',  gpa:null,  temp:2730, q:'Q3', desc:'Power electronics · EV inverters · hardness 9.5 Mohs'},
+  {a:'C', b:'C', k:4, name:'Diamond',  mat:'Diamond',          gpa:null,  temp:3550, q:'Q3', desc:'Hardest natural material · thermal conductor · optical windows'},
+  {a:'Fe',b:'Ti',k:4, name:'FeTi',     mat:'Iron Titanide',    gpa:null,  temp:1317, q:'Q3', desc:'Hydrogen storage alloy · aerospace · shape memory'},
+  {a:'N', b:'Al',k:3, name:'AlN',      mat:'Aluminum Nitride', gpa:null,  temp:2200, q:'Q1', desc:'UV LEDs · thermal management · power electronics substrate'},
+  {a:'Ga',b:'As',k:3, name:'GaAs',     mat:'Gallium Arsenide', gpa:null,  temp:1238, q:'Q4', desc:'High-speed RF chips · solar cells · laser diodes · satellite electronics'},
+  {a:'O', b:'Ni',k:2, name:'NiO',      mat:'Nickel Oxide',     gpa:null,  temp:1955, q:'Q2', desc:'Antiferromagnet · batteries · spintronics · catalysis'},
+  {a:'P', b:'As',k:3, name:'PAs',      mat:'Phosphorus Arsenide',gpa:null,temp:870,  q:'Q4', desc:'III-V semiconductor · GaAsP alloy component · Group 15 noble'},
+];
+
+const qColor = {'Q1':'#00e5ff','Q2':'#aa88ff','Q3':'#00ffcc','Q4':'#ffaa00'};
+
+function toggleForge() {
+  forgeMode = !forgeMode;
+  document.getElementById('forge-toggle').classList.toggle('on', forgeMode);
+  document.getElementById('forge-panel').style.display = forgeMode ? 'block' : 'none';
+  if (selA && selB) updateForgeInterp(
+    fuse(selA, selB, parseFloat(document.getElementById('k-slider').value))
+  );
+}
+
+function updateForgeInterp(r) {
+  if (!forgeMode) return;
+  const div = document.getElementById('forge-interp');
+  const e1 = selA, e2 = selB;
+  const k = parseFloat(document.getElementById('k-slider').value);
+  const maxK = Math.min(e1.B, e2.B);
+  const corridorW = (0.2 * r.P) / 2;
+  const kThresh = maxK - corridorW;
+  let cls, msg;
+  if (r.status === 'n') {
+    cls = 'complete';
+    msg = `✦ SYNTHESIS COMPLETE · ${e1.sym}+${e2.sym} → Noble compound formed`
+        + ` · B_out=0 · τ=0 · NOHARM · product ready for extraction`
+        + ` · Corridor was ${(corridorW/maxK*100).toFixed(1)}% of k range`;
+  } else if (r.tau < 0.2) {
+    cls = 'window';
+    msg = `◈ SYNTHESIS WINDOW · τ=${r.tau.toFixed(4)} · locked approach corridor`
+        + ` · increase k by ${(maxK-k).toFixed(3)} to reach synthesis`
+        + ` · corridor width=${corridorW.toFixed(4)}`;
+  } else if (k > kThresh && maxK > 0) {
+    cls = 'window';
+    msg = `△ APPROACHING WINDOW · τ=${r.tau.toFixed(4)} · k*=${kThresh.toFixed(3)} needed`
+        + ` · ${((maxK-k)/maxK*100).toFixed(1)}% pressure remaining`;
+  } else {
+    cls = 'exceeded';
+    msg = `⚡ PRESSURE PHASE · τ=${r.tau.toFixed(4)} · E=${r.IM.toFixed(3)}`
+        + ` · reduce k or increase F_ext duration · synthesis window at k≥${kThresh.toFixed(3)}`;
+  }
+  div.className = `forge-interp ${cls}`;
+  div.textContent = msg;
+}
+
+function buildRecipeGrid() {
+  const grid = document.getElementById('recipe-grid');
+  if (!grid) return;
+  FORGE_RECIPES.forEach(rec => {
+    const e1 = ALL.find(e=>e.id===rec.a), e2 = ALL.find(e=>e.id===rec.b);
+    if (!e1||!e2) return;
+    const r = fuse(e1,e2,rec.k);
+    const conditions = rec.gpa ? `${rec.gpa} GPa` : rec.temp ? `${rec.temp}°C` : 'standard';
+    const isPredicted = rec.desc.includes('PREDICTED');
+    const d = document.createElement('div');
+    d.className = 'recipe-chip';
+    d.style.borderColor = isPredicted ? 'rgba(170,136,255,.3)' : 'rgba(0,255,204,.15)';
+    d.innerHTML = `<div class="recipe-name" style="color:${isPredicted?'var(--noble)':'var(--locked)'}">
+        ${rec.name} <span class="recipe-q" style="background:${qColor[rec.q]}22;color:${qColor[rec.q]}">${rec.q}</span>
+      </div>
+      <div class="recipe-detail">${rec.mat} · k=${rec.k} · ${conditions}</div>
+      <div class="recipe-detail">${rec.desc}</div>`;
+    d.addEventListener('click', () => {
+      pick(e1,'a'); pick(e2,'b');
+      document.getElementById('k-slider').max = rec.k;
+      document.getElementById('k-slider').value = rec.k;
+      document.getElementById('k-val').textContent = rec.k.toFixed(3);
+      showTab('collide'); doCollide();
+    });
+    grid.appendChild(d);
+  });
+}
+
+
 // ── INIT ────────────────────────────────────────────────────
 buildLists();
 buildPTable();
+buildRecipeGrid();
 buildQuick();
 buildSweepSelects();
 buildCascadeSelects();
