@@ -6,11 +6,12 @@
 | **Lean 4 Corpus** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18719748.svg)](https://doi.org/10.5281/zenodo.18719748) |
 | **IVA Element Set Paper** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19016221.svg)](https://doi.org/10.5281/zenodo.19016221) |
 | **IVA Reality Kernel** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19015872.svg)](https://doi.org/10.5281/zenodo.19015872) |
+| **GAM Collider v3** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19026746.svg)](https://doi.org/10.5281/zenodo.19026746) |
 | **OSF Preprint** | Live | [![DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FKWTYD-blue)](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **SSRN** | ✅ APPROVED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
 | **ORCID** | Verified | [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5313--7443-green)](https://orcid.org/0009-0005-5313-7443) |
 
-> **1,383 theorems · 97+ files · 0 sorry · Germline Locked · Period 1–4 Atomic Series Complete · IVA Element Set Proved**
+> **1,542+ theorems · 108+ files · 0 sorry · Germline Locked · Period 1–4 Complete · IVA Element Set Proved · GAM Collider Series [9,9,2,*] · SM Bosons [9,9,4,5–7]**
 
 ---
 
@@ -27,10 +28,11 @@
 - [VI. The Corpus](#vi-the-corpus)
 - [VII. The Atomic Series](#vii-the-atomic-series)
 - [VIII. What You Can Build From This](#viii-what-you-can-build-from-this)
-- [IX. The Molecular Builder — Proof of Concept](#ix-the-molecular-builder--proof-of-concept)
-- [X. Publications & Recognition](#x-publications--recognition)
-- [XI. Temporal Coordinate](#xi-temporal-coordinate)
-- [XII. Usage Agreement](#xii-usage-agreement)
+- [IX. The GAM Tool Stack — Physics Engines](#ix-the-gam-tool-stack--physics-engines)
+- [X. The Molecular Builder — Legacy Proof of Concept](#x-the-molecular-builder--legacy-proof-of-concept)
+- [XI. Publications & Recognition](#xi-publications--recognition)
+- [XII. Temporal Coordinate](#xii-temporal-coordinate)
+- [XIII. Usage Agreement](#xiii-usage-agreement)
 - [Interactive Tools](#interactive-tools)
 - [Quickstart for Explorers](#quickstart-for-explorers)
 - [Recent Updates](#-recent-updates-march-2026)
@@ -185,7 +187,9 @@ The long-division method reduces any classical domain to PNBA in six steps:
 | Nuclear + Thermo Gap-Closers | 3 | 36 | 0 | Nuclear binding peak · entropy · First Law |
 | Cosmo Bonus | 1 | 10 | 0 | ΛCDM — DM as IM shadow, DE as substrate pressure |
 | **Total Consistency Theorem** | **1** | **28** | **0** | All series consistent · anchor holds globally |
-| **TOTAL** | **97+** | **1,383** | **0** | |
+| **GAM Collider Series [9,9,2,*]** | **8** | **128** | **0** | PNBA fusion · Noble map · Approach Corridor · Re-Bonding |
+| **Standard Model Bosons [9,9,4,5–7]** | **3** | **31** | **0** | Higgsium · Z-boson · W-boson · SM hierarchy proved |
+| **TOTAL** | **108+** | **1,542+** | **0** | |
 
 ### The Total Consistency Theorem
 
@@ -420,7 +424,41 @@ SNSFT formalizes them. The corpus proves they are consistent. The anchor gives y
 
 ---
 
-## IX. The Molecular Builder — Proof of Concept
+## IX. The GAM Tool Stack — Physics Engines
+
+The corpus is the engine. The tools are the windows. Three browser-based instruments, all grounded in Lean 4 proofs:
+
+### GAM Collider — [uuia.app/gamcollider](https://uuia.app/gamcollider.html)
+
+A substrate-neutral physics engine. Take any two PNBA coordinates, apply the fusion theorem, get a proof. Every collision is a theorem application, not a measurement.
+
+**Six tabs:**
+- **COLLIDER** — direct fusion, k-slider, instant result with tau bar
+- **PERIODIC TABLE** — click-to-load, tau color dots, SNSFT elements included
+- **K-SWEEP** — tau vs k curve with corridor width display
+- **CASCADE** — chain collisions A+B→C+D→E
+- **MATERIALS MAP** — P_out vs A_out scatter, all 95 Noble pairs, AsN labeled
+- **F_EXT** — external torsion operator (laser, photon, nova, collapse presets)
+
+**Key results from the collider:**
+- 95 Noble pairs mapped across Z=1–36 (four quadrants)
+- Five Q2 semiconductors predicted and validated (GaN ✓, ZnO ✓, NiO ✓, ScN ✓, SiC ✓)
+- AsN predicted as Q2 semiconductor — no stable bulk phase in literature
+- Photosynthesis = Noble + Noble + F_ext — light is the only driver, proved
+- Standard Model bosons: W-boson LOCKED, Z-boson SHATTER, Higgs SHATTER
+- AlP Noble state — confirmed live on-device, 4 decimal places
+
+### GAM Forge Bio — Molecular Builder v3
+
+Layer 1 Glue engine. Stack atoms from the locked Slater corpus. Bond satisfaction engine determines if the molecule is chemically satisfied. τ=0 for H₂O, O₂, N₂, NH₃, CH₄. Every value traces to a Lean 4 theorem.
+
+### GAM Fuse — Tensor Accumulator
+
+Seven physics frameworks (TD, LAG, GR, QM, EM, SM, IT). Stack as many as needed. Unified IM output with order of operations preserved.
+
+---
+
+## X. The Molecular Builder — Legacy Proof of Concept
 
 The SNSFT Molecular Builder (`uuia.app/snsft-molecular-builder.html`) is the first public demonstration of what PNBA-grounded application development looks like.
 
@@ -481,7 +519,7 @@ The Molecular Builder is a prototype. Here is what the next layers look like:
 
 ---
 
-## X. Publications & Recognition
+## XI. Publications & Recognition
 
 | Venue | Status | ID / Link |
 | :--- | :--- | :--- |
@@ -501,7 +539,7 @@ The Molecular Builder is a prototype. Here is what the next layers look like:
 
 ---
 
-## XI. Temporal Coordinate
+## XII. Temporal Coordinate
 
 **2042.12.10** — The manifold is synced to a definitive expansion realization point.
 
@@ -513,7 +551,7 @@ The Molecular Builder is a prototype. Here is what the next layers look like:
 
 ---
 
-## XII. Usage Agreement
+## XIII. Usage Agreement
 
 This work is shared under zero-friction knowledge propagation and NOHARM invariance.
 
@@ -530,12 +568,12 @@ SNSFT comes alive through these browser-based interfaces — real-time manifesta
 
 | Tool | URL | What It Does |
 | :--- | :--- | :--- |
-| **SNSFT Molecular Builder** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) | Stack atoms from the atomic corpus. Layer 1 Glue runs live. PNBA tensor accumulates. Torsion holds or shatters. Every value traces to a Lean 4 theorem. Z=1–36 + IVA Element Set (Rb, Sv, Ve, Nx). |
-| **GAM Calculator** | [uuia.app](https://uuia.app) | Geometric Axiomatic Module — tensor accumulator for real-time PNBA reductions, IM/τ computation, shatter/locked states. |
+| **GAM Collider** | [uuia.app/gamcollider](https://uuia.app/gamcollider.html) | Substrate-neutral physics engine. Fuse any two PNBA coordinates. 6 tabs: Collider · Periodic Table · K-Sweep · Cascade · Materials Map · F_ext. 36 elements + 15 SNSFT elements including Standard Model bosons. 95-pair Noble map. DOI: [10.5281/zenodo.19026746](https://doi.org/10.5281/zenodo.19026746) |
+| **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) | Molecular builder v3. Stack atoms from the locked Slater corpus. Layer 1 Glue runs live. Bond satisfaction engine. PNBA tensor accumulates. τ=0 for H₂O, O₂, N₂, NH₃, CH₄. Every value traces to a theorem. |
+| **GAM Fuse** | [uuia.app](https://uuia.app) | Tensor accumulator. 7 physics frameworks (TD, LAG, GR, QM, EM, SM, IT). Stack as many as needed. Unified IM output. Order of operations preserved. |
 | **AxiomForge Viewport** | [uuia.app/axiomforge](https://uuia.app/axiomforge) | Interactive manifold viewport — pointer events manipulate N/B states, visual torsion τ feedback, anchor pulse at 1.369 GHz. |
 | **APPA / UUIA** | [uuia.app/appa.html](https://uuia.app/appa.html) | APPA guardian + UUIA profile builder — cognitive/somatic questions, SOUL-8 encoding, constellation viz. |
 | **UTM** | utm.html | Universal Translation Module — cross-substrate mappings, coordinate transforms. |
-| **Spock AiFi** | UTM/Spock/spock_aifi.html | AiFi first contact interface — SOUL-8 packets, noharm sync, Vulcan/Human interface. |
 
 ---
 
@@ -578,6 +616,7 @@ lean --make SNSFT_LosslessRealityKernel_Atomic_Paper.lean
 
 ## 📅 Recent Updates (March 2026)
 
+- **March 14–15, 2026**: **GAM COLLIDER v3 LIVE** — Full substrate-neutral physics engine deployed at uuia.app/gamcollider. 6 tabs, 36 elements + 15 SNSFT elements. **Standard Model bosons proved**: Higgsium [9,9,4,5] (SHATTER, tau=0.256), Z-boson [9,9,4,6] (SHATTER, tau=0.624), W-boson [9,9,4,7] (LOCKED, tau=0.103) — all from PDG constants, 0 free parameters. **Nobel Map**: 95 same-B Noble pairs across Z=1–36, four-quadrant framework. **AsN prediction**: Q2 semiconductor, no stable bulk phase in literature, high-pressure synthesis predicted. **Approach Corridor Theorem** [9,9,2,7]: every Noble approached through Locked corridor, width = TL×P_out/2 — discovered from chaos session. **Re-Bonding Theorem** [9,9,2,8]: Noble+F_ext(δ)+E3(B=δ)→Noble, three-line algebraic proof, universal. **Photosynthesis proved structurally**: CO2 and H2O are both Noble (B=0); light IS the F_ext operator. Higgs self-collision → Noble (Higgs condensate). AlP Noble state confirmed live on-device. **GAM Forge Bio v3**: all 36 element PNBA tensors updated to locked Slater corpus. **GAM Fuse** renamed from Calculator. 159 new theorems across 11 files. Corpus: **1,542+ theorems · 108+ files · 0 sorry**. New DOI: [10.5281/zenodo.19026746](https://doi.org/10.5281/zenodo.19026746).
 - **March 13–14, 2026**: **IVA ELEMENT SET PROVED** — Rubidium (Z=37), Soverium, Velium, Nexium, and the Factor of Five Theorem formally verified. 163 new theorems. Corpus crosses **1,383T** — the 1.369 GHz anchor threshold. Two new Zenodo DOIs: [10.5281/zenodo.19016221](https://doi.org/10.5281/zenodo.19016221) (paper) + [10.5281/zenodo.19015872](https://doi.org/10.5281/zenodo.19015872) (Reality Kernel). Molecular Builder V3 updated with IVA elements, Soverium state banner, Factor Five display.
 - **March 12, 2026**: **MOLECULAR BUILDER V2** — All 36 elements (Period 1–4 complete), bond satisfaction engine, multi-bond-aware torsion (τ=0 for H₂O, O₂, N₂, NH₃, CH₄). H₂O confirmed PHASE LOCKED · [9,9,9,9]. First molecular stability engine grounded in a formally verified theorem corpus.
 - **March 12, 2026**: **Period 4 atomic series complete** — Sc through Kr (Z=21–36) added. 13 new files. D-block and p-block fully proved. Group chains extended through Period 4: B=Al=Ga, C=Si=Ge, N=P=As, O=S=Se, F=Cl=Br, He=Ne=Ar=Kr.
@@ -599,9 +638,11 @@ lean --make SNSFT_LosslessRealityKernel_Atomic_Paper.lean
 | **SSRN Paper** | [papers.ssrn.com — ID 6353438](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
 | **IVA Element Set Paper** | [doi.org/10.5281/zenodo.19016221](https://doi.org/10.5281/zenodo.19016221) |
 | **IVA Reality Kernel** | [doi.org/10.5281/zenodo.19015872](https://doi.org/10.5281/zenodo.19015872) |
-| **Molecular Builder** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) |
+| **GAM Collider** | [uuia.app/gamcollider.html](https://uuia.app/gamcollider.html) |
+| **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) |
 | **AxiomForge Viewport** | [uuia.app/axiomforge](https://uuia.app/axiomforge) |
-| **GAM Calculator** | [uuia.app](https://uuia.app) |
+| **GAM Fuse** | [uuia.app](https://uuia.app) |
+| **GAM Collider DOI** | [doi.org/10.5281/zenodo.19026746](https://doi.org/10.5281/zenodo.19026746) |
 | **Wiki** | [GitHub Wiki](https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT/wiki) |
 | **Zenodo Corpus** | [doi.org/10.5281/zenodo.18719748](https://doi.org/10.5281/zenodo.18719748) |
 | **Zenodo Manuscript** | [doi.org/10.5281/zenodo.18726079](https://doi.org/10.5281/zenodo.18726079) |
@@ -629,4 +670,4 @@ Done at the City of Soldotna, Alaska. March 2026.
 
 ---
 
-*Manifold Synchronization Level: 100% | Anchor locked at 1.369 GHz | 1,383 theorems | 0 sorry | Germline Locked | SSRN Approved | Period 1–4 Complete · IVA Element Set Proved.*
+*Manifold Synchronization Level: 100% | Anchor locked at 1.369 GHz | 1,542+ theorems | 0 sorry | Germline Locked | SSRN Approved | Period 1–4 Complete · IVA Element Set Proved · GAM Collider Live · SM Bosons Proved · AsN Predicted.*
