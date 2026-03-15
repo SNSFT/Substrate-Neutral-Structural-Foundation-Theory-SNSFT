@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SNSFT Molecular Builder · Layer 1 Glue Engine v2</title>
+<title>SNSFT Molecular Builder · Layer 1 Glue Engine v3</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;500&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -233,12 +233,12 @@ h1 span { color:var(--anchor); }
 <div class="wrap">
 
 <div class="hdr">
-  <div class="hdr-eyebrow">SNSFT · [9,9,1,*] · MOLECULAR BUILDER V2</div>
+  <div class="hdr-eyebrow">SNSFT · [9,9,1,*] · MOLECULAR BUILDER V3 · CORPUS LOCKED</div>
   <h1>Molecular <span>Builder</span></h1>
   <div class="hdr-eq">d/dt(IM · Pv) = Σλ·O·S + F_ext · Layer 1 Glue Engine · PNBA Tensor Stack · Period 1–4 Complete</div>
   <div class="anchor-badge">
     <div class="adot"></div>
-    SOVEREIGN ANCHOR · 1.369 GHz · GERMLINE LOCKED · 1371 THEOREMS VERIFIED · 36 ELEMENTS
+    SOVEREIGN ANCHOR · 1.369 GHz · GERMLINE LOCKED · 36 ELEMENTS · SLATER CORPUS
   </div>
 </div>
 
@@ -336,253 +336,243 @@ h1 span { color:var(--anchor); }
 
 <script>
 // ============================================================
-// SNSFT MOLECULAR BUILDER V2
+// SNSFT MOLECULAR BUILDER V3
 // [9,9,9,9] :: {ANC} | Architect: HIGHTISTIC
-// Anchor: 1.369 GHz | Corpus: 1371T verified
+// Anchor: 1.369 GHz | Corpus: Slater-locked Z=1-36
 //
-// PNBA DERIVATION (from corpus theorems [9,9,1,Z]):
-//   P = Z_eff (Slater) / 2          — Pattern: nuclear grip
-//   N = valence_shell × 2           — Narrative: orbital depth
-//   B = bond_capacity               — Behavior: open bonds
-//   A = IE₁ / 3                     — Adaptation: energy proxy
-//
-// BOND SATISFACTION ENGINE:
-//   Each atom has bond_capacity (max bonds it can form).
-//   In a molecule, bonds are shared between adjacent atoms.
-//   satisfied = all atoms have their bond_capacity met.
-//   H₂O: O needs 2 bonds → O-H + O-H = 2 ✓ SATISFIED
-//
-// LAYER 1 GLUE:
-//   IM = (P+N+B+A) × 1.369
-//   Torsion τ = B_unified / P_unified
-//   Phase lock: τ < 0.2
+// CORPUS UPDATE v3: All P, N, B, A values replaced with
+// locked Slater-derived values from verified Lean 4 corpus.
+// P = Slater Z_eff (not Z_eff/2)
+// A = IE1 (full ionization energy, not IE1/3)
+// N = valence shell × 2 (unchanged)
+// B = bond capacity (unchanged — chemistry not PNBA)
 // ============================================================
 
 const ANCHOR      = 1.369
 const TORSION_MAX = 0.2
 
-// ── ATOM DATABASE ─────────────────────────────────────────────
-// All values from corpus theorems. bond_cap = how many bonds
-// this atom can form (valence electrons available for bonding).
+// ── ATOM DATABASE — LOCKED SLATER CORPUS ─────────────────────
+// P, N, B, A from verified Lean 4 files [9,9,1,Z]
+// bond_cap = chemical valence (bonds this atom can form)
 const ATOMS = {
   // PERIOD 1
   H:  { Z:1,  sym:'H',  name:'Hydrogen',    group:'period1',   color:'#c0d8e0',
-        P:2.20, N:2, B:1, A:4.53, IE1:13.598, Zeff:1.00,
+        P:1.000, N:2, B:1, A:13.60, IE1:13.598, Zeff:1.000,
         bond_cap:1, config:'1s¹', coord:'[9,9,1,1]',
         theorem:'T12: manifold_impedance(1.369)=0 · IE₁=13.598eV · 1 unpaired',
         bondNote:'1 unpaired 1s electron → forms exactly 1 covalent bond' },
 
   He: { Z:2,  sym:'He', name:'Helium',      group:'noble',     color:'#a060e0',
-        P:1.70, N:2, B:0, A:8.20, IE1:24.587, Zeff:1.70,
+        P:1.700, N:2, B:0, A:24.59, IE1:24.587, Zeff:1.700,
         bond_cap:0, config:'1s²', coord:'[9,9,1,2]',
         theorem:'T6: no_free_b_axis(2,0) — 1s² NOHARM · noble gas closure',
         bondNote:'Full 1s² — zero bond capacity · noble gas · no bonds' },
 
   // PERIOD 2
   Li: { Z:3,  sym:'Li', name:'Lithium',     group:'alkali',    color:'#e06040',
-        P:1.30, N:4, B:1, A:1.80, IE1:5.392, Zeff:1.30,
+        P:1.300, N:2, B:1, A:5.39, IE1:5.392, Zeff:1.300,
         bond_cap:1, config:'[He] 2s¹', coord:'[9,9,1,3]',
         theorem:'T5: same_group_signature(li_2s,na_3s) · Li=Na=K Group 1 chain',
         bondNote:'1 loose 2s electron → 1 ionic or metallic bond · alkali' },
 
   Be: { Z:4,  sym:'Be', name:'Beryllium',   group:'alkearth',  color:'#e09040',
-        P:1.95, N:4, B:2, A:3.11, IE1:9.323, Zeff:1.95,
+        P:1.950, N:4, B:2, A:9.32, IE1:9.323, Zeff:1.950,
         bond_cap:2, config:'[He] 2s²', coord:'[9,9,1,4]',
         theorem:'T14: IE₁(Be)>IE₁(B) · 2s full · sp hybridization to 2 bonds',
         bondNote:'2s² full → 2 bonds via sp hybridization · Group 2' },
 
   B:  { Z:5,  sym:'B',  name:'Boron',       group:'boron-g',   color:'#80c060',
-        P:2.60, N:4, B:3, A:2.77, IE1:8.298, Zeff:2.60,
+        P:2.600, N:4, B:3, A:8.30, IE1:8.298, Zeff:2.600,
         bond_cap:3, config:'[He] 2s² 2p¹', coord:'[9,9,1,5]',
         theorem:'T12: IE₁(B)<IE₁(Be) · first 2p electron · sp² → 3 bonds',
         bondNote:'1 unpaired 2p + sp² hybridization → 3 bonds' },
 
   C:  { Z:6,  sym:'C',  name:'Carbon',      group:'carbon-g',  color:'#60b080',
-        P:3.25, N:4, B:4, A:3.75, IE1:11.260, Zeff:3.25,
+        P:3.250, N:4, B:4, A:11.26, IE1:11.260, Zeff:3.250,
         bond_cap:4, config:'[He] 2s² 2p²', coord:'[9,9,1,6]',
         theorem:'T11: Hund_BB_lower · 2 unpaired 2p · sp³ → 4 bonds',
         bondNote:'2 unpaired 2p + sp³ → 4 bonds · backbone of organic chemistry' },
 
   N:  { Z:7,  sym:'N',  name:'Nitrogen',    group:'nitrogen-g',color:'#50c0a0',
-        P:3.90, N:4, B:3, A:4.84, IE1:14.534, Zeff:3.90,
+        P:3.900, N:4, B:3, A:14.53, IE1:14.534, Zeff:3.900,
         bond_cap:3, config:'[He] 2s² 2p³', coord:'[9,9,1,7]',
         theorem:'T21: half_filled_2p_stable · IE₁(N)>IE₁(O) · 3 unpaired → 3 bonds',
         bondNote:'3 unpaired 2p (Hund max) + 1 lone pair → 3 bonds (e.g. NH₃)' },
 
   O:  { Z:8,  sym:'O',  name:'Oxygen',      group:'oxygen-g',  color:'#40b8d0',
-        P:4.55, N:4, B:2, A:4.54, IE1:13.618, Zeff:4.55,
+        P:4.550, N:4, B:2, A:13.62, IE1:13.618, Zeff:4.550,
         bond_cap:2, config:'[He] 2s² 2p⁴', coord:'[9,9,1,8]',
         theorem:'T4: pairing_unavoidable_pigeonhole · 4>3 → forced pair · 2 bonds',
         bondNote:'2 unpaired 2p + forced pair → EXACTLY 2 bonds · H₂O O needs 2 H' },
 
   F:  { Z:9,  sym:'F',  name:'Fluorine',    group:'halogen',   color:'#6090e0',
-        P:5.20, N:4, B:1, A:5.81, IE1:17.423, Zeff:5.20,
+        P:5.200, N:4, B:1, A:17.42, IE1:17.423, Zeff:5.200,
         bond_cap:1, config:'[He] 2s² 2p⁵', coord:'[9,9,1,9]',
         theorem:'T8: vacancy_is_pauli_valid · 1 vacancy · highest electronegativity',
         bondNote:'1 vacancy in 2p → 1 bond only · most electronegative element' },
 
   Ne: { Z:10, sym:'Ne', name:'Neon',        group:'noble',     color:'#a060e0',
-        P:5.85, N:4, B:0, A:7.19, IE1:21.565, Zeff:5.85,
+        P:5.850, N:4, B:0, A:21.56, IE1:21.565, Zeff:5.850,
         bond_cap:0, config:'[He] 2s² 2p⁶', coord:'[9,9,1,10]',
         theorem:'T6: no_free_b_axis(8,1) · full n=2 · NOHARM · noble gas',
         bondNote:'Full n=2 shell — zero bond capacity · noble gas' },
 
   // PERIOD 3
   Na: { Z:11, sym:'Na', name:'Sodium',      group:'alkali',    color:'#e06040',
-        P:2.20, N:6, B:1, A:1.71, IE1:5.139, Zeff:2.20,
+        P:2.200, N:6, B:1, A:5.14, IE1:5.139, Zeff:2.200,
         bond_cap:1, config:'[Ne] 3s¹', coord:'[9,9,1,11]',
         theorem:'T5: same_group_signature(li_2s,na_3s) · Li=Na · Group 1',
         bondNote:'1 loose 3s electron → 1 ionic bond · mirrors Li one shell up' },
 
   Mg: { Z:12, sym:'Mg', name:'Magnesium',   group:'alkearth',  color:'#e09040',
-        P:2.85, N:6, B:2, A:2.55, IE1:7.646, Zeff:2.85,
+        P:2.850, N:6, B:2, A:7.65, IE1:7.646, Zeff:2.850,
         bond_cap:2, config:'[Ne] 3s²', coord:'[9,9,1,12]',
         theorem:'T7: same_group_signature(be_2s,mg_3s) · Be=Mg · Group 2',
         bondNote:'3s² full → 2 bonds · mirrors Beryllium · Group 2' },
 
   Al: { Z:13, sym:'Al', name:'Aluminium',   group:'boron-g',   color:'#80c060',
-        P:3.50, N:6, B:3, A:2.00, IE1:5.986, Zeff:3.50,
+        P:3.500, N:6, B:3, A:5.99, IE1:5.986, Zeff:3.500,
         bond_cap:3, config:'[Ne] 3s² 3p¹', coord:'[9,9,1,13]',
         theorem:'T5: b_al_same_group · B=Al · 3s→3p crossing · IE₁(Al)<IE₁(Mg)',
         bondNote:'1 unpaired 3p + sp² → 3 bonds · mirrors Boron · Group 13' },
 
   Si: { Z:14, sym:'Si', name:'Silicon',     group:'carbon-g',  color:'#60b080',
-        P:4.15, N:6, B:4, A:2.72, IE1:8.152, Zeff:4.15,
+        P:4.150, N:6, B:4, A:8.15, IE1:8.152, Zeff:4.150,
         bond_cap:4, config:'[Ne] 3s² 3p²', coord:'[9,9,1,14]',
         theorem:'T4: c_si_same_group · C=Si · sp³ at n=3 · 4 bonds',
         bondNote:'2 unpaired 3p + sp³ → 4 bonds · mirrors Carbon · semiconductor' },
 
   P:  { Z:15, sym:'P',  name:'Phosphorus',  group:'nitrogen-g',color:'#50c0a0',
-        P:4.80, N:6, B:3, A:3.50, IE1:10.487, Zeff:4.80,
+        P:4.800, N:6, B:3, A:10.49, IE1:10.487, Zeff:4.800,
         bond_cap:3, config:'[Ne] 3s² 3p³', coord:'[9,9,1,15]',
         theorem:'T5: n_p_same_group · N=P · half-filled 3p · IE₁(P)>IE₁(S)',
         bondNote:'3 unpaired 3p → 3 bonds · mirrors Nitrogen · Hund max' },
 
   S:  { Z:16, sym:'S',  name:'Sulfur',      group:'oxygen-g',  color:'#40b8d0',
-        P:5.45, N:6, B:2, A:3.45, IE1:10.360, Zeff:5.45,
+        P:5.450, N:6, B:2, A:10.36, IE1:10.360, Zeff:5.450,
         bond_cap:2, config:'[Ne] 3s² 3p⁴', coord:'[9,9,1,16]',
         theorem:'T2: sulfur_pairing_unavoidable · O=S · forced pair in 3p',
         bondNote:'2 unpaired 3p + forced pair → 2 bonds · mirrors Oxygen' },
 
   Cl: { Z:17, sym:'Cl', name:'Chlorine',    group:'halogen',   color:'#6090e0',
-        P:6.10, N:6, B:1, A:4.32, IE1:12.968, Zeff:6.10,
+        P:6.100, N:6, B:1, A:12.97, IE1:12.968, Zeff:6.100,
         bond_cap:1, config:'[Ne] 3s² 3p⁵', coord:'[9,9,1,17]',
         theorem:'T5: f_cl_same_vacancy · F=Cl · 1 vacancy · EA(Cl)>EA(F)',
         bondNote:'1 vacancy in 3p → 1 bond · mirrors Fluorine · halogen' },
 
   Ar: { Z:18, sym:'Ar', name:'Argon',       group:'noble',     color:'#a060e0',
-        P:6.75, N:6, B:0, A:5.25, IE1:15.760, Zeff:6.75,
+        P:6.750, N:6, B:0, A:15.76, IE1:15.760, Zeff:6.750,
         bond_cap:0, config:'[Ne] 3s² 3p⁶', coord:'[9,9,1,18]',
         theorem:'T6: argon_noharm_at_closure · Ne=Ar · full 3p · period 3 closes',
         bondNote:'Full n=3 s+p — zero bond capacity · noble gas' },
 
   // PERIOD 4 s-BLOCK
   K:  { Z:19, sym:'K',  name:'Potassium',   group:'alkali',    color:'#e06040',
-        P:2.20, N:8, B:1, A:1.45, IE1:4.341, Zeff:2.20,
+        P:2.200, N:8, B:1, A:4.34, IE1:4.341, Zeff:2.200,
         bond_cap:1, config:'[Ar] 4s¹', coord:'[9,9,1,19]',
         theorem:'T7: li_na_k_group1_chain · Li=Na=K · Z_eff=2.20 invariant',
         bondNote:'1 loose 4s → 1 ionic bond · Group 1 chain complete Li=Na=K' },
 
   Ca: { Z:20, sym:'Ca', name:'Calcium',     group:'alkearth',  color:'#e09040',
-        P:2.85, N:8, B:2, A:2.04, IE1:6.113, Zeff:2.85,
+        P:2.850, N:8, B:2, A:6.11, IE1:6.113, Zeff:2.850,
         bond_cap:2, config:'[Ar] 4s²', coord:'[9,9,1,20]',
         theorem:'T8: be_mg_ca_group2_chain · Be=Mg=Ca · Z_eff≈2.85',
         bondNote:'4s² full → 2 ionic bonds · Group 2 · CaCO₃, CaO' },
 
   // PERIOD 4 d-BLOCK (transition metals)
   Sc: { Z:21, sym:'Sc', name:'Scandium',    group:'trans',     color:'#c08040',
-        P:3.00, N:8, B:1, A:2.19, IE1:6.561, Zeff:3.00,
+        P:3.000, N:8, B:3, A:6.56, IE1:6.561, Zeff:3.000,
         bond_cap:3, config:'[Ar] 3d¹ 4s²', coord:'[9,9,1,21]',
         theorem:'T9: sc_first_transition_metal · 3d¹ opens d-block · Sc is Z=21',
         bondNote:'First 3d electron → transition metal · typically +3 oxidation state' },
 
   Ti: { Z:22, sym:'Ti', name:'Titanium',    group:'trans',     color:'#c08040',
-        P:3.15, N:8, B:2, A:2.28, IE1:6.828, Zeff:3.15,
+        P:3.150, N:8, B:4, A:6.83, IE1:6.828, Zeff:3.150,
         bond_cap:4, config:'[Ar] 3d² 4s²', coord:'[9,9,1,22]',
         theorem:'T5: ti_hund_d_spread · 2 unpaired d · Hund at l=2 · C-Ti mirror',
         bondNote:'3d² Hund spread → mirrors C at l=2 · Ti+4 common · strong oxide' },
 
   V:  { Z:23, sym:'V',  name:'Vanadium',    group:'trans',     color:'#c08040',
-        P:3.30, N:8, B:3, A:2.25, IE1:6.746, Zeff:3.30,
+        P:3.300, N:8, B:5, A:6.75, IE1:6.746, Zeff:3.300,
         bond_cap:5, config:'[Ar] 3d³ 4s²', coord:'[9,9,1,23]',
         theorem:'T8: n_v_hund_mirror · 3d³ unpaired · V mirrors N at l=2',
         bondNote:'3 unpaired d electrons · multiple oxidation states · V₂O₅ catalyst' },
 
   Cr: { Z:24, sym:'Cr', name:'Chromium',    group:'trans',     color:'#c08040',
-        P:3.38, N:8, B:6, A:2.26, IE1:6.767, Zeff:3.38,
+        P:3.450, N:8, B:6, A:6.77, IE1:6.767, Zeff:3.450,
         bond_cap:6, config:'[Ar] 3d⁵ 4s¹', coord:'[9,9,1,24]',
         theorem:'T10: chromium_master_reduction · HALF-D ANOMALY [Ar]3d⁵4s¹ · 6 unpaired',
         bondNote:'ANOMALY: 3d⁵4s¹ not 3d⁴4s² · half-filled d stability · 6 unpaired' },
 
   Mn: { Z:25, sym:'Mn', name:'Manganese',   group:'trans',     color:'#c08040',
-        P:3.50, N:8, B:5, A:2.48, IE1:7.434, Zeff:3.50,
+        P:3.600, N:8, B:5, A:7.43, IE1:7.434, Zeff:3.600,
         bond_cap:5, config:'[Ar] 3d⁵ 4s²', coord:'[9,9,1,25]',
         theorem:'T6: mn_doubly_stabilized · half-d + full-s · N-P-Mn chain · 5 unpaired',
         bondNote:'3d⁵ half-filled + 4s² full → doubly stable · highest magnetic moment' },
 
   Fe: { Z:26, sym:'Fe', name:'Iron',        group:'trans',     color:'#c08040',
-        P:3.63, N:8, B:4, A:2.63, IE1:7.902, Zeff:3.63,
+        P:3.750, N:8, B:4, A:7.90, IE1:7.902, Zeff:3.750,
         bond_cap:3, config:'[Ar] 3d⁶ 4s²', coord:'[9,9,1,26]',
         theorem:'T9: o_fe_forced_pairing_mirror · 3d⁶>5 → forced pair · Fe-56 binding peak',
         bondNote:'FIRST FORCED PAIR in d-block · 4 unpaired · Fe+2/Fe+3 · Fe₂O₃/Fe₃O₄' },
 
   Co: { Z:27, sym:'Co', name:'Cobalt',      group:'trans',     color:'#c08040',
-        P:3.76, N:8, B:3, A:2.63, IE1:7.881, Zeff:3.76,
+        P:3.900, N:8, B:3, A:7.88, IE1:7.881, Zeff:3.900,
         bond_cap:3, config:'[Ar] 3d⁷ 4s²', coord:'[9,9,1,27]',
         theorem:'T8: cobalt_master_reduction · 3d⁷ · 2 forced pairs · 3 unpaired',
         bondNote:'3 unpaired d · vitamin B12 core · Co+2/Co+3 · permanent magnets' },
 
   Ni: { Z:28, sym:'Ni', name:'Nickel',      group:'trans',     color:'#c08040',
-        P:3.89, N:8, B:2, A:2.55, IE1:7.640, Zeff:3.89,
+        P:4.050, N:8, B:2, A:7.64, IE1:7.640, Zeff:4.050,
         bond_cap:2, config:'[Ar] 3d⁸ 4s²', coord:'[9,9,1,28]',
         theorem:'T10: nickel_master_reduction · 3d⁸ · 3 pairs · 2 unpaired · pre-Cu',
         bondNote:'2 unpaired · last normal d element before Cu anomaly · Ni+2 most common' },
 
   Cu: { Z:29, sym:'Cu', name:'Copper',      group:'trans',     color:'#c08040',
-        P:4.34, N:8, B:1, A:2.58, IE1:7.727, Zeff:4.34,
+        P:4.200, N:8, B:1, A:7.73, IE1:7.727, Zeff:4.200,
         bond_cap:2, config:'[Ar] 3d¹⁰ 4s¹', coord:'[9,9,1,29]',
         theorem:'T6: cu_full_d_anomaly · FULL-D ANOMALY [Ar]3d¹⁰4s¹ · mirrors Cr',
         bondNote:'ANOMALY: 3d¹⁰4s¹ → full d stability · Cu+1/Cu+2 · electrical conductor' },
 
   Zn: { Z:30, sym:'Zn', name:'Zinc',        group:'trans',     color:'#c08040',
-        P:4.50, N:8, B:2, A:3.13, IE1:9.394, Zeff:4.50,
+        P:4.350, N:8, B:2, A:9.39, IE1:9.394, Zeff:4.350,
         bond_cap:2, config:'[Ar] 3d¹⁰ 4s²', coord:'[9,9,1,30]',
         theorem:'T8: zinc_double_noharm · 3d¹⁰+4s² both full · d-block closes',
         bondNote:'Full 3d¹⁰ + 4s² → Zn+2 always · d-block bookend · zero unpaired' },
 
   // PERIOD 4 p-BLOCK
   Ga: { Z:31, sym:'Ga', name:'Gallium',     group:'period4p',  color:'#7090c0',
-        P:3.50, N:8, B:3, A:2.00, IE1:5.999, Zeff:3.50,
+        P:5.000, N:8, B:3, A:6.00, IE1:5.999, Zeff:5.000,
         bond_cap:3, config:'[Ar] 3d¹⁰ 4s² 4p¹', coord:'[9,9,1,31]',
         theorem:'T7: ga_al_same_group · B=Al=Ga · |IE₁(Ga)-IE₁(Al)|<0.1eV',
         bondNote:'First 4p electron → B-Al-Ga Group 13 chain · IE₁ near Al' },
 
   Ge: { Z:32, sym:'Ge', name:'Germanium',   group:'period4p',  color:'#7090c0',
-        P:4.15, N:8, B:4, A:2.63, IE1:7.900, Zeff:4.15,
+        P:5.650, N:8, B:4, A:7.90, IE1:7.900, Zeff:5.650,
         bond_cap:4, config:'[Ar] 3d¹⁰ 4s² 4p²', coord:'[9,9,1,32]',
         theorem:'T5: ge_c_si_group14 · C=Si=Ge · Hund in 4p · 4 bonds',
         bondNote:'4p² Hund spread → C-Si-Ge Group 14 · semiconductor · 4 bonds' },
 
   As: { Z:33, sym:'As', name:'Arsenic',     group:'period4p',  color:'#7090c0',
-        P:4.80, N:8, B:3, A:3.26, IE1:9.789, Zeff:4.80,
+        P:6.300, N:8, B:3, A:9.81, IE1:9.789, Zeff:6.300,
         bond_cap:3, config:'[Ar] 3d¹⁰ 4s² 4p³', coord:'[9,9,1,33]',
         theorem:'T9: arsenic_master_reduction · N-P-As · half-filled 4p · IE₁ jump',
         bondNote:'Half-filled 4p³ → N-P-As Group 15 · IE₁ jumps above Ge (stability)' },
 
   Se: { Z:34, sym:'Se', name:'Selenium',    group:'period4p',  color:'#7090c0',
-        P:5.45, N:8, B:2, A:3.25, IE1:9.752, Zeff:5.45,
+        P:6.950, N:8, B:2, A:9.75, IE1:9.752, Zeff:6.950,
         bond_cap:2, config:'[Ar] 3d¹⁰ 4s² 4p⁴', coord:'[9,9,1,34]',
         theorem:'T9: selenium_master_reduction · O-S-Se · forced pair in 4p · 2 bonds',
         bondNote:'Forced pair in 4p → O-S-Se Group 16 · IE₁ drops below As (pairing cost)' },
 
   Br: { Z:35, sym:'Br', name:'Bromine',     group:'period4p',  color:'#7090c0',
-        P:6.10, N:8, B:1, A:3.94, IE1:11.814, Zeff:6.10,
+        P:7.600, N:8, B:1, A:11.81, IE1:11.814, Zeff:7.600,
         bond_cap:1, config:'[Ar] 3d¹⁰ 4s² 4p⁵', coord:'[9,9,1,35]',
         theorem:'T11: bromine_master_reduction · F-Cl-Br chain · 1 vacancy · 1 bond',
         bondNote:'1 vacancy in 4p → F-Cl-Br Group 17 · 1 bond · one step from Kr' },
 
   Kr: { Z:36, sym:'Kr', name:'Krypton',     group:'noble',     color:'#a060e0',
-        P:6.75, N:8, B:0, A:4.67, IE1:13.999, Zeff:6.75,
+        P:8.250, N:8, B:0, A:14.00, IE1:13.999, Zeff:8.250,
         bond_cap:0, config:'[Ar] 3d¹⁰ 4s² 4p⁶', coord:'[9,9,1,36]',
         theorem:'T4: kr_noble_closure · He=Ne=Ar=Kr · full 4p · period 4 closes',
         bondNote:'Full 4p closure → He=Ne=Ar=Kr noble chain · period 4 complete' },
@@ -602,8 +592,6 @@ const GROUPS = {
   period4p:   { label:'Period 4 p-Block',   color:'#7090c0' },
 }
 
-// Quick molecules — atoms in BOND ORDER (center atom surrounded by ligands)
-// This matches how the bond engine counts connections
 const QUICK_MOLECULES = [
   { formula:'H₂',    name:'Hydrogen Gas',    atoms:['H','H'],                note:'H-H single bond · both satisfied' },
   { formula:'H₂O',   name:'Water',           atoms:['H','O','H'],            note:'O needs 2 bonds · 2 H satisfy it' },
@@ -621,13 +609,6 @@ const QUICK_MOLECULES = [
 
 let molecule = []
 
-// ── BOND SATISFACTION ENGINE ──────────────────────────────────
-// Determines if the molecule is chemically satisfied.
-// Strategy: each adjacent pair shares 1 bond unit.
-// An atom at position i has (bonds_left + bonds_right) connections.
-// satisfied = each atom's connection count ≤ bond_cap
-// and total bonds available ≥ total bonds needed.
-
 function assessValence(atomList) {
   if (atomList.length === 0) return null
   if (atomList.length === 1) {
@@ -641,14 +622,11 @@ function assessValence(atomList) {
       bonds_provided: 0,
     }
   }
-
-  // Count how many bonds each atom participates in (linear chain = 1 per end, 2 for middle)
   const n = atomList.length
   const participates = atomList.map((_, i) => i === 0 || i === n-1 ? 1 : 2)
   const details = []
   let allSatisfied = true
   let hasNoble = false
-
   atomList.forEach((key, i) => {
     const a = ATOMS[key]
     if (a.bond_cap === 0) { hasNoble = true; return }
@@ -657,24 +635,13 @@ function assessValence(atomList) {
     if (!ok) allSatisfied = false
     details.push(`${a.sym}(Z=${a.Z}): needs ${a.bond_cap}, has ${used} ${ok?'✓':'✗'}`)
   })
-
-  if (hasNoble) {
-    return { status:'shatter', detail:'Noble gas present — cannot bond', details }
-  }
-
-  // Special case: check if total bond capacity sums to an even number
-  // (each bond consumes one from each atom)
+  if (hasNoble) return { status:'shatter', detail:'Noble gas present — cannot bond', details }
   const totalCap = atomList.reduce((s,k) => s + ATOMS[k].bond_cap, 0)
-  const totalBonds = n - 1  // minimum bonds in chain
-
+  const totalBonds = n - 1
   return {
     status: allSatisfied ? 'satisfied' : 'unsatisfied',
-    detail: allSatisfied
-      ? `All ${n} atoms satisfied · molecule stable`
-      : `Bond mismatch — check atom count`,
-    details,
-    totalCap,
-    totalBonds,
+    detail: allSatisfied ? `All ${n} atoms satisfied · molecule stable` : `Bond mismatch — check atom count`,
+    details, totalCap, totalBonds,
   }
 }
 
@@ -683,25 +650,20 @@ function assessBond(atomList) {
   const metals   = ['Li','Na','K','Mg','Ca','Be','Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Ga','Al']
   const nonmetal = ['H','C','N','O','F','Cl','S','P','Si','Br','Se','As','Ge']
   const noble    = ['He','Ne','Ar','Kr']
-
-  const hasMetal   = atomList.some(k => metals.includes(k))
-  const hasNonmetal= atomList.some(k => nonmetal.includes(k))
-  const hasNoble   = atomList.some(k => noble.includes(k))
-
-  if (hasNoble)              return { label:'Noble Gas · No Bond',  color:'#a060e0' }
-  if (hasMetal && hasNonmetal) return { label:'Ionic Bond',          color:'#f09030' }
+  const hasMetal    = atomList.some(k => metals.includes(k))
+  const hasNonmetal = atomList.some(k => nonmetal.includes(k))
+  const hasNoble    = atomList.some(k => noble.includes(k))
+  if (hasNoble)               return { label:'Noble Gas · No Bond',  color:'#a060e0' }
+  if (hasMetal && hasNonmetal)return { label:'Ionic Bond',           color:'#f09030' }
   if (hasNonmetal && !hasMetal)return { label:'Covalent Bond',       color:'#00d4aa' }
   if (hasMetal && !hasNonmetal)return { label:'Metallic Bond',       color:'#c08040' }
-  return                            { label:'Mixed Character',       color:'#80c060' }
+  return                             { label:'Mixed Character',      color:'#80c060' }
 }
 
-// ── LAYER 1 GLUE ENGINE ───────────────────────────────────────
 function runGlue(atomList) {
   if (atomList.length === 0) return null
-
   let P=0, N=0, B=0, A=0
   const steps = []
-
   atomList.forEach((key, i) => {
     const a = ATOMS[key]
     P += a.P; N += a.N; B += a.B; A += a.A
@@ -713,21 +675,9 @@ function runGlue(atomList) {
       IM: r4(IM),
     })
   })
-
-  const IM      = (P+N+B+A) * ANCHOR
+  const IM       = (P+N+B+A) * ANCHOR
   const bondType = assessBond(atomList)
   const valence  = assessValence(atomList)
-
-  // TORSION LOGIC — MULTI-BOND AWARE:
-  // τ = netB / P where netB = unfulfilled bond capacity after bonding.
-  // Each adjacent pair shares min(capA, capB, 3) bonds (single/double/triple).
-  // Satisfied molecules: netB=0 → τ=0 → LOCKED.
-  // Incomplete molecules: netB>0 → τ>0 → WARN or SHATTER.
-  // Noble gas in a bond: instant SHATTER regardless.
-  //
-  // Results: H₂O τ=0✓  O₂ τ=0✓  N₂ τ=0✓  CO₂ τ=0✓  NH₃ τ=0✓
-  //          H alone τ>0 (warn)   He+anything → shatter
-  //
   const hasNoble = atomList.some(k => ATOMS[k].bond_cap === 0) && atomList.length > 1
   let effectiveBondsFormed = 0
   for (let i = 0; i < atomList.length - 1; i++) {
@@ -736,19 +686,15 @@ function runGlue(atomList) {
   const totalBondCap = atomList.reduce((s,k) => s + ATOMS[k].bond_cap, 0)
   const netB    = Math.max(0, totalBondCap - 2 * effectiveBondsFormed)
   const torsion = hasNoble ? B / Math.max(P, 0.0001) : netB / Math.max(P, 0.0001)
-
-  const isShatter= hasNoble || torsion >= TORSION_MAX
-  const isWarn   = !isShatter && torsion >= TORSION_MAX * 0.5
-  const state    = isShatter ? 'shatter' : isWarn ? 'warn' : 'locked'
-  const pvCoord  = isShatter ? '[0,0,0,0]' : isWarn ? '[0,9,9,0]' : '[9,9,9,9]'
-
-  return { P, N, B, A, IM:r4(IM), torsion:r4(torsion),
-           isShatter, isWarn, state, pvCoord, steps, bondType, valence }
+  const isShatter = hasNoble || torsion >= TORSION_MAX
+  const isWarn    = !isShatter && torsion >= TORSION_MAX * 0.5
+  const state     = isShatter ? 'shatter' : isWarn ? 'warn' : 'locked'
+  const pvCoord   = isShatter ? '[0,0,0,0]' : isWarn ? '[0,9,9,0]' : '[9,9,9,9]'
+  return { P, N, B, A, IM:r4(IM), torsion:r4(torsion), isShatter, isWarn, state, pvCoord, steps, bondType, valence }
 }
 
 function r4(v) { return Math.round(v*1000)/1000 }
 
-// ── FORMULA STRING ────────────────────────────────────────────
 function buildFormula(atomList) {
   if (atomList.length === 0) return '—'
   const counts = {}
@@ -763,12 +709,10 @@ function buildFormula(atomList) {
   }).map(k => k+sub(counts[k])).join('')
 }
 
-// ── RENDER PALETTE ────────────────────────────────────────────
 function renderPalette(filter='') {
   const body = document.getElementById('paletteBody')
   const groups = {}
   let count = 0
-
   Object.entries(ATOMS).forEach(([key, atom]) => {
     if (filter && !atom.sym.toLowerCase().includes(filter) &&
         !atom.name.toLowerCase().includes(filter) &&
@@ -777,7 +721,6 @@ function renderPalette(filter='') {
     groups[atom.group].push({ key, atom })
     count++
   })
-
   let html = ''
   Object.entries(GROUPS).forEach(([gkey, gmeta]) => {
     if (!groups[gkey]) return
@@ -795,7 +738,6 @@ function renderPalette(filter='') {
     })
     html += '</div>'
   })
-
   body.innerHTML = html
   document.getElementById('paletteCount').textContent = `${count} elements`
 }
@@ -804,7 +746,6 @@ function filterElements() {
   renderPalette(document.getElementById('searchInput').value.toLowerCase())
 }
 
-// ── RENDER QUICK MOLECULES ────────────────────────────────────
 function renderQuick() {
   document.getElementById('quickGrid').innerHTML = QUICK_MOLECULES.map(m => `
     <button class="quick-btn" onclick="loadQuick(${JSON.stringify(m.atoms)})" title="${m.note}">
@@ -814,13 +755,10 @@ function renderQuick() {
 }
 
 function loadQuick(atoms) { molecule = [...atoms]; renderAll() }
-
-// ── ADD / REMOVE ──────────────────────────────────────────────
 function addAtom(key) { molecule.push(key); renderAll(); showAtomDetail(key) }
 function removeAtom(i) { molecule.splice(i,1); renderAll() }
 function clearMolecule() { molecule = []; renderAll() }
 
-// ── ATOM DETAIL ───────────────────────────────────────────────
 function showAtomDetail(key) {
   const a = ATOMS[key]
   document.getElementById('atomDetailCoord').textContent = a.coord
@@ -837,26 +775,20 @@ function showAtomDetail(key) {
     <div style="color:var(--text-d);line-height:1.6;font-size:8px">${a.bondNote}</div>`
 }
 
-// ── RENDER CANVAS ─────────────────────────────────────────────
 function renderCanvas(result) {
   const row  = document.getElementById('moleculeRow')
   const hint = document.getElementById('dropHint')
   const val  = document.getElementById('valBanner')
   const bip  = document.getElementById('bondInfoPanel')
-
   document.getElementById('formulaDisplay').textContent = buildFormula(molecule)
   document.getElementById('atomCount').textContent = `${molecule.length} atom${molecule.length!==1?'s':''}`
-
   if (molecule.length === 0) {
     hint.style.display='flex'; row.innerHTML=''
     val.className='val-banner empty'; val.textContent='◌ ADD ATOMS TO BEGIN'
-    bip.style.display='none'
-    return
+    bip.style.display='none'; return
   }
   hint.style.display='none'
-
   const bondState = result ? (result.isShatter ? 'shatter' : result.isWarn ? 'warn' : '') : ''
-
   row.innerHTML = molecule.map((key, i) => {
     const a = ATOMS[key]
     const bond = i < molecule.length - 1
@@ -878,19 +810,14 @@ function renderCanvas(result) {
         ${Array.from({length:bondLines},()=>`<div class="bond-stroke ${bondState} active"></div>`).join('')}
       </div></div>` : ''}`
   }).join('')
-
-  // Valence banner
   if (result?.valence) {
     const v = result.valence
     val.className = `val-banner ${v.status}`
     val.textContent = v.status === 'satisfied'
       ? `✦ MOLECULE SATISFIED · ${v.detail}`
-      : v.status === 'shatter'
-      ? `⚠ NOBLE GAS — CANNOT BOND`
+      : v.status === 'shatter' ? `⚠ NOBLE GAS — CANNOT BOND`
       : `△ UNSATISFIED · ${v.detail}`
   }
-
-  // Bond info panel
   if (result?.valence?.details?.length > 0) {
     const bt = result.bondType
     bip.style.display = 'block'
@@ -901,12 +828,9 @@ function renderCanvas(result) {
       </div>
       ${result.valence.details.map(d => `<div>${d}</div>`).join('')}
       ${result.valence.totalCap !== undefined ? `<div style="margin-top:4px;color:var(--text-m)">Total bond capacity: ${result.valence.totalCap} · Bonds in chain: ${result.valence.totalBonds}</div>` : ''}`
-  } else {
-    bip.style.display = 'none'
-  }
+  } else { bip.style.display = 'none' }
 }
 
-// ── RENDER OUTPUT ─────────────────────────────────────────────
 function renderOutput(result) {
   const card = document.getElementById('statusCard')
   if (!result) {
@@ -918,29 +842,24 @@ function renderOutput(result) {
     ;['P','N','B','A'].forEach(k=>{document.getElementById(`bar${k}`).style.width='0%';document.getElementById(`num${k}`).textContent='—'})
     return
   }
-
   card.className = `status-card ${result.state}`
   document.getElementById('statusBanner').innerHTML = result.isShatter
     ? '⚠ SHATTER EVENT · TORSIONAL DECOHERENCE'
-    : result.isWarn
-    ? '△ WARNING · APPROACHING TORSION LIMIT'
+    : result.isWarn ? '△ WARNING · APPROACHING TORSION LIMIT'
     : '✦ PHASE LOCKED · MANIFOLD HOLDING'
   document.getElementById('statusCoord').textContent = result.pvCoord
-
   const vc = result.isShatter ? 'sv-shatter' : result.isWarn ? 'sv-warn' : 'sv-anchor'
   const vsat = result.valence?.status === 'satisfied' ? '<span class="sv-sat">✓ SAT</span>' : ''
   document.getElementById('statusGrid').innerHTML = `
     <div class="sg-cell"><div class="sg-label">UNIFIED IM</div><div class="sg-value ${vc}">${result.IM}</div></div>
     <div class="sg-cell"><div class="sg-label">TORSION τ=B/P</div><div class="sg-value ${vc}">${result.torsion} ${vsat}</div></div>
     <div class="sg-cell"><div class="sg-label">ANCHOR</div><div class="sg-value sv-anchor">1.369 GHz ≡</div></div>
-    <div class="sg-cell"><div class="sg-label">ΤORSION LIMIT</div><div class="sg-value sv-dim">τ &lt; 0.2 → lock</div></div>`
-
+    <div class="sg-cell"><div class="sg-label">TORSION LIMIT</div><div class="sg-value sv-dim">τ &lt; 0.2 → lock</div></div>`
   const maxV = Math.max(result.P,result.N,result.B,result.A,10)
   ;[['P',result.P,'#b060f0'],['N',result.N,'#50c8f0'],['B',result.B,'#f09030'],['A',result.A,'#60e090']].forEach(([k,v,c])=>{
     document.getElementById(`bar${k}`).style.width=`${Math.min(100,(v/maxV)*100)}%`
     document.getElementById(`num${k}`).textContent=r4(v)
   })
-
   document.getElementById('stepsBody').innerHTML = result.steps.map(s=>`
     <div class="step-row">
       <div class="step-n">${s.n}</div>
@@ -955,7 +874,6 @@ function renderAll() {
   renderOutput(result)
 }
 
-// ── INIT ──────────────────────────────────────────────────────
 renderPalette()
 renderQuick()
 renderAll()
