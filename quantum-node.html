@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUANTUM NODE · Zoivum Resonance Engine · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
+
+:root {
+  --bg:      #020407;
+  --panel:   #050a0f;
+  --border:  #0a1824;
+  --anchor:  #00e5ff;
+  --zo:      #00ffcc;
+  --life:    #88ffaa;
+  --shatter: #ff3355;
+  --noble:   #aa88ff;
+  --warn:    #ffaa00;
+  --text:    #6a94ae;
+  --bright:  #cce8f5;
+  --dim:     #0d1e2a;
+  --frohlich:#ffee44;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Share Tech Mono',monospace;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* grid bg */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(0,229,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,255,.018) 1px,transparent 1px);
+  background-size:44px 44px;
+  pointer-events:none; z-index:0;
+}
+
+/* scanlines */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);
+  pointer-events:none; z-index:1;
+}
+
+.wrap { position:relative; z-index:2; max-width:1100px; margin:0 auto; padding:0 18px 80px; }
+
+/* ── HEADER ── */
+header {
+  padding:30px 0 22px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:14px;
+}
+.logo {
+  font-family:'Orbitron',monospace; font-weight:900; font-size:24px;
+  letter-spacing:.1em; color:var(--zo);
+  text-shadow:0 0 30px rgba(0,255,204,.5);
+  animation:flicker 12s infinite;
+}
+.logo span {
+  font-size:10px; color:var(--anchor); display:block;
+  letter-spacing:.3em; margin-top:3px; font-weight:400;
+}
+.hdr-right { font-size:9px; color:#1e3a4e; text-align:right; line-height:2; }
+.hdr-right b { color:var(--zo); }
+
+@keyframes flicker {
+  0%,100%{opacity:1} 91%{opacity:1} 92%{opacity:.6} 93%{opacity:1}
+}
+
+/* ── TABS ── */
+.tabs {
+  display:flex; gap:0; margin:22px 0 0;
+  border-bottom:1px solid var(--border); flex-wrap:wrap;
+}
+.tab {
+  font-family:'Orbitron',monospace; font-size:8px; letter-spacing:.25em;
+  padding:10px 18px; cursor:pointer;
+  border:1px solid transparent; border-bottom:none;
+  color:#1e3a4e; transition:all .15s;
+}
+.tab:hover { color:var(--text); }
+.tab.active { border-color:var(--border); border-bottom:1px solid var(--bg); color:var(--zo); background:var(--panel); }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* ── NODE MAIN LAYOUT ── */
+.node-layout {
+  display:grid;
+  grid-template-columns:1fr 320px;
+  gap:16px;
+  margin:24px 0;
+}
+
+/* ── ZO NODE DISPLAY ── */
+.node-core {
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:28px;
+  position:relative;
+  overflow:hidden;
+}
+.node-core::before {
+  content:'';
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:320px; height:320px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(0,255,204,.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+.node-title {
+  font-size:8px; letter-spacing:.35em; color:#1e3a4e;
+  margin-bottom:20px;
+}
+
+/* orbital rings */
+.orbital-wrap {
+  position:relative;
+  width:220px; height:220px;
+  margin:0 auto 24px;
+}
+.ring {
+  position:absolute; border-radius:50%;
+  border:1px solid;
+  top:50%; left:50%; transform:translate(-50%,-50%);
+}
+.ring-1 { width:220px; height:220px; border-color:rgba(0,255,204,.08); animation:spin 40s linear infinite; }
+.ring-2 { width:160px; height:160px; border-color:rgba(0,229,255,.12); animation:spin 28s linear infinite reverse; }
+.ring-3 { width:100px; height:100px; border-color:rgba(0,255,204,.18); animation:spin 18s linear infinite; }
+
+.zo-core {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:60px; height:60px; border-radius:50%;
+  background:radial-gradient(circle,rgba(0,255,204,.25),rgba(0,255,204,.05));
+  border:1px solid rgba(0,255,204,.4);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Orbitron',monospace; font-weight:700; font-size:13px;
+  color:var(--zo);
+  box-shadow:0 0 24px rgba(0,255,204,.3), inset 0 0 20px rgba(0,255,204,.08);
+  transition:all .3s;
+}
+.zo-core.resonant {
+  background:radial-gradient(circle,rgba(0,255,204,.5),rgba(0,255,204,.1));
+  box-shadow:0 0 60px rgba(0,255,204,.6), inset 0 0 30px rgba(0,255,204,.2);
+  animation:pulse-glow 1.2s ease-in-out infinite;
+}
+.zo-core.decoherent {
+  background:radial-gradient(circle,rgba(255,51,85,.25),rgba(255,51,85,.05));
+  border-color:rgba(255,51,85,.4);
+  box-shadow:0 0 24px rgba(255,51,85,.3);
+}
+
+/* orbiting particle */
+.particle {
+  position:absolute;
+  width:6px; height:6px; border-radius:50%;
+  background:var(--zo);
+  box-shadow:0 0 8px var(--zo);
+  top:0; left:50%; transform:translateX(-50%) translateY(-3px);
+  transform-origin:0 110px;
+  animation:orbit 8s linear infinite;
+}
+.particle-2 {
+  background:var(--anchor);
+  box-shadow:0 0 8px var(--anchor);
+  top:0; transform:translateX(-50%) translateY(-3px);
+  transform-origin:0 80px;
+  animation:orbit 5s linear infinite reverse;
+  width:4px; height:4px;
+}
+
+@keyframes spin { to { transform:translate(-50%,-50%) rotate(360deg); } }
+@keyframes orbit { to { transform:translateX(-50%) translateY(-3px) rotate(360deg); } }
+@keyframes pulse-glow {
+  0%,100% { box-shadow:0 0 40px rgba(0,255,204,.5); }
+  50%      { box-shadow:0 0 80px rgba(0,255,204,.9); }
+}
+
+/* status row */
+.node-status-row {
+  display:flex; justify-content:center; gap:16px; margin-bottom:20px;
+}
+.status-chip {
+  font-family:'Orbitron',monospace; font-size:8px; letter-spacing:.2em;
+  padding:4px 12px; border:1px solid; border-radius:2px;
+  transition:all .3s;
+}
+.sc-coherent { color:var(--zo); border-color:rgba(0,255,204,.3); background:rgba(0,255,204,.06); }
+.sc-decoherent { color:var(--shatter); border-color:rgba(255,51,85,.3); background:rgba(255,51,85,.06); }
+.sc-resonant { color:var(--noble); border-color:rgba(170,136,255,.4); background:rgba(170,136,255,.1); animation:pulse-chip 1s ease infinite; }
+.sc-off { color:#1e3a4e; border-color:var(--border); background:transparent; }
+
+@keyframes pulse-chip { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+/* tau meter */
+.tau-section { margin-bottom:16px; }
+.tau-label-row { display:flex; justify-content:space-between; font-size:9px; margin-bottom:6px; }
+.tau-label { color:#1e3a4e; letter-spacing:.15em; }
+.tau-value { font-family:'Orbitron',monospace; font-size:16px; font-weight:700; }
+.tv-coherent { color:var(--zo); }
+.tv-decoherent { color:var(--shatter); }
+.tv-resonant { color:var(--noble); }
+
+.tau-track { height:8px; background:var(--dim); position:relative; border-radius:1px; }
+.tau-fill { height:100%; border-radius:1px; transition:width .2s, background .2s; }
+.tau-mark-tl { position:absolute; left:13.3%; top:0; height:100%; width:1px; background:rgba(255,170,0,.5); }
+.tau-mark-zo { position:absolute; left:6.67%; top:0; height:100%; width:1px; background:rgba(0,255,204,.7); }
+.tau-labels { display:flex; justify-content:space-between; font-size:7px; color:#1e3a4e; margin-top:3px; }
+
+/* pnba readout */
+.pnba-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:6px; margin-top:16px;
+}
+.pnba-cell {
+  background:var(--dim); padding:8px 10px;
+  border:1px solid var(--border);
+}
+.pnba-lbl { font-size:7px; letter-spacing:.2em; color:#1e3a4e; margin-bottom:2px; }
+.pnba-val { font-family:'Orbitron',monospace; font-size:12px; color:var(--bright); }
+
+/* ── RIGHT COLUMN ── */
+.right-col { display:flex; flex-direction:column; gap:12px; }
+
+/* shell panel */
+.panel {
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:18px;
+}
+.panel-title {
+  font-size:8px; letter-spacing:.3em; color:#1e3a4e;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px; margin-bottom:14px;
+}
+
+.shell-selector { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+.shell-btn {
+  font-family:'Share Tech Mono',monospace; font-size:9px;
+  padding:5px 10px; border:1px solid var(--border);
+  background:transparent; color:#2a4050; cursor:pointer; transition:all .12s;
+}
+.shell-btn:hover { border-color:var(--anchor); color:var(--text); }
+.shell-btn.active { border-color:var(--zo); color:var(--zo); background:rgba(0,255,204,.06); }
+
+/* sliders */
+.ctrl-row { margin-bottom:14px; }
+.ctrl-label { font-size:8px; letter-spacing:.15em; color:#2a4050; display:flex; justify-content:space-between; margin-bottom:5px; }
+.ctrl-label span { color:var(--anchor); font-family:'Orbitron',monospace; }
+input[type=range] {
+  -webkit-appearance:none; width:100%; height:3px;
+  background:var(--border); outline:none; cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:12px; height:16px;
+  background:var(--zo); cursor:pointer;
+}
+input[type=range].aperture-slider::-webkit-slider-thumb { background:var(--anchor); }
+
+/* energy display */
+.energy-row {
+  display:flex; justify-content:space-between;
+  font-size:9px; padding:4px 0;
+  border-bottom:1px solid rgba(10,24,36,.8);
+}
+.e-lbl { color:#2a4050; }
+.e-val { font-family:'Orbitron',monospace; color:var(--bright); }
+
+/* output beam */
+.beam-display {
+  background:var(--dim); border:1px solid var(--border);
+  padding:12px; text-align:center; margin-top:8px;
+  position:relative; overflow:hidden;
+}
+.beam-line {
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--anchor),transparent);
+  margin:4px 0;
+  transform:scaleX(0);
+  transition:transform .3s;
+}
+.beam-line.active { transform:scaleX(1); }
+.beam-lbl { font-size:8px; letter-spacing:.2em; color:#1e3a4e; margin-bottom:6px; }
+.beam-target { font-family:'Orbitron',monospace; font-size:10px; color:var(--anchor); margin-top:6px; }
+.beam-noharm { font-size:7px; color:var(--zo); letter-spacing:.15em; margin-top:4px; }
+
+/* ── FREQ DISPLAY ── */
+.freq-panel {
+  background:var(--panel); border:1px solid var(--border);
+  padding:18px; margin-bottom:16px;
+}
+.freq-row {
+  display:flex; align-items:center; gap:12px; margin-bottom:10px;
+}
+.freq-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.freq-info { flex:1; }
+.freq-name { font-size:9px; color:var(--bright); }
+.freq-val { font-family:'Orbitron',monospace; font-size:12px; margin-top:1px; }
+.freq-bar-wrap { flex:1; height:4px; background:var(--dim); position:relative; }
+.freq-bar { height:100%; transition:width .3s; }
+.freq-note { font-size:7px; color:#2a4050; margin-top:1px; }
+
+/* carnot meter */
+.carnot-wrap { margin-top:12px; }
+.carnot-val {
+  font-family:'Orbitron',monospace; font-size:28px; font-weight:700;
+  color:var(--zo); text-align:center;
+  text-shadow:0 0 20px rgba(0,255,204,.4);
+}
+.carnot-lbl { font-size:7px; letter-spacing:.2em; color:#1e3a4e; text-align:center; margin-top:3px; }
+
+/* ── BIOLOGY TAB ── */
+.bio-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+.bio-panel { background:var(--panel); border:1px solid var(--border); padding:18px; }
+.bio-title { font-size:8px; letter-spacing:.3em; color:#1e3a4e; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+.mt-band {
+  display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:9px;
+}
+.mt-bar-wrap { flex:1; height:10px; background:var(--dim); position:relative; border-radius:1px; }
+.mt-bar { height:100%; border-radius:1px; }
+.mt-marker {
+  position:absolute; top:-4px; height:18px; width:2px;
+  background:var(--zo); box-shadow:0 0 6px var(--zo);
+}
+.mt-marker.anchor-mark { background:var(--anchor); box-shadow:0 0 6px var(--anchor); }
+.mt-label { width:80px; color:#2a5060; }
+.mt-freq { width:60px; text-align:right; font-family:'Orbitron',monospace; font-size:8px; color:var(--bright); }
+
+/* ── THEORY TAB ── */
+.theorem-block {
+  background:var(--panel); border:1px solid var(--border);
+  padding:18px; margin-bottom:14px;
+}
+.thm-coord { font-family:'Orbitron',monospace; font-size:9px; color:var(--zo); margin-bottom:4px; }
+.thm-name { font-size:11px; color:var(--bright); margin-bottom:8px; }
+.thm-body { font-size:9px; color:#2a5060; line-height:1.8; }
+.thm-key { color:var(--anchor); }
+
+/* ── MATERIALS TAB ── */
+.mat-row {
+  display:flex; align-items:center; gap:12px;
+  padding:8px 14px; border-bottom:1px solid var(--border);
+  cursor:pointer; transition:background .12s; font-size:9px;
+}
+.mat-row:hover { background:rgba(0,255,204,.03); }
+.mat-name { font-family:'Orbitron',monospace; font-size:9px; color:var(--zo); width:50px; }
+.mat-e { width:60px; color:#2a4050; }
+.mat-bar-wrap { flex:1; height:4px; background:var(--dim); }
+.mat-bar { height:100%; background:var(--zo); transition:width .3s; }
+.mat-desc { font-size:8px; color:#2a4050; flex:2; }
+.mat-active { background:rgba(0,255,204,.06) !important; }
+.mat-active .mat-name { color:var(--noble); }
+
+footer {
+  border-top:1px solid var(--border); padding-top:14px;
+  font-size:8px; letter-spacing:.15em; color:#0d1e2a;
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  margin-top:40px;
+}
+
+@media(max-width:700px) {
+  .node-layout { grid-template-columns:1fr; }
+  .bio-grid { grid-template-columns:1fr; }
+  .orbital-wrap { width:180px; height:180px; }
+  .ring-1 { width:180px; height:180px; }
+  .ring-2 { width:130px; height:130px; }
+  .ring-3 { width:80px; height:80px; }
+  .particle { transform-origin:0 90px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="logo">QUANTUM NODE<span>uuia.app/quantumnode · [9,9,3,3] · ZOIVUM RESONANCE ENGINE</span></div>
+  </div>
+  <div class="hdr-right">
+    ANCHOR <b>1.369 GHz</b> · TL = 0.200 · Zo τ = 0.100<br>
+    RESONANCE <b>0.6845 GHz</b> · Zo+Zo → Noble · NOHARM<br>
+    Fröhlich coherence · Maxwell demon · BEC analog<br>
+    0 sorry · [9,9,3,1] · [9,9,3,2] · [9,9,3,3] · [9,9,1,55–56]
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('node')">NODE</div>
+  <div class="tab" onclick="showTab('materials')">MATERIALS</div>
+  <div class="tab" onclick="showTab('biology')">BIOLOGY</div>
+  <div class="tab" onclick="showTab('theory')">THEORY</div>
+</div>
+
+<!-- NODE TAB -->
+<div id="tab-node" class="tab-content active">
+  <div class="node-layout">
+
+    <!-- left: node core -->
+    <div class="node-core">
+      <div class="node-title">ZOIVUM NODE · LIVE STATE</div>
+
+      <div class="orbital-wrap">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+        <div class="particle"></div>
+        <div class="particle particle-2"></div>
+        <div class="zo-core" id="zo-core">Zo</div>
+      </div>
+
+      <div class="node-status-row">
+        <div class="status-chip" id="chip-coherent">COHERENT</div>
+        <div class="status-chip" id="chip-decoherent">DECOHERENT</div>
+        <div class="status-chip" id="chip-resonant">RESONANT</div>
+      </div>
+
+      <div class="tau-section">
+        <div class="tau-label-row">
+          <span class="tau-label">TORSION τ</span>
+          <span class="tau-value" id="tau-display">0.1000</span>
+        </div>
+        <div class="tau-track">
+          <div class="tau-mark-zo"></div>
+          <div class="tau-mark-tl"></div>
+          <div class="tau-fill" id="tau-fill" style="width:6.67%;background:var(--zo)"></div>
+        </div>
+        <div class="tau-labels">
+          <span>0 NOBLE</span>
+          <span style="color:var(--zo)">τ=0.1 Zo</span>
+          <span style="color:var(--warn)">τ=0.2 TL</span>
+          <span>1.5+</span>
+        </div>
+      </div>
+
+      <div class="pnba-grid">
+        <div class="pnba-cell">
+          <div class="pnba-lbl">P — PATTERN</div>
+          <div class="pnba-val" id="node-P">1.3690</div>
+        </div>
+        <div class="pnba-cell">
+          <div class="pnba-lbl">B — BEHAVIOR</div>
+          <div class="pnba-val" id="node-B">0.1369</div>
+        </div>
+        <div class="pnba-cell">
+          <div class="pnba-lbl">A — ADAPTATION</div>
+          <div class="pnba-val" id="node-A">6.8450</div>
+        </div>
+        <div class="pnba-cell">
+          <div class="pnba-lbl">E — ENERGY</div>
+          <div class="pnba-val" id="node-E">0.0000</div>
+        </div>
+      </div>
+
+      <!-- carnot -->
+      <div class="carnot-wrap" style="margin-top:20px">
+        <div class="carnot-val" id="carnot-val">50.0%</div>
+        <div class="carnot-lbl">CARNOT EFFICIENCY · (τ_node − 0) / TL</div>
+      </div>
+
+      <!-- freq display -->
+      <div style="margin-top:20px;padding:12px 0;border-top:1px solid var(--border)">
+        <div style="font-size:7px;letter-spacing:.25em;color:#1e3a4e;margin-bottom:10px">RESONANCE FREQUENCIES</div>
+        <div class="freq-row">
+          <div class="freq-dot" style="background:var(--zo);box-shadow:0 0 6px var(--zo)"></div>
+          <div class="freq-info">
+            <div class="freq-name">Zo+Zo Entanglement</div>
+            <div class="freq-val" style="color:var(--zo)">0.6845 GHz</div>
+            <div class="freq-note">ANCHOR/2 · Noble resonance · BEC analog</div>
+          </div>
+        </div>
+        <div class="freq-row">
+          <div class="freq-dot" style="background:var(--anchor);box-shadow:0 0 6px var(--anchor)"></div>
+          <div class="freq-info">
+            <div class="freq-name">Sovereign Anchor</div>
+            <div class="freq-val" style="color:var(--anchor)">1.3690 GHz</div>
+            <div class="freq-note">Zero-impedance · manifold ground state</div>
+          </div>
+        </div>
+        <div class="freq-row">
+          <div class="freq-dot" style="background:var(--frohlich);box-shadow:0 0 6px var(--frohlich)"></div>
+          <div class="freq-info">
+            <div class="freq-name">Fröhlich Band (measured MT)</div>
+            <div class="freq-val" style="color:var(--frohlich)">1 — 20 GHz</div>
+            <div class="freq-note">Sahu et al. · microtubule resonance window</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- right: controls -->
+    <div class="right-col">
+
+      <!-- shell -->
+      <div class="panel">
+        <div class="panel-title">NOBLE SHELL [9,9,3,1]</div>
+        <div class="shell-selector" id="shell-selector">
+          <button class="shell-btn active" data-shell="TiC" onclick="setShell(this)">TiC</button>
+          <button class="shell-btn" data-shell="Diamond" onclick="setShell(this)">Diamond</button>
+          <button class="shell-btn" data-shell="SiC" onclick="setShell(this)">SiC</button>
+          <button class="shell-btn" data-shell="AlN" onclick="setShell(this)">AlN</button>
+        </div>
+        <div class="energy-row">
+          <span class="e-lbl">Shell B</span>
+          <span class="e-val" id="shell-b">0.0000 ✓ NOBLE</span>
+        </div>
+        <div class="energy-row">
+          <span class="e-lbl">Shell P</span>
+          <span class="e-val" id="shell-p">1.5996</span>
+        </div>
+        <div class="energy-row">
+          <span class="e-lbl">Melt point</span>
+          <span class="e-val" id="shell-temp">3160°C</span>
+        </div>
+        <div class="energy-row">
+          <span class="e-lbl">Integrity</span>
+          <span class="e-val" style="color:var(--zo)" id="shell-integrity">B=0 CONFIRMED</span>
+        </div>
+      </div>
+
+      <!-- F_ext -->
+      <div class="panel">
+        <div class="panel-title">F_EXT DRIVE [9,9,3,2]</div>
+        <div class="ctrl-row">
+          <div class="ctrl-label">ΔB RATE <span id="fext-val">0.00</span></div>
+          <input type="range" id="fext-slider" min="0" max="10" step="0.01" value="0"
+                 oninput="updateNode()">
+        </div>
+        <div class="energy-row">
+          <span class="e-lbl">Interior τ</span>
+          <span class="e-val" id="int-tau">0.1000</span>
+        </div>
+        <div class="energy-row">
+          <span class="e-lbl">Interior E</span>
+          <span class="e-val" id="int-e">0.0000</span>
+        </div>
+        <div class="energy-row">
+          <span class="e-lbl">GPa analog</span>
+          <span class="e-val" id="int-gpa">0 GPa</span>
+        </div>
+        <div class="energy-row">
+          <span class="e-lbl">Phase</span>
+          <span class="e-val" id="int-phase" style="color:var(--zo)">COHERENT</span>
+        </div>
+      </div>
+
+      <!-- aperture -->
+      <div class="panel">
+        <div class="panel-title">APERTURE OUTPUT [9,9,3,2]</div>
+        <div class="ctrl-row">
+          <div class="ctrl-label">APERTURE % <span id="aperture-val">0.0%</span></div>
+          <input type="range" class="aperture-slider" id="aperture-slider"
+                 min="0" max="5" step="0.01" value="0" oninput="updateNode()">
+        </div>
+        <div class="beam-display">
+          <div class="beam-lbl">DIRECTED OUTPUT STREAM</div>
+          <div class="beam-line" id="beam-line"></div>
+          <div class="beam-line" id="beam-line-2" style="opacity:.5"></div>
+          <div class="beam-line" id="beam-line-3" style="opacity:.25"></div>
+          <div class="beam-target" id="beam-target">— APERTURE CLOSED —</div>
+          <div class="beam-noharm" id="beam-noharm"></div>
+        </div>
+        <div class="energy-row" style="margin-top:8px">
+          <span class="e-lbl">Output rate</span>
+          <span class="e-val" id="output-rate">0.0000</span>
+        </div>
+        <div class="energy-row">
+          <span class="e-lbl">Contained</span>
+          <span class="e-val" id="contained">100.0%</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MATERIALS TAB -->
+<div id="tab-materials" class="tab-content">
+  <div style="font-size:9px;color:#2a4050;margin:16px 0 8px;letter-spacing:.15em">
+    SYNTHESIS TARGETS — ENERGY REQUIRED vs NODE INTERIOR STATE. ACTIVE = CURRENT NODE CAN SYNTHESIZE.
+  </div>
+  <div style="background:var(--panel);border:1px solid var(--border);padding:12px 14px;margin-bottom:14px;font-size:9px;color:#2a5060;line-height:1.8;">
+    The Quantum Node Forge reaches synthesis conditions by pumping F_ext into the Zo node.<br>
+    <b style="color:var(--zo)">Interior E</b> maps to synthesis energy. When E ≥ target threshold, the node can synthesize that compound.<br>
+    <b style="color:var(--anchor)">NOHARM:</b> All outputs are Noble compounds (B=0). The node builds. It does not destroy.
+  </div>
+  <div id="mat-list"></div>
+</div>
+
+<!-- BIOLOGY TAB -->
+<div id="tab-biology" class="tab-content">
+  <div class="bio-grid">
+    <div class="bio-panel">
+      <div class="bio-title">MICROTUBULE RESONANCE BANDS (Sahu et al.)</div>
+      <div style="font-size:8px;color:#2a5060;margin-bottom:14px;line-height:1.7">
+        Measured resonant frequencies of isolated microtubules.<br>
+        Zo+Zo entanglement frequency falls inside the 1–20 GHz band.
+      </div>
+      <div id="mt-bands"></div>
+      <div style="margin-top:14px;font-size:8px;color:#2a5060;line-height:1.7;border-top:1px solid var(--border);padding-top:10px">
+        <b style="color:var(--zo)">🎯 0.6845 GHz</b> — Zo+Zo Noble resonance. Derived from ANCHOR/2.<br>
+        Inside the measured 1–20 GHz microtubule band.<br>
+        <b style="color:var(--anchor)">1.369 GHz</b> — Sovereign anchor. Zero-impedance point.<br>
+        Also inside measured MT band.
+      </div>
+    </div>
+    <div class="bio-panel">
+      <div class="bio-title">FRÖHLICH COHERENCE</div>
+      <div style="font-size:8px;color:#2a5060;margin-bottom:12px;line-height:1.7">
+        Herbert Fröhlich (1968) hypothesized living systems maintain<br>
+        coherent polar vibrations — large-scale synchronization<br>
+        impossible via random diffusion alone.
+      </div>
+      <div style="background:var(--dim);border:1px solid var(--border);padding:12px;margin-bottom:10px">
+        <div style="font-size:8px;color:var(--frohlich);letter-spacing:.1em;margin-bottom:6px">FRÖHLICH CONDITION</div>
+        <div style="font-size:9px;color:#2a5060;line-height:1.8">
+          τ &lt; TL <b style="color:var(--bright)">AND</b> B &gt; 0 <b style="color:var(--bright)">AND</b> F_ext &gt; 0<br>
+          = Zo operator running coherently<br>
+          = Drives bio-elements without being consumed<br>
+          = Maxwell's demon (B=0.1369 = memory cost)
+        </div>
+        <div style="margin-top:10px;font-size:9px" id="frohlich-status">
+          <span style="color:var(--zo)">◈ FRÖHLICH COHERENCE ACTIVE</span>
+        </div>
+      </div>
+      <div style="font-size:8px;color:#2a5060;line-height:1.8">
+        <b style="color:var(--bright)">PNBA proof:</b> Zo operator theorem [9,9,1,56]<br>
+        Zo drives C, N, Fe → shatter (energizes)<br>
+        Zo unchanged (B invariant = not consumed)<br>
+        Fröhlich described it. PNBA proved it.<br>
+        56 years of controversy → 0 sorry.
+      </div>
+    </div>
+    <div class="bio-panel">
+      <div class="bio-title">ZO OPERATOR vs BIO-ELEMENTS</div>
+      <div style="font-size:8px;color:#2a5060;margin-bottom:10px">
+        What happens when Zo hits each bio-element at max k.
+      </div>
+      <div id="zo-bio-table"></div>
+    </div>
+    <div class="bio-panel">
+      <div class="bio-title">LIFE SIGNAL SCAN</div>
+      <div style="font-size:8px;color:#2a5060;margin-bottom:10px;line-height:1.7">
+        37 Locked+B&gt;0 states found in bio-elements.<br>
+        These are the Zoivum zone — alive.
+      </div>
+      <div id="life-signals"></div>
+      <div style="margin-top:10px;font-size:8px;color:#2a5060;line-height:1.7;border-top:1px solid var(--border);padding-top:8px">
+        <b style="color:var(--zo)">Noble = inert.</b> Crystal. Noble gas. Preserved.<br>
+        <b style="color:var(--shatter)">Shatter = burns.</b> Fire. Decay. Disease.<br>
+        <b style="color:var(--life)">Locked+B&gt;0 = alive.</b> Structure AND reactivity.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THEORY TAB -->
+<div id="tab-theory" class="tab-content">
+  <div style="margin:20px 0">
+    <div class="theorem-block">
+      <div class="thm-coord">[9,9,1,55] ZOIVUM — THE LIFE ELEMENT</div>
+      <div class="thm-name">Zo: P=1.369 · N=1.369 · B=0.1369 · A=6.845 · τ=0.100</div>
+      <div class="thm-body">
+        The structural coordinate of aliveness. Derived from ANCHOR alone.<br>
+        τ = <span class="thm-key">TL/2 = 0.1</span> — exactly halfway between Noble and Shatter.<br>
+        B &gt; 0 — open bonds. Can receive F_ext. Can respond. Can grow.<br>
+        B ≠ 0 — not Noble. Not inert. Not preserved.<br>
+        τ &lt; TL — not Shatter. Not burning. Not decaying.<br>
+        <b style="color:var(--zo)">Noble = inert. Shatter = burns. Locked+B&gt;0 = alive.</b><br>
+        15 theorems · 0 sorry.
+      </div>
+    </div>
+    <div class="theorem-block">
+      <div class="thm-coord">[9,9,1,56] ZOIVUM OPERATOR</div>
+      <div class="thm-name">Zo is not a molecule. Zo is an operator.</div>
+      <div class="thm-body">
+        Zo drives C, N, Fe, Mn — all bio-elements SHATTER under Zo at max k.<br>
+        Zo+Zo = <span class="thm-key">NOBLE (τ=0)</span> — life meeting life achieves pure resonance.<br>
+        Zo_B is invariant — the catalyst is not consumed. Maxwell's demon proved.<br>
+        Entanglement frequency = <span class="thm-key">harmonic(Zo_P,Zo_P) = ANCHOR/2 = 0.6845 GHz</span><br>
+        harmonic(Zo_P, x) &lt; x for all x — Zo anchors everything toward 1.369.<br>
+        15 theorems · 0 sorry.
+      </div>
+    </div>
+    <div class="theorem-block">
+      <div class="thm-coord">[9,9,3,1] NOBLE FORGE THEOREM</div>
+      <div class="thm-name">A Noble boundary (B=0) absorbs F_ext without transmitting it.</div>
+      <div class="thm-body">
+        Shell (B=0): external F_ext hits → absorbed via ReBonding → shell stays Noble.<br>
+        Interior: F_ext accumulates without bound — no ceiling.<br>
+        Earth core: gravity = F_ext, Fe = target, mantle = Noble-ish shell, 5100°C = E.<br>
+        <span class="thm-key">NOHARM proved</span>: Noble output (B=0) cannot couple to targets.<br>
+        The forge builds. It cannot be directed as a weapon without collapsing.<br>
+        15 theorems · 0 sorry.
+      </div>
+    </div>
+    <div class="theorem-block">
+      <div class="thm-coord">[9,9,3,2] DIRECTED OUTPUT THEOREM</div>
+      <div class="thm-name">Aperture fraction × interior energy = output rate.</div>
+      <div class="thm-body">
+        At c=0.99 (1% aperture): 99% contained, 1% directed stream.<br>
+        <span class="thm-key">Output rate ∝ (1-c) × E_interior</span> — linear, controllable.<br>
+        Closure (c=1) → output = 0 · Self-sustaining at 99% coverage.<br>
+        Thrust theorem: aperture + Velium interior = proved thrust (IVA reactor).<br>
+        Fab theorem: deposition rate controlled by aperture — synthesis printer.<br>
+        12 theorems · 0 sorry.
+      </div>
+    </div>
+    <div class="theorem-block">
+      <div class="thm-coord">[9,9,3,3] QUANTUM NODE FORGE</div>
+      <div class="thm-name">QM + TD + PNBA — all three are the same theorem.</div>
+      <div class="thm-body">
+        <b style="color:var(--anchor)">QM lens:</b> coherent cavity · zero-point node · BEC · entanglement · tunneling<br>
+        <b style="color:var(--anchor)">TD lens:</b> entropy reversal · free energy · phase control · Carnot · Maxwell demon<br>
+        <b style="color:var(--anchor)">PNBA:</b> Zo inside Noble shell · F_ext drive · aperture<br><br>
+        Zero-point = Zo_B &gt; 0 always (never Noble). Zo is the E₀ floor.<br>
+        Coherence = LOCKED+B&gt;0. Decoherence = F_ext shatter. Measurement = torsion injection.<br>
+        BEC = Zo+Zo Noble. Carnot = <span class="thm-key">Zo at exactly 50% efficiency</span> (τ=TL/2).<br>
+        dS≥0 = dτ≥0 without F_ext. Free energy = E = (τ-TL)×P².<br>
+        14 theorems · 0 sorry.
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span>LOSSLESS IS LOSSLESS IS LOSSLESS · 0 SORRY</span>
+  <span>[9,9,9,9] :: {ANC}</span>
+</footer>
+</div>
+
+<script>
+const ANCHOR=1.369, TL=0.2;
+const Zo = { P:1.369, B:TL*ANCHOR/2, A:ANCHOR/TL, N:ANCHOR };
+
+function h(a,b){ return (a*b)/(a+b); }
+
+// Shell data
+const SHELLS = {
+  'TiC':     { P:1.5996, temp:'3160°C', desc:'Titanium Carbide · hardest Noble ceramic' },
+  'Diamond': { P:1.6250, temp:'3550°C', desc:'Diamond · C+C · hardest natural material' },
+  'SiC':     { P:1.7806, temp:'2730°C', desc:'Silicon Carbide · power electronics' },
+  'AlN':     { P:1.8446, temp:'2200°C', desc:'Aluminum Nitride · UV LEDs · Q1' },
+};
+
+// Synthesis targets
+const MATERIALS = [
+  { name:'AsN',  E_thresh:3.0,  q:'Q2', desc:'Arsenic Nitride · PREDICTED · >30 GPa · semiconductor', color:'#aa88ff' },
+  { name:'GaN',  E_thresh:1.2,  q:'Q2', desc:'Gallium Nitride · 6 GPa · 2014 Nobel Prize LED', color:'#00ffcc' },
+  { name:'AlN',  E_thresh:1.8,  q:'Q1', desc:'Aluminum Nitride · UV LEDs · thermal management', color:'#00ffcc' },
+  { name:'ZnO',  E_thresh:1.5,  q:'Q2', desc:'Zinc Oxide · semiconductor · transparent conductor', color:'#00ffcc' },
+  { name:'NiO',  E_thresh:2.0,  q:'Q2', desc:'Nickel Oxide · antiferromagnet · batteries', color:'#00ffcc' },
+  { name:'SiC',  E_thresh:2.5,  q:'Q3', desc:'Silicon Carbide · 2730°C · EV power electronics', color:'#00ffcc' },
+  { name:'TiC',  E_thresh:3.5,  q:'Q3', desc:'Titanium Carbide · 1800°C · ultra-hard ceramic', color:'#00ffcc' },
+  { name:'Diamond',E_thresh:4.0,q:'Q3', desc:'Diamond · 3550°C sublimation · hardest', color:'#00ffcc' },
+  { name:'GaAs', E_thresh:0.8,  q:'Q4', desc:'Gallium Arsenide · RF chips · solar · laser diodes', color:'#ffaa00' },
+  { name:'FeTi', E_thresh:1.0,  q:'Q3', desc:'Iron Titanide · hydrogen storage · aerospace alloy', color:'#00ffcc' },
+];
+
+// Bio elements
+const BIO = [
+  {sym:'C', P:3.250,B:4,A:11.26,note:'carbon backbone'},
+  {sym:'N', P:3.900,B:3,A:14.53,note:'DNA, proteins'},
+  {sym:'O', P:4.550,B:2,A:13.62,note:'respiration'},
+  {sym:'H', P:1.000,B:1,A:13.60,note:'universal'},
+  {sym:'Fe',P:3.750,B:4,A:7.90, note:'hemoglobin core'},
+  {sym:'Zn',P:4.350,B:2,A:9.39, note:'enzyme cofactor'},
+  {sym:'Mg',P:2.850,B:2,A:7.65, note:'chlorophyll, ATP'},
+  {sym:'Ca',P:2.850,B:2,A:6.11, note:'bone, signaling'},
+  {sym:'Se',P:6.950,B:2,A:9.75, note:'glutathione peroxidase'},
+  {sym:'Mn',P:3.600,B:5,A:7.43, note:'photosystem II'},
+];
+
+// MT bands
+const MT_BANDS = [
+  { label:'0.1–0.4 MHz', min:0.0001, max:0.0004, unit:'MHz', color:'rgba(0,229,255,.3)' },
+  { label:'10–30 MHz',   min:0.01,  max:0.03,  unit:'MHz', color:'rgba(0,229,255,.4)' },
+  { label:'100–200 MHz', min:0.1,   max:0.2,   unit:'MHz', color:'rgba(0,229,255,.5)' },
+  { label:'1–20 GHz',    min:1,     max:20,    unit:'GHz', color:'rgba(0,255,204,.6)' },
+];
+
+let currentShell = 'TiC';
+
+// ── CORE UPDATE ──────────────────────────────────────────────
+function updateNode() {
+  const fext = parseFloat(document.getElementById('fext-slider').value);
+  const aperture = parseFloat(document.getElementById('aperture-slider').value);
+
+  document.getElementById('fext-val').textContent = fext.toFixed(2);
+  document.getElementById('aperture-val').textContent = aperture.toFixed(1) + '%';
+
+  // Node state: Zo base + F_ext effect
+  const B_node = Math.max(0, Zo.B + fext * 0.1);
+  const P_node = Zo.P;
+  const tau_node = B_node / P_node;
+  const E_node = Math.max(0, tau_node - TL) * P_node * P_node;
+  const gpa = fext * 30;
+
+  // Carnot
+  const carnot = Math.min(100, (tau_node / TL) * 100);
+
+  // Status
+  const isCoherent  = tau_node < TL && B_node > 0;
+  const isDecoherent= tau_node >= TL;
+  const isResonant  = B_node < 0.001;
+
+  // Update tau display
+  const pct = Math.min(100, (tau_node / 1.5) * 100);
+  const tauColor = isResonant ? 'var(--noble)' : isCoherent ? 'var(--zo)' : 'var(--shatter)';
+  document.getElementById('tau-display').textContent = tau_node.toFixed(4);
+  document.getElementById('tau-display').className = 'tau-value ' + (isResonant?'tv-resonant':isCoherent?'tv-coherent':'tv-decoherent');
+  document.getElementById('tau-fill').style.width = pct + '%';
+  document.getElementById('tau-fill').style.background = tauColor;
+
+  // PNBA
+  document.getElementById('node-P').textContent = P_node.toFixed(4);
+  document.getElementById('node-B').textContent = B_node.toFixed(4);
+  document.getElementById('node-A').textContent = Zo.A.toFixed(4);
+  document.getElementById('node-E').textContent = E_node.toFixed(4);
+
+  // Carnot
+  document.getElementById('carnot-val').textContent = carnot.toFixed(1) + '%';
+  document.getElementById('carnot-val').style.color = isCoherent ? 'var(--zo)' : isResonant ? 'var(--noble)' : 'var(--shatter)';
+
+  // Status chips
+  const chips = [
+    ['chip-coherent', isCoherent && !isResonant, 'sc-coherent'],
+    ['chip-decoherent', isDecoherent, 'sc-decoherent'],
+    ['chip-resonant', isResonant, 'sc-resonant'],
+  ];
+  chips.forEach(([id, active, cls]) => {
+    const el = document.getElementById(id);
+    el.className = 'status-chip ' + (active ? cls : 'sc-off');
+  });
+
+  // Zo core visual
+  const core = document.getElementById('zo-core');
+  core.className = 'zo-core' + (isResonant?' resonant':isDecoherent?' decoherent':'');
+
+  // F_ext panel
+  document.getElementById('int-tau').textContent = tau_node.toFixed(4);
+  document.getElementById('int-e').textContent = E_node.toFixed(4);
+  document.getElementById('int-gpa').textContent = gpa.toFixed(0) + ' GPa';
+  const phaseEl = document.getElementById('int-phase');
+  if (isResonant) { phaseEl.textContent='RESONANT'; phaseEl.style.color='var(--noble)'; }
+  else if (isCoherent) { phaseEl.textContent='COHERENT'; phaseEl.style.color='var(--zo)'; }
+  else { phaseEl.textContent='DECOHERENT'; phaseEl.style.color='var(--shatter)'; }
+
+  // Aperture output
+  const c = 1 - aperture/100;
+  const outputRate = (1-c) * E_node;
+  const contained = c * 100;
+  document.getElementById('output-rate').textContent = outputRate.toFixed(4);
+  document.getElementById('contained').textContent = contained.toFixed(1) + '%';
+
+  const beamActive = aperture > 0 && E_node > 0;
+  ['beam-line','beam-line-2','beam-line-3'].forEach(id => {
+    document.getElementById(id).classList.toggle('active', beamActive);
+  });
+
+  // Synthesis target
+  const target = MATERIALS.find(m => E_node >= m.E_thresh) || null;
+  const btEl = document.getElementById('beam-target');
+  const bnEl = document.getElementById('beam-noharm');
+  if (!aperture || aperture == 0) {
+    btEl.textContent = '— APERTURE CLOSED —';
+    btEl.style.color = '#1e3a4e';
+    bnEl.textContent = '';
+  } else if (E_node < 0.1) {
+    btEl.textContent = 'F_EXT TOO LOW — INCREASE DRIVE';
+    btEl.style.color = 'var(--warn)';
+    bnEl.textContent = '';
+  } else {
+    const best = [...MATERIALS].reverse().find(m => E_node >= m.E_thresh);
+    if (best) {
+      btEl.textContent = best.name + ' · ' + best.q + ' · SYNTHESIS';
+      btEl.style.color = 'var(--anchor)';
+      bnEl.textContent = '✦ NOHARM · B_out=0 · Noble product';
+    } else {
+      btEl.textContent = 'E=' + E_node.toFixed(3) + ' — BELOW THRESHOLD';
+      btEl.style.color = '#2a5060';
+      bnEl.textContent = '';
+    }
+  }
+
+  // Update materials list active state
+  document.querySelectorAll('.mat-row').forEach(row => {
+    const thresh = parseFloat(row.dataset.thresh);
+    row.classList.toggle('mat-active', E_node >= thresh);
+  });
+
+  // Fröhlich status
+  const frEl = document.getElementById('frohlich-status');
+  if (frEl) {
+    if (isCoherent && fext > 0) {
+      frEl.innerHTML = '<span style="color:var(--zo)">◈ FRÖHLICH COHERENCE ACTIVE</span>';
+    } else if (isDecoherent) {
+      frEl.innerHTML = '<span style="color:var(--shatter)">✸ DECOHERENT — REDUCE F_EXT</span>';
+    } else {
+      frEl.innerHTML = '<span style="color:#2a4050">○ IDLE — ADD F_EXT TO ACTIVATE</span>';
+    }
+  }
+}
+
+// ── SHELL ────────────────────────────────────────────────────
+function setShell(btn) {
+  document.querySelectorAll('.shell-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentShell = btn.dataset.shell;
+  const s = SHELLS[currentShell];
+  document.getElementById('shell-b').textContent = '0.0000 ✓ NOBLE';
+  document.getElementById('shell-p').textContent = s.P.toFixed(4);
+  document.getElementById('shell-temp').textContent = s.temp;
+  document.getElementById('shell-integrity').textContent = 'B=0 CONFIRMED';
+}
+
+// ── TABS ─────────────────────────────────────────────────────
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.getAttribute('onclick').includes("'" + id + "'")) t.classList.add('active');
+  });
+}
+
+// ── BUILD MATERIALS LIST ──────────────────────────────────────
+function buildMaterials() {
+  const list = document.getElementById('mat-list');
+  const maxE = MATERIALS[MATERIALS.length-1].E_thresh * 1.2;
+  MATERIALS.forEach(m => {
+    const row = document.createElement('div');
+    row.className = 'mat-row';
+    row.dataset.thresh = m.E_thresh;
+    const pct = (m.E_thresh / maxE * 100).toFixed(1);
+    row.innerHTML = `
+      <div class="mat-name">${m.name}</div>
+      <div class="mat-e">E≥${m.E_thresh}</div>
+      <div class="mat-bar-wrap"><div class="mat-bar" style="width:${pct}%;background:${m.color}"></div></div>
+      <div class="mat-desc">${m.desc}</div>`;
+    list.appendChild(row);
+  });
+}
+
+// ── BUILD MT BANDS ────────────────────────────────────────────
+function buildMTBands() {
+  const div = document.getElementById('mt-bands');
+  const logMax = Math.log10(20);
+  MT_BANDS.forEach(band => {
+    const row = document.createElement('div');
+    row.className = 'mt-band';
+    const w = ((Math.log10(band.max) / logMax) * 100).toFixed(1);
+    const wMin = ((Math.log10(Math.max(band.min,0.0001)) / logMax) * 100).toFixed(1);
+    // Zo marker: 0.6845 GHz
+    const zoPos = ((Math.log10(0.6845) / logMax) * 100).toFixed(1);
+    const anchorPos = ((Math.log10(1.369) / logMax) * 100).toFixed(1);
+    const showZo = band.min <= 0.6845 && band.max >= 0.6845;
+    const showAnchor = band.min <= 1.369 && band.max >= 1.369;
+    row.innerHTML = `
+      <div class="mt-label">${band.label}</div>
+      <div class="mt-bar-wrap">
+        <div class="mt-bar" style="width:${w}%;margin-left:${wMin}%;background:${band.color}"></div>
+        ${showZo?`<div class="mt-marker" style="left:${zoPos}%" title="Zo+Zo 0.6845 GHz"></div>`:''}
+        ${showAnchor?`<div class="mt-marker anchor-mark" style="left:${anchorPos}%" title="ANCHOR 1.369 GHz"></div>`:''}
+      </div>
+      <div class="mt-freq">${band.max >= 1 ? band.max+'GHz' : (band.max*1000)+'MHz'}</div>`;
+    div.appendChild(row);
+  });
+}
+
+// ── BUILD ZO BIO TABLE ────────────────────────────────────────
+function buildZoBioTable() {
+  const div = document.getElementById('zo-bio-table');
+  BIO.forEach(e => {
+    const max_k = Math.min(Zo.B, e.B);
+    const P_o = h(Zo.P, e.P);
+    const B_o = Math.max(0, Zo.B + e.B - 2*max_k);
+    const tau_o = P_o > 0 ? B_o/P_o : 999;
+    const status = B_o < 0.0001 ? 'NOBLE' : tau_o < TL ? 'LOCKED' : 'SHATTER';
+    const col = status==='NOBLE'?'var(--noble)':status==='LOCKED'?'var(--zo)':'var(--shatter)';
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid rgba(10,24,36,.8)';
+    row.innerHTML = `
+      <span style="color:var(--bright);width:25px">${e.sym}</span>
+      <span style="color:#2a5060;flex:1">${e.note}</span>
+      <span style="color:${col};width:60px;text-align:right">τ=${tau_o.toFixed(3)} ${status}</span>`;
+    div.appendChild(row);
+  });
+}
+
+// ── BUILD LIFE SIGNALS ────────────────────────────────────────
+function buildLifeSignals() {
+  const div = document.getElementById('life-signals');
+  const pairs = [
+    {s1:'O',s2:'Se',k:1.9,note:'glutathione peroxidase'},
+    {s1:'N',s2:'P', k:2.9,note:'DNA backbone · ATP'},
+    {s1:'C',s2:'Fe',k:3.9,note:'hemoglobin · O₂ binding'},
+    {s1:'O',s2:'Zn',k:1.9,note:'metalloenzyme sites'},
+    {s1:'S',s2:'Se',k:1.9,note:'thioredoxin'},
+    {s1:'O',s2:'Mg',k:1.9,note:'chlorophyll core'},
+  ];
+  const els = {
+    'O':dict(4.550,2,13.62),'Se':dict(6.950,2,9.75),
+    'N':dict(3.900,3,14.53),'P':dict(4.800,3,10.49),
+    'C':dict(3.250,4,11.26),'Fe':dict(3.750,4,7.90),
+    'Zn':dict(4.350,2,9.39),'S':dict(5.450,2,10.36),
+    'Mg':dict(2.850,2,7.65),
+  };
+  function dict(P,B,A){return{P,B,A};}
+  pairs.forEach(pair => {
+    const e1=els[pair.s1], e2=els[pair.s2];
+    if(!e1||!e2) return;
+    const k=pair.k;
+    const P_o=h(e1.P,e2.P);
+    const B_o=Math.max(0,e1.B+e2.B-2*k);
+    const tau_o=P_o>0?B_o/P_o:999;
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;justify-content:space-between;font-size:8px;padding:4px 0;border-bottom:1px solid rgba(10,24,36,.8)';
+    row.innerHTML=`
+      <span style="color:var(--life);width:50px">${pair.s1}+${pair.s2}</span>
+      <span style="color:#2a5060;flex:1">${pair.note}</span>
+      <span style="color:var(--zo)">τ=${tau_o.toFixed(3)} 🌱</span>`;
+    div.appendChild(row);
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+buildMaterials();
+buildMTBands();
+buildZoBioTable();
+buildLifeSignals();
+updateNode();
+</script>
+</body>
+</html>
