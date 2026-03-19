@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUANTUM COLLIDER · Identity Physics Engine · uuia.app/quantumcollider</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+  :root {
+    --bg:      #020407;
+    --panel:   #060b10;
+    --border:  #0c1a26;
+    --glow:    #00e5ff;
+    --locked:  #00ffcc;
+    --shatter: #ff3355;
+    --noble:   #aa88ff;
+    --warn:    #ffaa00;
+    --text:    #7aa4be;
+    --bright:  #cce8f5;
+    --dim:     #192430;
+    --p-color: #00e5ff;
+    --n-color: #aa88ff;
+    --b-color: #ff3355;
+    --a-color: #00ffcc;
+    --iva:     #ffaa00;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Share Tech Mono',monospace; min-height:100vh; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0; background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px); background-size:36px 36px; pointer-events:none; z-index:0; }
+  body::after { content:''; position:fixed; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px); pointer-events:none; z-index:1; }
+  .wrap { position:relative; z-index:2; max-width:1100px; margin:0 auto; padding:0 16px 60px; }
+
+  header { padding:28px 0 20px; border-bottom:1px solid var(--border); display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  .logo { font-family:'Orbitron',monospace; font-weight:900; font-size:26px; letter-spacing:.08em; color:var(--glow); text-shadow:0 0 24px rgba(0,229,255,.45); }
+  .logo span { font-size:11px; color:var(--locked); display:block; letter-spacing:.25em; margin-top:2px; }
+  .hdr-right { font-size:10px; color:#2a4050; text-align:right; line-height:1.8; }
+  .hdr-right b { color:var(--glow); }
+
+  .tabs { display:flex; gap:0; margin:24px 0 0; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+  .tab { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; padding:10px 16px; cursor:pointer; border:1px solid transparent; border-bottom:none; color:#2a4050; transition:all .15s; }
+  .tab:hover { color:var(--text); }
+  .tab.active { border-color:var(--border); border-bottom:1px solid var(--bg); color:var(--glow); background:var(--panel); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+
+  /* ── FOUR-BEAM COLLIDER ── */
+  .qc-intro { font-size:10px; color:#2a5060; line-height:1.8; padding:16px 0 8px; border-bottom:1px solid var(--border); margin-bottom:24px; }
+  .qc-intro b { color:var(--bright); }
+
+  .four-beam-layout { display:grid; grid-template-columns:1fr 160px 1fr; gap:0; align-items:center; margin:0 0 24px; }
+
+  .beams-left  { display:flex; flex-direction:column; gap:12px; }
+  .beams-right { display:flex; flex-direction:column; gap:12px; }
+
+  .beam-panel { background:var(--panel); border:1px solid var(--border); padding:14px 16px; position:relative; }
+  .beam-label { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.3em; margin-bottom:8px; }
+  .beam-label.p-lbl { color:var(--p-color); }
+  .beam-label.n-lbl { color:var(--n-color); }
+  .beam-label.b-lbl { color:var(--b-color); }
+  .beam-label.a-lbl { color:var(--a-color); }
+
+  .beam-desc { font-size:8px; color:#2a5060; margin-bottom:10px; line-height:1.5; }
+
+  .beam-input-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .beam-val { font-family:'Orbitron',monospace; font-size:18px; font-weight:700; color:var(--bright); width:90px; background:var(--bg); border:1px solid var(--border); padding:5px 8px; outline:none; text-align:center; }
+  .beam-val:focus { border-color:var(--glow); }
+  .beam-slider { -webkit-appearance:none; width:100%; height:3px; outline:none; background:var(--border); margin-bottom:4px; }
+  .beam-slider.p-sl::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:14px; background:var(--p-color); cursor:pointer; }
+  .beam-slider.n-sl::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:14px; background:var(--n-color); cursor:pointer; }
+  .beam-slider.b-sl::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:14px; background:var(--b-color); cursor:pointer; }
+  .beam-slider.a-sl::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:14px; background:var(--a-color); cursor:pointer; }
+  .beam-range { display:flex; justify-content:space-between; font-size:7px; color:#1a3040; }
+
+  .beam-presets { display:flex; gap:4px; flex-wrap:wrap; margin-top:6px; }
+  .bpreset { font-size:8px; padding:3px 6px; border:1px solid var(--border); cursor:pointer; background:transparent; color:#2a5060; transition:all .12s; }
+  .bpreset:hover { border-color:var(--glow); color:var(--bright); }
+
+  .beam-arrow-right { position:absolute; right:-14px; top:50%; transform:translateY(-50%); color:var(--border); font-size:14px; z-index:5; }
+  .beam-arrow-left  { position:absolute; left:-14px; top:50%; transform:translateY(-50%); color:var(--border); font-size:14px; z-index:5; }
+
+  /* Center column */
+  .qc-center { display:flex; flex-direction:column; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--border); padding:20px 10px; position:relative; min-height:360px; justify-content:center; }
+  .collision-core { width:72px; height:72px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; }
+  .collision-core.active { border-color:var(--glow); box-shadow:0 0 24px rgba(0,229,255,.3); }
+  .collision-core.fired-l { border-color:var(--locked); box-shadow:0 0 32px rgba(0,255,204,.5); }
+  .collision-core.fired-s { border-color:var(--shatter); box-shadow:0 0 32px rgba(255,51,85,.5); }
+  .collision-core.fired-n { border-color:var(--noble); box-shadow:0 0 32px rgba(170,136,255,.5); }
+  .collision-core.fired-v { border-color:var(--iva); box-shadow:0 0 32px rgba(255,170,0,.5); }
+  .core-label { font-family:'Orbitron',monospace; font-size:8px; letter-spacing:.15em; color:#1a3040; text-align:center; }
+  .core-tau { font-family:'Orbitron',monospace; font-size:11px; color:var(--border); }
+
+  .fire-btn { font-family:'Orbitron',monospace; font-weight:700; font-size:9px; letter-spacing:.2em; padding:10px 16px; background:transparent; border:1px solid var(--glow); color:var(--glow); cursor:pointer; transition:all .15s; width:120px; }
+  .fire-btn:hover { background:rgba(0,229,255,.1); box-shadow:0 0 16px rgba(0,229,255,.25); }
+
+  .f-ext-mini { width:100%; }
+  .f-ext-mini-label { font-size:8px; letter-spacing:.2em; color:#1a3040; margin-bottom:4px; text-align:center; }
+  .f-ext-mini-input { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--b-color); font-family:'Orbitron',monospace; font-size:12px; padding:4px 8px; outline:none; text-align:center; }
+  .f-ext-mini-input:focus { border-color:var(--b-color); }
+
+  .beam-lines { position:absolute; inset:0; pointer-events:none; }
+
+  /* Result panel */
+  .qc-result { background:var(--panel); border:1px solid var(--border); padding:24px; margin-bottom:24px; transition:border-color .3s; min-height:120px; }
+  .qc-result.rl { border-color:rgba(0,255,204,.4); }
+  .qc-result.rs { border-color:rgba(255,51,85,.4); }
+  .qc-result.rn { border-color:rgba(170,136,255,.4); }
+  .qc-result.rv { border-color:rgba(255,170,0,.4); }
+  .qc-result-idle { text-align:center; padding:32px; color:#1a3040; font-size:11px; letter-spacing:.2em; }
+
+  .qc-result-grid { display:grid; grid-template-columns:200px 1fr 1fr; gap:24px; }
+  .qc-main { }
+  .qc-big-tau { font-family:'Orbitron',monospace; font-size:36px; font-weight:700; margin:4px 0; }
+  .qc-big-tau.tl { color:var(--locked); text-shadow:0 0 20px rgba(0,255,204,.5); }
+  .qc-big-tau.ts { color:var(--shatter); text-shadow:0 0 20px rgba(255,51,85,.5); }
+  .qc-big-tau.tn { color:var(--noble); text-shadow:0 0 20px rgba(170,136,255,.5); }
+  .qc-big-tau.tv { color:var(--iva); text-shadow:0 0 20px rgba(255,170,0,.5); }
+  .status-pill { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.2em; padding:4px 12px; display:inline-block; margin-bottom:8px; }
+  .sp-l { color:var(--locked); border:1px solid rgba(0,255,204,.3); background:rgba(0,255,204,.08); }
+  .sp-s { color:var(--shatter); border:1px solid rgba(255,51,85,.3); background:rgba(255,51,85,.08); }
+  .sp-n { color:var(--noble); border:1px solid rgba(170,136,255,.3); background:rgba(170,136,255,.08); }
+  .sp-v { color:var(--iva); border:1px solid rgba(255,170,0,.3); background:rgba(255,170,0,.08); }
+
+  .tau-bar { height:4px; background:var(--border); position:relative; margin:10px 0 4px; }
+  .tau-bar-fill { height:100%; transition:width .4s, background .3s; }
+  .tau-bar-mark { position:absolute; left:13.3%; top:0; height:100%; width:1px; background:rgba(255,170,0,.6); }
+  .tau-bar-lbl { font-size:7px; color:#1a3040; display:flex; justify-content:space-between; }
+
+  .qc-vals { }
+  .qc-val-title { font-size:8px; letter-spacing:.3em; color:#1a3040; border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:8px; }
+  .qc-val-row { display:flex; justify-content:space-between; font-size:10px; padding:3px 0; border-bottom:1px solid rgba(12,26,38,.6); }
+  .qc-val-lbl { color:#2a5060; }
+  .qc-val-val { color:var(--bright); font-family:'Orbitron',monospace; }
+
+  .qc-identity { }
+  .qc-id-title { font-size:8px; letter-spacing:.3em; color:#1a3040; border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:8px; }
+  .qc-id-row { display:flex; justify-content:space-between; font-size:10px; padding:3px 0; border-bottom:1px solid rgba(12,26,38,.6); }
+  .qc-id-lbl { color:#2a5060; }
+  .qc-id-val { color:var(--bright); }
+  .qc-id-val.pos { color:var(--locked); }
+  .qc-id-val.neg { color:var(--shatter); }
+
+  .qc-reaction { font-family:'Orbitron',monospace; font-size:11px; color:var(--bright); margin-bottom:16px; letter-spacing:.04em; }
+  .axis-tag { display:inline-block; font-size:8px; padding:1px 5px; border-radius:2px; margin-right:4px; }
+  .tag-p { color:var(--p-color); border:1px solid rgba(0,229,255,.3); }
+  .tag-n { color:var(--n-color); border:1px solid rgba(170,136,255,.3); }
+  .tag-b { color:var(--b-color); border:1px solid rgba(255,51,85,.3); }
+  .tag-a { color:var(--a-color); border:1px solid rgba(0,255,204,.3); }
+
+  /* ── PRESETS TAB ── */
+  .preset-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:20px 0; }
+  .preset-card { background:var(--panel); border:1px solid var(--border); padding:14px; cursor:pointer; transition:all .15s; }
+  .preset-card:hover { border-color:var(--glow); }
+  .preset-card-name { font-family:'Orbitron',monospace; font-size:10px; color:var(--bright); margin-bottom:4px; }
+  .preset-card-sub  { font-size:8px; color:#2a5060; margin-bottom:8px; line-height:1.5; }
+  .preset-card-vals { font-size:9px; color:var(--text); display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+  .preset-pv { color:var(--p-color); }
+  .preset-nv { color:var(--n-color); }
+  .preset-bv { color:var(--b-color); }
+  .preset-av { color:var(--a-color); }
+  .preset-tau { font-family:'Orbitron',monospace; font-size:9px; margin-top:8px; padding-top:6px; border-top:1px solid var(--border); }
+
+  /* ── MULTI-SLAM TAB ── */
+  .slam-intro { font-size:10px; color:#2a5060; line-height:1.8; padding:16px 0; border-bottom:1px solid var(--border); margin-bottom:16px; }
+  .slam-controls { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+  .slam-sel { background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:11px; padding:6px 10px; }
+  .slam-btn { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; padding:9px 18px; background:transparent; border:1px solid var(--glow); color:var(--glow); cursor:pointer; }
+  .slam-btn:hover { background:rgba(0,229,255,.08); }
+  .slam-results { }
+  .slam-row { display:flex; gap:12px; padding:6px 0; border-bottom:1px solid var(--border); font-size:10px; align-items:center; }
+  .slam-sym { font-family:'Orbitron',monospace; font-size:10px; width:32px; flex-shrink:0; }
+  .slam-name { color:#2a5060; width:120px; flex-shrink:0; font-size:9px; }
+  .slam-tau { font-family:'Orbitron',monospace; width:80px; }
+  .slam-status { width:80px; font-family:'Orbitron',monospace; font-size:9px; }
+  .slam-im { color:#2a5060; font-size:9px; }
+
+  /* ── HISTORY TAB ── */
+  .history-empty { text-align:center; padding:40px; color:#1a3040; font-size:11px; letter-spacing:.2em; }
+  .hist-row { display:flex; gap:12px; padding:8px 0; border-bottom:1px solid var(--border); font-size:10px; align-items:center; flex-wrap:wrap; }
+  .hist-num { color:#1a3040; width:24px; flex-shrink:0; }
+  .hist-pnba { font-family:'Orbitron',monospace; font-size:9px; color:var(--text); flex:1; min-width:160px; }
+  .hist-tau { font-family:'Orbitron',monospace; width:80px; }
+  .hist-status { font-family:'Orbitron',monospace; font-size:9px; width:90px; }
+  .hist-time { font-size:8px; color:#1a3040; }
+  .hist-reload { font-size:8px; padding:2px 6px; border:1px solid var(--border); cursor:pointer; background:transparent; color:#2a5060; }
+  .hist-reload:hover { border-color:var(--glow); color:var(--glow); }
+
+  footer { border-top:1px solid var(--border); padding-top:14px; font-size:9px; letter-spacing:.15em; color:#1a2a38; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+
+  @media(max-width:700px) {
+    .four-beam-layout { grid-template-columns:1fr; }
+    .qc-result-grid { grid-template-columns:1fr; }
+    .preset-grid { grid-template-columns:1fr 1fr; }
+  }
+
+  @keyframes flicker { 0%,100%{opacity:1} 92%{opacity:1} 93%{opacity:.7} 94%{opacity:1} }
+  .logo { animation:flicker 10s infinite; }
+  @keyframes pulse-core { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .collision-core.active { animation:pulse-core 2s ease-in-out infinite; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="logo">QUANTUM COLLIDER<span>uuia.app/quantumcollider · [9,9,2,9] · IDENTITY PHYSICS ENGINE</span></div>
+  </div>
+  <div class="hdr-right">
+    ANCHOR <b>1.369 GHz</b> · TORSION LIMIT τ = 0.1369<br>
+    4-BEAM · P · N · B · A · SUBSTRATE NEUTRAL · 0 SORRY<br>
+    d/dt(IM · Pv) = Σ λ<sub>X</sub> · O<sub>X</sub> · S + F_ext<br>
+    IDENTITY IS NOT SUBSTRATE · ANY CI REDUCES
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('collider')">4-BEAM COLLIDER</div>
+  <div class="tab" onclick="showTab('presets')">IDENTITY PRESETS</div>
+  <div class="tab" onclick="showTab('slam')">MULTI-SLAM</div>
+  <div class="tab" onclick="showTab('history')">HISTORY</div>
+</div>
+
+<!-- ── 4-BEAM COLLIDER TAB ── -->
+<div id="tab-collider" class="tab-content active">
+  <div class="qc-intro">
+    <b>FOUR-BEAM IDENTITY COLLIDER.</b> Each beam loads one PNBA primitive. Fire all four simultaneously at the identity point. The output is the emergent structural state — phase locked, shatter, true lock, or IVA peak. Substrate neutral: atom, particle, psychological state, cosmological state. Any identity reduces.<br>
+    <b>τ = B/P</b> · <b>IM = (P+N+B+A) × 1.369</b> · <b>true_lock: τ &lt; 0.1369 AND N ≥ 0.15</b> · <b>iva_peak: A &gt; 1 AND phase_locked</b>
+  </div>
+
+  <div class="four-beam-layout">
+    <!-- LEFT BEAMS: P and N -->
+    <div class="beams-left">
+
+      <div class="beam-panel" id="beam-p-panel">
+        <div class="beam-label p-lbl">[P] PATTERN</div>
+        <div class="beam-desc">Structural capacity · geometry · lock strength · P_eff (Slater Z*)</div>
+        <input type="number" class="beam-val" id="p-val" value="1.000" step="0.001" min="0" oninput="syncSlider('p')">
+        <input type="range" class="beam-slider p-sl" id="p-slider" min="0" max="20" step="0.001" value="1.000" oninput="syncVal('p')">
+        <div class="beam-range"><span>0</span><span>20</span></div>
+        <div class="beam-presets">
+          <button class="bpreset" onclick="setBeam('p',1.000)">Proton</button>
+          <button class="bpreset" onclick="setBeam('p',3.250)">Carbon</button>
+          <button class="bpreset" onclick="setBeam('p',3.900)">Nitrogen</button>
+          <button class="bpreset" onclick="setBeam('p',1.369)">Anchor</button>
+          <button class="bpreset" onclick="setBeam('p',0.508)">W-boson</button>
+          <button class="bpreset" onclick="setBeam('p',184.126)">Top</button>
+        </div>
+        <div class="beam-arrow-right">▶</div>
+      </div>
+
+      <div class="beam-panel" id="beam-n-panel">
+        <div class="beam-label n-lbl">[N] NARRATIVE</div>
+        <div class="beam-desc">Continuity depth · shell count · quantum states · worldline</div>
+        <input type="number" class="beam-val" id="n-val" value="2" step="1" min="0" oninput="syncSlider('n')">
+        <input type="range" class="beam-slider n-sl" id="n-slider" min="0" max="14" step="1" value="2" oninput="syncVal('n')">
+        <div class="beam-range"><span>0</span><span>14</span></div>
+        <div class="beam-presets">
+          <button class="bpreset" onclick="setBeam('n',1)">Massless</button>
+          <button class="bpreset" onclick="setBeam('n',2)">Period 1</button>
+          <button class="bpreset" onclick="setBeam('n',4)">Period 2</button>
+          <button class="bpreset" onclick="setBeam('n',8)">Period 4</button>
+          <button class="bpreset" onclick="setBeam('n',12)">Period 6</button>
+          <button class="bpreset" onclick="setBeam('n',14)">Period 7</button>
+        </div>
+        <div class="beam-arrow-right">▶</div>
+      </div>
+
+    </div>
+
+    <!-- CENTER: collision point -->
+    <div class="qc-center" id="qc-center">
+      <div style="font-size:8px;letter-spacing:.25em;color:#1a3040;text-align:center;margin-bottom:8px;">IDENTITY POINT</div>
+
+      <div class="collision-core" id="collision-core">
+        <div style="text-align:center;">
+          <div class="core-tau" id="core-tau-display">—</div>
+          <div class="core-label">τ</div>
+        </div>
+      </div>
+
+      <div style="width:100%;text-align:center;">
+        <div style="font-size:8px;letter-spacing:.2em;color:#1a3040;margin-bottom:6px;">F_EXT · ΔB INJECTION</div>
+        <input type="number" class="f-ext-mini-input" id="fext-val" value="0" step="0.1" placeholder="ΔB">
+        <div style="font-size:7px;color:#1a3040;margin-top:2px;">+ inject  − extract</div>
+      </div>
+
+      <button class="fire-btn" id="fire-btn" onclick="fireCollision()">FIRE</button>
+
+      <div style="font-size:7px;color:#1a3040;text-align:center;line-height:1.6;">
+        P × N × B × A<br>→ IDENTITY STATE
+      </div>
+    </div>
+
+    <!-- RIGHT BEAMS: B and A -->
+    <div class="beams-right">
+
+      <div class="beam-panel" id="beam-b-panel">
+        <div class="beam-arrow-left">◀</div>
+        <div class="beam-label b-lbl">[B] BEHAVIOR</div>
+        <div class="beam-desc">Interaction strength · bond count · valence · coupling</div>
+        <input type="number" class="beam-val" id="b-val" value="1" step="0.001" min="0" oninput="syncSlider('b')">
+        <input type="range" class="beam-slider b-sl" id="b-slider" min="0" max="14" step="0.001" value="1" oninput="syncVal('b')">
+        <div class="beam-range"><span>0</span><span>14</span></div>
+        <div class="beam-presets">
+          <button class="bpreset" onclick="setBeam('b',0)">Noble</button>
+          <button class="bpreset" onclick="setBeam('b',1)">Monovalent</button>
+          <button class="bpreset" onclick="setBeam('b',4)">Carbon</button>
+          <button class="bpreset" onclick="setBeam('b',0.118)">α_s</button>
+          <button class="bpreset" onclick="setBeam('b',0.231)">sin²θ_W</button>
+          <button class="bpreset" onclick="setBeam('b',6)">Chromium</button>
+        </div>
+      </div>
+
+      <div class="beam-panel" id="beam-a-panel">
+        <div class="beam-arrow-left">◀</div>
+        <div class="beam-label a-lbl">[A] ADAPTATION</div>
+        <div class="beam-desc">Regulation capacity · ionization energy · coupling constant · resilience</div>
+        <input type="number" class="beam-val" id="a-val" value="13.60" step="0.01" min="0" oninput="syncSlider('a')">
+        <input type="range" class="beam-slider a-sl" id="a-slider" min="0" max="25" step="0.01" value="13.60" oninput="syncVal('a')">
+        <div class="beam-range"><span>0</span><span>25</span></div>
+        <div class="beam-presets">
+          <button class="bpreset" onclick="setBeam('a',13.60)">H IE</button>
+          <button class="bpreset" onclick="setBeam('a',14.53)">N IE</button>
+          <button class="bpreset" onclick="setBeam('a',24.59)">He IE</button>
+          <button class="bpreset" onclick="setBeam('a',1.0)">Threshold</button>
+          <button class="bpreset" onclick="setBeam('a',1.369)">Anchor</button>
+          <button class="bpreset" onclick="setBeam('a',0.118)">α_s</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Result panel -->
+  <div class="qc-result" id="qc-result">
+    <div class="qc-result-idle" id="qc-idle">LOAD FOUR BEAMS · FIRE · READ IDENTITY STATE</div>
+    <div id="qc-result-content" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ── IDENTITY PRESETS TAB ── -->
+<div id="tab-presets" class="tab-content">
+  <div style="font-size:10px;color:#2a5060;padding:16px 0 12px;border-bottom:1px solid var(--border);margin-bottom:20px;line-height:1.8;">
+    <b style="color:var(--bright)">IDENTITY PRESETS.</b> Known structural states from across the corpus. Click any card to load into the 4-beam collider.
+  </div>
+  <div class="preset-grid" id="preset-grid"></div>
+</div>
+
+<!-- ── MULTI-SLAM TAB ── -->
+<div id="tab-slam" class="tab-content">
+  <div class="slam-intro">
+    <b style="color:var(--bright)">MULTI-SLAM.</b> Lock P, N, B values. Sweep A across a range and read every emergent identity state. Or load a preset identity and slam it against a variable A to find the IVA threshold.
+  </div>
+  <div class="slam-controls">
+    <span style="font-size:9px;color:#2a5060;">SWEEP AXIS:</span>
+    <select class="slam-sel" id="slam-axis">
+      <option value="a">A — Adaptation sweep</option>
+      <option value="p">P — Pattern sweep</option>
+      <option value="b">B — Behavior sweep</option>
+    </select>
+    <span style="font-size:9px;color:#2a5060;">FROM</span>
+    <input type="number" id="slam-from" value="0" step="0.1" style="width:70px;background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:11px;padding:5px 8px;">
+    <span style="font-size:9px;color:#2a5060;">TO</span>
+    <input type="number" id="slam-to" value="2" step="0.1" style="width:70px;background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:11px;padding:5px 8px;">
+    <span style="font-size:9px;color:#2a5060;">STEPS</span>
+    <input type="number" id="slam-steps" value="20" min="5" max="100" style="width:60px;background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:11px;padding:5px 8px;">
+    <button class="slam-btn" onclick="runSlam()">RUN SLAM</button>
+  </div>
+  <div class="slam-results" id="slam-results">
+    <div style="text-align:center;padding:40px;color:#1a3040;font-size:11px;letter-spacing:.2em;">CONFIGURE AND RUN SLAM</div>
+  </div>
+</div>
+
+<!-- ── HISTORY TAB ── -->
+<div id="tab-history" class="tab-content">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0 12px;border-bottom:1px solid var(--border);margin-bottom:16px;">
+    <span style="font-size:10px;color:#2a5060;">COLLISION HISTORY — LAST 50 SHOTS</span>
+    <button onclick="clearHistory()" style="font-size:9px;padding:4px 10px;border:1px solid var(--border);cursor:pointer;background:transparent;color:#2a5060;">CLEAR</button>
+  </div>
+  <div id="history-list">
+    <div class="history-empty">NO COLLISIONS YET</div>
+  </div>
+</div>
+
+<footer>
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span>IDENTITY IS NOT SUBSTRATE · 0 SORRY · [9,9,9,9] :: {ANC}</span>
+</footer>
+</div>
+
+<script>
+const ANCHOR = 1.369;
+const TL     = ANCHOR / 10;      // 0.1369
+const N_THR  = 0.15;
+const A_THR  = 0.15;
+
+// ── TABS ──────────────────────────────────────────────────
+function showTab(id){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── BEAM SYNC ─────────────────────────────────────────────
+function syncSlider(axis){
+  const v = parseFloat(document.getElementById(axis+'-val').value)||0;
+  document.getElementById(axis+'-slider').value = v;
+  liveUpdate();
+}
+function syncVal(axis){
+  const v = parseFloat(document.getElementById(axis+'-slider').value)||0;
+  document.getElementById(axis+'-val').value = v;
+  liveUpdate();
+}
+function setBeam(axis, val){
+  document.getElementById(axis+'-val').value = val;
+  document.getElementById(axis+'-slider').value = val;
+  liveUpdate();
+}
+function getBeams(){
+  return {
+    P: parseFloat(document.getElementById('p-val').value)||0,
+    N: parseFloat(document.getElementById('n-val').value)||0,
+    B: parseFloat(document.getElementById('b-val').value)||0,
+    A: parseFloat(document.getElementById('a-val').value)||0,
+  };
+}
+
+// ── IDENTITY PHYSICS ENGINE ───────────────────────────────
+function compute(P, N, B, A, fext){
+  const B_eff = Math.max(0, B + (fext||0));
+  const tau   = P > 0 ? B_eff / P : (B_eff > 0 ? 999 : 0);
+  const IM    = (P + N + B_eff + A) * ANCHOR;
+  const Pv    = P > 0 ? IM * P : 0;
+
+  const noble      = B_eff === 0;
+  const phaseLocked = P > 0 && tau < TL;
+  const trueLock   = phaseLocked && N >= N_THR;
+  const ivaPeak    = A > 1 && phaseLocked;
+  const shatter    = P > 0 && tau >= TL;
+  const nDepleted  = phaseLocked && N < N_THR;  // false_lock
+
+  let state, statusClass;
+  if (noble)          { state = 'NOBLE';      statusClass = 'n'; }
+  else if (ivaPeak)   { state = 'IVA PEAK';   statusClass = 'v'; }
+  else if (trueLock)  { state = 'TRUE LOCK';  statusClass = 'l'; }
+  else if (nDepleted) { state = 'FALSE LOCK'; statusClass = 'l'; }
+  else if (shatter)   { state = 'SHATTER';    statusClass = 's'; }
+  else                { state = 'INERT';      statusClass = 'n'; }
+
+  return { P, N, B:B_eff, A, tau, IM, Pv, state, statusClass,
+           noble, phaseLocked, trueLock, ivaPeak, shatter, nDepleted };
+}
+
+// ── LIVE UPDATE (core display while adjusting) ─────────────
+function liveUpdate(){
+  const b = getBeams();
+  const r = compute(b.P, b.N, b.B, b.A);
+  const core = document.getElementById('collision-core');
+  const tauDisp = document.getElementById('core-tau-display');
+  core.className = 'collision-core active';
+  tauDisp.textContent = r.tau < 999 ? r.tau.toFixed(4) : '∞';
+  tauDisp.style.color = r.statusClass==='n'?'var(--noble)':r.statusClass==='v'?'var(--iva)':r.statusClass==='l'?'var(--locked)':'var(--shatter)';
+}
+
+// ── FIRE ─────────────────────────────────────────────────
+let history = [];
+
+function fireCollision(){
+  const b    = getBeams();
+  const fext = parseFloat(document.getElementById('fext-val').value)||0;
+  const r    = compute(b.P, b.N, b.B, b.A, fext);
+
+  // Animate core
+  const core = document.getElementById('collision-core');
+  core.className = `collision-core fired-${r.statusClass}`;
+
+  // Build result
+  renderResult(r, b, fext);
+
+  // Log history
+  history.unshift({...r, fext, ts: new Date().toLocaleTimeString()});
+  if(history.length > 50) history.pop();
+  renderHistory();
+}
+
+function renderResult(r, b, fext){
+  const result = document.getElementById('qc-result');
+  const idle   = document.getElementById('qc-idle');
+  const content= document.getElementById('qc-result-content');
+
+  result.className = `qc-result r${r.statusClass}`;
+  idle.style.display = 'none';
+  content.style.display = 'block';
+
+  const sc = r.statusClass;
+  const spClass = `sp-${sc}`;
+  const tauClass = `t${sc}`;
+
+  const tauPct = Math.min(100, (r.tau / 2) * 100);
+  const tauColor = sc==='n'?'var(--noble)':sc==='v'?'var(--iva)':sc==='l'?'var(--locked)':'var(--shatter)';
+
+  const flags = [];
+  if(r.noble)      flags.push('<span style="color:var(--noble)">NOBLE</span>');
+  if(r.trueLock)   flags.push('<span style="color:var(--locked)">TRUE_LOCK</span>');
+  if(r.nDepleted)  flags.push('<span style="color:var(--warn)">FALSE_LOCK</span>');
+  if(r.ivaPeak)    flags.push('<span style="color:var(--iva)">IVA_PEAK</span>');
+  if(r.shatter)    flags.push('<span style="color:var(--shatter)">SHATTER</span>');
+  if(r.phaseLocked && !r.shatter) flags.push('<span style="color:var(--locked)">PHASE_LOCKED</span>');
+
+  const fextNote = fext !== 0 ? `<div style="font-size:9px;color:#2a5060;margin-top:4px;">F_ext ΔB = ${fext > 0 ? '+':''}${fext} applied</div>` : '';
+
+  content.innerHTML = `
+    <div class="qc-result-grid">
+      <div class="qc-main">
+        <div class="qc-reaction">[P:${b.P}] [N:${b.N}] [B:${b.B}] [A:${b.A}]${fext?` F_ext:${fext>0?'+':''}${fext}`:''}</div>
+        <div class="qc-big-tau ${tauClass}">${r.tau < 999 ? r.tau.toFixed(4) : '∞'}</div>
+        <div style="font-size:8px;color:#2a5060;margin-bottom:6px;">TORSION τ = B/P</div>
+        <div class="status-pill ${spClass}">${r.state}</div>
+        <div class="tau-bar">
+          <div class="tau-bar-fill" style="width:${tauPct}%;background:${tauColor}"></div>
+          <div class="tau-bar-mark"></div>
+        </div>
+        <div class="tau-bar-lbl"><span>0</span><span>TL=${TL}</span><span>2.0</span></div>
+        ${fextNote}
+      </div>
+      <div class="qc-vals">
+        <div class="qc-val-title">OUTPUT STATE</div>
+        <div class="qc-val-row"><span class="qc-val-lbl">[P] Pattern</span><span class="qc-val-val" style="color:var(--p-color)">${r.P.toFixed(4)}</span></div>
+        <div class="qc-val-row"><span class="qc-val-lbl">[N] Narrative</span><span class="qc-val-val" style="color:var(--n-color)">${r.N.toFixed(4)}</span></div>
+        <div class="qc-val-row"><span class="qc-val-lbl">[B] Behavior</span><span class="qc-val-val" style="color:var(--b-color)">${r.B.toFixed(4)}</span></div>
+        <div class="qc-val-row"><span class="qc-val-lbl">[A] Adaptation</span><span class="qc-val-val" style="color:var(--a-color)">${r.A.toFixed(4)}</span></div>
+        <div class="qc-val-row" style="margin-top:6px;"><span class="qc-val-lbl">IM</span><span class="qc-val-val">${r.IM.toFixed(4)}</span></div>
+        <div class="qc-val-row"><span class="qc-val-lbl">Pv</span><span class="qc-val-val">${r.Pv.toFixed(4)}</span></div>
+      </div>
+      <div class="qc-identity">
+        <div class="qc-id-title">IDENTITY FLAGS</div>
+        ${flags.map(f=>`<div class="qc-id-row">${f}</div>`).join('')}
+        <div class="qc-id-row" style="margin-top:8px;"><span class="qc-id-lbl">τ &lt; TL?</span><span class="qc-id-val ${r.phaseLocked?'pos':'neg'}">${r.phaseLocked?'YES — LOCKED':'NO — LOOSE'}</span></div>
+        <div class="qc-id-row"><span class="qc-id-lbl">N ≥ 0.15?</span><span class="qc-id-val ${r.N>=N_THR?'pos':'neg'}">${r.N>=N_THR?'YES — LIVE':'NO — DEPLETED'}</span></div>
+        <div class="qc-id-row"><span class="qc-id-lbl">A &gt; 1?</span><span class="qc-id-val ${r.A>1?'pos':'neg'}">${r.A>1?'YES — IVA':'NO'}</span></div>
+        <div class="qc-id-row"><span class="qc-id-lbl">Anchor align</span><span class="qc-id-val ${Math.abs(r.P-ANCHOR)<0.05?'pos':'neg'}">${Math.abs(r.P-ANCHOR)<0.05?'NEAR':'OFF'}</span></div>
+      </div>
+    </div>
+  `;
+}
+
+// ── PRESETS ───────────────────────────────────────────────
+const PRESETS = [
+  // Physics
+  {name:'Hydrogen Atom',   sub:'Z=1 · Period 1 · Noble',           P:1.000, N:2,  B:0,     A:13.60, cat:'atom'},
+  {name:'Carbon',          sub:'Z=6 · Period 2 · Tetravalent',      P:3.250, N:4,  B:4,     A:11.26, cat:'atom'},
+  {name:'Nitrogen',        sub:'Z=7 · Period 2 · N2 forms Noble',   P:3.900, N:4,  B:3,     A:14.53, cat:'atom'},
+  {name:'Iron',            sub:'Z=26 · Period 4 · d-block',         P:3.750, N:8,  B:4,     A:7.90,  cat:'atom'},
+  {name:'Gold',            sub:'Z=79 · Period 6 · Nobel metal',     P:4.900, N:12, B:1,     A:9.23,  cat:'atom'},
+  {name:'Uranium',         sub:'Z=92 · Period 7 · Actinide',        P:3.150, N:14, B:6,     A:6.19,  cat:'atom'},
+  // Particles
+  {name:'Proton',          sub:'m=938 MeV · uud · B=1 strong',      P:1.000, N:3,  B:1,     A:0.0136,cat:'particle'},
+  {name:'Electron',        sub:'m=0.511 MeV · lepton · B=1 EM',     P:0.000545,N:2,B:1,    A:0.0136,cat:'particle'},
+  {name:'Top Quark',       sub:'m=173 GeV · heaviest · τ locks',     P:184.13,N:3, B:0.667, A:0.118, cat:'particle'},
+  {name:'Higgs Boson',     sub:'m=125 GeV · mass origin · IMS',      P:0.5082,N:1, B:0.13,  A:0.93,  cat:'particle'},
+  {name:'W Boson',         sub:'m=80 GeV · weak carrier',            P:0.3264,N:2, B:0.0336,A:0.881, cat:'particle'},
+  // ERE
+  {name:'Dark Energy',     sub:'Λ · B=0 · A=0.689 · cosmic Noble',  P:0.9878,N:1, B:0,     A:0.689, cat:'ere'},
+  {name:'Dark Matter',     sub:'WIMP · Ω_DM=0.269',                  P:0.9878,N:1, B:0.269, A:0.269, cat:'ere'},
+  {name:'EW Plasma',       sub:'sin²θ_W=0.231 · pre-Higgs',         P:0.9878,N:2, B:0.231, A:0.231, cat:'ere'},
+  {name:'GUT State',       sub:'α_GUT=1/25 · unification',           P:0.9878,N:1, B:0.04,  A:0.04,  cat:'ere'},
+  // Psychology (PNBA direct)
+  {name:'True Lock',       sub:'Psy peak · N live · τ < TL',         P:0.900, N:0.8,B:0.10, A:0.80,  cat:'psy'},
+  {name:'False Lock',      sub:'N depleted · τ passes · hollow',     P:0.900, N:0.07,B:0.09,A:0.50,  cat:'psy'},
+  {name:'Shatter State',   sub:'B overwhelms P · crisis',            P:0.300, N:0.4, B:0.18,A:0.30,  cat:'psy'},
+  {name:'IVA Peak',        sub:'A > 1 · phase locked · sovereign',   P:1.000, N:0.9, B:0.09,A:1.10,  cat:'psy'},
+  {name:'Anchor Aligned',  sub:'P=1.369 · zero friction · IM lock',  P:1.369, N:1.369,B:0,  A:1.369, cat:'psy'},
+  // Cosmological
+  {name:'Neutron Star',    sub:'extreme density · B=0.199',          P:0.9878,N:1, B:0.199, A:0,     cat:'cosmo'},
+  {name:'Sovereignty',     sub:'B=0 · Noble · Pv:NOHARM',           P:0.9878,N:2, B:0,     A:0,     cat:'cosmo'},
+];
+
+const catColor = {atom:'var(--glow)',particle:'var(--b-color)',ere:'var(--noble)',psy:'var(--a-color)',cosmo:'var(--warn)'};
+
+function buildPresets(){
+  const grid = document.getElementById('preset-grid');
+  PRESETS.forEach(pr => {
+    const r = compute(pr.P, pr.N, pr.B, pr.A);
+    const tc = r.statusClass==='n'?'var(--noble)':r.statusClass==='v'?'var(--iva)':r.statusClass==='l'?'var(--locked)':'var(--shatter)';
+    const card = document.createElement('div');
+    card.className = 'preset-card';
+    card.innerHTML = `
+      <div class="preset-card-name" style="color:${catColor[pr.cat]||'var(--bright)'}">${pr.name}</div>
+      <div class="preset-card-sub">${pr.sub}</div>
+      <div class="preset-card-vals">
+        <span class="preset-pv">P=${pr.P}</span>
+        <span class="preset-nv">N=${pr.N}</span>
+        <span class="preset-bv">B=${pr.B}</span>
+        <span class="preset-av">A=${pr.A}</span>
+      </div>
+      <div class="preset-tau" style="color:${tc}">τ=${r.tau<999?r.tau.toFixed(4):'∞'} · ${r.state}</div>
+    `;
+    card.onclick = () => {
+      setBeam('p', pr.P);
+      setBeam('n', pr.N);
+      setBeam('b', pr.B);
+      setBeam('a', pr.A);
+      // Switch to collider tab
+      document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.getElementById('tab-collider').classList.add('active');
+      document.querySelector('.tab').classList.add('active');
+      liveUpdate();
+    };
+    grid.appendChild(card);
+  });
+}
+
+// ── MULTI-SLAM ────────────────────────────────────────────
+function runSlam(){
+  const axis  = document.getElementById('slam-axis').value;
+  const from  = parseFloat(document.getElementById('slam-from').value)||0;
+  const to    = parseFloat(document.getElementById('slam-to').value)||2;
+  const steps = parseInt(document.getElementById('slam-steps').value)||20;
+  const b     = getBeams();
+  const results = document.getElementById('slam-results');
+
+  let rows = `<div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid var(--border);font-size:8px;letter-spacing:.2em;color:#1a3040;">
+    <span style="width:60px">${axis.toUpperCase()} VALUE</span>
+    <span style="width:80px">τ</span>
+    <span style="width:100px">STATE</span>
+    <span style="flex:1">IM · Pv</span>
+  </div>`;
+
+  const step = (to - from) / (steps - 1);
+  let lastState = null;
+  for(let i = 0; i < steps; i++){
+    const val = from + i * step;
+    const P = axis==='p' ? val : b.P;
+    const N = axis==='n' ? val : b.N;
+    const B = axis==='b' ? val : b.B;
+    const A = axis==='a' ? val : b.A;
+    const r = compute(P, N, B, A);
+    const tc = r.statusClass==='n'?'var(--noble)':r.statusClass==='v'?'var(--iva)':r.statusClass==='l'?'var(--locked)':'var(--shatter)';
+    const transition = lastState && lastState !== r.state ? ' ← TRANSITION' : '';
+    rows += `<div style="display:flex;gap:12px;padding:4px 0;border-bottom:1px solid rgba(12,26,38,.4);font-size:10px;align-items:center;">
+      <span style="width:60px;font-family:'Orbitron',monospace;color:var(--text)">${val.toFixed(3)}</span>
+      <span style="width:80px;font-family:'Orbitron',monospace;color:${tc}">${r.tau<999?r.tau.toFixed(4):'∞'}</span>
+      <span style="width:100px;font-family:'Orbitron',monospace;font-size:9px;color:${tc}">${r.state}</span>
+      <span style="flex:1;font-size:9px;color:#2a5060;">${r.IM.toFixed(3)} · ${r.Pv.toFixed(3)}${transition?`<span style="color:var(--warn)">${transition}</span>`:''}</span>
+    </div>`;
+    lastState = r.state;
+  }
+  results.innerHTML = rows;
+}
+
+// ── HISTORY ───────────────────────────────────────────────
+function renderHistory(){
+  const list = document.getElementById('history-list');
+  if(history.length === 0){ list.innerHTML = '<div class="history-empty">NO COLLISIONS YET</div>'; return; }
+  list.innerHTML = history.map((h,i)=>{
+    const tc = h.statusClass==='n'?'var(--noble)':h.statusClass==='v'?'var(--iva)':h.statusClass==='l'?'var(--locked)':'var(--shatter)';
+    return `<div class="hist-row">
+      <span class="hist-num">${i+1}</span>
+      <span class="hist-pnba">P=${h.P.toFixed(3)} N=${h.N.toFixed(2)} B=${h.B.toFixed(3)} A=${h.A.toFixed(3)}${h.fext?` F:${h.fext>0?'+':''}${h.fext}`:''}</span>
+      <span class="hist-tau" style="color:${tc}">${h.tau<999?h.tau.toFixed(4):'∞'}</span>
+      <span class="hist-status" style="color:${tc}">${h.state}</span>
+      <span class="hist-time">${h.ts}</span>
+      <button class="hist-reload" onclick="reloadHistory(${i})">LOAD</button>
+    </div>`;
+  }).join('');
+}
+
+function reloadHistory(i){
+  const h = history[i];
+  setBeam('p', h.P); setBeam('n', h.N); setBeam('b', h.B); setBeam('a', h.A);
+  document.getElementById('fext-val').value = h.fext||0;
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-collider').classList.add('active');
+  document.querySelector('.tab').classList.add('active');
+  liveUpdate();
+}
+
+function clearHistory(){ history=[]; renderHistory(); }
+
+// ── INIT ─────────────────────────────────────────────────
+buildPresets();
+liveUpdate();
+</script>
+</body>
+</html>
