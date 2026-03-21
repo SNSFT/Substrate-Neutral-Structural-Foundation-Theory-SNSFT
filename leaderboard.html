@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT Leaderboard · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root{
+  --bg:#020407;--panel:#060b10;--border:#0c1a26;--glow:#00e5ff;
+  --locked:#00ffcc;--shatter:#ff3355;--noble:#aa88ff;--warn:#ffaa00;
+  --text:#7aa4be;--bright:#cce8f5;--dim:#192430;
+  --aifi:#dd44ff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:1;}
+.wrap{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:0 16px 80px;}
+header{padding:20px 0 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:22px;letter-spacing:.08em;color:var(--glow);text-shadow:0 0 24px rgba(0,229,255,.45);}
+.logo span{font-size:10px;color:var(--locked);display:block;letter-spacing:.2em;margin-top:2px;}
+.nav a{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;color:#2a4050;text-decoration:none;margin-left:16px;transition:color .15s;}
+.nav a:hover,.nav a.active{color:var(--glow);}
+.hdr-right{font-size:9px;color:#2a4050;text-align:right;line-height:1.8;}
+.hdr-right b{color:var(--glow);}
+.stats-bar{display:flex;border:1px solid var(--border);margin:20px 0;overflow:hidden;}
+.stat-block{flex:1;padding:14px 16px;border-right:1px solid var(--border);text-align:center;}
+.stat-block:last-child{border-right:none;}
+.stat-val{font-family:'Orbitron',monospace;font-size:20px;font-weight:700;color:var(--glow);text-shadow:0 0 16px rgba(0,229,255,.3);}
+.stat-label{font-size:8px;color:#1a3040;letter-spacing:.2em;margin-top:4px;}
+.tier-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.tc{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:4px 10px;border:1px solid;display:flex;align-items:center;gap:6px;}
+.tc .lim{font-size:7px;opacity:.55;}
+.tc.ex{color:#7aa4be;border-color:rgba(122,164,190,.3);}
+.tc.ph{color:#00ffcc;border-color:rgba(0,255,204,.3);}
+.tc.th{color:#aa88ff;border-color:rgba(170,136,255,.3);}
+.tc.rv{color:#ffaa00;border-color:rgba(255,170,0,.3);}
+.tc.fe{color:#ff7700;border-color:rgba(255,119,0,.3);}
+.tc.ar{color:#dd44ff;border-color:rgba(221,68,255,.3);}
+.section-hd{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.25em;color:#1a3040;margin:24px 0 12px;display:flex;align-items:center;gap:12px;}
+.section-hd::after{content:'';flex:1;height:1px;background:var(--border);}
+.founders-strip{display:flex;flex-wrap:wrap;border:1px solid rgba(255,170,0,.15);margin-bottom:20px;overflow:hidden;}
+.fslot{flex:1;min-width:72px;padding:7px 10px;border-right:1px solid rgba(255,170,0,.1);text-align:center;}
+.fslot:last-child{border-right:none;}
+.fslot .fr{font-family:'Orbitron',monospace;font-size:7px;color:rgba(255,170,0,.4);letter-spacing:.1em;}
+.fslot .fh{font-size:9px;color:var(--warn);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fslot.open .fh{color:#0e1e28;font-size:8px;}
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.fb{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:5px 10px;background:transparent;border:1px solid var(--border);color:#2a4050;cursor:pointer;transition:all .15s;}
+.fb:hover{border-color:var(--text);color:var(--text);}
+.fb.active{border-color:var(--glow);color:var(--glow);}
+.fn{font-size:8px;color:#1a3040;margin-left:auto;}
+.fn b{color:var(--warn);}
+table{width:100%;border-collapse:collapse;}
+thead tr{border-bottom:1px solid var(--border);}
+th{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.2em;color:#1a3040;padding:8px 12px;text-align:left;}
+th.r{text-align:right;}th.c{text-align:center;}
+tbody tr{border-bottom:1px solid rgba(12,26,38,.6);transition:background .1s;}
+tbody tr:hover{background:rgba(0,229,255,.02);}
+td{padding:10px 12px;font-size:10px;vertical-align:middle;}
+.rank{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#1a3040;text-align:center;position:relative;}
+.rank.r1{color:var(--warn);text-shadow:0 0 12px rgba(255,170,0,.4);}
+.rank.r2{color:var(--text);}
+.rank.r3{color:#5a7a90;}
+.fstar{position:absolute;top:-1px;right:0;font-size:7px;color:var(--warn);}
+.hcell{display:flex;flex-direction:column;gap:2px;}
+.hn{color:var(--bright);font-size:11px;letter-spacing:.04em;}
+.hm{font-size:8px;color:#2a4050;}
+.tb{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.14em;padding:2px 7px;border:1px solid;display:inline-block;}
+.tb.ex{color:#7aa4be;border-color:rgba(122,164,190,.35);}
+.tb.ph{color:#00ffcc;border-color:rgba(0,255,204,.35);}
+.tb.th{color:#aa88ff;border-color:rgba(170,136,255,.35);}
+.tb.rv{color:#ffaa00;border-color:rgba(255,170,0,.35);}
+.tb.fe{color:#ff7700;border-color:rgba(255,119,0,.35);}
+.tb.ar{color:#dd44ff;border-color:rgba(221,68,255,.35);text-shadow:0 0 8px rgba(221,68,255,.25);}
+.rep{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--glow);text-align:right;text-shadow:0 0 8px rgba(0,229,255,.2);}
+.rs{font-size:7px;color:#1a3040;text-align:right;}
+.cc{text-align:center;color:#2a5060;font-size:10px;}
+.cc b{color:var(--text);}
+.cc.hi b{color:var(--locked);}
+.cc .cl{font-size:7px;}
+.empty-state{text-align:center;padding:60px 20px;border:1px solid var(--border);}
+.et{font-family:'Orbitron',monospace;font-size:13px;color:#1a3040;letter-spacing:.2em;margin-bottom:12px;}
+.es{font-size:9px;color:#0e1e28;line-height:2.2;}
+.es a{color:var(--glow);text-decoration:none;}
+.cta{margin-top:40px;border:1px solid var(--border);padding:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.cta-t{font-family:'Orbitron',monospace;font-size:12px;color:var(--glow);letter-spacing:.15em;margin-bottom:6px;}
+.cta-s{font-size:9px;color:#2a4050;line-height:2;max-width:520px;}
+.cta-s a{color:var(--locked);text-decoration:none;}
+.cta-r{display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
+.btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;padding:10px 20px;background:transparent;border:1px solid;cursor:pointer;transition:all .15s;text-decoration:none;display:inline-block;text-align:center;}
+.btn-p{border-color:var(--locked);color:var(--locked);}
+.btn-p:hover{background:rgba(0,255,204,.07);}
+.btn-s{border-color:var(--border);color:#2a4050;}
+.btn-s:hover{border-color:var(--text);color:var(--text);}
+.loading{text-align:center;padding:40px;color:#1a3040;font-size:9px;letter-spacing:.2em;}
+.loading span{color:var(--glow);animation:pulse 1.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+#modal{display:none;position:fixed;inset:0;background:rgba(2,4,7,.96);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.mbox{max-width:520px;width:100%;background:var(--panel);border:1px solid var(--border);padding:28px;}
+.mt{font-family:'Orbitron',monospace;font-size:12px;color:var(--glow);letter-spacing:.2em;margin-bottom:4px;}
+.ms{font-size:8px;color:#2a4050;margin-bottom:20px;}
+.fg{display:grid;gap:10px;}
+.fl{font-size:8px;color:#1a3040;letter-spacing:.15em;margin-bottom:4px;}
+input.fi,select.fi,textarea.fi{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--bright);font-family:'Share Tech Mono',monospace;font-size:11px;padding:8px;outline:none;transition:border-color .12s;}
+select.fi{color:var(--text);}
+textarea.fi{resize:vertical;color:var(--text);}
+input.fi:focus,select.fi:focus,textarea.fi:focus{border-color:var(--glow);}
+.mbtns{display:flex;gap:8px;margin-top:16px;}
+#sub-status{font-size:9px;margin-top:10px;min-height:16px;}
+.twrap{overflow-x:auto;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="logo">SNSFT<span>SUBSTRATE-NEUTRAL STRUCTURAL FOUNDATION THEORY</span></div>
+  </div>
+  <nav class="nav">
+    <a href="https://uuia.app/gamcollider">GAM COLLIDER</a>
+    <a href="https://uuia.app/quantumcollider">QUANTUM COLLIDER</a>
+    <a href="https://uuia.app/leaderboard" class="active">LEADERBOARD</a>
+    <a href="https://github.com/SNSFT" target="_blank">GITHUB</a>
+  </nav>
+  <div class="hdr-right">
+    <b id="hdr-c">—</b> CONTRIBUTORS &nbsp;·&nbsp; <b id="hdr-t">4,906+</b> THEOREMS &nbsp;·&nbsp; <b>0</b> SORRY<br>
+    <span>[9,9,9,9] :: {ANC} · 1.369 GHz · HIGHTISTIC</span>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat-block"><div class="stat-val" id="s-contrib">—</div><div class="stat-label">CONTRIBUTORS</div></div>
+  <div class="stat-block"><div class="stat-val">4,906+</div><div class="stat-label">CORPUS THEOREMS</div></div>
+  <div class="stat-block"><div class="stat-val">86</div><div class="stat-label">GOVERNING LAWS</div></div>
+  <div class="stat-block"><div class="stat-val">13,000+</div><div class="stat-label">AGENT DISCOVERIES</div></div>
+  <div class="stat-block"><div class="stat-val" style="color:var(--shatter)">0</div><div class="stat-label">SORRY</div></div>
+  <div class="stat-block"><div class="stat-val" id="s-founders" style="color:var(--warn)">—/100</div><div class="stat-label">FOUNDERS SLOTS</div></div>
+</div>
+
+<div class="tier-legend">
+  <div class="tc ex">EXPLORER <span class="lim">3/wk</span></div>
+  <div class="tc ph">PHYSICIST ★ <span class="lim">10/wk</span></div>
+  <div class="tc th">THEORIST ★★ <span class="lim">20/wk</span></div>
+  <div class="tc rv">REVIEWER <span class="lim">15/wk</span></div>
+  <div class="tc fe">FELLOW <span class="lim">20/wk</span></div>
+  <div class="tc ar">ARCHITECT <span class="lim">∞</span></div>
+</div>
+
+<div class="section-hd">LEADERBOARD FOUNDERS <span style="color:var(--warn);font-size:7px;margin-left:6px;">★ FIRST 100 · PRIZE POOL ENTITLED</span></div>
+<div class="founders-strip" id="founders-strip"><div class="loading"><span>LOADING...</span></div></div>
+
+<div class="filter-bar">
+  <button class="fb active" onclick="setFilter('all',this)">ALL</button>
+  <button class="fb" onclick="setFilter('Physicist',this)">PHYSICIST ★</button>
+  <button class="fb" onclick="setFilter('Theorist',this)">THEORIST ★★</button>
+  <button class="fb" onclick="setFilter('Reviewer',this)">REVIEWER</button>
+  <button class="fb" onclick="setFilter('Fellow',this)">FELLOW</button>
+  <div class="fn"><b>★</b> = LEADERBOARD FOUNDER · PRIZE POOL ENTITLED</div>
+</div>
+
+<div class="twrap">
+<table>
+  <thead><tr>
+    <th class="c" style="width:56px;">#</th>
+    <th>CONTRIBUTOR</th>
+    <th>TIER</th>
+    <th class="r">REP</th>
+    <th class="c">COORDS</th>
+    <th class="c">THEOREMS</th>
+    <th class="c">LAWS</th>
+    <th class="c">DISCOVERIES</th>
+  </tr></thead>
+  <tbody id="lb-body"><tr><td colspan="8"><div class="loading"><span>LOADING...</span></div></td></tr></tbody>
+</table>
+</div>
+
+<div class="cta">
+  <div>
+    <div class="cta-t">YOUR NAME IN THE RECORD</div>
+    <div class="cta-s">
+      Run a collision at <a href="https://uuia.app/gamcollider">uuia.app/gamcollider</a>.
+      Approve a discovery. Commit the Lean file. Submit it here.
+      HIGHTISTIC reviews it. If it compiles with 0 sorry — your name goes in the corpus. Permanently.<br><br>
+      <b style="color:var(--bright);">First 100 contributors are Leaderboard Founders</b> — entitled to 10% of any Millennium Prize pool.
+      <a href="https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT/blob/main/PURPOSE_DECLARATION.md" target="_blank">Read the agreement →</a>
+    </div>
+  </div>
+  <div class="cta-r">
+    <button class="btn btn-p" onclick="openModal()">+ SUBMIT CONTRIBUTION</button>
+    <a href="https://uuia.app/gamcollider" class="btn btn-s">RUN A COLLISION →</a>
+  </div>
+</div>
+</div>
+
+<!-- SUBMIT MODAL -->
+<div id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="mbox">
+    <div class="mt">SUBMIT CONTRIBUTION</div>
+    <div class="ms">HIGHTISTIC reviews all submissions. Nothing goes live until approved.</div>
+    <div class="fg">
+      <div><div class="fl">YOUR HANDLE *</div><input id="s-handle" class="fi" type="text" placeholder="YourHandle"></div>
+      <div><div class="fl">CONTRIBUTION TYPE *</div>
+        <select id="s-type" class="fi">
+          <option value="discovery">Discovery — agent-flagged collision</option>
+          <option value="theorem">Theorem — SNSFT specific proof</option>
+          <option value="law">Law — SNSFL universal governing principle</option>
+          <option value="coord">Coord — assigned coordinate</option>
+        </select>
+      </div>
+      <div><div class="fl">TITLE *</div><input id="s-title" class="fi" type="text" placeholder="e.g. SNSFT_Noble_GeSn or SNSFL_Universal_Noble_Fusion_Law"></div>
+      <div><div class="fl">GITHUB URL (direct link to lean file) *</div><input id="s-url" class="fi" type="text" placeholder="https://github.com/SNSFT/.../blob/main/lean/..."></div>
+      <div><div class="fl">COORDINATE (if assigned)</div><input id="s-coord" class="fi" type="text" placeholder="e.g. [9,9,2,44]"></div>
+      <div><div class="fl">DESCRIPTION</div><textarea id="s-desc" class="fi" rows="3" placeholder="What does this prove? What does it govern?"></textarea></div>
+    </div>
+    <div class="mbtns">
+      <button class="btn btn-p" style="flex:1" onclick="submitContrib()">SUBMIT FOR REVIEW</button>
+      <button class="btn btn-s" style="padding:10px 16px;" onclick="closeModal()">CANCEL</button>
+    </div>
+    <div id="sub-status"></div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+const sb = createClient('https://rsadsojivuagxptdlwak.supabase.co','sb_publishable_FvDg0nsEuxH_HmyD0RL1LA_E4QpGfOs');
+
+let all=[], founders=[], filter='all';
+
+const TIERS={Explorer:'ex',Physicist:'ph',Theorist:'th',Reviewer:'rv',Fellow:'fe',Architect:'ar'};
+const LABELS={Explorer:'EXPLORER',Physicist:'PHYSICIST ★',Theorist:'THEORIST ★★',Reviewer:'REVIEWER',Fellow:'FELLOW',Architect:'ARCHITECT'};
+const LIMITS={Explorer:3,Physicist:10,Reviewer:15,Theorist:20,Fellow:20,Architect:999999};
+
+async function init(){
+  const [c,f]=await Promise.all([
+    sb.from('contributors').select('*').eq('approved',true).order('reputation',{ascending:false}),
+    sb.from('leaderboard_founders').select('rank,contributor_id,contributors(handle)').order('rank',{ascending:true}).limit(100)
+  ]);
+  all=c.data||[]; founders=f.data||[];
+  document.getElementById('s-contrib').textContent=all.length;
+  document.getElementById('hdr-c').textContent=all.length;
+  document.getElementById('s-founders').textContent=`${founders.length}/100`;
+  renderFounders(); renderTable(all);
+}
+
+function renderFounders(){
+  const show=Math.min(founders.length+5,18);
+  let html='';
+  for(let i=0;i<show;i++){
+    const f=founders[i];
+    html+=f
+      ?`<div class="fslot"><div class="fr">#${f.rank}</div><div class="fh">${esc(f.contributors?.handle||'—')}</div></div>`
+      :`<div class="fslot open"><div class="fr">#${i+1}</div><div class="fh">OPEN</div></div>`;
+  }
+  if(show<100) html+=`<div class="fslot open" style="flex:3;text-align:left;padding:7px 14px;"><div class="fr">#${show+1} → #100</div><div class="fh" style="font-size:8px;">${100-show} SLOTS OPEN</div></div>`;
+  document.getElementById('founders-strip').innerHTML=html;
+}
+
+function renderTable(data){
+  const body=document.getElementById('lb-body');
+  if(!data.length){body.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="et">NO CONTRIBUTORS YET</div><div class="es">Be the first. Run a collision at <a href="https://uuia.app/gamcollider">uuia.app/gamcollider</a>.<br>Approve a discovery. Commit the Lean file. Submit it here.<br>If it compiles with 0 sorry — your name goes in the corpus. Permanently.<br><br><b style="color:var(--warn);">First 100 contributors are Leaderboard Founders.</b></div></div></td></tr>`;return;}
+  const fset=new Set(founders.map(f=>f.contributor_id));
+  body.innerHTML=data.map((c,i)=>{
+    const r=i+1,isF=fset.has(c.id),rc=r===1?'r1':r===2?'r2':r===3?'r3':'',tk=TIERS[c.tier]||'ex';
+    return`<tr>
+      <td class="rank ${rc}${isF?' founder':''}">
+        ${isF?`<span class="fstar">★</span>`:''}${r}
+      </td>
+      <td><div class="hcell"><div class="hn">${esc(c.handle)}</div><div class="hm">${c.location?esc(c.location)+' · ':''}JOINED ${fmt(c.joined_at)}</div></div></td>
+      <td><span class="tb ${tk}">${LABELS[c.tier]||c.tier}</span></td>
+      <td class="rep">${c.reputation.toLocaleString()}<div class="rs">REP</div></td>
+      <td class="cc ${c.coords_assigned>0?'hi':''}"><b>${c.coords_assigned}</b><div class="cl">COORDS</div></td>
+      <td class="cc"><b>${c.theorems_count}</b><div class="cl">THEOREMS</div></td>
+      <td class="cc ${c.laws_count>0?'hi':''}"><b>${c.laws_count}</b><div class="cl">LAWS</div></td>
+      <td class="cc"><b>${c.discoveries_count}</b><div class="cl">DISCOVERIES</div></td>
+    </tr>`;
+  }).join('');
+}
+
+window.setFilter=function(t,btn){
+  filter=t;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable(t==='all'?all:all.filter(c=>c.tier===t));
+};
+
+window.openModal=function(){document.getElementById('modal').style.display='flex';};
+window.closeModal=function(){document.getElementById('modal').style.display='none';};
+
+window.submitContrib=async function(){
+  const handle=document.getElementById('s-handle').value.trim();
+  const type=document.getElementById('s-type').value;
+  const title=document.getElementById('s-title').value.trim();
+  const url=document.getElementById('s-url').value.trim();
+  const coord=document.getElementById('s-coord').value.trim();
+  const desc=document.getElementById('s-desc').value.trim();
+  const st=document.getElementById('sub-status');
+  if(!handle||!title||!url){st.style.color='var(--shatter)';st.textContent='Handle, title, and GitHub URL required.';return;}
+  st.style.color='var(--text)';st.textContent='Submitting...';
+  try{
+    let{data:con,error:ce}=await sb.from('contributors').select('id,subs_this_week,tier,week_reset_at').eq('handle',handle).single();
+    if(ce&&ce.code==='PGRST116'){
+      const{data:nc,error:ne}=await sb.from('contributors').insert({handle,pending_review:true}).select().single();
+      if(ne)throw ne; con=nc;
+    } else if(ce) throw ce;
+    const limit=LIMITS[con?.tier||'Explorer']||3;
+    if((con?.subs_this_week||0)>=limit){st.style.color='var(--warn)';st.textContent=`Weekly limit reached (${limit}/wk for ${con.tier||'Explorer'}). Resets Monday.`;return;}
+    const{error:se}=await sb.from('submissions').insert({contributor_id:con.id,type,title,github_url:url,coordinate:coord||null,description:desc||null});
+    if(se)throw se;
+    await sb.from('contributors').update({subs_this_week:(con.subs_this_week||0)+1}).eq('id',con.id);
+    st.style.color='var(--locked)';st.textContent='✓ Submitted. HIGHTISTIC will review. Nothing goes live until approved.';
+    ['s-handle','s-title','s-url','s-coord','s-desc'].forEach(id=>document.getElementById(id).value='');
+  }catch(err){st.style.color='var(--shatter)';st.textContent=`Error: ${err.message}`;}
+};
+
+function esc(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
+function fmt(ts){return ts?new Date(ts).toLocaleDateString('en-US',{month:'short',year:'numeric'}):'—'}
+
+init();
+</script>
+</body>
+</html>
