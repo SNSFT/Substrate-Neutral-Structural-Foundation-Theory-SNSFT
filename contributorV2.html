@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT · Contributor</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root{
+  --bg:#020407;--panel:#060b10;--border:#0c1a26;--glow:#00e5ff;
+  --locked:#00ffcc;--shatter:#ff3355;--noble:#aa88ff;--warn:#ffaa00;
+  --text:#7aa4be;--bright:#cce8f5;--dim:#192430;--aifi:#dd44ff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:1;}
+.wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 16px 80px;}
+
+/* header */
+header{padding:20px 0 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:22px;letter-spacing:.08em;color:var(--glow);text-shadow:0 0 24px rgba(0,229,255,.45);text-decoration:none;}
+.logo span{font-size:10px;color:var(--locked);display:block;letter-spacing:.2em;margin-top:2px;}
+.nav a{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;color:#2a4050;text-decoration:none;margin-left:16px;transition:color .15s;}
+.nav a:hover{color:var(--glow);}
+
+/* loading / error */
+.loading{text-align:center;padding:80px;color:#1a3040;font-size:9px;letter-spacing:.2em;}
+.loading span{color:var(--glow);animation:pulse 1.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+.not-found{text-align:center;padding:80px 20px;}
+.nf-t{font-family:'Orbitron',monospace;font-size:14px;color:#1a3040;letter-spacing:.2em;margin-bottom:12px;}
+.nf-s{font-size:9px;color:#0e1e28;line-height:2.2;}
+.nf-s a{color:var(--glow);text-decoration:none;}
+
+/* identity card */
+.id-card{border:1px solid var(--border);margin:28px 0 24px;position:relative;overflow:hidden;}
+.id-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--glow),transparent);opacity:.3;}
+.id-top{display:flex;align-items:flex-start;justify-content:space-between;padding:22px 24px 16px;flex-wrap:wrap;gap:16px;}
+.id-left{display:flex;flex-direction:column;gap:4px;}
+.id-eyebrow{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.28em;color:#1a3040;}
+.id-handle{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:var(--bright);text-shadow:0 0 20px rgba(204,232,245,.15);letter-spacing:.06em;}
+.id-meta{font-size:8px;color:#2a4050;line-height:2;margin-top:4px;}
+.id-meta b{color:var(--text);}
+.id-right{display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
+.id-tier{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.18em;padding:6px 16px;border:1px solid;}
+.id-tier.ex{color:#7aa4be;border-color:rgba(122,164,190,.4);}
+.id-tier.ph{color:#00ffcc;border-color:rgba(0,255,204,.4);}
+.id-tier.th{color:#aa88ff;border-color:rgba(170,136,255,.4);}
+.id-tier.rv{color:#ffaa00;border-color:rgba(255,170,0,.4);}
+.id-tier.fe{color:#ff7700;border-color:rgba(255,119,0,.4);}
+.id-tier.ar{color:#dd44ff;border-color:rgba(221,68,255,.4);text-shadow:0 0 8px rgba(221,68,255,.2);}
+.id-founder{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.15em;padding:4px 12px;border:1px solid rgba(255,170,0,.4);color:var(--warn);}
+
+/* id stats row */
+.id-stats{display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--border);}
+@media(max-width:650px){.id-stats{grid-template-columns:repeat(3,1fr);}}
+.id-stat{padding:12px 14px;border-right:1px solid var(--border);text-align:center;}
+.id-stat:last-child{border-right:none;}
+.id-stat-val{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;color:var(--glow);text-shadow:0 0 10px rgba(0,229,255,.2);}
+.id-stat-label{font-size:7px;color:#1a3040;letter-spacing:.16em;margin-top:3px;}
+
+/* peer score bar */
+.id-peer{padding:10px 24px;border-top:1px solid var(--border);display:flex;align-items:center;gap:16px;font-size:8px;color:#1a3040;}
+.peer-score-label{letter-spacing:.12em;}
+.peer-bar{flex:1;height:4px;background:rgba(12,26,38,.8);position:relative;max-width:200px;}
+.peer-bar-fill{height:100%;transition:width .4s;background:var(--locked);}
+.peer-bar-fill.neg{background:var(--shatter);}
+.peer-val{font-family:'Orbitron',monospace;font-size:10px;}
+.peer-val.pos{color:var(--locked);}
+.peer-val.neg{color:var(--shatter);}
+
+/* section header */
+.section-hd{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.25em;color:#1a3040;margin:28px 0 14px;display:flex;align-items:center;gap:12px;}
+.section-hd::after{content:'';flex:1;height:1px;background:var(--border);}
+.section-hd .count{color:var(--glow);font-size:8px;}
+
+/* filter tabs */
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.fb{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:5px 10px;background:transparent;border:1px solid var(--border);color:#2a4050;cursor:pointer;transition:all .15s;}
+.fb:hover{border-color:var(--text);color:var(--text);}
+.fb.active{border-color:var(--glow);color:var(--glow);}
+
+/* submission cards grid */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;}
+.card{border:1px solid var(--border);background:var(--panel);position:relative;overflow:hidden;transition:border-color .15s;}
+.card:hover{border-color:rgba(0,229,255,.12);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;}
+.card.noble::before{background:linear-gradient(90deg,transparent,rgba(170,136,255,.5),transparent);}
+.card.locked::before{background:linear-gradient(90deg,transparent,rgba(0,255,204,.4),transparent);}
+.card.shatter::before{background:linear-gradient(90deg,transparent,rgba(255,51,85,.35),transparent);}
+.card.law::before{background:linear-gradient(90deg,transparent,rgba(170,136,255,.7),transparent);}
+.card.theorem::before{background:linear-gradient(90deg,transparent,rgba(0,229,255,.3),transparent);}
+
+/* card header */
+.card-hd{padding:12px 14px 10px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.card-desig{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.1em;color:var(--bright);}
+.card-collision{font-size:8px;color:#2a5060;margin-top:2px;}
+.card-status{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.14em;padding:3px 8px;border:1px solid;white-space:nowrap;flex-shrink:0;}
+.card-status.noble{color:var(--noble);border-color:rgba(170,136,255,.4);}
+.card-status.locked{color:var(--locked);border-color:rgba(0,255,204,.35);}
+.card-status.shatter{color:var(--shatter);border-color:rgba(255,51,85,.35);}
+.card-status.law{color:var(--noble);border-color:rgba(170,136,255,.5);text-shadow:0 0 6px rgba(170,136,255,.3);}
+.card-status.theorem{color:var(--glow);border-color:rgba(0,229,255,.3);}
+.card-status.discovery{color:var(--text);border-color:rgba(122,164,190,.25);}
+
+/* card pnba */
+.card-pnba{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);}
+.pnba-cell{padding:8px 10px;border-right:1px solid var(--border);text-align:center;}
+.pnba-cell:last-child{border-right:none;}
+.pnba-key{font-family:'Orbitron',monospace;font-size:6px;letter-spacing:.15em;color:#1a3040;}
+.pnba-val{font-size:10px;color:var(--text);margin-top:2px;}
+
+/* card im */
+.card-im{padding:7px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:8px;}
+.im-label{color:#1a3040;letter-spacing:.1em;}
+.im-val{font-family:'Orbitron',monospace;font-size:11px;color:var(--warn);}
+
+/* card body */
+.card-body{padding:10px 14px;}
+.card-flag{font-size:8px;color:#2a5060;line-height:1.7;margin-bottom:8px;}
+.card-flag b{color:var(--text);}
+.card-theorems{font-size:8px;color:#1a4050;margin-bottom:6px;}
+.card-theorems b{color:var(--locked);}
+
+/* abstract / notes */
+.card-abstract{font-size:8px;color:#2a4050;line-height:1.8;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.card-abstract-label{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.15em;color:#1a3040;margin-bottom:4px;}
+
+/* lean viewer */
+.lean-toggle{display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;padding:6px 0;border-top:1px solid var(--border);}
+.lean-toggle-label{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.15em;color:#1a3040;transition:color .15s;}
+.lean-toggle:hover .lean-toggle-label{color:var(--text);}
+.lean-arrow{font-size:8px;color:#1a3040;transition:transform .2s;}
+.lean-arrow.open{transform:rotate(90deg);}
+.lean-viewer{display:none;margin-top:8px;background:rgba(0,0,0,.3);border:1px solid rgba(12,26,38,.8);padding:10px 12px;max-height:240px;overflow-y:auto;}
+.lean-viewer.open{display:block;}
+.lean-viewer pre{font-size:8px;color:#2a5060;line-height:1.7;white-space:pre-wrap;word-break:break-word;}
+.lean-viewer pre .kw{color:rgba(0,229,255,.5);}
+.lean-viewer pre .thm{color:rgba(0,255,204,.6);}
+.lean-viewer pre .comment{color:#1a3040;}
+.lean-viewer pre .def{color:rgba(255,170,0,.5);}
+
+/* card footer */
+.card-footer{padding:8px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.card-ts{font-size:7px;color:#0e1e28;}
+.card-links{display:flex;gap:8px;}
+.card-link{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.1em;color:#1a3040;text-decoration:none;padding:3px 8px;border:1px solid #0c1a26;transition:all .15s;}
+.card-link:hover{border-color:var(--glow);color:var(--glow);}
+
+/* card vote */
+.card-vote{display:flex;align-items:center;gap:4px;}
+.cvbtn{background:transparent;border:1px solid #0c1a26;color:#1a3040;font-size:9px;padding:2px 6px;cursor:pointer;transition:all .15s;font-family:'Share Tech Mono',monospace;}
+.cvbtn.up:hover,.cvbtn.up.voted{border-color:var(--locked);color:var(--locked);}
+.cvbtn.dn:hover,.cvbtn.dn.voted{border-color:var(--shatter);color:var(--shatter);}
+.cvscore{font-family:'Orbitron',monospace;font-size:8px;color:#1a3040;min-width:16px;text-align:center;}
+.cvscore.pos{color:rgba(0,255,204,.55);}
+.cvscore.neg{color:rgba(255,51,85,.45);}
+
+/* empty submissions */
+.empty-subs{text-align:center;padding:40px 20px;border:1px solid var(--border);}
+.empty-subs-t{font-family:'Orbitron',monospace;font-size:11px;color:#1a3040;letter-spacing:.2em;margin-bottom:10px;}
+.empty-subs-s{font-size:9px;color:#0e1e28;line-height:2.2;}
+
+/* ── PROBE GROUPS ─────────────────────────────────────────── */
+.single-group{margin-bottom:12px;}
+.single-group .cards{display:grid;grid-template-columns:1fr;}
+
+.probe-group{border:1px solid var(--border);margin-bottom:14px;overflow:hidden;}
+.probe-group.group-noble{border-color:rgba(170,136,255,.25);}
+.probe-group.group-noble::before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(170,136,255,.5),transparent);}
+.probe-group.group-locked::before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,204,.25),transparent);}
+
+.probe-group-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,0,0,.2);border-bottom:1px solid var(--border);}
+.probe-group-left{display:flex;flex-direction:column;gap:3px;}
+.probe-desig{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:.1em;color:var(--bright);}
+.probe-meta{font-size:7px;color:#1a3040;letter-spacing:.1em;}
+.probe-group-right{display:flex;align-items:center;gap:6px;}
+.probe-badge{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.12em;padding:3px 8px;border:1px solid;}
+.probe-badge.noble{color:var(--noble);border-color:rgba(170,136,255,.4);}
+.probe-badge.count{color:#2a5060;border-color:var(--border);}
+
+.probe-rows{display:flex;flex-direction:column;}
+.probe-row{display:flex;align-items:center;gap:10px;padding:8px 16px;border-bottom:1px solid rgba(12,26,38,.5);flex-wrap:wrap;transition:background .1s;}
+.probe-row:hover{background:rgba(0,229,255,.015);}
+.probe-row:last-of-type{border-bottom:none;}
+.probe-row.probe-noble{background:rgba(170,136,255,.025);}
+.probe-row.probe-shatter{background:rgba(255,51,85,.02);}
+
+.probe-row-num{font-family:'Orbitron',monospace;font-size:9px;color:#1a3040;min-width:16px;}
+.probe-row-collision{font-size:9px;color:var(--text);min-width:120px;}
+.probe-row-pnba{display:flex;gap:8px;font-size:7px;color:#1a4050;flex:1;flex-wrap:wrap;}
+.probe-row-im{font-size:8px;color:#1a3040;min-width:100px;}
+.probe-row-im b{color:var(--warn);}
+.probe-row-tau{font-family:'Orbitron',monospace;font-size:8px;min-width:70px;}
+.probe-row-status{display:flex;gap:4px;align-items:center;}
+.probe-pip{font-family:'Orbitron',monospace;font-size:6px;letter-spacing:.12em;padding:2px 6px;border:1px solid;}
+.probe-pip.noble{color:var(--noble);border-color:rgba(170,136,255,.4);}
+.probe-pip.locked{color:var(--locked);border-color:rgba(0,255,204,.25);}
+.probe-pip.shatter{color:var(--shatter);border-color:rgba(255,51,85,.3);}
+.probe-pip.confirmed{color:var(--warn);border-color:rgba(255,170,0,.3);}
+
+.probe-expand-btn{background:transparent;border:1px solid #0c1a26;color:#1a3040;font-size:7px;padding:2px 8px;cursor:pointer;font-family:'Orbitron',monospace;letter-spacing:.1em;transition:all .15s;margin-left:auto;white-space:nowrap;}
+.probe-expand-btn:hover{border-color:var(--text);color:var(--text);}
+
+.probe-detail{display:none;padding:10px 16px;background:rgba(0,0,0,.15);border-top:1px solid rgba(12,26,38,.5);}
+.probe-detail.open{display:block;}
+.pd-line{font-size:8px;color:#2a4050;line-height:1.8;margin-bottom:6px;}
+.pd-line b{color:var(--text);}
+
+/* back link */
+.back{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;color:#1a3040;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-top:20px;transition:color .15s;}
+.back:hover{color:var(--glow);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a href="/leaderboard" class="logo">SNSFT<span>SUBSTRATE-NEUTRAL STRUCTURAL FOUNDATION THEORY</span></a>
+  <nav class="nav">
+    <a href="https://uuia.app/gamcollider">GAM COLLIDER</a>
+    <a href="https://uuia.app/quantumcollider">QUANTUM COLLIDER</a>
+    <a href="https://uuia.app/leaderboard">LEADERBOARD</a>
+    <a href="https://github.com/SNSFT" target="_blank">GITHUB</a>
+  </nav>
+</header>
+
+<div id="page-content">
+  <div class="loading"><span>LOADING CONTRIBUTOR RECORD...</span></div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+(async()=>{
+  const{createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+  const sb=createClient('https://rsadsojivuagxptdlwak.supabase.co','sb_publishable_FvDg0nsEuxH_HmyD0RL1LA_E4QpGfOs');
+
+  const TIERS={Explorer:'ex',Physicist:'ph',Theorist:'th',Reviewer:'rv',Fellow:'fe',Architect:'ar'};
+  const LABELS={Explorer:'EXPLORER',Physicist:'PHYSICIST ★',Theorist:'THEORIST ★★',Reviewer:'REVIEWER',Fellow:'FELLOW',Architect:'ARCHITECT'};
+
+  // get handle from URL — supports ?handle=X or /contributor/X
+  const params=new URLSearchParams(window.location.search);
+  const handle=params.get('handle')||decodeURIComponent(window.location.pathname.split('/').pop());
+
+  if(!handle||handle==='contributor.html'){
+    renderNotFound('No handle specified.');
+    return;
+  }
+
+  // load contributor + their approved submissions + founder status
+  const[contribRes, subsRes, foundersRes]=await Promise.all([
+    sb.from('contributors').select('*').eq('handle',handle).eq('approved',true).single(),
+    sb.from('submissions').select('*').eq('approved',true).order('created_at',{ascending:false})
+      .then(async r=>{
+        // need to join via contributor_id — fetch contributor id first
+        return r;
+      }),
+    sb.from('leaderboard_founders').select('rank,contributor_id').order('rank',{ascending:true}).limit(100)
+  ]);
+
+  if(contribRes.error||!contribRes.data){
+    renderNotFound(`No approved contributor found with handle "${esc(handle)}".`);
+    return;
+  }
+
+  const c=contribRes.data;
+
+  // now fetch this contributor's submissions specifically
+  const{data:subs}=await sb.from('submissions')
+    .select('*')
+    .eq('contributor_id',c.id)
+    .eq('approved',true)
+    .order('created_at',{ascending:false});
+
+  const founders=foundersRes.data||[];
+  const founderEntry=founders.find(f=>f.contributor_id===c.id);
+  const isFounder=!!founderEntry;
+
+  renderPage(c, subs||[], isFounder, founderEntry?.rank);
+})();
+
+function renderPage(c, subs, isFounder, founderRank){
+  const tk=({Explorer:'ex',Physicist:'ph',Theorist:'th',Reviewer:'rv',Fellow:'fe',Architect:'ar'})[c.tier]||'ex';
+  const tierLabel=({Explorer:'EXPLORER',Physicist:'PHYSICIST ★',Theorist:'THEORIST ★★',Reviewer:'REVIEWER',Fellow:'FELLOW',Architect:'ARCHITECT'})[c.tier]||c.tier;
+  const votes=c.votes_up||0, votesDown=c.votes_down||0, score=votes-votesDown;
+  const barPct=votes+votesDown>0?Math.round((votes/(votes+votesDown))*100):50;
+
+  // tally subs by type
+  const byType={discovery:0,theorem:0,law:0,coord:0};
+  subs.forEach(s=>{ if(byType[s.type]!==undefined) byType[s.type]++; else byType.discovery++;});
+
+  const html=`
+    <a href="https://uuia.app/leaderboard" class="back">← BACK TO LEADERBOARD</a>
+
+    <!-- IDENTITY CARD -->
+    <div class="id-card">
+      <div class="id-top">
+        <div class="id-left">
+          <div class="id-eyebrow">SNSFT CONTRIBUTOR RECORD · MACHINE VERIFIED · 0 SORRY</div>
+          <div class="id-handle">${esc(c.handle)}</div>
+          <div class="id-meta">
+            ${c.location?`<b>Location:</b> ${esc(c.location)} &nbsp;·&nbsp; `:''}
+            <b>Joined:</b> ${fmt(c.joined_at)}&nbsp;·&nbsp;
+            <b>Corpus:</b> HIGHTISTIC · DOI 10.5281/zenodo.18719748
+          </div>
+        </div>
+        <div class="id-right">
+          <div class="id-tier ${tk}">${tierLabel}</div>
+          ${isFounder?`<div class="id-founder">★ LEADERBOARD FOUNDER #${founderRank}</div>`:''}
+        </div>
+      </div>
+      <div class="id-stats">
+        <div class="id-stat">
+          <div class="id-stat-val">${c.reputation.toLocaleString()}</div>
+          <div class="id-stat-label">REPUTATION</div>
+        </div>
+        <div class="id-stat">
+          <div class="id-stat-val">${subs.length}</div>
+          <div class="id-stat-label">APPROVED SUBS</div>
+        </div>
+        <div class="id-stat">
+          <div class="id-stat-val" style="color:var(--locked)">${byType.theorem+byType.discovery}</div>
+          <div class="id-stat-label">THEOREMS + DISC</div>
+        </div>
+        <div class="id-stat">
+          <div class="id-stat-val" style="color:var(--noble)">${byType.law}</div>
+          <div class="id-stat-label">GOVERNING LAWS</div>
+        </div>
+        <div class="id-stat">
+          <div class="id-stat-val" style="color:var(--warn)">${c.coords_assigned||0}</div>
+          <div class="id-stat-label">COORDS ASSIGNED</div>
+        </div>
+        <div class="id-stat">
+          <div class="id-stat-val" style="color:var(--shatter)">0</div>
+          <div class="id-stat-label">SORRY · EVER</div>
+        </div>
+      </div>
+      <div class="id-peer">
+        <span class="peer-score-label">PEER REVIEW SCORE</span>
+        <div class="peer-bar"><div class="peer-bar-fill${score<0?' neg':''}" style="width:${Math.min(100,Math.max(4,barPct))}%"></div></div>
+        <span class="peer-val ${score>0?'pos':score<0?'neg':''}">${score>0?'+'+score:score} &nbsp;(${votes}▲ / ${votesDown}▼)</span>
+      </div>
+    </div>
+
+    <!-- SUBMISSIONS -->
+    <div class="section-hd">CONTRIBUTION RECORD <span class="count">${subs.length} APPROVED</span></div>
+
+    ${subs.length?`
+    <div class="filter-bar" id="sub-filters">
+      <button class="fb active" onclick="filterSubs('all',this)">ALL <span style="color:var(--glow)">${subs.length}</span></button>
+      ${byType.discovery?`<button class="fb" onclick="filterSubs('discovery',this)">DISCOVERIES <span style="color:var(--glow)">${byType.discovery}</span></button>`:''}
+      ${byType.theorem?`<button class="fb" onclick="filterSubs('theorem',this)">THEOREMS <span style="color:var(--glow)">${byType.theorem}</span></button>`:''}
+      ${byType.law?`<button class="fb" onclick="filterSubs('law',this)">LAWS <span style="color:var(--noble)">${byType.law}</span></button>`:''}
+      ${byType.coord?`<button class="fb" onclick="filterSubs('coord',this)">COORDS <span style="color:var(--warn)">${byType.coord}</span></button>`:''}
+    </div>
+    <div id="cards-grid">
+      ${renderGrouped(subs)}
+    </div>`
+    :`<div class="empty-subs"><div class="empty-subs-t">NO APPROVED SUBMISSIONS YET</div><div class="empty-subs-s">Submissions are reviewed by HIGHTISTIC.<br>Nothing goes live until approved.</div></div>`}
+  `;
+
+  document.getElementById('page-content').innerHTML=html;
+  document.title=`SNSFT · ${c.handle}`;
+
+  // store subs globally for filter
+  window._allSubs=subs;
+}
+
+function renderGrouped(subs){
+  const groups={}, order=[];
+  subs.forEach(s=>{
+    const desig=s.designation||s.title||'UNKNOWN';
+    if(!groups[desig]){ groups[desig]=[]; order.push(desig); }
+    groups[desig].push(s);
+  });
+
+  return order.map(desig=>{
+    const probes=groups[desig];
+    const single=probes.length===1;
+    const hasNoble=probes.some(s=>(s.status_flag||'').toLowerCase().includes('noble'));
+    const sigs=probes.map(s=>`${s.collision||''}|${s.im_out||''}`);
+    const confirmedSigs=new Set(sigs.filter((v,i)=>sigs.indexOf(v)!==i&&v!=='|'));
+    const typeSet=[...new Set(probes.map(s=>s.type||'discovery'))].join(' ');
+
+    if(single){
+      return`<div class="cards single-group" data-group="${esc(desig)}" data-type="${typeSet}">${renderCard(probes[0])}</div>`;
+    }
+
+    const groupClass=hasNoble?'group-noble':'group-locked';
+    return`<div class="probe-group ${groupClass}" data-group="${esc(desig)}" data-type="${typeSet}">
+      <div class="probe-group-hd">
+        <div class="probe-group-left">
+          <div class="probe-desig">${esc(desig)}</div>
+          <div class="probe-meta">${probes.length} PROBES · ${hasNoble?'<span style="color:var(--noble)">NOBLE DETECTED</span>':'LOCKED CORRIDOR'}</div>
+        </div>
+        <div class="probe-group-right">
+          ${hasNoble?'<span class="probe-badge noble">NOBLE ✦</span>':''}
+          <span class="probe-badge count">${probes.length}×</span>
+        </div>
+      </div>
+      <div class="probe-rows">
+        ${probes.map((s,i)=>{
+          const statusRaw=(s.status_flag||'').toLowerCase();
+          const isNoble=statusRaw.includes('noble');
+          const isShatter=statusRaw.includes('shatter');
+          const sig=`${s.collision||''}|${s.im_out||''}`;
+          const isConfirmed=confirmedSigs.has(sig)&&sig!=='|';
+          const tau=s.p_out&&s.b_out?(parseFloat(s.b_out)/parseFloat(s.p_out)).toFixed(4):'—';
+          const stateColor=isNoble?'var(--noble)':isShatter?'var(--shatter)':'var(--locked)';
+          return`<div class="probe-row ${isNoble?'probe-noble':isShatter?'probe-shatter':'probe-locked'}">
+            <div class="probe-row-num">${i+1}</div>
+            <div class="probe-row-collision">${esc(s.collision||'—')}</div>
+            <div class="probe-row-pnba">
+              <span>P:${s.p_out||'—'}</span>
+              <span>N:${s.n_out||'—'}</span>
+              <span>B:${s.b_out||'—'}</span>
+              <span>A:${s.a_out||'—'}</span>
+            </div>
+            <div class="probe-row-im">IM <b>${s.im_out||'—'}</b></div>
+            <div class="probe-row-tau" style="color:${stateColor}">τ=${tau}</div>
+            <div class="probe-row-status">
+              <span class="probe-pip ${isNoble?'noble':isShatter?'shatter':'locked'}">${isNoble?'NOBLE':isShatter?'SHATTER':'LOCKED'}</span>
+              ${isConfirmed?'<span class="probe-pip confirmed">CONFIRMED ×2</span>':''}
+            </div>
+            <button class="probe-expand-btn" onclick="toggleProbeDetail('pd-${s.id}',this)">+ DETAIL</button>
+          </div>
+          <div class="probe-detail" id="pd-${s.id}">
+            ${s.flag?`<div class="pd-line"><b>FLAG:</b> ${esc(s.flag)}</div>`:''}
+            ${s.abstract?`<div class="pd-line"><b>ABSTRACT:</b> ${esc(s.abstract)}</div>`:''}
+            ${s.lean_raw?`
+            <div class="lean-toggle" onclick="toggleLean('${s.id}')">
+              <span class="lean-arrow" id="la-${s.id}">▶</span>
+              <span class="lean-toggle-label">VIEW LEAN SOURCE</span>
+            </div>
+            <div class="lean-viewer" id="lv-${s.id}"><pre>${syntaxHL(esc(s.lean_raw))}</pre></div>`:''}
+            ${s.github_url?`<a href="${esc(s.github_url)}" target="_blank" class="card-link" style="margin-top:8px;display:inline-block;">LEAN FILE →</a>`:''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCard(s){
+  // determine status color class
+  const statusRaw=(s.status_flag||s.type||'discovery').toLowerCase();
+  let statusClass='discovery', statusLabel=s.type?s.type.toUpperCase():'DISCOVERY';
+  if(statusRaw.includes('noble')){statusClass='noble';statusLabel='NOBLE';}
+  else if(statusRaw.includes('locked')){statusClass='locked';statusLabel='LOCKED';}
+  else if(statusRaw.includes('shatter')){statusClass='shatter';statusLabel='SHATTER';}
+  else if(s.type==='law'){statusClass='law';statusLabel='LAW';}
+  else if(s.type==='theorem'){statusClass='theorem';statusLabel='THEOREM';}
+
+  const cardClass=statusClass;
+  const subVotes=s.votes_up||0, subVotesDn=s.votes_down||0, subScore=subVotes-subVotesDn;
+  const subScoreClass=subScore>0?'pos':subScore<0?'neg':'';
+
+  // PNBA from parsed fields if available
+  const hasPN=s.p_out||s.n_out||s.b_out||s.a_out;
+  const pnbaHTML=hasPN?`
+    <div class="card-pnba">
+      <div class="pnba-cell"><div class="pnba-key">P</div><div class="pnba-val">${s.p_out||'—'}</div></div>
+      <div class="pnba-cell"><div class="pnba-key">N</div><div class="pnba-val">${s.n_out||'—'}</div></div>
+      <div class="pnba-cell"><div class="pnba-key">B</div><div class="pnba-val">${s.b_out||'—'}</div></div>
+      <div class="pnba-cell"><div class="pnba-key">A</div><div class="pnba-val">${s.a_out||'—'}</div></div>
+    </div>
+    ${s.im_out?`<div class="card-im"><span class="im-label">IDENTITY MASS (IM)</span><span class="im-val">${s.im_out}</span></div>`:''}
+  `:'';
+
+  const cardId=`card-${s.id}`;
+
+  return`<div class="card ${cardClass}" data-type="${s.type||'discovery'}" id="${cardId}">
+    <div class="card-hd">
+      <div>
+        <div class="card-desig">${esc(s.designation||s.title||'—')}</div>
+        ${s.collision?`<div class="card-collision">COLLISION: ${esc(s.collision)}</div>`:''}
+      </div>
+      <div class="card-status ${statusClass}">${statusLabel}</div>
+    </div>
+
+    ${pnbaHTML}
+
+    <div class="card-body">
+      ${s.flag||s.description?`<div class="card-flag"><b>FLAG:</b> ${esc(s.flag||s.description||'')}</div>`:''}
+      ${s.theorems?`<div class="card-theorems">THEOREMS: <b>${esc(s.theorems)}</b></div>`:''}
+      ${s.abstract?`<div class="card-abstract"><div class="card-abstract-label">ABSTRACT</div>${esc(s.abstract)}</div>`:''}
+      ${s.citations?`<div class="card-abstract" style="margin-top:6px;"><div class="card-abstract-label">CITATIONS</div>${esc(s.citations)}</div>`:''}
+      ${s.notes?`<div class="card-abstract" style="margin-top:6px;"><div class="card-abstract-label">NOTES</div>${esc(s.notes)}</div>`:''}
+
+      ${s.lean_raw?`
+      <div class="lean-toggle" onclick="toggleLean('${s.id}')">
+        <span class="lean-arrow" id="la-${s.id}">▶</span>
+        <span class="lean-toggle-label">VIEW LEAN SOURCE</span>
+      </div>
+      <div class="lean-viewer" id="lv-${s.id}">
+        <pre>${syntaxHL(esc(s.lean_raw))}</pre>
+      </div>`:''}
+    </div>
+
+    <div class="card-footer">
+      <div class="card-ts">${fmtFull(s.created_at)}</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        ${s.github_url?`<a href="${esc(s.github_url)}" target="_blank" class="card-link">LEAN FILE →</a>`:''}
+        <div class="card-vote">
+          <button class="cvbtn up" onclick="cardVote('${s.id}','up',this)">▲</button>
+          <span class="cvscore ${subScoreClass}" id="cvs-${s.id}">${subScore>0?'+'+subScore:subScore}</span>
+          <button class="cvbtn dn" onclick="cardVote('${s.id}','dn',this)">▼</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// syntax highlight for lean viewer
+function syntaxHL(raw){
+  return raw
+    .replace(/(--[^\n]*)/g,'<span class="comment">$1</span>')
+    .replace(/\b(theorem|def|import|namespace|end|by|exact|unfold|norm_num|rfl|simp|ring|constructor|intro|apply|have|show|calc|where|open|variable|instance|structure|class|inductive)\b/g,'<span class="kw">$1</span>')
+    .replace(/\btheorem\b([^:]*)/g,'<span class="kw">theorem</span><span class="thm">$1</span>');
+}
+
+window.toggleLean=function(id){
+  const viewer=document.getElementById(`lv-${id}`);
+  const arrow=document.getElementById(`la-${id}`);
+  const isOpen=viewer.classList.contains('open');
+  viewer.classList.toggle('open',!isOpen);
+  arrow.classList.toggle('open',!isOpen);
+};
+
+window.filterSubs=function(type,btn){
+  document.querySelectorAll('#sub-filters .fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const groups=document.querySelectorAll('#cards-grid [data-group]');
+  groups.forEach(g=>{
+    const types=g.dataset.type||'';
+    g.style.display=(type==='all'||types.includes(type))?'':'none';
+  });
+};
+
+window.toggleProbeDetail=function(id,btn){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const isOpen=el.classList.contains('open');
+  el.classList.toggle('open',!isOpen);
+  btn.textContent=isOpen?'+ DETAIL':'− DETAIL';
+};
+
+// per-submission peer vote
+const subVotedSet=new Set(JSON.parse(localStorage.getItem('snsft_sub_votes')||'[]'));
+
+window.cardVote=async function(subId,dir,btn){
+  const voteKey=`${subId}_${dir}`;
+  if(subVotedSet.has(voteKey)) return;
+  const{createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+  const sb=createClient('https://rsadsojivuagxptdlwak.supabase.co','sb_publishable_FvDg0nsEuxH_HmyD0RL1LA_E4QpGfOs');
+  const col=dir==='up'?'votes_up':'votes_down';
+  const scoreEl=document.getElementById(`cvs-${subId}`);
+  try{
+    const{data:row}=await sb.from('submissions').select('votes_up,votes_down').eq('id',subId).single();
+    if(!row) return;
+    const newVal=(row[col]||0)+1;
+    await sb.from('submissions').update({[col]:newVal}).eq('id',subId);
+    subVotedSet.add(voteKey);
+    localStorage.setItem('snsft_sub_votes',JSON.stringify([...subVotedSet]));
+    btn.classList.add('voted');
+    const newUp=dir==='up'?newVal:(row.votes_up||0);
+    const newDn=dir==='dn'?newVal:(row.votes_down||0);
+    const score=newUp-newDn;
+    scoreEl.textContent=score>0?'+'+score:score;
+    scoreEl.className='cvscore '+(score>0?'pos':score<0?'neg':'');
+    const oppBtn=btn.parentElement.querySelector('.cvbtn.'+(dir==='up'?'dn':'up'));
+    if(oppBtn) oppBtn.style.opacity='.3';
+  }catch(e){console.error(e);}
+};
+
+function renderNotFound(msg){
+  document.getElementById('page-content').innerHTML=`
+    <a href="https://uuia.app/leaderboard" class="back">← BACK TO LEADERBOARD</a>
+    <div class="not-found">
+      <div class="nf-t">CONTRIBUTOR NOT FOUND</div>
+      <div class="nf-s">${msg}<br><br><a href="https://uuia.app/leaderboard">← Return to leaderboard</a></div>
+    </div>`;
+}
+
+function esc(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+function fmt(ts){return ts?new Date(ts).toLocaleDateString('en-US',{month:'short',year:'numeric'}):'—'}
+function fmtFull(ts){return ts?new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—'}
+</script>
+</body>
+</html>
