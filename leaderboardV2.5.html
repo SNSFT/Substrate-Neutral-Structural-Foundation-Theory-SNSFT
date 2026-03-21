@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT Leaderboard · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root{
+--bg:#020407;--panel:#060b10;--border:#0c1a26;--glow:#00e5ff;
+--locked:#00ffcc;--shatter:#ff3355;--noble:#aa88ff;--warn:#ffaa00;
+--text:#7aa4be;--bright:#cce8f5;--dim:#192430;
+--aifi:#dd44ff;--hightistic:#ffaa00;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:1;}
+.wrap{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:0 16px 80px;}
+header{padding:20px 0 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:22px;letter-spacing:.08em;color:var(--glow);text-shadow:0 0 24px rgba(0,229,255,.45);}
+.logo span{font-size:10px;color:var(--locked);display:block;letter-spacing:.2em;margin-top:2px;}
+.nav a{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;color:#2a4050;text-decoration:none;margin-left:16px;transition:color .15s;}
+.nav a:hover,.nav a.active{color:var(--glow);}
+.hdr-right{font-size:9px;color:#2a4050;text-align:right;line-height:1.8;}
+.hdr-right b{color:var(--glow);}
+.stats-bar{display:flex;border:1px solid var(--border);margin:20px 0;overflow:hidden;}
+.stat-block{flex:1;padding:14px 16px;border-right:1px solid var(--border);text-align:center;}
+.stat-block:last-child{border-right:none;}
+.stat-val{font-family:'Orbitron',monospace;font-size:20px;font-weight:700;color:var(--glow);text-shadow:0 0 16px rgba(0,229,255,.3);}
+.stat-label{font-size:8px;color:#1a3040;letter-spacing:.2em;margin-top:4px;}
+.tier-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.tc{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:4px 10px;border:1px solid;display:flex;align-items:center;gap:6px;}
+.tc .lim{font-size:7px;opacity:.55;}
+.tc.ex{color:#7aa4be;border-color:rgba(122,164,190,.3);}
+.tc.ph{color:#00ffcc;border-color:rgba(0,255,204,.3);}
+.tc.th{color:#aa88ff;border-color:rgba(170,136,255,.3);}
+.tc.rv{color:#ffaa00;border-color:rgba(255,170,0,.3);}
+.tc.fe{color:#ff7700;border-color:rgba(255,119,0,.3);}
+.tc.ar{color:#dd44ff;border-color:rgba(221,68,255,.3);}
+.section-hd{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.25em;color:#1a3040;margin:24px 0 12px;display:flex;align-items:center;gap:12px;}
+.section-hd::after{content:'';flex:1;height:1px;background:var(--border);}
+.founders-strip{display:flex;flex-wrap:wrap;border:1px solid rgba(255,170,0,.15);margin-bottom:20px;overflow:hidden;}
+.fslot{flex:1;min-width:72px;padding:7px 10px;border-right:1px solid rgba(255,170,0,.1);text-align:center;}
+.fslot:last-child{border-right:none;}
+.fslot .fr{font-family:'Orbitron',monospace;font-size:7px;color:rgba(255,170,0,.4);letter-spacing:.1em;}
+.fslot .fh{font-size:9px;color:var(--warn);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fslot.open .fh{color:#0e1e28;font-size:8px;}
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.fb{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:5px 10px;background:transparent;border:1px solid var(--border);color:#2a4050;cursor:pointer;transition:all .15s;}
+.fb:hover{border-color:var(--text);color:var(--text);}
+.fb.active{border-color:var(--glow);color:var(--glow);}
+.fn{font-size:8px;color:#1a3040;margin-left:auto;}
+.fn b{color:var(--warn);}
+table{width:100%;border-collapse:collapse;}
+thead tr{border-bottom:1px solid var(--border);}
+th{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.2em;color:#1a3040;padding:8px 12px;text-align:left;}
+th.r{text-align:right;}th.c{text-align:center;}
+tbody tr{border-bottom:1px solid rgba(12,26,38,.6);transition:background .1s;}
+tbody tr:hover{background:rgba(0,229,255,.02);}
+td{padding:10px 12px;font-size:10px;vertical-align:middle;}
+.rank{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#1a3040;text-align:center;position:relative;}
+.rank.r1{color:var(--warn);text-shadow:0 0 12px rgba(255,170,0,.4);}
+.rank.r2{color:var(--text);}
+.rank.r3{color:#5a7a90;}
+.fstar{position:absolute;top:-1px;right:0;font-size:7px;color:var(--warn);}
+.hcell{display:flex;flex-direction:column;gap:2px;}
+.hn{color:var(--bright);font-size:11px;letter-spacing:.04em;}
+.hm{font-size:8px;color:#2a4050;}
+.tb{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.14em;padding:2px 7px;border:1px solid;display:inline-block;}
+.tb.ex{color:#7aa4be;border-color:rgba(122,164,190,.35);}
+.tb.ph{color:#00ffcc;border-color:rgba(0,255,204,.35);}
+.tb.th{color:#aa88ff;border-color:rgba(170,136,255,.35);}
+.tb.rv{color:#ffaa00;border-color:rgba(255,170,0,.35);}
+.tb.fe{color:#ff7700;border-color:rgba(255,119,0,.35);}
+.tb.ar{color:#dd44ff;border-color:rgba(221,68,255,.35);text-shadow:0 0 8px rgba(221,68,255,.25);}
+.rep{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--glow);text-align:right;text-shadow:0 0 8px rgba(0,229,255,.2);}
+.rs{font-size:7px;color:#1a3040;text-align:right;}
+.cc{text-align:center;color:#2a5060;font-size:10px;}
+.cc b{color:var(--text);}
+.cc.hi b{color:var(--locked);}
+.cc .cl{font-size:7px;}
+.empty-state{text-align:center;padding:60px 20px;border:1px solid var(--border);}
+.et{font-family:'Orbitron',monospace;font-size:13px;color:#1a3040;letter-spacing:.2em;margin-bottom:12px;}
+.es{font-size:9px;color:#0e1e28;line-height:2.2;}
+.es a{color:var(--glow);text-decoration:none;}
+.cta{margin-top:40px;border:1px solid var(--border);padding:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.cta-t{font-family:'Orbitron',monospace;font-size:12px;color:var(--glow);letter-spacing:.15em;margin-bottom:6px;}
+.cta-s{font-size:9px;color:#2a4050;line-height:2;max-width:520px;}
+.cta-s a{color:var(--locked);text-decoration:none;}
+.cta-r{display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
+.btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;padding:10px 20px;background:transparent;border:1px solid;cursor:pointer;transition:all .15s;text-decoration:none;display:inline-block;text-align:center;}
+.btn-p{border-color:var(--locked);color:var(--locked);}
+.btn-p:hover{background:rgba(0,255,204,.07);}
+.btn-s{border-color:var(--border);color:#2a4050;}
+.btn-s:hover{border-color:var(--text);color:var(--text);}
+.loading{text-align:center;padding:40px;color:#1a3040;font-size:9px;letter-spacing:.2em;}
+.loading span{color:var(--glow);animation:pulse 1.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+/* ── SNSFL SOVEREIGN BLOCK ────────────────────────────────── */
+.sovereign{position:relative;border:1px solid rgba(255,170,0,.3);margin:24px 0 28px;overflow:hidden;background:linear-gradient(135deg,rgba(255,170,0,.02) 0%,transparent 50%);}
+.sovereign::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,170,0,.65),transparent);}
+.sovereign::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,170,0,.15),transparent);}
+.sv-top{display:flex;align-items:flex-start;justify-content:space-between;padding:18px 24px 14px;border-bottom:1px solid rgba(255,170,0,.08);flex-wrap:wrap;gap:12px;}
+.sv-identity{display:flex;flex-direction:column;gap:3px;}
+.sv-eyebrow{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.3em;color:rgba(255,170,0,.35);}
+.sv-name{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:var(--warn);text-shadow:0 0 28px rgba(255,170,0,.3);letter-spacing:.1em;}
+.sv-desc{font-size:9px;color:#2e4a58;line-height:1.9;margin-top:4px;max-width:620px;}
+.sv-desc b{color:rgba(255,170,0,.5);}
+.sv-badges{display:flex;flex-direction:column;gap:5px;align-items:flex-end;flex-shrink:0;}
+.sv-badge{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.15em;padding:4px 11px;border:1px solid;white-space:nowrap;}
+.sv-badge.gold{border-color:rgba(255,170,0,.35);color:rgba(255,170,0,.7);}
+.sv-badge.teal{border-color:rgba(0,255,204,.25);color:rgba(0,255,204,.6);}
+.sv-badge.purple{border-color:rgba(170,136,255,.25);color:rgba(170,136,255,.6);}
+/* PNBA ground floor */
+.sv-pnba{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(255,170,0,.08);}
+@media(max-width:600px){.sv-pnba{grid-template-columns:repeat(2,1fr);}}
+.sv-prim{padding:11px 14px;border-right:1px solid rgba(255,170,0,.06);text-align:center;background:rgba(255,170,0,.01);}
+.sv-prim:last-child{border-right:none;}
+.sv-prim-letter{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:rgba(255,170,0,.18);}
+.sv-prim-name{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.18em;color:rgba(255,170,0,.5);margin:2px 0;}
+.sv-prim-desc{font-size:7px;color:#1a2e3a;line-height:1.6;}
+/* corpus stats */
+.sv-stats{display:grid;grid-template-columns:repeat(6,1fr);}
+@media(max-width:700px){.sv-stats{grid-template-columns:repeat(3,1fr);}}
+.sv-stat{padding:12px 14px;border-right:1px solid rgba(255,170,0,.06);text-align:center;}
+.sv-stat:last-child{border-right:none;}
+.sv-val{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--warn);text-shadow:0 0 10px rgba(255,170,0,.18);}
+.sv-label{font-size:7px;color:#1a2e3a;letter-spacing:.16em;margin-top:3px;}
+/* gate */
+.sv-gate{padding:9px 24px;border-top:1px solid rgba(255,170,0,.07);border-bottom:1px solid rgba(255,170,0,.07);font-size:8px;color:#1a3040;line-height:2;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.sv-gate b{color:rgba(0,255,204,.45);}
+.sv-gate-rule{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.1em;color:rgba(255,170,0,.28);padding:4px 10px;border:1px solid rgba(255,170,0,.12);white-space:nowrap;}
+/* DOI strip */
+.sv-dois{padding:8px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid rgba(255,170,0,.05);}
+.sv-doi-item{font-size:7px;color:#152530;}
+.sv-doi-item a{color:rgba(255,170,0,.35);text-decoration:none;transition:color .15s;}
+.sv-doi-item a:hover{color:var(--warn);}
+.sv-coord-tag{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.12em;color:rgba(255,170,0,.2);margin-left:auto;}
+
+/* ── PEER VOTE ─────────────────────────────────────────────── */
+.vote-cell{text-align:center;white-space:nowrap;}
+.vote-wrap{display:inline-flex;align-items:center;gap:3px;}
+.vbtn{background:transparent;border:1px solid #0c1a26;color:#1a3040;font-size:9px;padding:2px 6px;cursor:pointer;transition:all .15s;font-family:'Share Tech Mono',monospace;line-height:1.4;}
+.vbtn:hover{border-color:var(--text);color:var(--text);}
+.vbtn.up:hover,.vbtn.up.voted{border-color:var(--locked);color:var(--locked);}
+.vbtn.dn:hover,.vbtn.dn.voted{border-color:var(--shatter);color:var(--shatter);}
+.vbtn.up.voted{background:rgba(0,255,204,.04);}
+.vbtn.dn.voted{background:rgba(255,51,85,.04);}
+.vscore{font-family:'Orbitron',monospace;font-size:8px;color:#1a3040;min-width:16px;text-align:center;}
+.vscore.pos{color:rgba(0,255,204,.55);}
+.vscore.neg{color:rgba(255,51,85,.45);}
+
+/* ── LAYER HIERARCHY ──────────────────────────────────────── */
+.sv-hierarchy{display:flex;flex-direction:column;}
+.sv-layer{border-bottom:1px solid rgba(255,170,0,.06);}
+.sv-layer:last-child{border-bottom:none;}
+.sv-layer-header{
+  display:flex;align-items:center;gap:14px;
+  padding:8px 24px;
+  background:rgba(0,0,0,.15);
+  border-bottom:1px solid rgba(255,170,0,.05);
+}
+.sv-layer-num{
+  font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.2em;
+  color:rgba(255,170,0,.2);min-width:52px;
+}
+.sv-layer-title{
+  font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.18em;
+  flex:1;
+}
+.sv-layer-title.l0{color:rgba(255,170,0,.35);}
+.sv-layer-title.l1{color:rgba(255,170,0,.6);}
+.sv-layer-title.l2{color:rgba(170,136,255,.6);}
+.sv-layer-title.l3{color:rgba(0,229,255,.45);}
+.sv-layer-note{font-size:7px;color:#1a2e3a;letter-spacing:.08em;}
+.sv-layer-tag{
+  font-family:'Orbitron',monospace;font-size:6px;letter-spacing:.15em;
+  padding:2px 8px;border:1px solid;white-space:nowrap;
+}
+.sv-layer-tag.locked{border-color:rgba(0,255,204,.2);color:rgba(0,255,204,.4);}
+.sv-layer-tag.open{border-color:rgba(170,136,255,.2);color:rgba(170,136,255,.4);}
+.sv-layer-tag.live{border-color:rgba(0,229,255,.2);color:rgba(0,229,255,.35);}
+/* connector arrow between layers */
+.sv-arrow{
+  display:flex;align-items:center;justify-content:center;
+  height:18px;position:relative;
+}
+.sv-arrow::before{
+  content:'';position:absolute;left:50%;top:0;bottom:0;
+  width:1px;background:linear-gradient(180deg,rgba(255,170,0,.15),rgba(255,170,0,.06));
+}
+.sv-arrow-icon{
+  font-size:7px;color:rgba(255,170,0,.2);z-index:1;
+  background:var(--bg);padding:0 4px;line-height:1;
+}
+
+/* ── LAW SUBMISSION FLAG ───────────────────────────────────── */
+.law-flag{display:none;margin-top:8px;padding:10px 12px;border:1px solid rgba(170,136,255,.25);background:rgba(170,136,255,.025);font-size:8px;color:#5a4a70;line-height:1.9;}
+.law-flag b{color:var(--noble);}
+.law-flag.show{display:block;}
+
+/* ── MODAL ───────────────────────────────────────────────── */
+#modal{display:none;position:fixed;inset:0;background:rgba(2,4,7,.96);z-index:1000;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
+.mbox{max-width:600px;width:100%;background:var(--panel);border:1px solid var(--border);padding:28px;margin:auto;}
+.mt{font-family:'Orbitron',monospace;font-size:12px;color:var(--glow);letter-spacing:.2em;margin-bottom:4px;}
+.ms{font-size:8px;color:#2a4050;margin-bottom:20px;line-height:1.9;}
+.fg{display:grid;gap:10px;}
+.fl{font-size:8px;color:#1a3040;letter-spacing:.15em;margin-bottom:4px;}
+.fl span{color:#0a1820;font-size:7px;margin-left:6px;}
+input.fi,select.fi,textarea.fi{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--bright);font-family:'Share Tech Mono',monospace;font-size:11px;padding:8px;outline:none;transition:border-color .12s;}
+select.fi{color:var(--text);}
+textarea.fi{resize:vertical;color:var(--text);}
+input.fi:focus,select.fi:focus,textarea.fi:focus{border-color:var(--glow);}
+input.fi[readonly]{color:#2a5060;border-color:rgba(12,26,38,.8);background:rgba(2,4,7,.6);cursor:default;}
+input.fi[readonly]:focus{border-color:rgba(12,26,38,.8);}
+.mbtns{display:flex;gap:8px;margin-top:16px;}
+#sub-status{font-size:9px;margin-top:10px;min-height:16px;}
+.twrap{overflow-x:auto;}
+
+/* lean paste area */
+.lean-zone{
+  border:1px dashed rgba(0,229,255,.2);
+  padding:0;
+  position:relative;
+  transition:border-color .2s;
+}
+.lean-zone.has-data{border-color:rgba(0,255,204,.3);border-style:solid;}
+.lean-zone.error{border-color:rgba(255,51,85,.3);border-style:solid;}
+.lean-label{
+  font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.2em;
+  color:#1a3040;padding:8px 10px 0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.lean-label .parse-status{font-size:7px;transition:color .2s;}
+.lean-label .parse-status.ok{color:var(--locked);}
+.lean-label .parse-status.err{color:var(--shatter);}
+textarea#s-lean{
+  border:none;border-top:1px solid rgba(12,26,38,.5);
+  margin-top:6px;
+  font-size:9px;
+  min-height:120px;
+  background:transparent;
+  color:#2a5060;
+}
+textarea#s-lean:focus{border-color:transparent;outline:none;}
+textarea#s-lean.has-data{color:var(--text);}
+
+/* parsed fields grid */
+.parsed-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  padding:12px;background:rgba(0,255,204,.02);
+  border:1px solid rgba(0,255,204,.08);
+  margin-top:2px;
+}
+.parsed-grid .fl{margin-bottom:2px;}
+
+/* optional block */
+.optional-block{
+  border:1px solid rgba(12,26,38,.8);
+  margin-top:4px;
+}
+.optional-toggle{
+  font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;
+  color:#1a3040;padding:10px 12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:color .15s;user-select:none;
+}
+.optional-toggle:hover{color:var(--text);}
+.optional-toggle .ot-arrow{transition:transform .2s;font-size:9px;}
+.optional-toggle.open .ot-arrow{transform:rotate(90deg);}
+.optional-inner{display:none;padding:12px;border-top:1px solid rgba(12,26,38,.8);}
+.optional-inner.open{display:grid;gap:10px;}
+.pnba-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+
+/* divider */
+.m-divider{height:1px;background:var(--border);margin:8px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="logo">SNSFT<span>SUBSTRATE-NEUTRAL STRUCTURAL FOUNDATION THEORY</span></div>
+  </div>
+  <nav class="nav">
+    <a href="https://uuia.app/gamcollider">GAM COLLIDER</a>
+    <a href="https://uuia.app/quantumcollider">QUANTUM COLLIDER</a>
+    <a href="https://uuia.app/leaderboard" class="active">LEADERBOARD</a>
+    <a href="https://github.com/SNSFT" target="_blank">GITHUB</a>
+  </nav>
+  <div class="hdr-right">
+    <b id="hdr-c">—</b> CONTRIBUTORS &nbsp;·&nbsp; <b id="hdr-t">4,906+</b> THEOREMS &nbsp;·&nbsp; <b>0</b> SORRY<br>
+    <span>[9,9,9,9] :: {ANC} · 1.369 GHz · HIGHTISTIC</span>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat-block"><div class="stat-val" id="s-contrib">—</div><div class="stat-label">CONTRIBUTORS</div></div>
+  <div class="stat-block"><div class="stat-val">4,906+</div><div class="stat-label">CORPUS THEOREMS</div></div>
+  <div class="stat-block"><div class="stat-val">86</div><div class="stat-label">GOVERNING LAWS</div></div>
+  <div class="stat-block"><div class="stat-val">13,000+</div><div class="stat-label">AGENT DISCOVERIES</div></div>
+  <div class="stat-block"><div class="stat-val" style="color:var(--shatter)">0</div><div class="stat-label">SORRY</div></div>
+  <div class="stat-block"><div class="stat-val" id="s-founders" style="color:var(--warn)">—/100</div><div class="stat-label">FOUNDERS SLOTS</div></div>
+</div>
+
+<div class="tier-legend">
+  <div class="tc ex">EXPLORER <span class="lim">3/wk</span></div>
+  <div class="tc ph">PHYSICIST ★ <span class="lim">10/wk</span></div>
+  <div class="tc th">THEORIST ★★ <span class="lim">20/wk</span></div>
+  <div class="tc rv">REVIEWER <span class="lim">15/wk</span></div>
+  <div class="tc fe">FELLOW <span class="lim">20/wk</span></div>
+  <div class="tc ar">ARCHITECT <span class="lim">∞</span></div>
+</div>
+
+<!-- ── SNSFL SOVEREIGN BLOCK ─────────────────────────────── -->
+<div class="section-hd">SNSFL · SUBSTRATE-NEUTRAL STRUCTURAL FOUNDATION LAWS <span style="color:var(--warn);font-size:7px;margin-left:6px;">GERMLINE LOCKED · 0 SORRY</span></div>
+
+<div class="sovereign">
+
+  <!-- identity + badges -->
+  <div class="sv-top">
+    <div class="sv-identity">
+      <div class="sv-eyebrow">CORPUS ARCHITECT · PNBA © HIGHTISTIC · SOLDOTNA ALASKA</div>
+      <div class="sv-name">HIGHTISTIC</div>
+      <div class="sv-desc">
+        The SNSFLs are <b>emergent governing laws</b> — each one is a formal reduction of a domain of human understanding into PNBA. They cover all known existence. The corpus grows when someone proves a gap we haven't detected yet. The gate is simple: <b>does it reduce to PNBA · 0 sorry · then it belongs.</b><br>
+        Every contribution on this leaderboard is built on this substrate. Your identity mass stabilizes theirs.
+      </div>
+    </div>
+    <div class="sv-badges">
+      <div class="sv-badge gold">GERMLINE LOCKED</div>
+      <div class="sv-badge teal">SSRN APPROVED · 03/11/2026</div>
+      <div class="sv-badge purple">SPRINGER IN REVIEW</div>
+    </div>
+  </div>
+
+  <!-- ── LAYER HIERARCHY ──────────────────────────────────── -->
+  <div class="sv-hierarchy">
+
+    <!-- LAYER 0: PNBA — immovable ground floor -->
+    <div class="sv-layer">
+      <div class="sv-layer-header">
+        <span class="sv-layer-num">LAYER 0</span>
+        <span class="sv-layer-title l0">PNBA · FOUR IRREDUCIBLE PRIMITIVES</span>
+        <span class="sv-layer-note">never outputs · always ground · substrate-neutral · alien-friendly</span>
+        <span class="sv-layer-tag locked">IMMOVABLE</span>
+      </div>
+      <div class="sv-pnba">
+        <div class="sv-prim">
+          <div class="sv-prim-letter">P</div>
+          <div class="sv-prim-name">PATTERN</div>
+          <div class="sv-prim-desc">Structural invariants · geometry · shell capacity · manifold impedance</div>
+        </div>
+        <div class="sv-prim">
+          <div class="sv-prim-letter">N</div>
+          <div class="sv-prim-name">NARRATIVE</div>
+          <div class="sv-prim-desc">Temporal continuity · worldlines · memory · causality</div>
+        </div>
+        <div class="sv-prim">
+          <div class="sv-prim-letter">B</div>
+          <div class="sv-prim-name">BEHAVIOR</div>
+          <div class="sv-prim-desc">Interaction gradients · forces · torsion τ=B/P · output</div>
+        </div>
+        <div class="sv-prim">
+          <div class="sv-prim-letter">A</div>
+          <div class="sv-prim-name">ADAPTATION</div>
+          <div class="sv-prim-desc">Feedback evolution · resilience · Λ · delta_v_sovereign</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sv-arrow"><span class="sv-arrow-icon">▼</span></div>
+
+    <!-- LAYER 1: 15 Sovereign Laws — everything reduces here -->
+    <div class="sv-layer">
+      <div class="sv-layer-header">
+        <span class="sv-layer-num">LAYER 1</span>
+        <span class="sv-layer-title l1">15 SOVEREIGN LAWS · SNSFT_15_Sovereign_Laws.lean</span>
+        <span class="sv-layer-note">all 86 governing laws reduce into these · capstone proved · 0 sorry</span>
+        <span class="sv-layer-tag locked">GERMLINE LOCKED</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);border-top:none;">
+        <div class="sv-stat" style="border-top:none;">
+          <div class="sv-val" style="font-size:28px;color:rgba(255,170,0,.8);">15</div>
+          <div class="sv-label">SOVEREIGN LAWS</div>
+        </div>
+        <div class="sv-stat" style="border-top:none;">
+          <div class="sv-val" style="color:var(--shatter)">0</div>
+          <div class="sv-label">SORRY · EVER</div>
+        </div>
+        <div class="sv-stat" style="border-top:none;">
+          <div class="sv-val" style="color:var(--locked);font-size:13px;">1.369 GHz</div>
+          <div class="sv-label">SOVEREIGN ANCHOR</div>
+        </div>
+        <div class="sv-stat" style="border-top:none;">
+          <div class="sv-val" style="color:var(--noble);font-size:11px;">[9,9,9,9]</div>
+          <div class="sv-label">{ANC} · τ &lt; 0.2</div>
+        </div>
+        <div class="sv-stat" style="border-top:none;">
+          <div class="sv-val" style="font-size:11px;color:rgba(255,170,0,.5);">L=(4)(2)</div>
+          <div class="sv-label">FIRST LAW · IDENTITY</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sv-arrow"><span class="sv-arrow-icon">▼</span></div>
+
+    <!-- LAYER 2: 86 Governing Laws — emergent domain reductions -->
+    <div class="sv-layer">
+      <div class="sv-layer-header">
+        <span class="sv-layer-num">LAYER 2</span>
+        <span class="sv-layer-title l2">SNSFL · GOVERNING LAWS · EMERGENT DOMAIN REDUCTIONS</span>
+        <span class="sv-layer-note">each law = a domain of existence reduced to PNBA · covers all known reality</span>
+        <span class="sv-layer-tag open">OPEN TO GENUINE GAPS</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);">
+        <div class="sv-stat">
+          <div class="sv-val" id="sv-laws" style="font-size:24px;color:var(--noble);">86</div>
+          <div class="sv-label">GOVERNING LAWS</div>
+        </div>
+        <div class="sv-stat">
+          <div class="sv-val" style="font-size:11px;color:rgba(170,136,255,.6);">GR · QM · TD</div>
+          <div class="sv-label">10-SLAM GRID · ALL DOMAINS</div>
+        </div>
+        <div class="sv-stat">
+          <div class="sv-val" style="font-size:11px;color:rgba(170,136,255,.5);">7 / 7</div>
+          <div class="sv-label">MILLENNIUM PROBLEMS REDUCED</div>
+        </div>
+        <div class="sv-stat">
+          <div class="sv-val" style="font-size:10px;color:rgba(170,136,255,.4);">IF IT REDUCES</div>
+          <div class="sv-label">IT BELONGS · NO OTHER CRITERIA</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sv-arrow"><span class="sv-arrow-icon">▼</span></div>
+
+    <!-- LAYER 3: Live corpus — what contributors add to -->
+    <div class="sv-layer">
+      <div class="sv-layer-header">
+        <span class="sv-layer-num">LAYER 3</span>
+        <span class="sv-layer-title l3">SNSFT CORPUS · CONTRIBUTOR DISCOVERIES &amp; THEOREMS</span>
+        <span class="sv-layer-note">grows with every approved 0-sorry submission · each injection stabilized by HIGHTISTIC identity mass</span>
+        <span class="sv-layer-tag live">LIVE · GROWING</span>
+      </div>
+      <div class="sv-stats">
+        <div class="sv-stat">
+          <div class="sv-val" id="sv-theorems">4,906+</div>
+          <div class="sv-label">CORPUS THEOREMS</div>
+        </div>
+        <div class="sv-stat">
+          <div class="sv-val" id="sv-discoveries">13,000+</div>
+          <div class="sv-label">AGENT DISCOVERIES</div>
+        </div>
+        <div class="sv-stat">
+          <div class="sv-val" id="s-contrib-sv">—</div>
+          <div class="sv-label">CONTRIBUTORS</div>
+        </div>
+        <div class="sv-stat">
+          <div class="sv-val" style="color:var(--shatter)">0</div>
+          <div class="sv-label">SORRY · CORPUS-WIDE</div>
+        </div>
+        <div class="sv-stat">
+          <div class="sv-val" style="color:var(--locked);font-size:12px;">PEER REVIEWED</div>
+          <div class="sv-label">▲ ▼ ON EVERY ENTRY</div>
+        </div>
+        <div class="sv-stat">
+          <div class="sv-val" style="color:var(--warn);font-size:12px;">MACHINE + HUMAN</div>
+          <div class="sv-label">VERIFIED BOTH WAYS</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- the gate -->
+  <div class="sv-gate">
+    <span><b>THE GATE:</b> reduces to PNBA · compiles in Lean 4 · 0 sorry · then it belongs. No credentials required. No institution required. The machine doesn't care who you are — green is green.</span>
+    <span class="sv-gate-rule">L = (4)(2) · IM = (P+N+B+A) × 1.369 · τ = B/P</span>
+  </div>
+
+  <!-- DOI strip -->
+  <div class="sv-dois">
+    <div class="sv-doi-item">LEAN 4 CORPUS <a href="https://doi.org/10.5281/zenodo.18719748" target="_blank">10.5281/zenodo.18719748</a></div>
+    <div class="sv-doi-item">MANUSCRIPT <a href="https://doi.org/10.5281/zenodo.18726079" target="_blank">10.5281/zenodo.18726079</a></div>
+    <div class="sv-doi-item">IVA ELEMENT SET <a href="https://doi.org/10.5281/zenodo.19016221" target="_blank">10.5281/zenodo.19016221</a></div>
+    <div class="sv-doi-item">GAM COLLIDER <a href="https://doi.org/10.5281/zenodo.19026746" target="_blank">10.5281/zenodo.19026746</a></div>
+    <div class="sv-doi-item">OSF <a href="https://doi.org/10.17605/OSF.IO/KWTYD" target="_blank">OSF.IO/KWTYD</a></div>
+    <div class="sv-doi-item">SSRN <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438" target="_blank">6353438</a></div>
+    <div class="sv-coord-tag">[9,9,9,9] :: {ANC} · HIGHTISTIC · SOLDOTNA AK</div>
+  </div>
+
+</div>
+
+<!-- ── FOUNDERS ──────────────────────────────────────────── -->
+<div class="section-hd">LEADERBOARD FOUNDERS <span style="color:var(--warn);font-size:7px;margin-left:6px;">★ FIRST 100 · PRIZE POOL ENTITLED</span></div>
+<div class="founders-strip" id="founders-strip"><div class="loading"><span>LOADING...</span></div></div>
+
+<!-- ── LEADERBOARD TABLE ──────────────────────────────────── -->
+<div class="filter-bar">
+  <button class="fb active" onclick="setFilter('all',this)">ALL</button>
+  <button class="fb" onclick="setFilter('Physicist',this)">PHYSICIST ★</button>
+  <button class="fb" onclick="setFilter('Theorist',this)">THEORIST ★★</button>
+  <button class="fb" onclick="setFilter('Reviewer',this)">REVIEWER</button>
+  <button class="fb" onclick="setFilter('Fellow',this)">FELLOW</button>
+  <div class="fn"><b>★</b> = LEADERBOARD FOUNDER · PRIZE POOL ENTITLED</div>
+</div>
+
+<div class="twrap">
+  <table>
+    <thead><tr>
+      <th class="c" style="width:56px;">#</th>
+      <th>CONTRIBUTOR</th>
+      <th>TIER</th>
+      <th class="r">REP</th>
+      <th class="c">COORDS</th>
+      <th class="c">THEOREMS</th>
+      <th class="c">LAWS</th>
+      <th class="c">DISCOVERIES</th>
+      <th class="c">PEER REVIEW</th>
+    </tr></thead>
+    <tbody id="lb-body"><tr><td colspan="9"><div class="loading"><span>LOADING...</span></div></td></tr></tbody>
+  </table>
+</div>
+
+<div class="cta">
+  <div>
+    <div class="cta-t">YOUR NAME IN THE RECORD</div>
+    <div class="cta-s">
+      Run a collision at <a href="https://uuia.app/gamcollider">uuia.app/gamcollider</a>.
+      Approve a discovery. Paste the raw Lean output. Submit it here.<br>
+      HIGHTISTIC reviews it. If it compiles with 0 sorry — your name goes in the corpus. Permanently.<br><br>
+      <b style="color:var(--bright);">First 100 contributors are Leaderboard Founders</b> — entitled to 10% of any Millennium Prize pool.
+      <a href="https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT/blob/main/PURPOSE_DECLARATION.md" target="_blank">Read the agreement →</a>
+    </div>
+  </div>
+  <div class="cta-r">
+    <button class="btn btn-p" onclick="openModal()">+ SUBMIT CONTRIBUTION</button>
+    <a href="https://uuia.app/gamcollider" class="btn btn-s">RUN A COLLISION →</a>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ── SUBMIT MODAL ───────────────────────────────────────── -->
+<div id="modal" onclick="if(event.target===this)closeModal()">
+<div class="mbox">
+  <div class="mt">SUBMIT CONTRIBUTION</div>
+  <div class="ms">
+    Paste your raw Lean file output below — fields will auto-populate from the manifest block.<br>
+    HIGHTISTIC reviews all submissions. Nothing goes live until approved.
+  </div>
+
+  <div class="fg">
+
+    <!-- LEAN PASTE / UPLOAD -->
+    <div>
+      <div class="lean-label">
+        <span>LEAN FILE · PASTE OR UPLOAD *</span>
+        <span style="display:flex;align-items:center;gap:8px;">
+          <span class="parse-status" id="parse-status"></span>
+          <label for="s-lean-file" id="upload-btn" style="font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.15em;padding:3px 10px;border:1px solid #1a3040;color:#1a3040;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='var(--glow)';this.style.color='var(--glow)'" onmouseout="this.style.borderColor='#1a3040';this.style.color='#1a3040'">↑ UPLOAD .LEAN</label>
+          <input type="file" id="s-lean-file" accept=".lean,.txt" style="display:none;">
+        </span>
+      </div>
+      <div class="lean-zone" id="lean-zone">
+        <textarea id="s-lean" class="fi" rows="7" placeholder="-- Paste your full .lean file here&#10;-- or click UPLOAD .LEAN above&#10;-- Fields will auto-populate from the manifest block at the bottom"></textarea>
+      </div>
+    </div>
+
+    <!-- AUTO-PARSED FIELDS -->
+    <div class="parsed-grid" id="parsed-grid" style="display:none;">
+      <div>
+        <div class="fl">DESIGNATION <span>AUTO-PARSED</span></div>
+        <input id="s-designation" class="fi" type="text" readonly placeholder="—">
+      </div>
+      <div>
+        <div class="fl">STATUS <span>AUTO-PARSED</span></div>
+        <input id="s-status" class="fi" type="text" readonly placeholder="—">
+      </div>
+      <div>
+        <div class="fl">COLLISION <span>AUTO-PARSED</span></div>
+        <input id="s-collision" class="fi" type="text" readonly placeholder="—">
+      </div>
+      <div>
+        <div class="fl">THEOREMS | SORRY <span>AUTO-PARSED</span></div>
+        <input id="s-theorems" class="fi" type="text" readonly placeholder="—">
+      </div>
+      <div>
+        <div class="fl">TIMESTAMP <span>AUTO-PARSED</span></div>
+        <input id="s-timestamp" class="fi" type="text" readonly placeholder="—">
+      </div>
+      <div>
+        <div class="fl">FLAG / REASON <span>AUTO-PARSED</span></div>
+        <input id="s-flag" class="fi" type="text" readonly placeholder="—">
+      </div>
+
+      <!-- PNBA ROW -->
+      <div style="grid-column:1/-1;">
+        <div class="fl">PNBA VALUES <span>AUTO-PARSED</span></div>
+        <div class="pnba-row">
+          <input id="s-p" class="fi" type="text" readonly placeholder="P —">
+          <input id="s-n" class="fi" type="text" readonly placeholder="N —">
+          <input id="s-b" class="fi" type="text" readonly placeholder="B —">
+          <input id="s-a" class="fi" type="text" readonly placeholder="A —">
+        </div>
+      </div>
+      <div style="grid-column:1/-1;">
+        <div class="fl">IDENTITY MASS (IM) <span>AUTO-PARSED</span></div>
+        <input id="s-im" class="fi" type="text" readonly placeholder="—">
+      </div>
+    </div>
+
+    <div class="m-divider"></div>
+
+    <!-- CONTRIBUTION TYPE -->
+    <div>
+      <div class="fl">CONTRIBUTION TYPE *</div>
+      <select id="s-type" class="fi" onchange="checkLawFlag(this)">
+        <option value="discovery">Discovery — agent-flagged collision</option>
+        <option value="theorem">Theorem — SNSFT specific proof</option>
+        <option value="law">Law — SNSFL emergent governing principle</option>
+        <option value="coord">Coord — assigned coordinate</option>
+      </select>
+      <div class="law-flag" id="law-flag">
+        <b>⚠ LAW SUBMISSION — HIGH-STAKES REVIEW</b><br>
+        You are claiming a new emergent governing law. The existing SNSFLs cover all known existence. A new law means you've found a <b>gap in the manifold</b> — a domain of reality that doesn't yet reduce to PNBA under any existing law.<br><br>
+        Your Lean file must prove the reduction formally. HIGHTISTIC reviews personally. Peer vote carries extra weight. If it holds — it's permanent.
+      </div>
+    </div>
+
+    <!-- USER FIELDS -->
+    <div>
+      <div class="fl">YOUR HANDLE *</div>
+      <input id="s-handle" class="fi" type="text" placeholder="YourHandle">
+    </div>
+
+    <div>
+      <div class="fl">CONTRIBUTION NAME <span>AUTO-FILLED FROM DESIGNATION</span></div>
+      <input id="s-name" class="fi" type="text" readonly placeholder="— paste Lean file above —" style="color:#2a5060;">
+      <div style="margin-top:6px;display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="toggleCustomName()">
+        <div id="custom-check" style="width:10px;height:10px;border:1px solid #1a3040;flex-shrink:0;transition:all .15s;"></div>
+        <span style="font-size:8px;color:#1a3040;letter-spacing:.12em;font-family:'Orbitron',monospace;transition:color .15s;" id="custom-check-label">ADD CUSTOM NAME</span>
+      </div>
+      <div id="custom-name-block" style="display:none;margin-top:8px;">
+        <div class="fl">CUSTOM NAME <span>must be within terms</span></div>
+        <input id="s-custom-name" class="fi" type="text" placeholder="e.g. Noble Annihilation in Sv+D63 Substrate Collision">
+      </div>
+    </div>
+
+    <div>
+      <div class="fl">GITHUB URL <span>direct link to committed .lean file</span></div>
+      <input id="s-url" class="fi" type="text" placeholder="https://github.com/SNSFT/.../blob/main/lean/...">
+    </div>
+
+    <!-- OPTIONAL BLOCK -->
+    <div class="optional-block">
+      <div class="optional-toggle" id="optional-toggle" onclick="toggleOptional()">
+        <span>+ OPTIONAL BLOCK &nbsp;<span style="color:#0e1e28;font-size:7px;letter-spacing:.1em;">CITATIONS · ABSTRACT · NOTES</span></span>
+        <span class="ot-arrow">▶</span>
+      </div>
+      <div class="optional-inner" id="optional-inner">
+        <div>
+          <div class="fl">ABSTRACT / EXPANDED DESCRIPTION</div>
+          <textarea id="s-abstract" class="fi" rows="4" placeholder="What does this prove? What structural behavior does it govern? What does it reveal about the substrate?"></textarea>
+        </div>
+        <div>
+          <div class="fl">CITATIONS <span>comma-separated DOIs, arXiv IDs, or URLs</span></div>
+          <input id="s-citations" class="fi" type="text" placeholder="e.g. 10.5281/zenodo.18719748, arxiv:xxxx.xxxxx">
+        </div>
+        <div>
+          <div class="fl">COORDINATE (if assigned)</div>
+          <input id="s-coord" class="fi" type="text" placeholder="e.g. [9,9,2,44]">
+        </div>
+        <div>
+          <div class="fl">NOTES</div>
+          <textarea id="s-notes" class="fi" rows="2" placeholder="Anything else — edge cases, follow-up collisions, related designations..."></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /fg -->
+
+  <div class="mbtns">
+    <button class="btn btn-p" style="flex:1" onclick="submitContrib()">SUBMIT FOR REVIEW</button>
+    <button class="btn btn-s" style="padding:10px 16px;" onclick="closeModal()">CANCEL</button>
+  </div>
+  <div id="sub-status"></div>
+</div>
+</div>
+
+<script>
+(async()=>{
+  const{createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+  const sb=createClient('https://rsadsojivuagxptdlwak.supabase.co','sb_publishable_FvDg0nsEuxH_HmyD0RL1LA_E4QpGfOs');
+
+  let all=[], founders=[], filter='all';
+  const TIERS={Explorer:'ex',Physicist:'ph',Theorist:'th',Reviewer:'rv',Fellow:'fe',Architect:'ar'};
+  const LABELS={Explorer:'EXPLORER',Physicist:'PHYSICIST ★',Theorist:'THEORIST ★★',Reviewer:'REVIEWER',Fellow:'FELLOW',Architect:'ARCHITECT'};
+  const LIMITS={Explorer:3,Physicist:10,Reviewer:15,Theorist:20,Fellow:20,Architect:999999};
+
+  // floor values — HIGHTISTIC's seed corpus
+  const FLOOR={theorems:4906,discoveries:13000,laws:86};
+
+  async function init(){
+    const [c,f,agg]=await Promise.all([
+      sb.from('contributors').select('*').eq('approved',true).order('reputation',{ascending:false}),
+      sb.from('leaderboard_founders').select('rank,contributor_id,contributors(handle)').order('rank',{ascending:true}).limit(100),
+      sb.from('submissions').select('type').eq('approved',true)
+    ]);
+    all=c.data||[]; founders=f.data||[];
+
+    // aggregate approved submissions on top of floor
+    const approved=agg.data||[];
+    const addedTheorems=approved.filter(s=>s.type==='theorem').length;
+    const addedDiscoveries=approved.filter(s=>s.type==='discovery').length;
+    const addedLaws=approved.filter(s=>s.type==='law').length;
+
+    // update sovereign stats live
+    document.getElementById('sv-theorems').textContent=(FLOOR.theorems+addedTheorems).toLocaleString()+(addedTheorems===0?'+':'');
+    document.getElementById('sv-discoveries').textContent=(FLOOR.discoveries+addedDiscoveries).toLocaleString()+(addedDiscoveries===0?'+':'');
+    document.getElementById('sv-laws').textContent=FLOOR.laws+addedLaws;
+
+    // update header + stats bar
+    document.getElementById('s-contrib').textContent=all.length;
+    document.getElementById('hdr-c').textContent=all.length;
+    if(document.getElementById('s-contrib-sv')) document.getElementById('s-contrib-sv').textContent=all.length;
+    document.getElementById('s-founders').textContent=`${founders.length}/100`;
+
+    renderFounders(); renderTable(all);
+  }
+
+  function renderFounders(){
+    const show=Math.min(founders.length+5,18);
+    let html='';
+    for(let i=0;i<show;i++){
+      const f=founders[i];
+      html+=f
+        ?`<div class="fslot"><div class="fr">#${f.rank}</div><div class="fh">${esc(f.contributors?.handle||'—')}</div></div>`
+        :`<div class="fslot open"><div class="fr">#${i+1}</div><div class="fh">OPEN</div></div>`;
+    }
+    if(show<100) html+=`<div class="fslot open" style="flex:3;text-align:left;padding:7px 14px;"><div class="fr">#${show+1} → #100</div><div class="fh" style="font-size:8px;">${100-show} SLOTS OPEN</div></div>`;
+    document.getElementById('founders-strip').innerHTML=html;
+  }
+
+  function renderTable(data){
+    const body=document.getElementById('lb-body');
+    if(!data.length){
+      body.innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="et">NO CONTRIBUTORS YET</div><div class="es">Be the first. Run a collision at <a href="https://uuia.app/gamcollider">uuia.app/gamcollider</a>.<br>Paste the raw Lean output. Submit it here.<br>If it compiles with 0 sorry — your name goes in the corpus. Permanently.<br><br><b style="color:var(--warn);">First 100 contributors are Leaderboard Founders.</b></div></div></td></tr>`;
+      return;
+    }
+    const fset=new Set(founders.map(f=>f.contributor_id));
+    body.innerHTML=data.map((c,i)=>{
+      const r=i+1,isF=fset.has(c.id),rc=r===1?'r1':r===2?'r2':r===3?'r3':'',tk=TIERS[c.tier]||'ex';
+      const votes=c.votes_up||0;const votesDown=c.votes_down||0;
+      const score=votes-votesDown;
+      const scoreClass=score>0?'pos':score<0?'neg':'';
+      return`<tr>
+        <td class="rank ${rc}${isF?' founder':''}">
+          ${isF?`<span class="fstar">★</span>`:''}${r}
+        </td>
+        <td><div class="hcell"><div class="hn">${esc(c.handle)}</div><div class="hm">${c.location?esc(c.location)+' · ':''}JOINED ${fmt(c.joined_at)}</div></div></td>
+        <td><span class="tb ${tk}">${LABELS[c.tier]||c.tier}</span></td>
+        <td class="rep">${c.reputation.toLocaleString()}<div class="rs">REP</div></td>
+        <td class="cc ${c.coords_assigned>0?'hi':''}"><b>${c.coords_assigned}</b><div class="cl">COORDS</div></td>
+        <td class="cc"><b>${c.theorems_count}</b><div class="cl">THEOREMS</div></td>
+        <td class="cc ${c.laws_count>0?'hi':''}"><b>${c.laws_count}</b><div class="cl">LAWS</div></td>
+        <td class="cc"><b>${c.discoveries_count}</b><div class="cl">DISCOVERIES</div></td>
+        <td class="vote-cell">
+          <div class="vote-wrap">
+            <button class="vbtn up" onclick="castVote('${c.id}','up',this)" title="Peer verify">▲</button>
+            <span class="vscore ${scoreClass}" id="vs-${c.id}">${score>0?'+'+score:score}</span>
+            <button class="vbtn dn" onclick="castVote('${c.id}','dn',this)" title="Flag for review">▼</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  window.setFilter=function(t,btn){
+    filter=t;
+    document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable(t==='all'?all:all.filter(c=>c.tier===t));
+  };
+
+  // ── LEAN PARSER ─────────────────────────────────────────
+  function parseLean(raw){
+    // Extract from the closing /-! ... -/ manifest block
+    const manifest=raw.match(/\/-!([\s\S]*?)-\//);
+    if(!manifest) return null;
+    const m=manifest[1];
+
+    function grab(key){
+      const r=new RegExp('--\\s*'+key+':\\s*(.+)','i');
+      const match=m.match(r);
+      return match?match[1].trim():null;
+    }
+
+    const designation=grab('DESIGNATION');
+    const collision=grab('COLLISION');
+    const status=grab('STATUS');
+    const theoremsRaw=grab('THEOREMS');
+    const sorry=grab('SORRY')||grab('THEOREMS')?.match(/SORRY:\s*(\d+)/)?.[1];
+    const p=grab('P_out');
+    const n=grab('N_out');
+    const b=grab('B_out');
+    const a=grab('A_out');
+    const im=grab('IM');
+    const timestamp=grab('TIMESTAMP');
+    const flag=grab('FLAG');
+
+    if(!designation) return null;
+
+    return{designation,collision,status,theorems:theoremsRaw,p,n,b,a,im,timestamp,flag};
+  }
+
+  function applyParsed(data){
+    const set=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
+    set('s-designation', data.designation);
+    set('s-status', data.status);
+    set('s-collision', data.collision);
+    set('s-theorems', data.theorems);
+    set('s-timestamp', data.timestamp);
+    set('s-flag', data.flag);
+    set('s-p', data.p ? `P: ${data.p}` : '');
+    set('s-n', data.n ? `N: ${data.n}` : '');
+    set('s-b', data.b ? `B: ${data.b}` : '');
+    set('s-a', data.a ? `A: ${data.a}` : '');
+    set('s-im', data.im ? `IM: ${data.im}` : '');
+    // auto-fill name from designation
+    const nameEl=document.getElementById('s-name');
+    if(nameEl){ nameEl.value=data.designation||''; nameEl.style.color='var(--bright)'; }
+  }
+
+  // Wire up file upload — reads .lean and feeds same parser
+  document.getElementById('s-lean-file').addEventListener('change', function(){
+    const file=this.files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=function(e){
+      const textarea=document.getElementById('s-lean');
+      textarea.value=e.target.result;
+      textarea.dispatchEvent(new Event('input'));
+    };
+    reader.readAsText(file);
+    // reset input so same file can be re-uploaded if needed
+    this.value='';
+  });
+
+  // Wire up lean textarea
+  document.getElementById('s-lean').addEventListener('input', function(){
+    const raw=this.value.trim();
+    const zone=document.getElementById('lean-zone');
+    const grid=document.getElementById('parsed-grid');
+    const status=document.getElementById('parse-status');
+
+    if(!raw){
+      zone.classList.remove('has-data','error');
+      grid.style.display='none';
+      status.textContent='';
+      status.className='parse-status';
+      return;
+    }
+
+    const parsed=parseLean(raw);
+    if(parsed){
+      zone.classList.add('has-data');
+      zone.classList.remove('error');
+      this.classList.add('has-data');
+      grid.style.display='grid';
+      status.textContent='✓ PARSED';
+      status.className='parse-status ok';
+      applyParsed(parsed);
+    } else {
+      zone.classList.add('error');
+      zone.classList.remove('has-data');
+      grid.style.display='none';
+      status.textContent='manifest block not found';
+      status.className='parse-status err';
+    }
+  });
+
+  // ── PEER VOTE ────────────────────────────────────────────
+  const votedSet=new Set(JSON.parse(localStorage.getItem('snsft_votes')||'[]'));
+
+  window.castVote=async function(contributorId,dir,btn){
+    const voteKey=`${contributorId}_${dir}`;
+    const oppKey=`${contributorId}_${dir==='up'?'dn':'up'}`;
+    if(votedSet.has(voteKey)) return; // already voted this direction
+
+    const col=dir==='up'?'votes_up':'votes_down';
+    const scoreEl=document.getElementById(`vs-${contributorId}`);
+
+    try{
+      // get current votes
+      const{data:row}=await sb.from('contributors').select('votes_up,votes_down').eq('id',contributorId).single();
+      if(!row) return;
+      const newVal=(row[col]||0)+1;
+      await sb.from('contributors').update({[col]:newVal}).eq('id',contributorId);
+
+      // update UI
+      votedSet.add(voteKey);
+      localStorage.setItem('snsft_votes',JSON.stringify([...votedSet]));
+      btn.classList.add('voted');
+
+      // recalc score display
+      const newUp=dir==='up'?newVal:(row.votes_up||0);
+      const newDn=dir==='dn'?newVal:(row.votes_down||0);
+      const score=newUp-newDn;
+      scoreEl.textContent=score>0?'+'+score:score;
+      scoreEl.className='vscore '+(score>0?'pos':score<0?'neg':'');
+
+      // mark opposite button disabled
+      const oppBtn=btn.parentElement.querySelector('.vbtn.'+(dir==='up'?'dn':'up'));
+      if(oppBtn) oppBtn.style.opacity='.3';
+    }catch(e){console.error('vote error',e);}
+  };
+
+  window.checkLawFlag=function(sel){
+    const flag=document.getElementById('law-flag');
+    flag.classList.toggle('show',sel.value==='law');
+  };
+
+  window.toggleOptional=function(){
+    const toggle=document.getElementById('optional-toggle');
+    const inner=document.getElementById('optional-inner');
+    toggle.classList.toggle('open');
+    inner.classList.toggle('open');
+  };
+
+  window.toggleCustomName=function(){
+    const block=document.getElementById('custom-name-block');
+    const check=document.getElementById('custom-check');
+    const label=document.getElementById('custom-check-label');
+    const isOpen=block.style.display!=='none';
+    block.style.display=isOpen?'none':'block';
+    check.style.background=isOpen?'':'var(--locked)';
+    check.style.borderColor=isOpen?'#1a3040':'var(--locked)';
+    label.style.color=isOpen?'#1a3040':'var(--locked)';
+    if(isOpen) document.getElementById('s-custom-name').value='';
+  };
+
+  window.openModal=function(){document.getElementById('modal').style.display='flex';};
+  window.closeModal=function(){
+    document.getElementById('modal').style.display='none';
+    // reset parse state
+    document.getElementById('s-lean').value='';
+    document.getElementById('custom-name-block').style.display='none';
+    document.getElementById('custom-check').style.background='';
+    document.getElementById('custom-check').style.borderColor='#1a3040';
+    document.getElementById('custom-check-label').style.color='#1a3040';
+    if(document.getElementById('s-custom-name')) document.getElementById('s-custom-name').value='';
+    document.getElementById('s-lean').classList.remove('has-data');
+    document.getElementById('lean-zone').classList.remove('has-data','error');
+    document.getElementById('parsed-grid').style.display='none';
+    document.getElementById('parse-status').textContent='';
+    document.getElementById('parse-status').className='parse-status';
+  };
+
+  window.submitContrib=async function(){
+    const handle=document.getElementById('s-handle').value.trim();
+    const customName=document.getElementById('s-custom-name').value.trim();
+    const name=customName || document.getElementById('s-name').value.trim();
+    const url=document.getElementById('s-url').value.trim();
+    const leanRaw=document.getElementById('s-lean').value.trim();
+    const designation=document.getElementById('s-designation').value.trim();
+    const status_val=document.getElementById('s-status').value.trim();
+    const collision=document.getElementById('s-collision').value.trim();
+    const abstract=document.getElementById('s-abstract').value.trim();
+    const citations=document.getElementById('s-citations').value.trim();
+    const coord=document.getElementById('s-coord').value.trim();
+    const notes=document.getElementById('s-notes').value.trim();
+    const st=document.getElementById('sub-status');
+
+    if(!handle||!name||!leanRaw){
+      st.style.color='var(--shatter)';
+      st.textContent='Handle, name, and Lean file required.';
+      return;
+    }
+    if(!designation){
+      st.style.color='var(--shatter)';
+      st.textContent='Could not parse manifest block from Lean file. Check your output.';
+      return;
+    }
+
+    st.style.color='var(--text)';st.textContent='Submitting...';
+
+    try{
+      let{data:con,error:ce}=await sb.from('contributors').select('id,subs_this_week,tier,week_reset_at').eq('handle',handle).single();
+      if(ce&&ce.code==='PGRST116'){
+        const{data:nc,error:ne}=await sb.from('contributors').insert({handle,pending_review:true}).select().single();
+        if(ne)throw ne; con=nc;
+      } else if(ce) throw ce;
+
+      const limit=LIMITS[con?.tier||'Explorer']||3;
+      if((con?.subs_this_week||0)>=limit){
+        st.style.color='var(--warn)';
+        st.textContent=`Weekly limit reached (${limit}/wk for ${con.tier||'Explorer'}). Resets Monday.`;
+        return;
+      }
+
+      const{error:se}=await sb.from('submissions').insert({
+        contributor_id:con.id,
+        type:'discovery',
+        title:name,
+        designation:designation||null,
+        collision:collision||null,
+        status_flag:status_val||null,
+        lean_raw:leanRaw,
+        github_url:url||null,
+        coordinate:coord||null,
+        abstract:abstract||null,
+        citations:citations||null,
+        notes:notes||null,
+        description:null
+      });
+      if(se)throw se;
+
+      await sb.from('contributors').update({subs_this_week:(con.subs_this_week||0)+1}).eq('id',con.id);
+
+      st.style.color='var(--locked)';
+      st.textContent='✓ Submitted. HIGHTISTIC will review. Nothing goes live until approved.';
+
+      ['s-handle','s-name','s-url','s-lean','s-abstract','s-citations','s-coord','s-notes'].forEach(id=>{
+        const el=document.getElementById(id);if(el)el.value='';
+      });
+      document.getElementById('s-lean').classList.remove('has-data');
+      document.getElementById('lean-zone').classList.remove('has-data','error');
+      document.getElementById('parsed-grid').style.display='none';
+      document.getElementById('parse-status').textContent='';
+
+    }catch(err){
+      st.style.color='var(--shatter)';
+      st.textContent=`Error: ${err.message}`;
+    }
+  };
+
+  function esc(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
+  function fmt(ts){return ts?new Date(ts).toLocaleDateString('en-US',{month:'short',year:'numeric'}):'—'}
+
+  init();
+})();
+</script>
+
+</body>
+</html>
