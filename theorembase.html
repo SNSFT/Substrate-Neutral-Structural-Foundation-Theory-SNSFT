@@ -267,10 +267,8 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border);
       <div class="adv-label">STATUS</div>
       <select class="adv-input" id="f-status">
         <option value="">Any</option>
-        <option value="Noble">Noble</option>
-        <option value="Locked">Locked</option>
-        <option value="Phase Locked">Phase Locked</option>
-        <option value="Shatter">Shatter</option>
+        <option value="NOBLE">NOBLE</option>
+        <option value="LOCKED">LOCKED</option>
         <option value="SHATTER">SHATTER</option>
       </select>
     </div>
@@ -372,25 +370,22 @@ async function init() {
 }
 
 async function loadStats() {
-  const [colRes, subRes, conRes] = await Promise.all([
-    sb.from('collisions').select('id,status,flagged', {count:'exact',head:false}).limit(1),
-    sb.from('submissions').select('id,type', {count:'exact',head:false}).eq('approved',true).limit(1),
-    sb.from('contributors').select('id', {count:'exact',head:false}).eq('approved',true).limit(1)
-  ]);
-
-  // Get counts via separate queries
-  const [totalCol, nobleCols, flaggedCols, totalSubs] = await Promise.all([
-    sb.from('collisions').select('*',{count:'exact',head:true}),
-    sb.from('collisions').select('*',{count:'exact',head:true}).eq('status','Noble'),
-    sb.from('collisions').select('*',{count:'exact',head:true}).eq('flagged',true),
-    sb.from('submissions').select('*',{count:'exact',head:true}).eq('approved',true)
-  ]);
-
-  document.getElementById('st-collisions').textContent = (totalCol.count||0).toLocaleString();
-  document.getElementById('st-noble').textContent = (nobleCols.count||0).toLocaleString();
-  document.getElementById('st-flagged').textContent = (flaggedCols.count||0).toLocaleString();
-  document.getElementById('st-theorems').textContent = (totalSubs.count||0).toLocaleString();
-  document.getElementById('st-contributors').textContent = (conRes.count||0).toLocaleString();
+  try {
+    const [totalCol, nobleCols, flaggedCols, totalSubs, totalCons] = await Promise.all([
+      sb.from('collisions').select('*',{count:'exact',head:true}),
+      sb.from('collisions').select('*',{count:'exact',head:true}).eq('status','NOBLE'),
+      sb.from('collisions').select('*',{count:'exact',head:true}).eq('flagged',true),
+      sb.from('submissions').select('*',{count:'exact',head:true}).eq('approved',true),
+      sb.from('contributors').select('*',{count:'exact',head:true}).eq('approved',true)
+    ]);
+    document.getElementById('st-collisions').textContent = (totalCol.count||0).toLocaleString();
+    document.getElementById('st-noble').textContent = (nobleCols.count||0).toLocaleString();
+    document.getElementById('st-flagged').textContent = (flaggedCols.count||0).toLocaleString();
+    document.getElementById('st-theorems').textContent = (totalSubs.count||0).toLocaleString();
+    document.getElementById('st-contributors').textContent = (totalCons.count||0).toLocaleString();
+  } catch(e) {
+    console.log('Stats error:', e.message);
+  }
 }
 
 // ── SEARCH ────────────────────────────────────────────────────────────────────
@@ -416,9 +411,9 @@ async function searchCollisions(q) {
   try {
     let query = sb.from('collisions')
       .select('*')
-      .order(colSort === 'time' ? 'timestamp' :
+      .order(colSort === 'time' ? 'id' :
              colSort === 'tau' || colSort === 'tau-desc' ? 'tau' : 'timestamp',
-             {ascending: colSort === 'tau' || colSort === 'time' ? false : colSort === 'noble' ? false : true})
+             {ascending: colSort === 'tau' ? true : colSort === 'tau-desc' ? false : false})
       .limit(500);
 
     // Advanced filters
@@ -446,15 +441,15 @@ async function searchCollisions(q) {
     // Text search on q
     if (q === 'flagged') {
       query = sb.from('collisions').select('*').eq('flagged',true)
-        .order('timestamp',{ascending:false}).limit(500);
+        .order('id',{ascending:false}).limit(500);
     } else if (q === 'Noble' || q === 'noble') {
-      query = sb.from('collisions').select('*').eq('status','Noble')
+      query = sb.from('collisions').select('*').eq('status','NOBLE')
         .order('tau',{ascending:true}).limit(500);
     } else if (q) {
       // Search by element, designation, or reason
       query = sb.from('collisions').select('*')
         .or(`e1.ilike.%${q}%,e2.ilike.%${q}%,designation.ilike.%${q}%,reason.ilike.%${q}%,collision_key.ilike.%${q}%`)
-        .order('timestamp',{ascending:false}).limit(500);
+        .order('id',{ascending:false}).limit(500);
     }
 
     const { data, error } = await query;
@@ -536,8 +531,7 @@ function renderCollisions() {
   document.getElementById('col-results').innerHTML = page.map(r => {
     const sc = getStatusClass(r.status);
     const tau = typeof r.tau === 'number' ? r.tau.toFixed(4) : '—';
-    const ts = r.timestamp ? new Date(r.timestamp).toLocaleDateString('en-US',{
-      month:'short',day:'numeric',year:'numeric'}) : '—';
+    const ts = (r.timestamp||r.created_at) ? new Date(r.timestamp||r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
     const pnba = `P=${r.P_out?.toFixed(3)||'?'} N=${r.N_out?.toFixed(3)||'?'} B=${r.B_out?.toFixed(3)||'?'} A=${r.A_out?.toFixed(3)||'?'}`;
 
     return `
@@ -667,9 +661,9 @@ window.showTab = function(tab) {
 function getStatusClass(status) {
   if (!status) return '';
   const s = status.toLowerCase();
-  if (s === 'noble') return 'noble';
-  if (s.includes('lock')) return 'locked';
-  if (s.includes('shatter')) return 'shatter';
+  if (s === 'noble' || s === 'NOBLE') return 'noble';
+  if (s.includes('lock') || s === 'LOCKED') return 'locked';
+  if (s.includes('shatter') || s === 'SHATTER') return 'shatter';
   return 'locked';
 }
 
