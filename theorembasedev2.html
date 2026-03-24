@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheoremBase · SNSFL Corpus Search · [9,9,9,9]</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root{
+  --bg:#020407;--panel:#060b10;--border:#0c1a26;--glow:#00e5ff;
+  --locked:#00ffcc;--shatter:#ff3355;--noble:#aa88ff;--warn:#ffaa00;
+  --text:#7aa4be;--bright:#cce8f5;--dim:#192430;--aifi:#dd44ff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);
+  background-size:36px 36px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);
+  pointer-events:none;z-index:1}
+
+.wrap{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:0 16px 80px}
+
+/* HEADER */
+header{padding:20px 0 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:24px;
+  letter-spacing:.08em;color:var(--glow);text-shadow:0 0 24px rgba(0,229,255,.45)}
+.logo span{font-size:10px;color:var(--locked);display:block;letter-spacing:.2em;margin-top:2px}
+.nav a{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;
+  color:#2a4050;text-decoration:none;margin-left:16px;transition:color .15s}
+.nav a:hover{color:var(--glow)}
+.nav a.active{color:var(--glow)}
+.hdr-right{font-size:9px;color:#2a4050;text-align:right;line-height:1.8}
+.hdr-right b{color:var(--glow)}
+
+/* STATS */
+.stats-bar{display:flex;border:1px solid var(--border);margin:20px 0;overflow:hidden}
+.stat-block{flex:1;padding:12px 16px;border-right:1px solid var(--border);text-align:center}
+.stat-block:last-child{border-right:none}
+.stat-val{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;color:var(--glow);
+  text-shadow:0 0 12px rgba(0,229,255,.2)}
+.stat-label{font-size:7px;color:#1a3040;letter-spacing:.2em;margin-top:3px}
+
+/* SEARCH BOX */
+.search-section{margin:24px 0 20px}
+.search-label{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;
+  color:#1a3040;margin-bottom:10px}
+.search-main{display:flex;gap:8px;margin-bottom:12px}
+.search-input{flex:1;background:var(--panel);border:1px solid var(--border);
+  color:var(--bright);font-family:'Share Tech Mono',monospace;font-size:14px;
+  padding:12px 16px;outline:none;transition:.15s}
+.search-input:focus{border-color:var(--glow);box-shadow:0 0 12px rgba(0,229,255,.1)}
+.search-input::placeholder{color:#2a4050}
+.search-btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;
+  padding:12px 20px;background:transparent;border:1px solid var(--glow);
+  color:var(--glow);cursor:pointer;transition:.15s;white-space:nowrap}
+.search-btn:hover{background:rgba(0,229,255,.08)}
+
+/* FILTERS */
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.filter-group{display:flex;gap:4px;flex-wrap:wrap}
+.filter-label{font-size:7px;color:#1a3040;letter-spacing:.15em;align-self:center;margin-right:4px}
+.fb{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.12em;
+  padding:4px 10px;background:transparent;border:1px solid var(--border);
+  color:#2a4050;cursor:pointer;transition:.15s}
+.fb:hover{border-color:var(--text);color:var(--text)}
+.fb.active{border-color:var(--glow);color:var(--glow)}
+.fb.noble-f.active{border-color:var(--noble);color:var(--noble)}
+.fb.locked-f.active{border-color:var(--locked);color:var(--locked)}
+.fb.shatter-f.active{border-color:var(--shatter);color:var(--shatter)}
+
+/* ADVANCED FILTERS */
+.adv-filters{background:var(--panel);border:1px solid var(--border);padding:12px 16px;
+  margin-bottom:16px;display:none;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.adv-filters.open{display:grid}
+.adv-group{display:flex;flex-direction:column;gap:4px}
+.adv-label{font-size:7px;color:#1a3040;letter-spacing:.15em}
+.adv-input{background:var(--bg);border:1px solid var(--border);color:var(--text);
+  font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 8px;outline:none;width:100%}
+.adv-input:focus{border-color:var(--glow)}
+.adv-range{display:flex;gap:6px;align-items:center}
+.adv-range span{font-size:9px;color:#2a4050}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px}
+.tab{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;
+  padding:10px 16px;cursor:pointer;color:#2a4050;border-bottom:2px solid transparent;transition:.15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--glow);border-bottom-color:var(--glow)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* RESULTS */
+.results-hdr{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;font-size:9px}
+.results-count{color:#2a4050}
+.results-count b{color:var(--glow)}
+.sort-row{display:flex;gap:6px;align-items:center}
+.sort-label{font-size:7px;color:#1a3040;letter-spacing:.15em}
+.sort-btn{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.1em;
+  padding:3px 8px;background:transparent;border:1px solid var(--border);
+  color:#2a4050;cursor:pointer;transition:.15s}
+.sort-btn:hover{color:var(--text)}
+.sort-btn.active{border-color:var(--glow);color:var(--glow)}
+
+/* COLLISION CARD */
+.col-card{border:1px solid var(--border);background:var(--panel);
+  margin-bottom:8px;padding:12px 16px;display:flex;gap:16px;
+  align-items:flex-start;flex-wrap:wrap;transition:.15s;cursor:pointer}
+.col-card:hover{border-color:rgba(0,229,255,.2);background:rgba(6,11,16,.8)}
+.col-card.noble{border-left:3px solid var(--noble)}
+.col-card.locked{border-left:3px solid var(--locked)}
+.col-card.shatter{border-left:3px solid var(--shatter)}
+.col-left{flex:1;min-width:200px}
+.col-pair{font-family:'Orbitron',monospace;font-size:13px;color:var(--bright);
+  font-weight:700;letter-spacing:.06em}
+.col-meta{font-size:8px;color:#2a4050;margin-top:4px;line-height:1.8}
+.col-meta b{color:var(--text)}
+.col-right{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.col-tau{font-family:'Orbitron',monospace;font-size:16px;font-weight:700}
+.col-tau.noble{color:var(--noble)}
+.col-tau.locked{color:var(--locked)}
+.col-tau.shatter{color:var(--shatter)}
+.col-status{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.15em;
+  padding:2px 8px;border:1px solid}
+.col-status.noble{color:var(--noble);border-color:rgba(170,136,255,.4)}
+.col-status.locked{color:var(--locked);border-color:rgba(0,255,204,.4)}
+.col-status.shatter{color:var(--shatter);border-color:rgba(255,51,85,.4)}
+.col-pnba{display:flex;gap:8px;font-size:8px;color:#2a4050}
+.col-pnba span{color:var(--text)}
+.col-flag{font-size:8px;color:var(--warn)}
+.col-desig{font-size:9px;color:var(--warn);font-family:'Orbitron',monospace}
+
+/* SUBMISSION CARD */
+.sub-card{border:1px solid var(--border);background:var(--panel);
+  margin-bottom:10px;padding:14px 16px;transition:.15s}
+.sub-card:hover{border-color:rgba(0,229,255,.2)}
+.sub-hdr{display:flex;align-items:flex-start;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.sub-title{font-family:'Orbitron',monospace;font-size:12px;color:var(--bright);
+  font-weight:700;letter-spacing:.06em}
+.sub-meta{font-size:8px;color:#2a4050;margin-top:3px;line-height:1.8}
+.sub-meta b{color:var(--text)}
+.sub-abstract{font-size:9px;color:var(--text);line-height:1.7;
+  margin:8px 0;padding:8px 10px;background:var(--bg);border:1px solid var(--border)}
+.sub-coord{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--glow)}
+.sub-lean-btn{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.12em;
+  padding:4px 10px;background:transparent;border:1px solid #2a4050;
+  color:#2a4050;cursor:pointer;transition:.15s;margin-top:6px}
+.sub-lean-btn:hover{border-color:var(--aifi);color:var(--aifi)}
+.lean-preview{background:#000;border:1px solid rgba(0,229,255,.1);
+  padding:10px 12px;font-size:9px;color:#4a9;line-height:1.7;
+  max-height:180px;overflow-y:auto;white-space:pre-wrap;
+  font-family:'Share Tech Mono',monospace;margin-top:8px;display:none}
+.lean-preview.open{display:block}
+.type-badge{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.12em;
+  padding:2px 8px;border:1px solid}
+.type-theorem{color:var(--noble);border-color:rgba(170,136,255,.4)}
+.type-discovery{color:var(--warn);border-color:rgba(255,170,0,.4)}
+.type-law{color:var(--locked);border-color:rgba(0,255,204,.4)}
+.gh-link{font-size:8px;color:var(--glow);text-decoration:none}
+.gh-link:hover{color:var(--bright)}
+
+/* EMPTY / LOADING */
+.empty{text-align:center;padding:60px 20px;color:#1a3040;font-size:9px;letter-spacing:.2em;line-height:2}
+.loading{text-align:center;padding:40px;color:#2a4050;font-size:9px;letter-spacing:.2em}
+.loading span{color:var(--glow);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* PAGINATION */
+.pager{display:flex;gap:6px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.page-btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;
+  padding:6px 12px;background:transparent;border:1px solid var(--border);
+  color:#2a4050;cursor:pointer;transition:.15s}
+.page-btn:hover{border-color:var(--text);color:var(--text)}
+.page-btn.active{border-color:var(--glow);color:var(--glow)}
+.page-btn:disabled{opacity:.3;cursor:default}
+
+/* QUICK SEARCHES */
+.quick-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.quick-label{font-size:7px;color:#1a3040;letter-spacing:.15em;align-self:center}
+.quick-btn{font-family:'Share Tech Mono',monospace;font-size:9px;
+  padding:4px 12px;background:transparent;border:1px solid var(--border);
+  color:#2a4050;cursor:pointer;transition:.15s}
+.quick-btn:hover{border-color:var(--glow);color:var(--glow)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="logo">TheoremBase<span>SNSFL CORPUS SEARCH · [9,9,9,9] · 0 SORRY</span></div>
+  </div>
+  <nav class="nav">
+    <a href="https://uuia.app/axiomforge">AxiomForge</a>
+    <a href="https://uuia.app/gamcollider.html">GAM Collider</a>
+    <a href="https://uuia.app/discovery">Discovery</a>
+    <a href="https://uuia.app/leaderboard.html">Leaderboard</a>
+  </nav>
+  <div class="hdr-right">
+    ANCHOR <b>1.369 GHz</b> · TL = 0.1369<br>
+    HIGHTISTIC · Soldotna Alaska · SNSFT Foundation
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat-block">
+    <div class="stat-val" id="st-collisions">—</div>
+    <div class="stat-label">COLLISIONS LOGGED</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-val" id="st-noble" style="color:var(--noble)">—</div>
+    <div class="stat-label">NOBLE STATES</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-val" id="st-flagged" style="color:var(--warn)">—</div>
+    <div class="stat-label">FLAGGED DISCOVERIES</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-val" id="st-theorems" style="color:var(--locked)">—</div>
+    <div class="stat-label">APPROVED THEOREMS</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-val" id="st-contributors">—</div>
+    <div class="stat-label">CONTRIBUTORS</div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-label">SEARCH THE CORPUS</div>
+  <div class="search-main">
+    <input class="search-input" id="q" placeholder="element pair · coordinate · designation · theorem name · contributor handle..."
+      onkeydown="if(event.key==='Enter')search()">
+    <button class="search-btn" onclick="search()">SEARCH</button>
+    <button class="search-btn" style="border-color:var(--border);color:#2a4050" onclick="toggleAdv()">FILTERS ▾</button>
+  </div>
+
+  <!-- QUICK SEARCHES -->
+  <div class="quick-row">
+    <span class="quick-label">QUICK:</span>
+    <button class="quick-btn" onclick="quickSearch('Noble')">Noble states</button>
+    <button class="quick-btn" onclick="quickSearch('GaN')">GaN</button>
+    <button class="quick-btn" onclick="quickSearch('AsN')">AsN (prediction)</button>
+    <button class="quick-btn" onclick="quickSearch('N+')">All N pairs</button>
+    <button class="quick-btn" onclick="quickSearch('O+')">All O pairs</button>
+    <button class="quick-btn" onclick="quickSearch('flagged')">Flagged discoveries</button>
+    <button class="quick-btn" onclick="quickSearch('Higgs')">Higgs</button>
+    <button class="quick-btn" onclick="quickSearch('law')">Laws</button>
+  </div>
+
+  <!-- ADVANCED FILTERS -->
+  <div class="adv-filters" id="adv-filters">
+    <div class="adv-group">
+      <div class="adv-label">ELEMENT 1</div>
+      <input class="adv-input" id="f-e1" placeholder="e.g. N, Ga, Fe">
+    </div>
+    <div class="adv-group">
+      <div class="adv-label">ELEMENT 2</div>
+      <input class="adv-input" id="f-e2" placeholder="e.g. As, Zn, Cu">
+    </div>
+    <div class="adv-group">
+      <div class="adv-label">STATUS</div>
+      <select class="adv-input" id="f-status">
+        <option value="">Any</option>
+        <option value="NOBLE">NOBLE</option>
+        <option value="LOCKED">LOCKED</option>
+        <option value="SHATTER">SHATTER</option>
+      </select>
+    </div>
+    <div class="adv-group">
+      <div class="adv-label">τ RANGE</div>
+      <div class="adv-range">
+        <input class="adv-input" id="f-tau-min" placeholder="0" type="number" step="0.001" style="width:70px">
+        <span>to</span>
+        <input class="adv-input" id="f-tau-max" placeholder="1" type="number" step="0.001" style="width:70px">
+      </div>
+    </div>
+    <div class="adv-group">
+      <div class="adv-label">B OUTPUT</div>
+      <div class="adv-range">
+        <input class="adv-input" id="f-b-min" placeholder="0" type="number" step="any" style="width:70px">
+        <span>to</span>
+        <input class="adv-input" id="f-b-max" placeholder="14" type="number" step="any" style="width:70px">
+      </div>
+    </div>
+    <div class="adv-group">
+      <div class="adv-label">FLAGGED ONLY</div>
+      <select class="adv-input" id="f-flagged">
+        <option value="">Any</option>
+        <option value="true">Flagged discoveries only</option>
+        <option value="false">Unflagged only</option>
+      </select>
+    </div>
+    <div class="adv-group">
+      <div class="adv-label">DATE FROM</div>
+      <input class="adv-input" id="f-date-from" type="date">
+    </div>
+    <div class="adv-group" style="align-self:end">
+      <button class="search-btn" style="width:100%" onclick="search()">APPLY FILTERS</button>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('collisions')">
+    COLLISIONS <span id="tab-col-count" style="color:var(--dim);font-size:8px"></span>
+  </div>
+  <div class="tab" onclick="showTab('theorems')">
+    THEOREMS &amp; LAWS <span id="tab-sub-count" style="color:var(--dim);font-size:8px"></span>
+  </div>
+</div>
+
+<!-- COLLISIONS TAB -->
+<div id="tab-collisions" class="tab-content active">
+  <div class="results-hdr">
+    <div class="results-count">Showing <b id="col-showing">—</b> collisions</div>
+    <div class="sort-row">
+      <span class="sort-label">SORT:</span>
+      <button class="sort-btn active" id="sort-time" onclick="setSort('time')">RECENT</button>
+      <button class="sort-btn" id="sort-tau" onclick="setSort('tau')">τ ASC</button>
+      <button class="sort-btn" id="sort-tau-desc" onclick="setSort('tau-desc')">τ DESC</button>
+      <button class="sort-btn" id="sort-noble" onclick="setSort('noble')">NOBLE FIRST</button>
+    </div>
+  </div>
+  <div id="col-results"><div class="loading"><span>Ready to search</span></div></div>
+  <div class="pager" id="col-pager"></div>
+</div>
+
+<!-- THEOREMS TAB -->
+<div id="tab-theorems" class="tab-content">
+  <div class="results-hdr">
+    <div class="results-count">Showing <b id="sub-showing">—</b> entries</div>
+    <div class="sort-row">
+      <span class="sort-label">TYPE:</span>
+      <button class="sort-btn active" id="type-all" onclick="setTypeFilter('all')">ALL</button>
+      <button class="sort-btn" id="type-theorem" onclick="setTypeFilter('theorem')">THEOREMS</button>
+      <button class="sort-btn" id="type-law" onclick="setTypeFilter('law')">LAWS</button>
+      <button class="sort-btn" id="type-discovery" onclick="setTypeFilter('discovery')">DISCOVERIES</button>
+    </div>
+  </div>
+  <div id="sub-results"><div class="loading"><span>Ready to search</span></div></div>
+  <div class="pager" id="sub-pager"></div>
+</div>
+
+</div><!-- /wrap -->
+
+<script type="module">
+const SB_URL = 'https://rsadsojivuagxptdlwak.supabase.co';
+const SB_KEY = 'sb_publishable_FvDg0nsEuxH_HmyD0RL1LA_E4QpGfOs';
+const PAGE_SIZE = 20;
+
+let sb;
+let colResults = [], subResults = [];
+let colPage = 1, subPage = 1;
+let colSort = 'time', typeFilter = 'all';
+let advOpen = false;
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+async function init() {
+  const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+  sb = createClient(SB_URL, SB_KEY);
+  await loadStats();
+  await search(); // load recent results on start
+}
+
+async function loadStats() {
+  try {
+    const [totalCol, nobleCols, flaggedCols, totalSubs, totalCons] = await Promise.all([
+      sb.from('collisions').select('*',{count:'exact',head:true}),
+      sb.from('collisions').select('*',{count:'exact',head:true}).eq('status','NOBLE'),
+      sb.from('collisions').select('*',{count:'exact',head:true}).eq('flagged',true),
+      sb.from('submissions').select('*',{count:'exact',head:true}).eq('approved',true),
+      sb.from('contributors').select('*',{count:'exact',head:true}).eq('approved',true)
+    ]);
+    document.getElementById('st-collisions').textContent = (totalCol.count||0).toLocaleString();
+    document.getElementById('st-noble').textContent = (nobleCols.count||0).toLocaleString();
+    document.getElementById('st-flagged').textContent = (flaggedCols.count||0).toLocaleString();
+    document.getElementById('st-theorems').textContent = (totalSubs.count||0).toLocaleString();
+    document.getElementById('st-contributors').textContent = (totalCons.count||0).toLocaleString();
+  } catch(e) {
+    console.log('Stats error:', e.message);
+  }
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────────────
+window.search = async function() {
+  const q = document.getElementById('q').value.trim();
+  colPage = 1; subPage = 1;
+  await Promise.all([searchCollisions(q), searchSubmissions(q)]);
+};
+
+window.quickSearch = function(term) {
+  document.getElementById('q').value = term;
+  search();
+};
+
+window.toggleAdv = function() {
+  advOpen = !advOpen;
+  document.getElementById('adv-filters').classList.toggle('open', advOpen);
+};
+
+async function searchCollisions(q) {
+  document.getElementById('col-results').innerHTML = '<div class="loading"><span>Searching...</span></div>';
+
+  try {
+    let query = sb.from('collisions')
+      .select('*')
+      .order(colSort === 'time' ? 'id' :
+             colSort === 'tau' || colSort === 'tau-desc' ? 'tau' : 'timestamp',
+             {ascending: colSort === 'tau' ? true : colSort === 'tau-desc' ? false : false})
+      .limit(500);
+
+    // Advanced filters
+    const e1 = document.getElementById('f-e1')?.value.trim();
+    const e2 = document.getElementById('f-e2')?.value.trim();
+    const status = document.getElementById('f-status')?.value;
+    const tauMin = document.getElementById('f-tau-min')?.value;
+    const tauMax = document.getElementById('f-tau-max')?.value;
+    const bMin = document.getElementById('f-b-min')?.value;
+    const bMax = document.getElementById('f-b-max')?.value;
+    const flagged = document.getElementById('f-flagged')?.value;
+    const dateFrom = document.getElementById('f-date-from')?.value;
+
+    if (e1) query = query.or(`e1.ilike.${e1},e2.ilike.${e1}`);
+    if (e2) query = query.or(`e1.ilike.${e2},e2.ilike.${e2}`);
+    if (status) query = query.eq('status', status);
+    if (tauMin) query = query.gte('tau', parseFloat(tauMin));
+    if (tauMax) query = query.lte('tau', parseFloat(tauMax));
+    if (bMin) query = query.gte('B_out', parseFloat(bMin));
+    if (bMax) query = query.lte('B_out', parseFloat(bMax));
+    if (flagged === 'true') query = query.eq('flagged', true);
+    if (flagged === 'false') query = query.eq('flagged', false);
+    if (dateFrom) query = query.gte('timestamp', dateFrom);
+
+    // Text search on q
+    if (q === 'flagged') {
+      query = sb.from('collisions').select('*').eq('flagged',true)
+        .order('id',{ascending:false}).limit(500);
+    } else if (q === 'Noble' || q === 'noble') {
+      query = sb.from('collisions').select('*').eq('status','NOBLE')
+        .order('tau',{ascending:true}).limit(500);
+    } else if (q) {
+      // Search by element, designation, or reason
+      query = sb.from('collisions').select('*')
+        .or(`e1.ilike.%${q}%,e2.ilike.%${q}%,designation.ilike.%${q}%,reason.ilike.%${q}%,collision_key.ilike.%${q}%`)
+        .order('id',{ascending:false}).limit(500);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    colResults = data || [];
+
+    // Client-side noble-first sort
+    if (colSort === 'noble') {
+      colResults.sort((a,b) => {
+        const order = {Noble:0,'Phase Locked':1,Locked:1,Shatter:2,SHATTER:2};
+        return (order[a.status]||1) - (order[b.status]||1);
+      });
+    }
+
+    document.getElementById('tab-col-count').textContent = `(${colResults.length})`;
+    renderCollisions();
+
+  } catch(err) {
+    document.getElementById('col-results').innerHTML =
+      `<div class="empty">Search error: ${esc(err.message)}</div>`;
+  }
+}
+
+async function searchSubmissions(q) {
+  document.getElementById('sub-results').innerHTML = '<div class="loading"><span>Searching...</span></div>';
+
+  try {
+    let query = sb.from('submissions')
+      .select('*,contributors(handle,tier,reputation)')
+      .eq('approved', true)
+      .order('created_at', {ascending: false})
+      .limit(300);
+
+    if (q && q !== 'Noble' && q !== 'flagged') {
+      query = sb.from('submissions')
+        .select('*,contributors(handle,tier,reputation)')
+        .eq('approved', true)
+        .or(`title.ilike.%${q}%,designation.ilike.%${q}%,coordinate.ilike.%${q}%,abstract.ilike.%${q}%,type.ilike.%${q}%`)
+        .order('created_at', {ascending: false})
+        .limit(300);
+    } else if (q === 'law') {
+      query = sb.from('submissions')
+        .select('*,contributors(handle,tier,reputation)')
+        .eq('approved', true).eq('type','law')
+        .order('created_at', {ascending: false}).limit(300);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    subResults = data || [];
+    document.getElementById('tab-sub-count').textContent = `(${subResults.length})`;
+    renderSubmissions();
+
+  } catch(err) {
+    document.getElementById('sub-results').innerHTML =
+      `<div class="empty">Search error: ${esc(err.message)}</div>`;
+  }
+}
+
+// ── RENDER COLLISIONS ─────────────────────────────────────────────────────────
+function renderCollisions() {
+  const filtered = typeFilter === 'all' ? colResults : colResults;
+  const total = filtered.length;
+  const start = (colPage - 1) * PAGE_SIZE;
+  const page = filtered.slice(start, start + PAGE_SIZE);
+
+  document.getElementById('col-showing').textContent =
+    `${start+1}–${Math.min(start+PAGE_SIZE,total)} of ${total.toLocaleString()}`;
+
+  if (!page.length) {
+    document.getElementById('col-results').innerHTML =
+      '<div class="empty">NO COLLISIONS FOUND<br><br>Try a different element pair or remove filters</div>';
+    document.getElementById('col-pager').innerHTML = '';
+    return;
+  }
+
+  document.getElementById('col-results').innerHTML = page.map(r => {
+    const sc = getStatusClass(r.status);
+    const tau = typeof r.tau === 'number' ? r.tau.toFixed(4) : '—';
+    const ts = (r.timestamp||r.created_at) ? new Date(r.timestamp||r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+    const pnba = `P=${r.P_out?.toFixed(3)||'?'} N=${r.N_out?.toFixed(3)||'?'} B=${r.B_out?.toFixed(3)||'?'} A=${r.A_out?.toFixed(3)||'?'}`;
+
+    return `
+    <div class="col-card ${sc}">
+      <div class="col-left">
+        <div class="col-pair">${esc(r.e1)} + ${esc(r.e2)} @ k=${r.k}</div>
+        ${r.designation ? `<div class="col-desig">${esc(r.designation)}</div>` : ''}
+        <div class="col-meta">
+          <div class="col-pnba">[<span>${esc(pnba)}</span>]</div>
+          ${r.reason ? `<b>↳</b> ${esc(r.reason.slice(0,100))} · ` : ''}
+          ${ts} · ${esc(r.engine_version||'—')}
+          ${r.flagged ? `<span class="col-flag"> · ⚑ FLAGGED DISCOVERY</span>` : ''}
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="col-tau ${sc}">τ=${tau}</div>
+        <div class="col-status ${sc}">${esc(r.status)}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  renderPager('col', total, colPage, (p) => { colPage = p; renderCollisions(); });
+}
+
+// ── RENDER SUBMISSIONS ────────────────────────────────────────────────────────
+function renderSubmissions() {
+  let filtered = subResults;
+  if (typeFilter !== 'all') filtered = subResults.filter(s => s.type === typeFilter);
+
+  const total = filtered.length;
+  const start = (subPage - 1) * PAGE_SIZE;
+  const page = filtered.slice(start, start + PAGE_SIZE);
+
+  document.getElementById('sub-showing').textContent =
+    `${Math.min(start+1,total)}–${Math.min(start+PAGE_SIZE,total)} of ${total.toLocaleString()}`;
+
+  if (!page.length) {
+    document.getElementById('sub-results').innerHTML =
+      '<div class="empty">NO THEOREMS FOUND<br><br>Try a different search term</div>';
+    document.getElementById('sub-pager').innerHTML = '';
+    return;
+  }
+
+  document.getElementById('sub-results').innerHTML = page.map((s,i) => {
+    const handle = s.contributors?.handle || '—';
+    const tier = s.contributors?.tier || 'Explorer';
+    const ts = s.created_at ? new Date(s.created_at).toLocaleDateString('en-US',{
+      month:'short',day:'numeric',year:'numeric'}) : '—';
+    const typeClass = s.type === 'theorem' ? 'type-theorem'
+      : s.type === 'law' ? 'type-law' : 'type-discovery';
+    const uid = `lean-${start+i}`;
+
+    return `
+    <div class="sub-card">
+      <div class="sub-hdr">
+        <div>
+          <div class="sub-title">${esc(s.title || s.designation || 'Untitled')}</div>
+          <div class="sub-meta">
+            <b>${esc(handle)}</b> · ${esc(tier)} · ${ts}
+            ${s.designation ? ` · <span style="color:var(--warn)">${esc(s.designation)}</span>` : ''}
+          </div>
+        </div>
+        <span class="type-badge ${typeClass}">${(s.type||'discovery').toUpperCase()}</span>
+      </div>
+      ${s.coordinate ? `<div class="sub-coord">${esc(s.coordinate)}</div>` : ''}
+      ${s.abstract ? `<div class="sub-abstract">${esc(s.abstract.slice(0,300))}${s.abstract.length>300?'…':''}</div>` : ''}
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px">
+        ${s.github_url ? `<a class="gh-link" href="${esc(s.github_url)}" target="_blank">↗ GitHub</a>` : ''}
+        ${s.lean_raw ? `<button class="sub-lean-btn" onclick="toggleLean('${uid}')">VIEW LEAN ▾</button>` : ''}
+        ${s.citations ? `<span style="font-size:8px;color:#2a4050">Cites: ${esc(s.citations.slice(0,60))}</span>` : ''}
+      </div>
+      ${s.lean_raw ? `<div class="lean-preview" id="${uid}">${esc(s.lean_raw.slice(0,800))}${s.lean_raw.length>800?'\n\n...(truncated)':''}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  renderPager('sub', total, subPage, (p) => { subPage = p; renderSubmissions(); });
+}
+
+window.toggleLean = function(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+};
+
+// ── PAGER ─────────────────────────────────────────────────────────────────────
+function renderPager(prefix, total, current, onPage) {
+  const pages = Math.ceil(total / PAGE_SIZE);
+  if (pages <= 1) { document.getElementById(`${prefix}-pager`).innerHTML = ''; return; }
+
+  let html = `<button class="page-btn" onclick="(${onPage.toString()})(${current-1})"
+    ${current===1?'disabled':''}>◀</button>`;
+
+  for (let p = Math.max(1,current-2); p <= Math.min(pages,current+2); p++) {
+    html += `<button class="page-btn ${p===current?'active':''}"
+      onclick="(${onPage.toString()})(${p})">${p}</button>`;
+  }
+
+  html += `<button class="page-btn" onclick="(${onPage.toString()})(${current+1})"
+    ${current===pages?'disabled':''}>▶</button>`;
+
+  document.getElementById(`${prefix}-pager`).innerHTML = html;
+}
+
+// ── SORT & FILTER ─────────────────────────────────────────────────────────────
+window.setSort = function(s) {
+  colSort = s;
+  document.querySelectorAll('[id^="sort-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById(`sort-${s}`).classList.add('active');
+  search();
+};
+
+window.setTypeFilter = function(t) {
+  typeFilter = t;
+  document.querySelectorAll('[id^="type-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById(`type-${t}`).classList.add('active');
+  subPage = 1;
+  renderSubmissions();
+};
+
+window.showTab = function(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  event.target.classList.add('active');
+};
+
+// ── UTILS ──────────────────────────────────────────────────────────────────────
+function getStatusClass(status) {
+  if (!status) return '';
+  const s = status.toLowerCase();
+  if (s === 'noble' || s === 'NOBLE') return 'noble';
+  if (s.includes('lock') || s === 'LOCKED') return 'locked';
+  if (s.includes('shatter') || s === 'SHATTER') return 'shatter';
+  return 'locked';
+}
+
+function esc(s) {
+  return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
+}
+
+init();
+</script>
+</body>
+</html>
