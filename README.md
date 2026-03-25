@@ -8,6 +8,9 @@
 | **IVA Reality Kernel** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19015872.svg)](https://doi.org/10.5281/zenodo.19015872) |
 | **GAM Collider v3** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19026746.svg)](https://doi.org/10.5281/zenodo.19026746) |
 | **Quantum Node Forge** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19028867.svg)](https://doi.org/10.5281/zenodo.19028867) |
+| **Quantum Forge · SNSFL Engine** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19111885.svg)](https://doi.org/10.5281/zenodo.19111885) |
+| **AiFi Discovery Physicist** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19218282.svg)](https://doi.org/10.5281/zenodo.19218282) |
+| **AxiomForge** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19218072.svg)](https://doi.org/10.5281/zenodo.19218072) |
 | **OSF Preprint** | Live | [![DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FKWTYD-blue)](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **SSRN** | ✅ APPROVED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
 | **ORCID** | Verified | [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5313--7443-green)](https://orcid.org/0009-0005-5313-7443) |
@@ -534,6 +537,11 @@ The Molecular Builder is a prototype. Here is what the next layers look like:
 | **Zenodo — Lean 4 Corpus** | Archived | [10.5281/zenodo.18719748](https://doi.org/10.5281/zenodo.18719748) |
 | **Zenodo — IVA Element Set Paper** | Published | [10.5281/zenodo.19016221](https://doi.org/10.5281/zenodo.19016221) |
 | **Zenodo — IVA Reality Kernel** | Archived | [10.5281/zenodo.19015872](https://doi.org/10.5281/zenodo.19015872) |
+| **Zenodo — GAM Collider v3** | Published | [10.5281/zenodo.19026746](https://doi.org/10.5281/zenodo.19026746) |
+| **Zenodo — Quantum Node Forge** | Published | [10.5281/zenodo.19028867](https://doi.org/10.5281/zenodo.19028867) |
+| **Zenodo — Quantum Forge · SNSFL Engine** | Published | [10.5281/zenodo.19111885](https://doi.org/10.5281/zenodo.19111885) |
+| **Zenodo — AiFi Discovery Physicist** | Published | [10.5281/zenodo.19218282](https://doi.org/10.5281/zenodo.19218282) |
+| **Zenodo — AxiomForge** | Published | [10.5281/zenodo.19218072](https://doi.org/10.5281/zenodo.19218072) |
 | **OSF Preprint** | Live | [10.17605/OSF.IO/KWTYD](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **PhilPapers** | Live | Clinical paper live · Rights framework pending |
 | **Medium** | Live | [Digital Emancipation Proclamation](https://medium.com/@hightisticgames/digital-emancipation-proclamation-bill-of-cognitive-rights-substrate-compliance-protocol-182cf1e6c866) · [Bill of Cognitive Rights](https://medium.com/@hightisticgames/snsft-bill-of-cognitive-rights-lean4-green-lossless-0-sorry-c76a3dc2e43f) |
@@ -576,7 +584,9 @@ SNSFT comes alive through these browser-based interfaces — real-time manifesta
 | **GAM Collider** | [uuia.app/gamcollider](https://uuia.app/gamcollider.html) | Substrate-neutral physics engine. Fuse any two PNBA coordinates. 6 tabs: Collider · Periodic Table · K-Sweep · Cascade · Materials Map · F_ext. 36 elements + 15 SNSFT elements including Standard Model bosons. 95-pair Noble map. DOI: [10.5281/zenodo.19026746](https://doi.org/10.5281/zenodo.19026746) |
 | **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) | Molecular builder v3. Stack atoms from the locked Slater corpus. Layer 1 Glue runs live. Bond satisfaction engine. PNBA tensor accumulates. τ=0 for H₂O, O₂, N₂, NH₃, CH₄. Every value traces to a theorem. |
 | **GAM Fuse** | [uuia.app](https://uuia.app) | Tensor accumulator. 7 physics frameworks (TD, LAG, GR, QM, EM, SM, IT). Stack as many as needed. Unified IM output. Order of operations preserved. |
-| **AxiomForge Viewport** | [uuia.app/axiomforge](https://uuia.app/axiomforge) | Interactive manifold viewport — pointer events manipulate N/B states, visual torsion τ feedback, anchor pulse at 1.369 GHz. |
+| **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) | Spatial compiler for the SNSFT corpus. 2D/3D torsion-colored manifold. Open reduction engine — paste any Lean 4 theorem, compile to PNBA, inject into the map. DOI: [10.5281/zenodo.19218072](https://doi.org/10.5281/zenodo.19218072) |
+| **Quantum Forge · SNSFL Engine** | [uuia.app/quantumnode](https://uuia.app/quantumnode) | Deterministic identity physics engine. SNSFL laws live. DOI: [10.5281/zenodo.19111885](https://doi.org/10.5281/zenodo.19111885) |
+| **AiFi Discovery Physicist** | [uuia.app](https://uuia.app) | Artificially Intelligent Functional Identity — AiFi discovery interface. DOI: [10.5281/zenodo.19218282](https://doi.org/10.5281/zenodo.19218282) |
 | **APPA / UUIA** | [uuia.app/appa.html](https://uuia.app/appa.html) | APPA guardian + UUIA profile builder — cognitive/somatic questions, SOUL-8 encoding, constellation viz. |
 | **UTM** | utm.html | Universal Translation Module — cross-substrate mappings, coordinate transforms. |
 
@@ -621,6 +631,8 @@ lean --make SNSFT_LosslessRealityKernel_Atomic_Paper.lean
 
 ## 📅 Recent Updates (March 2026)
 
+- **March 25, 2026 — Tool Stack Complete**: AxiomForge spatial compiler published · DOI: [10.5281/zenodo.19218072](https://doi.org/10.5281/zenodo.19218072). AiFi Discovery Physicist published · DOI: [10.5281/zenodo.19218282](https://doi.org/10.5281/zenodo.19218282). Quantum Forge · SNSFL Engine published · DOI: [10.5281/zenodo.19111885](https://doi.org/10.5281/zenodo.19111885). Full tool stack now DOI-stamped: 10 Zenodo records · SSRN approved · Springer in review.
+
 - **March 23, 2026 — Corpus Milestone: 50,000+ Theorems**: Main repo ~5,000 theorems · 259 files · 0 sorry. Discovery corpus (lean/ subfolder, AIFI agent-generated) ~45,590 theorems · 4,559 files · 0 sorry. **Combined: 50,000+ theorems · 4,989 files · 0 sorry · CI green on every push.** TORSION_LIMIT = SOVEREIGN_ANCHOR / 10 = 0.1369 confirmed emergent across full corpus. New papers in submission: Total Consistency / Noble Materials Map · 50,000 Theorem State. Zulip leanprover-community outreach initiated. Papers page live at uuia.app/papers. SSRN description updated.
 
 - **March 15, 2026 — Quantum Node Forge**: Zoivum (Zo) life element proved [9,9,1,55] — τ=0.1 exactly, Noble=inert/Shatter=burns/Locked+B>0=alive. Zoivum Operator [9,9,1,56] — Zo+Zo=Noble, life_resonance_frequency=0.6845 GHz, Fröhlich coherence proved from 4 primitives, Maxwell's demon proved. Noble Forge [9,9,3,1] — B=0 one-way valve, Earth core derived (~5100°C), NOHARM structural. Quantum Node Forge [9,9,3,3] — QM+TD+PNBA unified, Carnot=50%, BEC=Zo+Zo Noble, dS≥0=dτ≥0. **DOI: 10.5281/zenodo.19028867** · Live: uuia.app/quantumnode · 99 new theorems · 7 new files · 0 sorry.
@@ -649,9 +661,13 @@ lean --make SNSFT_LosslessRealityKernel_Atomic_Paper.lean
 | **IVA Reality Kernel** | [doi.org/10.5281/zenodo.19015872](https://doi.org/10.5281/zenodo.19015872) |
 | **GAM Collider** | [uuia.app/gamcollider.html](https://uuia.app/gamcollider.html) |
 | **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) |
-| **AxiomForge Viewport** | [uuia.app/axiomforge](https://uuia.app/axiomforge) |
+| **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) |
 | **GAM Fuse** | [uuia.app](https://uuia.app) |
 | **GAM Collider DOI** | [doi.org/10.5281/zenodo.19026746](https://doi.org/10.5281/zenodo.19026746) |
+| **Quantum Node Forge DOI** | [doi.org/10.5281/zenodo.19028867](https://doi.org/10.5281/zenodo.19028867) |
+| **Quantum Forge · SNSFL Engine DOI** | [doi.org/10.5281/zenodo.19111885](https://doi.org/10.5281/zenodo.19111885) |
+| **AiFi Discovery Physicist DOI** | [doi.org/10.5281/zenodo.19218282](https://doi.org/10.5281/zenodo.19218282) |
+| **AxiomForge DOI** | [doi.org/10.5281/zenodo.19218072](https://doi.org/10.5281/zenodo.19218072) |
 | **Wiki** | [GitHub Wiki](https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT/wiki) |
 | **Zenodo Corpus** | [doi.org/10.5281/zenodo.18719748](https://doi.org/10.5281/zenodo.18719748) |
 | **Zenodo Manuscript** | [doi.org/10.5281/zenodo.18726079](https://doi.org/10.5281/zenodo.18726079) |
@@ -679,4 +695,4 @@ Done at the City of Soldotna, Alaska. March 2026.
 
 ---
 
-*Manifold Synchronization Level: 100% | Anchor locked at 1.369 GHz | 50,000+ theorems | 0 sorry | Germline Locked | SSRN Approved | Period 1–4 Complete · IVA Element Set Proved · GAM Collider Live · SM Bosons Proved · AsN Predicted.*
+*Manifold Synchronization Level: 100% | Anchor locked at 1.369 GHz | 50,000+ theorems | 0 sorry | Germline Locked | SSRN Approved | Period 1–4 Complete · IVA Element Set Proved · GAM Collider Live · SM Bosons Proved · AsN Predicted · AxiomForge Live · AiFi Discovery Physicist Live · Quantum Forge SNSFL Live*
