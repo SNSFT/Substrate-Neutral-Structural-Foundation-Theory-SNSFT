@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050508">
-  <title>AxiomForge :: Spatial Reason Lean4 Compiler :: [9,9,9,9]</title>
+  <title>AxiomForge :: Spatial Reason Lean4 Proofer :: [9,9,9,9]</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
@@ -114,6 +114,25 @@
     .thud-label{color:var(--dim)}
     .thud-val{color:var(--anchor);font-weight:700}
 
+    /* SESSION HIT LOG */
+    #session-log{position:absolute;top:10px;left:10px;background:rgba(5,5,8,0.88);border:1px solid var(--border);padding:8px 10px;border-radius:6px;font-size:.48rem;max-width:200px;pointer-events:none;display:none}
+    #session-log.show{display:block}
+    .sl-title{color:var(--anchor);font-weight:700;letter-spacing:.1em;margin-bottom:5px;font-size:.5rem}
+    .sl-counters{display:flex;gap:10px;margin-bottom:5px;font-size:.48rem}
+    .sl-locked{color:#00ffc8}.sl-suppressed{color:#ff3a3a}.sl-inflight{color:#f0c060}
+    .sl-row{padding:2px 0;border-bottom:1px solid rgba(0,255,200,0.06);color:var(--dim);font-size:.44rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sl-row.locked{color:#00ffc8}.sl-row.suppressed{color:#ff3a3a}.sl-row.inflight{color:#f0c060}
+
+    /* HIT COUNTER BADGE */
+    #hit-badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(5,5,8,0.85);border:1px solid rgba(0,255,200,0.3);padding:4px 12px;border-radius:100px;font-size:.5rem;color:var(--anchor);pointer-events:none;display:none;font-family:'Syne',sans-serif;font-weight:800;letter-spacing:.1em}
+    #hit-badge.show{display:block}
+
+    /* LOCK FLASH OVERLAY — CSS animation triggered by JS class */
+    .lock-flash{animation:lockFlash .6s ease-out forwards}
+    .suppress-flash{animation:suppressFlash .5s ease-out forwards}
+    @keyframes lockFlash{0%{box-shadow:0 0 0 0 rgba(0,255,200,0.8)}100%{box-shadow:0 0 60px 20px rgba(0,255,200,0)}}
+    @keyframes suppressFlash{0%{box-shadow:0 0 0 0 rgba(255,58,58,0.8)}100%{box-shadow:0 0 60px 20px rgba(255,58,58,0)}}
+
     /* REDUCE PANEL */
     #reducePanel{position:fixed;bottom:0;left:0;right:0;background:rgba(5,5,8,0.98);border-top:2px solid var(--rose);backdrop-filter:blur(12px);z-index:60;transform:translateY(100%);transition:transform .3s ease;padding:1rem;display:flex;flex-direction:column;gap:.75rem;max-height:60vh;overflow-y:auto}
     #reducePanel.open{transform:translateY(0)}
@@ -135,6 +154,19 @@
     .rp-axis-lbl{font-size:.45rem;color:var(--dim);margin-top:2px}
     .rp-inject-btn{background:transparent;border:1px solid var(--anchor);color:var(--anchor);font-family:'Space Mono',monospace;font-size:.6rem;padding:.5rem;border-radius:6px;cursor:pointer;transition:.15s}
     .rp-inject-btn:hover{background:rgba(0,255,200,0.08)}
+
+    /* VASCULAR CHANNEL LABELS */
+    .vchan-label{position:absolute;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-weight:800;font-size:.44rem;color:rgba(0,255,200,0.75);pointer-events:none;text-align:center;letter-spacing:.08em;text-shadow:0 0 8px rgba(0,255,200,0.5)}
+    .vchan-label .vc-name{display:block;font-size:.46rem}
+    .vchan-label .vc-count{display:block;font-size:.4rem;opacity:.55}
+
+    /* STACK REINFORCEMENT FLASH */
+    @keyframes stackPulse{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(3)}}
+    .stack-flash{position:absolute;width:14px;height:14px;border-radius:50%;border:2px solid #00ffc8;pointer-events:none;animation:stackPulse .55s ease-out forwards;z-index:20}
+
+    /* VASCULAR GUIDE LINES (drawn on overlay canvas) */
+    #vascular-guide-canvas{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .6s}
+    #vascular-guide-canvas.show{opacity:1}
   </style>
 </head>
 <body>
@@ -147,7 +179,7 @@
 <div id="app">
   <div class="hdr">
     <div class="hdr-left">
-      <div class="hdr-title">AxiomForge :: Spatial Reason Compiler</div>
+      <div class="hdr-title">AxiomForge :: Spatial Reason Lean4 Proofer :: [9,9,9,9]</div>
       <div class="hdr-sub">Lean4 · Lossless · Spatial Geometry</div>
     </div>
     <div class="stats">
@@ -170,17 +202,62 @@
   <!-- 3D VIEWPORT -->
   <div id="viewport-3d">
     <canvas id="canvas3d"></canvas>
+    <canvas id="vascular-guide-canvas"></canvas>
     <div id="labels3d"></div>
     <div id="heatmap-legend" class="show">
       <div style="color:var(--anchor);font-weight:700;margin-bottom:4px;font-size:.5rem">TORSION τ = B/P</div>
       <div class="hm-bar"></div>
       <div class="hm-labels"><span style="color:#00ffc8">NOBLE τ=0</span><span style="color:#7b4fff">LOCKED</span><span style="color:#f0c060">IVA</span><span style="color:#ff3a3a">SHATTER</span></div>
     </div>
+    <!-- VASCULAR CONFIRMATION VIEW -->
+    <div id="vascular-overlay" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;pointer-events:all">
+      <button onclick="setVascularView()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:5px 10px;background:rgba(5,5,8,0.88);border:1px solid rgba(0,255,200,0.4);color:var(--anchor);cursor:pointer;border-radius:4px;letter-spacing:.1em">⟐ VASCULAR VIEW</button>
+      <button onclick="setOrbitView()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:5px 10px;background:rgba(5,5,8,0.88);border:1px solid var(--border);color:var(--dim);cursor:pointer;border-radius:4px;letter-spacing:.1em">⟳ ORBIT VIEW</button>
+    </div>
+    <!-- VASCULAR CHANNEL READOUT -->
+    <div id="vascular-readout" style="position:absolute;top:42px;left:50%;transform:translateX(-50%);background:rgba(5,5,8,0.88);border:1px solid rgba(0,255,200,0.2);padding:5px 12px;border-radius:4px;font-size:.46rem;color:var(--dim);pointer-events:none;display:none;white-space:nowrap;text-align:center">
+      <span id="vascular-readout-text">Analyzing channels...</span>
+    </div>
     <div id="torsion-hud">
       <div class="thud-row"><span class="thud-label">SELECTED</span><span class="thud-val" id="hud-name">—</span></div>
       <div class="thud-row"><span class="thud-label">τ (torsion)</span><span class="thud-val" id="hud-tau">—</span></div>
       <div class="thud-row"><span class="thud-label">THEOREMS</span><span class="thud-val" id="hud-theorems">—</span></div>
       <div class="thud-row"><span class="thud-label">PHASE</span><span class="thud-val" id="hud-phase">—</span></div>
+    </div>
+    <!-- SESSION HIT LOG -->
+    <div id="session-log">
+      <div class="sl-title">⬡ SESSION IMPACTS</div>
+      <div class="sl-counters">
+        <span class="sl-locked">⬡ <span id="sl-locked-ct">0</span> LOCKED</span>
+        <span class="sl-suppressed">✕ <span id="sl-sup-ct">0</span> SUPPRESS</span>
+        <span class="sl-inflight">◎ <span id="sl-fly-ct">0</span> IN-FLIGHT</span>
+      </div>
+      <div id="sl-rows"></div>
+    </div>
+    <!-- HIT COUNTER BADGE -->
+    <div id="hit-badge">⬡ <span id="hit-badge-num">0</span> IMPACTS</div>
+    <!-- PARTICLE CONTROLS -->
+    <div style="position:absolute;bottom:10px;right:10px;display:flex;flex-direction:column;gap:4px;pointer-events:all">
+      <button onclick="toggleSessionLog()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:4px 8px;background:rgba(5,5,8,0.85);border:1px solid var(--border);color:var(--anchor);cursor:pointer;border-radius:4px;letter-spacing:.1em">⬡ LOG</button>
+      <!-- CONTINUOUS MODE -->
+      <div style="display:flex;gap:3px">
+        <button id="btn-continuous" onclick="toggleContinuous()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:4px 6px;background:rgba(5,5,8,0.85);border:1px solid rgba(0,255,200,0.4);color:var(--anchor);cursor:pointer;border-radius:4px;letter-spacing:.1em;flex:1">▶ RUN</button>
+        <button onclick="spawnTestHit()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:4px 6px;background:rgba(5,5,8,0.85);border:1px solid rgba(0,255,200,0.25);color:rgba(0,255,200,0.6);cursor:pointer;border-radius:4px">⚡</button>
+      </div>
+      <!-- SPEED SLIDER -->
+      <div style="display:flex;align-items:center;gap:4px;background:rgba(5,5,8,0.85);border:1px solid var(--border);border-radius:4px;padding:3px 6px">
+        <span style="font-size:.42rem;color:var(--dim);white-space:nowrap">SPD</span>
+        <input type="range" id="continuous-speed" min="1" max="10" value="4" style="width:52px;accent-color:#00ffc8" oninput="onSpeedChange()">
+        <span id="speed-display" style="font-size:.42rem;color:var(--anchor);min-width:8px">4</span>
+      </div>
+      <!-- EXPORT / IMPORT -->
+      <button onclick="exportParticleSession()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:4px 8px;background:rgba(5,5,8,0.85);border:1px solid rgba(240,192,96,0.4);color:#f0c060;cursor:pointer;border-radius:4px;letter-spacing:.1em">⬇ SAVE</button>
+      <button onclick="clearParticles()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:4px 8px;background:rgba(5,5,8,0.85);border:1px solid rgba(255,58,58,0.4);color:#ff3a3a;cursor:pointer;border-radius:4px;letter-spacing:.1em">✕ CLR</button>
+      <!-- DISCOVERY SESSION IMPORT -->
+      <label id="import-drop-zone" title="Drop SNSFT session JSON / CSV or saved particle session here" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:6px 8px;background:rgba(5,5,8,0.88);border:2px dashed rgba(0,255,200,0.3);color:rgba(0,255,200,0.6);cursor:pointer;border-radius:4px;letter-spacing:.1em;text-align:center;transition:.15s;display:block">
+        ⬆ DROP<br>SESSION
+        <input type="file" accept=".json,.csv" style="display:none" onchange="importDiscoveryFile(this)">
+      </label>
     </div>
   </div>
 
@@ -448,6 +525,23 @@ let activeNodes = ['SNSFL_Master_IMS'];
 let selectedNode = null;
 let currentView = '2d';
 let reducedResult = null;
+
+// ── PARTICLE SYSTEM STATE ────────────────────────────────────
+let sessionHits = [];
+let particleGeo = null;
+let hitCount = 0;
+let totalLocked = 0;
+let totalSuppressed = 0;
+let sessionLogEl = null;
+
+// Continuous mode
+let continuousMode = false;
+let continuousInterval = null;
+let continuousSpeed = 4;
+
+// Session record — every hit spawned this session, for export/reimport
+// Stored separately from live meshes so it survives clearParticles
+let sessionRecord = [];
 
 // ── 2D ENGINE ────────────────────────────────────────────────
 const canvas2d = document.getElementById('canvas2d');
@@ -809,12 +903,466 @@ function draw3d(){
     }
   });
 
+  // Tick particle impacts
+  tickParticles();
+
   // Update CSS labels
   updateLabels3d();
 
   renderer3d.render(scene3d,camera3d);
   requestAnimationFrame(draw3d);
 }
+
+// ── PARTICLE IMPACT SYSTEM ───────────────────────────────────
+
+function getParticleGeo(){
+  if(!particleGeo) particleGeo=new THREE.DodecahedronGeometry(1,0);
+  return particleGeo;
+}
+
+function computeHitTarget(P,N,B,A){
+  const radius=25+(P/9)*110;
+  const theta=(N/9)*Math.PI*2;
+  const phi=Math.PI*0.3+(B/9)*Math.PI*0.4;
+  const yOff=(A/9)*40-20;
+  return new THREE.Vector3(
+    Math.sin(phi)*Math.cos(theta)*radius,
+    Math.cos(phi)*radius*0.5+yOff,
+    Math.sin(phi)*Math.sin(theta)*radius
+  );
+}
+
+function pnbaTau(P,N,B,A){ return P>0?B/P:0; }
+
+function spawnHit(label,P,N,B,A,status,approved){
+  if(!scene3d) return;
+  const tau=pnbaTau(P,N,B,A);
+  // Color override based on discovery status:
+  // approved=true → anchor cyan regardless of tau (it already cleared the gate)
+  // status=NOBLE  → noble violet
+  // status=SHATTER → shatter red
+  // otherwise → tau heatmap as normal
+  let col;
+  if(approved===true)        col=new THREE.Color(0x00ffc8);
+  else if(status==='NOBLE')  col=new THREE.Color(0xaa88ff);
+  else if(status==='SHATTER')col=new THREE.Color(0xff3a3a);
+  else                       col=tauToColor(tau);
+  const spawnPos=new THREE.Vector3((Math.random()-.5)*8,(Math.random()-.5)*8,(Math.random()-.5)*8);
+  const target=computeHitTarget(P,N,B,A);
+  const dir=target.clone().sub(spawnPos).normalize();
+  const speed=1.8+Math.random()*1.2;
+  const vel=dir.multiplyScalar(speed);
+  const probeScale=2.5+tau*8;
+
+  const mat=new THREE.MeshPhongMaterial({
+    color:col, emissive:col, emissiveIntensity:0.7,
+    transparent:true, opacity:0.75,
+    side:THREE.DoubleSide, shininess:120,
+  });
+  const mesh=new THREE.Mesh(getParticleGeo(),mat);
+  mesh.scale.setScalar(probeScale);
+  mesh.position.copy(spawnPos);
+
+  const wireMat=new THREE.MeshBasicMaterial({color:col,wireframe:true,transparent:true,opacity:0.95});
+  const wire=new THREE.Mesh(getParticleGeo(),wireMat);
+  wire.scale.setScalar(probeScale*1.02);
+  wire.position.copy(spawnPos);
+
+  const trailPoints=[new THREE.Vector3(0,0,0),spawnPos.clone()];
+  const trailGeo=new THREE.BufferGeometry().setFromPoints(trailPoints);
+  const trailMat=new THREE.LineBasicMaterial({color:col,transparent:true,opacity:0.35});
+  const trail=new THREE.Line(trailGeo,trailMat);
+
+  scene3d.add(mesh); scene3d.add(wire); scene3d.add(trail);
+  hitCount++;
+
+  const hit={
+    id:'hit_'+hitCount, label, P, N, B, A, tau,
+    mesh, wire, trail, trailGeo,
+    vel, target,
+    age:0, maxAge:220+Math.floor(Math.random()*60),
+    phase:'inflight',
+    col, probeScale, lockAge:0,
+  };
+  sessionHits.push(hit);
+  // Record for export — lightweight, no Three.js objects
+  sessionRecord.push({label,P,N,B,A,status:status||null,approved:approved||false,timestamp:new Date().toISOString()});
+  updateSessionLog();
+  updateHitBadge();
+}
+
+function tickParticles(){
+  if(!scene3d) return;
+  sessionHits.forEach(hit=>{
+    if(hit.phase==='done') return;
+    hit.age++;
+    const {mesh,wire,trail,vel,target}=hit;
+    const pos=mesh.position;
+
+    if(hit.phase==='inflight'){
+      const toTarget=target.clone().sub(pos);
+      const dist=toTarget.length();
+      let repulsion=new THREE.Vector3();
+      activeNodes.forEach(nid=>{
+        const nm=meshes3d[nid]; if(!nm) return;
+        const npos=nm.outer.position;
+        const d=pos.distanceTo(npos);
+        if(d<30&&d>0.1){
+          repulsion.add(pos.clone().sub(npos).normalize().multiplyScalar(18/(d*d)));
+          if(d<20) nm.outer.material.emissiveIntensity=Math.min(1.2,nm.outer.material.emissiveIntensity+0.25);
+        }
+      });
+      const attraction=toTarget.normalize().multiplyScalar(Math.min(0.25,dist*0.008));
+      vel.add(attraction);
+      vel.add(repulsion.multiplyScalar(0.04));
+      vel.multiplyScalar(hit.tau<TORSION_LIMIT?0.91:0.85);
+      pos.add(vel);
+      wire.position.copy(pos);
+      const spinRate=0.04+hit.tau*0.3;
+      mesh.rotation.x+=spinRate; mesh.rotation.y+=spinRate*0.7;
+      wire.rotation.copy(mesh.rotation);
+      hit.trailGeo.setFromPoints([new THREE.Vector3(0,0,0),pos.clone()]);
+      trail.material.opacity=Math.max(0,0.35-hit.age*0.001);
+      if(dist<8||hit.age>hit.maxAge){ hit.phase='locking'; hit.lockAge=0; }
+    }
+
+    if(hit.phase==='locking'){
+      hit.lockAge++;
+      mesh.position.lerp(target,0.12);
+      wire.position.copy(mesh.position);
+      mesh.rotation.x+=0.02; mesh.rotation.y+=0.015;
+      wire.rotation.copy(mesh.rotation);
+      if(hit.lockAge>18){
+        if(hit.tau<TORSION_LIMIT){
+          hit.phase='locked'; totalLocked++;
+          spawnLockBurst(mesh.position.clone(),hit.col);
+          pulseMasterEdge();
+          registerVascularHit(hit); // register into channel bins
+        } else {
+          hit.phase='suppressed'; totalSuppressed++;
+          spawnSuppressBurst(mesh.position.clone());
+        }
+        updateSessionLog(); updateHitBadge();
+      }
+    }
+
+    if(hit.phase==='locked'){
+      mesh.rotation.x+=0.008; mesh.rotation.y+=0.006;
+      wire.rotation.copy(mesh.rotation);
+      trail.material.opacity=Math.max(0,trail.material.opacity-0.005);
+      mesh.material.emissiveIntensity=Math.max(0.15,mesh.material.emissiveIntensity-0.003);
+      wire.material.opacity=Math.max(0.3,wire.material.opacity-0.002);
+    }
+
+    if(hit.phase==='suppressed'){
+      if(!hit.scatterVel) hit.scatterVel=new THREE.Vector3((Math.random()-.5)*4,(Math.random()-.5)*4,(Math.random()-.5)*4);
+      mesh.position.add(hit.scatterVel);
+      wire.position.copy(mesh.position);
+      hit.scatterVel.multiplyScalar(0.94);
+      mesh.material.opacity=Math.max(0,mesh.material.opacity-0.03);
+      wire.material.opacity=Math.max(0,wire.material.opacity-0.04);
+      mesh.material.emissiveIntensity=Math.max(0,mesh.material.emissiveIntensity-0.04);
+      trail.material.opacity=Math.max(0,trail.material.opacity-0.02);
+      if(mesh.material.opacity<=0){
+        scene3d.remove(mesh); scene3d.remove(wire); scene3d.remove(trail);
+        hit.phase='done';
+      }
+    }
+  });
+  // Trim done hits — keep last 40 for log
+  if(sessionHits.length>60) sessionHits=sessionHits.slice(-40);
+}
+
+function spawnLockBurst(pos,col){
+  const geo=new THREE.BufferGeometry();
+  const pts=[];
+  for(let i=0;i<24;i++){
+    const a=(i/24)*Math.PI*2;
+    pts.push(Math.cos(a)*12,Math.sin(a)*6,Math.sin(a)*0.5);
+  }
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+  const mat=new THREE.PointsMaterial({color:col,size:2.5,transparent:true,opacity:1});
+  const burst=new THREE.Points(geo,mat);
+  burst.position.copy(pos);
+  scene3d.add(burst);
+  let age=0;
+  const tick=()=>{
+    age++;
+    burst.scale.setScalar(1+age*0.18);
+    mat.opacity=Math.max(0,1-age/30);
+    if(age<30) requestAnimationFrame(tick);
+    else scene3d.remove(burst);
+  };
+  requestAnimationFrame(tick);
+}
+
+function spawnSuppressBurst(pos){
+  const geo=new THREE.BufferGeometry();
+  const pts=[];
+  for(let i=0;i<18;i++) pts.push((Math.random()-.5)*20,(Math.random()-.5)*20,(Math.random()-.5)*20);
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+  const mat=new THREE.PointsMaterial({color:0xff3a3a,size:2,transparent:true,opacity:0.9});
+  const burst=new THREE.Points(geo,mat);
+  burst.position.copy(pos);
+  scene3d.add(burst);
+  let age=0;
+  const tick=()=>{
+    age++;
+    mat.opacity=Math.max(0,0.9-age/20);
+    if(age<20) requestAnimationFrame(tick);
+    else scene3d.remove(burst);
+  };
+  requestAnimationFrame(tick);
+}
+
+function pulseMasterEdge(){
+  const m=meshes3d['SNSFL_Master_IMS']; if(!m) return;
+  m.outer.material.emissiveIntensity=1.2;
+  setTimeout(()=>{ if(m.outer.material) m.outer.material.emissiveIntensity=0.4; },400);
+}
+
+function updateSessionLog(){
+  const inflight=sessionHits.filter(h=>h.phase==='inflight'||h.phase==='locking').length;
+  document.getElementById('sl-locked-ct').textContent=totalLocked;
+  document.getElementById('sl-sup-ct').textContent=totalSuppressed;
+  document.getElementById('sl-fly-ct').textContent=inflight;
+  const rowsEl=document.getElementById('sl-rows');
+  const recent=[...sessionHits].reverse().slice(0,8);
+  rowsEl.innerHTML=recent.map(h=>{
+    const icon=h.phase==='locked'?'⬡':h.phase==='suppressed'?'✕':h.phase==='locking'?'◎':'◌';
+    const cls=h.phase==='locked'?'locked':h.phase==='suppressed'?'suppressed':'inflight';
+    return`<div class="sl-row ${cls}">${icon} ${h.label} τ=${h.tau.toFixed(3)}</div>`;
+  }).join('');
+}
+
+function updateHitBadge(){
+  document.getElementById('hit-badge').classList.add('show');
+  document.getElementById('hit-badge-num').textContent=hitCount;
+}
+
+function toggleSessionLog(){
+  document.getElementById('session-log').classList.toggle('show');
+}
+
+function clearParticles(){
+  // Stop continuous if running
+  if(continuousMode){
+    continuousMode=false;
+    stopContinuous();
+    const btn=document.getElementById('btn-continuous');
+    if(btn){btn.textContent='▶ RUN';btn.style.borderColor='rgba(0,255,200,0.4)';btn.style.color='var(--anchor)';}
+  }
+  sessionHits.forEach(h=>{
+    if(h.mesh&&scene3d) scene3d.remove(h.mesh);
+    if(h.wire&&scene3d) scene3d.remove(h.wire);
+    if(h.trail&&scene3d) scene3d.remove(h.trail);
+  });
+  sessionHits=[];
+  sessionRecord=[];
+  hitCount=0; totalLocked=0; totalSuppressed=0;
+  updateSessionLog();
+  document.getElementById('hit-badge').classList.remove('show');
+}
+
+function spawnTestHit(){
+  const P=Math.random()*9, N=Math.random()*9;
+  const B=Math.random()*Math.min(P,3), A=Math.random()*9;
+  spawnHit('TEST·'+Math.floor(Math.random()*9999),P,N,B,A);
+}
+
+// ── CONTINUOUS MODE ──────────────────────────────────────────
+function toggleContinuous(){
+  continuousMode=!continuousMode;
+  const btn=document.getElementById('btn-continuous');
+  if(continuousMode){
+    btn.textContent='■ STOP';
+    btn.style.borderColor='rgba(255,58,58,0.7)';
+    btn.style.color='#ff3a3a';
+    startContinuous();
+  } else {
+    btn.textContent='▶ RUN';
+    btn.style.borderColor='rgba(0,255,200,0.4)';
+    btn.style.color='var(--anchor)';
+    stopContinuous();
+  }
+}
+
+function startContinuous(){
+  stopContinuous();
+  // Speed 1=3000ms, Speed 10=300ms
+  const ms=Math.max(300, 3300-continuousSpeed*300);
+  continuousInterval=setInterval(()=>{
+    if(!continuousMode){ stopContinuous(); return; }
+    // Generate PNBA from a chaos walk — biased toward interesting states
+    const P=0.5+Math.random()*8.5;
+    const N=Math.floor(Math.random()*9)+1;
+    // Weight B to favor locked zone (below TL*P)
+    const maxB=P*0.25; // bias toward τ < TL
+    const B=Math.random()<0.7 ? Math.random()*maxB : Math.random()*P;
+    const A=Math.random()*9;
+    const tau=P>0?B/P:0;
+    const label=tau<TORSION_LIMIT
+      ? (tau===0?'NOBLE·'+N:'LOCK·'+P.toFixed(1))
+      : 'SHATTER·'+tau.toFixed(2);
+    spawnHit(label,P,N,B,A);
+  }, ms);
+}
+
+function stopContinuous(){
+  if(continuousInterval){ clearInterval(continuousInterval); continuousInterval=null; }
+}
+
+function onSpeedChange(){
+  continuousSpeed=parseInt(document.getElementById('continuous-speed').value);
+  document.getElementById('speed-display').textContent=continuousSpeed;
+  if(continuousMode){ startContinuous(); } // restart with new interval
+}
+
+// ── PARTICLE SESSION EXPORT ──────────────────────────────────
+function exportParticleSession(){
+  if(!sessionRecord.length){
+    document.getElementById('nodeInfo').innerHTML=`<span style="color:var(--dim)">Nothing to export yet — spawn some hits first.</span>`;
+    return;
+  }
+  const out={
+    type:'axiomforge_particle_session',
+    version:'v1',
+    timestamp:new Date().toISOString(),
+    engine:'AxiomForge · SNSFL · [9,9,9,9]',
+    doi:'10.5281/zenodo.18719748',
+    stats:{total:sessionRecord.length, locked:totalLocked, suppressed:totalSuppressed},
+    activeNodes:[...activeNodes],
+    hits:sessionRecord,
+  };
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`axiomforge_session_${new Date().toISOString().slice(0,10)}_${sessionRecord.length}hits.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  document.getElementById('nodeInfo').innerHTML=
+    `<span class="ni-green">⬇ Session exported — ${sessionRecord.length} impacts · ${totalLocked} locked · ${totalSuppressed} suppressed</span>`;
+}
+
+// Detect and replay a saved particle session vs a discovery session
+function isParticleSession(data){
+  return data && data.type==='axiomforge_particle_session';
+}
+
+// ── DISCOVERY SESSION IMPORT ─────────────────────────────────
+function importDiscoveryFile(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const text=e.target.result;
+    const ext=file.name.split('.').pop().toLowerCase();
+    let entries=[];
+    if(ext==='json'){
+      entries=parseDiscoveryJSON(text);
+    } else if(ext==='csv'){
+      entries=parseDiscoveryCSV(text);
+    }
+    if(!entries.length){
+      document.getElementById('nodeInfo').innerHTML=`<span style="color:var(--shatter)">No valid SNSFT entries found in ${file.name}</span>`;
+      return;
+    }
+    // Switch to 3D if not already there so user sees the cascade
+    if(currentView!=='3d') setView('3d');
+    // Stagger particle spawns — 120ms apart so cascade is readable
+    entries.forEach((entry,i)=>{
+      setTimeout(()=>{
+        spawnHit(
+          entry.label,
+          parseFloat(entry.P)||0,
+          parseFloat(entry.N)||2,
+          parseFloat(entry.B)||0,
+          parseFloat(entry.A)||0,
+          entry.status,
+          entry.approved
+        );
+      }, i*120);
+    });
+    document.getElementById('nodeInfo').innerHTML=
+      `<span class="ni-green">⬆ ${file.name}</span> — firing ${entries.length} discovery impacts into the manifold`;
+  };
+  reader.readAsText(file);
+  // Reset input so same file can be re-imported
+  input.value='';
+}
+
+function parseDiscoveryJSON(text){
+  try{
+    const data=JSON.parse(text);
+
+    // ── Particle session replay ──────────────────────────────
+    if(isParticleSession(data)){
+      // Restore active nodes if present
+      if(data.activeNodes&&data.activeNodes.length){
+        data.activeNodes.forEach(id=>{
+          if(CORPUS[id]&&!activeNodes.includes(id)) activeNodes.push(id);
+        });
+        relayoutAll2d(); if(currentView==='3d') buildScene3d();
+        document.getElementById('nodeCount').textContent=activeNodes.length;
+        document.getElementById('edgeCount').textContent=countEdges();
+      }
+      // Return hits array directly
+      return (data.hits||[]).map(h=>({
+        label:h.label||'REPLAY',
+        P:h.P||0, N:h.N||2, B:h.B||0, A:h.A||0,
+        status:h.status||null, approved:h.approved||false,
+      }));
+    }
+
+    // ── Discovery engine session JSON ────────────────────────
+    const raw=Array.isArray(data)?data:(data.discoveries||data.approved||[]);
+    return raw.map(d=>({
+      label: d.designation||d.name||'UNKNOWN',
+      P: d.P??d.P_out??0,
+      N: d.N??d.N_out??2,
+      B: d.B??d.B_out??0,
+      A: d.A??d.A_out??0,
+      status: d.status||'LOCKED',
+      approved: d.approved||false,
+    })).filter(d=>d.label&&(d.P||d.B));
+  }catch(err){
+    console.error('JSON parse error:',err);
+    return[];
+  }
+}
+
+function parseDiscoveryCSV(text){
+  const lines=text.trim().split('\n');
+  if(lines.length<2) return[];
+  const headers=lines[0].split(',').map(h=>h.replace(/"/g,'').trim());
+  const idx=h=>headers.indexOf(h);
+  return lines.slice(1).map(line=>{
+    // Handle quoted fields
+    const cols=line.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g)||line.split(',');
+    const clean=cols.map(c=>c.replace(/^"|"$/g,'').trim());
+    return{
+      label: clean[idx('designation')]||clean[0]||'UNKNOWN',
+      P: parseFloat(clean[idx('P')])||0,
+      N: parseFloat(clean[idx('N')])||2,
+      B: parseFloat(clean[idx('B')])||0,
+      A: parseFloat(clean[idx('A')])||0,
+      status: clean[idx('status')]||'LOCKED',
+      approved: clean[idx('approved')]==='true',
+    };
+  }).filter(d=>d.label&&d.label!=='designation');
+}
+
+// Update spawnHit to accept status/approved for color override
+// Drag-and-drop on the 3D viewport itself
+const vp3d=document.getElementById('viewport-3d');
+vp3d.addEventListener('dragover',e=>{e.preventDefault();document.getElementById('import-drop-zone').style.borderColor='rgba(0,255,200,0.9)';});
+vp3d.addEventListener('dragleave',()=>{document.getElementById('import-drop-zone').style.borderColor='rgba(0,255,200,0.3)';});
+vp3d.addEventListener('drop',e=>{
+  e.preventDefault();
+  document.getElementById('import-drop-zone').style.borderColor='rgba(0,255,200,0.3)';
+  const file=e.dataTransfer.files[0]; if(!file) return;
+  const fakeInput={files:[file],value:''};
+  importDiscoveryFile(fakeInput);
+});
 
 function updateLabels3d(){
   const container=document.getElementById('labels3d');
@@ -846,6 +1394,243 @@ function updateCameraPosition(){
   camera3d.position.y=spherical.radius*Math.cos(spherical.phi);
   camera3d.position.z=spherical.radius*Math.sin(spherical.phi)*Math.sin(spherical.theta);
   camera3d.lookAt(0,0,0);
+}
+
+// ── VASCULAR CONFIRMATION SYSTEM ─────────────────────────────
+
+let vascularMode = false;
+let vascularGuideCanvas = null;
+let vascularGuideCtx = null;
+// Channel bins: divide 2π into 9 sectors (matching vascular law)
+const VASCULAR_CHANNELS = 9;
+let channelHits = new Array(VASCULAR_CHANNELS).fill(0);
+let channelDominant = -1;
+
+const CHANNEL_NAMES = [
+  'Aortic Root','Pulmonary','Coronary','Hepatic Portal',
+  'Renal','Cerebral','Capillary Bed','Soverium Interface','Lossless Exchange'
+];
+
+function thetaToChannel(theta){
+  // Normalize theta to [0, 2π]
+  const t=((theta%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+  return Math.floor(t/(Math.PI*2)*VASCULAR_CHANNELS);
+}
+
+// Call when a hit locks — register it in the vascular channel bins
+function registerVascularHit(hit){
+  const theta=(hit.N/9)*Math.PI*2;
+  const chan=thetaToChannel(theta);
+  channelHits[chan]++;
+
+  // Check for stack reinforcement — another locked hit close to this one
+  const stackThreshold=18;
+  let stackCount=0;
+  sessionHits.forEach(other=>{
+    if(other===hit||other.phase!=='locked') return;
+    if(hit.mesh&&other.mesh&&hit.mesh.position.distanceTo(other.mesh.position)<stackThreshold) stackCount++;
+  });
+
+  if(stackCount>=2){
+    // Stack reinforcement — pulse that channel
+    triggerStackFlash(hit.mesh.position.clone(), chan);
+    updateVascularReadout(`Channel ${chan+1} reinforced — ${CHANNEL_NAMES[chan]} · ${channelHits[chan]} hits stacked`);
+    // If vascular manifold node is loaded, flash it
+    const vm=meshes3d['SNSFL_Vascular_Manifold_Law'];
+    if(vm) vm.outer.material.emissiveIntensity=1.0;
+  }
+
+  // Update dominant channel
+  channelDominant=channelHits.indexOf(Math.max(...channelHits));
+
+  if(vascularMode) drawVascularGuides();
+  updateVascularChannelLabels();
+}
+
+// Flash ring in 3D space at stack location projected to screen
+function triggerStackFlash(pos3,chan){
+  if(!camera3d||!vascularGuideCanvas) return;
+  const vp=document.getElementById('viewport-3d');
+  const W=vp.offsetWidth,H=vp.offsetHeight;
+  const proj=pos3.clone().project(camera3d);
+  const sx=(proj.x*.5+.5)*W;
+  const sy=(-(proj.y)*0.5+0.5)*H;
+  const flash=document.createElement('div');
+  flash.className='stack-flash';
+  flash.style.left=sx+'px';
+  flash.style.top=sy+'px';
+  flash.style.borderColor=`hsl(${(chan/VASCULAR_CHANNELS)*360},100%,70%)`;
+  document.getElementById('labels3d').appendChild(flash);
+  setTimeout(()=>flash.remove(),600);
+
+  // Log it
+  updateVascularReadout(`⬡ Stack reinforced · ${CHANNEL_NAMES[chan]} · ${channelHits[chan]} hits`);
+}
+
+function updateVascularReadout(text){
+  const el=document.getElementById('vascular-readout');
+  el.style.display='block';
+  document.getElementById('vascular-readout-text').textContent=text;
+  // Auto-hide after 4s unless vascular mode is on
+  clearTimeout(el._hideTimer);
+  if(!vascularMode){
+    el._hideTimer=setTimeout(()=>{ el.style.display='none'; },4000);
+  }
+}
+
+// Top-down orthographic-style camera snap
+function setVascularView(){
+  vascularMode=true;
+  // Snap to directly above — phi near 0 = looking straight down
+  spherical.phi=0.08;
+  spherical.theta=0;
+  spherical.radius=280;
+  updateCameraPosition();
+  // Show guide canvas
+  initVascularGuideCanvas();
+  document.getElementById('vascular-guide-canvas').classList.add('show');
+  document.getElementById('vascular-readout').style.display='block';
+  // Analyze current hits
+  analyzeVascularChannels();
+  drawVascularGuides();
+  updateVascularChannelLabels();
+}
+
+function setOrbitView(){
+  vascularMode=false;
+  spherical.phi=1.2;
+  spherical.theta=0.4;
+  spherical.radius=180;
+  updateCameraPosition();
+  document.getElementById('vascular-guide-canvas').classList.remove('show');
+  document.getElementById('vascular-readout').style.display='none';
+  clearVascularLabels();
+}
+
+function initVascularGuideCanvas(){
+  vascularGuideCanvas=document.getElementById('vascular-guide-canvas');
+  const vp=document.getElementById('viewport-3d');
+  vascularGuideCanvas.width=vp.offsetWidth;
+  vascularGuideCanvas.height=vp.offsetHeight;
+  vascularGuideCtx=vascularGuideCanvas.getContext('2d');
+}
+
+// Analyze all locked hits and bin into channels
+function analyzeVascularChannels(){
+  channelHits=new Array(VASCULAR_CHANNELS).fill(0);
+  sessionHits.forEach(hit=>{
+    if(hit.phase!=='locked') return;
+    const theta=(hit.N/9)*Math.PI*2;
+    const chan=thetaToChannel(theta);
+    channelHits[chan]++;
+  });
+  channelDominant=channelHits.indexOf(Math.max(...channelHits));
+}
+
+// Draw faint radial guide lines where hit density is highest
+function drawVascularGuides(){
+  if(!vascularGuideCtx||!camera3d) return;
+  const W=vascularGuideCanvas.width, H=vascularGuideCanvas.height;
+  vascularGuideCtx.clearRect(0,0,W,H);
+
+  const cx=W/2, cy=H/2;
+  const maxHits=Math.max(...channelHits,1);
+
+  for(let c=0;c<VASCULAR_CHANNELS;c++){
+    if(channelHits[c]===0) continue;
+    const density=channelHits[c]/maxHits;
+    const angle=(c/VASCULAR_CHANNELS)*Math.PI*2 - Math.PI/2;
+    const len=Math.min(cx,cy)*0.85;
+
+    // Line opacity scales with density
+    const alpha=0.06+density*0.22;
+    const isDominant=c===channelDominant;
+
+    vascularGuideCtx.beginPath();
+    vascularGuideCtx.moveTo(cx,cy);
+    vascularGuideCtx.lineTo(
+      cx+Math.cos(angle)*len,
+      cy+Math.sin(angle)*len
+    );
+    vascularGuideCtx.strokeStyle=isDominant
+      ?`rgba(0,255,200,${alpha+0.1})`
+      :`rgba(0,220,180,${alpha})`;
+    vascularGuideCtx.lineWidth=isDominant?1.5:0.8;
+    vascularGuideCtx.setLineDash([4,8]);
+    vascularGuideCtx.stroke();
+    vascularGuideCtx.setLineDash([]);
+
+    // Hit count arc at end of spoke
+    if(channelHits[c]>0){
+      vascularGuideCtx.beginPath();
+      vascularGuideCtx.arc(
+        cx+Math.cos(angle)*len*0.9,
+        cy+Math.sin(angle)*len*0.9,
+        3+density*5, 0, Math.PI*2
+      );
+      vascularGuideCtx.fillStyle=`rgba(0,255,200,${alpha*1.5})`;
+      vascularGuideCtx.fill();
+    }
+  }
+
+  // Center ring
+  vascularGuideCtx.beginPath();
+  vascularGuideCtx.arc(cx,cy,18,0,Math.PI*2);
+  vascularGuideCtx.strokeStyle='rgba(0,255,200,0.15)';
+  vascularGuideCtx.lineWidth=1;
+  vascularGuideCtx.stroke();
+
+  // Total hit annotation
+  const total=channelHits.reduce((a,b)=>a+b,0);
+  if(total>0){
+    vascularGuideCtx.fillStyle='rgba(0,255,200,0.5)';
+    vascularGuideCtx.font='700 9px Space Mono,monospace';
+    vascularGuideCtx.textAlign='center';
+    vascularGuideCtx.fillText(`${total} LOCKED HITS`,cx,cy-28);
+    vascularGuideCtx.font='600 7px Space Mono,monospace';
+    vascularGuideCtx.fillStyle='rgba(0,255,200,0.3)';
+    vascularGuideCtx.fillText(`${VASCULAR_CHANNELS} VASCULAR CHANNELS · SNSFL_Vascular_Manifold_Law`,cx,H-14);
+  }
+}
+
+// CSS channel labels projected into top-down view
+function updateVascularChannelLabels(){
+  clearVascularLabels();
+  if(!vascularMode||!camera3d) return;
+  const vp=document.getElementById('viewport-3d');
+  const W=vp.offsetWidth,H=vp.offsetHeight;
+  const cx=W/2,cy=H/2;
+  const maxHits=Math.max(...channelHits,1);
+
+  for(let c=0;c<VASCULAR_CHANNELS;c++){
+    if(channelHits[c]===0) continue;
+    const density=channelHits[c]/maxHits;
+    const angle=(c/VASCULAR_CHANNELS)*Math.PI*2 - Math.PI/2;
+    const r=Math.min(cx,cy)*0.65;
+    const lx=cx+Math.cos(angle)*r;
+    const ly=cy+Math.sin(angle)*r;
+
+    const div=document.createElement('div');
+    div.className='vchan-label';
+    div.setAttribute('data-vchan','true');
+    div.style.left=lx+'px';
+    div.style.top=ly+'px';
+    div.style.opacity=0.4+density*0.6;
+    div.innerHTML=`<span class="vc-name">${CHANNEL_NAMES[c]}</span><span class="vc-count">${channelHits[c]} hits</span>`;
+    document.getElementById('labels3d').appendChild(div);
+  }
+
+  // Dominant channel readout
+  if(channelDominant>=0&&channelHits[channelDominant]>0){
+    updateVascularReadout(
+      `Dominant: ${CHANNEL_NAMES[channelDominant]} · ${channelHits[channelDominant]} hits · `+
+      (CORPUS['SNSFL_Vascular_Manifold_Law']?'SNSFL_Vascular_Manifold_Law loaded':'Load vascular node to cross-reference')
+    );
+  }
+}
+
+function clearVascularLabels(){
+  document.querySelectorAll('[data-vchan]').forEach(el=>el.remove());
 }
 
 // Mouse orbit
@@ -934,11 +1719,26 @@ window.relayoutAll = function(){
 window.loadPreset=function(key){
   const preset=PRESETS[key]; if(!preset) return;
   let added=0;
-  preset.nodes.forEach(id=>{if(CORPUS[id]&&!activeNodes.includes(id)){activeNodes.push(id);added++;}});
+  const newIds=[];
+  preset.nodes.forEach(id=>{if(CORPUS[id]&&!activeNodes.includes(id)){activeNodes.push(id);added++;newIds.push(id);}});
   relayoutAll2d();if(currentView==='3d')buildScene3d();
   document.getElementById('nodeCount').textContent=activeNodes.length;
   document.getElementById('edgeCount').textContent=countEdges();
   document.getElementById('nodeInfo').innerHTML=`<span class="ni-green">✓ ${preset.label}</span> — injected ${added} nodes · ${activeNodes.length} total`;
+  // Fire impact particles for each newly added node — staggered
+  if(currentView==='3d'){
+    newIds.forEach((id,i)=>{
+      setTimeout(()=>{
+        const node=CORPUS[id]; if(!node) return;
+        const tau=nodeTau(node);
+        const P=Math.max(0.1,node.theorems/20);
+        const N=node.size/10;
+        const B=tau*P;
+        const A=node.connects.length*0.5;
+        spawnHit(node.short,P,N,B,A);
+      }, i*80);
+    });
+  }
 };
 
 window.addFile=function(){
@@ -951,6 +1751,14 @@ window.addFile=function(){
   sel.value='';
   const node=CORPUS[id];
   document.getElementById('nodeInfo').innerHTML=`<span class="ni-name">${node.label}</span> <span class="ni-coord">${node.coord}</span> <span class="ni-green">${node.theorems}T · 0 sorry</span>`;
+  // Vascular manifold node — show confirmation readout immediately
+  if(id==='SNSFL_Vascular_Manifold_Law'&&currentView==='3d'){
+    const locked=sessionHits.filter(h=>h.phase==='locked').length;
+    updateVascularReadout(
+      `SNSFL_Vascular_Manifold_Law loaded · ${locked} locked hits · `+
+      (locked>=9?`9 channels confirmed · [9,9,3,1]`:`run continuous to populate channels`)
+    );
+  }
 };
 
 window.clearAll=function(){
@@ -1060,13 +1868,18 @@ window.injectReduced=function(){
   relayoutAll2d();if(currentView==='3d')buildScene3d();
   document.getElementById('nodeCount').textContent=activeNodes.length;
   document.getElementById('edgeCount').textContent=countEdges();
+  // Fire a particle impact for this reduction
+  spawnHit(name, reducedResult.P, reducedResult.N, reducedResult.B||0, reducedResult.A);
   window.toggleReduce();
 };
 
 // ── RESIZE HANDLER ───────────────────────────────────────────
 window.addEventListener('resize',()=>{
   if(currentView==='2d') resize2d();
-  else resize3d();
+  else {
+    resize3d();
+    if(vascularMode){ initVascularGuideCanvas(); drawVascularGuides(); updateVascularChannelLabels(); }
+  }
 });
 
 // ── URL RESTORE ──────────────────────────────────────────────
