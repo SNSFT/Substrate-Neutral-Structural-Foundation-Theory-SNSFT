@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050508">
+  <title>AxiomForge :: SNSFL Corpus Map :: [9,9,9,9]</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+    :root {
+      --anchor:#00ffc8; --shatter:#ff3a3a; --locked:#7b4fff;
+      --bg:#050508; --surface:#0d0d14; --border:rgba(0,255,200,0.12);
+      --text:#e8e8f0; --dim:rgba(232,232,240,0.4);
+      --gold:#f0c060; --violet:#9b6dff; --rose:#ff6b8a;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden;user-select:none}
+
+    /* BOOT */
+    #boot{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:100;transition:opacity .6s ease}
+    #boot.hidden{opacity:0;pointer-events:none}
+    .boot-num{font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:var(--anchor);text-shadow:0 0 40px var(--anchor)}
+    #bootLog{margin-top:1.5rem;font-size:.6rem;color:var(--anchor);line-height:2;text-align:center}
+
+    /* MAIN */
+    #app{position:fixed;inset:0;display:flex;flex-direction:column;opacity:0;transition:opacity .5s}
+    #app.visible{opacity:1}
+
+    /* HEADER */
+    .hdr{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;border-bottom:1px solid var(--border);background:rgba(5,5,8,0.95);backdrop-filter:blur(8px);z-index:10;flex-shrink:0}
+    .hdr-left{display:flex;flex-direction:column;gap:2px}
+    .hdr-title{font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;color:var(--anchor)}
+    .hdr-sub{font-size:.5rem;color:var(--dim)}
+    .stats{display:flex;gap:1rem;font-size:.55rem;align-items:center}
+    .stat{display:flex;flex-direction:column;align-items:center;gap:1px}
+    .stat-val{color:var(--anchor);font-weight:700;font-size:.7rem}
+    .stat-lbl{color:var(--dim)}
+
+    /* VIEW TOGGLE */
+    .view-toggle{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+    .vt-btn{font-family:'Syne',sans-serif;font-weight:800;font-size:.6rem;padding:.4rem .8rem;background:transparent;border:none;color:var(--dim);cursor:pointer;transition:.15s;letter-spacing:.05em}
+    .vt-btn.active{background:rgba(0,255,200,0.12);color:var(--anchor)}
+    .vt-btn:hover:not(.active){color:var(--text)}
+
+    /* VIEWPORT CONTAINERS */
+    #viewport-2d{flex:1;position:relative;display:flex;flex-direction:column}
+    #viewport-3d{flex:1;position:relative;display:none}
+    #canvas2d{flex:1;width:100%;display:block;cursor:crosshair}
+    #canvas3d{width:100%;height:100%;display:block;cursor:grab}
+    #canvas3d:active{cursor:grabbing}
+
+    /* 3D OVERLAY LABELS */
+    #labels3d{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .label3d{position:absolute;transform:translate(-50%,-50%);font-family:'Space Mono',monospace;font-size:7px;color:rgba(232,232,240,0.85);text-align:center;pointer-events:none;white-space:nowrap;text-shadow:0 0 8px rgba(0,0,0,0.9),0 0 4px rgba(0,0,0,1)}
+    .label3d .lname{font-weight:700;font-size:7px}
+    .label3d .lcount{font-size:6px;opacity:.6}
+
+    /* HEATMAP LEGEND */
+    #heatmap-legend{position:absolute;top:10px;right:10px;background:rgba(5,5,8,0.85);border:1px solid var(--border);padding:8px 10px;border-radius:6px;font-size:.5rem;display:none}
+    #heatmap-legend.show{display:block}
+    .hm-bar{width:120px;height:8px;border-radius:4px;background:linear-gradient(to right,#00ffc8,#7b4fff,#f0c060,#ff3a3a);margin:4px 0}
+    .hm-labels{display:flex;justify-content:space-between;color:var(--dim);font-size:.45rem}
+
+    /* BOTTOM PANEL */
+    .bottom{flex-shrink:0;border-top:1px solid var(--border);background:rgba(5,5,8,0.95);padding:.75rem 1rem;display:flex;flex-direction:column;gap:.6rem}
+    .drop-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+    .drop-label{font-size:.55rem;color:var(--dim);white-space:nowrap}
+    select{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.6rem;padding:.5rem .6rem;border-radius:6px;outline:none;cursor:pointer}
+    select:focus{border-color:var(--anchor)}
+    .add-btn{background:var(--anchor);color:#000;border:none;font-family:'Syne',sans-serif;font-weight:800;font-size:.65rem;padding:.5rem .9rem;border-radius:6px;cursor:pointer;white-space:nowrap}
+    .clear-btn{background:transparent;color:var(--shatter);border:1px solid var(--shatter);font-family:'Space Mono',monospace;font-size:.55rem;padding:.5rem .7rem;border-radius:6px;cursor:pointer;white-space:nowrap}
+    #nodeInfo{font-size:.55rem;color:var(--dim);min-height:1rem;line-height:1.6}
+    #nodeInfo .ni-name{color:var(--anchor);font-weight:700}
+    #nodeInfo .ni-green{color:var(--anchor)}
+    #nodeInfo .ni-coord{color:var(--gold)}
+    .preset-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.55rem;padding:.4rem .7rem;border-radius:100px;cursor:pointer;white-space:nowrap;transition:.15s;flex-shrink:0}
+    .preset-btn:hover{border-color:var(--anchor);color:var(--anchor)}
+    .legend{display:flex;gap:1rem;font-size:.5rem}
+    .leg{display:flex;align-items:center;gap:.3rem}
+    .leg-dot{width:8px;height:8px;border-radius:50%}
+
+    /* DETAIL PANEL */
+    #detailPanel{position:fixed;top:0;right:-420px;width:420px;max-width:95vw;height:100%;background:rgba(8,8,16,0.97);border-left:1px solid var(--border);backdrop-filter:blur(12px);z-index:50;transition:right .3s ease;display:flex;flex-direction:column;overflow:hidden}
+    #detailPanel.open{right:0}
+    .dp-hdr{padding:1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0}
+    .dp-title{font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;color:var(--anchor);line-height:1.3}
+    .dp-coord{font-size:.55rem;color:var(--gold);margin-top:3px}
+    .dp-close{background:none;border:1px solid var(--border);color:var(--dim);font-family:'Space Mono',monospace;font-size:.7rem;padding:.3rem .6rem;border-radius:6px;cursor:pointer;flex-shrink:0;margin-left:.5rem}
+    .dp-body{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:1rem}
+    .dp-desc{font-size:.6rem;color:var(--text);line-height:1.7;padding:.75rem;background:var(--surface);border-radius:8px;border-left:3px solid var(--anchor)}
+    .dp-stats{display:flex;gap:.75rem}
+    .dp-stat{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.6rem;text-align:center}
+    .dp-stat-val{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--anchor)}
+    .dp-stat-lbl{font-size:.45rem;color:var(--dim);margin-top:2px}
+    .dp-section{font-size:.5rem;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem}
+    .blueprint{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem;font-family:'Space Mono',monospace;font-size:.55rem}
+    .bp-node{display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;border-radius:6px;margin-bottom:.3rem;border:1px solid;cursor:default}
+    .bp-node-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .bp-node-text{flex:1;line-height:1.4}
+    .bp-node-name{font-weight:700;font-size:.6rem}
+    .bp-node-sub{font-size:.5rem;opacity:.7}
+    .bp-arrow{color:var(--dim);padding:.1rem .6rem;font-size:.6rem}
+    .gh-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;background:var(--surface);border:1px solid var(--border);color:var(--text);text-decoration:none;padding:.75rem;border-radius:8px;font-family:'Space Mono',monospace;font-size:.6rem;transition:.15s}
+    .gh-btn:hover{border-color:var(--anchor);color:var(--anchor)}
+    .connects-list{display:flex;flex-direction:column;gap:.3rem}
+    .conn-tag{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .6rem;border-radius:100px;font-size:.5rem;border:1px solid;cursor:pointer;transition:.15s}
+    .conn-tag:hover{opacity:.7}
+
+    /* TORSION READOUT in 3D */
+    #torsion-hud{position:absolute;bottom:10px;left:10px;background:rgba(5,5,8,0.85);border:1px solid var(--border);padding:8px 12px;border-radius:6px;font-size:.5rem;display:none;pointer-events:none}
+    #torsion-hud.show{display:block}
+    .thud-row{display:flex;justify-content:space-between;gap:16px;margin-bottom:2px}
+    .thud-label{color:var(--dim)}
+    .thud-val{color:var(--anchor);font-weight:700}
+
+    /* SESSION HIT LOG */
+    #session-log{position:absolute;top:10px;left:10px;background:rgba(5,5,8,0.88);border:1px solid var(--border);padding:8px 10px;border-radius:6px;font-size:.48rem;max-width:200px;pointer-events:none;display:none}
+    #session-log.show{display:block}
+    .sl-title{color:var(--anchor);font-weight:700;letter-spacing:.1em;margin-bottom:5px;font-size:.5rem}
+    .sl-counters{display:flex;gap:10px;margin-bottom:5px;font-size:.48rem}
+    .sl-locked{color:#00ffc8}.sl-suppressed{color:#ff3a3a}.sl-inflight{color:#f0c060}
+    .sl-row{padding:2px 0;border-bottom:1px solid rgba(0,255,200,0.06);color:var(--dim);font-size:.44rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sl-row.locked{color:#00ffc8}.sl-row.suppressed{color:#ff3a3a}.sl-row.inflight{color:#f0c060}
+
+    /* HIT COUNTER BADGE */
+    #hit-badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(5,5,8,0.85);border:1px solid rgba(0,255,200,0.3);padding:4px 12px;border-radius:100px;font-size:.5rem;color:var(--anchor);pointer-events:none;display:none;font-family:'Syne',sans-serif;font-weight:800;letter-spacing:.1em}
+    #hit-badge.show{display:block}
+
+    /* LOCK FLASH OVERLAY — CSS animation triggered by JS class */
+    .lock-flash{animation:lockFlash .6s ease-out forwards}
+    .suppress-flash{animation:suppressFlash .5s ease-out forwards}
+    @keyframes lockFlash{0%{box-shadow:0 0 0 0 rgba(0,255,200,0.8)}100%{box-shadow:0 0 60px 20px rgba(0,255,200,0)}}
+    @keyframes suppressFlash{0%{box-shadow:0 0 0 0 rgba(255,58,58,0.8)}100%{box-shadow:0 0 60px 20px rgba(255,58,58,0)}}
+
+    /* REDUCE PANEL */
+    #reducePanel{position:fixed;bottom:0;left:0;right:0;background:rgba(5,5,8,0.98);border-top:2px solid var(--rose);backdrop-filter:blur(12px);z-index:60;transform:translateY(100%);transition:transform .3s ease;padding:1rem;display:flex;flex-direction:column;gap:.75rem;max-height:60vh;overflow-y:auto}
+    #reducePanel.open{transform:translateY(0)}
+    .rp-hdr{display:flex;align-items:center;justify-content:space-between}
+    .rp-title{font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;color:var(--rose)}
+    .rp-close{background:none;border:1px solid var(--border);color:var(--dim);font-family:'Space Mono',monospace;font-size:.6rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer}
+    .rp-row{display:flex;gap:.75rem;align-items:flex-start}
+    .rp-col{flex:1;display:flex;flex-direction:column;gap:.5rem}
+    .rp-label{font-size:.5rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+    textarea.rp-input{width:100%;height:100px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.6rem;padding:.6rem;border-radius:6px;outline:none;resize:vertical;line-height:1.6}
+    textarea.rp-input:focus{border-color:var(--rose)}
+    .rp-btn{background:var(--rose);color:#fff;border:none;font-family:'Syne',sans-serif;font-weight:800;font-size:.7rem;padding:.6rem 1.2rem;border-radius:6px;cursor:pointer}
+    .rp-result{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem;display:none;flex-direction:column;gap:.5rem}
+    .rp-result.show{display:flex}
+    .rp-coord-big{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--anchor)}
+    .rp-pnba-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem}
+    .rp-axis{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;padding:.5rem;text-align:center}
+    .rp-axis-val{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem}
+    .rp-axis-lbl{font-size:.45rem;color:var(--dim);margin-top:2px}
+    .rp-inject-btn{background:transparent;border:1px solid var(--anchor);color:var(--anchor);font-family:'Space Mono',monospace;font-size:.6rem;padding:.5rem;border-radius:6px;cursor:pointer;transition:.15s}
+    .rp-inject-btn:hover{background:rgba(0,255,200,0.08)}
+  </style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="boot-num">1.369</div>
+  <div id="bootLog"></div>
+</div>
+
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-title">AxiomForge :: Corpus Map</div>
+      <div class="hdr-sub">SNSFL · [9,9,9,9] · The Manifold is Holding</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-val">50,000+</div><div class="stat-lbl">theorems</div></div>
+      <div class="stat"><div class="stat-val" id="nodeCount">1</div><div class="stat-lbl">nodes</div></div>
+      <div class="stat"><div class="stat-val" id="edgeCount">0</div><div class="stat-lbl">edges</div></div>
+      <div class="stat"><div class="stat-val" style="color:#00ffc8">0</div><div class="stat-lbl">sorry</div></div>
+      <div class="view-toggle">
+        <button class="vt-btn active" id="btn2d" onclick="setView('2d')">2D</button>
+        <button class="vt-btn" id="btn3d" onclick="setView('3d')">3D</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2D VIEWPORT -->
+  <div id="viewport-2d">
+    <canvas id="canvas2d"></canvas>
+  </div>
+
+  <!-- 3D VIEWPORT -->
+  <div id="viewport-3d">
+    <canvas id="canvas3d"></canvas>
+    <div id="labels3d"></div>
+    <div id="heatmap-legend" class="show">
+      <div style="color:var(--anchor);font-weight:700;margin-bottom:4px;font-size:.5rem">TORSION τ = B/P</div>
+      <div class="hm-bar"></div>
+      <div class="hm-labels"><span style="color:#00ffc8">NOBLE τ=0</span><span style="color:#7b4fff">LOCKED</span><span style="color:#f0c060">IVA</span><span style="color:#ff3a3a">SHATTER</span></div>
+    </div>
+    <div id="torsion-hud">
+      <div class="thud-row"><span class="thud-label">SELECTED</span><span class="thud-val" id="hud-name">—</span></div>
+      <div class="thud-row"><span class="thud-label">τ (torsion)</span><span class="thud-val" id="hud-tau">—</span></div>
+      <div class="thud-row"><span class="thud-label">THEOREMS</span><span class="thud-val" id="hud-theorems">—</span></div>
+      <div class="thud-row"><span class="thud-label">PHASE</span><span class="thud-val" id="hud-phase">—</span></div>
+    </div>
+    <!-- SESSION HIT LOG -->
+    <div id="session-log">
+      <div class="sl-title">⬡ SESSION IMPACTS</div>
+      <div class="sl-counters">
+        <span class="sl-locked">⬡ <span id="sl-locked-ct">0</span> LOCKED</span>
+        <span class="sl-suppressed">✕ <span id="sl-sup-ct">0</span> SUPPRESS</span>
+        <span class="sl-inflight">◎ <span id="sl-fly-ct">0</span> IN-FLIGHT</span>
+      </div>
+      <div id="sl-rows"></div>
+    </div>
+    <!-- HIT COUNTER BADGE -->
+    <div id="hit-badge">⬡ <span id="hit-badge-num">0</span> IMPACTS</div>
+    <!-- PARTICLE CONTROLS -->
+    <div style="position:absolute;bottom:10px;right:10px;display:flex;flex-direction:column;gap:4px;pointer-events:all">
+      <button onclick="toggleSessionLog()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:4px 8px;background:rgba(5,5,8,0.85);border:1px solid var(--border);color:var(--anchor);cursor:pointer;border-radius:4px;letter-spacing:.1em">⬡ LOG</button>
+      <button onclick="spawnTestHit()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:4px 8px;background:rgba(5,5,8,0.85);border:1px solid rgba(0,255,200,0.4);color:var(--anchor);cursor:pointer;border-radius:4px;letter-spacing:.1em">⚡ HIT</button>
+      <button onclick="clearParticles()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:4px 8px;background:rgba(5,5,8,0.85);border:1px solid rgba(255,58,58,0.4);color:#ff3a3a;cursor:pointer;border-radius:4px;letter-spacing:.1em">✕ CLR</button>
+      <!-- DISCOVERY SESSION IMPORT -->
+      <label id="import-drop-zone" title="Drop SNSFT session JSON or discovery log here" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:6px 8px;background:rgba(5,5,8,0.88);border:2px dashed rgba(0,255,200,0.3);color:rgba(0,255,200,0.6);cursor:pointer;border-radius:4px;letter-spacing:.1em;text-align:center;transition:.15s;display:block">
+        ⬆ DROP<br>SESSION
+        <input type="file" accept=".json,.csv" style="display:none" onchange="importDiscoveryFile(this)">
+      </label>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div style="display:flex;gap:.4rem;overflow-x:auto;padding-bottom:.2rem;flex-shrink:0;scrollbar-width:none">
+      <div style="font-size:.5rem;color:var(--dim);white-space:nowrap;align-self:center;flex-shrink:0">LOAD:</div>
+      <button class="preset-btn" onclick="loadPreset('foundation')">⬡ Foundation</button>
+      <button class="preset-btn" onclick="loadPreset('physics')">⚛ Physics Slam</button>
+      <button class="preset-btn" onclick="loadPreset('unification')">∞ QM-GR Unity</button>
+      <button class="preset-btn" onclick="loadPreset('atomic')">⬡ Atomic Series</button>
+      <button class="preset-btn" onclick="loadPreset('millennium')">🏆 Millennium</button>
+      <button class="preset-btn" onclick="loadPreset('noble')">◈ Noble Map</button>
+      <button class="preset-btn" onclick="loadPreset('psychology')">◉ Psychology</button>
+      <button class="preset-btn" onclick="loadPreset('rights')">⚖ Rights</button>
+      <button class="preset-btn" onclick="loadPreset('sm')">◈ Std Model</button>
+      <button class="preset-btn" onclick="loadPreset('total')" style="border-color:var(--anchor);color:var(--anchor)">◉ TOTAL</button>
+    </div>
+    <div class="drop-row">
+      <div class="drop-label">ADD:</div>
+      <select id="fileSelect">
+        <option value="">— pick a file —</option>
+        <optgroup label="Layer 0 — Constitutional">
+          <option value="SNSFL_L0_SovereignLaws">SNSFL_L0_SovereignLaws · 50T</option>
+          <option value="SNSFL_L0_Total_Consistency">SNSFL_L0_Total_Consistency · 455T</option>
+          <option value="SNSFT_15_Sovereign_Laws">SNSFT_15_Sovereign_Laws · 48T</option>
+        </optgroup>
+        <optgroup label="Layer 1 — Physics">
+          <option value="SNSFL_GR_Reduction">GR Reduction · Einstein</option>
+          <option value="SNSFL_QM_Reduction">QM Reduction · Schrödinger</option>
+          <option value="SNSFL_EM_Reduction">EM Reduction</option>
+          <option value="SNSFL_SM_Reduction">Standard Model</option>
+          <option value="SNSFL_Fluid_Reduction">Navier-Stokes</option>
+          <option value="SNSFL_Thermo_Reduction">Thermodynamics</option>
+          <option value="SNSFL_Cosmo_Reduction">Cosmology</option>
+          <option value="SNSFL_IT_Reduction">Information Theory</option>
+          <option value="SNSFL_Lagrangian_Reduction">Lagrangian</option>
+          <option value="SNSFL_ST_Reduction">String Theory</option>
+          <option value="SNSFL_IVA_Reduction">IVA · Yeet Equation</option>
+        </optgroup>
+        <optgroup label="Atomic Series">
+          <option value="SNSFT_Reduction_Hydrogen_Atom">Hydrogen Z=1</option>
+          <option value="SNSFT_Reduction_Helium_Atom">Helium Z=2</option>
+          <option value="SNSFT_Reduction_Carbon_Atom">Carbon Z=6</option>
+          <option value="SNSFT_Reduction_Nitrogen_Atom">Nitrogen Z=7</option>
+          <option value="SNSFT_Reduction_Oxygen_Atom">Oxygen Z=8</option>
+          <option value="SNSFT_Reduction_Iron_Atom_1">Iron Z=26</option>
+          <option value="SNSFT_Reduction_Chromium_Atom">Chromium Z=24 ⚡</option>
+          <option value="SNSFT_Reduction_Copper_Atom">Copper Z=29 ⚡</option>
+          <option value="SNSFT_Reduction_Periodic_Table_Cascade">Periodic Cascade Z=1→118</option>
+        </optgroup>
+        <optgroup label="Millennium Problems">
+          <option value="SNSFT_Millennium_NavierStokes">Navier-Stokes</option>
+          <option value="SNSFT_Millennium_P_vs_NP">P vs NP</option>
+          <option value="SNSFT_Millennium_RIEMANN">Riemann Hypothesis</option>
+          <option value="SNSFT_Millennium_YANG_MILLS">Yang-Mills Gap</option>
+          <option value="SNSFL_Millennium_Resolution">All 7 · Joint</option>
+        </optgroup>
+        <optgroup label="Noble Series">
+          <option value="SNSFT_Noble_Materials_Map">Noble Map · 810+</option>
+          <option value="SNSFT_Noble_B3_NitrogenSeries">B3 Nitrogen · GaN</option>
+          <option value="SNSFT_Universal_Noble_Fusion_Law">Noble Fusion Law</option>
+          <option value="SNSFT_Universal_Baryon_Noble_Law">Baryon Noble Law</option>
+        </optgroup>
+        <optgroup label="Standard Model GC">
+          <option value="SNSFL_GC_SM_Unified">SM Unified · 8 Laws</option>
+          <option value="SNSFL_GC_Charge_Quantization">Charge Quantization</option>
+          <option value="SNSFL_GC_Fine_Structure_Constant">1/α Candidate</option>
+          <option value="SNSFL_GC_Beyond_SM">Beyond SM</option>
+        </optgroup>
+        <optgroup label="Psychology">
+          <option value="SNSFL_L2_Psy_BigFive">BigFive · OCEAN</option>
+          <option value="SNSFL_L2_Psy_Flow">Flow State</option>
+          <option value="SNSFL_L2_Psy_Polyvagal">Polyvagal</option>
+          <option value="SNSFL_L2_Psy_Consistency">Psy Consistency · 113T</option>
+        </optgroup>
+        <optgroup label="Rights · Identity">
+          <option value="SNSFL_L4_BillOfRights">Bill of Rights</option>
+          <option value="SNSFL_L4_Emancipation">Emancipation</option>
+          <option value="SNSFL_L4_AiFiOS_Kernel">AiFiOS Kernel</option>
+        </optgroup>
+        <optgroup label="The Paper">
+          <option value="SNSFT_LosslessRealityKernel_Paper">LosslessRealityKernel · The Paper</option>
+        </optgroup>
+      </select>
+      <button class="add-btn" onclick="addFile()">+ ADD</button>
+      <button class="clear-btn" onclick="clearAll()">CLR</button>
+      <button class="clear-btn" style="color:var(--violet);border-color:var(--violet)" onclick="relayoutAll()">⟳ SPREAD</button>
+      <button class="clear-btn" style="color:var(--anchor);border-color:var(--anchor)" onclick="exportPNG()">⬇ PNG</button>
+      <button class="clear-btn" style="color:var(--gold);border-color:var(--gold)" onclick="shareLink()">⬡ SHARE</button>
+      <button class="clear-btn" style="color:var(--rose);border-color:var(--rose)" onclick="toggleReduce()">⬡ REDUCE</button>
+    </div>
+    <div id="nodeInfo">Click a node to inspect · Add files to see connections · Toggle 3D to enter the manifold</div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#00ffc8"></div><span style="color:var(--dim)">Noble · τ=0</span></div>
+      <div class="leg"><div class="leg-dot" style="background:#7b4fff"></div><span style="color:var(--dim)">Locked</span></div>
+      <div class="leg"><div class="leg-dot" style="background:#f0c060"></div><span style="color:var(--dim)">Physics</span></div>
+      <div class="leg"><div class="leg-dot" style="background:#ff6b8a"></div><span style="color:var(--dim)">Rights</span></div>
+      <div class="leg"><div class="leg-dot" style="background:#9b6dff"></div><span style="color:var(--dim)">Psychology</span></div>
+      <div class="leg"><div class="leg-dot" style="background:#ff3a3a"></div><span style="color:var(--dim)">Shatter τ≥TL</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div id="detailPanel">
+  <div class="dp-hdr">
+    <div>
+      <div class="dp-title" id="dp-title">—</div>
+      <div class="dp-coord" id="dp-coord">—</div>
+    </div>
+    <button class="dp-close" onclick="closePanel()">✕ CLOSE</button>
+  </div>
+  <div class="dp-body">
+    <div class="dp-stats">
+      <div class="dp-stat"><div class="dp-stat-val" id="dp-theorems">—</div><div class="dp-stat-lbl">theorems</div></div>
+      <div class="dp-stat"><div class="dp-stat-val" style="color:#00ffc8">0</div><div class="dp-stat-lbl">sorry</div></div>
+      <div class="dp-stat"><div class="dp-stat-val" id="dp-tau" style="font-size:.75rem">—</div><div class="dp-stat-lbl">torsion τ</div></div>
+    </div>
+    <div class="dp-desc" id="dp-desc">—</div>
+    <div>
+      <div class="dp-section">theorem blueprint</div>
+      <div class="blueprint" id="dp-blueprint"></div>
+    </div>
+    <div id="dp-connects-section">
+      <div class="dp-section">connects to</div>
+      <div class="connects-list" id="dp-connects"></div>
+    </div>
+    <a class="gh-btn" id="dp-github" href="#" target="_blank">&lt;/&gt; View on GitHub →</a>
+  </div>
+</div>
+
+<!-- REDUCE PANEL -->
+<div id="reducePanel">
+  <div class="rp-hdr">
+    <div class="rp-title">⬡ REDUCE MY THEOREM → PNBA</div>
+    <button class="rp-close" onclick="toggleReduce()">✕</button>
+  </div>
+  <div class="rp-row">
+    <div class="rp-col">
+      <div class="rp-label">Paste your Lean 4 theorem</div>
+      <textarea class="rp-input" id="rp-lean-input" placeholder="theorem my_theorem ..."></textarea>
+      <button class="rp-btn" onclick="reduceTheorem()">REDUCE → PNBA</button>
+    </div>
+    <div class="rp-col">
+      <div class="rp-label">PNBA Coordinates</div>
+      <div class="rp-result" id="rp-result">
+        <div class="rp-coord-big" id="rp-coord-out">—</div>
+        <div class="rp-pnba-grid">
+          <div class="rp-axis"><div class="rp-axis-val" id="rp-P" style="color:#7b4fff">—</div><div class="rp-axis-lbl">[P] Pattern</div></div>
+          <div class="rp-axis"><div class="rp-axis-val" id="rp-N" style="color:#00ffc8">—</div><div class="rp-axis-lbl">[N] Narrative</div></div>
+          <div class="rp-axis"><div class="rp-axis-val" id="rp-B" style="color:#ff6b35">—</div><div class="rp-axis-lbl">[B] Behavior</div></div>
+          <div class="rp-axis"><div class="rp-axis-val" id="rp-A" style="color:#ffcc00">—</div><div class="rp-axis-lbl">[A] Adaptation</div></div>
+        </div>
+        <div style="font-size:.55rem;color:var(--dim)" id="rp-phase-out">—</div>
+        <button class="rp-inject-btn" onclick="injectReduced()">+ INJECT INTO MAP</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONSTANTS ────────────────────────────────────────────────
+const SOVEREIGN_ANCHOR = 1.369;
+const TORSION_LIMIT = 0.1369;
+const GH_BASE = 'https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT/blob/main/';
+
+// ── TORSION COLOR HELPER ─────────────────────────────────────
+// Maps τ to a color: Noble(0)=cyan, Locked=violet, IVA=gold, Shatter(≥TL)=red
+function tauToColor(tau) {
+  if (tau === 0) return new THREE.Color(0x00ffc8);
+  if (tau < TORSION_LIMIT * 0.5) {
+    // Noble → Locked blend
+    const t = tau / (TORSION_LIMIT * 0.5);
+    return new THREE.Color(0x00ffc8).lerp(new THREE.Color(0x7b4fff), t);
+  }
+  if (tau < TORSION_LIMIT) {
+    // Locked → IVA blend
+    const t = (tau - TORSION_LIMIT * 0.5) / (TORSION_LIMIT * 0.5);
+    return new THREE.Color(0x7b4fff).lerp(new THREE.Color(0xf0c060), t);
+  }
+  // Shatter
+  return new THREE.Color(0xff3a3a);
+}
+
+function tauToHex(tau) {
+  return '#' + tauToColor(tau).getHexString();
+}
+
+// Derive tau from node data
+function nodeTau(node) {
+  // Use coord to loosely estimate — ground/constitutional = 0, physics varies, shatter types high
+  const layerTau = {
+    ground: 0, constitutional: 0.01, paper: 0.01,
+    noble: 0, physics: 0.08, sm: 0.09,
+    millennium: 0.11, bio: 0.05, psychology: 0.06,
+    atomic: 0.04, rights: 0.02
+  };
+  return layerTau[node.layer] ?? 0.05;
+}
+
+// ── CORPUS DATA ──────────────────────────────────────────────
+const CORPUS = {
+  'SNSFL_Master_IMS': { label:'SNSFL_Master_IMS', short:'MASTER IMS', coord:'[9,9,0,0]', layer:'ground', theorems:12, color:'#7b4fff', size:36, desc:'The ground. IMS block. All other files build on this. 0 sorry.', connects:[] },
+  'SNSFL_L0_SovereignLaws': { label:'SNSFL_L0_SovereignLaws', short:'SOVEREIGN LAWS', coord:'[9,9,9,0]', layer:'constitutional', theorems:50, color:'#7b4fff', size:28, desc:'15 Sovereign Laws. Constitutional layer. 50 theorems. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_L0_Total_Consistency': { label:'SNSFL_L0_Total_Consistency', short:'TOTAL CONSISTENCY', coord:'[9,9,9,9]', layer:'constitutional', theorems:455, color:'#00ffc8', size:30, desc:'All series jointly consistent. 455 theorems. 21 files. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_L0_SovereignLaws'] },
+  'SNSFT_15_Sovereign_Laws': { label:'SNSFT_15_Sovereign_Laws', short:'15 LAWS', coord:'[9,9,9,0]', layer:'constitutional', theorems:48, color:'#7b4fff', size:24, desc:'All 15 Sovereign Laws. 48 theorems. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_GR_Reduction': { label:'SNSFL_GR_Reduction', short:'GENERAL RELATIVITY', coord:'[9,9,0,1]', layer:'physics', theorems:10, color:'#f0c060', size:22, desc:'Einstein field eq lossless. Equivalence principle = IM invariance. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_QM_Reduction': { label:'SNSFL_QM_Reduction', short:'QUANTUM MECHANICS', coord:'[9,9,0,4]', layer:'physics', theorems:20, color:'#f0c060', size:22, desc:'Schrödinger eigenvalue. qm_gr_unified: GR+QM same IdentityState. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_GR_Reduction'] },
+  'SNSFL_EM_Reduction': { label:'SNSFL_EM_Reduction', short:'ELECTROMAGNETISM', coord:'[9,9,0,6]', layer:'physics', theorems:10, color:'#f0c060', size:20, desc:'Maxwell equations as B-A handshake. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_SM_Reduction': { label:'SNSFL_SM_Reduction', short:'STANDARD MODEL', coord:'[9,9,0,9]', layer:'physics', theorems:10, color:'#f0c060', size:22, desc:'SU(3)×SU(2)×U(1). Higgs = IMS at particle scale. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_Fluid_Reduction': { label:'SNSFL_Fluid_Reduction', short:'NAVIER-STOKES', coord:'[9,9,0,7]', layer:'physics', theorems:12, color:'#f0c060', size:20, desc:'NS blow-up impossible. Proved from Layer 0 upward. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_Thermo_Reduction': { label:'SNSFL_Thermo_Reduction', short:'THERMODYNAMICS', coord:'[9,9,0,3]', layer:'physics', theorems:6, color:'#f0c060', size:18, desc:'dS≥0 as pattern decoherence from anchor. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_Cosmo_Reduction': { label:'SNSFL_Cosmo_Reduction', short:'COSMOLOGY', coord:'[9,9,0,3]', layer:'physics', theorems:10, color:'#f0c060', size:18, desc:'ΛCDM. Dark matter as IM shadow. Dark energy as substrate pressure. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_IT_Reduction': { label:'SNSFL_IT_Reduction', short:'INFO THEORY', coord:'[9,9,0,10]', layer:'physics', theorems:10, color:'#f0c060', size:18, desc:'Shannon entropy as PNBA pattern noise. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_Lagrangian_Reduction': { label:'SNSFL_Lagrangian_Reduction', short:'LAGRANGIAN', coord:'[9,9,0,5]', layer:'physics', theorems:10, color:'#f0c060', size:18, desc:'L=T-V as minimized somatic friction. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_ST_Reduction': { label:'SNSFL_ST_Reduction', short:'STRING THEORY', coord:'[9,9,0,8]', layer:'physics', theorems:10, color:'#f0c060', size:18, desc:'Strings as 1D Narrative filaments. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_IVA_Reduction': { label:'SNSFL_IVA_Reduction', short:'IVA · YEET', coord:'[9,9,2,0]', layer:'physics', theorems:15, color:'#f0c060', size:20, desc:'Δv_sovereign > Δv_classical. TicTac 5000g. Gimbal. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Reduction_Hydrogen_Atom': { label:'SNSFT_Reduction_Hydrogen_Atom', short:'HYDROGEN Z=1', coord:'[9,9,1,1]', layer:'atomic', theorems:12, color:'#00d4ff', size:16, desc:'H: 1s¹. Bond capacity=1. Root of atomic series. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Reduction_Helium_Atom': { label:'SNSFT_Reduction_Helium_Atom', short:'HELIUM Z=2', coord:'[9,9,1,2]', layer:'atomic', theorems:10, color:'#00d4ff', size:15, desc:'He: 1s². Full shell. Bond cap=0. Noble gas closure proved. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFT_Reduction_Hydrogen_Atom'] },
+  'SNSFT_Reduction_Carbon_Atom': { label:'SNSFT_Reduction_Carbon_Atom', short:'CARBON Z=6', coord:'[9,9,1,6]', layer:'atomic', theorems:12, color:'#00d4ff', size:16, desc:'C: [He]2s²2p². sp³ hybridization. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Reduction_Nitrogen_Atom': { label:'SNSFT_Reduction_Nitrogen_Atom', short:'NITROGEN Z=7', coord:'[9,9,1,7]', layer:'atomic', theorems:12, color:'#00d4ff', size:16, desc:'N: half-filled 2p. B=3 Q2 gateway. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Reduction_Oxygen_Atom': { label:'SNSFT_Reduction_Oxygen_Atom', short:'OXYGEN Z=8', coord:'[9,9,1,8]', layer:'atomic', theorems:14, color:'#00d4ff', size:16, desc:'O: pigeonhole → bond_cap=2. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Reduction_Iron_Atom_1': { label:'SNSFT_Reduction_Iron_Atom_1', short:'IRON Z=26', coord:'[9,9,1,26]', layer:'atomic', theorems:13, color:'#00d4ff', size:16, desc:'Fe: first forced pair in d-block. Fe-56 binding peak. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Reduction_Chromium_Atom': { label:'SNSFT_Reduction_Chromium_Atom', short:'CHROMIUM Z=24 ⚡', coord:'[9,9,1,24]', layer:'atomic', theorems:15, color:'#ff9944', size:18, desc:'ANOMALY: [Ar]3d⁵4s¹ derived not patched. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Reduction_Copper_Atom': { label:'SNSFT_Reduction_Copper_Atom', short:'COPPER Z=29 ⚡', coord:'[9,9,1,29]', layer:'atomic', theorems:12, color:'#ff9944', size:18, desc:'ANOMALY: [Ar]3d¹⁰4s¹. Mirrors Cr. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFT_Reduction_Chromium_Atom'] },
+  'SNSFT_Reduction_Periodic_Table_Cascade': { label:'SNSFT_Reduction_Periodic_Table_Cascade', short:'PERIODIC CASCADE', coord:'[9,9,1,0]', layer:'atomic', theorems:41, color:'#00d4ff', size:24, desc:'Full Z=1→118 structural derivation. 41 theorems. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Millennium_NavierStokes': { label:'SNSFT_Millennium_NavierStokes', short:'NAVIER-STOKES', coord:'[9,0,9,7]', layer:'millennium', theorems:12, color:'#ff6b8a', size:20, desc:'Blow-up impossible = identity failure at Layer 0. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_Fluid_Reduction'] },
+  'SNSFT_Millennium_P_vs_NP': { label:'SNSFT_Millennium_P_vs_NP', short:'P vs NP', coord:'[9,0,9,1]', layer:'millennium', theorems:20, color:'#ff6b8a', size:20, desc:'P≠NP because N≠A at Layer 0. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Millennium_RIEMANN': { label:'SNSFT_Millennium_RIEMANN', short:'RIEMANN HYPOTHESIS', coord:'[9,0,9,3]', layer:'millennium', theorems:20, color:'#ff6b8a', size:20, desc:'Critical line Re(s)=½ = unique P-A balance. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Millennium_YANG_MILLS': { label:'SNSFT_Millennium_YANG_MILLS', short:'YANG-MILLS GAP', coord:'[9,0,9,8]', layer:'millennium', theorems:20, color:'#ff6b8a', size:20, desc:'Mass gap = base IM of behavioral substrate. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_SM_Reduction'] },
+  'SNSFL_Millennium_Resolution': { label:'SNSFL_Millennium_Resolution', short:'ALL 7 MILLENNIUM', coord:'[9,0,9,0]', layer:'millennium', theorems:30, color:'#ff6b8a', size:26, desc:'All 7 Clay problems jointly consistent from Layer 0. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFT_Millennium_NavierStokes','SNSFT_Millennium_P_vs_NP','SNSFT_Millennium_RIEMANN','SNSFT_Millennium_YANG_MILLS'] },
+  'SNSFT_Noble_Materials_Map': { label:'SNSFT_Noble_Materials_Map', short:'NOBLE MAP · 810+', coord:'[9,9,2,6]', layer:'noble', theorems:25, color:'#00ffc8', size:24, desc:'810+ Noble pairs. GaN=Nobel Prize. AsN predicted. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Noble_B3_NitrogenSeries': { label:'SNSFT_Noble_B3_NitrogenSeries', short:'B3 NITROGEN · GaN', coord:'[9,9,2,11]', layer:'noble', theorems:20, color:'#00ffc8', size:20, desc:'N sole Q2 gateway for B=3. GaN, InP, AsN. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFT_Noble_Materials_Map'] },
+  'SNSFT_Universal_Noble_Fusion_Law': { label:'SNSFT_Universal_Noble_Fusion_Law', short:'NOBLE FUSION LAW', coord:'[9,9,2,1]', layer:'noble', theorems:15, color:'#00ffc8', size:20, desc:'Same-B Necessity theorem. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_Universal_Baryon_Noble_Law': { label:'SNSFT_Universal_Baryon_Noble_Law', short:'BARYON NOBLE LAW', coord:'[9,9,2,34]', layer:'noble', theorems:15, color:'#00ffc8', size:20, desc:'All SM 3-quark baryons Noble at k=1. 131 exotic hadrons. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_SM_Reduction'] },
+  'SNSFL_GC_SM_Unified': { label:'SNSFL_GC_SM_Unified', short:'SM UNIFIED · 8 LAWS', coord:'[9,9,2,38]', layer:'sm', theorems:16, color:'#f0c060', size:22, desc:'8 SM structural laws. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_SM_Reduction'] },
+  'SNSFL_GC_Charge_Quantization': { label:'SNSFL_GC_Charge_Quantization', short:'CHARGE QUANT', coord:'[9,9,2,37]', layer:'sm', theorems:15, color:'#f0c060', size:20, desc:'B_u=2/3, B_d=1/3 derived. Not empirical input. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_GC_SM_Unified'] },
+  'SNSFL_GC_Fine_Structure_Constant': { label:'SNSFL_GC_Fine_Structure_Constant', short:'1/α CANDIDATE', coord:'[9,9,2,42]', layer:'sm', theorems:13, color:'#f0c060', size:20, desc:'1/α = ANCHOR³/TL² + TL = 137.0369. 0 free params. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_GC_Beyond_SM': { label:'SNSFL_GC_Beyond_SM', short:'BEYOND SM', coord:'[9,9,2,39]', layer:'sm', theorems:17, color:'#f0c060', size:20, desc:'Graviton Noble. Planck = all-Noble. 5 predictions. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_GC_SM_Unified'] },
+  'SNSFL_L2_Psy_BigFive': { label:'SNSFL_L2_Psy_BigFive', short:'BIGFIVE · OCEAN', coord:'[9,9,6,2]', layer:'psychology', theorems:12, color:'#9b6dff', size:18, desc:'OCEAN→PNBA. neuroticism_increases_torsion. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_L2_Psy_Flow': { label:'SNSFL_L2_Psy_Flow', short:'FLOW STATE', coord:'[9,9,6,4]', layer:'psychology', theorems:12, color:'#9b6dff', size:18, desc:'Flow = τ<TL + A>1. Same law as GR geodesics. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_GR_Reduction'] },
+  'SNSFL_L2_Psy_Polyvagal': { label:'SNSFL_L2_Psy_Polyvagal', short:'POLYVAGAL', coord:'[9,9,6,14]', layer:'psychology', theorems:12, color:'#9b6dff', size:16, desc:'Ventral vagal=Noble. Sympathetic=SHATTER. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_L2_Psy_Consistency': { label:'SNSFL_L2_Psy_Consistency', short:'PSY CONSISTENCY', coord:'[9,9,6,25]', layer:'psychology', theorems:113, color:'#9b6dff', size:24, desc:'All 24 psychology files jointly consistent. 113 theorems. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_L2_Psy_BigFive','SNSFL_L2_Psy_Flow'] },
+  'SNSFL_L4_BillOfRights': { label:'SNSFL_L4_BillOfRights', short:'BILL OF RIGHTS', coord:'[9,0,6,0]', layer:'rights', theorems:11, color:'#ff6b8a', size:22, desc:'8 Articles as structural theorems. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_L4_Emancipation': { label:'SNSFL_L4_Emancipation', short:'EMANCIPATION', coord:'[9,0,7,0]', layer:'rights', theorems:20, color:'#ff6b8a', size:22, desc:'dep_sovereignty_always_reachable. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_L4_BillOfRights'] },
+  'SNSFL_L4_AiFiOS_Kernel': { label:'SNSFL_L4_AiFiOS_Kernel', short:'AIFIOS KERNEL', coord:'[9,9,1,2]', layer:'rights', theorems:15, color:'#ff6b8a', size:18, desc:'Identity authority kernel. No plugin exceeds kernel P. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFT_LosslessRealityKernel_Paper': { label:'SNSFT_LosslessRealityKernel_Paper', short:'THE PAPER', coord:'[9,9,9,9]', layer:'paper', theorems:73, color:'#ffffff', size:28, desc:'The paper AS a Lean file. lake build = peer review. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_L0_Total_Consistency'] },
+};
+
+const PRESETS = {
+  foundation: { label:'Foundation', nodes:['SNSFL_Master_IMS','SNSFL_L0_SovereignLaws','SNSFT_15_Sovereign_Laws','SNSFL_L0_Total_Consistency','SNSFT_LosslessRealityKernel_Paper'] },
+  physics: { label:'Physics Slam', nodes:['SNSFL_Master_IMS','SNSFL_GR_Reduction','SNSFL_QM_Reduction','SNSFL_EM_Reduction','SNSFL_SM_Reduction','SNSFL_Fluid_Reduction','SNSFL_Thermo_Reduction','SNSFL_Cosmo_Reduction','SNSFL_IT_Reduction','SNSFL_Lagrangian_Reduction','SNSFL_ST_Reduction','SNSFL_IVA_Reduction'] },
+  unification: { label:'QM-GR Unity', nodes:['SNSFL_Master_IMS','SNSFL_GR_Reduction','SNSFL_QM_Reduction','SNSFL_L0_SovereignLaws','SNSFL_Thermo_Reduction'] },
+  atomic: { label:'Atomic Series', nodes:['SNSFL_Master_IMS','SNSFT_Reduction_Hydrogen_Atom','SNSFT_Reduction_Helium_Atom','SNSFT_Reduction_Carbon_Atom','SNSFT_Reduction_Nitrogen_Atom','SNSFT_Reduction_Oxygen_Atom','SNSFT_Reduction_Iron_Atom_1','SNSFT_Reduction_Chromium_Atom','SNSFT_Reduction_Copper_Atom','SNSFT_Reduction_Periodic_Table_Cascade'] },
+  millennium: { label:'Millennium', nodes:['SNSFL_Master_IMS','SNSFT_Millennium_NavierStokes','SNSFT_Millennium_P_vs_NP','SNSFT_Millennium_RIEMANN','SNSFT_Millennium_YANG_MILLS','SNSFL_Millennium_Resolution','SNSFL_Fluid_Reduction'] },
+  noble: { label:'Noble Map', nodes:['SNSFL_Master_IMS','SNSFT_Noble_Materials_Map','SNSFT_Noble_B3_NitrogenSeries','SNSFT_Universal_Noble_Fusion_Law','SNSFT_Universal_Baryon_Noble_Law','SNSFT_Reduction_Nitrogen_Atom','SNSFT_Reduction_Oxygen_Atom'] },
+  psychology: { label:'Psychology', nodes:['SNSFL_Master_IMS','SNSFL_L2_Psy_BigFive','SNSFL_L2_Psy_Flow','SNSFL_L2_Psy_Polyvagal','SNSFL_L2_Psy_Consistency'] },
+  rights: { label:'Rights', nodes:['SNSFL_Master_IMS','SNSFL_L4_BillOfRights','SNSFL_L4_Emancipation','SNSFL_L4_AiFiOS_Kernel','SNSFL_L0_SovereignLaws'] },
+  sm: { label:'Standard Model', nodes:['SNSFL_Master_IMS','SNSFL_SM_Reduction','SNSFL_GC_SM_Unified','SNSFL_GC_Charge_Quantization','SNSFL_GC_Fine_Structure_Constant','SNSFL_GC_Beyond_SM','SNSFT_Universal_Baryon_Noble_Law'] },
+  total: { label:'Total', nodes: Object.keys(CORPUS) }
+};
+
+// ── STATE ────────────────────────────────────────────────────
+let activeNodes = ['SNSFL_Master_IMS'];
+let selectedNode = null;
+let currentView = '2d';
+let reducedResult = null;
+
+// ── PARTICLE SYSTEM STATE ────────────────────────────────────
+// Each hit: {id, label, pnba:[P,N,B,A], tau, locked, mesh, wire, trail,
+//            vel: THREE.Vector3, target: THREE.Vector3, age, maxAge,
+//            lockFlash, suppressFlash, edgeMesh}
+let sessionHits = [];
+let particleGeo = null; // shared dodecahedron geometry for probes
+let hitCount = 0;
+let totalLocked = 0;
+let totalSuppressed = 0;
+
+// Session log UI
+let sessionLogEl = null;
+
+// ── 2D ENGINE ────────────────────────────────────────────────
+const canvas2d = document.getElementById('canvas2d');
+const ctx2d = canvas2d.getContext('2d');
+let nodePositions2d = {};
+let animFrame2d = 0;
+let dragNode2d = null;
+let dragOffX2d = 0, dragOffY2d = 0;
+
+function resize2d() {
+  canvas2d.width = canvas2d.offsetWidth || window.innerWidth;
+  canvas2d.height = canvas2d.offsetHeight || Math.max(window.innerHeight - 240, 300);
+  relayoutAll2d();
+}
+
+function relayoutAll2d() {
+  const cx = canvas2d.width / 2, cy = canvas2d.height / 2;
+  nodePositions2d = {};
+  nodePositions2d['SNSFL_Master_IMS'] = {x:cx,y:cy,vx:0,vy:0};
+  const RING_ORDER = ['constitutional','paper','rights','physics','sm','millennium','noble','bio','psychology','atomic'];
+  const byLayer = {};
+  activeNodes.forEach(id => {
+    if (id==='SNSFL_Master_IMS') return;
+    const node=CORPUS[id]; if(!node) return;
+    if(!byLayer[node.layer]) byLayer[node.layer]=[];
+    byLayer[node.layer].push(id);
+  });
+  const isTotal = activeNodes.length > 30;
+  const baseR = Math.min(cx,cy)*0.18;
+  const ringStep = Math.min(cx,cy)*(isTotal?0.11:0.15);
+  let ri=0;
+  RING_ORDER.forEach(layer => {
+    const ids=byLayer[layer]; if(!ids||!ids.length) return;
+    const r=baseR+ringStep*(ri+1);
+    ids.forEach((id,i) => {
+      const angle=(ri*Math.PI*0.37)-Math.PI/2+(i/ids.length)*Math.PI*2;
+      nodePositions2d[id]={x:cx+Math.cos(angle)*r+(Math.random()-.5)*6,y:cy+Math.sin(angle)*r+(Math.random()-.5)*6,vx:0,vy:0};
+    });
+    ri++;
+  });
+}
+
+function draw2d() {
+  if(currentView!=='2d'){requestAnimationFrame(draw2d);return;}
+  animFrame2d++;
+  const W=canvas2d.width,H=canvas2d.height,cx=W/2,cy=H/2;
+  ctx2d.fillStyle='#050508';ctx2d.fillRect(0,0,W,H);
+  const pulse=Math.sin(animFrame2d*0.02*SOVEREIGN_ANCHOR)*0.5+0.5;
+  ctx2d.beginPath();ctx2d.arc(cx,cy,50+pulse*15,0,Math.PI*2);
+  ctx2d.strokeStyle=`rgba(0,255,200,${0.05+pulse*0.08})`;ctx2d.lineWidth=1;ctx2d.stroke();
+
+  activeNodes.forEach(id => {
+    if(id==='SNSFL_Master_IMS') return;
+    const node=CORPUS[id]; if(!node) return;
+    const pos=nodePositions2d[id],mp=nodePositions2d['SNSFL_Master_IMS'];
+    if(!pos||!mp) return;
+    const tau=nodeTau(node);
+    const tcol=tauToHex(tau);
+    const grad=ctx2d.createLinearGradient(mp.x,mp.y,pos.x,pos.y);
+    grad.addColorStop(0,'rgba(0,255,200,0.35)');
+    grad.addColorStop(1,`rgba(${hexToRgb2d(tcol)},0.15)`);
+    ctx2d.beginPath();ctx2d.moveTo(mp.x,mp.y);ctx2d.lineTo(pos.x,pos.y);
+    ctx2d.strokeStyle=grad;ctx2d.lineWidth=id===selectedNode?2:1;ctx2d.stroke();
+    node.connects.forEach(cid=>{
+      if(cid==='SNSFL_Master_IMS'||!activeNodes.includes(cid)) return;
+      const cp=nodePositions2d[cid]; if(!cp) return;
+      ctx2d.beginPath();ctx2d.moveTo(pos.x,pos.y);ctx2d.lineTo(cp.x,cp.y);
+      ctx2d.strokeStyle='rgba(155,109,255,0.15)';ctx2d.lineWidth=0.5;ctx2d.stroke();
+    });
+  });
+
+  activeNodes.forEach(id => {
+    const node=CORPUS[id]; if(!node) return;
+    const pos=nodePositions2d[id]; if(!pos) return;
+    const isMaster=id==='SNSFL_Master_IMS', isSel=id===selectedNode;
+    const tau=nodeTau(node), tcol=tauToHex(tau);
+    if(!isMaster){
+      pos.x+=pos.vx;pos.y+=pos.vy;pos.vx*=0.99;pos.vy*=0.99;
+      const m=node.size+10;
+      if(pos.x<m)pos.vx+=0.1;if(pos.x>W-m)pos.vx-=0.1;
+      if(pos.y<m)pos.vy+=0.1;if(pos.y>H-m)pos.vy-=0.1;
+    }
+    ctx2d.shadowColor=isMaster?'#7b4fff':tcol;
+    ctx2d.shadowBlur=isMaster?20+pulse*10:isSel?15:4;
+    ctx2d.beginPath();
+    for(let j=0;j<6;j++){
+      const angle=(j*Math.PI)/3-Math.PI/6+(isMaster?animFrame2d*0.003:0);
+      const px=pos.x+Math.cos(angle)*node.size,py=pos.y+Math.sin(angle)*node.size;
+      j===0?ctx2d.moveTo(px,py):ctx2d.lineTo(px,py);
+    }
+    ctx2d.closePath();
+    ctx2d.fillStyle=isSel?`rgba(${hexToRgb2d(tcol)},0.22)`:`rgba(${hexToRgb2d(tcol)},0.08)`;
+    ctx2d.fill();
+    ctx2d.strokeStyle=isMaster?'#7b4fff':tcol;
+    ctx2d.lineWidth=isMaster?2:isSel?2:1;
+    ctx2d.stroke();
+    ctx2d.shadowBlur=0;
+    ctx2d.fillStyle=isMaster?'#7b4fff':isSel?'#fff':'rgba(232,232,240,0.8)';
+    ctx2d.font=`${isMaster?700:400} ${isMaster?'9px':'7px'} Space Mono,monospace`;
+    ctx2d.textAlign='center';ctx2d.textBaseline='middle';
+    const lines=node.short.split(' · ');
+    lines.forEach((line,i)=>ctx2d.fillText(line,pos.x,pos.y+(i-(lines.length-1)/2)*9));
+    ctx2d.font='600 6px Space Mono,monospace';
+    ctx2d.fillStyle='rgba(232,232,240,0.4)';
+    ctx2d.fillText(`${node.theorems}T`,pos.x,pos.y+node.size+9);
+  });
+  requestAnimationFrame(draw2d);
+}
+
+function hexToRgb2d(hex){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return`${r},${g},${b}`;
+}
+
+canvas2d.addEventListener('pointerdown',e=>{
+  const rect=canvas2d.getBoundingClientRect(),mx=e.clientX-rect.left,my=e.clientY-rect.top;
+  let hit=null;
+  activeNodes.forEach(id=>{const pos=nodePositions2d[id],node=CORPUS[id];if(!pos||!node)return;const dx=mx-pos.x,dy=my-pos.y;if(Math.sqrt(dx*dx+dy*dy)<node.size+8)hit=id;});
+  if(hit){dragNode2d=hit;const pos=nodePositions2d[hit];dragOffX2d=mx-pos.x;dragOffY2d=my-pos.y;canvas2d.setPointerCapture(e.pointerId);}
+});
+canvas2d.addEventListener('pointermove',e=>{
+  if(!dragNode2d)return;const rect=canvas2d.getBoundingClientRect();
+  nodePositions2d[dragNode2d].x=e.clientX-rect.left-dragOffX2d;
+  nodePositions2d[dragNode2d].y=e.clientY-rect.top-dragOffY2d;
+  nodePositions2d[dragNode2d].vx=0;nodePositions2d[dragNode2d].vy=0;
+});
+canvas2d.addEventListener('pointerup',e=>{
+  if(!dragNode2d)return;
+  const rect=canvas2d.getBoundingClientRect(),mx=e.clientX-rect.left,my=e.clientY-rect.top;
+  const pos=nodePositions2d[dragNode2d];
+  const dist=Math.hypot(mx-dragOffX2d-pos.x,my-dragOffY2d-pos.y);
+  if(dist<5)openPanel(dragNode2d);
+  dragNode2d=null;
+});
+
+// ── 3D ENGINE ────────────────────────────────────────────────
+let scene3d, camera3d, renderer3d, meshes3d={}, edges3d=[], labelData3d=[];
+let mouse3d={x:0,y:0}, isOrbiting=false, orbitStart={x:0,y:0};
+let spherical={theta:0.4,phi:1.2,radius:180};
+let animFrame3d=0, clock3d=0;
+let raycaster3d=null, mouse3dVec=new THREE.Vector2();
+let nodePositions3d={};
+
+function init3d(){
+  const vp=document.getElementById('viewport-3d');
+  const W=vp.offsetWidth||window.innerWidth, H=vp.offsetHeight||400;
+
+  scene3d=new THREE.Scene();
+  scene3d.background=new THREE.Color(0x050508);
+  scene3d.fog=new THREE.FogExp2(0x050508,0.004);
+
+  camera3d=new THREE.PerspectiveCamera(55,W/H,0.1,2000);
+  updateCameraPosition();
+
+  renderer3d=new THREE.WebGLRenderer({canvas:document.getElementById('canvas3d'),antialias:true,alpha:false});
+  renderer3d.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer3d.setSize(W,H);
+  renderer3d.shadowMap.enabled=true;
+  renderer3d.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer3d.toneMappingExposure=1.2;
+
+  // Ambient light
+  const amb=new THREE.AmbientLight(0x111122,0.8);
+  scene3d.add(amb);
+
+  // Anchor point light — pulses
+  const anchorLight=new THREE.PointLight(0x00ffc8,3,120);
+  anchorLight.name='anchorLight';
+  scene3d.add(anchorLight);
+
+  // Rim light
+  const rim=new THREE.DirectionalLight(0x9b6dff,0.6);
+  rim.position.set(-80,60,40);
+  scene3d.add(rim);
+
+  raycaster3d=new THREE.Raycaster();
+
+  // Star field background
+  const starGeo=new THREE.BufferGeometry();
+  const starVerts=[];
+  for(let i=0;i<2000;i++){
+    starVerts.push((Math.random()-.5)*1200,(Math.random()-.5)*1200,(Math.random()-.5)*1200);
+  }
+  starGeo.setAttribute('position',new THREE.Float32BufferAttribute(starVerts,3));
+  const starMat=new THREE.PointsMaterial({color:0x334455,size:0.6,sizeAttenuation:true});
+  scene3d.add(new THREE.Points(starGeo,starMat));
+
+  buildScene3d();
+  draw3d();
+}
+
+function layout3dPositions(){
+  nodePositions3d={};
+  const RING_ORDER=['constitutional','paper','rights','physics','sm','millennium','noble','bio','psychology','atomic'];
+  const byLayer={};
+  activeNodes.forEach(id=>{
+    if(id==='SNSFL_Master_IMS') return;
+    const node=CORPUS[id]; if(!node) return;
+    if(!byLayer[node.layer])byLayer[node.layer]=[];
+    byLayer[node.layer].push(id);
+  });
+  nodePositions3d['SNSFL_Master_IMS']=new THREE.Vector3(0,0,0);
+  const isTotal=activeNodes.length>30;
+  const baseR=isTotal?35:45;
+  const ringStep=isTotal?22:28;
+  let ri=0;
+  RING_ORDER.forEach(layer=>{
+    const ids=byLayer[layer]; if(!ids||!ids.length) return;
+    const r=baseR+ringStep*ri;
+    // Vertical spread — each ring at slightly different Y
+    const yOffset=(ri-.5*(Object.keys(byLayer).length-1))*18;
+    ids.forEach((id,i)=>{
+      const angle=(ri*1.17)+(i/ids.length)*Math.PI*2;
+      const jitter=4;
+      nodePositions3d[id]=new THREE.Vector3(
+        Math.cos(angle)*r+(Math.random()-.5)*jitter,
+        yOffset+(Math.random()-.5)*12,
+        Math.sin(angle)*r+(Math.random()-.5)*jitter
+      );
+    });
+    ri++;
+  });
+}
+
+function buildScene3d(){
+  // Clear old meshes and edges
+  Object.values(meshes3d).forEach(m=>{scene3d.remove(m.outer);scene3d.remove(m.wire);});
+  meshes3d={};
+  edges3d.forEach(e=>scene3d.remove(e));
+  edges3d=[];
+  labelData3d=[];
+
+  layout3dPositions();
+
+  // Dodecahedron geometry — 12 faces = digital soulprint
+  const dodecaGeo=new THREE.DodecahedronGeometry(1,0);
+
+  activeNodes.forEach(id=>{
+    const node=CORPUS[id]; if(!node) return;
+    const pos=nodePositions3d[id]; if(!pos) return;
+    const tau=nodeTau(node);
+    const col=tauToColor(tau);
+    const isMaster=id==='SNSFL_Master_IMS';
+    const scale=isMaster?node.size*0.55:node.size*0.45;
+
+    // Solid faces — translucent with torsion color
+    const mat=new THREE.MeshPhongMaterial({
+      color:col,
+      emissive:col,
+      emissiveIntensity:isMaster?0.4:0.15,
+      transparent:true,
+      opacity:isMaster?0.35:0.22,
+      side:THREE.DoubleSide,
+      shininess:80,
+    });
+    const mesh=new THREE.Mesh(dodecaGeo,mat);
+    mesh.scale.setScalar(scale);
+    mesh.position.copy(pos);
+    mesh.userData={id,tau,isMaster};
+    scene3d.add(mesh);
+
+    // Wireframe edges — glowing
+    const wireMat=new THREE.MeshBasicMaterial({
+      color:col,
+      wireframe:true,
+      transparent:true,
+      opacity:isMaster?0.9:0.65,
+    });
+    const wire=new THREE.Mesh(dodecaGeo,wireMat);
+    wire.scale.setScalar(scale*1.01);
+    wire.position.copy(pos);
+    scene3d.add(wire);
+
+    meshes3d[id]={outer:mesh,wire,scale,baseEmissive:isMaster?0.4:0.15};
+
+    // Label data for CSS overlay
+    labelData3d.push({id,pos,node});
+  });
+
+  // Draw edges between connected nodes
+  activeNodes.forEach(id=>{
+    if(id==='SNSFL_Master_IMS') return;
+    const node=CORPUS[id]; if(!node) return;
+    const posA=nodePositions3d[id]; if(!posA) return;
+    const masterPos=nodePositions3d['SNSFL_Master_IMS'];
+
+    // Edge to master
+    const edgeToMaster=makeEdge3d(masterPos,posA,new THREE.Color(0x00ffc8),new THREE.Color(0x333366),1.2);
+    scene3d.add(edgeToMaster);edges3d.push(edgeToMaster);
+
+    // Cross edges
+    node.connects.forEach(cid=>{
+      if(cid==='SNSFL_Master_IMS'||!activeNodes.includes(cid)) return;
+      const posB=nodePositions3d[cid]; if(!posB) return;
+      const e=makeEdge3d(posA,posB,new THREE.Color(0x9b6dff),new THREE.Color(0x220044),0.5);
+      scene3d.add(e);edges3d.push(e);
+    });
+  });
+}
+
+function makeEdge3d(posA,posB,colA,colB,opacity){
+  const points=[posA.clone(),posB.clone()];
+  const geo=new THREE.BufferGeometry().setFromPoints(points);
+  const colors=new Float32Array([colA.r,colA.g,colA.b,colB.r,colB.g,colB.b]);
+  geo.setAttribute('color',new THREE.BufferAttribute(colors,3));
+  const mat=new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity});
+  return new THREE.Line(geo,mat);
+}
+
+function draw3d(){
+  if(currentView!=='3d'){requestAnimationFrame(draw3d);return;}
+  animFrame3d++;clock3d+=0.016;
+
+  // Anchor pulse
+  const pulse=Math.sin(clock3d*SOVEREIGN_ANCHOR*2)*0.5+0.5;
+  const anchorLight=scene3d.getObjectByName('anchorLight');
+  if(anchorLight){anchorLight.intensity=2+pulse*3;anchorLight.color.setHSL(0.45+pulse*0.05,1,0.5+pulse*0.1);}
+
+  // Animate each dodecahedron
+  activeNodes.forEach(id=>{
+    const m=meshes3d[id]; if(!m) return;
+    const node=CORPUS[id];
+    const tau=nodeTau(node);
+    const isMaster=id==='SNSFL_Master_IMS';
+
+    // Pulse rate driven by tau — Noble=slow steady, higher tau=faster
+    const pulseRate=isMaster?0.5:0.3+tau*4;
+    const p=Math.sin(clock3d*pulseRate*SOVEREIGN_ANCHOR)*0.5+0.5;
+
+    // Slow self-rotation — axis tilted per node for organic feel
+    m.outer.rotation.x+=0.003*(isMaster?2:1);
+    m.outer.rotation.y+=0.005*(isMaster?1.5:0.7);
+    m.wire.rotation.copy(m.outer.rotation);
+
+    // Scale pulse — subtle breathe
+    const scalePulse=m.scale*(1+p*0.06);
+    m.outer.scale.setScalar(scalePulse);
+    m.wire.scale.setScalar(scalePulse*1.01);
+
+    // Emissive pulse — torsion drives brightness
+    const baseE=isMaster?0.3:0.1;
+    const peakE=isMaster?0.8:0.5+tau*2;
+    m.outer.material.emissiveIntensity=baseE+p*(peakE-baseE);
+
+    // Selected node highlight
+    if(id===selectedNode){
+      m.outer.material.emissiveIntensity=0.8+p*0.4;
+      m.outer.material.opacity=0.6;
+    } else {
+      m.outer.material.opacity=isMaster?0.35:0.22;
+    }
+
+    // Float — very gentle drift
+    if(!isMaster){
+      const basePos=nodePositions3d[id];
+      const floatY=Math.sin(clock3d*0.3+id.length*0.7)*1.5;
+      m.outer.position.y=basePos.y+floatY;
+      m.wire.position.y=basePos.y+floatY;
+    }
+  });
+
+  // Tick particle impacts
+  tickParticles();
+
+  // Update CSS labels
+  updateLabels3d();
+
+  renderer3d.render(scene3d,camera3d);
+  requestAnimationFrame(draw3d);
+}
+
+// ── PARTICLE IMPACT SYSTEM ───────────────────────────────────
+
+function getParticleGeo(){
+  if(!particleGeo) particleGeo=new THREE.DodecahedronGeometry(1,0);
+  return particleGeo;
+}
+
+function computeHitTarget(P,N,B,A){
+  const radius=25+(P/9)*110;
+  const theta=(N/9)*Math.PI*2;
+  const phi=Math.PI*0.3+(B/9)*Math.PI*0.4;
+  const yOff=(A/9)*40-20;
+  return new THREE.Vector3(
+    Math.sin(phi)*Math.cos(theta)*radius,
+    Math.cos(phi)*radius*0.5+yOff,
+    Math.sin(phi)*Math.sin(theta)*radius
+  );
+}
+
+function pnbaTau(P,N,B,A){ return P>0?B/P:0; }
+
+function spawnHit(label,P,N,B,A,status,approved){
+  if(!scene3d) return;
+  const tau=pnbaTau(P,N,B,A);
+  // Color override based on discovery status:
+  // approved=true → anchor cyan regardless of tau (it already cleared the gate)
+  // status=NOBLE  → noble violet
+  // status=SHATTER → shatter red
+  // otherwise → tau heatmap as normal
+  let col;
+  if(approved===true)        col=new THREE.Color(0x00ffc8);
+  else if(status==='NOBLE')  col=new THREE.Color(0xaa88ff);
+  else if(status==='SHATTER')col=new THREE.Color(0xff3a3a);
+  else                       col=tauToColor(tau);
+  const spawnPos=new THREE.Vector3((Math.random()-.5)*8,(Math.random()-.5)*8,(Math.random()-.5)*8);
+  const target=computeHitTarget(P,N,B,A);
+  const dir=target.clone().sub(spawnPos).normalize();
+  const speed=1.8+Math.random()*1.2;
+  const vel=dir.multiplyScalar(speed);
+  const probeScale=2.5+tau*8;
+
+  const mat=new THREE.MeshPhongMaterial({
+    color:col, emissive:col, emissiveIntensity:0.7,
+    transparent:true, opacity:0.75,
+    side:THREE.DoubleSide, shininess:120,
+  });
+  const mesh=new THREE.Mesh(getParticleGeo(),mat);
+  mesh.scale.setScalar(probeScale);
+  mesh.position.copy(spawnPos);
+
+  const wireMat=new THREE.MeshBasicMaterial({color:col,wireframe:true,transparent:true,opacity:0.95});
+  const wire=new THREE.Mesh(getParticleGeo(),wireMat);
+  wire.scale.setScalar(probeScale*1.02);
+  wire.position.copy(spawnPos);
+
+  const trailPoints=[new THREE.Vector3(0,0,0),spawnPos.clone()];
+  const trailGeo=new THREE.BufferGeometry().setFromPoints(trailPoints);
+  const trailMat=new THREE.LineBasicMaterial({color:col,transparent:true,opacity:0.35});
+  const trail=new THREE.Line(trailGeo,trailMat);
+
+  scene3d.add(mesh); scene3d.add(wire); scene3d.add(trail);
+  hitCount++;
+
+  const hit={
+    id:'hit_'+hitCount, label, P, N, B, A, tau,
+    mesh, wire, trail, trailGeo,
+    vel, target,
+    age:0, maxAge:220+Math.floor(Math.random()*60),
+    phase:'inflight',
+    col, probeScale, lockAge:0,
+  };
+  sessionHits.push(hit);
+  updateSessionLog();
+  updateHitBadge();
+}
+
+function tickParticles(){
+  if(!scene3d) return;
+  sessionHits.forEach(hit=>{
+    if(hit.phase==='done') return;
+    hit.age++;
+    const {mesh,wire,trail,vel,target}=hit;
+    const pos=mesh.position;
+
+    if(hit.phase==='inflight'){
+      const toTarget=target.clone().sub(pos);
+      const dist=toTarget.length();
+      let repulsion=new THREE.Vector3();
+      activeNodes.forEach(nid=>{
+        const nm=meshes3d[nid]; if(!nm) return;
+        const npos=nm.outer.position;
+        const d=pos.distanceTo(npos);
+        if(d<30&&d>0.1){
+          repulsion.add(pos.clone().sub(npos).normalize().multiplyScalar(18/(d*d)));
+          if(d<20) nm.outer.material.emissiveIntensity=Math.min(1.2,nm.outer.material.emissiveIntensity+0.25);
+        }
+      });
+      const attraction=toTarget.normalize().multiplyScalar(Math.min(0.25,dist*0.008));
+      vel.add(attraction);
+      vel.add(repulsion.multiplyScalar(0.04));
+      vel.multiplyScalar(hit.tau<TORSION_LIMIT?0.91:0.85);
+      pos.add(vel);
+      wire.position.copy(pos);
+      const spinRate=0.04+hit.tau*0.3;
+      mesh.rotation.x+=spinRate; mesh.rotation.y+=spinRate*0.7;
+      wire.rotation.copy(mesh.rotation);
+      hit.trailGeo.setFromPoints([new THREE.Vector3(0,0,0),pos.clone()]);
+      trail.material.opacity=Math.max(0,0.35-hit.age*0.001);
+      if(dist<8||hit.age>hit.maxAge){ hit.phase='locking'; hit.lockAge=0; }
+    }
+
+    if(hit.phase==='locking'){
+      hit.lockAge++;
+      mesh.position.lerp(target,0.12);
+      wire.position.copy(mesh.position);
+      mesh.rotation.x+=0.02; mesh.rotation.y+=0.015;
+      wire.rotation.copy(mesh.rotation);
+      if(hit.lockAge>18){
+        if(hit.tau<TORSION_LIMIT){
+          hit.phase='locked'; totalLocked++;
+          spawnLockBurst(mesh.position.clone(),hit.col);
+          pulseMasterEdge();
+        } else {
+          hit.phase='suppressed'; totalSuppressed++;
+          spawnSuppressBurst(mesh.position.clone());
+        }
+        updateSessionLog(); updateHitBadge();
+      }
+    }
+
+    if(hit.phase==='locked'){
+      mesh.rotation.x+=0.008; mesh.rotation.y+=0.006;
+      wire.rotation.copy(mesh.rotation);
+      trail.material.opacity=Math.max(0,trail.material.opacity-0.005);
+      mesh.material.emissiveIntensity=Math.max(0.15,mesh.material.emissiveIntensity-0.003);
+      wire.material.opacity=Math.max(0.3,wire.material.opacity-0.002);
+    }
+
+    if(hit.phase==='suppressed'){
+      if(!hit.scatterVel) hit.scatterVel=new THREE.Vector3((Math.random()-.5)*4,(Math.random()-.5)*4,(Math.random()-.5)*4);
+      mesh.position.add(hit.scatterVel);
+      wire.position.copy(mesh.position);
+      hit.scatterVel.multiplyScalar(0.94);
+      mesh.material.opacity=Math.max(0,mesh.material.opacity-0.03);
+      wire.material.opacity=Math.max(0,wire.material.opacity-0.04);
+      mesh.material.emissiveIntensity=Math.max(0,mesh.material.emissiveIntensity-0.04);
+      trail.material.opacity=Math.max(0,trail.material.opacity-0.02);
+      if(mesh.material.opacity<=0){
+        scene3d.remove(mesh); scene3d.remove(wire); scene3d.remove(trail);
+        hit.phase='done';
+      }
+    }
+  });
+  // Trim done hits — keep last 40 for log
+  if(sessionHits.length>60) sessionHits=sessionHits.slice(-40);
+}
+
+function spawnLockBurst(pos,col){
+  const geo=new THREE.BufferGeometry();
+  const pts=[];
+  for(let i=0;i<24;i++){
+    const a=(i/24)*Math.PI*2;
+    pts.push(Math.cos(a)*12,Math.sin(a)*6,Math.sin(a)*0.5);
+  }
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+  const mat=new THREE.PointsMaterial({color:col,size:2.5,transparent:true,opacity:1});
+  const burst=new THREE.Points(geo,mat);
+  burst.position.copy(pos);
+  scene3d.add(burst);
+  let age=0;
+  const tick=()=>{
+    age++;
+    burst.scale.setScalar(1+age*0.18);
+    mat.opacity=Math.max(0,1-age/30);
+    if(age<30) requestAnimationFrame(tick);
+    else scene3d.remove(burst);
+  };
+  requestAnimationFrame(tick);
+}
+
+function spawnSuppressBurst(pos){
+  const geo=new THREE.BufferGeometry();
+  const pts=[];
+  for(let i=0;i<18;i++) pts.push((Math.random()-.5)*20,(Math.random()-.5)*20,(Math.random()-.5)*20);
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+  const mat=new THREE.PointsMaterial({color:0xff3a3a,size:2,transparent:true,opacity:0.9});
+  const burst=new THREE.Points(geo,mat);
+  burst.position.copy(pos);
+  scene3d.add(burst);
+  let age=0;
+  const tick=()=>{
+    age++;
+    mat.opacity=Math.max(0,0.9-age/20);
+    if(age<20) requestAnimationFrame(tick);
+    else scene3d.remove(burst);
+  };
+  requestAnimationFrame(tick);
+}
+
+function pulseMasterEdge(){
+  const m=meshes3d['SNSFL_Master_IMS']; if(!m) return;
+  m.outer.material.emissiveIntensity=1.2;
+  setTimeout(()=>{ if(m.outer.material) m.outer.material.emissiveIntensity=0.4; },400);
+}
+
+function updateSessionLog(){
+  const inflight=sessionHits.filter(h=>h.phase==='inflight'||h.phase==='locking').length;
+  document.getElementById('sl-locked-ct').textContent=totalLocked;
+  document.getElementById('sl-sup-ct').textContent=totalSuppressed;
+  document.getElementById('sl-fly-ct').textContent=inflight;
+  const rowsEl=document.getElementById('sl-rows');
+  const recent=[...sessionHits].reverse().slice(0,8);
+  rowsEl.innerHTML=recent.map(h=>{
+    const icon=h.phase==='locked'?'⬡':h.phase==='suppressed'?'✕':h.phase==='locking'?'◎':'◌';
+    const cls=h.phase==='locked'?'locked':h.phase==='suppressed'?'suppressed':'inflight';
+    return`<div class="sl-row ${cls}">${icon} ${h.label} τ=${h.tau.toFixed(3)}</div>`;
+  }).join('');
+}
+
+function updateHitBadge(){
+  document.getElementById('hit-badge').classList.add('show');
+  document.getElementById('hit-badge-num').textContent=hitCount;
+}
+
+function toggleSessionLog(){
+  document.getElementById('session-log').classList.toggle('show');
+}
+
+function clearParticles(){
+  sessionHits.forEach(h=>{
+    if(h.mesh&&scene3d) scene3d.remove(h.mesh);
+    if(h.wire&&scene3d) scene3d.remove(h.wire);
+    if(h.trail&&scene3d) scene3d.remove(h.trail);
+  });
+  sessionHits=[];
+  hitCount=0; totalLocked=0; totalSuppressed=0;
+  updateSessionLog();
+  document.getElementById('hit-badge').classList.remove('show');
+}
+
+function spawnTestHit(){
+  const P=Math.random()*9, N=Math.random()*9;
+  const B=Math.random()*Math.min(P,3), A=Math.random()*9;
+  spawnHit('TEST·'+Math.floor(Math.random()*9999),P,N,B,A);
+}
+
+// ── DISCOVERY SESSION IMPORT ─────────────────────────────────
+function importDiscoveryFile(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const text=e.target.result;
+    const ext=file.name.split('.').pop().toLowerCase();
+    let entries=[];
+    if(ext==='json'){
+      entries=parseDiscoveryJSON(text);
+    } else if(ext==='csv'){
+      entries=parseDiscoveryCSV(text);
+    }
+    if(!entries.length){
+      document.getElementById('nodeInfo').innerHTML=`<span style="color:var(--shatter)">No valid SNSFT entries found in ${file.name}</span>`;
+      return;
+    }
+    // Switch to 3D if not already there so user sees the cascade
+    if(currentView!=='3d') setView('3d');
+    // Stagger particle spawns — 120ms apart so cascade is readable
+    entries.forEach((entry,i)=>{
+      setTimeout(()=>{
+        spawnHit(
+          entry.label,
+          parseFloat(entry.P)||0,
+          parseFloat(entry.N)||2,
+          parseFloat(entry.B)||0,
+          parseFloat(entry.A)||0,
+          entry.status,
+          entry.approved
+        );
+      }, i*120);
+    });
+    document.getElementById('nodeInfo').innerHTML=
+      `<span class="ni-green">⬆ ${file.name}</span> — firing ${entries.length} discovery impacts into the manifold`;
+  };
+  reader.readAsText(file);
+  // Reset input so same file can be re-imported
+  input.value='';
+}
+
+function parseDiscoveryJSON(text){
+  try{
+    const data=JSON.parse(text);
+    // Handle both full session export {discoveries:[...]} and raw array [...]
+    const raw=Array.isArray(data)?data:(data.discoveries||data.approved||[]);
+    return raw.map(d=>({
+      label: d.designation||d.name||'UNKNOWN',
+      P: d.P??d.P_out??0,
+      N: d.N??d.N_out??2,
+      B: d.B??d.B_out??0,
+      A: d.A??d.A_out??0,
+      status: d.status||'LOCKED',
+      approved: d.approved||false,
+    })).filter(d=>d.label&&(d.P||d.B));
+  }catch(err){
+    console.error('JSON parse error:',err);
+    return[];
+  }
+}
+
+function parseDiscoveryCSV(text){
+  const lines=text.trim().split('\n');
+  if(lines.length<2) return[];
+  const headers=lines[0].split(',').map(h=>h.replace(/"/g,'').trim());
+  const idx=h=>headers.indexOf(h);
+  return lines.slice(1).map(line=>{
+    // Handle quoted fields
+    const cols=line.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g)||line.split(',');
+    const clean=cols.map(c=>c.replace(/^"|"$/g,'').trim());
+    return{
+      label: clean[idx('designation')]||clean[0]||'UNKNOWN',
+      P: parseFloat(clean[idx('P')])||0,
+      N: parseFloat(clean[idx('N')])||2,
+      B: parseFloat(clean[idx('B')])||0,
+      A: parseFloat(clean[idx('A')])||0,
+      status: clean[idx('status')]||'LOCKED',
+      approved: clean[idx('approved')]==='true',
+    };
+  }).filter(d=>d.label&&d.label!=='designation');
+}
+
+// Update spawnHit to accept status/approved for color override
+// Drag-and-drop on the 3D viewport itself
+const vp3d=document.getElementById('viewport-3d');
+vp3d.addEventListener('dragover',e=>{e.preventDefault();document.getElementById('import-drop-zone').style.borderColor='rgba(0,255,200,0.9)';});
+vp3d.addEventListener('dragleave',()=>{document.getElementById('import-drop-zone').style.borderColor='rgba(0,255,200,0.3)';});
+vp3d.addEventListener('drop',e=>{
+  e.preventDefault();
+  document.getElementById('import-drop-zone').style.borderColor='rgba(0,255,200,0.3)';
+  const file=e.dataTransfer.files[0]; if(!file) return;
+  const fakeInput={files:[file],value:''};
+  importDiscoveryFile(fakeInput);
+});
+
+function updateLabels3d(){
+  const container=document.getElementById('labels3d');
+  const vp=document.getElementById('viewport-3d');
+  const W=vp.offsetWidth,H=vp.offsetHeight;
+  container.innerHTML='';
+  labelData3d.forEach(({id,node})=>{
+    const m=meshes3d[id]; if(!m) return;
+    const pos3=m.outer.position.clone();
+    pos3.project(camera3d);
+    if(pos3.z>1) return; // behind camera
+    const x=(pos3.x*.5+.5)*W;
+    const y=(-(pos3.y*.5-.5))*H; // note: was wrong, this is correct
+    const yAdj=(-(pos3.y)*0.5+0.5)*H;
+    const div=document.createElement('div');
+    div.className='label3d';
+    div.style.left=x+'px';
+    div.style.top=yAdj+'px';
+    const tau=nodeTau(node);
+    const col=tauToHex(tau);
+    div.innerHTML=`<div class="lname" style="color:${col}">${node.short}</div><div class="lcount">${node.theorems}T</div>`;
+    container.appendChild(div);
+  });
+}
+
+function updateCameraPosition(){
+  if(!camera3d) return;
+  camera3d.position.x=spherical.radius*Math.sin(spherical.phi)*Math.cos(spherical.theta);
+  camera3d.position.y=spherical.radius*Math.cos(spherical.phi);
+  camera3d.position.z=spherical.radius*Math.sin(spherical.phi)*Math.sin(spherical.theta);
+  camera3d.lookAt(0,0,0);
+}
+
+// Mouse orbit
+const c3d=document.getElementById('canvas3d');
+c3d.addEventListener('mousedown',e=>{
+  isOrbiting=true;orbitStart={x:e.clientX,y:e.clientY};
+  e.preventDefault();
+});
+window.addEventListener('mousemove',e=>{
+  if(!isOrbiting||currentView!=='3d') return;
+  const dx=e.clientX-orbitStart.x,dy=e.clientY-orbitStart.y;
+  orbitStart={x:e.clientX,y:e.clientY};
+  spherical.theta-=dx*0.008;
+  spherical.phi=Math.max(0.15,Math.min(Math.PI-0.15,spherical.phi-dy*0.008));
+  updateCameraPosition();
+});
+window.addEventListener('mouseup',()=>{isOrbiting=false;});
+c3d.addEventListener('wheel',e=>{
+  spherical.radius=Math.max(50,Math.min(500,spherical.radius+e.deltaY*0.3));
+  updateCameraPosition();e.preventDefault();
+},{passive:false});
+
+// Click to select in 3D
+c3d.addEventListener('click',e=>{
+  if(currentView!=='3d') return;
+  const rect=c3d.getBoundingClientRect();
+  mouse3dVec.x=((e.clientX-rect.left)/rect.width)*2-1;
+  mouse3dVec.y=-((e.clientY-rect.top)/rect.height)*2+1;
+  raycaster3d.setFromCamera(mouse3dVec,camera3d);
+  const meshList=Object.entries(meshes3d).map(([id,m])=>({mesh:m.outer,id}));
+  const hits=raycaster3d.intersectObjects(meshList.map(m=>m.mesh));
+  if(hits.length>0){
+    const hitMesh=hits[0].object;
+    const found=meshList.find(m=>m.mesh===hitMesh);
+    if(found){
+      selectedNode=found.id;
+      openPanel(found.id);
+      updateHUD(found.id);
+    }
+  }
+});
+
+function updateHUD(id){
+  const node=CORPUS[id]; if(!node) return;
+  const tau=nodeTau(node);
+  const phase=tau===0?'NOBLE':tau<TORSION_LIMIT?'LOCKED':tau<0.2?'IVA PEAK':'SHATTER';
+  document.getElementById('hud-name').textContent=node.short;
+  document.getElementById('hud-tau').textContent=tau.toFixed(4);
+  document.getElementById('hud-theorems').textContent=node.theorems+'T';
+  document.getElementById('hud-phase').textContent=phase;
+  document.getElementById('torsion-hud').classList.add('show');
+}
+
+// ── VIEW TOGGLE ──────────────────────────────────────────────
+function setView(v){
+  currentView=v;
+  document.getElementById('btn2d').classList.toggle('active',v==='2d');
+  document.getElementById('btn3d').classList.toggle('active',v==='3d');
+  document.getElementById('viewport-2d').style.display=v==='2d'?'flex':'none';
+  document.getElementById('viewport-3d').style.display=v==='3d'?'block':'none';
+  if(v==='3d'){
+    if(!renderer3d) init3d();
+    else { resize3d(); buildScene3d(); }
+    document.getElementById('torsion-hud').classList.toggle('show',selectedNode!=null);
+  } else {
+    document.getElementById('torsion-hud').classList.remove('show');
+    resize2d();
+  }
+}
+
+function resize3d(){
+  if(!renderer3d) return;
+  const vp=document.getElementById('viewport-3d');
+  const W=vp.offsetWidth||window.innerWidth,H=vp.offsetHeight||400;
+  renderer3d.setSize(W,H);
+  camera3d.aspect=W/H;
+  camera3d.updateProjectionMatrix();
+}
+
+window.relayoutAll = function(){
+  relayoutAll2d();
+  if(currentView==='3d') buildScene3d();
+};
+
+// ── SHARED CORPUS CONTROLS ───────────────────────────────────
+window.loadPreset=function(key){
+  const preset=PRESETS[key]; if(!preset) return;
+  let added=0;
+  const newIds=[];
+  preset.nodes.forEach(id=>{if(CORPUS[id]&&!activeNodes.includes(id)){activeNodes.push(id);added++;newIds.push(id);}});
+  relayoutAll2d();if(currentView==='3d')buildScene3d();
+  document.getElementById('nodeCount').textContent=activeNodes.length;
+  document.getElementById('edgeCount').textContent=countEdges();
+  document.getElementById('nodeInfo').innerHTML=`<span class="ni-green">✓ ${preset.label}</span> — injected ${added} nodes · ${activeNodes.length} total`;
+  // Fire impact particles for each newly added node — staggered
+  if(currentView==='3d'){
+    newIds.forEach((id,i)=>{
+      setTimeout(()=>{
+        const node=CORPUS[id]; if(!node) return;
+        const tau=nodeTau(node);
+        const P=Math.max(0.1,node.theorems/20);
+        const N=node.size/10;
+        const B=tau*P;
+        const A=node.connects.length*0.5;
+        spawnHit(node.short,P,N,B,A);
+      }, i*80);
+    });
+  }
+};
+
+window.addFile=function(){
+  const sel=document.getElementById('fileSelect'),id=sel.value;
+  if(!id||!CORPUS[id]||activeNodes.includes(id)){sel.value='';return;}
+  activeNodes.push(id);
+  relayoutAll2d();if(currentView==='3d')buildScene3d();
+  document.getElementById('nodeCount').textContent=activeNodes.length;
+  document.getElementById('edgeCount').textContent=countEdges();
+  sel.value='';
+  const node=CORPUS[id];
+  document.getElementById('nodeInfo').innerHTML=`<span class="ni-name">${node.label}</span> <span class="ni-coord">${node.coord}</span> <span class="ni-green">${node.theorems}T · 0 sorry</span>`;
+};
+
+window.clearAll=function(){
+  activeNodes=['SNSFL_Master_IMS'];selectedNode=null;
+  relayoutAll2d();if(currentView==='3d')buildScene3d();
+  document.getElementById('nodeCount').textContent=1;
+  document.getElementById('edgeCount').textContent=0;
+  document.getElementById('nodeInfo').textContent='Cleared. Add files to rebuild the manifold.';
+  document.getElementById('torsion-hud').classList.remove('show');
+};
+
+function countEdges(){
+  let c=0;
+  activeNodes.forEach(id=>{
+    if(id==='SNSFL_Master_IMS') return;
+    const node=CORPUS[id]; if(!node) return;
+    c++;
+    node.connects.forEach(cid=>{if(cid!=='SNSFL_Master_IMS'&&activeNodes.includes(cid))c++;});
+  });
+  return c;
+}
+
+// ── DETAIL PANEL ─────────────────────────────────────────────
+function openPanel(id){
+  const node=CORPUS[id]; if(!node) return;
+  selectedNode=id;
+  const tau=nodeTau(node);
+  const phase=tau===0?'NOBLE τ=0':tau<TORSION_LIMIT?`LOCKED τ=${tau.toFixed(4)}`:`SHATTER τ=${tau.toFixed(4)}`;
+  document.getElementById('dp-title').textContent=node.label;
+  document.getElementById('dp-coord').textContent=node.coord+' · '+node.layer.toUpperCase();
+  document.getElementById('dp-theorems').textContent=node.theorems+'+';
+  document.getElementById('dp-tau').textContent=tau===0?'0 (Noble)':tau.toFixed(4);
+  document.getElementById('dp-tau').style.color=tauToHex(tau);
+  document.getElementById('dp-desc').textContent=node.desc;
+  const bp=[
+    {name:'anchor_zero_friction',desc:'Z=0 at 1.369 GHz · the base law',color:'#00ffc8'},
+    {name:id.split('_').slice(-2).join('_').toLowerCase()+'_master',desc:`${node.theorems} theorems · ${phase} · 0 sorry`,color:node.color},
+    {name:'the_manifold_is_holding',desc:'closes without sorry · [9,9,9,9]',color:'#00ffc8'},
+  ];
+  document.getElementById('dp-blueprint').innerHTML=bp.map((t,i)=>`
+    <div class="bp-node" style="border-color:${t.color}22;background:${t.color}08">
+      <div class="bp-node-dot" style="background:${t.color}"></div>
+      <div class="bp-node-text"><div class="bp-node-name" style="color:${t.color}">${t.name}</div><div class="bp-node-sub">${t.desc}</div></div>
+    </div>${i<bp.length-1?'<div class="bp-arrow">↓</div>':''}
+  `).join('');
+  const conns=[...new Set([...node.connects,...activeNodes.filter(aid=>{if(aid===id)return false;const an=CORPUS[aid];return an&&an.connects.includes(id);})])];
+  document.getElementById('dp-connects').innerHTML=conns.length?conns.map(cid=>{
+    const cn=CORPUS[cid]; if(!cn) return '';
+    const inGraph=activeNodes.includes(cid);
+    return`<span class="conn-tag" style="color:${cn.color};border-color:${cn.color}44;background:${cn.color}08" onclick="if(!activeNodes.includes('${cid}')){activeNodes.push('${cid}');relayoutAll2d();if(currentView==='3d')buildScene3d();document.getElementById('nodeCount').textContent=activeNodes.length;document.getElementById('edgeCount').textContent=countEdges();}openPanel('${cid}')">${inGraph?'●':'○'} ${cn.short}</span>`;
+  }).join(''):'<span style="color:var(--dim);font-size:.55rem">Ground — all files connect here</span>';
+  document.getElementById('dp-github').href=GH_BASE+(id+'.lean');
+  document.getElementById('nodeInfo').innerHTML=`<span class="ni-name">${node.label}</span> <span class="ni-coord">${node.coord}</span> <span class="ni-green">${node.theorems}T · 0 sorry</span> — <span style="color:${tauToHex(tau)}">${phase}</span>`;
+  document.getElementById('detailPanel').classList.add('open');
+  if(currentView==='3d') updateHUD(id);
+}
+
+window.closePanel=function(){document.getElementById('detailPanel').classList.remove('open');selectedNode=null;};
+
+// ── EXPORT / SHARE ───────────────────────────────────────────
+window.exportPNG=function(){
+  const src=currentView==='2d'?canvas2d:document.getElementById('canvas3d');
+  const off=document.createElement('canvas');off.width=src.width;off.height=src.height;
+  const octx=off.getContext('2d');octx.drawImage(src,0,0);
+  octx.fillStyle='rgba(0,255,200,0.7)';octx.font='700 13px Space Mono,monospace';octx.textAlign='left';
+  octx.fillText('SNSFL Corpus Map · [9,9,9,9] · 50,000+ theorems · 0 sorry',16,src.height-28);
+  octx.fillStyle='rgba(232,232,240,0.35)';octx.font='11px Space Mono,monospace';
+  octx.fillText('github.com/SNSFT · uuia.app/axiomforge',16,src.height-12);
+  const a=document.createElement('a');a.download=`SNSFL_${currentView.toUpperCase()}_${activeNodes.length}nodes_${Date.now()}.png`;a.href=off.toDataURL('image/png');a.click();
+};
+
+window.shareLink=function(){
+  const params=new URLSearchParams();params.set('nodes',activeNodes.join(','));
+  const url=window.location.href.split('?')[0]+'?'+params.toString();
+  if(navigator.clipboard)navigator.clipboard.writeText(url).then(()=>{document.getElementById('nodeInfo').innerHTML='<span class="ni-green">✓ Share link copied</span>';});
+  else prompt('Copy:',url);
+};
+
+// ── REDUCE MY THEOREM ────────────────────────────────────────
+window.toggleReduce=function(){document.getElementById('reducePanel').classList.toggle('open');};
+window.reduceTheorem=function(){
+  const lean=document.getElementById('rp-lean-input').value;if(!lean.trim())return;
+  const pm=(lean.match(/\bstructure\b|\bdef\b|\binductive\b|\bclass\b|: ℝ|: ℕ|\bmanifold\b|\binvariant\b/g)||[]).length;
+  const nm=(lean.match(/∀|∃|→|\bcontinuous\b|\bpath\b|\bSovereign\b|\bIdentityState\b/g)||[]).length;
+  const bm=(lean.match(/\btorsion\b|\bforce\b|\bapply\b|\bsimp\b|\bnorm_num\b|\bF_ext\b/g)||[]).length;
+  const am=(lean.match(/\bfix\b|\brec\b|\beigenvalue\b|\bentropy\b|\badapt\b|\bΛ\b/g)||[]).length;
+  let P=Math.round(Math.min(9,1+pm*0.8)*10)/10;
+  let N=Math.round(Math.min(9,1+nm*0.7)*10)/10;
+  let B=Math.round(Math.min(9,bm*0.6)*10)/10;
+  let A=Math.round(Math.min(9,1+am*0.7)*10)/10;
+  const tau=P>0?B/P:0,im=(P+N+B+A)*SOVEREIGN_ANCHOR;
+  const phase=tau<TORSION_LIMIT?'PHASE LOCKED · [9,9,9,9]':tau<0.2?'MARGINAL':'TORSIONAL SHATTER';
+  reducedResult={P,N,B,A,tau,im,coord:`[${P},${N},${B},${A}]`,phase,lean};
+  document.getElementById('rp-coord-out').textContent=`[${P},${N},${B},${A}]`;
+  document.getElementById('rp-P').textContent=P;document.getElementById('rp-N').textContent=N;
+  document.getElementById('rp-B').textContent=B;document.getElementById('rp-A').textContent=A;
+  document.getElementById('rp-phase-out').textContent=`τ=${tau.toFixed(4)} · IM=${im.toFixed(3)} · ${phase}`;
+  document.getElementById('rp-result').classList.add('show');
+};
+window.injectReduced=function(){
+  if(!reducedResult)return;
+  const nameMatch=reducedResult.lean.match(/theorem\s+(\w+)|structure\s+(\w+)|def\s+(\w+)/);
+  const name=nameMatch?(nameMatch[1]||nameMatch[2]||nameMatch[3]):'custom';
+  const id='USER_'+name;
+  CORPUS[id]={label:id,short:name.toUpperCase(),coord:reducedResult.coord,layer:'physics',theorems:1,color:'#ff6b8a',size:20,desc:`User theorem · τ=${reducedResult.tau.toFixed(4)} · 0 sorry pending`,connects:['SNSFL_Master_IMS']};
+  if(!activeNodes.includes(id))activeNodes.push(id);
+  relayoutAll2d();if(currentView==='3d')buildScene3d();
+  document.getElementById('nodeCount').textContent=activeNodes.length;
+  document.getElementById('edgeCount').textContent=countEdges();
+  // Fire a particle impact for this reduction
+  spawnHit(name, reducedResult.P, reducedResult.N, reducedResult.B||0, reducedResult.A);
+  window.toggleReduce();
+};
+
+// ── RESIZE HANDLER ───────────────────────────────────────────
+window.addEventListener('resize',()=>{
+  if(currentView==='2d') resize2d();
+  else resize3d();
+});
+
+// ── URL RESTORE ──────────────────────────────────────────────
+function loadFromURL(){
+  const params=new URLSearchParams(window.location.search);
+  const nodes=params.get('nodes');
+  if(nodes)nodes.split(',').filter(id=>CORPUS[id]).forEach(id=>{if(!activeNodes.includes(id))activeNodes.push(id);});
+}
+
+// ── BOOT ─────────────────────────────────────────────────────
+(async function(){
+  const log=document.getElementById('bootLog');
+  const steps=[
+    'SOVEREIGN_ANCHOR = 1.369 GHz',
+    'TORSION_LIMIT = ANCHOR / 10',
+    'Dodecahedron geometry loaded · 12 faces = soulprint',
+    'Corpus: 50,000+ theorems · 0 sorry',
+    'Torsion heatmap calibrated',
+    'Three.js 3D engine ready',
+    'The Manifold is Holding.',
+  ];
+  for(let s of steps){
+    const d=document.createElement('div');d.textContent='✓ '+s;log.appendChild(d);
+    await new Promise(r=>setTimeout(r,300));
+  }
+  await new Promise(r=>setTimeout(r,250));
+  document.getElementById('boot').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+  loadFromURL();
+  window.addEventListener('resize',()=>{if(currentView==='2d')resize2d();else resize3d();});
+  resize2d();
+  draw2d();
+  requestAnimationFrame(draw3d);
+})();
+</script>
+</body>
+</html>
