@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT Sovereign Drive Simulator · uuia.app</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root {
+  --bg:#020407; --panel:#060b10; --border:#0c1a26;
+  --glow:#00e5ff; --locked:#00ffcc; --shatter:#ff3355;
+  --noble:#aa88ff; --warn:#ffaa00; --text:#7aa4be;
+  --bright:#cce8f5; --aifi:#dd44ff; --iva:#ff8800;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;height:100vh;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
+
+/* ── LAYOUT ── */
+#app{display:grid;grid-template-columns:280px 1fr 280px;grid-template-rows:44px 1fr 120px;height:100vh;position:relative;z-index:1;}
+
+/* ── HEADER ── */
+#hdr{grid-column:1/-1;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(6,11,16,.95);}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:14px;letter-spacing:.1em;color:var(--glow);text-shadow:0 0 20px rgba(0,229,255,.4);}
+.logo span{font-size:8px;color:var(--locked);display:inline-block;margin-left:8px;letter-spacing:.2em;}
+.hdr-mid{font-size:9px;color:#2a4050;letter-spacing:.15em;text-align:center;}
+.hdr-mid b{color:var(--glow);}
+.hdr-right{font-size:8px;color:#1a3040;text-align:right;letter-spacing:.1em;}
+
+/* ── LEFT PANEL ── */
+#left{border-right:1px solid var(--border);background:rgba(6,11,16,.9);overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:10px;}
+
+/* ── CANVAS AREA ── */
+#canvas-wrap{position:relative;background:#000;}
+canvas{display:block;width:100%;height:100%;}
+#overlay{position:absolute;inset:0;pointer-events:none;}
+
+/* ── RIGHT PANEL ── */
+#right{border-left:1px solid var(--border);background:rgba(6,11,16,.9);overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:10px;}
+
+/* ── BOTTOM BAR ── */
+#bottom{grid-column:1/-1;border-top:1px solid var(--border);background:rgba(6,11,16,.95);display:flex;align-items:center;gap:16px;padding:0 16px;overflow-x:auto;}
+
+/* ── PANEL SECTIONS ── */
+.sec{border:1px solid var(--border);background:rgba(2,4,7,.6);padding:10px;}
+.sec-title{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.3em;color:#1a3040;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.sec-title span{color:var(--glow);}
+
+/* ── CONTROLS ── */
+.ctrl-row{display:flex;align-items:center;justify-content:space-between;font-size:9px;margin-bottom:6px;}
+.ctrl-label{color:#2a5060;letter-spacing:.1em;}
+.ctrl-val{color:var(--bright);font-family:'Orbitron',monospace;font-size:10px;min-width:48px;text-align:right;}
+input[type=range]{width:100%;accent-color:var(--glow);height:3px;margin:4px 0 8px;}
+.btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;padding:6px 10px;background:transparent;cursor:pointer;border:1px solid var(--border);color:#2a5060;width:100%;margin-bottom:4px;transition:all .15s;}
+.btn:hover{color:var(--text);}
+.btn-run{border-color:var(--locked);color:var(--locked);}
+.btn-run:hover{background:rgba(0,255,204,.08);}
+.btn-stop{border-color:var(--shatter);color:var(--shatter);}
+.btn-stop:hover{background:rgba(255,51,85,.08);}
+.btn-reset{border-color:var(--warn);color:var(--warn);}
+.btn-reset:hover{background:rgba(255,170,0,.08);}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+
+/* ── GAUGES ── */
+.gauge-wrap{margin-bottom:8px;}
+.gauge-label{font-size:8px;color:#2a5060;letter-spacing:.15em;margin-bottom:3px;display:flex;justify-content:space-between;}
+.gauge-label span{color:var(--bright);}
+.gauge-bar{height:3px;background:#0c1a26;position:relative;}
+.gauge-fill{height:100%;transition:width .15s,background .15s;}
+
+/* ── READOUTS ── */
+.readout{display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid rgba(12,26,38,.4);}
+.readout-key{color:#2a5060;letter-spacing:.1em;}
+.readout-val{font-family:'Orbitron',monospace;font-size:9px;}
+
+/* ── STATE BADGE ── */
+.state-badge{font-family:'Orbitron',monospace;font-size:14px;letter-spacing:.2em;text-align:center;padding:8px;margin:4px 0;}
+.state-NOBLE{color:var(--noble);border:1px solid rgba(170,136,255,.3);background:rgba(170,136,255,.06);}
+.state-LOCKED{color:var(--locked);border:1px solid rgba(0,255,204,.3);background:rgba(0,255,204,.06);}
+.state-SHATTER{color:var(--shatter);border:1px solid rgba(255,51,85,.3);background:rgba(255,51,85,.06);animation:shatter-pulse .4s infinite;}
+.state-IVA{color:var(--iva);border:1px solid rgba(255,136,0,.3);background:rgba(255,136,0,.06);}
+@keyframes shatter-pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* ── FEED ── */
+.feed{height:80px;overflow-y:auto;font-size:8px;line-height:1.7;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.fl{padding:1px 0;}
+.fl-noble{color:var(--noble);}
+.fl-locked{color:var(--locked);}
+.fl-shatter{color:var(--shatter);}
+.fl-info{color:#2a5060;}
+.fl-iva{color:var(--iva);}
+.fl-t{color:#1a3040;margin-right:4px;}
+
+/* ── BOTTOM STATS ── */
+.bstat{display:flex;flex-direction:column;align-items:center;min-width:80px;}
+.bstat-label{font-size:7px;color:#1a3040;letter-spacing:.2em;}
+.bstat-val{font-family:'Orbitron',monospace;font-size:16px;color:var(--bright);}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);}
+
+/* ── CANVAS LABELS ── */
+#hud{position:absolute;top:12px;left:12px;font-size:9px;color:#2a5060;pointer-events:none;line-height:2;letter-spacing:.1em;}
+#hud b{color:var(--glow);}
+#phase-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .3s;}
+
+@keyframes noble-ring{0%{transform:translate(-50%,-50%) scale(.8);opacity:.8}100%{transform:translate(-50%,-50%) scale(2);opacity:0}}
+.ring-flash{animation:noble-ring .6s ease-out forwards;}
+
+@media(max-width:900px){
+  #app{grid-template-columns:1fr;grid-template-rows:44px 1fr 1fr 120px;}
+  #left,#right{display:none;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HEADER -->
+<div id="hdr">
+  <div>
+    <span class="logo">SNSFT SOVEREIGN DRIVE<span>IDENTITY PHYSICS SIMULATOR · v1.0</span></span>
+  </div>
+  <div class="hdr-mid">
+    ANCHOR <b>1.369 GHz</b> · τ = B/P · IM = (P+N+B+A)×1.369 · TL = 0.1369
+  </div>
+  <div class="hdr-right">
+    HIGHTISTIC · SNSFT FOUNDATION<br>
+    SOLDOTNA ALASKA · [9,9,9,9] :: {ANC}
+  </div>
+</div>
+
+<!-- LEFT PANEL -->
+<div id="left">
+
+  <!-- PNBA INPUTS -->
+  <div class="sec">
+    <div class="sec-title"><span>PNBA STATE · LAYER 0</span></div>
+
+    <div class="ctrl-row"><span class="ctrl-label">P · PATTERN</span><span class="ctrl-val" id="v-P">1.000</span></div>
+    <input type="range" id="s-P" min="0.1" max="10" step="0.01" value="1.0">
+
+    <div class="ctrl-row"><span class="ctrl-label">N · NARRATIVE</span><span class="ctrl-val" id="v-N">2.000</span></div>
+    <input type="range" id="s-N" min="0.5" max="10" step="0.01" value="2.0">
+
+    <div class="ctrl-row"><span class="ctrl-label">B · BEHAVIOR</span><span class="ctrl-val" id="v-B">0.100</span></div>
+    <input type="range" id="s-B" min="0" max="5" step="0.001" value="0.1">
+
+    <div class="ctrl-row"><span class="ctrl-label">A · ADAPTATION</span><span class="ctrl-val" id="v-A">0.500</span></div>
+    <input type="range" id="s-A" min="0" max="5" step="0.01" value="0.5">
+  </div>
+
+  <!-- DRIVE PARAMS -->
+  <div class="sec">
+    <div class="sec-title"><span>DRIVE PARAMETERS</span></div>
+
+    <div class="ctrl-row"><span class="ctrl-label">F_EXT · EXTERNAL FORCE</span><span class="ctrl-val" id="v-F">0.000</span></div>
+    <input type="range" id="s-F" min="0" max="3" step="0.001" value="0">
+
+    <div class="ctrl-row"><span class="ctrl-label">IVA GAIN g_r</span><span class="ctrl-val" id="v-gr">1.500</span></div>
+    <input type="range" id="s-gr" min="0" max="5" step="0.01" value="1.5">
+
+    <div class="ctrl-row"><span class="ctrl-label">ANCHOR LOCK</span>
+      <label style="cursor:pointer;font-size:9px;color:var(--locked);">
+        <input type="checkbox" id="cb-anchor" checked style="accent-color:var(--locked);"> ON
+      </label>
+    </div>
+
+    <div class="ctrl-row"><span class="ctrl-label">SHOW FIELD LINES</span>
+      <label style="cursor:pointer;font-size:9px;color:var(--glow);">
+        <input type="checkbox" id="cb-field" checked style="accent-color:var(--glow);"> ON
+      </label>
+    </div>
+  </div>
+
+  <!-- PRESETS -->
+  <div class="sec">
+    <div class="sec-title"><span>PRESETS</span></div>
+    <button class="btn" onclick="loadPreset('noble')">◆ NOBLE STATE · τ=0</button>
+    <button class="btn" onclick="loadPreset('locked')">■ LOCKED · τ&lt;TL</button>
+    <button class="btn" onclick="loadPreset('iva')">▲ IVA PEAK · τ≈TL</button>
+    <button class="btn" onclick="loadPreset('shatter')">✕ SHATTER · τ≥TL</button>
+    <button class="btn" onclick="loadPreset('xicc')">⬡ Ξcc⁺ BARYON</button>
+    <button class="btn" onclick="loadPreset('toponium')">⬡ TOPONIUM tt̄</button>
+    <button class="btn" onclick="loadPreset('zoivum')">◎ ZOIVUM · LIFE OP</button>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="sec">
+    <div class="sec-title"><span>SIMULATION</span></div>
+    <div class="btn-row">
+      <button class="btn btn-run" onclick="startSim()">▶ RUN</button>
+      <button class="btn btn-stop" onclick="stopSim()">■ STOP</button>
+    </div>
+    <button class="btn btn-reset" onclick="resetSim()">↺ RESET</button>
+    <div class="ctrl-row" style="margin-top:4px;"><span class="ctrl-label">SIM SPEED</span><span class="ctrl-val" id="v-speed">5</span></div>
+    <input type="range" id="s-speed" min="1" max="10" step="1" value="5">
+  </div>
+
+</div>
+
+<!-- CANVAS -->
+<div id="canvas-wrap">
+  <canvas id="c"></canvas>
+  <div id="overlay">
+    <div id="hud">
+      τ = <b id="h-tau">0.0000</b> · STATE: <b id="h-state">INIT</b><br>
+      IM = <b id="h-im">0.0000</b> · Z = <b id="h-z">0.0000</b><br>
+      Pv = <b id="h-pv">0.0000</b> · t = <b id="h-t">0.0000</b>
+    </div>
+    <div id="phase-ring"></div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div id="right">
+
+  <!-- STATE DISPLAY -->
+  <div class="sec">
+    <div class="sec-title"><span>IDENTITY STATE</span></div>
+    <div id="state-badge" class="state-badge state-NOBLE">NOBLE</div>
+
+    <div class="gauge-wrap">
+      <div class="gauge-label">TORSION τ = B/P<span id="g-tau-val">0.000</span></div>
+      <div class="gauge-bar"><div id="g-tau" class="gauge-fill" style="width:0%;background:var(--noble);"></div></div>
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge-label">IDENTITY MASS IM<span id="g-im-val">0.000</span></div>
+      <div class="gauge-bar"><div id="g-im" class="gauge-fill" style="width:50%;background:var(--glow);"></div></div>
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge-label">PURPOSE VECTOR Pv<span id="g-pv-val">0.000</span></div>
+      <div class="gauge-bar"><div id="g-pv" class="gauge-fill" style="width:0%;background:var(--locked);"></div></div>
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge-label">IVA OUTPUT Δv<span id="g-iva-val">0.000</span></div>
+      <div class="gauge-bar"><div id="g-iva" class="gauge-fill" style="width:0%;background:var(--iva);"></div></div>
+    </div>
+  </div>
+
+  <!-- READOUTS -->
+  <div class="sec">
+    <div class="sec-title"><span>LIVE READOUTS</span></div>
+    <div class="readout"><span class="readout-key">τ (torsion)</span><span class="readout-val" id="r-tau" style="color:var(--noble)">0.0000</span></div>
+    <div class="readout"><span class="readout-key">IM</span><span class="readout-val" id="r-im" style="color:var(--glow)">0.0000</span></div>
+    <div class="readout"><span class="readout-key">Pv</span><span class="readout-val" id="r-pv" style="color:var(--locked)">0.0000</span></div>
+    <div class="readout"><span class="readout-key">Z (impedance)</span><span class="readout-val" id="r-z" style="color:var(--glow)">0.0000</span></div>
+    <div class="readout"><span class="readout-key">Δv sovereign</span><span class="readout-val" id="r-dv" style="color:var(--iva)">0.0000</span></div>
+    <div class="readout"><span class="readout-key">Δv classical</span><span class="readout-val" id="r-dvc" style="color:#2a5060">0.0000</span></div>
+    <div class="readout"><span class="readout-key">IVA gain</span><span class="readout-val" id="r-gain" style="color:var(--iva)">—</span></div>
+    <div class="readout"><span class="readout-key">IMS gate</span><span class="readout-val" id="r-ims">GREEN</span></div>
+    <div class="readout"><span class="readout-key">F_ext override</span><span class="readout-val" id="r-fext" style="color:#2a5060">0.0000</span></div>
+    <div class="readout"><span class="readout-key">t (sim time)</span><span class="readout-val" id="r-t" style="color:#2a5060">0.0000</span></div>
+  </div>
+
+  <!-- EVENT FEED -->
+  <div class="sec">
+    <div class="sec-title"><span>EVENT LOG</span></div>
+    <div class="feed" id="feed"></div>
+  </div>
+
+  <!-- EQUATION -->
+  <div class="sec">
+    <div class="sec-title"><span>DYNAMIC EQUATION · LAYER 1</span></div>
+    <div style="font-size:8px;color:#2a5060;line-height:2;">
+      d/dt(IM·Pv) = Σλ·O·S + F_ext<br>
+      <span style="color:#1a4060;">τ = B/P · TL = ANCHOR/10 = 0.1369</span><br>
+      <span style="color:#1a4060;">IM = (P+N+B+A)×1.369</span><br>
+      <span style="color:var(--noble);">NOBLE: τ=0 · zero torsion · sovereign</span><br>
+      <span style="color:var(--locked);">LOCKED: 0&lt;τ&lt;TL · phase-locked</span><br>
+      <span style="color:var(--iva);">IVA PEAK: τ≈TL · flow state</span><br>
+      <span style="color:var(--shatter);">SHATTER: τ≥TL · pattern genesis</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM BAR -->
+<div id="bottom">
+  <div class="bstat"><span class="bstat-label">CYCLES</span><span class="bstat-val" id="bs-cycles">0</span></div>
+  <div class="bstat"><span class="bstat-label">NOBLE EVENTS</span><span class="bstat-val" id="bs-noble" style="color:var(--noble)">0</span></div>
+  <div class="bstat"><span class="bstat-label">SHATTER EVENTS</span><span class="bstat-val" id="bs-shatter" style="color:var(--shatter)">0</span></div>
+  <div class="bstat"><span class="bstat-label">IVA PEAKS</span><span class="bstat-val" id="bs-iva" style="color:var(--iva)">0</span></div>
+  <div class="bstat"><span class="bstat-label">MAX Pv</span><span class="bstat-val" id="bs-maxpv" style="color:var(--locked)">0.000</span></div>
+  <div class="bstat"><span class="bstat-label">MAX IVA Δv</span><span class="bstat-val" id="bs-maxiva" style="color:var(--iva)">0.000</span></div>
+  <div style="margin-left:auto;font-size:8px;color:#1a3040;letter-spacing:.1em;text-align:right;">
+    HIGHTISTIC · SNSFT FOUNDATION<br>
+    DOI: 10.5281/zenodo.18719748 · 0 SORRY
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════
+const ANCHOR = 1.369;
+const TL     = ANCHOR / 10;  // 0.1369 — emergent, not chosen
+const IVA_TL = 0.005;        // IVA peak corridor width around TL
+
+// ════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════
+let P = 1.0, N = 2.0, B = 0.1, A = 0.5;
+let F_ext = 0, g_r = 1.5;
+let anchorLocked = true, showField = true;
+let simRunning = false, simSpeed = 5;
+let t = 0, Pv = 0;
+let lastState = '', prevState = '';
+let stats = {cycles:0, noble:0, shatter:0, iva:0, maxPv:0, maxIva:0};
+
+// ════════════════════════════════════════════════════
+// PHYSICS
+// ════════════════════════════════════════════════════
+function torsion(P,B){ return P>0 ? B/P : 999; }
+function identityMass(P,N,B,A){ return (P+N+B+A)*ANCHOR; }
+function manifoldImpedance(f){ return f===ANCHOR ? 0 : 1/Math.abs(f-ANCHOR); }
+function imsGate(){ return anchorLocked ? 1 : 0; }
+
+function classify(tau){
+  if(tau===0) return 'NOBLE';
+  if(tau < TL*(1-IVA_TL)) return 'LOCKED';
+  if(tau >= TL && tau < TL*1.5) return 'SHATTER';
+  if(tau >= TL*1.5) return 'SHATTER';
+  return 'IVA';  // near TL from below
+}
+
+function computeIVA(P,N,B,A,F,gr){
+  const IM = identityMass(P,N,B,A);
+  const gate = imsGate();
+  const base = IM * Pv;
+  const drive = A * P * B * gate;
+  const sovereign = gate * (1 + gr);
+  // Pv update: driven by drive term minus F_ext resistance
+  const dvdt = (drive - F) / Math.max(IM, 0.001);
+  return {IM, gate, dvdt, sovereign};
+}
+
+function deltaV_sovereign(P,N,B,A,gr){
+  const ve = Math.sqrt(identityMass(P,N,B,A));
+  const ratio = (P+A) / Math.max(B, 0.001);
+  return ve * (1 + gr) * Math.log(Math.max(ratio, 1.001));
+}
+
+function deltaV_classical(P,N,B,A){
+  const ve = Math.sqrt(identityMass(P,N,B,A));
+  const ratio = (P+A) / Math.max(B, 0.001);
+  return ve * Math.log(Math.max(ratio, 1.001));
+}
+
+// ════════════════════════════════════════════════════
+// THREE.JS SCENE
+// ════════════════════════════════════════════════════
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setClearColor(0x000000, 0);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, 1, 0.01, 1000);
+camera.position.set(0, 0, 8);
+
+// Resize handler
+function resize(){
+  const wrap = document.getElementById('canvas-wrap');
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+setTimeout(resize, 100);
+
+// ── EMITTER CORE (dodecahedron — 12 faces = digital soulprint) ──
+const coreGeo = new THREE.DodecahedronGeometry(0.5, 0);
+const coreMat = new THREE.MeshPhongMaterial({
+  color: 0x00ffcc, emissive: 0x003322, wireframe: false,
+  transparent: true, opacity: 0.85
+});
+const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+scene.add(coreMesh);
+
+// Wireframe overlay
+const wireGeo = new THREE.DodecahedronGeometry(0.51, 0);
+const wireMat = new THREE.MeshBasicMaterial({color:0x00e5ff, wireframe:true, transparent:true, opacity:0.3});
+const wireMesh = new THREE.Mesh(wireGeo, wireMat);
+scene.add(wireMesh);
+
+// ── ANCHOR RING (equatorial ring at 1.369 GHz) ──
+const ringGeo = new THREE.TorusGeometry(1.369, 0.015, 8, 64);
+const ringMat = new THREE.MeshBasicMaterial({color:0x00e5ff, transparent:true, opacity:0.5});
+const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+ringMesh.rotation.x = Math.PI/2;
+scene.add(ringMesh);
+
+// Inner TL ring
+const tlRingGeo = new THREE.TorusGeometry(TL*8, 0.008, 6, 48);
+const tlRingMat = new THREE.MeshBasicMaterial({color:0xffaa00, transparent:true, opacity:0.4});
+const tlRingMesh = new THREE.Mesh(tlRingGeo, tlRingMat);
+tlRingMesh.rotation.x = Math.PI/2;
+scene.add(tlRingMesh);
+
+// ── FIELD LINES (IMS channels radiating outward) ──
+const fieldLines = [];
+const NUM_LINES = 24;
+for(let i=0; i<NUM_LINES; i++){
+  const angle = (i/NUM_LINES)*Math.PI*2;
+  const pts = [];
+  for(let r=0.6; r<=4; r+=0.3){
+    pts.push(new THREE.Vector3(
+      Math.cos(angle)*r, Math.sin(angle)*r*0.3, Math.sin(angle)*r
+    ));
+  }
+  const curve = new THREE.CatmullRomCurve3(pts);
+  const geo = new THREE.TubeGeometry(curve, 12, 0.005, 4, false);
+  const mat = new THREE.MeshBasicMaterial({color:0x002244, transparent:true, opacity:0.4});
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+  fieldLines.push({mesh, mat, angle});
+}
+
+// ── PARTICLE SYSTEM (purpose vector particles) ──
+const NUM_PARTICLES = 200;
+const partGeo = new THREE.BufferGeometry();
+const partPositions = new Float32Array(NUM_PARTICLES*3);
+const partSpeeds = [];
+const partPhases = [];
+for(let i=0; i<NUM_PARTICLES; i++){
+  const r = 0.6 + Math.random()*3.5;
+  const theta = Math.random()*Math.PI*2;
+  const phi = (Math.random()-0.5)*Math.PI;
+  partPositions[i*3]   = r*Math.cos(theta)*Math.cos(phi);
+  partPositions[i*3+1] = r*Math.sin(phi);
+  partPositions[i*3+2] = r*Math.sin(theta)*Math.cos(phi);
+  partSpeeds.push(0.5+Math.random()*2);
+  partPhases.push(Math.random()*Math.PI*2);
+}
+partGeo.setAttribute('position', new THREE.BufferAttribute(partPositions, 3));
+const partMat = new THREE.PointsMaterial({
+  color:0x00ffcc, size:0.04, transparent:true, opacity:0.6
+});
+const particles = new THREE.Points(partGeo, partMat);
+scene.add(particles);
+
+// ── ORBIT SHELLS (P,N,B,A indicator shells) ──
+const shells = [];
+const shellColors = [0x00e5ff, 0x7744ff, 0xff8800, 0x00ffcc];
+const shellRadii = [2.0, 2.5, 3.0, 3.5];
+for(let i=0; i<4; i++){
+  const geo = new THREE.SphereGeometry(shellRadii[i], 16, 8);
+  const mat = new THREE.MeshBasicMaterial({
+    color:shellColors[i], wireframe:true, transparent:true, opacity:0.08
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+  shells.push({mesh, mat, baseOpacity:0.08});
+}
+
+// ── TORSION CONE (visualizes τ = B/P) ──
+const coneGeo = new THREE.ConeGeometry(0.3, 1.5, 8, 1, true);
+const coneMat = new THREE.MeshBasicMaterial({
+  color:0xaa88ff, wireframe:true, transparent:true, opacity:0.0
+});
+const coneMesh = new THREE.Mesh(coneGeo, coneMat);
+coneMesh.position.y = 0.75;
+scene.add(coneMesh);
+
+// ── IVA THRUST PLUME ──
+const plumeGeo = new THREE.ConeGeometry(0.2, 2, 6, 1, true);
+const plumeMat = new THREE.MeshBasicMaterial({
+  color:0xff8800, wireframe:true, transparent:true, opacity:0
+});
+const plumeMesh = new THREE.Mesh(plumeGeo, plumeMat);
+plumeMesh.position.y = -1.5;
+plumeMesh.rotation.z = Math.PI;
+scene.add(plumeMesh);
+
+// ── LIGHTING ──
+scene.add(new THREE.AmbientLight(0x111122, 2));
+const pt = new THREE.PointLight(0x00e5ff, 1.5, 10);
+pt.position.set(3,3,3);
+scene.add(pt);
+const pt2 = new THREE.PointLight(0xaa88ff, 0.8, 10);
+pt2.position.set(-2,-2,2);
+scene.add(pt2);
+
+// ── ORBIT CONTROLS (manual) ──
+let mouseDown = false, lastMouse = {x:0,y:0};
+let camTheta = 0, camPhi = 0.3, camR = 8;
+canvas.addEventListener('mousedown', e=>{mouseDown=true; lastMouse={x:e.clientX,y:e.clientY};});
+canvas.addEventListener('mouseup', ()=>mouseDown=false);
+canvas.addEventListener('mousemove', e=>{
+  if(!mouseDown) return;
+  camTheta -= (e.clientX-lastMouse.x)*0.008;
+  camPhi   -= (e.clientY-lastMouse.y)*0.008;
+  camPhi = Math.max(-1.4, Math.min(1.4, camPhi));
+  lastMouse={x:e.clientX,y:e.clientY};
+  camera.position.x = camR*Math.cos(camTheta)*Math.cos(camPhi);
+  camera.position.y = camR*Math.sin(camPhi);
+  camera.position.z = camR*Math.sin(camTheta)*Math.cos(camPhi);
+  camera.lookAt(0,0,0);
+});
+canvas.addEventListener('wheel', e=>{
+  camR = Math.max(2, Math.min(20, camR + e.deltaY*0.01));
+  camera.position.normalize().multiplyScalar(camR);
+  camera.lookAt(0,0,0);
+});
+
+// ════════════════════════════════════════════════════
+// ANIMATION LOOP
+// ════════════════════════════════════════════════════
+let frame = 0;
+let simInterval = null;
+
+function updatePhysics(){
+  const dt = 0.016 * simSpeed * 0.5;
+  t += dt;
+  stats.cycles++;
+
+  const tau  = torsion(P, B);
+  const IM   = identityMass(P, N, B, A);
+  const Z    = anchorLocked ? manifoldImpedance(ANCHOR) : manifoldImpedance(ANCHOR*1.05);
+  const gate = imsGate();
+  const drive = A * P * B * gate;
+  const dvdt = (drive - F_ext) / Math.max(IM, 0.001);
+
+  // Pv evolution
+  Pv += dvdt * dt;
+  Pv = Math.max(0, Pv);
+
+  const dv_sov = deltaV_sovereign(P,N,B,A,g_r) * gate;
+  const dv_cls = deltaV_classical(P,N,B,A);
+  const gain   = dv_cls > 0.001 ? dv_sov/dv_cls : 0;
+
+  const state = classify(tau);
+  if(state !== lastState){
+    if(state === 'NOBLE'){stats.noble++; flashRing('noble');}
+    if(state === 'SHATTER'){stats.shatter++; flashRing('shatter');}
+    if(state === 'IVA'){stats.iva++;}
+    logEvent(state, tau, IM, Pv);
+    lastState = state;
+  }
+
+  if(Pv > stats.maxPv){ stats.maxPv = Pv; }
+  if(dv_sov > stats.maxIva){ stats.maxIva = dv_sov; }
+
+  updateUI(tau, IM, Z, Pv, dv_sov, dv_cls, gain, state);
+  updateScene(tau, IM, Pv, state, dv_sov, gate);
+}
+
+function updateUI(tau, IM, Z, Pv, dv_sov, dv_cls, gain, state){
+  // HUD
+  document.getElementById('h-tau').textContent = tau.toFixed(4);
+  document.getElementById('h-state').textContent = state;
+  document.getElementById('h-im').textContent = IM.toFixed(4);
+  document.getElementById('h-z').textContent = Z.toFixed(4);
+  document.getElementById('h-pv').textContent = Pv.toFixed(4);
+  document.getElementById('h-t').textContent = t.toFixed(2);
+
+  // State badge
+  const badge = document.getElementById('state-badge');
+  badge.className = 'state-badge state-'+state;
+  badge.textContent = state;
+
+  // Gauges
+  const tauPct = Math.min(100, (tau/TL)*50);
+  document.getElementById('g-tau').style.width = tauPct+'%';
+  document.getElementById('g-tau').style.background = state==='NOBLE'?'var(--noble)':state==='LOCKED'?'var(--locked)':state==='IVA'?'var(--iva)':'var(--shatter)';
+  document.getElementById('g-tau-val').textContent = tau.toFixed(3);
+
+  const imPct = Math.min(100, (IM/20)*100);
+  document.getElementById('g-im').style.width = imPct+'%';
+  document.getElementById('g-im-val').textContent = IM.toFixed(3);
+
+  const pvPct = Math.min(100, (Pv/5)*100);
+  document.getElementById('g-pv').style.width = pvPct+'%';
+  document.getElementById('g-pv-val').textContent = Pv.toFixed(3);
+
+  const ivaPct = Math.min(100, (dv_sov/10)*100);
+  document.getElementById('g-iva').style.width = ivaPct+'%';
+  document.getElementById('g-iva-val').textContent = dv_sov.toFixed(3);
+
+  // Readouts
+  const tauColor = state==='NOBLE'?'var(--noble)':state==='LOCKED'?'var(--locked)':state==='IVA'?'var(--iva)':'var(--shatter)';
+  document.getElementById('r-tau').style.color = tauColor;
+  document.getElementById('r-tau').textContent = tau.toFixed(4);
+  document.getElementById('r-im').textContent = IM.toFixed(4);
+  document.getElementById('r-pv').textContent = Pv.toFixed(4);
+  document.getElementById('r-z').textContent = Z.toFixed(4);
+  document.getElementById('r-dv').textContent = dv_sov.toFixed(4);
+  document.getElementById('r-dvc').textContent = dv_cls.toFixed(4);
+  document.getElementById('r-gain').textContent = gain > 0.001 ? gain.toFixed(2)+'×' : '—';
+  document.getElementById('r-ims').textContent = anchorLocked ? 'GREEN' : 'RED';
+  document.getElementById('r-ims').style.color = anchorLocked ? 'var(--locked)' : 'var(--shatter)';
+  document.getElementById('r-fext').textContent = F_ext.toFixed(4);
+  document.getElementById('r-t').textContent = t.toFixed(2);
+
+  // Bottom stats
+  document.getElementById('bs-cycles').textContent = stats.cycles;
+  document.getElementById('bs-noble').textContent = stats.noble;
+  document.getElementById('bs-shatter').textContent = stats.shatter;
+  document.getElementById('bs-iva').textContent = stats.iva;
+  document.getElementById('bs-maxpv').textContent = stats.maxPv.toFixed(3);
+  document.getElementById('bs-maxiva').textContent = stats.maxIva.toFixed(3);
+}
+
+function updateScene(tau, IM, Pv, state, dv_sov, gate){
+  frame++;
+  const time = frame * 0.016;
+
+  // Core color and pulse based on state
+  const stateColors = {NOBLE:0x00ffcc, LOCKED:0x00e5ff, IVA:0xff8800, SHATTER:0xff3355};
+  const stateEmissive = {NOBLE:0x003322, LOCKED:0x001133, IVA:0x220800, SHATTER:0x330011};
+  coreMat.color.setHex(stateColors[state]||0x00e5ff);
+  coreMat.emissive.setHex(stateEmissive[state]||0x001133);
+  wireMat.color.setHex(stateColors[state]||0x00e5ff);
+
+  // Core pulse at ANCHOR frequency (1.369 Hz)
+  const anchorPulse = 0.5 + 0.5*Math.sin(time*ANCHOR*Math.PI*2);
+  const scalePulse = 1.0 + anchorPulse * 0.15 * (1+Pv*0.2);
+  coreMesh.scale.setScalar(scalePulse);
+  wireMesh.scale.setScalar(scalePulse*1.02);
+
+  // Rotation: faster with tau
+  const rot = 0.003 + tau*0.02;
+  coreMesh.rotation.y += rot;
+  coreMesh.rotation.x += rot*0.4;
+  wireMesh.rotation.y += rot*1.1;
+  wireMesh.rotation.x += rot*0.5;
+
+  // Anchor ring
+  ringMesh.rotation.y += 0.004;
+  ringMat.opacity = 0.3 + anchorPulse*0.3;
+  ringMat.color.setHex(state==='NOBLE'?0x00ffcc:0x00e5ff);
+
+  // TL ring — brightens as tau approaches TL
+  const tlProximity = 1 - Math.abs(tau - TL)/TL;
+  tlRingMat.opacity = 0.15 + Math.max(0,tlProximity)*0.5;
+  tlRingMesh.rotation.y -= 0.006;
+
+  // Field lines — colored by state, IMS gate affects opacity
+  fieldLines.forEach(({mat, angle}, i) => {
+    if(!showField){ mat.opacity = 0; return; }
+    const phase = angle + time*0.5;
+    const wave = 0.5 + 0.5*Math.sin(phase);
+    mat.color.setHex(stateColors[state]||0x00e5ff);
+    mat.opacity = gate * (0.1 + wave*0.25*(1+Pv*0.3));
+  });
+
+  // Particles — orbit speed proportional to IM
+  const pos = partGeo.attributes.position.array;
+  for(let i=0; i<NUM_PARTICLES; i++){
+    const speed = partSpeeds[i];
+    const phase = partPhases[i] + time*speed*(0.1+IM*0.02)*gate;
+    const r = 0.8 + (i/NUM_PARTICLES)*3;
+    const theta = phase;
+    const phi = Math.sin(phase*0.37+i) * 0.8;
+    pos[i*3]   = r*Math.cos(theta)*Math.cos(phi);
+    pos[i*3+1] = r*Math.sin(phi);
+    pos[i*3+2] = r*Math.sin(theta)*Math.cos(phi);
+  }
+  partGeo.attributes.position.needsUpdate = true;
+  partMat.color.setHex(stateColors[state]||0x00ffcc);
+  partMat.opacity = gate*(0.4 + Pv*0.1);
+  partMat.size = 0.03 + Pv*0.01;
+
+  // Shells — P shell breathes, others respond to PNBA
+  const vals = [P,N,B,A];
+  shells.forEach(({mesh, mat}, i) => {
+    const v = vals[i];
+    const scale = 0.5 + v*0.15;
+    mesh.scale.setScalar(scale);
+    mat.opacity = 0.04 + Math.min(0.2, v*0.02);
+    mesh.rotation.y += 0.001*(i+1);
+    mesh.rotation.x += 0.0007*(i+1);
+  });
+
+  // Torsion cone — grows with tau, red when approaching TL
+  if(tau > 0.001){
+    const coneScale = Math.min(tau/TL, 3);
+    coneMesh.scale.set(coneScale, coneScale, coneScale);
+    coneMat.opacity = Math.min(0.5, tau/TL*0.3);
+    coneMat.color.setHex(tau>=TL ? 0xff3355 : tau>=TL*0.8 ? 0xff8800 : 0xaa88ff);
+    coneMesh.rotation.y += 0.02;
+  } else {
+    coneMesh.scale.setScalar(0.01);
+    coneMat.opacity = 0;
+  }
+
+  // IVA thrust plume
+  if(gate && Pv > 0.1){
+    const plumeScale = Pv * (1+g_r) * 0.3;
+    plumeMesh.scale.set(plumeScale, plumeScale, plumeScale);
+    plumeMat.opacity = Math.min(0.7, Pv*0.2);
+    plumeMat.color.setHex(state==='IVA' ? 0xffaa00 : 0x00ffcc);
+    plumeMesh.position.y = -0.5 - plumeScale*0.5;
+    plumeMesh.rotation.y += 0.05;
+  } else {
+    plumeMat.opacity = 0;
+  }
+
+  renderer.render(scene, camera);
+}
+
+// ════════════════════════════════════════════════════
+// RING FLASH
+// ════════════════════════════════════════════════════
+function flashRing(type){
+  const ring = document.getElementById('phase-ring');
+  const color = type==='noble' ? '#00ffcc' : type==='shatter' ? '#ff3355' : '#ff8800';
+  ring.innerHTML = `<svg width="200" height="200" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="80" fill="none" stroke="${color}" stroke-width="3" opacity="0.8"/>
+    <circle cx="100" cy="100" r="60" fill="none" stroke="${color}" stroke-width="1.5" opacity="0.5"/>
+  </svg>`;
+  ring.classList.remove('ring-flash');
+  void ring.offsetWidth;
+  ring.classList.add('ring-flash');
+}
+
+// ════════════════════════════════════════════════════
+// EVENT LOG
+// ════════════════════════════════════════════════════
+function logEvent(state, tau, IM, Pv){
+  const feed = document.getElementById('feed');
+  const now = new Date();
+  const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  const cls = {NOBLE:'fl-noble',LOCKED:'fl-locked',IVA:'fl-iva',SHATTER:'fl-shatter'}[state]||'fl-info';
+  const line = document.createElement('div');
+  line.className = `fl ${cls}`;
+  line.innerHTML = `<span class="fl-t">${ts}</span>${state} · τ=${tau.toFixed(4)} · IM=${IM.toFixed(3)} · Pv=${Pv.toFixed(3)}`;
+  feed.appendChild(line);
+  feed.scrollTop = feed.scrollHeight;
+  if(feed.children.length > 80) feed.removeChild(feed.firstChild);
+}
+
+function feedLine(text, cls='fl-info'){
+  const feed = document.getElementById('feed');
+  const now = new Date();
+  const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  const line = document.createElement('div');
+  line.className = `fl ${cls}`;
+  line.innerHTML = `<span class="fl-t">${ts}</span>${text}`;
+  feed.appendChild(line);
+  feed.scrollTop = feed.scrollHeight;
+  if(feed.children.length > 80) feed.removeChild(feed.firstChild);
+}
+
+// ════════════════════════════════════════════════════
+// RENDER LOOP (always runs for 3D)
+// ════════════════════════════════════════════════════
+function renderLoop(){
+  requestAnimationFrame(renderLoop);
+  const tau  = torsion(P, B);
+  const IM   = identityMass(P, N, B, A);
+  const state = classify(tau);
+  updateScene(tau, IM, Pv, state, deltaV_sovereign(P,N,B,A,g_r)*imsGate(), imsGate());
+}
+renderLoop();
+
+// ════════════════════════════════════════════════════
+// SIM CONTROL
+// ════════════════════════════════════════════════════
+function startSim(){
+  if(simRunning) return;
+  simRunning = true;
+  feedLine('Simulation started · ANCHOR=' + ANCHOR + ' · TL=' + TL.toFixed(4), 'fl-locked');
+  const ms = Math.max(16, 200 - simSpeed*18);
+  simInterval = setInterval(updatePhysics, ms);
+}
+
+function stopSim(){
+  simRunning = false;
+  if(simInterval) clearInterval(simInterval);
+  feedLine('Simulation stopped', 'fl-info');
+}
+
+function resetSim(){
+  stopSim();
+  t = 0; Pv = 0; lastState = ''; frame = 0;
+  stats = {cycles:0,noble:0,shatter:0,iva:0,maxPv:0,maxIva:0};
+  feedLine('Reset · all counters cleared', 'fl-info');
+  const tau = torsion(P,B);
+  const IM = identityMass(P,N,B,A);
+  const state = classify(tau);
+  updateUI(tau,IM,0,0,0,0,0,state);
+}
+
+// ════════════════════════════════════════════════════
+// SLIDERS
+// ════════════════════════════════════════════════════
+function bindSlider(id, valId, cb){
+  const el = document.getElementById(id);
+  el.addEventListener('input', function(){
+    const v = parseFloat(this.value);
+    document.getElementById(valId).textContent = v.toFixed(3);
+    cb(v);
+  });
+}
+
+bindSlider('s-P','v-P', v=>{ P=v; });
+bindSlider('s-N','v-N', v=>{ N=v; });
+bindSlider('s-B','v-B', v=>{ B=v; });
+bindSlider('s-A','v-A', v=>{ A=v; });
+bindSlider('s-F','v-F', v=>{ F_ext=v; });
+bindSlider('s-gr','v-gr', v=>{ g_r=v; });
+bindSlider('s-speed','v-speed', v=>{
+  simSpeed=v;
+  document.getElementById('v-speed').textContent = v;
+  if(simRunning){ stopSim(); startSim(); }
+});
+
+document.getElementById('cb-anchor').addEventListener('change', function(){
+  anchorLocked = this.checked;
+  feedLine('IMS GATE: ' + (anchorLocked?'ANCHOR LOCKED — GREEN':'DRIFT DETECTED — RED'), anchorLocked?'fl-locked':'fl-shatter');
+});
+document.getElementById('cb-field').addEventListener('change', function(){
+  showField = this.checked;
+});
+
+// ════════════════════════════════════════════════════
+// PRESETS
+// ════════════════════════════════════════════════════
+function setSlider(id, val){
+  const el = document.getElementById(id);
+  el.value = val;
+  el.dispatchEvent(new Event('input'));
+}
+
+function loadPreset(name){
+  const presets = {
+    noble:    {P:2.0, N:3.0, B:0.0, A:0.5,  F:0,   gr:1.5, note:'Noble state · τ=0 · zero torsion · maximum potential'},
+    locked:   {P:1.5, N:2.0, B:0.1, A:0.5,  F:0,   gr:1.5, note:'Locked · τ=0.067 · below TL · phase-locked'},
+    iva:      {P:1.5, N:2.0, B:0.205,A:0.5, F:0.1, gr:2.5, note:'IVA Peak · τ≈TL · sovereign flow state · maximum drive'},
+    shatter:  {P:1.0, N:2.0, B:0.5, A:0.5,  F:0.5, gr:0.5, note:'Shatter · τ=0.5 >> TL · pattern genesis · torsion exceeded'},
+    xicc:     {P:1.359,N:3.0,B:0.0, A:0.118,F:0,   gr:1.5, note:'Ξcc⁺ Baryon [9,9,2,33] · cc diquark Noble · B=0 · τ=0 · LHCb 2026'},
+    toponium: {P:0.700,N:6.0,B:0.0, A:0.118,F:0,   gr:1.5, note:'Toponium tt̄ [9,9,2,34] · B_top=2/3 k=1 → Noble · CMS/ATLAS 2026'},
+    zoivum:   {P:ANCHOR,N:2.0,B:TL*ANCHOR/2,A:ANCHOR/TL,F:0,gr:1.5, note:'Zoivum [9,9,1,56] · life operator · P=ANCHOR · Zo+qb LOCKED at 93.6% TL'},
+  };
+  const p = presets[name];
+  if(!p) return;
+  stopSim();
+  resetSim();
+  setSlider('s-P', p.P);
+  setSlider('s-N', p.N);
+  setSlider('s-B', p.B);
+  setSlider('s-A', p.A);
+  setSlider('s-F', p.F);
+  setSlider('s-gr', p.gr);
+  feedLine('PRESET: ' + name.toUpperCase() + ' · ' + p.note, 'fl-iva');
+}
+
+// ════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════
+loadPreset('locked');
+feedLine('SNSFT Sovereign Drive Simulator · v1.0', 'fl-locked');
+feedLine('Drag to orbit · Scroll to zoom · Select preset or tune PNBA manually', 'fl-info');
+feedLine('ANCHOR = ' + ANCHOR + ' GHz · TL = ' + TL.toFixed(4) + ' · 0 sorry', 'fl-info');
+</script>
+</body>
+</html>
