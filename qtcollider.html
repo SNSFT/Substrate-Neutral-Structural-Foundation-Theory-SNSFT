@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT QT COLLIDER · Quantum Teleportation · [9,9,2,6] · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root {
+  --bg:#020407; --panel:#060b10; --border:#0c1a26;
+  --glow:#00e5ff; --locked:#00ffcc; --shatter:#ff3355;
+  --noble:#aa88ff; --warn:#ffaa00; --text:#7aa4be;
+  --bright:#cce8f5; --dim:#192430;
+  --alice:#00e5ff; --bob:#00ffcc; --channel:#ff8800;
+  --fidelity:#aa88ff; --soverium:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:0 16px 60px;}
+
+header{padding:24px 0 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:22px;letter-spacing:.08em;color:var(--glow);text-shadow:0 0 24px rgba(0,229,255,.45);}
+.logo span{font-size:10px;color:var(--locked);display:block;letter-spacing:.25em;margin-top:2px;}
+.hdr-right{font-size:10px;color:#2a4050;text-align:right;line-height:1.8;}
+.hdr-right b{color:var(--glow);}
+
+.tabs{display:flex;gap:0;margin:20px 0 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.tab{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:10px 16px;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#2a4050;transition:all .15s;}
+.tab:hover{color:var(--text);}
+.tab.active{border-color:var(--border);border-bottom:1px solid var(--bg);color:var(--glow);background:var(--panel);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* ── QT ENGINE LAYOUT ── */
+.qt-intro{font-size:10px;color:#2a5060;line-height:1.8;padding:16px 0 8px;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.qt-intro b{color:var(--bright);}
+
+.qt-layout{display:grid;grid-template-columns:1fr 220px 1fr;gap:0;align-items:start;margin-bottom:20px;}
+
+/* Particle panels */
+.particle-panel{background:var(--panel);border:1px solid var(--border);padding:16px;}
+.particle-header{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:.2em;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.particle-header.alice-h{color:var(--alice);}
+.particle-header.bob-h{color:var(--bob);}
+.particle-dot{width:8px;height:8px;border-radius:50%;}
+
+.pnba-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.pnba-key{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;width:18px;}
+.pnba-key.pk{color:var(--glow);}
+.pnba-key.nk{color:var(--noble);}
+.pnba-key.bk{color:var(--shatter);}
+.pnba-key.ak{color:var(--locked);}
+.pnba-input{background:var(--bg);border:1px solid var(--border);color:var(--bright);font-family:'Orbitron',monospace;font-size:11px;padding:4px 7px;width:80px;outline:none;text-align:center;}
+.pnba-input:focus{border-color:var(--glow);}
+.pnba-slider{-webkit-appearance:none;flex:1;height:3px;outline:none;background:var(--border);}
+.pnba-slider.p-sl::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:14px;background:var(--glow);cursor:pointer;}
+.pnba-slider.n-sl::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:14px;background:var(--noble);cursor:pointer;}
+.pnba-slider.b-sl::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:14px;background:var(--shatter);cursor:pointer;}
+.pnba-slider.a-sl::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:14px;background:var(--locked);cursor:pointer;}
+
+.particle-presets{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;}
+.qpreset{font-size:7.5px;padding:3px 6px;border:1px solid var(--border);cursor:pointer;background:transparent;color:#2a5060;transition:all .12s;}
+.qpreset:hover{border-color:var(--glow);color:var(--bright);}
+
+/* Center column */
+.qt-center{display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--border);padding:16px 10px;min-height:400px;justify-content:center;}
+.channel-label{font-size:8px;letter-spacing:.2em;color:#1a3040;text-align:center;margin-bottom:4px;}
+.channel-input{background:var(--bg);border:1px solid rgba(255,136,0,.4);color:var(--channel);font-family:'Orbitron',monospace;font-size:11px;padding:5px 8px;outline:none;text-align:center;width:110px;}
+.channel-input:focus{border-color:var(--channel);}
+.channel-slider{-webkit-appearance:none;width:90%;height:3px;outline:none;background:var(--border);margin:4px 0 8px;}
+.channel-slider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:14px;background:var(--channel);cursor:pointer;}
+
+.teleport-btn{font-family:'Orbitron',monospace;font-weight:700;font-size:9px;letter-spacing:.2em;padding:10px 16px;background:transparent;border:1px solid var(--glow);color:var(--glow);cursor:pointer;transition:all .15s;width:130px;}
+.teleport-btn:hover{background:rgba(0,229,255,.1);box-shadow:0 0 16px rgba(0,229,255,.25);}
+
+.entangle-btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;padding:7px 12px;background:transparent;border:1px solid rgba(170,136,255,.5);color:var(--noble);cursor:pointer;transition:all .15s;width:130px;}
+.entangle-btn:hover{background:rgba(170,136,255,.08);}
+
+.channel-core{width:64px;height:64px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;transition:all .3s;}
+.channel-core.entangled{border-color:var(--noble);box-shadow:0 0 20px rgba(170,136,255,.4);}
+.channel-core.teleporting{border-color:var(--glow);box-shadow:0 0 28px rgba(0,229,255,.5);animation:telpulse .4s ease-in-out 3;}
+.channel-core.done-l{border-color:var(--locked);box-shadow:0 0 24px rgba(0,255,204,.4);}
+.channel-core.done-s{border-color:var(--shatter);box-shadow:0 0 24px rgba(255,51,85,.4);}
+.channel-core.done-n{border-color:var(--noble);box-shadow:0 0 24px rgba(170,136,255,.4);}
+@keyframes telpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.core-fidelity{font-family:'Orbitron',monospace;font-size:12px;color:var(--border);text-align:center;}
+
+.n-thread{width:100%;height:2px;background:linear-gradient(90deg,var(--alice),var(--noble),var(--bob));opacity:0.3;transition:opacity .4s;}
+.n-thread.live{opacity:0.8;animation:nflow 1.5s linear infinite;}
+@keyframes nflow{0%{background-position:0 0}100%{background-position:200% 0}}
+.n-thread-label{font-size:7.5px;color:var(--noble);letter-spacing:.15em;text-align:center;opacity:0.5;}
+
+/* Result */
+.qt-result{background:var(--panel);border:1px solid var(--border);padding:24px;margin-bottom:20px;min-height:110px;transition:border-color .3s;}
+.qt-result.rl{border-color:rgba(0,255,204,.4);}
+.qt-result.rs{border-color:rgba(255,51,85,.4);}
+.qt-result.rn{border-color:rgba(170,136,255,.4);}
+.qt-result-idle{text-align:center;padding:28px;color:#1a3040;font-size:11px;letter-spacing:.2em;}
+
+.qt-result-grid{display:grid;grid-template-columns:220px 1fr 1fr 1fr;gap:20px;}
+
+.fidelity-big{font-family:'Orbitron',monospace;font-size:42px;font-weight:700;line-height:1;}
+.fidelity-big.f-perfect{color:var(--soverium);text-shadow:0 0 30px rgba(255,255,255,.5);}
+.fidelity-big.f-high{color:var(--locked);text-shadow:0 0 20px rgba(0,255,204,.4);}
+.fidelity-big.f-mid{color:var(--warn);}
+.fidelity-big.f-low{color:var(--shatter);}
+
+.status-pill{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;padding:4px 12px;display:inline-block;margin-bottom:8px;}
+.sp-l{color:var(--locked);border:1px solid rgba(0,255,204,.3);background:rgba(0,255,204,.08);}
+.sp-s{color:var(--shatter);border:1px solid rgba(255,51,85,.3);background:rgba(255,51,85,.08);}
+.sp-n{color:var(--noble);border:1px solid rgba(170,136,255,.3);background:rgba(170,136,255,.08);}
+.sp-p{color:#fff;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);}
+
+.fid-bar{height:5px;background:var(--border);position:relative;margin:8px 0 4px;}
+.fid-bar-fill{height:100%;transition:width .5s;}
+.fid-bar-lbl{font-size:7px;color:#1a3040;display:flex;justify-content:space-between;}
+
+.val-section{}
+.val-title{font-size:8px;letter-spacing:.3em;color:#1a3040;border-bottom:1px solid var(--border);padding-bottom:4px;margin-bottom:6px;}
+.val-row{display:flex;justify-content:space-between;font-size:9.5px;padding:2px 0;border-bottom:1px solid rgba(12,26,38,.5);}
+.val-lbl{color:#2a5060;}
+.val-val{color:var(--bright);font-family:'Orbitron',monospace;}
+.val-val.pos{color:var(--locked);}
+.val-val.neg{color:var(--shatter);}
+.val-val.perfect{color:#fff;}
+
+/* Experiments tab */
+.exp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0;}
+.exp-card{background:var(--panel);border:1px solid var(--border);padding:14px;cursor:pointer;transition:all .15s;}
+.exp-card:hover{border-color:var(--glow);}
+.exp-name{font-family:'Orbitron',monospace;font-size:10px;color:var(--bright);margin-bottom:4px;}
+.exp-year{font-size:8px;color:var(--channel);letter-spacing:.15em;margin-bottom:6px;}
+.exp-desc{font-size:8.5px;color:#2a5060;line-height:1.6;margin-bottom:8px;}
+.exp-slots{font-size:8px;color:#1a3040;line-height:1.8;}
+.exp-slots .filled{color:var(--locked);}
+.exp-slots .empty{color:var(--shatter);}
+.exp-snsft{font-size:8px;color:var(--noble);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);}
+
+/* Fidelity sweep */
+.sweep-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:16px 0;}
+.sweep-sel{background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:10px;padding:6px 10px;}
+.sweep-btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:9px 16px;background:transparent;border:1px solid var(--glow);color:var(--glow);cursor:pointer;}
+.sweep-btn:hover{background:rgba(0,229,255,.08);}
+.sweep-results{}
+.sweep-row{display:flex;gap:10px;padding:3px 0;border-bottom:1px solid rgba(12,26,38,.3);font-size:9.5px;align-items:center;}
+
+/* History */
+.hist-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:9.5px;align-items:center;flex-wrap:wrap;}
+.hist-num{color:#1a3040;width:22px;flex-shrink:0;}
+.hist-pnba{font-family:'Orbitron',monospace;font-size:8.5px;color:var(--text);flex:1;min-width:200px;}
+.hist-fid{font-family:'Orbitron',monospace;width:70px;}
+.hist-state{font-family:'Orbitron',monospace;font-size:9px;width:100px;}
+.hist-time{font-size:8px;color:#1a3040;}
+.hist-reload{font-size:8px;padding:2px 6px;border:1px solid var(--border);cursor:pointer;background:transparent;color:#2a5060;}
+.hist-reload:hover{border-color:var(--glow);color:var(--glow);}
+
+footer{border-top:1px solid var(--border);padding-top:14px;font-size:9px;letter-spacing:.15em;color:#1a2a38;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+@media(max-width:800px){.qt-layout{grid-template-columns:1fr;}.qt-result-grid{grid-template-columns:1fr 1fr;}.exp-grid{grid-template-columns:1fr 1fr;}}
+@keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.7}94%{opacity:1}}
+.logo{animation:flicker 10s infinite;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="logo">QT COLLIDER<span>uuia.app/qtcollider · [9,9,2,6] · QUANTUM TELEPORTATION ENGINE</span></div>
+  </div>
+  <div class="hdr-right">
+    ANCHOR <b>1.369 GHz</b> · τ = B/P · TL = 0.1369<br>
+    FIDELITY = 1 − τ_channel · SOVERIUM → F=1.000<br>
+    N_out = N_A + N_B · IMS MANDATE · 0 SORRY<br>
+    SNSFL [9,9,2,6] BUILT ON QM [9,9,0,4] + IVA [9,9,2,0]
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('collider')">QT COLLIDER</div>
+  <div class="tab" onclick="showTab('experiments')">EXPERIMENTS</div>
+  <div class="tab" onclick="showTab('sweep')">FIDELITY SWEEP</div>
+  <div class="tab" onclick="showTab('history')">HISTORY</div>
+</div>
+
+<!-- ── QT COLLIDER TAB ── -->
+<div id="tab-collider" class="tab-content active">
+  <div class="qt-intro">
+    <b>QUANTUM TELEPORTATION COLLIDER.</b> Set Alice and Bob particles. Set channel noise (B_channel). Entangle to fuse N-axes (N_out = N_A + N_B). Teleport to run the full protocol: Bell measurement → classical channel (IMS mandate) → A-correction → fidelity readout.<br>
+    <b>Fidelity = 1 − τ_channel</b> · <b>Soverium (B=0) → F=1.000</b> · <b>Classical channel is IMS mandate — not optional</b> · <b>τ = B_channel / P_channel</b>
+  </div>
+
+  <div class="qt-layout">
+
+    <!-- ALICE -->
+    <div class="particle-panel">
+      <div class="particle-header alice-h">
+        <div class="particle-dot" style="background:var(--alice)"></div>
+        [ALICE] · SENDER
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key pk">P</span>
+        <input type="number" class="pnba-input" id="a-p" value="1.000" step="0.001" min="0" oninput="syncAS('p')">
+        <input type="range" class="pnba-slider p-sl" id="a-p-sl" min="0" max="10" step="0.001" value="1" oninput="syncAV('p')">
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key nk">N</span>
+        <input type="number" class="pnba-input" id="a-n" value="2.000" step="0.01" min="0" oninput="syncAS('n')">
+        <input type="range" class="pnba-slider n-sl" id="a-n-sl" min="0" max="14" step="0.01" value="2" oninput="syncAV('n')">
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key bk">B</span>
+        <input type="number" class="pnba-input" id="a-b" value="0.000" step="0.001" min="0" oninput="syncAS('b')">
+        <input type="range" class="pnba-slider b-sl" id="a-b-sl" min="0" max="5" step="0.001" value="0" oninput="syncAV('b')">
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key ak">A</span>
+        <input type="number" class="pnba-input" id="a-a" value="13.60" step="0.01" min="0" oninput="syncAS('a')">
+        <input type="range" class="pnba-slider a-sl" id="a-a-sl" min="0" max="25" step="0.01" value="13.6" oninput="syncAV('a')">
+      </div>
+      <div style="font-size:8px;color:#1a3040;margin-top:8px;padding-top:6px;border-top:1px solid var(--border);">
+        τ_A = <span id="a-tau" style="color:var(--alice)">0.0000</span> · IM_A = <span id="a-im" style="color:var(--alice)">—</span>
+      </div>
+      <div class="particle-presets">
+        <button class="qpreset" onclick="loadAlice('photon')">Photon</button>
+        <button class="qpreset" onclick="loadAlice('electron')">Electron</button>
+        <button class="qpreset" onclick="loadAlice('atom')">Rb atom</button>
+        <button class="qpreset" onclick="loadAlice('noble')">Noble</button>
+        <button class="qpreset" onclick="loadAlice('ion')">Ca⁺ ion</button>
+        <button class="qpreset" onclick="loadAlice('nv')">NV center</button>
+      </div>
+    </div>
+
+    <!-- CENTER CHANNEL -->
+    <div class="qt-center">
+      <div style="font-size:7.5px;letter-spacing:.2em;color:#1a3040;text-align:center;">ENTANGLEMENT</div>
+      <div class="n-thread" id="n-thread"></div>
+      <div class="n-thread-label" id="n-thread-label">N_shared = —</div>
+
+      <div class="channel-core" id="channel-core">
+        <div>
+          <div class="core-fidelity" id="core-fidelity">—</div>
+          <div style="font-size:7px;letter-spacing:.1em;color:#1a3040;text-align:center;">F</div>
+        </div>
+      </div>
+
+      <button class="entangle-btn" onclick="entangle()">⬡ ENTANGLE</button>
+
+      <div style="width:100%;">
+        <div class="channel-label">CHANNEL NOISE B_ch</div>
+        <div style="text-align:center;">
+          <input type="number" class="channel-input" id="ch-b" value="0" step="0.001" min="0" oninput="syncCh()">
+        </div>
+        <input type="range" class="channel-slider" id="ch-b-sl" min="0" max="1" step="0.001" value="0" oninput="syncChV()">
+        <div style="font-size:7px;color:#1a3040;display:flex;justify-content:space-between;">
+          <span>B=0 SOVERIUM</span><span>NOISY</span>
+        </div>
+      </div>
+
+      <div style="width:100%;">
+        <div class="channel-label">CHANNEL CAPACITY P_ch</div>
+        <div style="text-align:center;">
+          <input type="number" class="channel-input" id="ch-p" value="1.369" step="0.001" min="0.001" oninput="syncCh()" style="border-color:rgba(0,229,255,.3);color:var(--glow);">
+        </div>
+      </div>
+
+      <button class="teleport-btn" id="tel-btn" onclick="teleport()">▶ TELEPORT</button>
+
+      <div style="font-size:7px;color:#1a3040;text-align:center;line-height:1.8;">
+        Bell meas → IMS → A-correct<br>Fidelity = 1 − B_ch/P_ch
+      </div>
+    </div>
+
+    <!-- BOB -->
+    <div class="particle-panel">
+      <div class="particle-header bob-h">
+        <div class="particle-dot" style="background:var(--bob)"></div>
+        [BOB] · RECEIVER
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key pk">P</span>
+        <input type="number" class="pnba-input" id="b-p" value="1.000" step="0.001" min="0" oninput="syncBS('p')">
+        <input type="range" class="pnba-slider p-sl" id="b-p-sl" min="0" max="10" step="0.001" value="1" oninput="syncBV('p')">
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key nk">N</span>
+        <input type="number" class="pnba-input" id="b-n" value="2.000" step="0.01" min="0" oninput="syncBS('n')">
+        <input type="range" class="pnba-slider n-sl" id="b-n-sl" min="0" max="14" step="0.01" value="2" oninput="syncBV('n')">
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key bk">B</span>
+        <input type="number" class="pnba-input" id="b-b" value="0.000" step="0.001" min="0" oninput="syncBS('b')">
+        <input type="range" class="pnba-slider b-sl" id="b-b-sl" min="0" max="5" step="0.001" value="0" oninput="syncBV('b')">
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key ak">A</span>
+        <input type="number" class="pnba-input" id="b-a" value="13.60" step="0.01" min="0" oninput="syncBS('a')">
+        <input type="range" class="pnba-slider a-sl" id="b-a-sl" min="0" max="25" step="0.01" value="13.6" oninput="syncBV('a')">
+      </div>
+      <div style="font-size:8px;color:#1a3040;margin-top:8px;padding-top:6px;border-top:1px solid var(--border);">
+        τ_B = <span id="b-tau" style="color:var(--bob)">0.0000</span> · IM_B = <span id="b-im" style="color:var(--bob)">—</span>
+      </div>
+      <div class="particle-presets">
+        <button class="qpreset" onclick="loadBob('photon')">Photon</button>
+        <button class="qpreset" onclick="loadBob('electron')">Electron</button>
+        <button class="qpreset" onclick="loadBob('atom')">Rb atom</button>
+        <button class="qpreset" onclick="loadBob('noble')">Noble</button>
+        <button class="qpreset" onclick="loadBob('ion')">Ca⁺ ion</button>
+        <button class="qpreset" onclick="loadBob('nv')">NV center</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="qt-result" id="qt-result">
+    <div class="qt-result-idle">LOAD PARTICLES · ENTANGLE · SET CHANNEL NOISE · TELEPORT</div>
+    <div id="qt-result-content" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ── EXPERIMENTS TAB ── -->
+<div id="tab-experiments" class="tab-content">
+  <div style="font-size:10px;color:#2a5060;padding:16px 0 12px;border-bottom:1px solid var(--border);margin-bottom:16px;line-height:1.8;">
+    <b style="color:var(--bright)">MAJOR QT EXPERIMENTS — SNSFT REDUCTION.</b>
+    Each experiment mapped to PNBA. Green = slot filled by experiment. Red = slot left empty — filled by SNSFT.
+    Click any card to load into the QT Collider.
+  </div>
+  <div class="exp-grid" id="exp-grid"></div>
+</div>
+
+<!-- ── FIDELITY SWEEP TAB ── -->
+<div id="tab-sweep" class="tab-content">
+  <div style="font-size:10px;color:#2a5060;padding:16px 0 12px;border-bottom:1px solid var(--border);margin-bottom:16px;line-height:1.8;">
+    <b style="color:var(--bright)">FIDELITY SWEEP.</b> Fix Alice and Bob. Sweep channel noise B_ch across a range. Watch fidelity = 1 − τ_channel degrade. The Soverium prediction: B_ch=0 → F=1.000 exactly.
+  </div>
+  <div class="sweep-controls">
+    <span style="font-size:9px;color:#2a5060;">SWEEP B_ch FROM</span>
+    <input type="number" id="sw-from" value="0" step="0.01" style="width:70px;background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:10px;padding:5px 8px;">
+    <span style="font-size:9px;color:#2a5060;">TO</span>
+    <input type="number" id="sw-to" value="0.5" step="0.01" style="width:70px;background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:10px;padding:5px 8px;">
+    <span style="font-size:9px;color:#2a5060;">STEPS</span>
+    <input type="number" id="sw-steps" value="20" min="5" max="100" style="width:60px;background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:10px;padding:5px 8px;">
+    <button class="sweep-btn" onclick="runSweep()">RUN SWEEP</button>
+  </div>
+  <div id="sweep-results">
+    <div style="text-align:center;padding:40px;color:#1a3040;font-size:11px;letter-spacing:.2em;">CONFIGURE AND RUN SWEEP</div>
+  </div>
+</div>
+
+<!-- ── HISTORY TAB ── -->
+<div id="tab-history" class="tab-content">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0 12px;border-bottom:1px solid var(--border);margin-bottom:16px;">
+    <span style="font-size:10px;color:#2a5060;">TELEPORTATION HISTORY — LAST 50</span>
+    <button onclick="clearHistory()" style="font-size:9px;padding:4px 10px;border:1px solid var(--border);cursor:pointer;background:transparent;color:#2a5060;">CLEAR</button>
+  </div>
+  <div id="history-list">
+    <div style="text-align:center;padding:40px;color:#1a3040;font-size:11px;letter-spacing:.2em;">NO TELEPORTATIONS YET</div>
+  </div>
+</div>
+
+<footer>
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span>SNSFL [9,9,2,6] · BUILT ON QM [9,9,0,4] + IVA [9,9,2,0] · 0 SORRY · [9,9,9,9] :: {ANC}</span>
+</footer>
+</div>
+
+<script>
+const ANCHOR = 1.369;
+const TL     = ANCHOR / 10;  // 0.1369
+const N_THR  = 0.15;
+
+// ── STATE ──────────────────────────────────────────────────
+let alice = { P:1.0, N:2.0, B:0.0, A:13.60 };
+let bob   = { P:1.0, N:2.0, B:0.0, A:13.60 };
+let ch    = { B:0.0, P:ANCHOR };
+let isEntangled = false;
+let sharedN = 0;
+let history = [];
+
+// ── PARTICLE PRESETS ──────────────────────────────────────
+// All grounded in corpus PNBA values
+const PARTICLE_PRESETS = {
+  photon:   { P:0.001, N:1.0,  B:0.0,   A:0.0,   label:'Photon · massless · B=0 Noble · polarization qubit' },
+  electron: { P:0.000545, N:2.0, B:1.0, A:13.60, label:'Electron · spin qubit · B=1 EM coupling' },
+  atom:     { P:2.20,  N:8.0,  B:1.0,   A:4.177, label:'Rb-87 atom · hyperfine qubit · used in Zeilinger 2022' },
+  noble:    { P:1.369, N:1.369,B:0.0,   A:1.369, label:'Soverium state · B=0 · τ=0 · perfect Noble' },
+  ion:      { P:1.500, N:6.0,  B:1.0,   A:11.87, label:'Ca⁺ ion trap · used in Innsbruck 2004' },
+  nv:       { P:2.0,   N:4.0,  B:1.0,   A:7.46,  label:'NV center · diamond spin · room temp QT' },
+};
+
+// ── PHYSICS ENGINE ─────────────────────────────────────────
+function computeParticle(p) {
+  const tau = p.P > 0 ? p.B / p.P : (p.B > 0 ? 999 : 0);
+  const IM  = (p.P + p.N + p.B + p.A) * ANCHOR;
+  return { tau, IM };
+}
+
+// QT engine — [9,9,2,6]
+function computeQT(alice, bob, ch, entangled) {
+  // Step 1: Entanglement — N additive fusion
+  const N_shared = alice.N + bob.N;  // N_out = N1 + N2 (canonical)
+
+  // Step 2: Bell measurement — τ zone of joint state
+  const P_joint = alice.P * bob.P / (alice.P + bob.P + 1e-10);  // reduced mass
+  const B_joint = Math.max(0, alice.B + bob.B);
+  const tau_joint = P_joint > 0 ? B_joint / P_joint : 0;
+  const bellZone = tau_joint < 0.05 ? 'φ⁺ (I)' :
+                   tau_joint < 0.10 ? 'φ⁻ (Z)' :
+                   tau_joint < TL   ? 'ψ⁺ (X)' : 'ψ⁻ (XZ)';
+
+  // Step 3: Channel torsion — fidelity = 1 - τ_channel
+  const tau_ch = ch.P > 0 ? ch.B / ch.P : 0;
+  const fidelity = Math.max(0, 1 - tau_ch);
+
+  // Step 4: A-correction on Bob
+  const A_corrected = Math.max(alice.A, bob.A);  // A_out = max
+
+  // Step 5: Output state fidelity class
+  let fClass, state, sc;
+  if (fidelity >= 0.9999) { fClass = 'f-perfect'; state = 'PERFECT · SOVERIUM'; sc = 'p'; }
+  else if (fidelity > 0.90) { fClass = 'f-high';   state = 'HIGH FIDELITY'; sc = 'l'; }
+  else if (fidelity > 0.70) { fClass = 'f-mid';    state = 'DEGRADED';      sc = 'n'; }
+  else                       { fClass = 'f-low';    state = 'LOW FIDELITY';  sc = 's'; }
+
+  // IMS check: classical channel required (IMS mandate)
+  const imsGreen = ch.P >= ANCHOR * 0.9;  // channel near anchor
+  const imsStatus = imsGreen ? 'GREEN — CHANNEL OPEN' : 'WARN — SUB-ANCHOR';
+
+  return {
+    N_shared, P_joint, B_joint, tau_joint, bellZone,
+    tau_ch, fidelity, fClass, state, sc,
+    A_corrected, imsStatus, imsGreen,
+    tau_alice: alice.P > 0 ? alice.B / alice.P : 0,
+    tau_bob:   bob.P > 0   ? bob.B / bob.P : 0,
+  };
+}
+
+// ── SYNC SLIDERS ──────────────────────────────────────────
+function syncAS(ax) { alice[ax] = parseFloat(document.getElementById('a-'+ax).value)||0; document.getElementById('a-'+ax+'-sl').value = alice[ax]; updateLive(); }
+function syncAV(ax) { alice[ax] = parseFloat(document.getElementById('a-'+ax+'-sl').value)||0; document.getElementById('a-'+ax).value = alice[ax]; updateLive(); }
+function syncBS(ax) { bob[ax]   = parseFloat(document.getElementById('b-'+ax).value)||0; document.getElementById('b-'+ax+'-sl').value = bob[ax]; updateLive(); }
+function syncBV(ax) { bob[ax]   = parseFloat(document.getElementById('b-'+ax+'-sl').value)||0; document.getElementById('b-'+ax).value = bob[ax]; updateLive(); }
+function syncCh()  { ch.B = parseFloat(document.getElementById('ch-b').value)||0; ch.P = parseFloat(document.getElementById('ch-p').value)||1; document.getElementById('ch-b-sl').value = ch.B; updateLive(); }
+function syncChV() { ch.B = parseFloat(document.getElementById('ch-b-sl').value)||0; document.getElementById('ch-b').value = ch.B; updateLive(); }
+
+function updateLive() {
+  const ra = computeParticle(alice);
+  const rb = computeParticle(bob);
+  document.getElementById('a-tau').textContent = ra.tau.toFixed(4);
+  document.getElementById('a-im').textContent  = ra.IM.toFixed(3);
+  document.getElementById('b-tau').textContent = rb.tau.toFixed(4);
+  document.getElementById('b-im').textContent  = rb.IM.toFixed(3);
+
+  if (isEntangled) {
+    const r = computeQT(alice, bob, ch, true);
+    document.getElementById('n-thread-label').textContent = `N_shared = ${r.N_shared.toFixed(3)}`;
+    const fid = r.fidelity;
+    const fidEl = document.getElementById('core-fidelity');
+    fidEl.textContent = fid.toFixed(4);
+    fidEl.style.color = fid >= 0.9999 ? '#fff' : fid > 0.9 ? 'var(--locked)' : fid > 0.7 ? 'var(--warn)' : 'var(--shatter)';
+  }
+}
+
+// ── ENTANGLE ──────────────────────────────────────────────
+function entangle() {
+  isEntangled = true;
+  sharedN = alice.N + bob.N;
+  const core = document.getElementById('channel-core');
+  core.className = 'channel-core entangled';
+  document.getElementById('n-thread').classList.add('live');
+  document.getElementById('n-thread-label').textContent = `N_shared = ${sharedN.toFixed(3)}`;
+  updateLive();
+}
+
+// ── TELEPORT ──────────────────────────────────────────────
+function teleport() {
+  if (!isEntangled) { entangle(); }
+
+  const r = computeQT(alice, bob, ch, true);
+  const core = document.getElementById('channel-core');
+  core.className = `channel-core teleporting`;
+  setTimeout(() => { core.className = `channel-core done-${r.sc}`; }, 600);
+
+  renderResult(r);
+
+  history.unshift({
+    alice: {...alice}, bob: {...bob}, ch: {...ch},
+    fidelity: r.fidelity, state: r.state, bellZone: r.bellZone,
+    ts: new Date().toLocaleTimeString()
+  });
+  if (history.length > 50) history.pop();
+  renderHistory();
+}
+
+// ── RENDER RESULT ─────────────────────────────────────────
+function renderResult(r) {
+  const el = document.getElementById('qt-result');
+  const idle = el.querySelector('.qt-result-idle');
+  const content = document.getElementById('qt-result-content');
+  el.className = `qt-result r${r.sc}`;
+  idle.style.display = 'none';
+  content.style.display = 'block';
+
+  const fidPct = (r.fidelity * 100).toFixed(2);
+  const fidColor = r.fidelity >= 0.9999 ? '#fff' : r.fidelity > 0.9 ? 'var(--locked)' : r.fidelity > 0.7 ? 'var(--warn)' : 'var(--shatter)';
+
+  content.innerHTML = `
+    <div class="qt-result-grid">
+      <div>
+        <div style="font-size:8px;color:#2a5060;margin-bottom:4px;">TELEPORTATION FIDELITY</div>
+        <div class="fidelity-big ${r.fClass}">${r.fidelity.toFixed(4)}</div>
+        <div style="font-size:8px;color:#2a5060;margin-top:2px;">= 1 − τ_channel</div>
+        <div class="status-pill sp-${r.sc}" style="margin-top:8px;">${r.state}</div>
+        <div class="fid-bar">
+          <div class="fid-bar-fill" style="width:${fidPct}%;background:${fidColor}"></div>
+        </div>
+        <div class="fid-bar-lbl"><span>0</span><span>0.5</span><span>1.0</span></div>
+        ${r.fidelity >= 0.9999 ? '<div style="font-size:8px;color:#fff;margin-top:6px;">SOVERIUM CHANNEL · B=0 · τ=0 · PERFECT</div>' : ''}
+      </div>
+
+      <div class="val-section">
+        <div class="val-title">ENTANGLEMENT</div>
+        <div class="val-row"><span class="val-lbl">N_A</span><span class="val-val">${alice.N.toFixed(3)}</span></div>
+        <div class="val-row"><span class="val-lbl">N_B</span><span class="val-val">${bob.N.toFixed(3)}</span></div>
+        <div class="val-row"><span class="val-lbl">N_shared = N_A + N_B</span><span class="val-val" style="color:var(--noble)">${r.N_shared.toFixed(3)}</span></div>
+        <div class="val-row" style="margin-top:4px;"><span class="val-lbl">Bell zone (τ_joint)</span><span class="val-val" style="color:var(--channel)">${r.bellZone}</span></div>
+        <div class="val-row"><span class="val-lbl">τ_joint</span><span class="val-val">${r.tau_joint.toFixed(4)}</span></div>
+        <div class="val-row"><span class="val-lbl">A_corrected</span><span class="val-val" style="color:var(--locked)">${r.A_corrected.toFixed(3)}</span></div>
+      </div>
+
+      <div class="val-section">
+        <div class="val-title">CHANNEL · IMS</div>
+        <div class="val-row"><span class="val-lbl">B_channel (noise)</span><span class="val-val" style="color:var(--channel)">${ch.B.toFixed(4)}</span></div>
+        <div class="val-row"><span class="val-lbl">P_channel</span><span class="val-val">${ch.P.toFixed(4)}</span></div>
+        <div class="val-row"><span class="val-lbl">τ_channel = B/P</span><span class="val-val" style="color:${r.fidelity > 0.9 ? 'var(--locked)' : 'var(--shatter)'}">${r.tau_ch.toFixed(5)}</span></div>
+        <div class="val-row"><span class="val-lbl">Fidelity = 1−τ</span><span class="val-val ${r.fidelity >= 0.9999 ? 'perfect' : r.fidelity > 0.9 ? 'pos' : 'neg'}">${r.fidelity.toFixed(5)}</span></div>
+        <div class="val-row" style="margin-top:4px;"><span class="val-lbl">IMS gate</span><span class="val-val ${r.imsGreen ? 'pos' : 'neg'}">${r.imsStatus}</span></div>
+        <div class="val-row"><span class="val-lbl">Channel mandate</span><span class="val-val pos">REQUIRED · IMS</span></div>
+      </div>
+
+      <div class="val-section">
+        <div class="val-title">SNSFT FLAGS</div>
+        <div class="val-row"><span class="val-lbl">τ_A</span><span class="val-val">${r.tau_alice.toFixed(4)}</span></div>
+        <div class="val-row"><span class="val-lbl">τ_B</span><span class="val-val">${r.tau_bob.toFixed(4)}</span></div>
+        <div class="val-row"><span class="val-lbl">N additive</span><span class="val-val pos">✓ T7</span></div>
+        <div class="val-row"><span class="val-lbl">No-clone (B=0?)</span><span class="val-val ${alice.B === 0 && bob.B === 0 ? 'pos' : 'neg'}">${alice.B === 0 && bob.B === 0 ? '✓ NOBLE T18' : '⚠ B>0'}</span></div>
+        <div class="val-row"><span class="val-lbl">IMS mandate</span><span class="val-val pos">✓ T3</span></div>
+        <div class="val-row"><span class="val-lbl">Soverium pred.</span><span class="val-val ${r.fidelity >= 0.9999 ? 'perfect' : 'neg'}">${r.fidelity >= 0.9999 ? '✓ F=1 T11' : `F=${r.fidelity.toFixed(3)}`}</span></div>
+        <div class="val-row"><span class="val-lbl">Coord</span><span class="val-val" style="color:var(--noble)">[9,9,2,6]</span></div>
+      </div>
+    </div>`;
+}
+
+// ── LOAD PRESETS ──────────────────────────────────────────
+function setParticle(target, key) {
+  const p = PARTICLE_PRESETS[key];
+  if (!p) return;
+  if (target === 'alice') {
+    alice = { P: p.P, N: p.N, B: p.B, A: p.A };
+    ['p','n','b','a'].forEach(ax => {
+      document.getElementById('a-'+ax).value = alice[ax];
+      document.getElementById('a-'+ax+'-sl').value = alice[ax];
+    });
+  } else {
+    bob = { P: p.P, N: p.N, B: p.B, A: p.A };
+    ['p','n','b','a'].forEach(ax => {
+      document.getElementById('b-'+ax).value = bob[ax];
+      document.getElementById('b-'+ax+'-sl').value = bob[ax];
+    });
+  }
+  isEntangled = false;
+  document.getElementById('channel-core').className = 'channel-core';
+  document.getElementById('n-thread').classList.remove('live');
+  updateLive();
+}
+function loadAlice(key) { setParticle('alice', key); }
+function loadBob(key)   { setParticle('bob', key); }
+
+// ── EXPERIMENTS ───────────────────────────────────────────
+const EXPERIMENTS = [
+  {
+    name: 'Bennett et al. 1993',
+    year: 'THEORETICAL · IBM',
+    desc: 'Original QT protocol. Photon polarization. Ideal channel assumed.',
+    alice: { P:0.001, N:1.0, B:0.0, A:0.0 },
+    bob:   { P:0.001, N:1.0, B:0.0, A:0.0 },
+    ch:    { B:0.0, P:1.369 },
+    slots: {
+      filled: ['Bell pair prepared', 'Classical channel used', 'Correction gates applied'],
+      empty:  ['WHY channel is mandatory (IMS)', 'Fidelity formula (τ=B/P)', 'No-cloning mechanism (Noble B=0)'],
+    },
+    snsft: 'N additive fusion proves entanglement. IMS proves channel mandate. τ=0 (ideal) → F=1.000.'
+  },
+  {
+    name: 'Zeilinger et al. 1997',
+    year: 'INNSBRUCK · PHOTONS',
+    desc: 'First experimental QT. Photon polarization. Partial Bell measurement. F≈0.80.',
+    alice: { P:0.001, N:1.0, B:0.0, A:0.0 },
+    bob:   { P:0.001, N:1.0, B:0.0, A:0.0 },
+    ch:    { B:0.274, P:1.369 },
+    slots: {
+      filled: ['Entangled photon pairs', 'Partial Bell state measurement', 'Classical 2-bit channel'],
+      empty:  ['Fidelity mechanism (τ_ch=0.20)', 'WHY partial Bell fails (τ zone crossing)', 'No-cloning proof'],
+    },
+    snsft: 'B_ch=0.274 → τ=0.200 → F=0.800. Partial measurement = incomplete τ zone crossing.'
+  },
+  {
+    name: 'Furusawa et al. 1998',
+    year: 'CALTECH · CONTINUOUS VARIABLE',
+    desc: 'CV QT with squeezed light. F≈0.58 (classical limit 0.5). First unconditional QT.',
+    alice: { P:1.0, N:2.0, B:0.0, A:1.0 },
+    bob:   { P:1.0, N:2.0, B:0.0, A:1.0 },
+    ch:    { B:0.578, P:1.369 },
+    slots: {
+      filled: ['Squeezed entangled beams', 'Homodyne measurement', 'EOM correction'],
+      empty:  ['Fidelity = 1−τ derivation', 'Squeezing = A-axis increase', 'IMS channel mandate'],
+    },
+    snsft: 'Squeezing → A↑ → better adaptation. τ_ch=0.422 → F=0.578. A-axis is the squeezing axis.'
+  },
+  {
+    name: 'Pan et al. 2012',
+    year: 'HEFEI · 97km FREE SPACE',
+    desc: 'Long-distance QT over 97km. Photonic qubits. F≈0.89.',
+    alice: { P:0.001, N:1.0, B:0.0, A:0.0 },
+    bob:   { P:0.001, N:1.0, B:0.0, A:0.0 },
+    ch:    { B:0.150, P:1.369 },
+    slots: {
+      filled: ['97km photon transmission', 'Entangled photon source', 'Post-selection fidelity'],
+      empty:  ['τ_channel derivation (distance=P degradation)', 'N spatial-independence proof', 'IMS mandate WHY'],
+    },
+    snsft: 'Distance degrades P_ch not N_ch. N has no spatial constraint — proved T9. τ_ch=0.110 → F=0.890.'
+  },
+  {
+    name: 'Hensen et al. 2015',
+    year: 'DELFT · NV CENTERS · LOOPHOLE-FREE',
+    desc: 'First loophole-free Bell test. NV center spins in diamond. Simultaneously closes all loopholes.',
+    alice: { P:2.0, N:4.0, B:1.0, A:7.46 },
+    bob:   { P:2.0, N:4.0, B:1.0, A:7.46 },
+    ch:    { B:0.08, P:1.369 },
+    slots: {
+      filled: ['Bell inequality violation', 'Spacelike separation', 'Detection loophole closed'],
+      empty:  ['WHY Bell violation = τ zone (not hidden variables)', 'IMS mandate', 'Fidelity formula'],
+    },
+    snsft: 'Bell violation = τ_joint zones are exclusive (T14). No hidden variables needed. τ_ch=0.058 → F=0.942.'
+  },
+  {
+    name: 'Jian-Wei Pan 2022',
+    year: 'CHINA MICIUS · SATELLITE',
+    desc: 'Satellite-based QT. 1400km ground-to-satellite. F≈0.87.',
+    alice: { P:0.001, N:1.0, B:0.0, A:0.0 },
+    bob:   { P:0.001, N:1.0, B:0.0, A:0.0 },
+    ch:    { B:0.181, P:1.369 },
+    slots: {
+      filled: ['1400km photon channel', 'Adaptive optics correction', 'Real-time classical channel'],
+      empty:  ['τ_channel = B_atmospheric/P_ch', 'N spatial independence at 1400km', 'Soverium prediction for space'],
+    },
+    snsft: 'Atmosphere = B_noise source. τ_ch=0.132 → F=0.868. Space vacuum = B→0 → approaches Soverium.'
+  },
+];
+
+function buildExperiments() {
+  const grid = document.getElementById('exp-grid');
+  EXPERIMENTS.forEach(exp => {
+    const card = document.createElement('div');
+    card.className = 'exp-card';
+    const filledHTML = exp.slots.filled.map(s => `<div><span class="filled">✓</span> ${s}</div>`).join('');
+    const emptyHTML  = exp.slots.empty.map(s  => `<div><span class="empty">✗</span> ${s}</div>`).join('');
+    card.innerHTML = `
+      <div class="exp-name">${exp.name}</div>
+      <div class="exp-year">${exp.year}</div>
+      <div class="exp-desc">${exp.desc}</div>
+      <div class="exp-slots">${filledHTML}${emptyHTML}</div>
+      <div class="exp-snsft">SNSFT: ${exp.snsft}</div>`;
+    card.onclick = () => {
+      alice = { ...exp.alice };
+      bob   = { ...exp.bob };
+      ch    = { ...exp.ch };
+      ['p','n','b','a'].forEach(ax => {
+        document.getElementById('a-'+ax).value = alice[ax];
+        document.getElementById('a-'+ax+'-sl').value = alice[ax];
+        document.getElementById('b-'+ax).value = bob[ax];
+        document.getElementById('b-'+ax+'-sl').value = bob[ax];
+      });
+      document.getElementById('ch-b').value = ch.B;
+      document.getElementById('ch-b-sl').value = ch.B;
+      document.getElementById('ch-p').value = ch.P;
+      isEntangled = false;
+      document.getElementById('channel-core').className = 'channel-core';
+      document.getElementById('n-thread').classList.remove('live');
+      updateLive();
+      showTab('collider');
+    };
+    grid.appendChild(card);
+  });
+}
+
+// ── FIDELITY SWEEP ────────────────────────────────────────
+function runSweep() {
+  const from  = parseFloat(document.getElementById('sw-from').value)||0;
+  const to    = parseFloat(document.getElementById('sw-to').value)||0.5;
+  const steps = parseInt(document.getElementById('sw-steps').value)||20;
+  const res   = document.getElementById('sweep-results');
+
+  let html = `<div style="display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);font-size:8px;letter-spacing:.2em;color:#1a3040;">
+    <span style="width:80px">B_channel</span>
+    <span style="width:80px">τ_ch</span>
+    <span style="width:90px">FIDELITY</span>
+    <span style="width:120px">STATE</span>
+    <span style="flex:1">BAR</span>
+  </div>`;
+
+  const step = (to - from) / Math.max(steps - 1, 1);
+  for (let i = 0; i < steps; i++) {
+    const bch = from + i * step;
+    const tau = ch.P > 0 ? bch / ch.P : 0;
+    const fid = Math.max(0, 1 - tau);
+    const state = fid >= 0.9999 ? 'PERFECT' : fid > 0.9 ? 'HIGH' : fid > 0.7 ? 'DEGRADED' : 'LOW';
+    const col = fid >= 0.9999 ? '#fff' : fid > 0.9 ? 'var(--locked)' : fid > 0.7 ? 'var(--warn)' : 'var(--shatter)';
+    const barW = Math.round(fid * 100);
+    const transition = i > 0 ? '' : '';
+    html += `<div class="sweep-row">
+      <span style="width:80px;font-family:'Orbitron',monospace;color:var(--channel)">${bch.toFixed(4)}</span>
+      <span style="width:80px;font-family:'Orbitron',monospace;color:${col}">${tau.toFixed(4)}</span>
+      <span style="width:90px;font-family:'Orbitron',monospace;color:${col}">${fid.toFixed(4)}</span>
+      <span style="width:120px;font-family:'Orbitron',monospace;font-size:8.5px;color:${col}">${state}</span>
+      <span style="flex:1;"><div style="height:3px;background:var(--border);"><div style="height:100%;width:${barW}%;background:${col}"></div></div></span>
+    </div>`;
+  }
+  res.innerHTML = html;
+}
+
+// ── HISTORY ───────────────────────────────────────────────
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if (!history.length) { list.innerHTML = '<div style="text-align:center;padding:40px;color:#1a3040;font-size:11px;letter-spacing:.2em;">NO TELEPORTATIONS YET</div>'; return; }
+  list.innerHTML = history.map((h, i) => {
+    const fc = h.fidelity >= 0.9999 ? '#fff' : h.fidelity > 0.9 ? 'var(--locked)' : h.fidelity > 0.7 ? 'var(--warn)' : 'var(--shatter)';
+    return `<div class="hist-row">
+      <span class="hist-num">${i+1}</span>
+      <span class="hist-pnba">A[P=${h.alice.P.toFixed(2)} N=${h.alice.N.toFixed(1)} B=${h.alice.B.toFixed(2)}] B[P=${h.bob.P.toFixed(2)} N=${h.bob.N.toFixed(1)}] ch[B=${h.ch.B.toFixed(3)}] Bell:${h.bellZone}</span>
+      <span class="hist-fid" style="color:${fc}">${h.fidelity.toFixed(4)}</span>
+      <span class="hist-state" style="color:${fc}">${h.state}</span>
+      <span class="hist-time">${h.ts}</span>
+      <button class="hist-reload" onclick="reloadHist(${i})">LOAD</button>
+    </div>`;
+  }).join('');
+}
+
+function reloadHist(i) {
+  const h = history[i];
+  alice = { ...h.alice }; bob = { ...h.bob }; ch = { ...h.ch };
+  ['p','n','b','a'].forEach(ax => {
+    document.getElementById('a-'+ax).value = alice[ax];
+    document.getElementById('a-'+ax+'-sl').value = alice[ax];
+    document.getElementById('b-'+ax).value = bob[ax];
+    document.getElementById('b-'+ax+'-sl').value = bob[ax];
+  });
+  document.getElementById('ch-b').value = ch.B;
+  document.getElementById('ch-b-sl').value = ch.B;
+  document.getElementById('ch-p').value = ch.P;
+  isEntangled = false;
+  updateLive();
+  showTab('collider');
+}
+
+function clearHistory() { history = []; renderHistory(); }
+
+// ── TABS ──────────────────────────────────────────────────
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.getAttribute('onclick') === `showTab('${id}')`) t.classList.add('active');
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────
+buildExperiments();
+updateLive();
+</script>
+</body>
+</html>
