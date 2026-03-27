@@ -439,6 +439,19 @@ body::after {
     <button class="btn on" id="btn-labels" onclick="toggleLabels()">◎ LABELS · ON</button>
     <button class="btn on" id="btn-field"  onclick="toggleField()">◎ FIELD LINES · ON</button>
     <button class="btn on" id="btn-pnba"   onclick="togglePNBA()">◎ PNBA SHELLS · ON</button>
+    <button class="btn" id="btn-surface" onclick="toggleSurfaceView()" style="margin-top:4px;border-color:var(--iva);color:var(--dim);">○ SURFACE VIEW · OFF</button>
+    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:4px;">
+        <span style="color:var(--dim);letter-spacing:.1em;">SIM SPEED</span>
+        <span style="font-family:'Orbitron',monospace;font-size:9px;color:var(--bright)" id="v-speed">5 · REAL</span>
+      </div>
+      <input type="range" id="s-speed" min="0" max="10" step="1" value="5"
+        style="width:100%;accent-color:var(--glow);height:3px;margin:4px 0 6px;"
+        oninput="setSimSpeed(parseInt(this.value))">
+      <div style="display:flex;justify-content:space-between;font-size:6px;color:var(--dim);letter-spacing:.1em;">
+        <span>PAUSE</span><span>SLOW</span><span>REAL</span><span>FAST</span><span>MAX</span>
+      </div>
+    </div>
   </div>
 
   <div class="sec">
@@ -471,6 +484,12 @@ body::after {
 <div id="canvas-wrap">
   <canvas id="c"></canvas>
   <div id="tooltip"></div>
+  <div id="surface-hud" style="display:none;position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+    font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.2em;color:var(--iva);
+    background:rgba(6,11,18,.9);border:1px solid rgba(255,136,0,.35);padding:7px 18px;
+    text-align:center;pointer-events:none;white-space:nowrap;">
+    SURFACE VIEW · <span id="sv-body">EARTH</span> · DRAG TO LOOK · SCROLL TO EXIT
+  </div>
 </div>
 
 <!-- RIGHT: Selected Body Detail -->
@@ -608,6 +627,37 @@ body::after {
 const ANCHOR = 1.369;
 const TL     = ANCHOR / 10;  // 0.1369 — emergent, not chosen
 
+// CAMERA VARIABLES — declared early so selectBody() can use them
+// ════════════════════════════════════════════════════════════════
+let camMode = 'system';
+let isDragging = false;
+let lastX = 0, lastY = 0;
+let camTheta = 0;
+let camPhi = 0.85;
+let camRadius = 220;
+let camTarget = new THREE.Vector3(0, 0, 0);
+let camTargetGoal = new THREE.Vector3(0, 0, 0);
+let surfTheta = 0;
+let surfPhi = 0.15;
+let surfBodyIdx = 3;
+let lerping = false;
+let lerpT = 0;
+const LERP_SPEED = 0.06;
+
+function getBodyWorldPos(idx) {
+  if (idx === 0) return new THREE.Vector3(0, 0, 0);
+  return bodyMeshes[idx].position.clone();
+}
+
+function centerOnBody(idx) {
+  camTargetGoal.copy(getBodyWorldPos(idx));
+  lerping = true;
+  lerpT = 0;
+  const targetRadius = Math.max(30, BODY_VISUAL_RADIUS[idx] * 8 + ORBIT_SCALE[idx] * 0.15);
+  camRadius = Math.max(targetRadius, camRadius * 0.6);
+}
+
+
 // ════════════════════════════════════════════════════════════════
 // PNBA SOLAR BODY CORPUS
 // Derived from SNSFL_Cosmo_Reduction [9,9,0,4] + Scale Chain [9,9,3,6]
@@ -706,7 +756,7 @@ renderer.setClearColor(0x000000, 0);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 10000);
 camera.position.set(0, 220, 0);
-camera.lookAt(0, 0, 0);
+// camera driven by updateCameraSystem() each frame
 
 function resize() {
   const wrap = document.getElementById('canvas-wrap');
@@ -768,7 +818,7 @@ for (let i = 1; i < BODIES.length; i++) {
 
   // Orbit ring
   const oGeo = new THREE.TorusGeometry(orbR, 0.3, 6, 120);
-  const oMat = new THREE.MeshBasicMaterial({ color: 0x0a1828, transparent: true, opacity: 0.5 });
+  const oMat = new THREE.MeshBasicMaterial({ color: 0x00aacc, transparent: true, opacity: 0.35 });
   const oMesh = new THREE.Mesh(oGeo, oMat);
   oMesh.rotation.x = Math.PI / 2;
   scene.add(oMesh);
@@ -827,16 +877,58 @@ for (let i = 0; i < BODIES.length; i++) {
 for (let i = 1; i < BODIES.length; i++) {
   const pts = [new THREE.Vector3(0,0,0), new THREE.Vector3(ORBIT_SCALE[i], 0, 0)];
   const geo = new THREE.BufferGeometry().setFromPoints(pts);
-  const mat = new THREE.LineBasicMaterial({ color: 0x0a1828, transparent: true, opacity: 0.3 });
+  const mat = new THREE.LineBasicMaterial({ color: 0x1a8090, transparent: true, opacity: 0.25 });
   const line = new THREE.Line(geo, mat);
   scene.add(line);
   fieldLines.push({line, mat});
 }
 
+
+// ── MOON (Earth's Moon) ──
+// PNBA from SNSFL Interstellar Reduction Template [9,9,3,7]
+// P=6.076 (mass), N=1.0 (27.3d period short narrative), 
+// B=0.00212 (Earth grav coupling), A=4.780 (ecc=0.055)
+// tau=0.00035 → NOBLE. Tidal locked.
+const MOON_DATA = {
+  name:'Moon', P:6.076, N:1.0, B:0.00212, A:4.780,
+  color:'#D0D0C8', state:'NOBLE', tau:0.00035,
+  orbitRadius: 8,         // visual units around Earth — outside Earth radius (4.5) + moon radius (1.8)
+  speed: 0.002900 * 13.37 // Moon completes 13.37 orbits per Earth year
+};
+MOON_DATA.IM = +((MOON_DATA.P + MOON_DATA.N + MOON_DATA.B + MOON_DATA.A) * ANCHOR).toFixed(3);
+
+const moonGeo  = new THREE.SphereGeometry(1.8, 16, 16);
+const moonMat  = new THREE.MeshPhongMaterial({ color: 0xD0D0C8, emissive: 0x444442, shininess: 20 });
+const moonMesh = new THREE.Mesh(moonGeo, moonMat);
+scene.add(moonMesh);
+
+// Moon orbit ring around Earth (thin, dim)
+const moonRingGeo = new THREE.TorusGeometry(MOON_DATA.orbitRadius, 0.1, 6, 64);
+const moonRingMat = new THREE.MeshBasicMaterial({ color: 0x888880, transparent: true, opacity: 0.25 });
+const moonRingMesh = new THREE.Mesh(moonRingGeo, moonRingMat);
+moonRingMesh.rotation.x = Math.PI / 2;
+scene.add(moonRingMesh);
+
+// Moon label
+const moonLabel = document.createElement('div');
+moonLabel.style.cssText = `
+  position:absolute; pointer-events:none; font-family:'Orbitron',monospace;
+  font-size:6px; letter-spacing:.12em; white-space:nowrap; transition:opacity .2s;
+  text-shadow: 0 0 6px #D0D0C8; color:#D0D0C8; opacity:0.6;
+`;
+moonLabel.textContent = 'MOON';
+document.getElementById('canvas-wrap').appendChild(moonLabel);
+
+let moonAngle = 1.2; // initial angle
 // ─── PLANET ORBIT ANGLES ───
 const orbitAngles = [0, 0.4, 1.1, 2.0, 3.4, 0.8, 1.9, 0.5, 2.8]; // radians initial
-// Orbital speeds (normalized, proportional to 1/sqrt(a))
-const orbitSpeeds = [0, 0.0120, 0.0047, 0.0029, 0.0015, 0.000414, 0.000165, 0.0000576, 0.0000294];
+// Orbital speeds — exact Kepler ω = 2π/T, normalized so Earth = 0.0029 rad/frame
+// Verified against T(days): Mercury=87.97, Venus=224.7, Earth=365.25, Mars=686.97,
+// Jupiter=4332.6, Saturn=10759, Uranus=30687, Neptune=60190
+// Inner three were correct; outer four were ~1.67× too fast — now fixed.
+const BASE_SPEEDS = [0, 0.01204, 0.004714, 0.002900, 0.001542, 0.0002445, 0.00009847, 0.00003452, 0.00001760];
+let simSpeed = 5;   // 0–10, 5 = "real" relative speed
+let speedMult = 1.0; // computed from simSpeed
 
 // ════════════════════════════════════════════════════════════════
 // PLANET LIST UI
@@ -864,6 +956,9 @@ buildPlanetList();
 function selectBody(idx) {
   selectedIdx = idx;
   const b = BODIES[idx];
+
+  // Center camera on selected body
+  centerOnBody(idx);
 
   // Planet list highlight
   document.querySelectorAll('.planet-row').forEach((r,i) => {
@@ -927,6 +1022,7 @@ const wrap = document.getElementById('canvas-wrap');
 const tooltip = document.getElementById('tooltip');
 
 wrap.addEventListener('mousemove', (e) => {
+  if (camMode === 'surface') return; // no raycasting in surface view
   const rect = wrap.getBoundingClientRect();
   mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
@@ -953,6 +1049,7 @@ wrap.addEventListener('mousemove', (e) => {
 });
 
 wrap.addEventListener('click', () => {
+  if (camMode === 'surface') return;
   if (hoveredIdx >= 0) selectBody(hoveredIdx);
 });
 
@@ -961,36 +1058,130 @@ wrap.addEventListener('mouseleave', () => {
   tooltip.style.display = 'none';
 });
 
-// ─── CAMERA DRAG (orbit around Y) ───
-let isDragging = false;
-let lastX = 0;
-let camTheta = 0;
-let camRadius = 220;
-let camY = 220;
+// ════════════════════════════════════════════════════════════════
+function enterSurfaceView(idx) {
+  camMode = 'surface';
+  surfBodyIdx = idx;
+  surfTheta = camTheta;
+  surfPhi = 0.15;
+  document.getElementById('btn-surface').textContent = '◉ SURFACE VIEW · ON';
+  document.getElementById('btn-surface').classList.add('on');
+  document.getElementById('btn-surface').style.borderColor = 'var(--iva)';
+  document.getElementById('btn-surface').style.color = 'var(--iva)';
+  document.getElementById('surface-hud').style.display = 'block';
+  document.getElementById('sv-body').textContent = BODIES[idx].name.toUpperCase();
+}
 
-wrap.addEventListener('mousedown', (e) => { isDragging = true; lastX = e.clientX; });
+function exitSurfaceView() {
+  camMode = 'system';
+  document.getElementById('btn-surface').textContent = '○ SURFACE VIEW · OFF';
+  document.getElementById('btn-surface').classList.remove('on');
+  document.getElementById('btn-surface').style.borderColor = '';
+  document.getElementById('btn-surface').style.color = '';
+  document.getElementById('surface-hud').style.display = 'none';
+  // Restore to orbit above current body
+  camTargetGoal.copy(getBodyWorldPos(surfBodyIdx));
+  camRadius = 60;
+  lerping = true; lerpT = 0;
+}
+
+function toggleSurfaceView() {
+  if (camMode === 'surface') exitSurfaceView();
+  else enterSurfaceView(selectedIdx);
+}
+
+function updateCameraSystem() {
+  if (camMode === 'system') {
+    // Lerp camTarget toward goal
+    if (lerping) {
+      lerpT = Math.min(1, lerpT + LERP_SPEED);
+      camTarget.lerp(camTargetGoal, LERP_SPEED * 2);
+      if (lerpT >= 1) lerping = false;
+    }
+    // Keep camTarget tracking selected body (smooth follow)
+    if (!lerping) {
+      const bodyPos = getBodyWorldPos(selectedIdx);
+      camTargetGoal.copy(bodyPos);
+      camTarget.lerp(camTargetGoal, 0.04);
+    }
+    // Position camera in spherical coords around camTarget
+    camera.position.x = camTarget.x + Math.sin(camTheta) * Math.cos(camPhi) * camRadius;
+    camera.position.y = camTarget.y + Math.sin(camPhi) * camRadius;
+    camera.position.z = camTarget.z + Math.cos(camTheta) * Math.cos(camPhi) * camRadius;
+    camera.lookAt(camTarget);
+  } else {
+    // SURFACE VIEW — camera sits just above the body, looking outward
+    const bodyPos = getBodyWorldPos(surfBodyIdx);
+    const surfR = BODY_VISUAL_RADIUS[surfBodyIdx] * 1.3; // just above surface
+
+    // Camera position: on the surface shell
+    const cx = bodyPos.x + Math.sin(surfTheta) * Math.cos(surfPhi) * surfR;
+    const cy = bodyPos.y + Math.sin(surfPhi) * surfR;
+    const cz = bodyPos.z + Math.cos(surfTheta) * Math.cos(surfPhi) * surfR;
+    camera.position.set(cx, cy, cz);
+
+    // Look outward from the body toward where the drag aims
+    const lookDist = 1000;
+    const lx = bodyPos.x + Math.sin(surfTheta + Math.PI) * Math.cos(surfPhi) * lookDist;
+    const ly = bodyPos.y + Math.sin(surfPhi + 0.1) * lookDist;
+    const lz = bodyPos.z + Math.cos(surfTheta + Math.PI) * Math.cos(surfPhi) * lookDist;
+    camera.lookAt(lx, ly, lz);
+  }
+  camera.updateProjectionMatrix();
+}
+
+// ── DRAG ──
+wrap.addEventListener('mousedown', (e) => {
+  if (e.button !== 0) return;
+  isDragging = true;
+  lastX = e.clientX;
+  lastY = e.clientY;
+});
 window.addEventListener('mouseup', () => isDragging = false);
 window.addEventListener('mousemove', (e) => {
   if (!isDragging) return;
   const dx = e.clientX - lastX;
-  camTheta += dx * 0.005;
+  const dy = e.clientY - lastY;
   lastX = e.clientX;
-  camera.position.x = Math.sin(camTheta) * camRadius;
-  camera.position.z = Math.cos(camTheta) * camRadius;
-  camera.position.y = camY;
-  camera.lookAt(0, 0, 0);
+  lastY = e.clientY;
+
+  if (camMode === 'system') {
+    camTheta -= dx * 0.005;
+    camPhi = Math.max(0.05, Math.min(1.4, camPhi - dy * 0.004));
+  } else {
+    surfTheta -= dx * 0.004;
+    surfPhi = Math.max(-0.5, Math.min(1.2, surfPhi + dy * 0.003));
+  }
 });
+
+// ── ZOOM / SURFACE EXIT ──
 wrap.addEventListener('wheel', (e) => {
-  camRadius = Math.max(60, Math.min(500, camRadius + e.deltaY * 0.4));
-  camera.position.x = Math.sin(camTheta) * camRadius;
-  camera.position.z = Math.cos(camTheta) * camRadius;
-  camera.position.y = camY;
-  camera.lookAt(0, 0, 0);
+  if (camMode === 'surface') {
+    exitSurfaceView();
+  } else {
+    camRadius = Math.max(25, Math.min(600, camRadius + e.deltaY * 0.35));
+  }
   e.preventDefault();
 }, { passive: false });
 
-// ════════════════════════════════════════════════════════════════
-// DISPLAY TOGGLES
+// Speed control — 0=pause, 5=real relative, 10=max
+// Scale: exponential so the feel is even across the range
+// speed=5 → mult=1.0 (real), speed=0 → mult=0, speed=10 → mult=~50
+function setSimSpeed(val) {
+  simSpeed = val;
+  if (val === 0) {
+    speedMult = 0;
+  } else {
+    // exponential: 5→1.0, 1→~0.02, 10→~50
+    speedMult = Math.pow(10, (val - 5) * 0.34);
+  }
+  const labels = ['PAUSE','·','SLOW','·','·','REAL','·','FAST','·','·','MAX'];
+  document.getElementById('v-speed').textContent = val + ' · ' + labels[val];
+}
+// Init
+setSimSpeed(5);
+
+
 // ════════════════════════════════════════════════════════════════
 function toggleOrbits() {
   showOrbits = !showOrbits;
@@ -1022,8 +1213,161 @@ function togglePNBA() {
 }
 
 // ════════════════════════════════════════════════════════════════
-// ANIMATION LOOP — targeting 60fps, zero lag
+// FIELD INTERACTION SYSTEM
+// Each planet's PNBA shells have a world-space field radius.
+// When two bodies' fields overlap, the shells respond:
+//   P shells (teal)   = gravitational pattern coupling
+//   N shells (purple) = narrative/DM inertia overlap
+//   B shells (orange) = behavior/tidal coupling
+//   A shells (green)  = adaptation/DE pressure
+// Strength = 1/d² falloff. Same law as EM — because it IS the same law.
 // ════════════════════════════════════════════════════════════════
+
+// Field radii in world units — how far each shell reaches
+// BODY_VISUAL_RADIUS[i] * shell multiplier * field reach factor
+const FIELD_REACH = [3.5, 2.8, 2.2, 1.8]; // P,N,B,A — P reaches furthest
+const FIELD_COLORS = [0x00d4ff, 0xaa88ff, 0xff8800, 0x00ffcc];
+const FIELD_NAMES  = ['P·GRAVITY', 'N·DM INERTIA', 'B·TIDAL', 'A·DE PRESSURE'];
+
+// Interaction connection lines — one per body pair per shell type
+// Max pairs = 8*7/2 = 28, x4 shell types = 112 lines — but we only show active ones
+const interactionLines = [];
+const MAX_PAIRS = 36; // enough for all pairs
+for (let k = 0; k < MAX_PAIRS; k++) {
+  const pts = [new THREE.Vector3(), new THREE.Vector3()];
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const mat = new THREE.LineBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0, linewidth: 2 });
+  const line = new THREE.Line(geo, mat);
+  scene.add(line);
+  interactionLines.push({ line, mat, geo });
+}
+
+// Interaction particle system — sparks at overlap zones
+const NUM_SPARK = 120;
+const sparkGeo = new THREE.BufferGeometry();
+const sparkPos = new Float32Array(NUM_SPARK * 3);
+const sparkAlpha = new Float32Array(NUM_SPARK);
+for (let i = 0; i < NUM_SPARK; i++) sparkPos[i*3] = sparkPos[i*3+1] = sparkPos[i*3+2] = 9999;
+sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
+const sparkMat = new THREE.PointsMaterial({ color: 0x00ffcc, size: 0.6, transparent: true, opacity: 0 });
+const sparks = new THREE.Points(sparkGeo, sparkMat);
+scene.add(sparks);
+
+let sparkPool = Array.from({length: NUM_SPARK}, (_, i) => ({
+  idx: i, active: false, x: 0, y: 0, z: 0,
+  vx: 0, vy: 0, vz: 0, life: 0, maxLife: 1, color: 0x00ffcc
+}));
+
+function spawnSpark(x, y, z, color) {
+  const s = sparkPool.find(p => !p.active);
+  if (!s) return;
+  s.active = true;
+  s.x = x + (Math.random()-0.5)*3;
+  s.y = y + (Math.random()-0.5)*1;
+  s.z = z + (Math.random()-0.5)*3;
+  s.vx = (Math.random()-0.5)*0.08;
+  s.vy = (Math.random()-0.5)*0.04;
+  s.vz = (Math.random()-0.5)*0.08;
+  s.life = 0; s.maxLife = 0.5 + Math.random()*0.8;
+  s.color = color;
+}
+
+function updateFieldInteractions(t) {
+  // World positions for all bodies
+  const worldPos = BODIES.map((b, i) =>
+    i === 0 ? new THREE.Vector3(0,0,0) : bodyMeshes[i].position.clone()
+  );
+
+  const PNBA_KEYS = ['P','N','B','A'];
+
+  // One connection line per body pair — show strongest active field
+  let lineIdx = 0;
+
+  for (let a = 0; a < BODIES.length; a++) {
+    for (let b = a + 1; b < BODIES.length; b++) {
+      if (lineIdx >= MAX_PAIRS) break;
+      const line = interactionLines[lineIdx++];
+
+      const posA = worldPos[a];
+      const posB = worldPos[b];
+      const dist  = posA.distanceTo(posB);
+
+      // Find the shell type with the strongest overlap
+      let bestStrength = 0;
+      let bestCol = 0x00d4ff;
+      let bestSI  = 0;
+
+      for (let si = 0; si < 4; si++) {
+        const key  = PNBA_KEYS[si];
+        const valA = BODIES[a][key] || 0;
+        const valB = BODIES[b][key] || 0;
+        const radA = BODY_VISUAL_RADIUS[a] * FIELD_REACH[si] * (1 + valA * 0.4);
+        const radB = BODY_VISUAL_RADIUS[b] * FIELD_REACH[si] * (1 + valB * 0.4);
+        const overlapDist = radA + radB;
+
+        if (dist < overlapDist) {
+          const strength = Math.pow(1 - dist / overlapDist, 1.2);
+          if (strength > bestStrength) {
+            bestStrength = strength;
+            bestCol = FIELD_COLORS[si];
+            bestSI  = si;
+          }
+
+          // Brighten the specific shell on each body
+          if (a > 0 && pnbaShells[a-1] && showPNBA) {
+            const shell = pnbaShells[a-1][si];
+            shell.material.opacity = Math.min(0.55, shell.material.opacity + strength * 0.3);
+            shell.material.color.setHex(FIELD_COLORS[si]);
+          }
+          if (b > 0 && pnbaShells[b-1] && showPNBA) {
+            const shell = pnbaShells[b-1][si];
+            shell.material.opacity = Math.min(0.55, shell.material.opacity + strength * 0.3);
+            shell.material.color.setHex(FIELD_COLORS[si]);
+          }
+
+          // Sparks at midpoint on strong overlap
+          if (strength > 0.35 && Math.random() < strength * 0.12) {
+            const mx = (posA.x + posB.x) / 2;
+            const mz = (posA.z + posB.z) / 2;
+            spawnSpark(mx, 0, mz, FIELD_COLORS[si]);
+          }
+        }
+      }
+
+      // Draw connection line for strongest field
+      if (bestStrength > 0 && showPNBA) {
+        const wave = 0.5 + 0.5 * Math.sin(t * 2.5 + a * 1.3 + b * 0.7);
+        const pts  = line.geo.attributes.position;
+        pts.setXYZ(0, posA.x, posA.y, posA.z);
+        pts.setXYZ(1, posB.x, posB.y, posB.z);
+        pts.needsUpdate = true;
+        line.mat.color.setHex(bestCol);
+        line.mat.opacity = bestStrength * wave * 1.0;
+      } else {
+        line.mat.opacity = 0;
+      }
+    }
+  }
+
+  // Hide unused lines
+  for (let k = lineIdx; k < MAX_PAIRS; k++) interactionLines[k].mat.opacity = 0;
+
+  // Update spark particles
+  const sPos = sparkGeo.attributes.position.array;
+  let anyActive = false;
+  for (let k = 0; k < NUM_SPARK; k++) {
+    const s = sparkPool[k];
+    if (!s.active) { sPos[k*3] = sPos[k*3+1] = sPos[k*3+2] = 9999; continue; }
+    anyActive = true;
+    s.life += 0.016;
+    s.x += s.vx; s.y += s.vy; s.z += s.vz;
+    sPos[k*3] = s.x; sPos[k*3+1] = s.y; sPos[k*3+2] = s.z;
+    if (s.life >= s.maxLife) s.active = false;
+  }
+  sparkGeo.attributes.position.needsUpdate = true;
+  sparkMat.opacity = anyActive ? 0.75 : 0;
+}
+
 let frame = 0;
 const vec3 = new THREE.Vector3();
 
@@ -1033,9 +1377,12 @@ function animate() {
 
   const t = frame * 0.016;
 
+  // ── Camera update (every frame — lerp, follow, surface) ──
+  updateCameraSystem();
+
   // ── Update planet positions ──
   for (let i = 1; i < BODIES.length; i++) {
-    orbitAngles[i] += orbitSpeeds[i];
+    orbitAngles[i] += BASE_SPEEDS[i] * speedMult;
     const angle = orbitAngles[i];
     const r = ORBIT_SCALE[i];
     const x = Math.cos(angle) * r;
@@ -1053,8 +1400,8 @@ function animate() {
       // color: locked=cyan, bright near selected
       const isSel = i === selectedIdx;
       const isHov = i === hoveredIdx;
-      fieldLines[i-1].mat.color.setHex(isSel ? 0x00ffcc : isHov ? 0x00d4ff : 0x0a1828);
-      fieldLines[i-1].mat.opacity = isSel ? 0.6 : isHov ? 0.4 : 0.15 + b.tau * 2;
+      fieldLines[i-1].mat.color.setHex(isSel ? 0x00ffcc : isHov ? 0x00d4ff : 0x00aadd);
+      fieldLines[i-1].mat.opacity = isSel ? 0.7 : isHov ? 0.5 : 0.25;
     }
 
     // PNBA shells — orbit at PNBA velocities, opacity from value
@@ -1075,15 +1422,43 @@ function animate() {
       const c = new THREE.Color(BODIES[i].color);
       bodyMeshes[i].material.emissive.set(
         isSelected ? c.multiplyScalar(0.25) :
-        isHovered  ? c.multiplyScalar(0.15) : new THREE.Color(0x000000)
+        isHovered  ? c.multiplyScalar(0.15) : new THREE.Color(0x111111)
       );
     }
+  }
+
+
+  // ── Moon: orbits Earth ──
+  moonAngle += MOON_DATA.speed * speedMult;
+  const earthPos = bodyMeshes[3].position;
+  const moonX = earthPos.x + Math.cos(moonAngle) * MOON_DATA.orbitRadius;
+  const moonZ = earthPos.z + Math.sin(moonAngle) * MOON_DATA.orbitRadius;
+  moonMesh.position.set(moonX, 0, moonZ);
+  moonMesh.rotation.y += 0.002;
+
+  // Moon orbit ring follows Earth
+  moonRingMesh.position.set(earthPos.x, 0, earthPos.z);
+
+  // Moon label
+  if (showLabels) {
+    const rect = wrap.getBoundingClientRect();
+    const mpos = moonMesh.position.clone();
+    mpos.y += 2.5;
+    mpos.project(camera);
+    moonLabel.style.left = ((mpos.x * 0.5 + 0.5) * rect.width - 16) + 'px';
+    moonLabel.style.top  = ((-mpos.y * 0.5 + 0.5) * rect.height - 10) + 'px';
+    moonLabel.style.display = 'block';
+  } else {
+    moonLabel.style.display = 'none';
   }
 
   // ── Sun pulse at 1.369 Hz ──
   const sunPulse = 0.95 + 0.05 * Math.sin(t * ANCHOR * Math.PI * 2);
   sunMesh.scale.setScalar(sunPulse);
   sunLight.intensity = 2.8 + 0.4 * Math.sin(t * ANCHOR * Math.PI * 2);
+
+  // ── Field interactions — PNBA shell overlaps ──
+  updateFieldInteractions(t);
 
   // ── Labels: project 3D → 2D ──
   if (showLabels) {
@@ -1110,9 +1485,9 @@ function animate() {
     const isSel = bodyIdx === selectedIdx;
     const isHov = bodyIdx === hoveredIdx;
     orbitRings[i].material.color.setHex(
-      isSel ? 0x00ffcc : isHov ? 0x0a3050 : 0x0a1828
+      isSel ? 0x00ffcc : isHov ? 0x00d4ff : 0x00aacc
     );
-    orbitRings[i].material.opacity = isSel ? 0.7 : isHov ? 0.45 : 0.25;
+    orbitRings[i].material.opacity = isSel ? 0.8 : isHov ? 0.55 : 0.35;
   }
 
   renderer.render(scene, camera);
