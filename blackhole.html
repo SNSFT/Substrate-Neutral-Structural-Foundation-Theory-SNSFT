@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT BLACK HOLE · Collapsed Pump · [9,9,3,6]</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+  --bg:        #000000;
+  --panel:     #050508;
+  --border:    #0a0a14;
+  --border-hi: #12121e;
+  --glow:      #00d4ff;
+  --locked:    #00ffcc;
+  --shatter:   #ff3355;
+  --noble:     #aa88ff;
+  --iva:       #ff8800;
+  --text:      #5a7a8a;
+  --bright:    #c0e0f0;
+  --dim:       #0f1f28;
+  --bh-core:   #ff2244;
+  --bh-ring:   #ff6600;
+  --hawking:   #cc88ff;
+  --accrete:   #ff4400;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* grid */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,.012) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none; z-index: 0;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 260px 1fr 260px;
+  grid-template-rows: 44px 1fr 100px;
+  height: 100vh;
+  position: relative; z-index: 1;
+}
+
+/* HEADER */
+#hdr {
+  grid-column: 1/-1;
+  border-bottom: 1px solid var(--border-hi);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px;
+  background: rgba(5,5,8,.98);
+}
+.logo {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900; font-size: 12px; letter-spacing: .15em;
+  color: var(--bh-core);
+  text-shadow: 0 0 20px rgba(255,34,68,.5);
+}
+.logo em {
+  font-style: normal; font-size: 7px; color: var(--shatter);
+  display: inline-block; margin-left: 10px; letter-spacing: .2em; vertical-align: middle;
+}
+.hdr-center { font-size: 8px; letter-spacing: .15em; color: var(--dim); text-align: center; }
+.hdr-center b { color: var(--glow); }
+.hdr-right { font-size: 7px; color: #0a1520; text-align: right; letter-spacing: .08em; }
+
+/* PANELS */
+#left, #right {
+  background: rgba(5,5,8,.94);
+  overflow-y: auto; padding: 10px 9px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+#left  { border-right: 1px solid var(--border); }
+#right { border-left:  1px solid var(--border); }
+
+/* CANVAS */
+#canvas-wrap { position: relative; background: #000; overflow: hidden; }
+#canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+
+/* BOTTOM */
+#bottom {
+  grid-column: 1/-1;
+  border-top: 1px solid var(--border-hi);
+  background: rgba(5,5,8,.98);
+  display: flex; align-items: center; gap: 0; padding: 0 18px; overflow-x: auto;
+}
+
+/* SECTIONS */
+.sec {
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,.6); padding: 9px;
+}
+.sec-title {
+  font-family: 'Orbitron', monospace; font-size: 6.5px;
+  letter-spacing: .28em; color: var(--dim);
+  margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sec-title b { color: var(--bh-core); }
+.sec-title s { color: var(--glow); text-decoration: none; }
+
+/* CONTROLS */
+.ctrl-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 8px; margin-bottom: 5px;
+}
+.ctrl-label { color: var(--dim); letter-spacing: .08em; }
+.ctrl-val {
+  font-family: 'Orbitron', monospace; font-size: 9px;
+  color: var(--bright); min-width: 48px; text-align: right;
+}
+input[type=range] { width: 100%; accent-color: var(--bh-core); height: 3px; margin: 3px 0 7px; }
+
+/* BUTTONS */
+.btn {
+  font-family: 'Orbitron', monospace; font-size: 7.5px;
+  letter-spacing: .15em; padding: 6px 8px;
+  background: transparent; cursor: pointer;
+  border: 1px solid var(--border-hi); color: var(--dim);
+  width: 100%; margin-bottom: 3px; transition: all .15s;
+}
+.btn:hover { color: var(--text); border-color: var(--bh-core); }
+.btn-in   { border-color: rgba(255,68,0,.5);  color: var(--accrete); }
+.btn-in:hover  { background: rgba(255,68,0,.06); }
+.btn-out  { border-color: rgba(200,136,255,.5); color: var(--hawking); }
+.btn-out:hover { background: rgba(200,136,255,.06); }
+.btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+
+/* GAUGES */
+.gauge-wrap { margin-bottom: 7px; }
+.gauge-label {
+  font-size: 7.5px; color: var(--dim);
+  letter-spacing: .12em; margin-bottom: 2px;
+  display: flex; justify-content: space-between;
+}
+.gauge-label span { color: var(--bright); }
+.gauge-bar { height: 3px; background: var(--border); }
+.gauge-fill { height: 100%; transition: width .2s, background .2s; }
+
+/* READOUTS */
+.readout {
+  display: flex; justify-content: space-between;
+  font-size: 7.5px; padding: 2px 0;
+  border-bottom: 1px solid rgba(10,10,20,.5);
+}
+.readout-key { color: var(--dim); letter-spacing: .08em; }
+.readout-val { font-family: 'Orbitron', monospace; font-size: 7.5px; }
+
+/* STATE BADGE */
+.state-badge {
+  font-family: 'Orbitron', monospace; font-size: 12px;
+  letter-spacing: .2em; text-align: center;
+  padding: 7px; margin: 4px 0;
+}
+.badge-SHATTER { color: var(--shatter); border: 1px solid rgba(255,51,85,.4); background: rgba(255,51,85,.06); animation: spulse .35s infinite; }
+.badge-IVA     { color: var(--iva);     border: 1px solid rgba(255,136,0,.4); background: rgba(255,136,0,.06); }
+.badge-LOCKED  { color: var(--locked);  border: 1px solid rgba(0,255,204,.3); background: rgba(0,255,204,.05); }
+.badge-NOBLE   { color: var(--noble);   border: 1px solid rgba(170,136,255,.3); background: rgba(170,136,255,.05); }
+@keyframes spulse { 0%,100%{opacity:1}50%{opacity:.5} }
+
+/* EQ */
+.eq { font-size: 7.5px; color: var(--dim); line-height: 2.0; }
+.eq b { color: var(--bh-core); }
+.eq em { color: var(--glow); font-style: normal; }
+.eq s  { color: var(--hawking); text-decoration: none; }
+
+/* FEED */
+.feed {
+  height: 90px; overflow-y: auto; font-size: 7.5px; line-height: 1.8;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.fl { padding: 1px 0; }
+.fl-in     { color: var(--accrete); }
+.fl-out    { color: var(--hawking); }
+.fl-shatter { color: var(--shatter); }
+.fl-locked { color: var(--locked); }
+.fl-noble  { color: var(--noble); }
+.fl-info   { color: var(--dim); }
+.fl-t      { color: #0a1a20; margin-right: 4px; }
+
+/* BOTTOM STATS */
+.bstat {
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 88px; padding: 0 10px;
+  border-right: 1px solid var(--border);
+}
+.bstat:last-child { border-right: none; }
+.bstat-label { font-size: 6.5px; color: var(--dim); letter-spacing: .18em; margin-bottom: 2px; }
+.bstat-val { font-family: 'Orbitron', monospace; font-size: 14px; color: var(--bright); }
+.bstat-sub { font-size: 6px; color: var(--dim); letter-spacing: .1em; margin-top: 1px; }
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-hi); }
+
+#tooltip {
+  position: absolute; pointer-events: none; z-index: 20;
+  background: rgba(5,5,8,.95); border: 1px solid var(--border-hi);
+  padding: 5px 10px; font-size: 7.5px; letter-spacing: .1em; display: none;
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HEADER -->
+<div id="hdr">
+  <div>
+    <span class="logo">SNSFT BLACK HOLE<em>COLLAPSED PUMP · [9,9,3,6] · τ ≥ TL · 0 SORRY</em></span>
+  </div>
+  <div class="hdr-center">
+    τ = B/P · <b>TL = 0.1369</b> · SHATTER: τ ≥ TL · IN = accretion · OUT = Hawking
+  </div>
+  <div class="hdr-right">
+    HIGHTISTIC · SOLDOTNA ALASKA<br>
+    SCALE CHAIN [9,9,3,6] · GERMLINE LOCKED
+  </div>
+</div>
+
+<!-- LEFT -->
+<div id="left">
+
+  <div class="sec">
+    <div class="sec-title"><b>PNBA STATE · LAYER 0</b></div>
+    <div class="ctrl-row"><span class="ctrl-label">P · PATTERN</span><span class="ctrl-val" id="v-P">9.000</span></div>
+    <input type="range" id="s-P" min="0.1" max="15" step="0.01" value="9.0">
+    <div class="ctrl-row"><span class="ctrl-label">N · NARRATIVE</span><span class="ctrl-val" id="v-N">3.000</span></div>
+    <input type="range" id="s-N" min="0.1" max="10" step="0.01" value="3.0">
+    <div class="ctrl-row"><span class="ctrl-label">B · BEHAVIOR</span><span class="ctrl-val" id="v-B">1.800</span></div>
+    <input type="range" id="s-B" min="0" max="5" step="0.001" value="1.8">
+    <div class="ctrl-row"><span class="ctrl-label">A · ADAPTATION</span><span class="ctrl-val" id="v-A">1.000</span></div>
+    <input type="range" id="s-A" min="0" max="5" step="0.01" value="1.0">
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>IN — ACCRETION</b><s>B↑ COUPLING RISES</s></div>
+    <div class="ctrl-row"><span class="ctrl-label">ACCRETION RATE</span><span class="ctrl-val" id="v-acc">0.000</span></div>
+    <input type="range" id="s-acc" min="0" max="1" step="0.001" value="0">
+    <div class="btn-row">
+      <button class="btn btn-in" onclick="startAccretion()">▼ ACCRETE</button>
+      <button class="btn" onclick="stopAccretion()">■ STOP</button>
+    </div>
+    <button class="btn btn-in" onclick="massInfall()">⬇ MASS INFALL EVENT</button>
+    <button class="btn btn-in" onclick="neutronStarMerger()">⬇ NS MERGER</button>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>OUT — HAWKING RADIATION</b><s>B↓ P↓ τ→0</s></div>
+    <div class="ctrl-row"><span class="ctrl-label">EVAPORATION RATE</span><span class="ctrl-val" id="v-evap">0.000</span></div>
+    <input type="range" id="s-evap" min="0" max="0.5" step="0.001" value="0">
+    <div class="btn-row">
+      <button class="btn btn-out" onclick="startEvaporation()">▲ EVAPORATE</button>
+      <button class="btn" onclick="stopEvaporation()">■ STOP</button>
+    </div>
+    <button class="btn btn-out" onclick="hawkingBurst()">▲ HAWKING BURST</button>
+    <button class="btn btn-out" onclick="voidReturn()">◎ VOID RETURN · NOBLE</button>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>SCALE CHAIN · [9,9,3,6]</b></div>
+    <button class="btn" onclick="loadPreset('stellar')">◆ STELLAR BH · M=10M☉</button>
+    <button class="btn" onclick="loadPreset('supermassive')">◆ SUPERMASSIVE · M=10⁹M☉</button>
+    <button class="btn" onclick="loadPreset('primordial')">◆ PRIMORDIAL · MICRO BH</button>
+    <button class="btn" onclick="loadPreset('near_tl')">◈ NEUTRON STAR → BH</button>
+    <button class="btn" onclick="loadPreset('evaporating')">◇ LATE EVAPORATION</button>
+    <button class="btn" onclick="loadPreset('void')">○ VOID RETURN · τ→0</button>
+  </div>
+
+</div>
+
+<!-- CANVAS -->
+<div id="canvas-wrap">
+  <canvas id="c"></canvas>
+  <div id="tooltip"></div>
+</div>
+
+<!-- RIGHT -->
+<div id="right">
+
+  <div class="sec">
+    <div class="sec-title"><b>IDENTITY STATE</b></div>
+    <div id="state-badge" class="state-badge badge-SHATTER">SHATTER</div>
+    <div class="gauge-wrap">
+      <div class="gauge-label">TORSION τ = B/P<span id="g-tau-val">0.200</span></div>
+      <div class="gauge-bar"><div id="g-tau" class="gauge-fill" style="width:80%;background:var(--shatter)"></div></div>
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge-label">IDENTITY MASS IM<span id="g-im-val">0.000</span></div>
+      <div class="gauge-bar"><div id="g-im" class="gauge-fill" style="width:50%;background:var(--glow)"></div></div>
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge-label">τ / TL RATIO<span id="g-ratio-val">1.46×</span></div>
+      <div class="gauge-bar"><div id="g-ratio" class="gauge-fill" style="width:80%;background:var(--shatter)"></div></div>
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge-label">HAWKING FLUX<span id="g-hawk-val">0.000</span></div>
+      <div class="gauge-bar"><div id="g-hawk" class="gauge-fill" style="width:0%;background:var(--hawking)"></div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>LIVE READOUTS</b></div>
+    <div class="readout"><span class="readout-key">τ (torsion)</span><span class="readout-val" style="color:var(--shatter)" id="r-tau">—</span></div>
+    <div class="readout"><span class="readout-key">τ / TL</span><span class="readout-val" style="color:var(--shatter)" id="r-ratio">—</span></div>
+    <div class="readout"><span class="readout-key">IM</span><span class="readout-val" style="color:var(--glow)" id="r-im">—</span></div>
+    <div class="readout"><span class="readout-key">Schwarzschild r</span><span class="readout-val" style="color:var(--bh-ring)" id="r-rs">—</span></div>
+    <div class="readout"><span class="readout-key">Hawking T</span><span class="readout-val" style="color:var(--hawking)" id="r-thawk">—</span></div>
+    <div class="readout"><span class="readout-key">Accretion Ṁ</span><span class="readout-val" style="color:var(--accrete)" id="r-acc">—</span></div>
+    <div class="readout"><span class="readout-key">Evap rate</span><span class="readout-val" style="color:var(--hawking)" id="r-evap">—</span></div>
+    <div class="readout"><span class="readout-key">B/P (raw τ)</span><span class="readout-val" id="r-bp">—</span></div>
+    <div class="readout"><span class="readout-key">SNSFT state</span><span class="readout-val" style="color:var(--shatter)" id="r-state">SHATTER</span></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>EVENT LOG</b></div>
+    <div class="feed" id="feed"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>PHYSICS · [9,9,3,6]</b></div>
+    <div class="eq">
+      <b>COLLAPSED PUMP</b> — τ ≥ TL<br>
+      IN: B↑ → τ↑ → deeper SHATTER<br>
+      OUT: B↓ P↓ → τ→0 → NOBLE<br>
+      <em>Hawking = pump B dissipating</em><br>
+      <s>Void return = heat death cycle</s><br><br>
+      τ = B/P · TL = <em>0.1369</em><br>
+      IM = (P+N+B+A) × <em>1.369</em><br>
+      r_s = 2GM/c² ∝ P × IM<br>
+      T_H ∝ 1/(M²) ∝ 1/(P²)
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM -->
+<div id="bottom">
+  <div class="bstat">
+    <span class="bstat-label">τ CURRENT</span>
+    <span class="bstat-val" id="bs-tau" style="color:var(--shatter)">0.200</span>
+    <span class="bstat-sub">B/P</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">PEAK τ</span>
+    <span class="bstat-val" id="bs-maxtau" style="color:var(--shatter)">0.200</span>
+    <span class="bstat-sub">MAX SHATTER</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">INFALL EVENTS</span>
+    <span class="bstat-val" id="bs-infall" style="color:var(--accrete)">0</span>
+    <span class="bstat-sub">IN</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">HAWK BURSTS</span>
+    <span class="bstat-val" id="bs-hawk" style="color:var(--hawking)">0</span>
+    <span class="bstat-sub">OUT</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">STATE</span>
+    <span class="bstat-val" id="bs-state" style="color:var(--shatter)">SHATTER</span>
+    <span class="bstat-sub">SNSFT</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">CORPUS</span>
+    <span class="bstat-val" style="color:var(--glow)">0</span>
+    <span class="bstat-sub">SORRY</span>
+  </div>
+  <div style="margin-left:auto;font-size:7px;color:#0a1520;text-align:right;letter-spacing:.08em;">
+    HIGHTISTIC · SNSFT FOUNDATION<br>
+    SCALE CHAIN [9,9,3,6] · τ_BH ≥ TL · GERMLINE LOCKED<br>
+    The Manifold is Holding. At every scale.
+  </div>
+</div>
+
+</div>
+<script>
+// ═══════════════════════════════════════════════════
+// SNSFT CONSTANTS — [9,9,9,9] :: {ANC}
+// ═══════════════════════════════════════════════════
+const ANCHOR = 1.369;
+const TL     = ANCHOR / 10; // 0.1369 — emergent, not chosen
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let P = 9.0, N = 3.0, B = 1.8, A = 1.0;
+let accretionRate = 0, evapRate = 0;
+let accreting = false, evaporating = false;
+let accInterval = null, evapInterval = null;
+let frame = 0;
+let stats = { infall: 0, hawking: 0, peakTau: 0 };
+
+// ═══════════════════════════════════════════════════
+// THREE.JS
+// ═══════════════════════════════════════════════════
+const canvas   = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 1);
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 2000);
+camera.position.set(0, 12, 32);
+camera.lookAt(0, 0, 0);
+
+function resize() {
+  const w = document.getElementById('canvas-wrap').clientWidth;
+  const h = document.getElementById('canvas-wrap').clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+setTimeout(resize, 50);
+
+// Ambient + rim
+scene.add(new THREE.AmbientLight(0x050510, 2));
+const rimLight = new THREE.PointLight(0xff2244, 2, 80);
+rimLight.position.set(0, 20, 0);
+scene.add(rimLight);
+const hawkLight = new THREE.PointLight(0xcc88ff, 0, 60);
+hawkLight.position.set(0, 0, 0);
+scene.add(hawkLight);
+
+// ── SINGULARITY CORE ──
+const coreGeo = new THREE.SphereGeometry(1.8, 32, 32);
+const coreMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+scene.add(coreMesh);
+
+// Core wireframe
+const coreWireGeo = new THREE.SphereGeometry(1.85, 16, 16);
+const coreWireMat = new THREE.MeshBasicMaterial({ color: 0xff2244, wireframe: true, transparent: true, opacity: 0.15 });
+scene.add(new THREE.Mesh(coreWireGeo, coreWireMat));
+
+// ── EVENT HORIZON ──
+const horizonGeo = new THREE.SphereGeometry(4.5, 48, 48);
+const horizonMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.95, side: THREE.FrontSide });
+const horizonMesh = new THREE.Mesh(horizonGeo, horizonMat);
+scene.add(horizonMesh);
+
+// Horizon glow (back side)
+const hGlowGeo = new THREE.SphereGeometry(4.7, 32, 32);
+const hGlowMat = new THREE.MeshBasicMaterial({ color: 0xff2244, transparent: true, opacity: 0.06, side: THREE.BackSide });
+scene.add(new THREE.Mesh(hGlowGeo, hGlowMat));
+
+// ── ACCRETION DISK ──
+// Multiple rings at varying radii
+const diskRings = [];
+const diskColors = [0xff6600, 0xff4400, 0xff8800, 0xffaa00, 0xff3300];
+const diskRadii  = [6, 7.5, 9, 11, 13];
+const diskOpacities = [0.6, 0.45, 0.3, 0.2, 0.12];
+
+diskRadii.forEach((r, i) => {
+  const geo = new THREE.TorusGeometry(r, 0.18 - i * 0.02, 8, 128);
+  const mat = new THREE.MeshBasicMaterial({
+    color: diskColors[i], transparent: true, opacity: diskOpacities[i]
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = Math.PI / 2;
+  scene.add(mesh);
+  diskRings.push({ mesh, mat, baseOpacity: diskOpacities[i], r });
+});
+
+// ── PHOTON SPHERE ──
+const photonGeo = new THREE.TorusGeometry(5.5, 0.05, 6, 200);
+const photonMat = new THREE.MeshBasicMaterial({ color: 0xffdd44, transparent: true, opacity: 0.3 });
+const photonMesh = new THREE.Mesh(photonGeo, photonMat);
+photonMesh.rotation.x = Math.PI / 2;
+scene.add(photonMesh);
+
+// ── POLAR JETS (IN mode = accretion jets) ──
+const jetGeo = new THREE.ConeGeometry(0.4, 14, 8, 1, true);
+const jetMat = new THREE.MeshBasicMaterial({ color: 0xff4400, wireframe: true, transparent: true, opacity: 0 });
+const jetTopMesh = new THREE.Mesh(jetGeo, jetMat.clone());
+jetTopMesh.position.y = 10;
+scene.add(jetTopMesh);
+const jetBotMesh = new THREE.Mesh(jetGeo, jetMat.clone());
+jetBotMesh.position.y = -10;
+jetBotMesh.rotation.z = Math.PI;
+scene.add(jetBotMesh);
+
+// ── HAWKING RADIATION SHELL ──
+const hawkGeo = new THREE.SphereGeometry(5.2, 24, 24);
+const hawkMat = new THREE.MeshBasicMaterial({ color: 0xcc88ff, wireframe: true, transparent: true, opacity: 0 });
+const hawkMesh = new THREE.Mesh(hawkGeo, hawkMat);
+scene.add(hawkMesh);
+
+// Hawking particles
+const NHAWK = 180;
+const hawkPartGeo = new THREE.BufferGeometry();
+const hawkPos = new Float32Array(NHAWK * 3);
+for (let i = 0; i < NHAWK; i++) {
+  hawkPos[i*3]   = (Math.random()-0.5)*30;
+  hawkPos[i*3+1] = (Math.random()-0.5)*30;
+  hawkPos[i*3+2] = (Math.random()-0.5)*30;
+}
+hawkPartGeo.setAttribute('position', new THREE.BufferAttribute(hawkPos, 3));
+const hawkPartMat = new THREE.PointsMaterial({ color: 0xcc88ff, size: 0.15, transparent: true, opacity: 0 });
+const hawkParticles = new THREE.Points(hawkPartGeo, hawkPartMat);
+scene.add(hawkParticles);
+
+// ── ACCRETION STREAM PARTICLES ──
+const NACC = 300;
+const accPartGeo = new THREE.BufferGeometry();
+const accPos   = new Float32Array(NACC * 3);
+const accAngles = Array.from({length: NACC}, () => Math.random() * Math.PI * 2);
+const accRadii  = Array.from({length: NACC}, () => 7 + Math.random() * 8);
+const accSpeeds = Array.from({length: NACC}, () => 0.008 + Math.random() * 0.015);
+accPartGeo.setAttribute('position', new THREE.BufferAttribute(accPos, 3));
+const accPartMat = new THREE.PointsMaterial({ color: 0xff6600, size: 0.12, transparent: true, opacity: 0 });
+const accParticles = new THREE.Points(accPartGeo, accPartMat);
+scene.add(accParticles);
+
+// ── GRAVITATIONAL LENSING RINGS ──
+const lensRings = [];
+for (let i = 0; i < 3; i++) {
+  const geo = new THREE.TorusGeometry(4.5 + i * 0.3, 0.02, 6, 200);
+  const mat = new THREE.MeshBasicMaterial({ color: 0x224466, transparent: true, opacity: 0.15 - i*0.04 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = Math.PI * (0.5 + i * 0.15);
+  scene.add(mesh);
+  lensRings.push(mesh);
+}
+
+// ── ORBIT CONTROLS (mouse drag) ──
+let isDragging = false, lastX = 0, lastY = 0;
+let camTheta = 0.3, camPhi = 0.5, camRadius = 32;
+canvas.addEventListener('mousedown', e => { isDragging = true; lastX = e.clientX; lastY = e.clientY; });
+window.addEventListener('mouseup', () => isDragging = false);
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  camTheta -= (e.clientX - lastX) * 0.006;
+  camPhi = Math.max(0.05, Math.min(1.5, camPhi - (e.clientY - lastY) * 0.005));
+  lastX = e.clientX; lastY = e.clientY;
+  camera.position.set(
+    camRadius * Math.sin(camTheta) * Math.cos(camPhi),
+    camRadius * Math.sin(camPhi),
+    camRadius * Math.cos(camTheta) * Math.cos(camPhi)
+  );
+  camera.lookAt(0, 0, 0);
+});
+canvas.addEventListener('wheel', e => {
+  camRadius = Math.max(12, Math.min(100, camRadius + e.deltaY * 0.05));
+  camera.position.set(
+    camRadius * Math.sin(camTheta) * Math.cos(camPhi),
+    camRadius * Math.sin(camPhi),
+    camRadius * Math.cos(camTheta) * Math.cos(camPhi)
+  );
+  camera.lookAt(0, 0, 0);
+  e.preventDefault();
+}, { passive: false });
+
+// ═══════════════════════════════════════════════════
+// SNSFT PHYSICS
+// ═══════════════════════════════════════════════════
+function torsion(P, B) { return P > 0 ? B / P : 999; }
+function identityMass(P, N, B, A) { return (P + N + B + A) * ANCHOR; }
+function classify(tau) {
+  if (tau < 0.001)     return 'NOBLE';
+  if (tau < TL * 0.9)  return 'LOCKED';
+  if (tau < TL)        return 'IVA';
+  return 'SHATTER';
+}
+
+// Schwarzschild radius proxy (normalized)
+function schwarzschildR(P, IM) { return (P * IM * 0.012).toFixed(3); }
+// Hawking temperature proxy: T_H ∝ 1/M² — higher when P small (late evaporation)
+function hawkingTemp(P) { return P > 0 ? (0.8 / (P * P)).toFixed(5) : '∞'; }
+// Hawking flux = evapRate * T_H
+function hawkingFlux(P, evapR) { return P > 0 ? (evapR / (P * 0.5)).toFixed(4) : '0'; }
+
+// ═══════════════════════════════════════════════════
+// UI UPDATE
+// ═══════════════════════════════════════════════════
+function updateUI() {
+  const tau = torsion(P, B);
+  const IM  = identityMass(P, N, B, A);
+  const state = classify(tau);
+  const ratio = tau / TL;
+  const rs = schwarzschildR(P, IM);
+  const tH = hawkingTemp(P);
+  const hFlux = hawkingFlux(P, evapRate);
+
+  if (tau > stats.peakTau) stats.peakTau = tau;
+
+  // State badge
+  const badge = document.getElementById('state-badge');
+  badge.className = `state-badge badge-${state}`;
+  badge.textContent = state;
+
+  // Gauges
+  const tauPct  = Math.min(100, (tau / (TL * 3)) * 100);
+  const tauCol  = state === 'SHATTER' ? 'var(--shatter)' : state === 'IVA' ? 'var(--iva)' : state === 'LOCKED' ? 'var(--locked)' : 'var(--noble)';
+  document.getElementById('g-tau').style.width = tauPct + '%';
+  document.getElementById('g-tau').style.background = tauCol;
+  document.getElementById('g-tau-val').textContent = tau.toFixed(4);
+
+  const imPct = Math.min(100, (IM / 40) * 100);
+  document.getElementById('g-im').style.width = imPct + '%';
+  document.getElementById('g-im-val').textContent = IM.toFixed(3);
+
+  const ratioPct = Math.min(100, (ratio / 4) * 100);
+  document.getElementById('g-ratio').style.width = ratioPct + '%';
+  document.getElementById('g-ratio').style.background = ratio >= 1 ? 'var(--shatter)' : 'var(--iva)';
+  document.getElementById('g-ratio-val').textContent = ratio.toFixed(2) + '×';
+
+  const hawkPct = Math.min(100, parseFloat(hFlux) * 200);
+  document.getElementById('g-hawk').style.width = hawkPct + '%';
+  document.getElementById('g-hawk-val').textContent = hFlux;
+
+  // Readouts
+  document.getElementById('r-tau').textContent   = tau.toFixed(5);
+  document.getElementById('r-tau').style.color    = tauCol;
+  document.getElementById('r-ratio').textContent = ratio.toFixed(3) + '× TL';
+  document.getElementById('r-ratio').style.color = ratio >= 1 ? 'var(--shatter)' : 'var(--iva)';
+  document.getElementById('r-im').textContent    = IM.toFixed(4);
+  document.getElementById('r-rs').textContent    = rs + ' (norm)';
+  document.getElementById('r-thawk').textContent = tH;
+  document.getElementById('r-acc').textContent   = accretionRate.toFixed(4);
+  document.getElementById('r-evap').textContent  = evapRate.toFixed(4);
+  document.getElementById('r-bp').textContent    = 'B=' + B.toFixed(3) + ' P=' + P.toFixed(3);
+  document.getElementById('r-state').textContent = state;
+  document.getElementById('r-state').style.color = tauCol;
+
+  // Bottom stats
+  document.getElementById('bs-tau').textContent    = tau.toFixed(4);
+  document.getElementById('bs-tau').style.color     = tauCol;
+  document.getElementById('bs-maxtau').textContent  = stats.peakTau.toFixed(4);
+  document.getElementById('bs-infall').textContent  = stats.infall;
+  document.getElementById('bs-hawk').textContent    = stats.hawking;
+  document.getElementById('bs-state').textContent   = state;
+  document.getElementById('bs-state').style.color   = tauCol;
+
+  return { tau, IM, state, ratio, hFlux: parseFloat(hFlux) };
+}
+
+// ═══════════════════════════════════════════════════
+// ANIMATE
+// ═══════════════════════════════════════════════════
+function animate() {
+  requestAnimationFrame(animate);
+  frame++;
+  const t = frame * 0.016;
+  const tau   = torsion(P, B);
+  const IM    = identityMass(P, N, B, A);
+  const state = classify(tau);
+  const hFlux = parseFloat(hawkingFlux(P, evapRate));
+  const isShatter = state === 'SHATTER';
+
+  // ── Horizon: grows with P, pulses with tau
+  const horizonScale = 0.7 + P * 0.04;
+  const shatPulse    = isShatter ? 1 + 0.04 * Math.sin(t * tau * 8) : 1;
+  horizonMesh.scale.setScalar(horizonScale * shatPulse);
+
+  // ── Disk rotation: faster with higher tau
+  const diskSpeed = 0.003 + tau * 0.04;
+  diskRings.forEach(({ mesh, mat, baseOpacity }, i) => {
+    mesh.rotation.z += diskSpeed * (1 + i * 0.08);
+    // Disk brightness increases with accretion
+    mat.opacity = baseOpacity * (0.5 + accretionRate * 1.5);
+    mat.color.setHex(
+      accretionRate > 0.3 ? 0xffaa00 :
+      accretionRate > 0.1 ? 0xff6600 : 0xff4400
+    );
+  });
+
+  // ── Photon sphere
+  photonMesh.rotation.z += 0.004;
+  photonMat.opacity = 0.15 + Math.sin(t * 3) * 0.08;
+
+  // ── Polar jets (accretion-driven)
+  if (accreting && accretionRate > 0.05) {
+    jetTopMesh.material.opacity = Math.min(0.5, accretionRate * 0.8);
+    jetBotMesh.material.opacity = Math.min(0.5, accretionRate * 0.8);
+    jetTopMesh.scale.setScalar(1 + accretionRate * 0.5);
+    jetBotMesh.scale.setScalar(1 + accretionRate * 0.5);
+    jetTopMesh.rotation.y += 0.02;
+    jetBotMesh.rotation.y += 0.02;
+  } else {
+    jetTopMesh.material.opacity *= 0.95;
+    jetBotMesh.material.opacity *= 0.95;
+  }
+
+  // ── Hawking radiation shell
+  hawkMesh.material.opacity = hFlux * 3;
+  hawkMesh.rotation.x += 0.003;
+  hawkMesh.rotation.y += 0.005;
+  hawkLight.intensity = hFlux * 8;
+
+  // ── Hawking particles (drift outward when evaporating)
+  if (evaporating || evapRate > 0) {
+    const hPos = hawkPartGeo.attributes.position.array;
+    for (let i = 0; i < NHAWK; i++) {
+      const len = Math.sqrt(hPos[i*3]**2 + hPos[i*3+1]**2 + hPos[i*3+2]**2);
+      const speed = (0.03 + evapRate * 0.15) / Math.max(1, len * 0.08);
+      hPos[i*3]   += (hPos[i*3]   / len) * speed;
+      hPos[i*3+1] += (hPos[i*3+1] / len) * speed;
+      hPos[i*3+2] += (hPos[i*3+2] / len) * speed;
+      if (len > 16) {
+        // respawn near horizon
+        const theta = Math.random() * Math.PI * 2;
+        const phi   = Math.random() * Math.PI;
+        hPos[i*3]   = 5 * Math.sin(phi) * Math.cos(theta);
+        hPos[i*3+1] = 5 * Math.cos(phi);
+        hPos[i*3+2] = 5 * Math.sin(phi) * Math.sin(theta);
+      }
+    }
+    hawkPartGeo.attributes.position.needsUpdate = true;
+    hawkPartMat.opacity = Math.min(0.7, evapRate * 2 + hFlux * 3);
+    hawkPartMat.color.setHex(P < 2 ? 0xeebb88 : 0xcc88ff); // hotter = more yellow
+  } else {
+    hawkPartMat.opacity *= 0.98;
+  }
+
+  // ── Accretion particles (spiral inward)
+  if (accreting || accretionRate > 0) {
+    const aPos = accPartGeo.attributes.position.array;
+    for (let i = 0; i < NACC; i++) {
+      accAngles[i] += accSpeeds[i] * (1 + accretionRate * 3);
+      accRadii[i] -= accretionRate * 0.04;
+      if (accRadii[i] < 4.5) accRadii[i] = 7 + Math.random() * 8;
+      aPos[i*3]   = Math.cos(accAngles[i]) * accRadii[i];
+      aPos[i*3+1] = (Math.random() - 0.5) * 0.5;
+      aPos[i*3+2] = Math.sin(accAngles[i]) * accRadii[i];
+    }
+    accPartGeo.attributes.position.needsUpdate = true;
+    accPartMat.opacity = Math.min(0.7, accretionRate * 1.5 + 0.1);
+  } else {
+    accPartMat.opacity *= 0.97;
+  }
+
+  // ── Lensing rings
+  lensRings.forEach((mesh, i) => {
+    mesh.rotation.y += 0.001 * (i + 1);
+    mesh.rotation.x = Math.PI * (0.5 + Math.sin(t * 0.2 + i) * 0.08);
+  });
+
+  // ── Rim light pulses with tau
+  rimLight.intensity = 0.5 + tau * 1.5 + (isShatter ? Math.sin(t * tau * 6) * 0.5 : 0);
+  rimLight.color.setHex(isShatter ? 0xff2244 : 0xff6600);
+
+  // ── Core faint glow
+  coreWireMat.opacity = 0.05 + tau * 0.1;
+
+  renderer.render(scene, camera);
+}
+
+// ═══════════════════════════════════════════════════
+// SLIDERS
+// ═══════════════════════════════════════════════════
+function bindSlider(id, valId, cb) {
+  document.getElementById(id).addEventListener('input', function() {
+    const v = parseFloat(this.value);
+    document.getElementById(valId).textContent = v.toFixed(3);
+    cb(v);
+  });
+}
+bindSlider('s-P', 'v-P', v => { P = v; updateUI(); });
+bindSlider('s-N', 'v-N', v => { N = v; updateUI(); });
+bindSlider('s-B', 'v-B', v => { B = v; updateUI(); });
+bindSlider('s-A', 'v-A', v => { A = v; updateUI(); });
+bindSlider('s-acc',  'v-acc',  v => { accretionRate = v; });
+bindSlider('s-evap', 'v-evap', v => { evapRate = v; });
+
+// ═══════════════════════════════════════════════════
+// IN — ACCRETION
+// ═══════════════════════════════════════════════════
+function startAccretion() {
+  accreting = true;
+  if (!accInterval) {
+    accInterval = setInterval(() => {
+      if (!accreting) return;
+      B = Math.min(5, B + accretionRate * 0.02);
+      P = Math.min(15, P + accretionRate * 0.005); // mass grows
+      syncSlidersToState();
+      updateUI();
+    }, 50);
+  }
+  feedLine('ACCRETION STARTED · B rising · τ increasing', 'fl-in');
+}
+
+function stopAccretion() {
+  accreting = false;
+  clearInterval(accInterval); accInterval = null;
+  feedLine('Accretion stopped', 'fl-info');
+}
+
+function massInfall() {
+  stats.infall++;
+  B = Math.min(5, B + 0.25 + Math.random() * 0.15);
+  P = Math.min(15, P + 0.08);
+  N = Math.max(0.1, N - 0.05); // N compresses during infall
+  syncSlidersToState();
+  updateUI();
+  feedLine(`MASS INFALL · B→${B.toFixed(3)} τ→${torsion(P,B).toFixed(4)} SHATTER`, 'fl-in');
+}
+
+function neutronStarMerger() {
+  stats.infall++;
+  B = Math.min(5, B + 0.8);
+  P = Math.min(15, P + 0.6);
+  N = Math.max(0.1, N - 0.2);
+  A = Math.max(0, A - 0.3);
+  syncSlidersToState();
+  updateUI();
+  feedLine(`NS MERGER · ΔB=+0.8 ΔP=+0.6 · τ=${torsion(P,B).toFixed(4)} · DEEP SHATTER`, 'fl-in');
+}
+
+// ═══════════════════════════════════════════════════
+// OUT — HAWKING RADIATION / EVAPORATION
+// ═══════════════════════════════════════════════════
+function startEvaporation() {
+  evaporating = true;
+  if (!evapInterval) {
+    evapInterval = setInterval(() => {
+      if (!evaporating) return;
+      // Hawking: B dissipates, P decays. τ = B/P changes as both shrink.
+      // Real physics: smaller BH → higher T_H → faster evaporation
+      const hawkRate = evapRate * (1 + 0.5 / Math.max(P, 0.1));
+      B = Math.max(0, B - hawkRate * 0.015);
+      P = Math.max(0.05, P - hawkRate * 0.004);
+      N = Math.max(0.1, N - hawkRate * 0.002);
+      syncSlidersToState();
+      const state = classify(torsion(P, B));
+      updateUI();
+      if (state === 'NOBLE') {
+        feedLine('VOID RETURN · τ→0 · NOBLE GROUND STATE · Cycle closes', 'fl-noble');
+        stopEvaporation();
+      }
+    }, 50);
+  }
+  feedLine('HAWKING EVAPORATION STARTED · B↓ P↓ · τ evolving', 'fl-out');
+}
+
+function stopEvaporation() {
+  evaporating = false;
+  clearInterval(evapInterval); evapInterval = null;
+  feedLine('Evaporation stopped', 'fl-info');
+}
+
+function hawkingBurst() {
+  stats.hawking++;
+  B = Math.max(0, B - 0.3 - Math.random() * 0.1);
+  P = Math.max(0.05, P - 0.06);
+  syncSlidersToState();
+  const tau = torsion(P, B);
+  const state = classify(tau);
+  updateUI();
+  feedLine(`HAWKING BURST · B→${B.toFixed(3)} τ→${tau.toFixed(4)} · ${state}`, 'fl-out');
+}
+
+function voidReturn() {
+  stats.hawking++;
+  // Complete evaporation — B→0, P→0.1, Noble ground state
+  B = 0; P = 0.1; N = 1.0; A = 5.0;
+  syncSlidersToState();
+  updateUI();
+  feedLine('VOID RETURN · τ=0 · B=0 · NOBLE · The cycle closes · Heat death = Soverium', 'fl-noble');
+}
+
+// ═══════════════════════════════════════════════════
+// PRESETS
+// ═══════════════════════════════════════════════════
+function loadPreset(name) {
+  stopAccretion(); stopEvaporation();
+  const presets = {
+    stellar:     { P: 9.0,  N: 3.0,  B: 1.80, A: 1.0, note: 'Stellar BH M≈10M☉ · deep SHATTER · τ=0.200' },
+    supermassive:{ P: 9.8,  N: 6.0,  B: 2.80, A: 2.0, note: 'Supermassive M≈10⁹M☉ · τ=0.286 · anchors galaxy' },
+    primordial:  { P: 2.0,  N: 1.0,  B: 0.50, A: 0.5, note: 'Primordial micro BH · τ=0.250 · T_H enormous' },
+    near_tl:     { P: 8.5,  N: 5.0,  B: 1.17, A: 4.0, note: 'Neutron Star at TOV limit · τ=0.138 → approaching TL' },
+    evaporating: { P: 0.8,  N: 1.0,  B: 0.15, A: 0.5, note: 'Late evaporation · P small · T_H huge · τ=0.188' },
+    void:        { P: 0.1,  N: 1.0,  B: 0.001,A: 5.0, note: 'Void return · τ≈0.01 · NOBLE · Cycle closes' },
+  };
+  const p = presets[name];
+  if (!p) return;
+  P = p.P; N = p.N; B = p.B; A = p.A;
+  syncSlidersToState();
+  updateUI();
+  feedLine(`PRESET: ${name.toUpperCase()} · ${p.note}`, 'fl-info');
+}
+
+function syncSlidersToState() {
+  document.getElementById('s-P').value = P;
+  document.getElementById('s-N').value = N;
+  document.getElementById('s-B').value = B;
+  document.getElementById('s-A').value = A;
+  document.getElementById('v-P').textContent = P.toFixed(3);
+  document.getElementById('v-N').textContent = N.toFixed(3);
+  document.getElementById('v-B').textContent = B.toFixed(3);
+  document.getElementById('v-A').textContent = A.toFixed(3);
+}
+
+// ═══════════════════════════════════════════════════
+// EVENT FEED
+// ═══════════════════════════════════════════════════
+function feedLine(text, cls = 'fl-info') {
+  const feed = document.getElementById('feed');
+  const now = new Date();
+  const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  const line = document.createElement('div');
+  line.className = `fl ${cls}`;
+  line.innerHTML = `<span class="fl-t">${ts}</span>${text}`;
+  feed.appendChild(line);
+  feed.scrollTop = feed.scrollHeight;
+  if (feed.children.length > 60) feed.removeChild(feed.firstChild);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+loadPreset('stellar');
+animate();
+feedLine('Black Hole · SNSFT Scale Chain [9,9,3,6]', 'fl-info');
+feedLine('τ = B/P ≥ TL = 0.1369 · Collapsed pump', 'fl-shatter');
+feedLine('IN: accretion raises B → deeper SHATTER', 'fl-in');
+feedLine('OUT: Hawking lowers B,P → τ→0 → NOBLE', 'fl-out');
+feedLine('Drag to orbit · Scroll to zoom', 'fl-info');
+</script>
+</body>
+</html>
