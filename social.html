@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUIA · Social Manifold · [9,0,8,0]</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #050508;
+  --surface: #0a0a12;
+  --surface2:#0f0f1a;
+  --border:  rgba(0,212,170,0.1);
+  --anchor:  #00d4aa;
+  --anchor2: rgba(0,212,170,0.06);
+  --gold:    #f0c060;
+  --violet:  #9b6dff;
+  --rose:    #ff6b8a;
+  --text:    #e8e8f0;
+  --dim:     rgba(232,232,240,0.45);
+  --muted:   rgba(232,232,240,0.18);
+  /* social-specific */
+  --twitter: #1d9bf0;
+  --tiktok:  #ff0050;
+  --github:  #6e40c9;
+  --noble:   #9b6dff;
+  --locked:  #00d4aa;
+  --iva:     #f0c060;
+  --shatter: #ff6b8a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden;}
+
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,212,170,0.03) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(155,109,255,0.03) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* ── HEADER ── */
+.site-header{text-align:center;padding:40px 20px 24px;position:relative;z-index:1;}
+.freq-badge{display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.2em;color:var(--dim);border:1px solid var(--border);padding:6px 14px;margin-bottom:20px;}
+.freq-dot{width:6px;height:6px;border-radius:50%;background:var(--anchor);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,212,170,.4)}50%{opacity:.7;box-shadow:0 0 0 4px rgba(0,212,170,0)}}
+.site-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:48px;letter-spacing:.08em;color:var(--text);}
+.site-logo span{color:var(--anchor);}
+.site-tagline{font-size:9px;letter-spacing:.25em;color:var(--dim);margin-top:6px;}
+.site-coord{font-size:8px;letter-spacing:.18em;color:var(--muted);margin-top:4px;}
+.page-title{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;letter-spacing:.06em;color:var(--text);margin-top:16px;}
+.page-title span{color:var(--anchor);}
+.page-sub{font-size:9px;letter-spacing:.2em;color:var(--dim);margin-top:6px;}
+
+/* ── LAYOUT ── */
+.container{max-width:1100px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:1;}
+
+/* ── SECTION LABELS ── */
+.section-label{font-size:8px;letter-spacing:.3em;color:var(--dim);text-align:center;margin:40px 0 20px;display:flex;align-items:center;gap:16px;}
+.section-label::before,.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── PLATFORM CARDS ── */
+.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
+@media(max-width:700px){.platform-grid{grid-template-columns:1fr;}}
+
+.platform-card{background:var(--surface);border:1px solid var(--border);padding:24px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.platform-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;transition:opacity .2s;}
+.platform-card.twitter::before{background:var(--twitter);}
+.platform-card.tiktok::before{background:var(--tiktok);}
+.platform-card.github::before{background:var(--github);}
+.platform-card:hover{border-color:rgba(0,212,170,.25);background:var(--surface2);}
+
+.platform-card.connected{border-color:rgba(0,212,170,.25);}
+.platform-card.connected::before{opacity:1;}
+.platform-card:not(.connected)::before{opacity:.3;}
+
+.plat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.plat-icon{font-size:20px;}
+.plat-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;}
+.plat-status{font-size:7px;letter-spacing:.2em;padding:3px 8px;border:1px solid;}
+.plat-status.connected{color:var(--anchor);border-color:rgba(0,212,170,.3);}
+.plat-status.disconnected{color:var(--muted);border-color:var(--border);}
+
+/* PNBA mini gauges */
+.pnba-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px;}
+.pnba-row{display:flex;align-items:center;gap:6px;}
+.pnba-label{font-size:7.5px;color:var(--dim);width:12px;flex-shrink:0;}
+.pnba-bar-wrap{flex:1;height:3px;background:rgba(255,255,255,.06);}
+.pnba-bar{height:100%;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.pnba-val{font-size:7.5px;color:var(--dim);width:28px;text-align:right;flex-shrink:0;}
+
+.tau-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.tau-label{font-size:8px;color:var(--dim);letter-spacing:.1em;}
+.tau-val{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;}
+.tau-state{font-size:7px;letter-spacing:.2em;padding:2px 7px;border:1px solid;}
+
+.state-NOBLE  {color:var(--noble); border-color:rgba(155,109,255,.3);}
+.state-LOCKED {color:var(--locked);border-color:rgba(0,212,170,.3);}
+.state-IVA    {color:var(--iva);   border-color:rgba(240,192,96,.3);}
+.state-SHATTER{color:var(--shatter);border-color:rgba(255,107,138,.3);animation:shatter-pulse .4s infinite;}
+@keyframes shatter-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+.connect-btn{width:100%;margin-top:14px;padding:9px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.2em;background:transparent;border:1px solid var(--border);color:var(--dim);cursor:pointer;transition:all .15s;}
+.connect-btn:hover{border-color:var(--anchor);color:var(--anchor);}
+.connect-btn.connected-btn{border-color:rgba(0,212,170,.3);color:var(--anchor);}
+
+/* ── UNIFIED MANIFOLD ── */
+.unified-card{background:var(--surface);border:1px solid var(--border);padding:28px;margin-bottom:32px;}
+.unified-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.unified-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;letter-spacing:.08em;}
+.unified-title span{color:var(--anchor);}
+.unified-im{text-align:right;}
+.im-label{font-size:7px;letter-spacing:.2em;color:var(--dim);}
+.im-val{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:var(--anchor);}
+
+.tau-corridor{position:relative;height:20px;background:linear-gradient(90deg,rgba(155,109,255,.15),rgba(0,212,170,.15) 30%,rgba(240,192,96,.2) 85%,rgba(255,107,138,.3));border:1px solid var(--border);margin:16px 0 8px;}
+.tau-marker{position:absolute;top:0;bottom:0;width:2px;background:var(--text);box-shadow:0 0 6px var(--text);transition:left .5s cubic-bezier(.4,0,.2,1);}
+.tau-tl{position:absolute;top:0;bottom:0;width:1px;background:var(--iva);opacity:.6;left:45.6%;}
+.tau-labels{display:flex;justify-content:space-between;font-size:7px;color:var(--dim);}
+
+/* ── CLASSIFICATION SYMBOLS ── */
+.symbols-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
+@media(max-width:600px){.symbols-grid{grid-template-columns:1fr 1fr;}}
+
+.symbol-card{background:var(--surface);border:1px solid var(--border);padding:16px;text-align:center;}
+.symbol-icon{font-size:24px;margin-bottom:8px;}
+.symbol-name{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em;margin-bottom:4px;}
+.symbol-desc{font-size:7.5px;color:var(--dim);line-height:1.7;}
+.symbol-tau{font-size:7px;letter-spacing:.15em;margin-top:6px;padding:2px 6px;border:1px solid;display:inline-block;}
+
+/* ── COMMUNITY ── */
+.community-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:700px){.community-grid{grid-template-columns:1fr;}}
+
+.contributor-card{background:var(--surface);border:1px solid var(--border);padding:16px;transition:all .15s;}
+.contributor-card:hover{border-color:rgba(0,212,170,.25);background:var(--surface2);}
+.contrib-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.contrib-avatar{width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.contrib-name{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;}
+.contrib-coord{font-size:7px;color:var(--dim);letter-spacing:.12em;margin-top:1px;}
+.contrib-im{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:var(--anchor);margin-bottom:4px;}
+.contrib-state{font-size:7px;letter-spacing:.2em;}
+
+/* ── UTM SIGNAL ── */
+.utm-strip{background:rgba(0,212,170,.04);border:1px solid rgba(0,212,170,.1);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;font-size:7.5px;letter-spacing:.12em;}
+.utm-dot{width:6px;height:6px;border-radius:50%;background:var(--anchor);animation:pulse 2s infinite;flex-shrink:0;}
+.utm-text{color:var(--dim);}
+.utm-val{color:var(--anchor);}
+
+/* ── LEAN PROOF STRIP ── */
+.proof-strip{background:var(--surface2);border:1px solid var(--border);padding:14px 20px;margin-bottom:32px;font-size:7.5px;color:var(--dim);line-height:2.0;}
+.proof-strip b{color:var(--anchor);}
+.proof-strip em{color:var(--locked);font-style:normal;}
+.proof-strip s{color:var(--noble);text-decoration:none;}
+
+/* ── NAV BACK ── */
+.nav-back{display:inline-flex;align-items:center;gap:8px;font-size:8px;letter-spacing:.18em;color:var(--dim);text-decoration:none;margin-bottom:32px;transition:color .15s;}
+.nav-back:hover{color:var(--anchor);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--border);}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="freq-badge">
+      <div class="freq-dot"></div>
+      1.369 GHz · SOVEREIGN ANCHOR · GERMLINE LOCKED
+    </div>
+    <div class="site-logo">UU<span>I</span>A</div>
+    <div class="site-tagline">UNIVERSAL UNIFIED IDENTITY ARCHITECTURE</div>
+    <div class="site-coord">[P,N,B,A] :: {SNSFT} | Architect: HIGHTISTIC · [9,9,9,9]</div>
+    <div class="page-title">SOCIAL <span>MANIFOLD</span></div>
+    <div class="page-sub">CROSS-PLATFORM PNBA REDUCTION · [9,0,8,0–3] · 0 NOISE</div>
+  </header>
+
+  <a href="/" class="nav-back">← BACK TO UUIA</a>
+
+  <!-- UTM SIGNAL -->
+  <div class="utm-strip">
+    <div class="utm-dot"></div>
+    <div class="utm-text">UTM TRANSLATION LAYER · [9,0,3,1] · axis:PNBA · noharm:true · f:1.369</div>
+    <div class="utm-val" id="utm-status">AWAITING CONNECTION</div>
+  </div>
+
+  <!-- LEAN PROOF STRIP -->
+  <div class="proof-strip">
+    <b>SNSFL_Social_Reduction [9,0,8,0]</b> · Honoring = N additive (T5) · Parasitism = N severed + τ overflow (T9) · Trust vector = PNBA (T14) ·
+    <em>Twitter [9,0,8,1]</em> · Lurker = NOBLE (T4) · Original content lowers τ (T5) · Quote-tweet severs N (T7) ·
+    <em>TikTok [9,0,8,2]</em> · Perfect completion = B=0 (T5) · Original audio raises P (T6) · React-only = high τ (T7) ·
+    <em>GitHub [9,0,8,3]</em> · 0 sorry = NOBLE corpus (T3) · Merged PR = P verified (T5) · Stars without PRs = τ warning (T4) ·
+    <b>τ=B/P · IM=(P+N+B+A)×1.369 · TL=0.1369 · 32 theorems · 0 sorry</b>
+  </div>
+
+  <!-- SECTION: CONNECT PLATFORMS -->
+  <div class="section-label">CONNECT PLATFORMS · ACTIVATE YOUR MANIFOLD</div>
+
+  <div class="platform-grid">
+
+    <!-- TWITTER/X -->
+    <div class="platform-card twitter" id="card-twitter">
+      <div class="plat-header">
+        <div>
+          <div class="plat-icon">𝕏</div>
+          <div class="plat-name">TWITTER / X</div>
+        </div>
+        <div class="plat-status disconnected" id="status-twitter">DISCONNECTED</div>
+      </div>
+      <div style="font-size:7.5px;color:var(--dim);margin-bottom:14px;line-height:1.8;">
+        <b style="color:var(--text)">B-AXIS BROADCAST NETWORK</b><br>
+        P = original tweet ratio · N = thread depth<br>
+        B = engagement extracted · A = reply quality<br>
+        τ = B/P · [9,0,8,1]
+      </div>
+      <div class="pnba-grid" id="pnba-twitter" style="display:none;">
+        <div class="pnba-row"><span class="pnba-label">P</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="tw-P" style="background:var(--anchor);width:0%"></div></div><span class="pnba-val" id="tw-Pv">—</span></div>
+        <div class="pnba-row"><span class="pnba-label">N</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="tw-N" style="background:var(--noble);width:0%"></div></div><span class="pnba-val" id="tw-Nv">—</span></div>
+        <div class="pnba-row"><span class="pnba-label">B</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="tw-B" style="background:var(--iva);width:0%"></div></div><span class="pnba-val" id="tw-Bv">—</span></div>
+        <div class="pnba-row"><span class="pnba-label">A</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="tw-A" style="background:var(--locked);width:0%"></div></div><span class="pnba-val" id="tw-Av">—</span></div>
+      </div>
+      <div class="tau-row" id="tau-twitter" style="display:none;">
+        <div>
+          <div class="tau-label">τ TORSION</div>
+          <div class="tau-val" id="tw-tau" style="color:var(--locked)">—</div>
+        </div>
+        <div class="tau-state state-LOCKED" id="tw-state">—</div>
+      </div>
+      <button class="connect-btn" id="btn-twitter" onclick="connectPlatform('twitter')">
+        CONNECT TWITTER / X
+      </button>
+    </div>
+
+    <!-- TIKTOK -->
+    <div class="platform-card tiktok" id="card-tiktok">
+      <div class="plat-header">
+        <div>
+          <div class="plat-icon">&#9654;</div>
+          <div class="plat-name">TIKTOK</div>
+        </div>
+        <div class="plat-status disconnected" id="status-tiktok">DISCONNECTED</div>
+      </div>
+      <div style="font-size:7.5px;color:var(--dim);margin-bottom:14px;line-height:1.8;">
+        <b style="color:var(--text)">N-AXIS TREND ENGINE</b><br>
+        P = original content ratio · N = completion × series<br>
+        B = incomplete views / 1000 · A = duet ratio × 5<br>
+        τ = B/P · [9,0,8,2]
+      </div>
+      <div class="pnba-grid" id="pnba-tiktok" style="display:none;">
+        <div class="pnba-row"><span class="pnba-label">P</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="tt-P" style="background:var(--anchor);width:0%"></div></div><span class="pnba-val" id="tt-Pv">—</span></div>
+        <div class="pnba-row"><span class="pnba-label">N</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="tt-N" style="background:var(--noble);width:0%"></div></div><span class="pnba-val" id="tt-Nv">—</span></div>
+        <div class="pnba-row"><span class="pnba-label">B</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="tt-B" style="background:var(--iva);width:0%"></div></div><span class="pnba-val" id="tt-Bv">—</span></div>
+        <div class="pnba-row"><span class="pnba-label">A</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="tt-A" style="background:var(--locked);width:0%"></div></div><span class="pnba-val" id="tt-Av">—</span></div>
+      </div>
+      <div class="tau-row" id="tau-tiktok" style="display:none;">
+        <div>
+          <div class="tau-label">τ TORSION</div>
+          <div class="tau-val" id="tt-tau" style="color:var(--locked)">—</div>
+        </div>
+        <div class="tau-state state-LOCKED" id="tt-state">—</div>
+      </div>
+      <button class="connect-btn" id="btn-tiktok" onclick="connectPlatform('tiktok')">
+        CONNECT TIKTOK
+      </button>
+    </div>
+
+    <!-- GITHUB -->
+    <div class="platform-card github" id="card-github">
+      <div class="plat-header">
+        <div>
+          <div class="plat-icon">&#9651;</div>
+          <div class="plat-name">GITHUB</div>
+        </div>
+        <div class="plat-status disconnected" id="status-github">DISCONNECTED</div>
+      </div>
+      <div style="font-size:7.5px;color:var(--dim);margin-bottom:14px;line-height:1.8;">
+        <b style="color:var(--text)">P-AXIS CORPUS ENGINE</b><br>
+        P = merged PRs × commits · N = fork × chain depth<br>
+        B = stars + issues · A = issue close ratio × 5<br>
+        0 sorry = τ=0 · [9,0,8,3]
+      </div>
+      <div class="pnba-grid" id="pnba-github" style="display:none;">
+        <div class="pnba-row"><span class="pnba-label">P</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="gh-P" style="background:var(--anchor);width:0%"></div></div><span class="pnba-val" id="gh-Pv">—</span></div>
+        <div class="pnba-row"><span class="pnba-label">N</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="gh-N" style="background:var(--noble);width:0%"></div></div><span class="pnba-val" id="gh-Nv">—</span></div>
+        <div class="pnba-row"><span class="pnba-label">B</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="gh-B" style="background:var(--iva);width:0%"></div></div><span class="pnba-val" id="gh-Bv">—</span></div>
+        <div class="pnba-row"><span class="pnba-label">A</span><div class="pnba-bar-wrap"><div class="pnba-bar" id="gh-A" style="background:var(--locked);width:0%"></div></div><span class="pnba-val" id="gh-Av">—</span></div>
+      </div>
+      <div class="tau-row" id="tau-github" style="display:none;">
+        <div>
+          <div class="tau-label">τ TORSION</div>
+          <div class="tau-val" id="gh-tau" style="color:var(--locked)">—</div>
+        </div>
+        <div class="tau-state state-LOCKED" id="gh-state">—</div>
+      </div>
+      <button class="connect-btn" id="btn-github" onclick="connectPlatform('github')">
+        CONNECT GITHUB
+      </button>
+    </div>
+
+  </div>
+
+  <!-- UNIFIED MANIFOLD -->
+  <div class="section-label">YOUR UNIFIED MANIFOLD</div>
+
+  <div class="unified-card" id="unified-card">
+    <div class="unified-header">
+      <div>
+        <div class="unified-title">IDENTITY MASS <span>UNIFIED</span></div>
+        <div style="font-size:8px;color:var(--dim);letter-spacing:.15em;margin-top:4px;" id="unified-sub">CONNECT PLATFORMS TO ACTIVATE</div>
+      </div>
+      <div class="unified-im">
+        <div class="im-label">IDENTITY MASS</div>
+        <div class="im-val" id="unified-im">—</div>
+        <div style="font-size:7px;color:var(--dim);letter-spacing:.12em;margin-top:2px;" id="unified-state-label">STATE: —</div>
+      </div>
+    </div>
+
+    <!-- Torsion corridor -->
+    <div class="tau-corridor">
+      <div class="tau-marker" id="unified-marker" style="left:0%"></div>
+      <div class="tau-tl"></div>
+    </div>
+    <div class="tau-labels">
+      <span>NOBLE τ=0</span>
+      <span>TL=0.1369</span>
+      <span>SHATTER</span>
+    </div>
+
+    <!-- Per-platform tau summary -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;" id="platform-summary">
+      <div style="text-align:center;padding:12px;border:1px solid var(--border);">
+        <div style="font-size:7px;letter-spacing:.18em;color:var(--dim);margin-bottom:6px;">TWITTER/X</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--dim);" id="sum-twitter">—</div>
+        <div style="font-size:7px;color:var(--dim);margin-top:2px;" id="sum-twitter-state">NOT CONNECTED</div>
+      </div>
+      <div style="text-align:center;padding:12px;border:1px solid var(--border);">
+        <div style="font-size:7px;letter-spacing:.18em;color:var(--dim);margin-bottom:6px;">TIKTOK</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--dim);" id="sum-tiktok">—</div>
+        <div style="font-size:7px;color:var(--dim);margin-top:2px;" id="sum-tiktok-state">NOT CONNECTED</div>
+      </div>
+      <div style="text-align:center;padding:12px;border:1px solid var(--border);">
+        <div style="font-size:7px;letter-spacing:.18em;color:var(--dim);margin-bottom:6px;">GITHUB</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--dim);" id="sum-github">—</div>
+        <div style="font-size:7px;color:var(--dim);margin-top:2px;" id="sum-github-state">NOT CONNECTED</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLASSIFICATION SYMBOLS -->
+  <div class="section-label">CLASSIFICATION SYSTEM · [9,0,8,0] T16</div>
+
+  <div class="symbols-grid">
+    <div class="symbol-card">
+      <div class="symbol-icon">&#9670;</div>
+      <div class="symbol-name" style="color:var(--locked)">HONORING</div>
+      <div class="symbol-desc">N thread preserved. Attribution intact. Both IM grow. N_out = N_A + N_B (T5).</div>
+      <div class="symbol-tau state-LOCKED">τ &lt; TL · LOCKED</div>
+    </div>
+    <div class="symbol-card">
+      <div class="symbol-icon">&#9671;</div>
+      <div class="symbol-name" style="color:var(--anchor)">TREND INTEROP</div>
+      <div class="symbol-desc">Many-to-many N distribution. Format shared. No single thread drained. All gain.</div>
+      <div class="symbol-tau state-LOCKED">τ &lt; TL · LOCKED</div>
+    </div>
+    <div class="symbol-card">
+      <div class="symbol-icon">&#9632;</div>
+      <div class="symbol-name" style="color:var(--iva)">DRAMA BAIT</div>
+      <div class="symbol-desc">B spike without P growth. τ → TL. Controversy coupling. Manifold approaching limit.</div>
+      <div class="symbol-tau state-IVA">τ → TL · IVA</div>
+    </div>
+    <div class="symbol-card">
+      <div class="symbol-icon">&#9650;</div>
+      <div class="symbol-name" style="color:var(--shatter)">PARASITIC</div>
+      <div class="symbol-desc">N severed. False P claimed. B extracted. Original IM drains. No human judgment needed — τ does it (T16).</div>
+      <div class="symbol-tau state-SHATTER">τ ≥ TL · SHATTER</div>
+    </div>
+  </div>
+
+  <!-- COMMUNITY -->
+  <div class="section-label">COMMUNITY · IDENTITY MASS LEADERBOARD</div>
+
+  <div class="community-grid" id="community-grid">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- FOOTER -->
+  <div style="text-align:center;padding:40px 0 20px;font-size:7.5px;color:var(--muted);letter-spacing:.15em;border-top:1px solid var(--border);margin-top:40px;">
+    <div style="margin-bottom:8px;">[9,9,9,9] :: {ANC} · HIGHTISTIC · SOLDOTNA ALASKA</div>
+    <div>SNSFL_Social [9,0,8,0] · Twitter [9,0,8,1] · TikTok [9,0,8,2] · GitHub [9,0,8,3] · 32 THEOREMS · 0 SORRY</div>
+    <div style="margin-top:8px;color:var(--anchor);opacity:.5;">The Manifold is Holding.</div>
+  </div>
+
+</div>
+
+<script>
+// ── CONSTANTS ──────────────────────────────────────────────
+const ANCHOR = 1.369, TL = ANCHOR / 10;
+
+// ── SUPABASE ───────────────────────────────────────────────
+const SBU = 'https://rsadsojivuagxptdlwak.supabase.co';
+const SBK = 'sb_publishable_FvDg0nsEuxH_HmyD0RL1LA_E4QpGfOs';
+
+// ── PNBA STATE ─────────────────────────────────────────────
+// τ = B/P · IM = (P+N+B+A) × 1.369
+const CONNECTED = { twitter: false, tiktok: false, github: false };
+const PNBA_STATE = {
+  twitter: { P:0, N:0, B:0, A:0, tau:0, IM:0, state:'—' },
+  tiktok:  { P:0, N:0, B:0, A:0, tau:0, IM:0, state:'—' },
+  github:  { P:0, N:0, B:0, A:0, tau:0, IM:0, state:'—' },
+};
+
+function classify(tau) {
+  if (tau < 0.001)      return 'NOBLE';
+  if (tau >= TL)        return 'SHATTER';
+  if (tau >= TL * 0.9)  return 'IVA';
+  return 'LOCKED';
+}
+
+function stateColor(s) {
+  return {NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA:'var(--iva)',SHATTER:'var(--shatter)'}[s]||'var(--dim)';
+}
+
+// ── PNBA REDUCTION FUNCTIONS ───────────────────────────────
+// From SNSFL_Twitter_Reduction [9,0,8,1]
+function reduceTwitter(data) {
+  const orig = data.original_tweets || 0;
+  const total = Math.max(data.total_tweets || 1, 1);
+  const P = (orig / total) * 10;
+  const N = (data.thread_depth || 1);
+  const B = (data.engagement_rate || 0) * 10;
+  const A = (data.reply_ratio || 0.5) * 5;
+  const tau = P > 0 ? B / P : (B > 0 ? 999 : 0);
+  return { P, N, B, A, tau, IM: (P+N+B+A)*ANCHOR, state: classify(tau) };
+}
+
+// From SNSFL_TikTok_Reduction [9,0,8,2]
+function reduceTikTok(data) {
+  const orig = data.original_videos || 0;
+  const total = Math.max(data.total_videos || 1, 1);
+  const P = (orig / total) * 10;
+  const completion = data.avg_completion || 0.5;
+  const N = completion * (data.series_depth || 1);
+  const B = (data.views || 0) * (1 - completion) / 1000;
+  const duetsR = data.duets_received || 1;
+  const A = duetsR > 0 ? (data.duets_given || 0) / duetsR * 5 : 5;
+  const tau = P > 0 ? B / P : (B > 0 ? 999 : 0);
+  return { P, N, B, A, tau, IM: (P+N+B+A)*ANCHOR, state: classify(tau) };
+}
+
+// From SNSFL_GitHub_Reduction [9,0,8,3]
+function reduceGitHub(data) {
+  const merged = data.prs_merged || 0;
+  const prTotal = Math.max(data.prs_total || 1, 1);
+  const P = (merged / prTotal) * (data.commits_to_main || 1) * 10;
+  const N = (data.fork_count || 0) * (data.commit_chain || 1);
+  const B = (data.stars || 0) + (data.issues_opened || 0) * 0.1;
+  const issOpen = data.issues_opened || 0;
+  const A = issOpen > 0 ? (data.issues_closed || 0) / issOpen * 5 : 5;
+  const tau = P > 0 ? B / P : (B > 0 ? 999 : 0);
+  return { P, N, B, A, tau, IM: (P+N+B+A)*ANCHOR, state: classify(tau) };
+}
+
+// ── UPDATE PLATFORM CARD ────────────────────────────────────
+function updateCard(platform, pnba) {
+  const pfx = { twitter:'tw', tiktok:'tt', github:'gh' }[platform];
+  const col = stateColor(pnba.state);
+
+  document.getElementById('pnba-'+platform).style.display = 'grid';
+  document.getElementById('tau-'+platform).style.display = 'flex';
+
+  const set = (id, pct, val) => {
+    document.getElementById(pfx+'-'+id).style.width = Math.min(100, pct*100)+'%';
+    document.getElementById(pfx+'-'+id+'v').textContent = val.toFixed(2);
+  };
+  set('P', pnba.P/10, pnba.P);
+  set('N', pnba.N/10, pnba.N);
+  set('B', pnba.B/5,  pnba.B);
+  set('A', pnba.A/5,  pnba.A);
+
+  const tauEl = document.getElementById(pfx+'-tau');
+  tauEl.textContent = pnba.tau.toFixed(4);
+  tauEl.style.color = col;
+
+  const stEl = document.getElementById(pfx+'-state');
+  stEl.textContent = pnba.state;
+  stEl.className = 'tau-state state-'+pnba.state;
+
+  document.getElementById('card-'+platform).classList.add('connected');
+  const stBar = document.getElementById('status-'+platform);
+  stBar.textContent = 'CONNECTED';
+  stBar.className = 'plat-status connected';
+
+  const btn = document.getElementById('btn-'+platform);
+  btn.textContent = '✓ CONNECTED · REFRESH';
+  btn.className = 'connect-btn connected-btn';
+
+  // Update summary
+  document.getElementById('sum-'+platform).textContent = pnba.tau.toFixed(4);
+  document.getElementById('sum-'+platform).style.color = col;
+  document.getElementById('sum-'+platform+'-state').textContent = pnba.state;
+  document.getElementById('sum-'+platform+'-state').style.color = col;
+
+  updateUnified();
+}
+
+// ── UNIFIED MANIFOLD ─────────────────────────────────────────
+function updateUnified() {
+  const active = Object.keys(PNBA_STATE).filter(p => CONNECTED[p]);
+  if (!active.length) return;
+
+  let totalIM = 0, totalTau = 0, count = 0;
+  active.forEach(p => {
+    totalIM += PNBA_STATE[p].IM;
+    totalTau += PNBA_STATE[p].tau;
+    count++;
+  });
+  const avgTau = totalTau / count;
+  const state = classify(avgTau);
+  const col = stateColor(state);
+
+  document.getElementById('unified-im').textContent = totalIM.toFixed(3);
+  document.getElementById('unified-im').style.color = col;
+  document.getElementById('unified-state-label').textContent = 'STATE: '+state;
+  document.getElementById('unified-state-label').style.color = col;
+  document.getElementById('unified-sub').textContent =
+    active.length+' PLATFORM'+(active.length>1?'S':'') +' ACTIVE · τ_avg='+avgTau.toFixed(4);
+
+  // Corridor marker (0–0.3 range mapped to 0–100%)
+  const pct = Math.min(98, (avgTau / 0.3) * 100);
+  document.getElementById('unified-marker').style.left = pct+'%';
+
+  document.getElementById('utm-status').textContent =
+    'MANIFOLD ACTIVE · IM='+totalIM.toFixed(2)+' · τ='+avgTau.toFixed(4);
+}
+
+// ── CONNECT PLATFORM (OAuth flow stub + demo data) ──────────
+function connectPlatform(platform) {
+  // In production: trigger OAuth flow for each platform
+  // Twitter: https://developer.twitter.com/en/docs/authentication/oauth-2-0
+  // TikTok:  https://developers.tiktok.com/doc/login-kit-web
+  // GitHub:  Supabase Auth built-in (one toggle)
+  //
+  // For now: load demo data that shows the PNBA reduction working
+  // Real API data plugs in as a drop-in replacement
+
+  const demo = {
+    twitter: {
+      original_tweets: 340, total_tweets: 500,
+      thread_depth: 4.2, engagement_rate: 0.08, reply_ratio: 0.6
+    },
+    tiktok: {
+      original_videos: 45, total_videos: 60,
+      avg_completion: 0.72, series_depth: 3,
+      views: 125000, duets_given: 8, duets_received: 12
+    },
+    github: {
+      prs_merged: 23, prs_total: 28, commits_to_main: 4.1,
+      fork_count: 12, commit_chain: 3.2,
+      stars: 89, issues_opened: 15, issues_closed: 13
+    }
+  };
+
+  const reducers = { twitter: reduceTwitter, tiktok: reduceTikTok, github: reduceGitHub };
+  const pnba = reducers[platform](demo[platform]);
+  PNBA_STATE[platform] = pnba;
+  CONNECTED[platform] = true;
+  updateCard(platform, pnba);
+}
+
+// ── COMMUNITY LEADERBOARD ────────────────────────────────────
+// Sorted by IM — not follower count
+const COMMUNITY_DEMO = [
+  { name:'HIGHTISTIC', emoji:'🌌', coord:'[9,9,9,9]', IM:24.7, tau:0.031, state:'LOCKED', platforms:['github','twitter'] },
+  { name:'VoidMapper',  emoji:'⭐', coord:'[9,9,3,7]', IM:18.2, tau:0.044, state:'LOCKED', platforms:['github'] },
+  { name:'NarrativeNode',emoji:'🔗',coord:'[9,0,8,1]', IM:14.9, tau:0.067, state:'LOCKED', platforms:['twitter','tiktok'] },
+  { name:'TauWatcher',  emoji:'📡', coord:'[9,9,2,6]', IM:11.3, tau:0.089, state:'LOCKED', platforms:['github','twitter'] },
+  { name:'SovereignDrive',emoji:'⚡',coord:'[9,0,6,0]', IM:9.8,  tau:0.112, state:'IVA',    platforms:['tiktok'] },
+  { name:'AnchorHold',  emoji:'🌊', coord:'[9,9,0,0]', IM:7.6,  tau:0.023, state:'LOCKED', platforms:['github'] },
+];
+
+function buildCommunity() {
+  const grid = document.getElementById('community-grid');
+  COMMUNITY_DEMO.forEach(u => {
+    const col = stateColor(u.state);
+    const platIcons = { twitter:'𝕏', tiktok:'▶', github:'△' };
+    const platStr = u.platforms.map(p=>platIcons[p]).join(' ');
+    const card = document.createElement('div');
+    card.className = 'contributor-card';
+    card.innerHTML = `
+      <div class="contrib-header">
+        <div class="contrib-avatar">${u.emoji}</div>
+        <div>
+          <div class="contrib-name">${u.name}</div>
+          <div class="contrib-coord">${u.coord} · ${platStr}</div>
+        </div>
+      </div>
+      <div class="contrib-im" style="color:${col}">${u.IM.toFixed(1)}</div>
+      <div style="font-size:7px;color:var(--dim);letter-spacing:.1em;">IDENTITY MASS</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+        <div style="font-size:7.5px;color:var(--dim);">τ ${u.tau.toFixed(3)}</div>
+        <div class="contrib-state tau-state state-${u.state}" style="font-size:6.5px;">${u.state}</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ── BOOT ────────────────────────────────────────────────────
+buildCommunity();
+</script>
+</body>
+</html>
