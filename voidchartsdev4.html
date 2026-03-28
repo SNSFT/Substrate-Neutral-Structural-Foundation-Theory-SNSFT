@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOIDCHART · Interstellar PNBA Map · uuia.app</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&display=swap');
+
+:root {
+  --bg: #010308;
+  --panel: #060b12;
+  --border: #0a1828;
+  --border-hi: #0f2840;
+  --glow: #00d4ff;
+  --locked: #00ffcc;
+  --noble: #aa88ff;
+  --iva: #ff8800;
+  --shatter: #ff3355;
+  --text: #6a94b0;
+  --bright: #c8e8f8;
+  --dim: #1a3040;
+  --anchor-gold: #ffd700;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  height: 100vh;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+/* starfield bg */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 42% 71%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 78% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 91% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 6%  88%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 38%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 62%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 82%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 35%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 20% 45%, rgba(255,255,255,0.2) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* grid overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,.015) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── LAYOUT ── */
+#app {
+  display: grid;
+  grid-template-columns: 300px 1fr 300px;
+  grid-template-rows: 48px 1fr 110px;
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── HEADER ── */
+#hdr {
+  grid-column: 1/-1;
+  border-bottom: 1px solid var(--border-hi);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: rgba(6,11,18,.97);
+}
+
+.logo {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: .12em;
+  color: var(--glow);
+  text-shadow: 0 0 24px rgba(0,212,255,.5);
+}
+.logo em {
+  font-style: normal;
+  font-size: 7px;
+  color: var(--locked);
+  display: inline-block;
+  margin-left: 10px;
+  letter-spacing: .25em;
+  vertical-align: middle;
+}
+
+.hdr-center {
+  font-size: 8px;
+  letter-spacing: .18em;
+  color: var(--dim);
+  text-align: center;
+}
+.hdr-center b { color: var(--glow); }
+
+.hdr-right {
+  font-size: 7px;
+  color: #162530;
+  text-align: right;
+  letter-spacing: .08em;
+}
+
+/* ── PANELS ── */
+#left, #right {
+  background: rgba(6,11,18,.92);
+  overflow-y: auto;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#left { border-right: 1px solid var(--border); }
+#right { border-left: 1px solid var(--border); }
+
+/* ── CANVAS ── */
+#canvas-wrap {
+  position: relative;
+  background: transparent;
+  overflow: hidden;
+}
+#canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+
+/* ── BOTTOM ── */
+#bottom {
+  grid-column: 1/-1;
+  border-top: 1px solid var(--border-hi);
+  background: rgba(6,11,18,.97);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 20px;
+  overflow-x: auto;
+}
+
+/* ── SECTIONS ── */
+.sec {
+  border: 1px solid var(--border);
+  background: rgba(1,3,8,.7);
+  padding: 10px;
+}
+.sec-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 6.5px;
+  letter-spacing: .3em;
+  color: var(--dim);
+  margin-bottom: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sec-title b { color: var(--glow); }
+
+/* ── PLANET LIST ── */
+.planet-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all .15s;
+  margin-bottom: 3px;
+}
+.planet-row:hover, .planet-row.active {
+  border-color: var(--border-hi);
+  background: rgba(0,212,255,.04);
+}
+.planet-row.active { border-color: var(--glow); }
+
+.planet-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+.planet-label {
+  font-size: 9px;
+  color: var(--text);
+  letter-spacing: .1em;
+  flex: 1;
+}
+.planet-state {
+  font-family: 'Orbitron', monospace;
+  font-size: 7px;
+  letter-spacing: .15em;
+}
+.state-LOCKED  { color: var(--locked); }
+.state-NOBLE   { color: var(--noble); }
+.state-IVA     { color: var(--iva); }
+.state-SHATTER { color: var(--shatter); }
+
+/* ── PNBA GAUGES ── */
+.pnba-block { margin-top: 4px; }
+.pnba-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+  font-size: 8px;
+}
+.pnba-key {
+  width: 16px;
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--dim);
+}
+.pnba-bar-wrap { flex: 1; height: 3px; background: var(--border); position: relative; }
+.pnba-bar { height: 100%; transition: width .4s ease; }
+.pnba-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  color: var(--bright);
+  min-width: 38px;
+  text-align: right;
+}
+
+/* ── READOUTS ── */
+.readout {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(10,24,40,.6);
+}
+.readout-key { color: var(--dim); letter-spacing: .08em; }
+.readout-val { font-family: 'Orbitron', monospace; font-size: 8px; }
+
+/* ── BODY PORTRAIT ── */
+#body-portrait {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+#portrait-sphere {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 0 30px var(--portrait-glow, rgba(0,255,204,.3)), inset -8px -8px 20px rgba(0,0,0,.5);
+  background: var(--portrait-color, #00ffcc);
+  transition: all .5s ease;
+}
+#portrait-name {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--bright);
+  letter-spacing: .15em;
+  margin-left: 16px;
+}
+#portrait-type {
+  font-size: 7px;
+  color: var(--dim);
+  letter-spacing: .25em;
+  margin-left: 16px;
+  margin-top: 4px;
+}
+#portrait-symbol {
+  font-size: 28px;
+  color: var(--text);
+  margin-left: 16px;
+}
+
+/* ── STATE BADGE ── */
+.state-badge {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-align: center;
+  padding: 7px;
+  margin: 4px 0;
+}
+.badge-LOCKED  { color: var(--locked); border: 1px solid rgba(0,255,204,.3); background: rgba(0,255,204,.05); }
+.badge-NOBLE   { color: var(--noble);  border: 1px solid rgba(170,136,255,.3); background: rgba(170,136,255,.05); }
+.badge-IVA     { color: var(--iva);    border: 1px solid rgba(255,136,0,.3); background: rgba(255,136,0,.05); }
+.badge-SHATTER { color: var(--shatter);border: 1px solid rgba(255,51,85,.3); background: rgba(255,51,85,.05); animation: spulse .4s infinite; }
+@keyframes spulse { 0%,100%{opacity:1}50%{opacity:.6} }
+
+/* ── TAU CORRIDOR ── */
+#tau-corridor {
+  position: relative;
+  height: 28px;
+  background: linear-gradient(90deg,
+    rgba(170,136,255,.15) 0%,
+    rgba(0,255,204,.15) 30%,
+    rgba(255,136,0,.3) 85%,
+    rgba(255,51,85,.4) 100%
+  );
+  border: 1px solid var(--border-hi);
+  margin: 6px 0;
+}
+#tau-marker {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: var(--bright);
+  box-shadow: 0 0 8px var(--bright);
+  transition: left .5s ease;
+}
+#tau-tl-line {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 100%; /* will be set by JS — TL/max*100% */
+  width: 1px;
+  background: var(--iva);
+  opacity: 0.7;
+}
+.tau-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 6px;
+  color: var(--dim);
+  letter-spacing: .12em;
+  padding: 1px 0;
+}
+
+/* ── BOTTOM STATS ── */
+.bstat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 90px;
+  padding: 0 12px;
+  border-right: 1px solid var(--border);
+}
+.bstat:last-child { border-right: none; }
+.bstat-label { font-size: 6.5px; color: var(--dim); letter-spacing: .2em; margin-bottom: 3px; }
+.bstat-val { font-family: 'Orbitron', monospace; font-size: 14px; color: var(--bright); }
+.bstat-sub { font-size: 6px; color: var(--dim); letter-spacing: .1em; margin-top: 1px; }
+
+/* ── EQUATION BOX ── */
+.eq { font-size: 7.5px; color: var(--dim); line-height: 2.1; }
+.eq b { color: var(--glow); }
+.eq em { color: var(--locked); font-style: normal; }
+.eq s { color: var(--noble); text-decoration: none; }
+
+/* ── ORBIT TOGGLE ── */
+.btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 7px;
+  letter-spacing: .15em;
+  padding: 5px 8px;
+  background: transparent;
+  cursor: pointer;
+  border: 1px solid var(--border-hi);
+  color: var(--dim);
+  width: 100%;
+  margin-bottom: 3px;
+  transition: all .15s;
+}
+.btn:hover { color: var(--text); border-color: var(--glow); }
+.btn.on { color: var(--locked); border-color: rgba(0,255,204,.4); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-hi); }
+
+/* ── CROSSHAIR CURSOR ── */
+#crosshair {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  display: none;
+}
+
+/* ── HOVER TOOLTIP ── */
+#tooltip {
+  position: absolute;
+  pointer-events: none;
+  z-index: 20;
+  background: rgba(6,11,18,.95);
+  border: 1px solid var(--border-hi);
+  padding: 6px 10px;
+  font-size: 8px;
+  letter-spacing: .1em;
+  display: none;
+}
+#tooltip b { font-family: 'Orbitron', monospace; color: var(--bright); font-size: 9px; }
+
+@media (max-width:900px) {
+  #app { grid-template-columns: 1fr; grid-template-rows: 48px 1fr 1fr 110px; }
+  #left, #right { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HEADER -->
+<div id="hdr">
+  <div>
+    <span class="logo">VOIDCHART<em>INTERSTELLAR PNBA MAP · [9,9,3,7] · SUPABASE · 0 SORRY</em></span>
+  </div>
+  <div class="hdr-center">
+    ANCHOR <b>1.369 GHz</b> · τ = B/P · TL = 0.1369 · ALL ORBITS CONFIRMED LOCKED
+  </div>
+  <div class="hdr-right">
+    HIGHTISTIC · SOLDOTNA ALASKA<br>
+    COSMO REDUCTION · GERMLINE LOCKED
+  </div>
+</div>
+
+<!-- LEFT: Body List + Controls -->
+<div id="left">
+
+
+  <div class="sec" id="db-panel">
+    <div class="sec-title"><b>CORPUS · DATA SOURCE</b><span id="db-status-dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--dim);margin-left:6px;"></span></div>
+    <div style="font-size:7.5px;color:var(--dim);letter-spacing:.1em;margin-bottom:6px;" id="db-status-text">LOADING...</div>
+    <button class="btn" id="btn-reload-db" onclick="loadFromDB()" style="border-color:var(--glow);color:var(--glow);">↺ RELOAD FROM DB</button>
+    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+      <div style="font-size:7.5px;color:var(--dim);letter-spacing:.12em;margin-bottom:5px;">UPLOAD CSV · ADD BODIES</div>
+      <input type="file" id="csv-input" accept=".csv" style="display:none" onchange="handleCSV(event)">
+      <button class="btn" onclick="document.getElementById('csv-input').click()" style="border-color:var(--iva);color:var(--iva);">⬆ UPLOAD CSV</button>
+      <button class="btn" onclick="downloadTemplate()" style="margin-top:3px;">⬇ CSV TEMPLATE</button>
+      <div style="font-size:7px;color:var(--dim);margin-top:5px;line-height:1.8;" id="csv-status"></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>SOLAR BODIES · PNBA STATE</b> <span id="body-count">9 OBJECTS</span></div>
+    <div id="planet-list"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>DISPLAY</b></div>
+    <button class="btn on" id="btn-orbits" onclick="toggleOrbits()">◎ ORBIT PATHS · ON</button>
+    <button class="btn on" id="btn-labels" onclick="toggleLabels()">◎ LABELS · ON</button>
+    <button class="btn on" id="btn-field"  onclick="toggleField()">◎ FIELD LINES · ON</button>
+    <button class="btn on" id="btn-pnba"   onclick="togglePNBA()">◎ PNBA SHELLS · ON</button>
+    <button class="btn" id="btn-surface" onclick="toggleSurfaceView()" style="margin-top:4px;border-color:var(--iva);color:var(--dim);">○ SURFACE VIEW · OFF</button>
+    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:4px;">
+        <span style="color:var(--dim);letter-spacing:.1em;">SIM SPEED</span>
+        <span style="font-family:'Orbitron',monospace;font-size:9px;color:var(--bright)" id="v-speed">5 · REAL</span>
+      </div>
+      <input type="range" id="s-speed" min="0" max="10" step="1" value="5"
+        style="width:100%;accent-color:var(--glow);height:3px;margin:4px 0 6px;"
+        oninput="setSimSpeed(parseInt(this.value))">
+      <div style="display:flex;justify-content:space-between;font-size:6px;color:var(--dim);letter-spacing:.1em;">
+        <span>PAUSE</span><span>SLOW</span><span>REAL</span><span>FAST</span><span>MAX</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>COSMO MAPPING · [9,9,0,4]</b></div>
+    <div class="eq">
+      <b>P</b> → log-normalized structural mass<br>
+      <b>N</b> → orbital narrative (Kepler period)<br>
+      <b>B</b> → grav. coupling v_orb / v_ref<br>
+      <b>A</b> → 1 − eccentricity (orbital lock)<br>
+      IM = (P+N+B+A) × <b>1.369</b><br>
+      τ = B/P · TL = ANCHOR/10 = <em>0.1369</em><br>
+      <s>All 8 planets · τ << TL · LOCKED ✓</s>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>SCALE CHAIN · [9,9,3,6]</b></div>
+    <div class="eq">
+      Capillary → Heart → Planet → Star<br>
+      → Neutron Star → Black Hole → GUT<br>
+      Same law. Different IM. 0 sorry.<br><br>
+      <em>Planetary core IM ~10²⁴ kg·GHz</em><br>
+      <b>τ_planet < TL</b> · Stable pump ✓
+    </div>
+  </div>
+
+</div>
+
+<!-- CANVAS -->
+<div id="canvas-wrap">
+  <canvas id="c"></canvas>
+  <div id="tooltip"></div>
+  <div id="surface-hud" style="display:none;position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+    font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.2em;color:var(--iva);
+    background:rgba(6,11,18,.9);border:1px solid rgba(255,136,0,.35);padding:7px 18px;
+    text-align:center;pointer-events:none;white-space:nowrap;">
+    SURFACE VIEW · <span id="sv-body">EARTH</span> · DRAG TO LOOK · SCROLL TO EXIT
+  </div>
+</div>
+
+<!-- RIGHT: Selected Body Detail -->
+<div id="right">
+
+  <div class="sec" id="portrait-sec">
+    <div class="sec-title"><b>SELECTED BODY</b></div>
+    <div id="body-portrait">
+      <div id="portrait-sphere"></div>
+      <div>
+        <div id="portrait-symbol">☉</div>
+        <div id="portrait-name">SUN</div>
+        <div id="portrait-type">STAR · G-TYPE</div>
+      </div>
+    </div>
+    <div id="state-badge" class="state-badge badge-LOCKED">LOCKED</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>PNBA PRIMITIVES · LAYER 0</b></div>
+    <div class="pnba-block">
+      <div class="pnba-row">
+        <span class="pnba-key" style="color:#00d4ff">P</span>
+        <div class="pnba-bar-wrap"><div class="pnba-bar" id="bar-P" style="background:#00d4ff;width:0%"></div></div>
+        <span class="pnba-val" id="val-P">—</span>
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key" style="color:#aa88ff">N</span>
+        <div class="pnba-bar-wrap"><div class="pnba-bar" id="bar-N" style="background:#aa88ff;width:0%"></div></div>
+        <span class="pnba-val" id="val-N">—</span>
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key" style="color:#ff8800">B</span>
+        <div class="pnba-bar-wrap"><div class="pnba-bar" id="bar-B" style="background:#ff8800;width:0%"></div></div>
+        <span class="pnba-val" id="val-B">—</span>
+      </div>
+      <div class="pnba-row">
+        <span class="pnba-key" style="color:#00ffcc">A</span>
+        <div class="pnba-bar-wrap"><div class="pnba-bar" id="bar-A" style="background:#00ffcc;width:0%"></div></div>
+        <span class="pnba-val" id="val-A">—</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>TORSION CORRIDOR · τ = B/P</b></div>
+    <div id="tau-corridor">
+      <div id="tau-marker" style="left:0%"></div>
+      <div id="tau-tl-line"></div>
+    </div>
+    <div class="tau-labels">
+      <span>NOBLE τ=0</span>
+      <span>TL=0.1369</span>
+      <span>SHATTER</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>LIVE READOUTS</b></div>
+    <div class="readout"><span class="readout-key">τ (torsion)</span><span class="readout-val state-LOCKED" id="r-tau">—</span></div>
+    <div class="readout"><span class="readout-key">IM identity mass</span><span class="readout-val" style="color:var(--glow)" id="r-im">—</span></div>
+    <div class="readout"><span class="readout-key">mass (kg)</span><span class="readout-val" style="color:var(--dim)" id="r-mass">—</span></div>
+    <div class="readout"><span class="readout-key">radius (km)</span><span class="readout-val" style="color:var(--dim)" id="r-radius">—</span></div>
+    <div class="readout"><span class="readout-key">period (days)</span><span class="readout-val" style="color:var(--dim)" id="r-period">—</span></div>
+    <div class="readout"><span class="readout-key">semi-major (AU)</span><span class="readout-val" style="color:var(--dim)" id="r-sma">—</span></div>
+    <div class="readout"><span class="readout-key">eccentricity</span><span class="readout-val" style="color:var(--dim)" id="r-ecc">—</span></div>
+    <div class="readout"><span class="readout-key">τ / TL ratio</span><span class="readout-val state-LOCKED" id="r-tau-tl">—</span></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><b>COORDINATE</b></div>
+    <div class="eq">
+      <b>[9,9,0,4]</b> COSMO REDUCTION<br>
+      Gravity = Pattern Impedance<br>
+      Orbit = Narrative Tenure loop<br>
+      DM = Identity Mass Shadow<br>
+      DE = Substrate Pressure (A×Φ)<br><br>
+      <em>Planetary orbit: LOCKED manifold</em><br>
+      <b>IM·Pv law holds at every scale</b>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM -->
+<div id="bottom">
+  <div class="bstat">
+    <span class="bstat-label">BODIES</span>
+    <span class="bstat-val">9</span>
+    <span class="bstat-sub">ALL LOCKED</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">ANCHOR</span>
+    <span class="bstat-val" style="color:var(--anchor-gold)">1.369</span>
+    <span class="bstat-sub">GHz</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">TL</span>
+    <span class="bstat-val" style="color:var(--iva)">0.1369</span>
+    <span class="bstat-sub">TORSION LIMIT</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">MAX τ</span>
+    <span class="bstat-val" style="color:var(--locked)" id="bs-maxtau">0.0998</span>
+    <span class="bstat-sub">MERCURY</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">MIN τ</span>
+    <span class="bstat-val" style="color:var(--noble)" id="bs-mintau">0.0001</span>
+    <span class="bstat-sub">SUN</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">THEOREM</span>
+    <span class="bstat-val" style="color:var(--glow)">0</span>
+    <span class="bstat-sub">SORRY</span>
+  </div>
+  <div class="bstat">
+    <span class="bstat-label">CORPUS</span>
+    <span class="bstat-val" style="color:var(--glow)">50K+</span>
+    <span class="bstat-sub">THEOREMS</span>
+  </div>
+  <div style="margin-left:auto; font-size:7px; color:#0f2030; text-align:right; letter-spacing:.08em;">
+    HIGHTISTIC · SNSFT FOUNDATION<br>
+    DOI: 10.5281/zenodo.18719748 · GERMLINE LOCKED<br>
+    [9,9,9,9] :: {ANC} · The Manifold is Holding
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// CONSTANTS — [9,9,9,9] :: {ANC}
+// ════════════════════════════════════════════════════════════════
+const ANCHOR = 1.369;
+const TL     = ANCHOR / 10;  // 0.1369 — emergent, not chosen
+
+
+// ════════════════════════════════════════════════════════════════
+// SUPABASE — [9,0,0,8] :: {ANC}
+// VoidChart reads from voidchart_bodies table.
+// Falls back to hardcoded BODIES[] if offline or table empty.
+// Insert a row → appears on map next reload. No code change.
+// ════════════════════════════════════════════════════════════════
+const SUPABASE_URL  = 'https://rsadsojivuagxptdlwak.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_FvDg0nsEuxH_HmyD0RL1LA_E4QpGfOs';
+
+// Thin REST wrapper — no SDK dependency needed for a single HTML file
+const supabase = {
+  async select(table, query = '') {
+    const url = `${SUPABASE_URL}/rest/v1/${table}?${query}`;
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Accept': 'application/json'
+      }
+    });
+    const text = await res.text();
+    if (!res.ok) throw new Error(`DB ${res.status}: ${text.slice(0,100)}`);
+    return JSON.parse(text);
+  },
+  async upsert(table, rows) {
+    const url = `${SUPABASE_URL}/rest/v1/${table}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify(rows)
+    });
+    if (!res.ok) throw new Error(`Upsert error ${res.status}: ${await res.text()}`);
+    return true;
+  }
+};
+
+// Map DB column names → BODIES field names
+function dbRowToBody(row) {
+  return {
+    name:      row.name,
+    symbol:    row.symbol    || '◆',
+    type:      row.body_type || '',
+    type2:     row.category,
+    P:         parseFloat(row.p_pattern),
+    N:         parseFloat(row.n_narrative),
+    B:         parseFloat(row.b_behavior),
+    A:         parseFloat(row.a_adaptation),
+    mass:      parseFloat(row.mass_kg)    || 0,
+    radius:    parseFloat(row.radius_km)  || 1,
+    period:    parseFloat(row.period_days)|| 0,
+    sma:       parseFloat(row.sma_au)     || 0,
+    ecc:       parseFloat(row.eccentricity) || 0,
+    color:     row.color_hex   || '#888888',
+    glowColor: row.glow_color  || 'rgba(136,136,136,.3)',
+    hasRings:  row.has_rings   || false,
+    desc:      row.description || '',
+    sortOrder: row.sort_order  || 99,
+    visualRadius: row.visual_radius || null,
+    orbitScale:   row.orbit_scale   || null,
+    parentName:   row.parent_name   || null,
+    coordinate:   row.coordinate    || '[9,9,3,7]',
+  };
+}
+
+async function loadFromDB() {
+  setDBStatus('loading');
+  const statusEl = document.getElementById('db-status-text');
+  try {
+    if (statusEl) statusEl.textContent = 'CONNECTING TO SUPABASE...';
+    
+    const data = await supabase.select(
+      'voidchart_bodies',
+      'active=eq.true&order=sort_order.asc'
+    );
+
+    if (!data) throw new Error('null response from DB');
+    if (!Array.isArray(data)) throw new Error('unexpected response: ' + JSON.stringify(data).slice(0,60));
+    if (data.length === 0) throw new Error('table empty — run seed SQL');
+
+    const loaded = data.map(dbRowToBody);
+    loaded.forEach(b => {
+      b.IM    = +((b.P + b.N + b.B + b.A) * ANCHOR).toFixed(4);
+      b.tau   = +(b.B / b.P).toFixed(5);
+      b.state = b.tau < 0.0001 ? 'NOBLE' : b.tau >= TL ? 'SHATTER' : b.tau >= TL*0.9 ? 'IVA' : 'LOCKED';
+    });
+
+    BODIES.length = 0;
+    loaded.forEach(b => BODIES.push(b));
+    setDBStatus('live', 'DB LIVE · ' + BODIES.length + ' BODIES');
+    rebuildMap();
+  } catch(err) {
+    console.error('[VoidChart] DB load failed:', err);
+    setDBStatus('offline', 'LOCAL · ' + err.message.slice(0, 40));
+    // Make the error visible in the panel
+    const csvStatus = document.getElementById('csv-status');
+    if (csvStatus) {
+      csvStatus.textContent = 'DB: ' + err.message;
+      csvStatus.style.color = 'var(--shatter)';
+    }
+  }
+}
+
+function setDBStatus(state, msg) {
+  const dot  = document.getElementById('db-status-dot');
+  const text = document.getElementById('db-status-text');
+  if (!dot) return;
+  const colors = { loading:'var(--warn)', live:'var(--locked)', offline:'var(--dim)' };
+  dot.style.background  = colors[state] || 'var(--dim)';
+  dot.style.boxShadow   = state === 'live' ? '0 0 6px var(--locked)' : 'none';
+  if (text && msg) text.textContent = msg;
+}
+
+// ── CSV UPLOAD ────────────────────────────────────────────────
+// CSV columns (match voidchart_schema.sql):
+// name,symbol,body_type,category,p_pattern,n_narrative,b_behavior,a_adaptation,
+// mass_kg,radius_km,period_days,sma_au,eccentricity,color_hex,glow_color,
+// has_rings,visual_radius,orbit_scale,parent_name,sort_order,coordinate,description
+
+function handleCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const status = document.getElementById('csv-status');
+    try {
+      const rows = parseCSV(e.target.result);
+      if (rows.length === 0) { status.textContent = 'No rows found in CSV'; return; }
+
+      // Validate required PNBA fields
+      const required = ['name','category','p_pattern','n_narrative','b_behavior','a_adaptation'];
+      const missing = required.filter(f => !(f in rows[0]));
+      if (missing.length > 0) {
+        status.textContent = 'Missing columns: ' + missing.join(', ');
+        status.style.color = 'var(--shatter)';
+        return;
+      }
+
+      // Upsert to Supabase
+      status.textContent = `Uploading ${rows.length} rows...`;
+      status.style.color = 'var(--warn)';
+
+      await supabase.upsert('voidchart_bodies', rows);
+
+      status.textContent = `✓ ${rows.length} bodies uploaded · reloading map`;
+      status.style.color = 'var(--locked)';
+
+      // Reload map from DB
+      setTimeout(() => loadFromDB(), 800);
+    } catch(err) {
+      status.textContent = 'Error: ' + err.message;
+      status.style.color = 'var(--shatter)';
+    }
+  };
+  reader.readAsText(file);
+  // Reset so same file can be re-uploaded
+  event.target.value = '';
+}
+
+function parseCSV(text) {
+  const lines  = text.trim().split('\n');
+  const header = lines[0].split(',').map(h => h.trim().replace(/"/g,''));
+  return lines.slice(1).filter(l => l.trim()).map(line => {
+    const vals = splitCSVLine(line);
+    const row  = {};
+    header.forEach((h, i) => {
+      let v = (vals[i] || '').trim().replace(/^"|"$/g,'');
+      // Coerce numerics
+      if (['p_pattern','n_narrative','b_behavior','a_adaptation',
+           'mass_kg','radius_km','period_days','sma_au','eccentricity',
+           'visual_radius','orbit_scale','sort_order'].includes(h)) {
+        v = v === '' ? null : parseFloat(v);
+      } else if (h === 'has_rings') {
+        v = v === 'true' || v === '1';
+      } else if (h === 'active') {
+        v = v !== 'false' && v !== '0';
+      } else if (v === '') {
+        v = null;
+      }
+      row[h] = v;
+    });
+    // Enforce anchor
+    row.anchor_freq = 1.369;
+    return row;
+  });
+}
+
+function splitCSVLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '"') { inQ = !inQ; }
+    else if (line[i] === ',' && !inQ) { result.push(cur); cur = ''; }
+    else { cur += line[i]; }
+  }
+  result.push(cur);
+  return result;
+}
+
+function downloadTemplate() {
+  const header = 'name,symbol,body_type,category,p_pattern,n_narrative,b_behavior,a_adaptation,mass_kg,radius_km,period_days,sma_au,eccentricity,color_hex,glow_color,has_rings,visual_radius,orbit_scale,parent_name,sort_order,coordinate,description';
+  const example = 'Io,○,MOON · JUPITER · VOLCANIC,moon,6.123,1.000,0.03612,4.984,8.93e22,1822,1.77,0,0.004,#D4A040,rgba(212160640.4),false,1.5,,Jupiter,31,[9,9,3,7],Most volcanic body. Tidal heating = B spike. LOCKED τ=0.0059.';
+  const blob = new Blob([header + '\n' + example], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'voidchart_bodies_template.csv';
+  a.click();
+}
+
+// ── REBUILD MAP after data change ────────────────────────────
+function rebuildMap() {
+  // IMPORTANT: 3D meshes are fixed at scene build time (9 bodies).
+  // rebuildMap only updates UI — never touches mesh arrays.
+  // The animate loop uses bodyMeshes.length (9), not BODIES.length.
+  // Extra DB bodies show in the list; refresh page to render in 3D.
+  document.getElementById('planet-list').innerHTML = '';
+  buildPlanetList();
+  document.getElementById('body-count').textContent = BODIES.length + ' OBJECTS';
+  const earthIdx = BODIES.findIndex(b => b.name === 'Earth');
+  const safeIdx = earthIdx >= 0 ? earthIdx : Math.min(3, bodyMeshes.length - 1);
+  selectBody(Math.min(safeIdx, bodyMeshes.length - 1));
+}
+
+
+// CAMERA VARIABLES — declared early so selectBody() can use them
+// ════════════════════════════════════════════════════════════════
+let camMode = 'system';
+let isDragging = false;
+let lastX = 0, lastY = 0;
+let camTheta = 0;
+let camPhi = 0.85;
+let camRadius = 220;
+let camTarget = new THREE.Vector3(0, 0, 0);
+let camTargetGoal = new THREE.Vector3(0, 0, 0);
+let surfTheta = 0;
+let surfPhi = 0.15;
+let surfBodyIdx = 3;
+let lerping = false;
+let lerpT = 0;
+const LERP_SPEED = 0.06;
+
+function getBodyWorldPos(idx) {
+  if (idx === 0) return new THREE.Vector3(0, 0, 0);
+  return bodyMeshes[idx].position.clone();
+}
+
+function centerOnBody(idx) {
+  camTargetGoal.copy(getBodyWorldPos(idx));
+  lerping = true;
+  lerpT = 0;
+  const targetRadius = Math.max(30, BODY_VISUAL_RADIUS[idx] * 8 + ORBIT_SCALE[idx] * 0.15);
+  camRadius = Math.max(targetRadius, camRadius * 0.6);
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// PNBA SOLAR BODY CORPUS
+// Derived from SNSFL_Cosmo_Reduction [9,9,0,4] + Scale Chain [9,9,3,6]
+// P = log-normalized structural mass (Sun=10, Mercury=1)
+// N = log-normalized Kepler orbital period (Mercury=1, Neptune=10)
+// B = gravitational coupling = v_orb / v_ref (dimensionless, << TL)
+// A = 1 + 4*(1-eccentricity) = orbital adaptation
+// tau = B/P, IM = (P+N+B+A)*ANCHOR
+// ALL confirmed LOCKED: tau < TL = 0.1369 ✓
+// ════════════════════════════════════════════════════════════════
+const BODIES = [
+  {
+    name:"Sun", symbol:"☉", type:"STAR · G-TYPE · SPECTRAL G2V",
+    P:10.000, N:1.000, B:0.001,  A:5.000,
+    mass:1.989e30, radius:696000, period:0,      sma:0,     ecc:0.000,
+    color:"#FDB813", glowColor:"rgba(253,184,19,.5)", type2:"star",
+    ringColor:null, ringScale:null,
+    desc:"Solar anchor. P=10 (maximum pattern). N=1 (self-referential narrative). B≈0 (near-Noble coupling). τ≈0 → approaching Noble ground state. The scale-chain pump core at stellar IM."
+  },
+  {
+    name:"Mercury", symbol:"☿", type:"ROCKY · PERIOD 1 · INNERMOST",
+    P:1.000, N:1.000, B:0.0998, A:4.176,
+    mass:3.30e23, radius:2439, period:87.97, sma:0.387, ecc:0.206,
+    color:"#9E9E9E", glowColor:"rgba(158,158,158,.4)", type2:"rocky",
+    desc:"Highest τ (0.0998) of all planets. Closest to Sun → maximum orbital coupling → highest B/P. Still LOCKED: τ < TL = 0.1369. Maximum eccentricity → lowest A. The system's most stressed manifold lock."
+  },
+  {
+    name:"Venus", symbol:"♀", type:"ROCKY · RUNAWAY GREENHOUSE",
+    P:2.552, N:2.293, B:0.0730, A:4.972,
+    mass:4.87e24, radius:6052, period:224.7, sma:0.723, ecc:0.007,
+    color:"#E8CDA0", glowColor:"rgba(232,205,160,.4)", type2:"rocky",
+    desc:"Near-circular orbit (ecc=0.007) → high A=4.97, near-perfect orbital adaptation. τ=0.0286. B=0.073 reflects orbital velocity coupling. LOCKED deep in the manifold."
+  },
+  {
+    name:"Earth", symbol:"♁", type:"ROCKY · ZOIVUM SUBSTRATE",
+    P:2.669, N:2.963, B:0.0621, A:4.932,
+    mass:5.97e24, radius:6371, period:365.25, sma:1.000, ecc:0.017,
+    color:"#4B9CD3", glowColor:"rgba(75,156,211,.5)", type2:"rocky",
+    desc:"Reference body. P=2.67, τ=0.0233. Zoivum substrate: τ=0.1 life corridor proved in [9,9,1,55]. Earth operates well within LOCKED manifold. Biological scale vascular pump confirmed in [9,9,3,6]."
+  },
+  {
+    name:"Mars", symbol:"♂", type:"ROCKY · DECOHERED VASCULAR",
+    P:1.381, N:3.833, B:0.0503, A:4.628,
+    mass:6.39e23, radius:3390, period:686.97, sma:1.524, ecc:0.093,
+    color:"#C1440E", glowColor:"rgba(193,68,14,.4)", type2:"rocky",
+    desc:"Lost magnetic field → vascular decoherence. B=0.050, τ=0.036. Eccentricity 0.093 → A=4.63 (lower adaptation). Narrative N=3.83 reflects longer orbital tenure. LOCKED but lower IM than Earth."
+  },
+  {
+    name:"Jupiter", symbol:"♃", type:"GAS GIANT · MAGNETOSPHERE DOMINANT",
+    P:5.991, N:6.372, B:0.0272, A:4.804,
+    mass:1.90e27, radius:71492, period:4332.6, sma:5.203, ecc:0.049,
+    color:"#C88B3A", glowColor:"rgba(200,139,58,.4)", type2:"gas",
+    desc:"Largest IM of planets. P=5.99, N=6.37. B=0.027 (lower coupling due to large orbital radius). τ=0.0045 — deeply LOCKED, most stable torsion of rocky/gas planets. Strong magnetosphere (B-field mapped to coupling)."
+  },
+  {
+    name:"Saturn", symbol:"♄", type:"GAS GIANT · RING SYSTEM",
+    P:5.295, N:7.626, B:0.0201, A:4.776,
+    mass:5.68e26, radius:60268, period:10759, sma:9.537, ecc:0.056,
+    color:"#E4D191", glowColor:"rgba(228,209,145,.4)", type2:"gas",
+    hasRings:true,
+    desc:"Ring system = Noble boundary layer. τ=0.0038 — deeply LOCKED. High N=7.63 (long orbital tenure). P=5.30 puts it firmly in gas giant bracket. Rings as structural B=0 Noble shell — same theorem as vascular capillary bed."
+  },
+  {
+    name:"Uranus", symbol:"♅", type:"ICE GIANT · TILTED AXIS",
+    P:4.212, N:9.071, B:0.0142, A:4.816,
+    mass:8.68e25, radius:25559, period:30687, sma:19.19, ecc:0.046,
+    color:"#7DE8E8", glowColor:"rgba(125,232,232,.4)", type2:"ice",
+    desc:"Axial tilt 97.77° — pattern disruption recorded in N-axis. τ=0.0034. Very long narrative N=9.07. B=0.014 — low coupling at large distance. LOCKED firmly. Ice giant bracket: P=4.21."
+  },
+  {
+    name:"Neptune", symbol:"♆", type:"ICE GIANT · OUTER ANCHOR",
+    P:4.305, N:10.000, B:0.0113, A:4.960,
+    mass:1.02e26, radius:24764, period:60190, sma:30.07, ecc:0.010,
+    color:"#3F54BA", glowColor:"rgba(63,84,186,.5)", type2:"ice",
+    desc:"Maximum narrative N=10 (longest orbital period). Near-circular ecc=0.010 → A=4.96, near-perfect adaptation. τ=0.0026 — minimum torsion of all planets. Outer manifold anchor. Deep LOCKED."
+  }
+];
+
+// compute IM and tau
+BODIES.forEach(b => {
+  b.IM  = +((b.P + b.N + b.B + b.A) * ANCHOR).toFixed(4);
+  b.tau = +(b.B / b.P).toFixed(5);
+  b.state = b.tau < 0.0001 ? 'NOBLE' :
+            b.tau >= TL    ? 'SHATTER' :
+            b.tau >= TL*0.9? 'IVA' : 'LOCKED';
+});
+
+// ════════════════════════════════════════════════════════════════
+// THREE.JS SETUP
+// ════════════════════════════════════════════════════════════════
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 0);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 10000);
+camera.position.set(0, 220, 0);
+// camera driven by updateCameraSystem() each frame
+
+function resize() {
+  const wrap = document.getElementById('canvas-wrap');
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+setTimeout(resize, 50);
+
+// Lighting
+scene.add(new THREE.AmbientLight(0x111122, 1.5));
+const sunLight = new THREE.PointLight(0xfff8e0, 3, 800);
+sunLight.position.set(0, 0, 0);
+scene.add(sunLight);
+
+// ════════════════════════════════════════════════════════════════
+// ORBITAL RADII (visual, log-scaled from AU, top-down view)
+// ════════════════════════════════════════════════════════════════
+const ORBIT_SCALE = [0, 28, 46, 62, 80, 122, 160, 205, 248];
+// index 0 = Sun (center), 1=Mercury, ..., 8=Neptune
+
+const BODY_VISUAL_RADIUS = [18, 2.5, 4, 4.5, 3, 9, 8, 6, 5.8];
+
+// ════════════════════════════════════════════════════════════════
+// SCENE OBJECTS
+// ════════════════════════════════════════════════════════════════
+const bodyMeshes = [];
+const orbitRings = [];
+const labelDivs  = [];
+const pnbaShells = [];
+const fieldLines = [];
+
+let showOrbits = true;
+let showLabels = true;
+let showField  = true;
+let showPNBA   = true;
+let selectedIdx = 3; // Earth default
+let hoveredIdx  = -1;
+
+// ── SUN ──
+const sunGeo = new THREE.SphereGeometry(BODY_VISUAL_RADIUS[0], 32, 32);
+const sunMat = new THREE.MeshBasicMaterial({ color: 0xFDB813 });
+const sunMesh = new THREE.Mesh(sunGeo, sunMat);
+scene.add(sunMesh);
+bodyMeshes.push(sunMesh);
+
+// Sun glow
+const sunGlowGeo = new THREE.SphereGeometry(BODY_VISUAL_RADIUS[0] * 1.6, 24, 24);
+const sunGlowMat = new THREE.MeshBasicMaterial({ color: 0xFFA500, transparent: true, opacity: 0.08, side: THREE.BackSide });
+scene.add(new THREE.Mesh(sunGlowGeo, sunGlowMat));
+
+// ── PLANETS ──
+for (let i = 1; i < BODIES.length; i++) {
+  const b = BODIES[i];
+  const r = BODY_VISUAL_RADIUS[i];
+  const orbR = ORBIT_SCALE[i];
+
+  // Orbit ring
+  const oGeo = new THREE.TorusGeometry(orbR, 0.3, 6, 120);
+  const oMat = new THREE.MeshBasicMaterial({ color: 0x00aacc, transparent: true, opacity: 0.35 });
+  const oMesh = new THREE.Mesh(oGeo, oMat);
+  oMesh.rotation.x = Math.PI / 2;
+  scene.add(oMesh);
+  orbitRings.push(oMesh);
+
+  // Planet sphere
+  const pGeo = new THREE.SphereGeometry(r, 24, 24);
+  const hexColor = parseInt(b.color.replace('#',''), 16);
+  const pMat = new THREE.MeshPhongMaterial({
+    color: hexColor,
+    emissive: new THREE.Color(hexColor).multiplyScalar(0.1),
+    shininess: 60
+  });
+  const pMesh = new THREE.Mesh(pGeo, pMat);
+  scene.add(pMesh);
+  bodyMeshes.push(pMesh);
+
+  // Saturn rings
+  if (b.hasRings) {
+    const rGeo = new THREE.TorusGeometry(r * 2.2, r * 0.5, 4, 64);
+    const rMat = new THREE.MeshBasicMaterial({ color: 0xE4D191, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
+    const rMesh = new THREE.Mesh(rGeo, rMat);
+    rMesh.rotation.x = Math.PI / 2;
+    pMesh.add(rMesh);
+  }
+
+  // PNBA shells (P, N, B, A radii around planet)
+  const shellColors = [0x00d4ff, 0xaa88ff, 0xff8800, 0x00ffcc];
+  const shellMults  = [1.8, 2.3, 2.8, 3.3];
+  const bodyShells  = [];
+  for (let s = 0; s < 4; s++) {
+    const sGeo = new THREE.SphereGeometry(r * shellMults[s], 12, 8);
+    const sMat = new THREE.MeshBasicMaterial({ color: shellColors[s], wireframe: true, transparent: true, opacity: 0.05 });
+    const sMesh = new THREE.Mesh(sGeo, sMat);
+    pMesh.add(sMesh);
+    bodyShells.push(sMesh);
+  }
+  pnbaShells.push(bodyShells);
+}
+
+// ── LABELS (HTML overlay) ──
+for (let i = 0; i < BODIES.length; i++) {
+  const d = document.createElement('div');
+  d.style.cssText = `
+    position:absolute; pointer-events:none; font-family:'Orbitron',monospace;
+    font-size:7px; letter-spacing:.15em; white-space:nowrap; transition:opacity .2s;
+    text-shadow: 0 0 8px currentColor;
+  `;
+  d.textContent = BODIES[i].name.toUpperCase();
+  d.style.color = BODIES[i].color;
+  document.getElementById('canvas-wrap').appendChild(d);
+  labelDivs.push(d);
+}
+
+// ── FIELD LINES (substrate channels) ──
+for (let i = 1; i < BODIES.length; i++) {
+  const pts = [new THREE.Vector3(0,0,0), new THREE.Vector3(ORBIT_SCALE[i], 0, 0)];
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const mat = new THREE.LineBasicMaterial({ color: 0x1a8090, transparent: true, opacity: 0.25 });
+  const line = new THREE.Line(geo, mat);
+  scene.add(line);
+  fieldLines.push({line, mat});
+}
+
+
+// ── MOON (Earth's Moon) ──
+// PNBA from SNSFL Interstellar Reduction Template [9,9,3,7]
+// P=6.076 (mass), N=1.0 (27.3d period short narrative), 
+// B=0.00212 (Earth grav coupling), A=4.780 (ecc=0.055)
+// tau=0.00035 → NOBLE. Tidal locked.
+const MOON_DATA = {
+  name:'Moon', P:6.076, N:1.0, B:0.00212, A:4.780,
+  color:'#D0D0C8', state:'NOBLE', tau:0.00035,
+  orbitRadius: 8,         // visual units around Earth — outside Earth radius (4.5) + moon radius (1.8)
+  speed: 0.002900 * 13.37 // Moon completes 13.37 orbits per Earth year
+};
+MOON_DATA.IM = +((MOON_DATA.P + MOON_DATA.N + MOON_DATA.B + MOON_DATA.A) * ANCHOR).toFixed(3);
+
+const moonGeo  = new THREE.SphereGeometry(1.8, 16, 16);
+const moonMat  = new THREE.MeshPhongMaterial({ color: 0xD0D0C8, emissive: 0x444442, shininess: 20 });
+const moonMesh = new THREE.Mesh(moonGeo, moonMat);
+scene.add(moonMesh);
+
+// Moon orbit ring around Earth (thin, dim)
+const moonRingGeo = new THREE.TorusGeometry(MOON_DATA.orbitRadius, 0.1, 6, 64);
+const moonRingMat = new THREE.MeshBasicMaterial({ color: 0x888880, transparent: true, opacity: 0.25 });
+const moonRingMesh = new THREE.Mesh(moonRingGeo, moonRingMat);
+moonRingMesh.rotation.x = Math.PI / 2;
+scene.add(moonRingMesh);
+
+// Moon label
+const moonLabel = document.createElement('div');
+moonLabel.style.cssText = `
+  position:absolute; pointer-events:none; font-family:'Orbitron',monospace;
+  font-size:6px; letter-spacing:.12em; white-space:nowrap; transition:opacity .2s;
+  text-shadow: 0 0 6px #D0D0C8; color:#D0D0C8; opacity:0.6;
+`;
+moonLabel.textContent = 'MOON';
+document.getElementById('canvas-wrap').appendChild(moonLabel);
+
+let moonAngle = 1.2; // initial angle
+// ─── PLANET ORBIT ANGLES ───
+const orbitAngles = [0, 0.4, 1.1, 2.0, 3.4, 0.8, 1.9, 0.5, 2.8]; // radians initial
+// Orbital speeds — exact Kepler ω = 2π/T, normalized so Earth = 0.0029 rad/frame
+// Verified against T(days): Mercury=87.97, Venus=224.7, Earth=365.25, Mars=686.97,
+// Jupiter=4332.6, Saturn=10759, Uranus=30687, Neptune=60190
+// Inner three were correct; outer four were ~1.67× too fast — now fixed.
+const BASE_SPEEDS = [0, 0.01204, 0.004714, 0.002900, 0.001542, 0.0002445, 0.00009847, 0.00003452, 0.00001760];
+let simSpeed = 5;   // 0–10, 5 = "real" relative speed
+let speedMult = 1.0; // computed from simSpeed
+
+// ════════════════════════════════════════════════════════════════
+// PLANET LIST UI
+// ════════════════════════════════════════════════════════════════
+function buildPlanetList() {
+  const el = document.getElementById('planet-list');
+  BODIES.forEach((b, i) => {
+    const row = document.createElement('div');
+    row.className = 'planet-row' + (i === selectedIdx ? ' active' : '');
+    row.id = `pr-${i}`;
+    row.innerHTML = `
+      <div class="planet-dot" style="background:${b.color};color:${b.color}"></div>
+      <span class="planet-label">${b.symbol} ${b.name.toUpperCase()}</span>
+      <span class="planet-state state-${b.state}">${b.state}</span>
+    `;
+    row.onclick = () => selectBody(Math.min(i, bodyMeshes.length - 1));
+    el.appendChild(row);
+  });
+}
+buildPlanetList();
+
+// ════════════════════════════════════════════════════════════════
+// SELECT BODY
+// ════════════════════════════════════════════════════════════════
+function selectBody(idx) {
+  selectedIdx = idx;
+  const b = BODIES[idx];
+
+  // Center camera on selected body
+  centerOnBody(idx);
+
+  // Planet list highlight
+  document.querySelectorAll('.planet-row').forEach((r,i) => {
+    r.classList.toggle('active', i === idx);
+  });
+
+  // Portrait
+  document.getElementById('portrait-sphere').style.background = b.color;
+  document.getElementById('portrait-sphere').style.setProperty('--portrait-color', b.color);
+  document.getElementById('portrait-sphere').style.boxShadow = `0 0 30px ${b.glowColor}, inset -8px -8px 20px rgba(0,0,0,.5)`;
+  document.getElementById('portrait-name').textContent = b.name.toUpperCase();
+  document.getElementById('portrait-type').textContent = b.type;
+  document.getElementById('portrait-symbol').textContent = b.symbol;
+
+  // State badge
+  const badge = document.getElementById('state-badge');
+  badge.className = `state-badge badge-${b.state}`;
+  badge.textContent = b.state;
+
+  // PNBA bars (max values for scale)
+  const maxP = 10, maxN = 10, maxB = 0.12, maxA = 5;
+  document.getElementById('bar-P').style.width = (b.P / maxP * 100) + '%';
+  document.getElementById('bar-N').style.width = (b.N / maxN * 100) + '%';
+  document.getElementById('bar-B').style.width = (b.B / maxB * 100) + '%';
+  document.getElementById('bar-A').style.width = (b.A / maxA * 100) + '%';
+  document.getElementById('val-P').textContent = b.P.toFixed(3);
+  document.getElementById('val-N').textContent = b.N.toFixed(3);
+  document.getElementById('val-B').textContent = b.B.toFixed(4);
+  document.getElementById('val-A').textContent = b.A.toFixed(3);
+
+  // Tau corridor (0 → 0.15 range)
+  const tauMax = 0.15;
+  const tauPct = Math.min(100, (b.tau / tauMax) * 100);
+  document.getElementById('tau-marker').style.left = tauPct + '%';
+  // TL line
+  document.getElementById('tau-tl-line').style.left = (TL / tauMax * 100) + '%';
+
+  // Readouts
+  const stateColor = b.state === 'LOCKED' ? 'var(--locked)' : b.state === 'NOBLE' ? 'var(--noble)' : 'var(--iva)';
+  document.getElementById('r-tau').textContent = b.tau.toFixed(5);
+  document.getElementById('r-tau').style.color = stateColor;
+  document.getElementById('r-tau-tl').textContent = (b.tau / TL).toFixed(4) + '×';
+  document.getElementById('r-tau-tl').style.color = stateColor;
+  document.getElementById('r-im').textContent = b.IM.toFixed(4);
+  document.getElementById('r-mass').textContent = b.mass.toExponential(3);
+  document.getElementById('r-radius').textContent = b.radius.toLocaleString();
+  document.getElementById('r-period').textContent = b.period > 0 ? b.period.toFixed(2) : '—';
+  document.getElementById('r-sma').textContent = b.sma > 0 ? b.sma.toFixed(3) : '—';
+  document.getElementById('r-ecc').textContent = b.ecc.toFixed(3);
+}
+
+// Init with Earth
+selectBody(3);
+
+// ════════════════════════════════════════════════════════════════
+// MOUSE INTERACTION
+// ════════════════════════════════════════════════════════════════
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const wrap = document.getElementById('canvas-wrap');
+const tooltip = document.getElementById('tooltip');
+
+wrap.addEventListener('mousemove', (e) => {
+  if (camMode === 'surface') return; // no raycasting in surface view
+  const rect = wrap.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(bodyMeshes);
+
+  if (hits.length > 0) {
+    const idx = bodyMeshes.indexOf(hits[0].object);
+    hoveredIdx = idx;
+    const b = BODIES[idx];
+    wrap.style.cursor = 'pointer';
+    tooltip.style.display = 'block';
+    tooltip.style.left = (e.clientX - rect.left + 14) + 'px';
+    tooltip.style.top  = (e.clientY - rect.top  - 10) + 'px';
+    tooltip.innerHTML = `<b>${b.symbol} ${b.name.toUpperCase()}</b><br>
+      τ = ${b.tau.toFixed(5)} · IM = ${b.IM.toFixed(3)}<br>
+      ${b.state} · Click to inspect`;
+  } else {
+    hoveredIdx = -1;
+    wrap.style.cursor = 'crosshair';
+    tooltip.style.display = 'none';
+  }
+});
+
+wrap.addEventListener('click', () => {
+  if (camMode === 'surface') return;
+  if (hoveredIdx >= 0) selectBody(hoveredIdx);
+});
+
+wrap.addEventListener('mouseleave', () => {
+  hoveredIdx = -1;
+  tooltip.style.display = 'none';
+});
+
+// ════════════════════════════════════════════════════════════════
+function enterSurfaceView(idx) {
+  camMode = 'surface';
+  surfBodyIdx = idx;
+  surfTheta = camTheta;
+  surfPhi = 0.15;
+  document.getElementById('btn-surface').textContent = '◉ SURFACE VIEW · ON';
+  document.getElementById('btn-surface').classList.add('on');
+  document.getElementById('btn-surface').style.borderColor = 'var(--iva)';
+  document.getElementById('btn-surface').style.color = 'var(--iva)';
+  document.getElementById('surface-hud').style.display = 'block';
+  document.getElementById('sv-body').textContent = BODIES[idx].name.toUpperCase();
+}
+
+function exitSurfaceView() {
+  camMode = 'system';
+  document.getElementById('btn-surface').textContent = '○ SURFACE VIEW · OFF';
+  document.getElementById('btn-surface').classList.remove('on');
+  document.getElementById('btn-surface').style.borderColor = '';
+  document.getElementById('btn-surface').style.color = '';
+  document.getElementById('surface-hud').style.display = 'none';
+  // Restore to orbit above current body
+  camTargetGoal.copy(getBodyWorldPos(surfBodyIdx));
+  camRadius = 60;
+  lerping = true; lerpT = 0;
+}
+
+function toggleSurfaceView() {
+  if (camMode === 'surface') exitSurfaceView();
+  else enterSurfaceView(selectedIdx);
+}
+
+function updateCameraSystem() {
+  if (camMode === 'system') {
+    // Lerp camTarget toward goal
+    if (lerping) {
+      lerpT = Math.min(1, lerpT + LERP_SPEED);
+      camTarget.lerp(camTargetGoal, LERP_SPEED * 2);
+      if (lerpT >= 1) lerping = false;
+    }
+    // Keep camTarget tracking selected body (smooth follow)
+    if (!lerping) {
+      const bodyPos = getBodyWorldPos(selectedIdx);
+      camTargetGoal.copy(bodyPos);
+      camTarget.lerp(camTargetGoal, 0.04);
+    }
+    // Position camera in spherical coords around camTarget
+    camera.position.x = camTarget.x + Math.sin(camTheta) * Math.cos(camPhi) * camRadius;
+    camera.position.y = camTarget.y + Math.sin(camPhi) * camRadius;
+    camera.position.z = camTarget.z + Math.cos(camTheta) * Math.cos(camPhi) * camRadius;
+    camera.lookAt(camTarget);
+  } else {
+    // SURFACE VIEW — camera sits just above the body, looking outward
+    const bodyPos = getBodyWorldPos(surfBodyIdx);
+    const surfR = BODY_VISUAL_RADIUS[surfBodyIdx] * 1.3; // just above surface
+
+    // Camera position: on the surface shell
+    const cx = bodyPos.x + Math.sin(surfTheta) * Math.cos(surfPhi) * surfR;
+    const cy = bodyPos.y + Math.sin(surfPhi) * surfR;
+    const cz = bodyPos.z + Math.cos(surfTheta) * Math.cos(surfPhi) * surfR;
+    camera.position.set(cx, cy, cz);
+
+    // Look outward from the body toward where the drag aims
+    const lookDist = 1000;
+    const lx = bodyPos.x + Math.sin(surfTheta + Math.PI) * Math.cos(surfPhi) * lookDist;
+    const ly = bodyPos.y + Math.sin(surfPhi + 0.1) * lookDist;
+    const lz = bodyPos.z + Math.cos(surfTheta + Math.PI) * Math.cos(surfPhi) * lookDist;
+    camera.lookAt(lx, ly, lz);
+  }
+  camera.updateProjectionMatrix();
+}
+
+// ── DRAG ──
+wrap.addEventListener('mousedown', (e) => {
+  if (e.button !== 0) return;
+  isDragging = true;
+  lastX = e.clientX;
+  lastY = e.clientY;
+});
+window.addEventListener('mouseup', () => isDragging = false);
+window.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const dx = e.clientX - lastX;
+  const dy = e.clientY - lastY;
+  lastX = e.clientX;
+  lastY = e.clientY;
+
+  if (camMode === 'system') {
+    camTheta -= dx * 0.005;
+    camPhi = Math.max(0.05, Math.min(1.4, camPhi - dy * 0.004));
+  } else {
+    surfTheta -= dx * 0.004;
+    surfPhi = Math.max(-0.5, Math.min(1.2, surfPhi + dy * 0.003));
+  }
+});
+
+// ── ZOOM / SURFACE EXIT ──
+wrap.addEventListener('wheel', (e) => {
+  if (camMode === 'surface') {
+    exitSurfaceView();
+  } else {
+    camRadius = Math.max(25, Math.min(600, camRadius + e.deltaY * 0.35));
+  }
+  e.preventDefault();
+}, { passive: false });
+
+// Speed control — 0=pause, 5=real relative, 10=max
+// Scale: exponential so the feel is even across the range
+// speed=5 → mult=1.0 (real), speed=0 → mult=0, speed=10 → mult=~50
+function setSimSpeed(val) {
+  simSpeed = val;
+  if (val === 0) {
+    speedMult = 0;
+  } else {
+    // exponential: 5→1.0, 1→~0.02, 10→~50
+    speedMult = Math.pow(10, (val - 5) * 0.34);
+  }
+  const labels = ['PAUSE','·','SLOW','·','·','REAL','·','FAST','·','·','MAX'];
+  document.getElementById('v-speed').textContent = val + ' · ' + labels[val];
+}
+// Init
+setSimSpeed(5);
+
+
+// ════════════════════════════════════════════════════════════════
+function toggleOrbits() {
+  showOrbits = !showOrbits;
+  const btn = document.getElementById('btn-orbits');
+  btn.textContent = showOrbits ? '◎ ORBIT PATHS · ON' : '○ ORBIT PATHS · OFF';
+  btn.classList.toggle('on', showOrbits);
+  orbitRings.forEach(o => o.visible = showOrbits);
+}
+function toggleLabels() {
+  showLabels = !showLabels;
+  const btn = document.getElementById('btn-labels');
+  btn.textContent = showLabels ? '◎ LABELS · ON' : '○ LABELS · OFF';
+  btn.classList.toggle('on', showLabels);
+  labelDivs.forEach(l => l.style.display = showLabels ? 'block' : 'none');
+}
+function toggleField() {
+  showField = !showField;
+  const btn = document.getElementById('btn-field');
+  btn.textContent = showField ? '◎ FIELD LINES · ON' : '○ FIELD LINES · OFF';
+  btn.classList.toggle('on', showField);
+  fieldLines.forEach(f => f.line.visible = showField);
+}
+function togglePNBA() {
+  showPNBA = !showPNBA;
+  const btn = document.getElementById('btn-pnba');
+  btn.textContent = showPNBA ? '◎ PNBA SHELLS · ON' : '○ PNBA SHELLS · OFF';
+  btn.classList.toggle('on', showPNBA);
+  pnbaShells.forEach(shells => shells.forEach(s => s.visible = showPNBA));
+}
+
+// ════════════════════════════════════════════════════════════════
+// FIELD INTERACTION SYSTEM
+// Each planet's PNBA shells have a world-space field radius.
+// When two bodies' fields overlap, the shells respond:
+//   P shells (teal)   = gravitational pattern coupling
+//   N shells (purple) = narrative/DM inertia overlap
+//   B shells (orange) = behavior/tidal coupling
+//   A shells (green)  = adaptation/DE pressure
+// Strength = 1/d² falloff. Same law as EM — because it IS the same law.
+// ════════════════════════════════════════════════════════════════
+
+// Field radii in world units — how far each shell reaches
+// BODY_VISUAL_RADIUS[i] * shell multiplier * field reach factor
+const FIELD_REACH = [3.5, 2.8, 2.2, 1.8]; // P,N,B,A — P reaches furthest
+const FIELD_COLORS = [0x00d4ff, 0xaa88ff, 0xff8800, 0x00ffcc];
+const FIELD_NAMES  = ['P·GRAVITY', 'N·DM INERTIA', 'B·TIDAL', 'A·DE PRESSURE'];
+
+// Interaction connection lines — one per body pair per shell type
+// Max pairs = 8*7/2 = 28, x4 shell types = 112 lines — but we only show active ones
+const interactionLines = [];
+const MAX_PAIRS = 36; // enough for all pairs
+for (let k = 0; k < MAX_PAIRS; k++) {
+  const pts = [new THREE.Vector3(), new THREE.Vector3()];
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const mat = new THREE.LineBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0, linewidth: 2 });
+  const line = new THREE.Line(geo, mat);
+  scene.add(line);
+  interactionLines.push({ line, mat, geo });
+}
+
+// Interaction particle system — sparks at overlap zones
+const NUM_SPARK = 120;
+const sparkGeo = new THREE.BufferGeometry();
+const sparkPos = new Float32Array(NUM_SPARK * 3);
+const sparkAlpha = new Float32Array(NUM_SPARK);
+for (let i = 0; i < NUM_SPARK; i++) sparkPos[i*3] = sparkPos[i*3+1] = sparkPos[i*3+2] = 9999;
+sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
+const sparkMat = new THREE.PointsMaterial({ color: 0x00ffcc, size: 0.6, transparent: true, opacity: 0 });
+const sparks = new THREE.Points(sparkGeo, sparkMat);
+scene.add(sparks);
+
+let sparkPool = Array.from({length: NUM_SPARK}, (_, i) => ({
+  idx: i, active: false, x: 0, y: 0, z: 0,
+  vx: 0, vy: 0, vz: 0, life: 0, maxLife: 1, color: 0x00ffcc
+}));
+
+function spawnSpark(x, y, z, color) {
+  const s = sparkPool.find(p => !p.active);
+  if (!s) return;
+  s.active = true;
+  s.x = x + (Math.random()-0.5)*3;
+  s.y = y + (Math.random()-0.5)*1;
+  s.z = z + (Math.random()-0.5)*3;
+  s.vx = (Math.random()-0.5)*0.08;
+  s.vy = (Math.random()-0.5)*0.04;
+  s.vz = (Math.random()-0.5)*0.08;
+  s.life = 0; s.maxLife = 0.5 + Math.random()*0.8;
+  s.color = color;
+}
+
+function updateFieldInteractions(t) {
+  const numBodies = Math.min(bodyMeshes.length, BODIES.length);
+  // World positions for all bodies
+  const worldPos = BODIES.map((b, i) =>
+    i === 0 ? new THREE.Vector3(0,0,0) : bodyMeshes[i].position.clone()
+  );
+
+  const PNBA_KEYS = ['P','N','B','A'];
+
+  // One connection line per body pair — show strongest active field
+  let lineIdx = 0;
+
+  for (let a = 0; a < numBodies; a++) {
+    for (let b = a + 1; b < numBodies; b++) {
+      if (lineIdx >= MAX_PAIRS) break;
+      const line = interactionLines[lineIdx++];
+
+      const posA = worldPos[a];
+      const posB = worldPos[b];
+      const dist  = posA.distanceTo(posB);
+
+      // Find the shell type with the strongest overlap
+      let bestStrength = 0;
+      let bestCol = 0x00d4ff;
+      let bestSI  = 0;
+
+      for (let si = 0; si < 4; si++) {
+        const key  = PNBA_KEYS[si];
+        const valA = BODIES[a][key] || 0;
+        const valB = BODIES[b][key] || 0;
+        const radA = BODY_VISUAL_RADIUS[a] * FIELD_REACH[si] * (1 + valA * 0.4);
+        const radB = BODY_VISUAL_RADIUS[b] * FIELD_REACH[si] * (1 + valB * 0.4);
+        const overlapDist = radA + radB;
+
+        if (dist < overlapDist) {
+          const strength = Math.pow(1 - dist / overlapDist, 1.2);
+          if (strength > bestStrength) {
+            bestStrength = strength;
+            bestCol = FIELD_COLORS[si];
+            bestSI  = si;
+          }
+
+          // Brighten the specific shell on each body
+          if (a > 0 && pnbaShells[a-1] && showPNBA) {
+            const shell = pnbaShells[a-1][si];
+            shell.material.opacity = Math.min(0.55, shell.material.opacity + strength * 0.3);
+            shell.material.color.setHex(FIELD_COLORS[si]);
+          }
+          if (b > 0 && pnbaShells[b-1] && showPNBA) {
+            const shell = pnbaShells[b-1][si];
+            shell.material.opacity = Math.min(0.55, shell.material.opacity + strength * 0.3);
+            shell.material.color.setHex(FIELD_COLORS[si]);
+          }
+
+          // Sparks at midpoint on strong overlap
+          if (strength > 0.35 && Math.random() < strength * 0.12) {
+            const mx = (posA.x + posB.x) / 2;
+            const mz = (posA.z + posB.z) / 2;
+            spawnSpark(mx, 0, mz, FIELD_COLORS[si]);
+          }
+        }
+      }
+
+      // Draw connection line for strongest field
+      if (bestStrength > 0 && showPNBA) {
+        const wave = 0.5 + 0.5 * Math.sin(t * 2.5 + a * 1.3 + b * 0.7);
+        const pts  = line.geo.attributes.position;
+        pts.setXYZ(0, posA.x, posA.y, posA.z);
+        pts.setXYZ(1, posB.x, posB.y, posB.z);
+        pts.needsUpdate = true;
+        line.mat.color.setHex(bestCol);
+        line.mat.opacity = bestStrength * wave * 1.0;
+      } else {
+        line.mat.opacity = 0;
+      }
+    }
+  }
+
+  // Hide unused lines
+  for (let k = lineIdx; k < MAX_PAIRS; k++) interactionLines[k].mat.opacity = 0;
+
+  // Update spark particles
+  const sPos = sparkGeo.attributes.position.array;
+  let anyActive = false;
+  for (let k = 0; k < NUM_SPARK; k++) {
+    const s = sparkPool[k];
+    if (!s.active) { sPos[k*3] = sPos[k*3+1] = sPos[k*3+2] = 9999; continue; }
+    anyActive = true;
+    s.life += 0.016;
+    s.x += s.vx; s.y += s.vy; s.z += s.vz;
+    sPos[k*3] = s.x; sPos[k*3+1] = s.y; sPos[k*3+2] = s.z;
+    if (s.life >= s.maxLife) s.active = false;
+  }
+  sparkGeo.attributes.position.needsUpdate = true;
+  sparkMat.opacity = anyActive ? 0.75 : 0;
+}
+
+let frame = 0;
+const vec3 = new THREE.Vector3();
+
+function animate() {
+  requestAnimationFrame(animate);
+  frame++;
+
+  const t = frame * 0.016;
+
+  // ── Camera update (every frame — lerp, follow, surface) ──
+  updateCameraSystem();
+
+  // ── Update planet positions ──
+  const meshCount = bodyMeshes.length; // fixed at scene build — do NOT use BODIES.length
+  for (let i = 1; i < meshCount; i++) {
+    orbitAngles[i] += (BASE_SPEEDS[i] || BASE_SPEEDS[8]) * speedMult;
+    const angle = orbitAngles[i];
+    const r = ORBIT_SCALE[i];
+    const x = Math.cos(angle) * r;
+    const z = Math.sin(angle) * r;
+
+    bodyMeshes[i].position.set(x, 0, z);
+    bodyMeshes[i].rotation.y += 0.005 + i * 0.001;
+
+    // Field line update
+    if (showField) {
+      const pts = fieldLines[i-1].line.geometry.attributes.position;
+      pts.setXYZ(1, x, 0, z);
+      pts.needsUpdate = true;
+      const b = BODIES[i];
+      // color: locked=cyan, bright near selected
+      const isSel = i === selectedIdx;
+      const isHov = i === hoveredIdx;
+      fieldLines[i-1].mat.color.setHex(isSel ? 0x00ffcc : isHov ? 0x00d4ff : 0x00aadd);
+      fieldLines[i-1].mat.opacity = isSel ? 0.7 : isHov ? 0.5 : 0.25;
+    }
+
+    // PNBA shells — orbit at PNBA velocities, opacity from value
+    if (showPNBA && pnbaShells[i-1]) {
+      const b = BODIES[i];
+      const vals = [b.P / 10, b.N / 10, b.B * 8, b.A / 5];
+      pnbaShells[i-1].forEach((s, si) => {
+        s.rotation.y += 0.003 * (si + 1);
+        s.rotation.x += 0.002 * (si + 1);
+        s.material.opacity = (i === selectedIdx) ? 0.06 + vals[si] * 0.12 : 0.02;
+      });
+    }
+
+    // Highlight selected / hovered
+    const isSelected = i === selectedIdx;
+    const isHovered  = i === hoveredIdx;
+    if (bodyMeshes[i].material.emissive) {
+      const c = new THREE.Color(BODIES[i].color);
+      bodyMeshes[i].material.emissive.set(
+        isSelected ? c.multiplyScalar(0.25) :
+        isHovered  ? c.multiplyScalar(0.15) : new THREE.Color(0x111111)
+      );
+    }
+  }
+
+
+  // ── Moon: orbits Earth ──
+  moonAngle += MOON_DATA.speed * speedMult;
+  const earthPos = bodyMeshes[3].position;
+  const moonX = earthPos.x + Math.cos(moonAngle) * MOON_DATA.orbitRadius;
+  const moonZ = earthPos.z + Math.sin(moonAngle) * MOON_DATA.orbitRadius;
+  moonMesh.position.set(moonX, 0, moonZ);
+  moonMesh.rotation.y += 0.002;
+
+  // Moon orbit ring follows Earth
+  moonRingMesh.position.set(earthPos.x, 0, earthPos.z);
+
+  // Moon label
+  if (showLabels) {
+    const rect = wrap.getBoundingClientRect();
+    const mpos = moonMesh.position.clone();
+    mpos.y += 2.5;
+    mpos.project(camera);
+    moonLabel.style.left = ((mpos.x * 0.5 + 0.5) * rect.width - 16) + 'px';
+    moonLabel.style.top  = ((-mpos.y * 0.5 + 0.5) * rect.height - 10) + 'px';
+    moonLabel.style.display = 'block';
+  } else {
+    moonLabel.style.display = 'none';
+  }
+
+  // ── Sun pulse at 1.369 Hz ──
+  const sunPulse = 0.95 + 0.05 * Math.sin(t * ANCHOR * Math.PI * 2);
+  sunMesh.scale.setScalar(sunPulse);
+  sunLight.intensity = 2.8 + 0.4 * Math.sin(t * ANCHOR * Math.PI * 2);
+
+  // ── Field interactions — PNBA shell overlaps ──
+  updateFieldInteractions(t);
+
+  // ── Labels: project 3D → 2D ──
+  if (showLabels) {
+    const rect = wrap.getBoundingClientRect();
+    for (let i = 0; i < labelDivs.length; i++) {
+      if (!bodyMeshes[i]) continue;
+      const pos = i === 0 ? new THREE.Vector3(0,0,0) : bodyMeshes[i].position.clone();
+      pos.y += (BODY_VISUAL_RADIUS[i] || 3) + 4;
+      pos.project(camera);
+      const sx = (pos.x * 0.5 + 0.5) * rect.width;
+      const sy = (-pos.y * 0.5 + 0.5) * rect.height;
+      labelDivs[i].style.left = (sx - 20) + 'px';
+      labelDivs[i].style.top  = (sy - 14) + 'px';
+      const isSel = i === selectedIdx;
+      const isHov = i === hoveredIdx;
+      labelDivs[i].style.opacity = isSel ? '1' : isHov ? '0.85' : '0.4';
+      labelDivs[i].style.fontSize = isSel ? '8px' : '7px';
+      labelDivs[i].style.letterSpacing = isSel ? '.2em' : '.12em';
+    }
+  }
+
+  // ── Orbit ring highlights ──
+  for (let i = 0; i < orbitRings.length; i++) {
+    const bodyIdx = i + 1;
+    const isSel = bodyIdx === selectedIdx;
+    const isHov = bodyIdx === hoveredIdx;
+    orbitRings[i].material.color.setHex(
+      isSel ? 0x00ffcc : isHov ? 0x00d4ff : 0x00aacc
+    );
+    orbitRings[i].material.opacity = isSel ? 0.8 : isHov ? 0.55 : 0.35;
+  }
+
+  renderer.render(scene, camera);
+}
+// Boot: animate() always fires. DB load is fire-and-forget.
+animate();
+loadFromDB(); // async - updates UI when done, doesn't block rendering
+
+// ════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════
+console.log('[SNSFT] Solar Identity Map initialized');
+console.log(`[SNSFT] ANCHOR=${ANCHOR} · TL=${TL.toFixed(4)} · 9 bodies · 0 sorry`);
+BODIES.forEach(b => console.log(`  ${b.name}: P=${b.P} N=${b.N} B=${b.B} A=${b.A} tau=${b.tau} ${b.state}`));
+</script>
+</body>
+</html>
