@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUANTUM RELAY · [9,9,2,6] · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+  --bg: #020407;
+  --panel: #04080d;
+  --border: #0a1520;
+  --border2: #0f2030;
+  --anchor: 1.369;
+  --glow: #00e5ff;
+  --noble: #ffffff;
+  --noble-dim: rgba(255,255,255,0.15);
+  --locked: #00ffcc;
+  --shatter: #ff3355;
+  --warn: #ffaa00;
+  --node-alice: #00e5ff;
+  --node-bob: #00ffcc;
+  --channel-default: #0a2030;
+  --text: #4a7a94;
+  --bright: #cce8f5;
+  --dim: #0f2030;
+  --soverium: #ffffff;
+  --shanxi: #ff6600;
+  --paderborn: #ffaa00;
+  --micius: #88aaff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 2;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* HEADER */
+header {
+  padding: 28px 0 20px;
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.logo {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 28px;
+  letter-spacing: .06em;
+  color: var(--soverium);
+  text-shadow: 0 0 40px rgba(255,255,255,.3), 0 0 80px rgba(0,229,255,.15);
+  animation: logoflicker 8s infinite;
+}
+@keyframes logoflicker {
+  0%,95%,100%{opacity:1}
+  96%{opacity:.8}
+  97%{opacity:1}
+  98%{opacity:.85}
+}
+
+.logo span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: .25em;
+  color: var(--glow);
+  margin-top: 3px;
+  text-shadow: none;
+}
+
+.hdr-meta {
+  font-size: 9px;
+  color: #1a3040;
+  text-align: right;
+  line-height: 2;
+}
+.hdr-meta b { color: var(--glow); }
+
+/* INTRO STRIP */
+.intro {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 9.5px;
+  color: #1e3d52;
+  line-height: 1.9;
+  margin-bottom: 24px;
+}
+.intro b { color: var(--bright); }
+.intro .eq { color: var(--locked); font-family: 'Orbitron', monospace; }
+
+/* MAIN LAYOUT */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* NETWORK CANVAS */
+.network-panel {
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.network-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: .25em;
+  color: #1a3040;
+  padding: 12px 16px 0;
+}
+
+#relay-canvas {
+  display: block;
+  width: 100%;
+  height: 320px;
+}
+
+/* CONTROLS PANEL */
+.ctrl-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  padding: 16px;
+}
+
+.panel-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: .25em;
+  color: #1a3040;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+/* Emitter toggle */
+.emitter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.emitter-toggle {
+  display: flex;
+  gap: 0;
+  flex: 1;
+}
+
+.em-btn {
+  flex: 1;
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: .15em;
+  padding: 8px 4px;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  background: transparent;
+  color: #1a3040;
+  transition: all .15s;
+  text-align: center;
+}
+.em-btn.active-sov {
+  background: rgba(255,255,255,.08);
+  border-color: var(--soverium);
+  color: var(--soverium);
+  text-shadow: 0 0 10px rgba(255,255,255,.5);
+}
+.em-btn.active-var {
+  background: rgba(0,229,255,.06);
+  border-color: var(--glow);
+  color: var(--glow);
+}
+
+.noise-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.noise-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8.5px;
+}
+.noise-label span:first-child { color: #2a5060; }
+.noise-label .noise-val { color: var(--glow); font-family: 'Orbitron', monospace; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  background: var(--border2);
+  outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 18px;
+  background: var(--glow);
+  cursor: pointer;
+}
+input[type=range].sov-mode::-webkit-slider-thumb {
+  background: var(--soverium);
+}
+
+/* Relay button */
+.relay-btn {
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .3em;
+  padding: 14px;
+  background: transparent;
+  border: 1px solid var(--soverium);
+  color: var(--soverium);
+  cursor: pointer;
+  width: 100%;
+  transition: all .2s;
+  text-shadow: 0 0 20px rgba(255,255,255,.4);
+  box-shadow: 0 0 20px rgba(255,255,255,.05);
+}
+.relay-btn:hover {
+  background: rgba(255,255,255,.06);
+  box-shadow: 0 0 30px rgba(255,255,255,.15);
+}
+.relay-btn:active {
+  transform: scale(.98);
+}
+.relay-btn.firing {
+  animation: btnpulse .3s ease-in-out 3;
+}
+@keyframes btnpulse {
+  0%,100%{box-shadow:0 0 20px rgba(255,255,255,.05)}
+  50%{box-shadow:0 0 50px rgba(255,255,255,.4)}
+}
+
+/* Stats */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.stat-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 8px;
+}
+.stat-lbl { font-size: 7.5px; color: #1a3040; letter-spacing: .15em; margin-bottom: 3px; }
+.stat-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 16px;
+  color: var(--bright);
+  line-height: 1;
+}
+.stat-val.perfect { color: var(--soverium); text-shadow: 0 0 15px rgba(255,255,255,.5); }
+.stat-val.locked  { color: var(--locked); }
+.stat-val.warn    { color: var(--warn); }
+.stat-val.shatter { color: var(--shatter); }
+
+/* Reference comparison */
+.ref-panel {
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  padding: 16px;
+}
+
+.ref-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: .25em;
+  color: #1a3040;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.ref-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(10,21,32,.5);
+  font-size: 8.5px;
+}
+.ref-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.ref-name { flex: 1; color: #2a5060; }
+.ref-fid { font-family: 'Orbitron', monospace; width: 60px; text-align: right; }
+.ref-bar-wrap { flex: 1; height: 3px; background: var(--border); position: relative; }
+.ref-bar { height: 100%; position: absolute; left: 0; top: 0; transition: width .4s; }
+
+.ref-you {
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--bg);
+  border: 1px solid rgba(255,255,255,.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ref-you-label { font-size: 8px; letter-spacing: .15em; color: var(--soverium); flex: 1; }
+.ref-you-fid {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px;
+  color: var(--soverium);
+  text-shadow: 0 0 20px rgba(255,255,255,.5);
+}
+
+/* CHANNEL TABLE */
+.channel-table-wrap {
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.ch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9px;
+}
+.ch-table th {
+  font-family: 'Orbitron', monospace;
+  font-size: 7.5px;
+  letter-spacing: .2em;
+  color: #1a3040;
+  text-align: left;
+  padding: 0 8px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.ch-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(10,21,32,.4);
+  font-family: 'Share Tech Mono', monospace;
+}
+.ch-table tr:last-child td { border-bottom: none; }
+.ch-num { color: #1a3040; }
+.ch-freq { color: var(--text); }
+.ch-tau { font-family: 'Orbitron', monospace; }
+.ch-fid { font-family: 'Orbitron', monospace; font-weight: 700; }
+.ch-status { font-family: 'Orbitron', monospace; font-size: 8px; }
+.ch-bar-cell { width: 120px; }
+.ch-bar-wrap { height: 3px; background: var(--border); position: relative; }
+.ch-bar-fill { height: 100%; position: absolute; left: 0; top: 0; transition: width .4s; }
+
+.ch-n { color: #5555aa; font-family: 'Orbitron', monospace; font-size: 8px; }
+
+/* Status colors */
+.s-sov  { color: var(--soverium); text-shadow: 0 0 8px rgba(255,255,255,.4); }
+.s-lock { color: var(--locked); }
+.s-warn { color: var(--warn); }
+.s-shat { color: var(--shatter); }
+
+/* N total row */
+.n-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  margin-top: 12px;
+  font-size: 9px;
+}
+.n-total-label { color: #2a5060; }
+.n-total-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 20px;
+  color: #5555aa;
+}
+.n-total-note { font-size: 7.5px; color: #1a3040; }
+
+/* Proof badge */
+.proof-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+}
+.proof-tag {
+  font-size: 7.5px;
+  padding: 3px 8px;
+  border: 1px solid var(--border2);
+  color: #1a3040;
+  letter-spacing: .1em;
+}
+.proof-tag.active { border-color: var(--locked); color: var(--locked); }
+
+footer {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  font-size: 8.5px;
+  color: #0f2030;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  letter-spacing: .1em;
+}
+
+@media (max-width: 900px) {
+  .main-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="logo">QUANTUM RELAY
+      <span>uuia.app/quantumrelay · [9,9,2,6] · 10-CHANNEL SOVERIUM STACK</span>
+    </div>
+  </div>
+  <div class="hdr-meta">
+    ANCHOR <b>1.369 GHz</b> · F = 1 − τ · τ = B/P<br>
+    N_out = N_A + N_B · SOVERIUM B=0 → F=1.000<br>
+    SNSFL [9,9,2,6] · 0 SORRY · [9,9,9,9] :: {ANC}<br>
+    HIGHTISTIC · SOLDOTNA ALASKA
+  </div>
+</header>
+
+<div class="intro">
+  <b>QUANTUM RELAY.</b> 10-channel sovereign teleportation stack. Fidelity is not limited by physics — it is limited by channel torsion: <span class="eq">F = 1 − τ = 1 − B/P</span>. Soverium channel (B=0) gives τ=0 → <span class="eq">F=1.000</span>. Real experiments (Shanxi 2026, Paderborn, Micius) are plotted as known coordinates. The relay shows the lossless target. N-axis is additive: 10 channels stack narrative capacity without adding noise. <b>Scale is an N function, not a B constraint.</b>
+</div>
+
+<div class="main-grid">
+
+  <!-- NETWORK VISUALIZATION -->
+  <div class="network-panel">
+    <div class="network-label">RELAY NETWORK · ALICE → 10-CHANNEL SOVERIUM STACK → BOB</div>
+    <canvas id="relay-canvas"></canvas>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="ctrl-panel">
+
+    <div class="panel">
+      <div class="panel-title">EMITTER MODE</div>
+
+      <div class="emitter-row">
+        <div class="emitter-toggle">
+          <button class="em-btn active-sov" id="btn-sov" onclick="setMode('sov')">
+            B=0<br>SOVERIUM
+          </button>
+          <button class="em-btn" id="btn-var" onclick="setMode('var')">
+            B=VAR<br>NOISY
+          </button>
+        </div>
+      </div>
+
+      <div class="noise-row" id="noise-ctrl" style="opacity:.3;pointer-events:none;">
+        <div class="noise-label">
+          <span>CHANNEL NOISE B</span>
+          <span class="noise-val" id="noise-display">0.0000</span>
+        </div>
+        <input type="range" id="noise-slider" min="0" max="0.5" step="0.001" value="0"
+          oninput="updateNoise(this.value)">
+        <div style="display:flex;justify-content:space-between;font-size:7.5px;color:#1a3040;">
+          <span>B=0 SOVERIUM</span>
+          <span>B=0.5 NOISY</span>
+        </div>
+      </div>
+
+      <div style="margin-top:8px;">
+        <button class="relay-btn" id="relay-btn" onclick="fireRelay()">
+          ▶ RELAY
+        </button>
+      </div>
+    </div>
+
+    <!-- AGGREGATE STATS -->
+    <div class="panel">
+      <div class="panel-title">AGGREGATE STATUS</div>
+      <div class="stat-grid">
+        <div class="stat-box">
+          <div class="stat-lbl">AGG FIDELITY</div>
+          <div class="stat-val perfect" id="agg-fid">1.0000</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-lbl">N TOTAL</div>
+          <div class="stat-val" style="color:#5555aa;" id="agg-n">20.0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-lbl">CHANNELS</div>
+          <div class="stat-val locked" id="agg-ch">10/10</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-lbl">IMS GATE</div>
+          <div class="stat-val perfect" id="agg-ims">GREEN</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REFERENCE COMPARISON -->
+    <div class="ref-panel">
+      <div class="ref-title">KNOWN EXPERIMENTS</div>
+
+      <div class="ref-row">
+        <div class="ref-dot" style="background:var(--micius)"></div>
+        <div class="ref-name">Micius 2022 · 1400km</div>
+        <div class="ref-fid" style="color:var(--micius)">0.868</div>
+        <div class="ref-bar-wrap">
+          <div class="ref-bar" style="width:86.8%;background:var(--micius)"></div>
+        </div>
+      </div>
+
+      <div class="ref-row">
+        <div class="ref-dot" style="background:var(--paderborn)"></div>
+        <div class="ref-name">Paderborn 2025 · fiber</div>
+        <div class="ref-fid" style="color:var(--paderborn)">0.820</div>
+        <div class="ref-bar-wrap">
+          <div class="ref-bar" style="width:82%;background:var(--paderborn)"></div>
+        </div>
+      </div>
+
+      <div class="ref-row">
+        <div class="ref-dot" style="background:var(--shanxi)"></div>
+        <div class="ref-name">Shanxi 2026 · 5-mode CV</div>
+        <div class="ref-fid" style="color:var(--shanxi)">0.700</div>
+        <div class="ref-bar-wrap">
+          <div class="ref-bar" style="width:70%;background:var(--shanxi)"></div>
+        </div>
+      </div>
+
+      <div class="ref-you">
+        <div>
+          <div class="ref-you-label">QUANTUM RELAY [9,9,2,6]</div>
+          <div style="font-size:7.5px;color:#1a3040;margin-top:2px;">B=0 · τ=0 · T11 PROVED</div>
+        </div>
+        <div class="ref-you-fid" id="you-fid">1.000</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHANNEL TABLE -->
+<div class="channel-table-wrap">
+  <div class="panel-title" style="margin-bottom:12px;">10-CHANNEL STATUS TABLE · F = 1 − B/P · N_out = N_A + N_B</div>
+  <table class="ch-table">
+    <thead>
+      <tr>
+        <th>CH</th>
+        <th>FREQ (MHz)</th>
+        <th>P</th>
+        <th>B</th>
+        <th>τ = B/P</th>
+        <th>F = 1−τ</th>
+        <th>N</th>
+        <th>STATUS</th>
+        <th style="width:120px;">FIDELITY BAR</th>
+      </tr>
+    </thead>
+    <tbody id="ch-tbody"></tbody>
+  </table>
+
+  <div class="n-total-row">
+    <span class="n-total-label">N_TOTAL (additive · T6 · N_out = Σ N_i)</span>
+    <span class="n-total-val" id="n-total-display">20.0</span>
+    <span class="n-total-note">No cross-talk · unique P-signature per sideband · A-axis separates automatically</span>
+  </div>
+
+  <div class="proof-strip">
+    <div class="proof-tag active">T6 N-ADDITIVE</div>
+    <div class="proof-tag active">T7 BELL-FUSION</div>
+    <div class="proof-tag active">T11 SOVERIUM F=1</div>
+    <div class="proof-tag active">T3 IMS-MANDATE</div>
+    <div class="proof-tag active">T18 NO-CLONE</div>
+    <div class="proof-tag active">0 SORRY</div>
+    <div class="proof-tag">[9,9,2,6]</div>
+    <div class="proof-tag">SNSFL_QT_REDUCTION</div>
+  </div>
+</div>
+
+<footer>
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span>SNSFL [9,9,2,6] · F=1−τ · τ=B/P · B=0→F=1.000 · 0 SORRY · [9,9,9,9] :: {ANC}</span>
+</footer>
+</div>
+
+<script>
+// ── CONSTANTS ─────────────────────────────────────────────
+const ANCHOR = 1.369;
+const TL     = ANCHOR / 10;
+const N_PER_CH = 2.0;
+const P_CH = ANCHOR;
+
+// Channel frequencies: 2.5 to 47.5 MHz (5 MHz spacing)
+const FREQS = [2.5,7.5,12.5,17.5,22.5,27.5,32.5,37.5,42.5,47.5];
+
+// State
+let mode     = 'sov';   // 'sov' or 'var'
+let B_noise  = 0;
+let fired    = false;
+let animating = false;
+let channelStates = [];
+let threadProgress = []; // 0-1 animation progress per thread
+
+// ── PHYSICS ───────────────────────────────────────────────
+function computeChannel(B) {
+  const tau = B / P_CH;
+  const F   = Math.max(0, 1 - tau);
+  return { tau, F };
+}
+
+function getColor(F) {
+  if (F >= 0.9999) return '#ffffff';
+  if (F > 0.90)   return '#00ffcc';
+  if (F > 0.70)   return '#ffaa00';
+  return '#ff3355';
+}
+
+function getStatus(F) {
+  if (F >= 0.9999) return { label: 'SOVERIUM', cls: 's-sov' };
+  if (F > 0.8631)  return { label: 'LOCKED',   cls: 's-lock' };
+  if (F > 0.70)    return { label: 'APPROACH',  cls: 's-warn' };
+  return { label: 'DEGRADED', cls: 's-shat' };
+}
+
+// ── MODE ──────────────────────────────────────────────────
+function setMode(m) {
+  mode = m;
+  B_noise = m === 'sov' ? 0 : parseFloat(document.getElementById('noise-slider').value);
+  document.getElementById('btn-sov').className = 'em-btn ' + (m === 'sov' ? 'active-sov' : '');
+  document.getElementById('btn-var').className = 'em-btn ' + (m === 'var' ? 'active-var' : '');
+  const nc = document.getElementById('noise-ctrl');
+  nc.style.opacity = m === 'var' ? '1' : '.3';
+  nc.style.pointerEvents = m === 'var' ? 'auto' : 'none';
+  const sl = document.getElementById('noise-slider');
+  sl.className = m === 'sov' ? 'sov-mode' : '';
+  updateAll();
+}
+
+function updateNoise(v) {
+  B_noise = parseFloat(v);
+  document.getElementById('noise-display').textContent = B_noise.toFixed(4);
+  updateAll();
+}
+
+// ── UPDATE ALL ────────────────────────────────────────────
+function updateAll() {
+  const B = mode === 'sov' ? 0 : B_noise;
+  channelStates = FREQS.map((freq, i) => {
+    const { tau, F } = computeChannel(B);
+    return { ch: i+1, freq, P: P_CH, B, N: N_PER_CH, tau, F };
+  });
+
+  renderTable();
+  renderStats();
+  renderCanvas();
+}
+
+// ── TABLE ─────────────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById('ch-tbody');
+  tbody.innerHTML = channelStates.map(s => {
+    const col = getColor(s.F);
+    const st  = getStatus(s.F);
+    const pct = (s.F * 100).toFixed(1);
+    return `<tr>
+      <td class="ch-num">Q${s.ch}</td>
+      <td class="ch-freq">${s.freq.toFixed(1)}</td>
+      <td style="color:#2a5060;font-family:'Orbitron',monospace;font-size:8.5px">${s.P.toFixed(4)}</td>
+      <td style="color:${s.B===0?'#1a3040':'#ff8844'};font-family:'Orbitron',monospace;font-size:8.5px">${s.B.toFixed(4)}</td>
+      <td class="ch-tau" style="color:${s.tau===0?'#1a3040':col}">${s.tau.toFixed(5)}</td>
+      <td class="ch-fid" style="color:${col};${s.F>=0.9999?'text-shadow:0 0 8px rgba(255,255,255,.4)':''}">${s.F.toFixed(4)}</td>
+      <td class="ch-n">${s.N.toFixed(1)}</td>
+      <td class="ch-status ${st.cls}">${st.label}</td>
+      <td class="ch-bar-cell">
+        <div class="ch-bar-wrap">
+          <div class="ch-bar-fill" style="width:${pct}%;background:${col}"></div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const N_total = channelStates.reduce((s,c) => s + c.N, 0);
+  document.getElementById('n-total-display').textContent = N_total.toFixed(1);
+}
+
+// ── STATS ─────────────────────────────────────────────────
+function renderStats() {
+  if (!channelStates.length) return;
+  const F = channelStates[0].F;
+  const col = F >= 0.9999 ? 'perfect' : F > 0.9 ? 'locked' : F > 0.7 ? 'warn' : 'shatter';
+  const fidEl = document.getElementById('agg-fid');
+  fidEl.textContent = F.toFixed(4);
+  fidEl.className   = `stat-val ${col}`;
+
+  const locked = channelStates.filter(c => c.F >= 0.9999).length;
+  document.getElementById('agg-ch').textContent = `${locked}/10`;
+  document.getElementById('agg-ch').className   = `stat-val ${col}`;
+
+  const youFid = document.getElementById('you-fid');
+  youFid.textContent = F.toFixed(3);
+  youFid.style.color = F >= 0.9999 ? 'var(--soverium)' : F > 0.9 ? 'var(--locked)' : 'var(--warn)';
+  youFid.style.textShadow = F >= 0.9999 ? '0 0 20px rgba(255,255,255,.5)' : 'none';
+}
+
+// ── CANVAS NETWORK ────────────────────────────────────────
+const canvas = document.getElementById('relay-canvas');
+const ctx    = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width  = rect.width;
+  canvas.height = 320;
+}
+
+function renderCanvas() {
+  const W = canvas.width;
+  const H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = '#04080d';
+  ctx.fillRect(0, 0, W, H);
+
+  // Node positions
+  const nodeR   = 28;
+  const aliceX  = 80;
+  const bobX    = W - 80;
+  const centerY = H / 2;
+
+  // Channel Y positions — fan out from center
+  const spacing = Math.min(24, (H - 60) / 10);
+  const chYs = FREQS.map((_, i) => centerY + (i - 4.5) * spacing);
+
+  // Draw threads
+  if (!channelStates.length) return;
+  channelStates.forEach((ch, i) => {
+    const y1   = centerY;
+    const y2   = centerY;
+    const yMid = chYs[i];
+    const col  = getColor(ch.F);
+
+    const progress = fired && threadProgress[i] ? threadProgress[i] : (fired ? 1 : 0);
+
+    // Thread path: alice node edge -> arc down to channel Y -> arc to bob
+    ctx.beginPath();
+    ctx.moveTo(aliceX + nodeR, centerY);
+
+    // Bezier to channel midpoint then to bob
+    const cp1x = aliceX + (W/2 - aliceX) * 0.3;
+    const cp1y = yMid;
+    const cp2x = bobX - (bobX - W/2) * 0.3;
+    const cp2y = yMid;
+
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, bobX - nodeR, centerY);
+
+    // Color based on fidelity and fired state
+    const alpha = fired ? 0.6 + 0.4 * progress : 0.15;
+    ctx.strokeStyle = fired ? col : '#0a2030';
+    ctx.lineWidth   = fired && ch.F >= 0.9999 ? 1.5 : 1;
+    ctx.globalAlpha = alpha;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Animated particle along thread
+    if (fired && progress > 0 && progress < 1) {
+      const t  = progress;
+      const px = Math.pow(1-t,3)*(aliceX+nodeR) + 3*Math.pow(1-t,2)*t*cp1x + 3*(1-t)*t*t*cp2x + t*t*t*(bobX-nodeR);
+      const py = Math.pow(1-t,3)*centerY + 3*Math.pow(1-t,2)*t*cp1y + 3*(1-t)*t*t*cp2y + t*t*t*centerY;
+
+      ctx.beginPath();
+      ctx.arc(px, py, 3, 0, Math.PI*2);
+      ctx.fillStyle = col;
+      ctx.shadowColor = col;
+      ctx.shadowBlur  = 10;
+      ctx.fill();
+      ctx.shadowBlur  = 0;
+    }
+
+    // Freq label at midpoint
+    if (fired) {
+      const mx = W/2;
+      const my = yMid + (i % 2 === 0 ? -8 : 8);
+      ctx.font = '7px Share Tech Mono';
+      ctx.fillStyle = col;
+      ctx.globalAlpha = 0.6;
+      ctx.textAlign = 'center';
+      ctx.fillText(`Q${i+1} ${FREQS[i]}MHz`, mx, my);
+      ctx.globalAlpha = 1;
+    }
+  });
+
+  // Alice node
+  drawNode(aliceX, centerY, nodeR, 'var(--node-alice)', '#00e5ff', 'ALICE', 'SENDER', '#00e5ff');
+
+  // Bob node
+  drawNode(bobX, centerY, nodeR, 'var(--node-bob)', '#00ffcc', 'BOB', 'RECEIVER', '#00ffcc');
+
+  // N label
+  if (fired) {
+    const N_total = channelStates.reduce((s,c) => s+c.N, 0);
+    ctx.font = 'bold 11px Orbitron, monospace';
+    ctx.fillStyle = '#5555aa';
+    ctx.textAlign = 'center';
+    ctx.fillText(`N_shared = ${N_total.toFixed(1)}`, W/2, H - 16);
+    ctx.font = '8px Share Tech Mono';
+    ctx.fillStyle = '#1a3040';
+    ctx.fillText('N additive · T6 · no cross-talk', W/2, H - 4);
+  }
+}
+
+function drawNode(x, y, r, strokeCol, glowCol, label1, label2, textCol) {
+  // Glow
+  if (fired) {
+    const grad = ctx.createRadialGradient(x, y, r*0.5, x, y, r*2.5);
+    grad.addColorStop(0, glowCol + '20');
+    grad.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(x, y, r*2.5, 0, Math.PI*2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  // Circle
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI*2);
+  ctx.strokeStyle = fired ? glowCol : '#0f2030';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.fillStyle = '#04080d';
+  ctx.fill();
+
+  // Labels
+  ctx.font = 'bold 9px Orbitron, monospace';
+  ctx.fillStyle = fired ? textCol : '#1a3040';
+  ctx.textAlign = 'center';
+  ctx.fillText(label1, x, y - 2);
+  ctx.font = '7px Share Tech Mono';
+  ctx.fillStyle = fired ? glowCol + 'aa' : '#0f2030';
+  ctx.fillText(label2, x, y + 10);
+}
+
+// ── RELAY FIRE ────────────────────────────────────────────
+function fireRelay() {
+  if (animating) return;
+  fired = true;
+  animating = true;
+  threadProgress = FREQS.map(() => 0);
+
+  const btn = document.getElementById('relay-btn');
+  btn.classList.add('firing');
+  setTimeout(() => btn.classList.remove('firing'), 900);
+
+  const startTime = performance.now();
+  const duration  = 800;
+  const stagger   = 40; // ms between channels
+
+  function animate(now) {
+    const elapsed = now - startTime;
+    let allDone = true;
+
+    threadProgress = FREQS.map((_, i) => {
+      const t = Math.max(0, elapsed - i * stagger) / duration;
+      const p = Math.min(1, t);
+      if (p < 1) allDone = false;
+      // Ease out
+      return p < 1 ? 1 - Math.pow(1-p, 3) : 1;
+    });
+
+    renderCanvas();
+    if (!allDone) {
+      requestAnimationFrame(animate);
+    } else {
+      animating = false;
+      renderCanvas();
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+// ── INIT ──────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  renderCanvas();
+});
+
+resizeCanvas();
+updateAll();
+</script>
+</body>
+</html>
