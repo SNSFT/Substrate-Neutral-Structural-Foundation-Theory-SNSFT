@@ -5,6 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QUANTUM RELAY · [9,9,2,6] · uuia.app</title>
 <style>
+.mode-tabs{display:flex;gap:0;margin:16px 0 0;border-bottom:1px solid var(--border2);}
+.mode-tab{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:10px 20px;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#1a3040;transition:all .15s;}
+.mode-tab:hover{color:var(--text);}
+.mode-tab.active{border-color:var(--border2);border-bottom:1px solid var(--bg);color:var(--soverium);background:var(--panel);}
+.mode-content{display:none;}
+.mode-content.active{display:block;}
+/* 3-node layout */
+.relay3-grid{display:grid;grid-template-columns:1fr 260px;gap:16px;margin-bottom:16px;}
+.node-config{background:var(--panel);border:1px solid var(--border2);padding:16px;}
+.node-section{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.node-section:last-child{border-bottom:none;margin-bottom:0;}
+.node-header{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;margin-bottom:10px;}
+.node-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:8.5px;}
+.node-lbl{color:#2a5060;width:90px;}
+.node-val{font-family:'Orbitron',monospace;color:var(--bright);width:70px;}
+.node-slider{flex:1;-webkit-appearance:none;height:3px;background:var(--border2);outline:none;}
+.node-slider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:14px;background:var(--glow);cursor:pointer;}
+.repeater-toggle{display:flex;gap:0;margin:8px 0;}
+.rep-btn{flex:1;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;padding:7px 4px;border:1px solid var(--border2);cursor:pointer;background:transparent;color:#1a3040;transition:all .15s;text-align:center;}
+.rep-btn.active-sov{background:rgba(255,255,255,.08);border-color:var(--soverium);color:var(--soverium);}
+.rep-btn.active-var{background:rgba(0,229,255,.06);border-color:var(--glow);color:var(--glow);}
+/* 3-node result */
+.result3{background:var(--panel);border:1px solid var(--border2);padding:20px;margin-bottom:16px;}
+.result3-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.r3-box{background:var(--bg);border:1px solid var(--border);padding:12px;}
+.r3-lbl{font-size:7.5px;letter-spacing:.15em;color:#1a3040;margin-bottom:4px;}
+.r3-val{font-family:'Orbitron',monospace;font-size:22px;line-height:1;}
+.r3-sub{font-size:7.5px;color:#1a3040;margin-top:3px;}
+.leg-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.leg-box{background:var(--bg);border:1px solid var(--border);padding:10px;}
+.leg-title{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;color:#2a5060;margin-bottom:6px;}
+.leg-row{display:flex;justify-content:space-between;font-size:8.5px;padding:2px 0;}
+.leg-row .lk{color:#2a5060;}
+.leg-row .lv{font-family:'Orbitron',monospace;color:var(--bright);}
+/* Canvas 3-node */
+.canvas3-wrap{background:var(--panel);border:1px solid var(--border2);margin-bottom:16px;}
+</style>
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 
 :root {
@@ -463,6 +501,12 @@ footer {
   </div>
 </header>
 
+<div class="mode-tabs">
+  <div class="mode-tab active" onclick="showMode('stack')">10-CHANNEL STACK</div>
+  <div class="mode-tab" onclick="showMode('relay3')">3-NODE MANIFOLD</div>
+</div>
+
+<div id="mode-stack" class="mode-content active">
 <div class="intro">
   <b>QUANTUM RELAY.</b> 10-channel sovereign teleportation stack. Fidelity is not limited by physics — it is limited by channel torsion: <span class="eq">F = 1 − τ = 1 − B/P</span>. Soverium channel (B=0) gives τ=0 → <span class="eq">F=1.000</span>. Real experiments (Shanxi 2026, Paderborn, Micius) are plotted as known coordinates. The relay shows the lossless target. N-axis is additive: 10 channels stack narrative capacity without adding noise. <b>Scale is an N function, not a B constraint.</b>
 </div>
@@ -615,8 +659,166 @@ footer {
     <div class="proof-tag">SNSFL_QT_REDUCTION</div>
   </div>
 </div>
+</div><!-- end mode-stack -->
 
-<footer>
+<!-- ── 3-NODE MANIFOLD MODE ── -->
+<div id="mode-relay3" class="mode-content">
+
+<div class="intro">
+  <b>3-NODE MANIFOLD.</b> Alice → Charlie → Bob. Two relay models proved in <span class="eq">SNSFL_QT_Soverium_Repeater [9,9,2,6b]</span>.<br>
+  <b>Compound:</b> <span class="eq">F_total = F1 × F2</span> — noise multiplies per hop. Standard relay behavior.<br>
+  <b>Reset (Soverium Repeater):</b> <span class="eq">F_total = F2</span> — Charlie has local B=0 source, leg1 isolated at BSM.<br>
+  N is additive across all nodes: <span class="eq">N_total = N_A + N_C + N_B</span>. N does not decay at relay nodes.
+</div>
+
+<!-- Canvas -->
+<div class="canvas3-wrap">
+  <div class="network-label" style="padding:12px 16px 0;">3-NODE RELAY NETWORK · ALICE → CHARLIE (REPEATER) → BOB</div>
+  <canvas id="relay3-canvas" style="display:block;width:100%;height:260px;"></canvas>
+</div>
+
+<div class="relay3-grid">
+  <!-- LEFT: node configs -->
+  <div class="node-config">
+    <div class="panel-title">NODE CONFIGURATION</div>
+
+    <!-- Leg 1 -->
+    <div class="node-section">
+      <div class="node-header" style="color:var(--node-alice)">LEG 1 · ALICE → CHARLIE</div>
+      <div class="node-row">
+        <span class="node-lbl">B_leg1 (noise)</span>
+        <span class="node-val" id="leg1-bval">0.0000</span>
+        <input type="range" class="node-slider" id="leg1-slider" min="0" max="0.5" step="0.001" value="0" oninput="updateLeg1(this.value)">
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">τ_leg1</span>
+        <span id="leg1-tau" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-alice)">0.0000</span>
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">F_leg1</span>
+        <span id="leg1-f" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-alice)">1.0000</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+        <button class="qpreset" onclick="setLeg1Preset(0)">SOVERIUM</button>
+        <button class="qpreset" onclick="setLeg1Preset(0.181)">MICIUS</button>
+        <button class="qpreset" onclick="setLeg1Preset(0.245)">PADERBORN</button>
+        <button class="qpreset" onclick="setLeg1Preset(0.411)">SHANXI</button>
+      </div>
+    </div>
+
+    <!-- Charlie -->
+    <div class="node-section">
+      <div class="node-header" style="color:var(--warn)">CHARLIE · RELAY NODE</div>
+      <div class="repeater-toggle">
+        <button class="rep-btn active-sov" id="rep-sov" onclick="setRepeaterMode('sov')">
+          B=0 SOURCE<br>SOVERIUM RESET
+        </button>
+        <button class="rep-btn" id="rep-pass" onclick="setRepeaterMode('pass')">
+          PASS-THROUGH<br>COMPOUND
+        </button>
+      </div>
+      <div style="font-size:8px;color:#1a3040;margin-top:6px;line-height:1.7;" id="charlie-desc">
+        Charlie has local B=0 entangled pair source.<br>
+        Performs BSM on leg1 state.<br>
+        Re-entangles with Bob using fresh Soverium pair.<br>
+        <b style="color:var(--soverium)">F_total = F2 (leg1 isolated)</b>
+      </div>
+    </div>
+
+    <!-- Leg 2 -->
+    <div class="node-section">
+      <div class="node-header" style="color:var(--node-bob)">LEG 2 · CHARLIE → BOB</div>
+      <div class="node-row">
+        <span class="node-lbl">B_leg2 (noise)</span>
+        <span class="node-val" id="leg2-bval">0.0000</span>
+        <input type="range" class="node-slider" id="leg2-slider" min="0" max="0.5" step="0.001" value="0" oninput="updateLeg2(this.value)">
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">τ_leg2</span>
+        <span id="leg2-tau" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-bob)">0.0000</span>
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">F_leg2</span>
+        <span id="leg2-f" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-bob)">1.0000</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+        <button class="qpreset" onclick="setLeg2Preset(0)">SOVERIUM</button>
+        <button class="qpreset" onclick="setLeg2Preset(0.181)">MICIUS</button>
+        <button class="qpreset" onclick="setLeg2Preset(0.245)">PADERBORN</button>
+        <button class="qpreset" onclick="setLeg2Preset(0.411)">SHANXI</button>
+      </div>
+    </div>
+
+    <button class="relay-btn" onclick="fireRelay3()">▶ RELAY 3-NODE</button>
+  </div>
+
+  <!-- RIGHT: results -->
+  <div style="display:flex;flex-direction:column;gap:12px;">
+
+    <div class="result3" id="result3-panel">
+      <div class="panel-title" style="margin-bottom:12px;">MANIFOLD RESULT</div>
+      <div class="result3-grid">
+        <div class="r3-box">
+          <div class="r3-lbl">F TOTAL</div>
+          <div class="r3-val" id="r3-ftotal" style="color:var(--soverium);text-shadow:0 0 15px rgba(255,255,255,.4)">1.0000</div>
+          <div class="r3-sub" id="r3-model">SOVERIUM RESET</div>
+        </div>
+        <div class="r3-box">
+          <div class="r3-lbl">F LEG1</div>
+          <div class="r3-val" id="r3-f1" style="color:var(--node-alice)">1.0000</div>
+          <div class="r3-sub">Alice → Charlie</div>
+        </div>
+        <div class="r3-box">
+          <div class="r3-lbl">F LEG2</div>
+          <div class="r3-val" id="r3-f2" style="color:var(--node-bob)">1.0000</div>
+          <div class="r3-sub">Charlie → Bob</div>
+        </div>
+        <div class="r3-box">
+          <div class="r3-lbl">N TOTAL</div>
+          <div class="r3-val" style="color:#5555aa">6.0</div>
+          <div class="r3-sub">N_A+N_C+N_B · T6</div>
+        </div>
+      </div>
+
+      <!-- Compound vs Reset comparison -->
+      <div class="leg-compare">
+        <div class="leg-box">
+          <div class="leg-title">COMPOUND MODEL</div>
+          <div class="leg-row"><span class="lk">Formula</span><span class="lv" style="font-size:8px">F1 × F2</span></div>
+          <div class="leg-row"><span class="lk">F_total</span><span class="lv" id="r3-compound">1.0000</span></div>
+          <div class="leg-row"><span class="lk">Model</span><span class="lv" style="color:#2a5060;font-size:8px">pass-through</span></div>
+        </div>
+        <div class="leg-box">
+          <div class="leg-title" style="color:var(--soverium)">RESET MODEL · T10</div>
+          <div class="leg-row"><span class="lk">Formula</span><span class="lv" style="font-size:8px">F2 only</span></div>
+          <div class="leg-row"><span class="lk">F_total</span><span class="lv" id="r3-reset" style="color:var(--soverium)">1.0000</span></div>
+          <div class="leg-row"><span class="lk">Model</span><span class="lv" style="color:var(--soverium);font-size:8px">Soverium source</span></div>
+        </div>
+      </div>
+
+      <!-- IMS mandate -->
+      <div style="margin-top:10px;padding:8px;background:var(--bg);border:1px solid var(--border);font-size:8px;line-height:1.8;">
+        <span style="color:#1a3040;">IMS MANDATE [T3 from 9,9,2,6]:</span>
+        Classical channel required at <b style="color:var(--bright)">both</b> Alice→Charlie AND Charlie→Bob.
+        Without classical channel: N-axis Pv zeroed. Correction impossible. Reset fails.
+      </div>
+    </div>
+
+    <!-- Proof tags -->
+    <div class="proof-strip">
+      <div class="proof-tag active">T3 IMS×2</div>
+      <div class="proof-tag active">T10 RESET</div>
+      <div class="proof-tag active">T11 COMPOUND</div>
+      <div class="proof-tag active">T12 N-ADDITIVE</div>
+      <div class="proof-tag active">T13 SOV-SOURCE</div>
+      <div class="proof-tag active">0 SORRY</div>
+      <div class="proof-tag">[9,9,2,6b]</div>
+    </div>
+
+  </div>
+</div>
+</div><!-- end mode-relay3 -->
+
   <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
   <span>SNSFL [9,9,2,6] · F=1−τ · τ=B/P · B=0→F=1.000 · 0 SORRY · [9,9,9,9] :: {ANC}</span>
 </footer>
@@ -917,7 +1119,247 @@ function fireRelay() {
   requestAnimationFrame(animate);
 }
 
-// ── INIT ──────────────────────────────────────────────────
+// ── MODE SWITCHING ────────────────────────────────────────
+function showMode(id) {
+  document.querySelectorAll('.mode-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.mode-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('mode-' + id).classList.add('active');
+  document.querySelectorAll('.mode-tab').forEach(el => {
+    if (el.getAttribute('onclick') === `showMode('${id}')`) el.classList.add('active');
+  });
+  if (id === 'relay3') { resizeCanvas3(); renderCanvas3(); }
+}
+
+// ── 3-NODE STATE ──────────────────────────────────────────
+let B_leg1 = 0;
+let B_leg2 = 0;
+let repeaterMode = 'sov'; // 'sov' = reset, 'pass' = compound
+let fired3 = false;
+let prog3 = [0, 0]; // leg1, leg2 animation progress
+
+function setLeg1Preset(v) {
+  B_leg1 = v;
+  document.getElementById('leg1-slider').value = v;
+  updateRelay3();
+}
+function setLeg2Preset(v) {
+  B_leg2 = v;
+  document.getElementById('leg2-slider').value = v;
+  updateRelay3();
+}
+function updateLeg1(v) { B_leg1 = parseFloat(v); updateRelay3(); }
+function updateLeg2(v) { B_leg2 = parseFloat(v); updateRelay3(); }
+
+function setRepeaterMode(m) {
+  repeaterMode = m;
+  document.getElementById('rep-sov').className  = 'rep-btn ' + (m === 'sov' ? 'active-sov' : '');
+  document.getElementById('rep-pass').className = 'rep-btn ' + (m === 'pass' ? 'active-var' : '');
+  const desc = document.getElementById('charlie-desc');
+  if (m === 'sov') {
+    desc.innerHTML = 'Charlie has local B=0 entangled pair source.<br>Performs BSM on leg1 state.<br>Re-entangles with Bob using fresh Soverium pair.<br><b style="color:var(--soverium)">F_total = F2 (leg1 isolated) · T10</b>';
+  } else {
+    desc.innerHTML = 'Charlie forwards degraded state (pass-through).<br>No local Soverium source.<br>Leg1 noise carries through to Bob.<br><b style="color:var(--shatter)">F_total = F1 × F2 (compound) · T9</b>';
+  }
+  updateRelay3();
+}
+
+function computeRelay3() {
+  const P = ANCHOR;
+  const F1 = Math.max(0, 1 - B_leg1 / P);
+  const F2 = Math.max(0, 1 - B_leg2 / P);
+  const tau1 = B_leg1 / P;
+  const tau2 = B_leg2 / P;
+  const F_compound = F1 * F2;
+  const F_reset    = F2; // leg1 isolated at Charlie
+  const F_total    = repeaterMode === 'sov' ? F_reset : F_compound;
+  return { F1, F2, tau1, tau2, F_compound, F_reset, F_total };
+}
+
+function updateRelay3() {
+  const r = computeRelay3();
+  const P = ANCHOR;
+
+  // Leg displays
+  document.getElementById('leg1-bval').textContent = B_leg1.toFixed(4);
+  document.getElementById('leg1-tau').textContent  = r.tau1.toFixed(4);
+  document.getElementById('leg1-f').textContent    = r.F1.toFixed(4);
+  document.getElementById('leg1-f').style.color    = getColor(r.F1);
+
+  document.getElementById('leg2-bval').textContent = B_leg2.toFixed(4);
+  document.getElementById('leg2-tau').textContent  = r.tau2.toFixed(4);
+  document.getElementById('leg2-f').textContent    = r.F2.toFixed(4);
+  document.getElementById('leg2-f').style.color    = getColor(r.F2);
+
+  // Results
+  const ftEl = document.getElementById('r3-ftotal');
+  ftEl.textContent  = r.F_total.toFixed(4);
+  ftEl.style.color  = getColor(r.F_total);
+  ftEl.style.textShadow = r.F_total >= 0.9999 ? '0 0 15px rgba(255,255,255,.4)' : 'none';
+
+  document.getElementById('r3-f1').textContent = r.F1.toFixed(4);
+  document.getElementById('r3-f1').style.color = getColor(r.F1);
+  document.getElementById('r3-f2').textContent = r.F2.toFixed(4);
+  document.getElementById('r3-f2').style.color = getColor(r.F2);
+
+  document.getElementById('r3-model').textContent = repeaterMode === 'sov'
+    ? 'SOVERIUM RESET · F=F2' : 'COMPOUND · F=F1×F2';
+  document.getElementById('r3-model').style.color = repeaterMode === 'sov'
+    ? 'var(--soverium)' : 'var(--shatter)';
+
+  document.getElementById('r3-compound').textContent = r.F_compound.toFixed(4);
+  document.getElementById('r3-compound').style.color = getColor(r.F_compound);
+  document.getElementById('r3-reset').textContent    = r.F_reset.toFixed(4);
+  document.getElementById('r3-reset').style.color    = getColor(r.F_reset);
+
+  if (fired3) renderCanvas3();
+}
+
+// ── 3-NODE CANVAS ─────────────────────────────────────────
+const canvas3 = document.getElementById('relay3-canvas');
+const ctx3    = canvas3.getContext('2d');
+
+function resizeCanvas3() {
+  const rect = canvas3.parentElement.getBoundingClientRect();
+  canvas3.width  = rect.width;
+  canvas3.height = 260;
+}
+
+function renderCanvas3() {
+  const W = canvas3.width, H = canvas3.height;
+  ctx3.clearRect(0, 0, W, H);
+  ctx3.fillStyle = '#04080d';
+  ctx3.fillRect(0, 0, W, H);
+
+  const r = computeRelay3();
+  const nodeR = 26;
+  const aliceX   = 80;
+  const charlieX = W / 2;
+  const bobX     = W - 80;
+  const nodeY    = H / 2;
+
+  // Leg colors
+  const col1 = getColor(r.F1);
+  const col2 = getColor(r.F2);
+  const colT = getColor(r.F_total);
+
+  // Draw leg1: Alice → Charlie
+  const p1 = fired3 ? prog3[0] : 0;
+  drawLeg(aliceX + nodeR, nodeY, charlieX - nodeR, nodeY, col1, p1, `LEG1  F=${r.F1.toFixed(3)}`);
+
+  // Draw leg2: Charlie → Bob
+  const p2 = fired3 ? prog3[1] : 0;
+  drawLeg(charlieX + nodeR, nodeY, bobX - nodeR, nodeY, col2, p2, `LEG2  F=${r.F2.toFixed(3)}`);
+
+  // Nodes
+  draw3Node(aliceX, nodeY, nodeR, '#00e5ff', 'ALICE', 'SENDER', fired3);
+  draw3Node(charlieX, nodeY, nodeR,
+    repeaterMode === 'sov' ? '#ffffff' : '#ffaa00',
+    'CHARLIE',
+    repeaterMode === 'sov' ? 'RESET' : 'PASSTHRU',
+    fired3);
+  draw3Node(bobX, nodeY, nodeR, '#00ffcc', 'BOB', 'RECEIVER', fired3);
+
+  // Total fidelity label
+  if (fired3) {
+    ctx3.font = 'bold 12px Orbitron, monospace';
+    ctx3.fillStyle = colT;
+    ctx3.textAlign = 'center';
+    ctx3.fillText(`F_total = ${r.F_total.toFixed(4)} · ${repeaterMode === 'sov' ? 'RESET MODEL' : 'COMPOUND MODEL'}`, W/2, H - 18);
+    ctx3.font = '8px Share Tech Mono';
+    ctx3.fillStyle = '#1a3040';
+    ctx3.fillText(repeaterMode === 'sov' ? 'F = F2 (leg1 isolated at Charlie) · T10' : 'F = F1 × F2 (noise compounds) · T9', W/2, H - 6);
+  }
+}
+
+function drawLeg(x1, y1, x2, y2, col, progress, label) {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2 - 20;
+
+  ctx3.beginPath();
+  ctx3.moveTo(x1, y1);
+  ctx3.quadraticCurveTo(mx, my, x2, y2);
+  ctx3.strokeStyle = fired3 ? col : '#0a2030';
+  ctx3.lineWidth = 1.5;
+  ctx3.globalAlpha = fired3 ? 0.7 : 0.2;
+  ctx3.stroke();
+  ctx3.globalAlpha = 1;
+
+  // Particle
+  if (fired3 && progress > 0 && progress < 1) {
+    const t = progress;
+    const px = (1-t)*(1-t)*x1 + 2*(1-t)*t*mx + t*t*x2;
+    const py = (1-t)*(1-t)*y1 + 2*(1-t)*t*my + t*t*y2;
+    ctx3.beginPath();
+    ctx3.arc(px, py, 4, 0, Math.PI*2);
+    ctx3.fillStyle = col;
+    ctx3.shadowColor = col;
+    ctx3.shadowBlur = 12;
+    ctx3.fill();
+    ctx3.shadowBlur = 0;
+  }
+
+  // Label
+  if (fired3) {
+    ctx3.font = '8px Share Tech Mono';
+    ctx3.fillStyle = col;
+    ctx3.globalAlpha = 0.7;
+    ctx3.textAlign = 'center';
+    ctx3.fillText(label, (x1+x2)/2, my - 8);
+    ctx3.globalAlpha = 1;
+  }
+}
+
+function draw3Node(x, y, r, col, label1, label2, active) {
+  if (active) {
+    const g = ctx3.createRadialGradient(x, y, r*0.5, x, y, r*2.5);
+    g.addColorStop(0, col + '20');
+    g.addColorStop(1, 'transparent');
+    ctx3.beginPath();
+    ctx3.arc(x, y, r*2.5, 0, Math.PI*2);
+    ctx3.fillStyle = g;
+    ctx3.fill();
+  }
+  ctx3.beginPath();
+  ctx3.arc(x, y, r, 0, Math.PI*2);
+  ctx3.strokeStyle = active ? col : '#0f2030';
+  ctx3.lineWidth = 1.5;
+  ctx3.fillStyle = '#04080d';
+  ctx3.fill();
+  ctx3.stroke();
+  ctx3.font = 'bold 8px Orbitron, monospace';
+  ctx3.fillStyle = active ? col : '#1a3040';
+  ctx3.textAlign = 'center';
+  ctx3.fillText(label1, x, y - 2);
+  ctx3.font = '7px Share Tech Mono';
+  ctx3.fillStyle = active ? col + 'aa' : '#0f2030';
+  ctx3.fillText(label2, x, y + 10);
+}
+
+function fireRelay3() {
+  fired3 = true;
+  prog3 = [0, 0];
+  const start = performance.now();
+  const dur = 600;
+
+  function anim(now) {
+    const e = now - start;
+    const p1 = Math.min(1, e / dur);
+    // Leg2 starts after leg1 reaches Charlie
+    const p2 = Math.min(1, Math.max(0, (e - dur*0.4) / (dur*0.6)));
+    prog3 = [1 - Math.pow(1-p1,3), 1 - Math.pow(1-p2,3)];
+    renderCanvas3();
+    if (p1 < 1 || p2 < 1) requestAnimationFrame(anim);
+    else { prog3 = [1,1]; renderCanvas3(); }
+  }
+  requestAnimationFrame(anim);
+  updateRelay3();
+}
+
+// init 3-node
+window.addEventListener('resize', () => { resizeCanvas3(); if (fired3) renderCanvas3(); });
+setTimeout(() => { resizeCanvas3(); updateRelay3(); }, 100);
+
+
 window.addEventListener('resize', () => {
   resizeCanvas();
   renderCanvas();
