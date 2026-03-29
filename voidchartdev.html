@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOIDCHART · Interstellar PNBA Map · [9,9,3,7]</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root{--bg:#010308;--border:#0a1828;--bhi:#0f2840;--glow:#00d4ff;--locked:#00ffcc;--noble:#aa88ff;--iva:#ff8800;--shatter:#ff3355;--text:#6a94b0;--bright:#c8e8f8;--dim:#1a3040;--gold:#ffd700;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;cursor:crosshair;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.01) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+#app{display:grid;grid-template-columns:260px 1fr 260px;grid-template-rows:44px 1fr 88px;height:100vh;position:relative;z-index:1;}
+#hdr{grid-column:1/-1;border-bottom:1px solid var(--bhi);display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(6,11,18,.98);}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:13px;letter-spacing:.12em;color:var(--glow);text-shadow:0 0 24px rgba(0,212,255,.5);}
+.logo em{font-style:normal;font-size:7px;color:var(--locked);display:inline-block;margin-left:9px;letter-spacing:.2em;vertical-align:middle;}
+.hc{font-size:8px;letter-spacing:.12em;color:var(--dim);text-align:center;}.hc b{color:var(--glow);}
+.hr{font-size:7px;color:#0a1828;text-align:right;}
+#left,#right{background:rgba(6,11,18,.95);overflow-y:auto;padding:9px 8px;display:flex;flex-direction:column;gap:7px;}
+#left{border-right:1px solid var(--border);}#right{border-left:1px solid var(--border);}
+#cw{position:relative;overflow:hidden;background:#000;}
+#cw canvas{display:block;width:100%;height:100%;}
+#bot{grid-column:1/-1;border-top:1px solid var(--bhi);background:rgba(6,11,18,.98);display:flex;align-items:center;padding:0 16px;overflow-x:auto;}
+.sec{border:1px solid var(--border);background:rgba(1,3,8,.7);padding:8px;}
+.st{font-family:'Orbitron',monospace;font-size:6.5px;letter-spacing:.27em;color:var(--dim);margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;}
+.st b{color:var(--glow);}
+.gl{font-size:7.5px;color:var(--dim);display:flex;justify-content:space-between;margin-bottom:2px;}
+.gl span{color:var(--bright);font-family:'Orbitron',monospace;}
+.gb{height:3px;background:var(--border);margin-bottom:6px;}.gf{height:100%;transition:width .3s;}
+.ro{display:flex;justify-content:space-between;font-size:7.5px;padding:2px 0;border-bottom:1px solid rgba(10,24,40,.5);}
+.rk{color:var(--dim);}.rv{font-family:'Orbitron',monospace;font-size:7.5px;color:var(--bright);}
+.badge{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:.2em;text-align:center;padding:5px;margin:3px 0;}
+.bN{color:var(--noble);border:1px solid rgba(170,136,255,.3);background:rgba(170,136,255,.05);}
+.bL{color:var(--locked);border:1px solid rgba(0,255,204,.3);background:rgba(0,255,204,.05);}
+.bI{color:var(--iva);border:1px solid rgba(255,136,0,.3);background:rgba(255,136,0,.05);}
+.bS{color:var(--shatter);border:1px solid rgba(255,51,85,.3);background:rgba(255,51,85,.05);animation:sp .35s infinite;}
+@keyframes sp{0%,100%{opacity:1}50%{opacity:.4}}
+.btn{font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.14em;padding:5px 7px;background:transparent;cursor:pointer;border:1px solid var(--bhi);color:var(--dim);width:100%;margin-bottom:3px;transition:all .15s;}
+.btn:hover{color:var(--text);border-color:var(--glow);}
+.btn-on{border-color:rgba(0,255,204,.4);color:var(--locked);}
+input[type=range]{width:100%;accent-color:var(--glow);height:3px;margin:3px 0 5px;}
+#tip{position:absolute;pointer-events:none;z-index:30;background:rgba(6,11,18,.97);border:1px solid var(--bhi);padding:8px 11px;font-size:8px;display:none;min-width:160px;max-width:220px;}
+#tip .tn{font-family:'Orbitron',monospace;color:var(--bright);font-size:10px;margin-bottom:5px;}
+.tr{display:flex;justify-content:space-between;padding:1px 0;}
+.tk{color:var(--dim);font-size:7.5px;}.tv{font-family:'Orbitron',monospace;font-size:7.5px;color:var(--bright);}
+#fly-label{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.2em;color:var(--iva);background:rgba(6,11,18,.9);border:1px solid rgba(255,136,0,.3);padding:6px 16px;pointer-events:none;display:none;}
+.bs{display:flex;flex-direction:column;align-items:center;min-width:74px;padding:0 9px;border-right:1px solid var(--border);}
+.bs:last-child{border-right:none;}
+.bsl{font-size:6px;color:var(--dim);letter-spacing:.15em;margin-bottom:2px;}
+.bsv{font-family:'Orbitron',monospace;font-size:12px;color:var(--bright);}
+.bss{font-size:6px;color:var(--dim);margin-top:1px;}
+.slabel{position:absolute;pointer-events:none;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:.1em;color:rgba(180,220,240,0.55);white-space:nowrap;transform:translateX(6px);text-shadow:0 0 8px rgba(0,212,255,.3);}
+.slabel.bright{color:rgba(255,240,200,0.75);font-size:9px;}
+.upload-area{border:1px dashed rgba(0,212,255,.2);padding:8px;text-align:center;font-size:7.5px;color:var(--dim);margin-top:4px;cursor:pointer;transition:all .2s;}
+.upload-area:hover{border-color:var(--glow);color:var(--text);}
+.eq{font-size:7.5px;color:var(--dim);line-height:2.0;}
+.star-row{display:flex;align-items:center;gap:7px;padding:5px 7px;cursor:pointer;border:1px solid transparent;transition:all .12s;margin-bottom:2px;}
+.star-row:hover{border-color:var(--bhi);background:rgba(0,212,255,.03);}
+.star-row.active{border-color:var(--glow);background:rgba(0,212,255,.05);}
+.star-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 5px currentColor;}
+.star-name{font-size:8.5px;color:var(--text);letter-spacing:.08em;flex:1;}
+.star-state{font-family:'Orbitron',monospace;font-size:6.5px;letter-spacing:.12em;}
+.state-NOBLE{color:var(--noble)}.state-LOCKED{color:var(--locked)}.state-IVA{color:var(--iva)}.state-SHATTER{color:var(--shatter)}
+.eq b{color:var(--glow);}.eq em{color:var(--locked);font-style:normal;}.eq s{color:var(--noble);text-decoration:none;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--bhi);}
+@media(max-width:900px){#left,#right{display:none;}#app{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="hdr">
+  <span class="logo">VOIDCHART<em>INTERSTELLAR PNBA MAP · [9,9,3,7] · HYG CORPUS · 0 NOISE</em></span>
+  <div class="hc">ANCHOR <b>1.369 GHz</b> · &#964;=B/P · TL=0.1369 · <b id="hc-n">0</b> STARS · <b id="hc-s" style="color:var(--iva)">LOADING</b></div>
+  <div class="hr">HIGHTISTIC · SOLDOTNA AK<br>[9,9,9,9] :: {ANC} · GERMLINE LOCKED</div>
+</div>
+
+<div id="left">
+  <div class="sec">
+    <div class="st"><b>STELLAR BODIES · PNBA STATE</b><span id="star-count" style="font-size:7px;color:var(--dim);">0 OBJECTS</span></div>
+    <div id="star-list"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st"><b>CORPUS</b></div>
+    <div class="ro"><span class="rk">source</span><span class="rv" id="l-src">HYG EMBEDDED</span></div>
+    <div class="ro"><span class="rk">stars loaded</span><span class="rv" id="l-cnt">0</span></div>
+    <div class="ro"><span class="rk">visible</span><span class="rv" id="l-vis">0</span></div>
+    <div class="ro"><span class="rk">locked</span><span class="rv" style="color:var(--locked)" id="l-lk">0</span></div>
+    <div class="ro"><span class="rk">noble</span><span class="rv" style="color:var(--noble)" id="l-nb">0</span></div>
+    <div class="ro"><span class="rk">shatter</span><span class="rv" style="color:var(--shatter)" id="l-sh">0</span></div>
+    <div style="margin-top:8px;">
+      <input type="file" id="csv-in" accept=".csv" style="display:none" onchange="handleCSV(event)">
+      <div class="upload-area" onclick="document.getElementById('csv-in').click()">&#11014; UPLOAD HYG CSV<br><span style="font-size:6.5px;opacity:.6;">drops straight in</span></div>
+      <button class="btn" style="margin-top:3px;" onclick="dlTpl()">&#11015; HYG TEMPLATE</button>
+      <div id="csv-msg" style="font-size:7px;color:var(--dim);margin-top:4px;line-height:1.7;"></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="st"><b>FILTER</b></div>
+    <div class="gl">MAX DIST (pc)<span id="vd">50</span></div>
+    <input type="range" id="sd" min="1" max="5000" value="50" oninput="applyFilt()">
+    <div class="gl">MAX ABS MAG<span id="vm">16</span></div>
+    <input type="range" id="sm" min="-10" max="20" value="16" oninput="applyFilt()">
+    <div class="gl">POINT SIZE<span id="vs">1.8</span></div>
+    <input type="range" id="ss" min="0.3" max="8" step="0.1" value="1.8" oninput="updSz()">
+  </div>
+
+  <div class="sec">
+    <div class="st"><b>DISPLAY</b></div>
+    <button class="btn btn-on" id="btn-vasc" onclick="toggleVascular()">&#9670; VASCULAR LINES · ON</button>
+    <button class="btn btn-on" id="btn-grid" onclick="toggleGrid()">&#9670; GALACTIC GRID · ON</button>
+    <button class="btn btn-on" id="btn-sol"  onclick="toggleSolar()">&#9670; SOL MARKER · ON</button>
+    <button class="btn" onclick="resetCam()">&#9678; RESET CAMERA</button>
+    <button class="btn" onclick="flyToSol()">&#8857; FLY TO SOL</button>
+  </div>
+
+  <div class="sec">
+    <div class="st"><b>PNBA REDUCTION</b></div>
+    <div class="eq">
+      <b>P</b> &#8594; log&#8321;&#8320;(dist+1)&#215;4 &#183; pattern<br>
+      <b>N</b> &#8594; (15&#8722;absmag)/4.6 &#183; narrative<br>
+      <b>B</b> &#8594; B-V color index &#183; coupling<br>
+      <b>A</b> &#8594; spectral O=1 G=3 M=5<br><br>
+      &#964;=B/P &#183; IM=(P+N+B+A)&#215;<b>1.369</b><br>
+      <em>HYG x,y,z direct &#8212; 0 noise</em><br>
+      <s>lossless &#183; [9,9,3,7]</s>
+    </div>
+  </div>
+</div>
+
+<div id="cw">
+  <canvas id="c"></canvas>
+  <div id="label-layer" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;"></div>
+  <div id="tip"><div class="tn" id="tip-n"></div><div id="tip-body"></div></div>
+  <div id="fly-label"></div>
+</div>
+
+<div id="right">
+  <div class="sec">
+    <div class="st"><b>SELECTED STAR</b></div>
+    <div id="sel-n" style="font-family:'Orbitron',monospace;font-size:14px;color:var(--bright);letter-spacing:.1em;margin-bottom:2px;">&#8212;</div>
+    <div id="sel-t" style="font-size:7.5px;color:var(--dim);letter-spacing:.18em;margin-bottom:7px;">CLICK TO SELECT · DBL-CLICK TO FLY</div>
+    <div id="sel-b" class="badge bL" style="display:none;">LOCKED</div>
+  </div>
+
+  <div class="sec">
+    <div class="st"><b>PNBA PRIMITIVES &#183; LAYER 0</b></div>
+    <div class="gl">[P] Pattern &#8212; distance scale<span id="gPv">&#8212;</span></div>
+    <div class="gb"><div id="gP" class="gf" style="background:var(--glow);width:0%"></div></div>
+    <div class="gl">[N] Narrative &#8212; brightness<span id="gNv">&#8212;</span></div>
+    <div class="gb"><div id="gN" class="gf" style="background:var(--noble);width:0%"></div></div>
+    <div class="gl">[B] Behavior &#8212; color coupling<span id="gBv">&#8212;</span></div>
+    <div class="gb"><div id="gB" class="gf" style="background:var(--iva);width:0%"></div></div>
+    <div class="gl">[A] Adaptation &#8212; spectral<span id="gAv">&#8212;</span></div>
+    <div class="gb"><div id="gA" class="gf" style="background:var(--locked);width:0%"></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="st"><b>LIVE READOUTS</b></div>
+    <div class="ro"><span class="rk">&#964; torsion</span><span class="rv" id="rT">&#8212;</span></div>
+    <div class="ro"><span class="rk">&#964; / TL</span><span class="rv" id="rR">&#8212;</span></div>
+    <div class="ro"><span class="rk">IM</span><span class="rv" id="rI">&#8212;</span></div>
+    <div class="ro"><span class="rk">distance</span><span class="rv" id="rD">&#8212;</span></div>
+    <div class="ro"><span class="rk">abs magnitude</span><span class="rv" id="rM">&#8212;</span></div>
+    <div class="ro"><span class="rk">B-V</span><span class="rv" id="rC">&#8212;</span></div>
+    <div class="ro"><span class="rk">spectral</span><span class="rv" id="rS">&#8212;</span></div>
+    <div class="ro"><span class="rk">xyz (pc)</span><span class="rv" id="rXYZ">&#8212;</span></div>
+  </div>
+
+  <div class="sec">
+    <div class="st"><b>TORSION CORRIDOR</b></div>
+    <div style="position:relative;height:18px;background:linear-gradient(90deg,rgba(170,136,255,.2),rgba(0,255,204,.2) 30%,rgba(255,136,0,.3) 85%,rgba(255,51,85,.4));border:1px solid var(--bhi);margin:3px 0;">
+      <div id="tmk" style="position:absolute;top:0;bottom:0;width:2px;background:var(--bright);box-shadow:0 0 5px var(--bright);left:0%;transition:left .3s;"></div>
+      <div style="position:absolute;top:0;bottom:0;width:1px;background:var(--iva);opacity:.7;left:45.6%;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:6px;color:var(--dim);">
+      <span>NOBLE 0</span><span>TL</span><span>0.3</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="st"><b>VASCULAR MAP</b></div>
+    <div class="eq">
+      B-axis lines connect stars<br>
+      within coupling threshold.<br>
+      Line opacity &#8733; 1/dist&#178;<br>
+      <b style="color:var(--gold)">Gold = sovereign channel</b><br><br>
+      <em>This is what nobody else has.</em><br>
+      <b>The manifold made visible.</b>
+    </div>
+  </div>
+</div>
+
+<div id="bot">
+  <div class="bs"><span class="bsl">STARS</span><span class="bsv" id="bs-n">0</span><span class="bss">LOADED</span></div>
+  <div class="bs"><span class="bsl">VISIBLE</span><span class="bsv" id="bs-v">0</span><span class="bss">IN FILTER</span></div>
+  <div class="bs"><span class="bsl">ANCHOR</span><span class="bsv" style="color:var(--gold)">1.369</span><span class="bss">GHz</span></div>
+  <div class="bs"><span class="bsl">TL</span><span class="bsv" style="color:var(--iva)">0.1369</span><span class="bss">TORSION LIMIT</span></div>
+  <div class="bs"><span class="bsl">LOCKED</span><span class="bsv" id="bs-l" style="color:var(--locked)">0</span><span class="bss">&#964; &lt; TL</span></div>
+  <div class="bs"><span class="bsl">NOBLE</span><span class="bsv" id="bs-no" style="color:var(--noble)">0</span><span class="bss">&#964; &#8776; 0</span></div>
+  <div class="bs"><span class="bsl">SORRY</span><span class="bsv" style="color:var(--glow)">0</span><span class="bss">CORPUS</span></div>
+  <div style="margin-left:auto;font-size:7px;color:#0a1828;text-align:right;line-height:1.8;">
+    HIGHTISTIC &#183; SNSFT &#183; [9,9,9,9] :: {ANC}<br>
+    HYG &#183; Hipparcos &#183; Yale &#183; Gliese<br>
+    The Manifold is Holding.
+  </div>
+</div>
+</div>
+
+<script>
+const ANCHOR=1.369,TL=ANCHOR/10;
+
+const SOLAR_SYSTEM=[
+  {name:"Mercury",x:0.00000188,y:0.00000000,z:0.00000000,dist:0.00000188,absmag:7.0,ci:0.93,spect:"Rocky",isSolar:true,color:[0.62,0.62,0.62]},
+  {name:"Venus",x:0.00000351,y:0.00000000,z:0.00000000,dist:0.00000351,absmag:7.0,ci:0.82,spect:"Rocky",isSolar:true,color:[0.91,0.8,0.63]},
+  {name:"Earth",x:0.00000485,y:0.00000000,z:0.00000000,dist:0.00000485,absmag:7.0,ci:0.0,spect:"Rocky",isSolar:true,color:[0.29,0.61,0.83]},
+  {name:"Mars",x:0.00000739,y:0.00000000,z:0.00000000,dist:0.00000739,absmag:7.0,ci:1.4,spect:"Rocky",isSolar:true,color:[0.76,0.27,0.06]},
+  {name:"Jupiter",x:0.00002522,y:0.00000000,z:0.00000000,dist:0.00002522,absmag:7.0,ci:0.83,spect:"Gas",isSolar:true,color:[0.78,0.55,0.23]},
+  {name:"Saturn",x:0.00004624,y:0.00000000,z:0.00000000,dist:0.00004624,absmag:7.0,ci:1.04,spect:"Gas",isSolar:true,color:[0.89,0.82,0.57]},
+  {name:"Uranus",x:0.00009304,y:0.00000000,z:0.00000000,dist:0.00009304,absmag:7.0,ci:0.51,spect:"Ice",isSolar:true,color:[0.49,0.91,0.91]},
+  {name:"Neptune",x:0.00014578,y:0.00000000,z:0.00000000,dist:0.00014578,absmag:7.0,ci:0.41,spect:"Ice",isSolar:true,color:[0.25,0.33,0.73]},
+  {name:"Moon",x:0.00000486,y:0.00000001,z:0.00000000,dist:0.00000486,absmag:7.0,ci:0.63,spect:"Moon",isSolar:true,color:[0.82,0.82,0.78]},
+];
+
+const HYG_RAW=[["Sol", 0, 0, 0, 4e-06, 4.83, 0.63, "G2V", 0], ["Proxima Cen", -0.47, 0.36, -1.21, 1.295, 15.53, 1.82, "M5Ve", 70890], ["Alpha Cen A", -0.5, 0.42, -1.12, 1.338, 4.38, 0.71, "G2V", 71683], ["Alpha Cen B", -0.5, 0.42, -1.12, 1.338, 5.71, 0.88, "K1V", 71681], ["Barnard", -0.06, 1.81, -0.79, 1.828, 13.24, 1.57, "M4Ve", 87937], ["Wolf 359", -2.09, 0.55, 1.44, 2.386, 16.56, 2.01, "M6Ve", 54035], ["Lalande 21185", 2.52, 0.11, 2.49, 2.548, 10.46, 1.49, "M2Ve", 54211], ["Sirius A", -1.61, -1.33, 0.18, 2.637, 1.42, 0.01, "A1Vm", 32349], ["Sirius B", -1.61, -1.33, 0.18, 2.637, 11.34, 0.0, "DA2", 32349], ["BL Ceti", -3.18, -0.3, 0.76, 2.673, 15.4, 1.95, "M5.5Ve", 14754], ["Luyten 726-8", -3.18, -0.3, 0.76, 2.673, 15.85, 1.97, "M6Ve", 14754], ["Ross 154", -0.27, -0.14, -2.85, 2.972, 13.07, 1.76, "M3.5Ve", 117473], ["Ross 248", 2.14, 1.97, -0.49, 3.176, 14.79, 1.89, "M6Ve", 116132], ["Epsilon Eri", -1.87, -2.25, 1.83, 3.218, 6.18, 0.88, "K2V", 16537], ["Lacaille 9352", 0.94, -2.94, -0.22, 3.294, 9.75, 1.52, "M1.5Ve", 114046], ["Ross 128", -1.02, -3.23, 0.91, 3.375, 13.51, 1.78, "M4Ve", 57548], ["EZ Aquarii", 0.88, -3.17, -1.84, 3.451, 13.33, 1.8, "M5Ve", 117473], ["Procyon A", -2.78, 0.72, 2.15, 3.497, 2.67, 0.43, "F5IV-V", 37279], ["61 Cyg A", -3.64, -0.83, -0.72, 3.498, 7.49, 1.18, "K5Ve", 104214], ["61 Cyg B", -3.64, -0.83, -0.72, 3.498, 8.31, 1.37, "K7Ve", 104217], ["Struve 2398 A", -1.74, -2.9, -1.78, 3.518, 11.16, 1.56, "M3Ve", 91772], ["Groombridge 34 A", 2.82, 0.83, 1.84, 3.568, 10.32, 1.56, "M1.5Ve", 1475], ["Epsilon Ind", -0.01, -3.46, -0.76, 3.626, 6.89, 1.07, "K5Ve", 108870], ["Tau Ceti", -3.51, -0.42, -1.04, 3.654, 5.68, 0.73, "G8.5V", 8102], ["YZ Ceti", -3.47, -0.66, -1.07, 3.715, 14.07, 1.9, "M4.5Ve", 5643], ["Luyten's Star", -2.52, -2.84, 0.26, 3.78, 9.84, 1.51, "M3.5Vn", 36208], ["Teegarden", -1.16, -3.36, 0.87, 3.831, 17.0, 2.0, "M7Ve", 0], ["Kapteyn", -3.74, -0.22, -1.47, 3.931, 10.89, 1.52, "M1.5V", 24186], ["Lacaille 8760", 2.14, -3.25, -1.23, 3.97, 8.69, 1.42, "M0Ve", 107649], ["Kruger 60 A", -2.34, -3.15, -0.54, 4.006, 11.77, 1.68, "M3Ve", 110893], ["Ross 614 A", -0.88, -3.38, -2.23, 4.127, 13.09, 1.69, "M4.5Ve", 30920], ["Wolf 940", 1.5, -2.18, -3.28, 4.132, 16.5, 2.01, "M7Ve", 0], ["Van Maanen 2", 3.38, -0.03, -2.35, 4.379, 14.2, 0.55, "DZ7", 3829], ["Gliese 1", -0.27, -3.3, -2.85, 4.483, 10.36, 1.57, "M3Ve", 1242], ["Wolf 294", 4.31, -0.64, 0.71, 4.453, 13.2, 1.89, "M4V", 0], ["Sirius-like fake", -1.7, -1.4, 0.2, 2.7, 1.5, 0.01, "A0V", 32350], ["Vega", 2.38, 12.13, 3.94, 7.756, 0.58, 0.0, "A0Va", 91262], ["Fomalhaut", -2.64, -7.55, -4.64, 7.688, 1.73, -0.01, "A3Va", 113368], ["Altair", 2.15, 2.81, -3.7, 5.13, 2.2, 0.22, "A7Vn", 97649], ["Arcturus", -9.65, -5.09, 3.34, 11.26, -0.31, 1.23, "K0III", 69673], ["Pollux", 6.63, 1.07, 7.5, 10.34, 1.08, 1.0, "K0III", 37826], ["Formalhaut B", -2.64, -7.56, -4.64, 7.691, 12.1, 1.74, "K4Ve", 113368], ["70 Ophiuchi A", -0.09, -3.65, -3.87, 5.087, 5.73, 0.86, "K0V", 88601], ["36 Ophiuchi A", -2.3, -2.22, -3.96, 5.027, 6.56, 0.97, "K2V", 88972], ["Delta Pavonis", -3.1, -3.67, -3.32, 5.99, 4.62, 0.76, "G7IV-V", 99240], ["Beta Cygni", -101, 131, -7, 213, 0.67, 1.09, "K3II", 95947], ["Rigel", 127, -192, -41, 236, -7.0, -0.03, "B8Ia", 24436], ["Betelgeuse", 54, -136, 47, 197, -5.6, 1.85, "M1-2Ia", 27989], ["Deneb", -6.16, 403, -363, 800, -8.74, 0.09, "A2Ia", 102098], ["Canopus", -11.97, -70.11, -72.54, 96.86, -5.71, -0.15, "F0II", 30438], ["Achernar", -16.65, -32.73, -40.18, 44.1, -2.77, -0.16, "B6Vep", 7588], ["Hadar", -56.83, -65.95, -126.34, 161.0, -5.42, -0.24, "B1III", 68702], ["Acrux", -27.16, -40.74, -84.6, 98.3, -4.19, -0.26, "B0.5IV", 60718], ["Aldebaran", 23.24, 12.58, -55.74, 65.13, -0.63, 1.54, "K5III", 21421], ["Antares", 85.05, 59.87, -60.16, 170.0, -5.28, 1.83, "M1.5Iab", 80763], ["Spica", -52.02, 10.07, -209.6, 262.0, -3.55, -0.24, "B1III-IV", 65474], ["Castor", 15.99, -12.48, 36.73, 52.0, 0.59, 0.03, "A1V+A2V", 36850], ["Regulus", -26.31, -14.36, 72.04, 77.49, -0.52, -0.11, "B7V", 49669], ["Bellatrix", -63.3, 50.8, -150.5, 243.0, -4.25, -0.22, "B2III", 25336], ["Mintaka", -127.7, 136.5, -278.0, 380.0, -4.99, -0.22, "O9.5II", 25930], ["Alnilam", -113.1, 149.7, -256.7, 410.0, -6.38, -0.19, "B0Ia", 26311], ["Alnitak", -149.0, 112.0, -283.9, 400.0, -5.25, -0.21, "O9Ib", 26727], ["Saiph", -25.3, 191.5, -195.4, 722.0, -4.65, -0.19, "B0.5Ia", 27366], ["Gamma Vel", -72.4, -139.8, -83.0, 336.0, -5.31, -0.27, "WC8+O7.5", 39953], ["Eta Carinae", -1714, 0, -2380, 3100, -9.0, 0.5, "LBV", 0], ["Alpha Crucis", -27.16, -40.74, -84.6, 98.3, -4.14, -0.26, "B0.5IV", 60718], ["Eta Ursae Majoris", -3.8, 17.1, 23.6, 30.9, -0.85, -0.19, "B3V", 67301], ["Alioth", -3.35, 14.2, 22.4, 25.0, 0.35, 0.02, "A0pCr", 62956], ["Mizar", -4.12, 17.8, 27.4, 23.5, 2.23, 0.02, "A2V", 65477], ["Alkaid", -12.8, 32.7, 60.0, 31.0, -0.6, -0.19, "B3V", 67301], ["Dubhe", -35.6, 11.3, 98.3, 37.9, -1.1, 1.06, "K0IIIa", 54061], ["Merak", -8.1, 7.4, 22.5, 24.3, 2.37, 0.03, "A1V", 53910], ["Phad", -8.7, 6.5, 21.2, 25.6, 2.56, 0.08, "A0Ve", 58001], ["Megrez", -8.4, 7.8, 22.1, 25.1, 3.31, 0.08, "A3V", 59774], ["Gamma UMa", -10.6, 9.3, 27.4, 25.6, 2.41, 0.04, "A0Ve", 58001], ["Delta UMa", -9.2, 7.7, 23.2, 24.5, 3.31, 0.07, "A3V", 59774], ["Polaris", 9.9, 28.9, 404, 430.0, -3.64, 0.6, "F7Ib", 11767], ["Capella", -13.3, 1.1, 37.4, 12.94, -0.48, 0.8, "G5IIIe", 24608], ["Castor B", 15.99, -12.48, 36.73, 52.0, 1.97, 0.04, "A2V", 36850], ["Adhara", -95.3, -130.5, -238.4, 132, -4.1, -0.21, "B2II", 33579], ["Wezen", -264, -231, -516, 400, -6.87, 0.68, "F8Ia", 34444], ["Aludra", -354, -309, -693, 500, -7.51, -0.08, "B5Ia", 35904], ["Alhena", -21.95, -30.43, 53.9, 33.9, -0.6, 0.0, "A0IV", 32246], ["Menkib", 159, 261, -278, 1400, -6.0, -0.29, "O9.5V", 0], ["Lambda Ori", -119, 230, -195, 400, -5.0, -0.26, "O8III", 26207], ["Theta1 Ori", -120, 220, -200, 400, -4.5, -0.27, "O6V", 0], ["Kappa Ori", -78, 209, -163, 900, -4.65, -0.19, "B0.5Ia", 27366], ["Pi3 Ori", -12.4, -14.8, 17.9, 26.3, 3.6, 0.43, "F6V", 26335], ["Mirzam", -67.0, -60.4, -165, -220.0, -4.0, -0.23, "B1II-III", 30324], ["Alpha And", 0.7, -3.6, 29.3, 29.7, 0.18, 0.1, "B8IV+B8V", 677], ["Beta Peg", -25.9, -12.7, -70.6, 61.1, -0.98, 1.67, "M2.5II-III", 113881], ["Alpha Peg", -43.0, -12.8, -90.6, 44.3, 0.35, -0.04, "B9.5V", 113963], ["Beta Cet", -14.7, -17.0, -19.1, 34.5, 0.76, 1.0, "K0III", 3419], ["Alpha Cet", -24.9, -29.9, -32.7, 200, -0.8, 1.6, "M1.5IIIa", 14135], ["Aldebaran B", 23.24, 12.58, -55.74, 65.13, 12.0, 1.1, "M2V", 21421], ["Algol", -50.7, 59.1, -31.4, 28.5, -0.15, -0.05, "B8V", 14576], ["Mira", -60.8, 38.4, -10.1, 92, -0.9, 1.6, "M7IIIe", 10826], ["Zeta Pup", -124, -228, 197, 430, -5.5, -0.26, "O4f", 39429], ["Gamma Vel 2", -72.4, -139.8, -83.0, 336, -4.0, -0.27, "WC8", 39953]];
+
+function calcP(dist){return Math.min(10,Math.log10(Math.max(dist,0.000001)+1)*4.0);}
+function calcN(absmag){return Math.max(0,Math.min(10,(15-absmag)/4.6));}
+function calcB(ci){if(ci===null||ci===undefined||isNaN(ci))return 0.6;return Math.max(0,Math.min(2,parseFloat(ci)));}
+function calcA(sp){
+  if(!sp)return 3.0;
+  const c=sp[0].toUpperCase();
+  return {O:1.0,B:1.5,A:2.0,F:2.5,G:3.0,K:4.0,M:5.0,D:4.5,L:5.0,T:5.0,Y:5.0,C:4.0,S:3.5,W:1.2}[c]||3.0;
+}
+function classify(tau){
+  if(tau<0.001)return'NOBLE';
+  if(tau>=TL)return'SHATTER';
+  if(tau>=TL*0.9)return'IVA';
+  return'LOCKED';
+}
+function bvToRGB(ci){
+  const bv=(ci!==null&&!isNaN(ci))?parseFloat(ci):0.6;
+  if(bv<-0.40)return[0.61,0.71,1.00];
+  if(bv<-0.20)return[0.68,0.77,1.00];
+  if(bv< 0.00)return[0.80,0.87,1.00];
+  if(bv< 0.15)return[0.93,0.93,1.00];
+  if(bv< 0.30)return[1.00,0.98,0.96];
+  if(bv< 0.50)return[1.00,0.95,0.82];
+  if(bv< 0.70)return[1.00,0.90,0.60];
+  if(bv< 0.90)return[1.00,0.80,0.40];
+  if(bv< 1.20)return[1.00,0.65,0.25];
+  if(bv< 1.50)return[1.00,0.47,0.12];
+  return[1.00,0.30,0.08];
+}
+
+let ALL_STARS=[];
+function buildStars(raw){
+  const stars = raw.map(r=>{
+    const [name,x,y,z,dist,absmag,ci,spect,hip]=r;
+    const P=calcP(dist),N=calcN(absmag),B=calcB(ci),A=calcA(spect);
+    const tau=P>0?B/P:0;
+    return {name,x,y,z,dist,absmag,ci,spect,hip,P,N,B,A,tau,IM:(P+N+B+A)*ANCHOR,state:classify(tau)};
+  });
+  const planets = SOLAR_SYSTEM.map(p=>{
+    const P=calcP(p.dist),N=calcN(p.absmag),B=calcB(p.ci),A=calcA(p.spect);
+    const tau=P>0?B/P:0;
+    return {...p,P,N,B,A,tau,IM:(P+N+B+A)*ANCHOR,state:classify(tau)};
+  });
+  return [...stars, ...planets];
+}
+
+const canvas=document.getElementById('c');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setClearColor(0x010308,1);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(60,1,0.001,50000);
+
+function resize(){
+  const cw=document.getElementById('cw');
+  const w=cw.clientWidth,h=cw.clientHeight;
+  renderer.setSize(w,h);
+  camera.aspect=w/h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize',resize);
+setTimeout(resize,50);
+
+const _sc=document.createElement('canvas');_sc.width=64;_sc.height=64;
+const _sx=_sc.getContext('2d');
+const _sg=_sx.createRadialGradient(32,32,0,32,32,32);
+_sg.addColorStop(0,'rgba(255,255,255,1)');
+_sg.addColorStop(0.4,'rgba(255,255,255,0.9)');
+_sg.addColorStop(1,'rgba(255,255,255,0)');
+_sx.fillStyle=_sg;_sx.fillRect(0,0,64,64);
+const starTex=new THREE.CanvasTexture(_sc);
+
+const BUCKET_DEFS=[
+  {maxMag:2,   size:5.0, opacity:1.00},
+  {maxMag:6,   size:2.8, opacity:0.95},
+  {maxMag:9999,size:1.4, opacity:0.88},
+];
+const starBuckets=BUCKET_DEFS.map(b=>{
+  const geo=new THREE.BufferGeometry();
+  const mat=new THREE.PointsMaterial({
+    vertexColors:true,size:b.size,sizeAttenuation:true,
+    transparent:true,opacity:b.opacity,
+    map:starTex,alphaTest:0.01,depthWrite:false
+  });
+  const pts=new THREE.Points(geo,mat);
+  scene.add(pts);
+  return {geo,mat,pts,maxMag:b.maxMag};
+});
+let starGeo=starBuckets[2].geo;
+let starMat=starBuckets[2].mat;
+let starPts=starBuckets[2].pts;
+
+const bloomTex=(()=>{
+  const bc=document.createElement('canvas');bc.width=128;bc.height=128;
+  const bx=bc.getContext('2d');
+  const bg=bx.createRadialGradient(64,64,0,64,64,64);
+  bg.addColorStop(0,'rgba(255,255,255,0.5)');
+  bg.addColorStop(0.3,'rgba(255,255,255,0.15)');
+  bg.addColorStop(1,'rgba(255,255,255,0)');
+  bx.fillStyle=bg;bx.fillRect(0,0,128,128);
+  return new THREE.CanvasTexture(bc);
+})();
+let bloomGeo=new THREE.BufferGeometry();
+const bloomMat=new THREE.PointsMaterial({vertexColors:true,size:14,sizeAttenuation:true,transparent:true,opacity:0.35,map:bloomTex,alphaTest:0.001,depthWrite:false});
+let bloomPts=new THREE.Points(bloomGeo,bloomMat);
+scene.add(bloomPts);
+
+// ── VASCULAR LINES — gold sovereign channels ──
+let vascGeo=new THREE.BufferGeometry();
+// Gold color, higher opacity so lines are clearly visible against black space
+let vascMat=new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:0.65});
+let vascLines=new THREE.LineSegments(vascGeo,vascMat);
+scene.add(vascLines);
+let showVasc=true;
+
+const gridGroup=new THREE.Group();
+for(let i=-5;i<=5;i++){
+  const x=i*50;
+  const gm=new THREE.LineBasicMaterial({color:0x0a1828,transparent:true,opacity:0.3});
+  scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,-250,0),new THREE.Vector3(x,250,0)]),gm));
+  scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-250,x,0),new THREE.Vector3(250,x,0)]),gm));
+}
+let showGrid=true;
+
+const solGroup=new THREE.Group();
+const solMesh=new THREE.Mesh(new THREE.SphereGeometry(0.5,16,16),new THREE.MeshBasicMaterial({color:0xFDB813}));
+solGroup.add(solMesh);
+const solGlow=new THREE.Mesh(new THREE.SphereGeometry(1.2,12,12),new THREE.MeshBasicMaterial({color:0xFFAA00,transparent:true,opacity:0.12,side:THREE.BackSide}));
+solGroup.add(solGlow);
+const RING_RADII=[5,10,25,50,100];
+const RING_COLS=[0x0f2035,0x0f2035,0x0c1a28,0x0a1520,0x080f18];
+const RING_OPS=[0.6,0.5,0.4,0.3,0.2];
+RING_RADII.forEach((r,ri)=>{
+  const pts=[];
+  for(let i=0;i<=128;i++){const a=i/128*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r));}
+  const line=new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(pts),
+    new THREE.LineBasicMaterial({color:RING_COLS[ri],transparent:true,opacity:RING_OPS[ri]})
+  );
+  solGroup.add(line);
+});
+for(let ang of[0,Math.PI/2]){
+  const l=200;
+  const pts=[new THREE.Vector3(Math.cos(ang)*-l,0,Math.sin(ang)*-l),new THREE.Vector3(Math.cos(ang)*l,0,Math.sin(ang)*l)];
+  solGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x0a1520,transparent:true,opacity:0.15})));
+}
+scene.add(solGroup);
+let showSol=true;
+
+let VISIBLE=[];
+function buildScene(stars){
+  let locked=0,noble=0,shatter=0;
+  stars.forEach(s=>{
+    if(s.state==='LOCKED'||s.state==='IVA')locked++;
+    if(s.state==='NOBLE')noble++;
+    if(s.state==='SHATTER')shatter++;
+  });
+
+  const bucketStars=[
+    stars.filter(s=>s.absmag<2),
+    stars.filter(s=>s.absmag>=2&&s.absmag<6),
+    stars.filter(s=>s.absmag>=6),
+  ];
+  bucketStars.forEach((bstars,bi)=>{
+    const bn=bstars.length;
+    const bpos=new Float32Array(bn*3);
+    const bcol=new Float32Array(bn*3);
+    bstars.forEach((s,i)=>{
+      bpos[i*3]=s.x;bpos[i*3+1]=s.y;bpos[i*3+2]=s.z;
+      let[r,g,b]=s.color?s.color:bvToRGB(s.ci);
+      if(s.state==='NOBLE')  {r=r*0.5+0.15;g=g*0.5+0.15;b=Math.min(1,b*0.8+0.4);}
+      if(s.state==='SHATTER'){r=Math.min(1,r*0.8+0.4);g*=0.3;b*=0.3;}
+      if(s.state==='IVA')    {r=Math.min(1,r*0.9+0.2);g=Math.min(1,g*0.85);}
+      const fog=Math.max(0.15,1/(1+s.dist*0.004));
+      r=r*fog+(1-fog)*0.01;g=g*fog+(1-fog)*0.01;b=b*fog+(1-fog)*0.03;
+      bcol[i*3]=r;bcol[i*3+1]=g;bcol[i*3+2]=b;
+    });
+    const bkt=starBuckets[bi];
+    bkt.geo.dispose();
+    bkt.geo=new THREE.BufferGeometry();
+    if(bn>0){
+      bkt.geo.setAttribute('position',new THREE.BufferAttribute(bpos,3));
+      bkt.geo.setAttribute('color',new THREE.BufferAttribute(bcol,3));
+      bkt.geo.computeBoundingSphere();
+    }
+    bkt.pts.geometry=bkt.geo;
+  });
+  starGeo=starBuckets[2].geo;
+  starMat=starBuckets[2].mat;
+  starPts=starBuckets[2].pts;
+
+  const bloomStars=stars.filter(s=>s.absmag<1);
+  const bn2=bloomStars.length;
+  const bpos2=new Float32Array(bn2*3);
+  const bcol2=new Float32Array(bn2*3);
+  bloomStars.forEach((s,i)=>{
+    bpos2[i*3]=s.x;bpos2[i*3+1]=s.y;bpos2[i*3+2]=s.z;
+    const[r,g,b]=s.color?s.color:bvToRGB(s.ci);
+    bcol2[i*3]=r;bcol2[i*3+1]=g;bcol2[i*3+2]=b;
+  });
+  scene.remove(bloomPts);
+  bloomGeo.dispose();
+  bloomGeo=new THREE.BufferGeometry();
+  if(bn2>0){
+    bloomGeo.setAttribute('position',new THREE.BufferAttribute(bpos2,3));
+    bloomGeo.setAttribute('color',new THREE.BufferAttribute(bcol2,3));
+  }
+  bloomPts=new THREE.Points(bloomGeo,bloomMat);
+  scene.add(bloomPts);
+
+  buildVascular(stars.filter(s=>s.dist<20));
+
+  VISIBLE=stars;
+  buildLabels(stars);
+  const id=s=>document.getElementById(s);
+  id('l-cnt').textContent=stars.length;
+  id('l-vis').textContent=stars.length;
+  id('l-lk').textContent=locked;
+  id('l-nb').textContent=noble;
+  id('l-sh').textContent=shatter;
+  id('bs-n').textContent=stars.length;
+  id('bs-v').textContent=stars.length;
+  id('bs-l').textContent=locked;
+  id('bs-no').textContent=noble;
+  id('hc-n').textContent=stars.length;
+  id('hc-s').textContent='LIVE';
+  id('hc-s').style.color='var(--locked)';
+  buildStarList(stars);
+}
+
+let activeStarIdx = -1;
+function buildStarList(stars) {
+  const el = document.getElementById('star-list');
+  document.getElementById('star-count').textContent = stars.length + ' OBJECTS';
+  el.innerHTML = '';
+  const sorted = [...stars].sort((a,b) => {
+    if(a.name==='Sol') return -1;
+    if(b.name==='Sol') return 1;
+    if(a.isSolar && !b.isSolar) return -1;
+    if(!a.isSolar && b.isSolar) return 1;
+    return a.dist - b.dist;
+  });
+  sorted.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.className = 'star-row';
+    row.id = 'sr-' + i;
+    const [r,g,b] = s.color ? s.color : bvToRGB(s.ci);
+    const hex = '#'+[r,g,b].map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('');
+    row.innerHTML =
+      '<div class="star-dot" style="background:'+hex+';color:'+hex+'"></div>' +
+      '<span class="star-name">' + s.name + '</span>' +
+      '<span class="star-state state-'+s.state+'">' + s.state + '</span>';
+    row.onclick = () => {
+      document.querySelectorAll('.star-row').forEach(r=>r.classList.remove('active'));
+      row.classList.add('active');
+      activeStarIdx = i;
+      selectStar(s);
+      flyToStar(s);
+    };
+    if(i>0 && !s.isSolar && sorted[i-1].isSolar){
+      const div=document.createElement('div');
+      div.style.cssText='font-family:Orbitron,monospace;font-size:6px;letter-spacing:.25em;color:#0f2840;padding:5px 0 3px;border-top:1px solid #0a1828;margin-bottom:3px;';
+      div.textContent='STELLAR NEIGHBORHOOD';
+      el.appendChild(div);
+    }
+    el.appendChild(row);
+  });
+}
+
+// ── VASCULAR LINES — gold sovereign channels ──
+// Gold RGB = (1.0, 0.84, 0.0) — bright and visible against black space
+function buildVascular(nearStars){
+  const MAX_DIST=8;
+  const verts=[];
+  const cols=[];
+  // Gold base color
+  const GOLD_R=1.0, GOLD_G=0.84, GOLD_B=0.0;
+  for(let a=0;a<nearStars.length;a++){
+    for(let b=a+1;b<nearStars.length;b++){
+      const sa=nearStars[a],sb=nearStars[b];
+      const dx=sa.x-sb.x,dy=sa.y-sb.y,dz=sa.z-sb.z;
+      const d=Math.sqrt(dx*dx+dy*dy+dz*dz);
+      if(d>MAX_DIST)continue;
+      const strength=((sa.B+sb.B)/2)*(1/(d*d+0.1));
+      if(strength<0.01)continue;
+      // Scale gold brightness by coupling strength — closer/stronger = brighter gold
+      const brightness=Math.min(1.0, strength*0.5 + 0.25);
+      verts.push(sa.x,sa.y,sa.z,sb.x,sb.y,sb.z);
+      // Both endpoints same gold — solid sovereign channel color
+      cols.push(
+        GOLD_R*brightness, GOLD_G*brightness, GOLD_B*brightness,
+        GOLD_R*brightness, GOLD_G*brightness, GOLD_B*brightness
+      );
+    }
+  }
+  scene.remove(vascLines);
+  vascGeo.dispose();
+  vascGeo=new THREE.BufferGeometry();
+  if(verts.length>0){
+    vascGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(verts),3));
+    vascGeo.setAttribute('color',new THREE.BufferAttribute(new Float32Array(cols),3));
+  }
+  vascLines=new THREE.LineSegments(vascGeo,vascMat);
+  vascLines.visible=showVasc;
+  scene.add(vascLines);
+}
+
+const LABEL_NAMES=new Set(['Sol','Sirius A','Vega','Arcturus','Rigel','Betelgeuse','Altair',
+  'Fomalhaut','Pollux','Procyon A','Epsilon Eri','Tau Ceti','Deneb','Canopus','Achernar',
+  'Alpha Cen A','Proxima Cen','Barnard','Capella','Aldebaran','Antares','Spica',
+  'Earth','Jupiter','Saturn']);
+let labelDivs=[];
+function buildLabels(stars){
+  const layer=document.getElementById('label-layer');
+  labelDivs.forEach(d=>d.remove());
+  labelDivs=[];
+  stars.forEach((s,i)=>{
+    if(!LABEL_NAMES.has(s.name)) return;
+    const d=document.createElement('div');
+    d.className='slabel'+(s.absmag<2?' bright':'');
+    d.textContent=s.name.toUpperCase();
+    d.dataset.idx=i;
+    layer.appendChild(d);
+    labelDivs.push(d);
+  });
+}
+function updateLabels(){
+  const cw=document.getElementById('cw');
+  const W=cw.clientWidth,H=cw.clientHeight;
+  const v=new THREE.Vector3();
+  labelDivs.forEach(d=>{
+    const i=parseInt(d.dataset.idx);
+    const s=VISIBLE[i];if(!s)return;
+    v.set(s.x,s.y,s.z).project(camera);
+    if(v.z>1){d.style.display='none';return;}
+    const sx=(v.x*0.5+0.5)*W;
+    const sy=(-v.y*0.5+0.5)*H;
+    if(sx<-100||sx>W+100||sy<-20||sy>H+20){d.style.display='none';return;}
+    d.style.display='block';
+    d.style.left=sx+'px';
+    d.style.top=sy+'px';
+  });
+}
+const cw=document.getElementById('cw');
+
+let drag=false,lx=0,ly=0;
+let camTh=0.3,camPh=0.15,camR=80;
+let camTarget=new THREE.Vector3(0,0,0);
+let flying=false,flyFrom=new THREE.Vector3(),flyTo=new THREE.Vector3(),flyT=0;
+
+cw.addEventListener('mousedown',e=>{drag=true;lx=e.clientX;ly=e.clientY;});
+window.addEventListener('mouseup',()=>drag=false);
+window.addEventListener('mousemove',e=>{
+  if(drag&&!flying){
+    camTh-=(e.clientX-lx)*0.005;
+    camPh=Math.max(-1.4,Math.min(1.4,camPh-(e.clientY-ly)*0.005));
+    lx=e.clientX;ly=e.clientY;
+    moveCam();
+  }
+});
+cw.addEventListener('wheel',e=>{
+  if(!flying){
+    camR=Math.max(0.5,Math.min(5000,camR*(1+e.deltaY*0.001)));
+    moveCam();
+  }
+  e.preventDefault();
+},{passive:false});
+
+function moveCam(){
+  const cp=Math.cos(camPh),sp=Math.sin(camPh);
+  camera.position.set(
+    camTarget.x+camR*cp*Math.sin(camTh),
+    camTarget.y+camR*sp,
+    camTarget.z+camR*cp*Math.cos(camTh)
+  );
+  camera.lookAt(camTarget);
+}
+
+function resetCam(){camTarget.set(0,0,0);camTh=0.3;camPh=0.15;camR=80;moveCam();}
+function flyToSol(){flyToStar({x:0,y:0,z:0,name:'Sol'});}
+function flyToStar(s){
+  flyFrom.copy(camera.position);
+  flyTo.set(s.x+0.5,s.y+0.5,s.z+camR*0.1);
+  camTarget.set(s.x,s.y,s.z);
+  flyT=0;flying=true;
+  const fl=document.getElementById('fly-label');
+  fl.textContent='FLYING TO '+s.name.toUpperCase();
+  fl.style.display='block';
+}
+
+const ray=new THREE.Raycaster();
+ray.params.Points.threshold=1.2;
+const tip=document.getElementById('tip');
+let lastClick=0,lastIdx=-1;
+
+cw.addEventListener('mousemove',e=>{
+  if(drag){tip.style.display='none';return;}
+  const rc=cw.getBoundingClientRect();
+  const mv=new THREE.Vector2(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);
+  ray.setFromCamera(mv,camera);
+  const hits=ray.intersectObject(starPts);
+  if(hits.length>0){
+    const s=VISIBLE[hits[0].index];
+    document.getElementById('tip-n').textContent=s.name;
+    document.getElementById('tip-body').innerHTML=
+      '<div class="tr"><span class="tk">dist</span><span class="tv">'+s.dist.toFixed(2)+' pc</span></div>'+
+      '<div class="tr"><span class="tk">spect</span><span class="tv">'+(s.spect||'?')+'</span></div>'+
+      '<div class="tr"><span class="tk">&#964;</span><span class="tv">'+s.tau.toFixed(4)+' '+s.state+'</span></div>'+
+      '<div class="tr"><span class="tk">IM</span><span class="tv">'+s.IM.toFixed(3)+'</span></div>';
+    tip.style.display='block';
+    tip.style.left=(e.clientX-rc.left+14)+'px';
+    tip.style.top=(e.clientY-rc.top+14)+'px';
+  } else {
+    tip.style.display='none';
+  }
+});
+
+cw.addEventListener('click',e=>{
+  const rc=cw.getBoundingClientRect();
+  const mv=new THREE.Vector2(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);
+  ray.setFromCamera(mv,camera);
+  const hits=ray.intersectObject(starPts);
+  if(!hits.length)return;
+  const idx=hits[0].index;
+  const s=VISIBLE[idx];
+  const now=Date.now();
+  if(idx===lastIdx&&now-lastClick<400){
+    flyToStar(s);
+  } else {
+    selectStar(s);
+  }
+  lastClick=now;lastIdx=idx;
+});
+
+function selectStar(s){
+  document.querySelectorAll('.star-row').forEach(row=>{
+    const nm=row.querySelector('.star-name');
+    if(nm&&nm.textContent===s.name){
+      row.classList.add('active');
+      row.scrollIntoView({block:'nearest',behavior:'smooth'});
+    }
+  });
+  document.getElementById('sel-n').textContent=s.name;
+  document.getElementById('sel-t').textContent=(s.spect||'?')+' · '+s.dist.toFixed(2)+' pc';
+  const bdg=document.getElementById('sel-b');
+  bdg.style.display='block';
+  bdg.className='badge b'+s.state[0];
+  bdg.textContent=s.state;
+  const pct=(v,mx)=>Math.min(100,v/mx*100)+'%';
+  document.getElementById('gP').style.width=pct(s.P,10);document.getElementById('gPv').textContent=s.P.toFixed(3);
+  document.getElementById('gN').style.width=pct(s.N,10);document.getElementById('gNv').textContent=s.N.toFixed(3);
+  document.getElementById('gB').style.width=pct(s.B,2); document.getElementById('gBv').textContent=s.B.toFixed(3);
+  document.getElementById('gA').style.width=pct(s.A,5); document.getElementById('gAv').textContent=s.A.toFixed(3);
+  const tc=s.state==='NOBLE'?'var(--noble)':s.state==='LOCKED'?'var(--locked)':s.state==='IVA'?'var(--iva)':'var(--shatter)';
+  document.getElementById('rT').textContent=s.tau.toFixed(5);document.getElementById('rT').style.color=tc;
+  document.getElementById('rR').textContent=(s.tau/TL).toFixed(3)+'× TL';document.getElementById('rR').style.color=tc;
+  document.getElementById('rI').textContent=s.IM.toFixed(4);
+  document.getElementById('rD').textContent=s.dist.toFixed(3)+' pc';
+  document.getElementById('rM').textContent=typeof s.absmag==='number'?s.absmag.toFixed(2):'?';
+  document.getElementById('rC').textContent=s.ci!==null&&s.ci!==undefined?parseFloat(s.ci).toFixed(3):'?';
+  document.getElementById('rS').textContent=s.spect||'?';
+  document.getElementById('rXYZ').textContent=s.x.toFixed(1)+','+s.y.toFixed(1)+','+s.z.toFixed(1);
+  document.getElementById('tmk').style.left=Math.min(98,(s.tau/0.3)*100)+'%';
+}
+
+function applyFilt(){
+  const maxD=parseFloat(document.getElementById('sd').value);
+  const maxM=parseFloat(document.getElementById('sm').value);
+  document.getElementById('vd').textContent=maxD;
+  document.getElementById('vm').textContent=maxM;
+  const f=ALL_STARS.filter(s=>s.isSolar||(s.dist<=maxD&&s.absmag<=maxM));
+  buildScene(f);
+}
+function updSz(){
+  const sz=parseFloat(document.getElementById('ss').value);
+  document.getElementById('vs').textContent=sz.toFixed(1);
+  starMat.size=sz;
+}
+
+function toggleVascular(){
+  showVasc=!showVasc;vascLines.visible=showVasc;
+  const b=document.getElementById('btn-vasc');
+  b.textContent='◆ VASCULAR LINES · '+(showVasc?'ON':'OFF');
+  b.className=showVasc?'btn btn-on':'btn';
+}
+function toggleGrid(){
+  showGrid=!showGrid;
+  scene.children.forEach(c=>{if(c.isLine&&c!==vascLines)c.visible=showGrid;});
+  const b=document.getElementById('btn-grid');
+  b.textContent='◆ GALACTIC GRID · '+(showGrid?'ON':'OFF');
+  b.className=showGrid?'btn btn-on':'btn';
+}
+function toggleSolar(){
+  showSol=!showSol;solGroup.visible=showSol;
+  const b=document.getElementById('btn-sol');
+  b.textContent='◆ SOL MARKER · '+(showSol?'ON':'OFF');
+  b.className=showSol?'btn btn-on':'btn';
+}
+
+function handleCSV(evt){
+  const file=evt.target.files[0];if(!file)return;
+  evt.target.value='';
+  const cm=document.getElementById('csv-msg');
+  cm.style.color='var(--iva)';cm.textContent='Parsing...';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const lines=e.target.result.trim().split('\n');
+      const hdr=lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/"/g,''));
+      const get=(row,key)=>{const i=hdr.indexOf(key);return i>=0?(row[i]||'').trim().replace(/^"|"$/g,''):null;};
+      const rows=lines.slice(1).filter(l=>l.trim()).map(l=>l.split(','));
+      const newStars=rows.filter(r=>{
+        const d=parseFloat(get(r,'dist'));
+        return !isNaN(d)&&d>0&&d<100000;
+      }).map(r=>{
+        const name=get(r,'proper')||get(r,'bf')||get(r,'gl')||(get(r,'hip')?'HIP'+get(r,'hip'):'STAR');
+        const x=parseFloat(get(r,'x'))||0;
+        const y=parseFloat(get(r,'y'))||0;
+        const z=parseFloat(get(r,'z'))||0;
+        const dist=parseFloat(get(r,'dist'))||0.001;
+        const absmag=parseFloat(get(r,'absmag'))||5;
+        const ci=parseFloat(get(r,'ci'));
+        const spect=get(r,'spect')||'';
+        const P=calcP(dist),N=calcN(absmag),B=calcB(isNaN(ci)?null:ci),A=calcA(spect);
+        const tau=P>0?B/P:0;
+        return {name,x,y,z,dist,absmag,ci:isNaN(ci)?null:ci,spect,P,N,B,A,tau,IM:(P+N+B+A)*ANCHOR,state:classify(tau)};
+      });
+      const merged=[...ALL_STARS];
+      newStars.forEach(ns=>{
+        const dup=merged.find(s=>Math.abs(s.x-ns.x)<0.01&&Math.abs(s.y-ns.y)<0.01);
+        if(!dup)merged.push(ns);
+      });
+      ALL_STARS=merged;
+      cm.style.color='var(--locked)';
+      cm.textContent='✓ '+newStars.length+' stars merged ('+ALL_STARS.length+' total)';
+      applyFilt();
+    }catch(err){
+      cm.style.color='var(--shatter)';cm.textContent='Error: '+err.message;
+    }
+  };
+  reader.readAsText(file);
+}
+
+function dlTpl(){
+  const h='id,hip,hd,hr,gl,bf,proper,ra,dec,dist,pmra,pmdec,rv,mag,absmag,spect,ci,x,y,z,vx,vy,vz,rarad,decrad,pmrarad,pmdecrad,bayer,flam,con,comp,comp_primary,base,lum,var,var_min,var_max';
+  const s1='0,0,0,0,,,Sol,0,0,0.000004,0,0,0,-26.74,4.83,G2V,0.63,0,0,0,0,0,0,0,0,0,0,,,,,,,1,,,,';
+  const s2='1,70890,0,0,GJ551,,Proxima Centauri,217.42,-62.68,1.295,-3775,769,-22.2,11.13,15.53,M5Ve,1.82,-0.47,0.36,-1.21,0,0,0,0,0,0,0,,,Cen,,,,0.0017,,,,';
+  const b=new Blob([h+'\n'+s1+'\n'+s2],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='hyg_template.csv';a.click();
+}
+
+function animate(){
+  requestAnimationFrame(animate);
+  if(flying){
+    flyT=Math.min(1,flyT+0.02);
+    const t=flyT<0.5?2*flyT*flyT:(1-Math.pow(-2*flyT+2,2)/2);
+    camera.position.lerpVectors(flyFrom,flyTo,t);
+    camera.lookAt(camTarget);
+    if(flyT>=1){
+      flying=false;
+      const d=camera.position.clone().sub(camTarget);
+      camR=d.length();
+      camPh=Math.asin(d.y/camR);
+      camTh=Math.atan2(d.x,d.z);
+      document.getElementById('fly-label').style.display='none';
+    }
+  }
+  updateLabels();
+  renderer.render(scene,camera);
+}
+
+(function(){
+  const W=2048,H=1024;
+  const mc=document.createElement('canvas');mc.width=W;mc.height=H;
+  const mx=mc.getContext('2d');
+  mx.fillStyle='#000308';mx.fillRect(0,0,W,H);
+  for(let pass=0;pass<3;pass++){
+    const bW=pass===0?130:pass===1?65:32;
+    const al=pass===0?0.035:pass===1?0.055:0.075;
+    const gr=mx.createLinearGradient(0,H/2-bW,0,H/2+bW);
+    gr.addColorStop(0,'rgba(0,0,0,0)');
+    gr.addColorStop(0.3,'rgba(140,160,200,'+al+')');
+    gr.addColorStop(0.5,'rgba(180,200,230,'+(al*1.5)+')');
+    gr.addColorStop(0.7,'rgba(140,160,200,'+al+')');
+    gr.addColorStop(1,'rgba(0,0,0,0)');
+    mx.fillStyle=gr;mx.fillRect(0,H/2-bW,W,bW*2);
+  }
+  const gcg=mx.createRadialGradient(W*0.25,H*0.5,0,W*0.25,H*0.5,W*0.13);
+  gcg.addColorStop(0,'rgba(255,220,160,0.07)');
+  gcg.addColorStop(0.5,'rgba(200,180,140,0.03)');
+  gcg.addColorStop(1,'rgba(0,0,0,0)');
+  mx.fillStyle=gcg;mx.fillRect(0,0,W,H);
+  mx.fillStyle='rgba(150,170,210,1)';
+  for(let i=0;i<6000;i++){
+    const x=Math.random()*W,y=Math.random()*H;
+    const inBand=Math.abs(y-H/2)<H*0.16;
+    if(!inBand&&Math.random()>0.25)continue;
+    mx.globalAlpha=Math.random()*(inBand?0.35:0.1);
+    mx.fillRect(x,y,Math.random()<0.02?1.5:0.7,Math.random()<0.02?1.5:0.7);
+  }
+  mx.globalAlpha=1;
+  scene.add(new THREE.Mesh(
+    new THREE.SphereGeometry(4000,32,16),
+    new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(mc),side:THREE.BackSide,transparent:true,opacity:0.9,depthWrite:false})
+  ));
+})();
+
+ALL_STARS=buildStars(HYG_RAW);
+moveCam();
+applyFilt();
+animate();
+</script>
+</body>
+</html>
