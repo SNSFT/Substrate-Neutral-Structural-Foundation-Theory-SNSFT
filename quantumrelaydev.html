@@ -3,1370 +3,1342 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QUANTUM RELAY · [9,9,2,6] · uuia.app</title>
+<title>SNSFT TRANSLOCATION · [9,9,2,6] · uuia.app</title>
 <style>
-.mode-tabs{display:flex;gap:0;margin:16px 0 0;border-bottom:1px solid var(--border2);}
-.mode-tab{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:10px 20px;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#1a3040;transition:all .15s;}
-.mode-tab:hover{color:var(--text);}
-.mode-tab.active{border-color:var(--border2);border-bottom:1px solid var(--bg);color:var(--soverium);background:var(--panel);}
-.mode-content{display:none;}
-.mode-content.active{display:block;}
-/* 3-node layout */
-.relay3-grid{display:grid;grid-template-columns:1fr 260px;gap:16px;margin-bottom:16px;}
-.node-config{background:var(--panel);border:1px solid var(--border2);padding:16px;}
-.node-section{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-.node-section:last-child{border-bottom:none;margin-bottom:0;}
-.node-header{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;margin-bottom:10px;}
-.node-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:8.5px;}
-.node-lbl{color:#2a5060;width:90px;}
-.node-val{font-family:'Orbitron',monospace;color:var(--bright);width:70px;}
-.node-slider{flex:1;-webkit-appearance:none;height:3px;background:var(--border2);outline:none;}
-.node-slider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:14px;background:var(--glow);cursor:pointer;}
-.repeater-toggle{display:flex;gap:0;margin:8px 0;}
-.rep-btn{flex:1;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;padding:7px 4px;border:1px solid var(--border2);cursor:pointer;background:transparent;color:#1a3040;transition:all .15s;text-align:center;}
-.rep-btn.active-sov{background:rgba(255,255,255,.08);border-color:var(--soverium);color:var(--soverium);}
-.rep-btn.active-var{background:rgba(0,229,255,.06);border-color:var(--glow);color:var(--glow);}
-/* 3-node result */
-.result3{background:var(--panel);border:1px solid var(--border2);padding:20px;margin-bottom:16px;}
-.result3-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-.r3-box{background:var(--bg);border:1px solid var(--border);padding:12px;}
-.r3-lbl{font-size:7.5px;letter-spacing:.15em;color:#1a3040;margin-bottom:4px;}
-.r3-val{font-family:'Orbitron',monospace;font-size:22px;line-height:1;}
-.r3-sub{font-size:7.5px;color:#1a3040;margin-top:3px;}
-.leg-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
-.leg-box{background:var(--bg);border:1px solid var(--border);padding:10px;}
-.leg-title{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;color:#2a5060;margin-bottom:6px;}
-.leg-row{display:flex;justify-content:space-between;font-size:8.5px;padding:2px 0;}
-.leg-row .lk{color:#2a5060;}
-.leg-row .lv{font-family:'Orbitron',monospace;color:var(--bright);}
-/* Canvas 3-node */
-.canvas3-wrap{background:var(--panel);border:1px solid var(--border2);margin-bottom:16px;}
-</style>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap');
 
 :root {
-  --bg: #020407;
-  --panel: #04080d;
-  --border: #0a1520;
-  --border2: #0f2030;
-  --anchor: 1.369;
-  --glow: #00e5ff;
-  --noble: #ffffff;
-  --noble-dim: rgba(255,255,255,0.15);
-  --locked: #00ffcc;
-  --shatter: #ff3355;
-  --warn: #ffaa00;
-  --node-alice: #00e5ff;
-  --node-bob: #00ffcc;
-  --channel-default: #0a2030;
-  --text: #4a7a94;
-  --bright: #cce8f5;
-  --dim: #0f2030;
-  --soverium: #ffffff;
-  --shanxi: #ff6600;
-  --paderborn: #ffaa00;
-  --micius: #88aaff;
+  --bg:       #020407;
+  --panel:    #04080d;
+  --border:   #0a1520;
+  --border2:  #0f2030;
+  --glow:     #00e5ff;
+  --locked:   #00ffcc;
+  --shatter:  #ff3355;
+  --warn:     #ffaa00;
+  --noble:    #ffffff;
+  --text:     #4a7a94;
+  --bright:   #cce8f5;
+  --dim:      #0f2030;
+  --anchor-a: #00e5ff;
+  --anchor-b: #00ffcc;
+  --relay:    #ffaa00;
+  --success:  #00ffcc;
+  --partial:  #ffaa00;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin:0; padding:0; box-sizing:border-box; }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Share Tech Mono', monospace;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Grid background */
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
+  content:'';
+  position:fixed;
+  inset:0;
   background-image:
-    linear-gradient(rgba(0,229,255,.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,229,255,.015) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
+    linear-gradient(rgba(0,229,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.012) 1px, transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+  z-index:0;
 }
 
 .wrap {
-  position: relative;
-  z-index: 2;
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 20px 80px;
+  position:relative;
+  z-index:2;
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 20px 80px;
 }
 
-/* HEADER */
-header {
-  padding: 28px 0 20px;
-  border-bottom: 1px solid var(--border2);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
+/* ── HEADER ── */
+.site-header {
+  padding:32px 0 24px;
+  border-bottom:1px solid var(--border2);
+  text-align:center;
 }
 
-.logo {
-  font-family: 'Orbitron', monospace;
-  font-weight: 900;
-  font-size: 28px;
-  letter-spacing: .06em;
-  color: var(--soverium);
-  text-shadow: 0 0 40px rgba(255,255,255,.3), 0 0 80px rgba(0,229,255,.15);
-  animation: logoflicker 8s infinite;
+.coord-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;
+  letter-spacing:.2em;
+  color:var(--dim);
+  border:1px solid var(--border2);
+  padding:5px 14px;
+  margin-bottom:16px;
 }
-@keyframes logoflicker {
-  0%,95%,100%{opacity:1}
-  96%{opacity:.8}
-  97%{opacity:1}
-  98%{opacity:.85}
+.coord-dot {
+  width:5px;height:5px;border-radius:50%;
+  background:var(--locked);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.site-title {
+  font-family:'Orbitron',monospace;
+  font-weight:900;
+  font-size:clamp(24px,4vw,42px);
+  letter-spacing:.08em;
+  color:var(--noble);
+  text-shadow:0 0 40px rgba(255,255,255,.2),0 0 80px rgba(0,229,255,.1);
+  margin-bottom:6px;
 }
 
-.logo span {
-  display: block;
-  font-size: 9px;
-  letter-spacing: .25em;
-  color: var(--glow);
-  margin-top: 3px;
-  text-shadow: none;
+.site-subtitle {
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;
+  letter-spacing:.25em;
+  color:var(--dim);
+  margin-bottom:16px;
 }
 
-.hdr-meta {
-  font-size: 9px;
-  color: #1a3040;
-  text-align: right;
-  line-height: 2;
+.noharm-banner {
+  display:inline-block;
+  background:rgba(0,255,204,.05);
+  border:1px solid rgba(0,255,204,.2);
+  padding:10px 24px;
+  font-size:13px;
+  color:rgba(200,232,245,.7);
+  line-height:1.7;
+  max-width:640px;
+  margin:0 auto;
 }
-.hdr-meta b { color: var(--glow); }
+.noharm-banner b { color:var(--locked); font-weight:500; }
+.noharm-banner em { color:var(--noble); font-style:normal; font-weight:500; }
 
-/* INTRO STRIP */
-.intro {
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 9.5px;
-  color: #1e3d52;
-  line-height: 1.9;
-  margin-bottom: 24px;
+/* ── MODE TABS ── */
+.mode-tabs {
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin:28px 0 24px;
 }
-.intro b { color: var(--bright); }
-.intro .eq { color: var(--locked); font-family: 'Orbitron', monospace; }
-
-/* MAIN LAYOUT */
-.main-grid {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 16px;
-  margin-bottom: 16px;
+.mode-tab {
+  font-family:'Orbitron',monospace;
+  font-size:9px;
+  letter-spacing:.2em;
+  padding:12px 28px;
+  border:1px solid var(--border2);
+  background:transparent;
+  color:var(--dim);
+  cursor:pointer;
+  transition:all .2s;
 }
-
-/* NETWORK CANVAS */
-.network-panel {
-  background: var(--panel);
-  border: 1px solid var(--border2);
-  padding: 0;
-  position: relative;
-  overflow: hidden;
+.mode-tab:hover { color:var(--text); border-color:rgba(0,229,255,.3); }
+.mode-tab.active {
+  border-color:var(--locked);
+  color:var(--locked);
+  background:rgba(0,255,204,.04);
 }
-
-.network-label {
-  font-family: 'Orbitron', monospace;
-  font-size: 8px;
-  letter-spacing: .25em;
-  color: #1a3040;
-  padding: 12px 16px 0;
-}
-
-#relay-canvas {
-  display: block;
-  width: 100%;
-  height: 320px;
+.mode-tab .tab-sub {
+  display:block;
+  font-family:'DM Sans',sans-serif;
+  font-size:10px;
+  letter-spacing:.05em;
+  color:var(--text);
+  font-weight:300;
+  margin-top:3px;
+  text-transform:none;
 }
 
-/* CONTROLS PANEL */
-.ctrl-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.mode-content { display:none; }
+.mode-content.active { display:block; }
+
+/* ── ANCHOR STATIONS ── */
+.stations-row {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-bottom:16px;
 }
 
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--border2);
-  padding: 16px;
+.station-card {
+  background:var(--panel);
+  border:1px solid var(--border2);
+  padding:20px;
+  position:relative;
+}
+.station-card.alice { border-top:2px solid var(--anchor-a); }
+.station-card.bob   { border-top:2px solid var(--anchor-b); }
+
+.station-sci {
+  font-family:'Orbitron',monospace;
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:.15em;
+  margin-bottom:2px;
+}
+.alice .station-sci { color:var(--anchor-a); }
+.bob   .station-sci { color:var(--anchor-b); }
+
+.station-plain {
+  font-size:11px;
+  color:var(--text);
+  margin-bottom:1px;
+}
+.station-role {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  letter-spacing:.15em;
+  color:var(--dim);
+  margin-bottom:16px;
 }
 
-.panel-title {
-  font-family: 'Orbitron', monospace;
-  font-size: 8px;
-  letter-spacing: .25em;
-  color: #1a3040;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 8px;
-  margin-bottom: 12px;
+.station-status {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  margin-bottom:12px;
+}
+.status-dot {
+  width:6px;height:6px;border-radius:50%;
+  background:var(--locked);
+  animation:pulse 2s infinite;
+}
+.status-text {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  letter-spacing:.15em;
+  color:var(--locked);
 }
 
-/* Emitter toggle */
-.emitter-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  padding: 10px;
-  border: 1px solid var(--border);
-  background: var(--bg);
+/* ── CORRIDOR CONTROL ── */
+.corridor-card {
+  background:var(--panel);
+  border:1px solid var(--border2);
+  padding:20px;
+  margin-bottom:16px;
 }
 
-.emitter-toggle {
-  display: flex;
-  gap: 0;
-  flex: 1;
+.corridor-title {
+  font-family:'Orbitron',monospace;
+  font-size:9px;
+  letter-spacing:.25em;
+  color:var(--dim);
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
+.corridor-title b { color:var(--glow); }
 
-.em-btn {
-  flex: 1;
-  font-family: 'Orbitron', monospace;
-  font-size: 8px;
-  letter-spacing: .15em;
-  padding: 8px 4px;
-  border: 1px solid var(--border2);
-  cursor: pointer;
-  background: transparent;
-  color: #1a3040;
-  transition: all .15s;
-  text-align: center;
+.quality-control {
+  margin-bottom:20px;
 }
-.em-btn.active-sov {
-  background: rgba(255,255,255,.08);
-  border-color: var(--soverium);
-  color: var(--soverium);
-  text-shadow: 0 0 10px rgba(255,255,255,.5);
+.quality-labels {
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  margin-bottom:6px;
 }
-.em-btn.active-var {
-  background: rgba(0,229,255,.06);
-  border-color: var(--glow);
-  color: var(--glow);
+.quality-plain {
+  font-size:13px;
+  color:var(--bright);
 }
-
-.noise-row {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.quality-sci {
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;
+  color:var(--dim);
+  letter-spacing:.1em;
 }
-.noise-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 8.5px;
+.quality-val {
+  font-family:'Orbitron',monospace;
+  font-size:11px;
+  color:var(--locked);
 }
-.noise-label span:first-child { color: #2a5060; }
-.noise-label .noise-val { color: var(--glow); font-family: 'Orbitron', monospace; }
 
 input[type=range] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 3px;
-  background: var(--border2);
-  outline: none;
+  -webkit-appearance:none;
+  width:100%;
+  height:4px;
+  background:var(--border2);
+  outline:none;
+  margin:6px 0;
+  border-radius:2px;
 }
 input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 18px;
-  background: var(--glow);
-  cursor: pointer;
-}
-input[type=range].sov-mode::-webkit-slider-thumb {
-  background: var(--soverium);
+  -webkit-appearance:none;
+  width:14px;height:20px;
+  background:var(--locked);
+  cursor:pointer;
+  border-radius:2px;
 }
 
-/* Relay button */
+.quality-scale {
+  display:flex;
+  justify-content:space-between;
+  font-size:9px;
+  color:var(--dim);
+  margin-top:3px;
+}
+
+/* ── TRANSLOCATE BUTTON ── */
+.translocate-btn {
+  width:100%;
+  font-family:'Orbitron',monospace;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:.3em;
+  padding:18px;
+  background:transparent;
+  border:1px solid var(--noble);
+  color:var(--noble);
+  cursor:pointer;
+  transition:all .2s;
+  text-shadow:0 0 20px rgba(255,255,255,.3);
+  box-shadow:0 0 20px rgba(255,255,255,.04);
+  margin-bottom:4px;
+}
+.translocate-btn:hover {
+  background:rgba(255,255,255,.05);
+  box-shadow:0 0 40px rgba(255,255,255,.12);
+}
+.translocate-btn:active { transform:scale(.99); }
+.translocate-btn.firing { animation:btnfire .3s ease-in-out 3; }
+@keyframes btnfire{
+  0%,100%{box-shadow:0 0 20px rgba(255,255,255,.04)}
+  50%{box-shadow:0 0 60px rgba(255,255,255,.3),0 0 100px rgba(0,229,255,.2)}
+}
+.btn-sub {
+  text-align:center;
+  font-size:9px;
+  color:var(--dim);
+  letter-spacing:.15em;
+  font-family:'Share Tech Mono',monospace;
+}
+
+/* ── CANVAS ── */
+.canvas-card {
+  background:var(--panel);
+  border:1px solid var(--border2);
+  margin-bottom:16px;
+  position:relative;
+}
+.canvas-label {
+  font-family:'Orbitron',monospace;
+  font-size:8px;
+  letter-spacing:.25em;
+  color:var(--dim);
+  padding:12px 16px 0;
+}
+#corridor-canvas {
+  display:block;
+  width:100%;
+  height:260px;
+}
+
+/* ── RESULT CARD ── */
+.result-card {
+  border:1px solid var(--border2);
+  padding:24px;
+  margin-bottom:16px;
+  display:none;
+  position:relative;
+  overflow:hidden;
+}
+.result-card::before {
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+}
+.result-card.success {
+  background:rgba(0,255,204,.04);
+  border-color:rgba(0,255,204,.3);
+}
+.result-card.success::before { background:var(--locked); }
+.result-card.partial {
+  background:rgba(255,170,0,.03);
+  border-color:rgba(255,170,0,.3);
+}
+.result-card.partial::before { background:var(--warn); }
+.result-card.degraded {
+  background:rgba(255,51,85,.03);
+  border-color:rgba(255,51,85,.3);
+}
+.result-card.degraded::before { background:var(--shatter); }
+
+.result-headline {
+  font-family:'Orbitron',monospace;
+  font-size:16px;
+  letter-spacing:.15em;
+  margin-bottom:6px;
+}
+.result-card.success .result-headline { color:var(--locked); }
+.result-card.partial .result-headline { color:var(--warn); }
+.result-card.degraded .result-headline { color:var(--shatter); }
+
+.result-plain {
+  font-size:13px;
+  color:var(--bright);
+  margin-bottom:16px;
+  line-height:1.7;
+}
+
+.result-stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+.rstat {
+  background:var(--bg);
+  border:1px solid var(--border);
+  padding:12px;
+}
+.rstat-plain {
+  font-size:10px;
+  color:var(--text);
+  margin-bottom:3px;
+}
+.rstat-sci {
+  font-family:'Share Tech Mono',monospace;
+  font-size:7.5px;
+  color:var(--dim);
+  letter-spacing:.1em;
+  margin-bottom:5px;
+}
+.rstat-val {
+  font-family:'Orbitron',monospace;
+  font-size:20px;
+  line-height:1;
+}
+
+.noharm-confirm {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  background:rgba(0,255,204,.05);
+  border:1px solid rgba(0,255,204,.15);
+  font-size:11px;
+  color:rgba(200,232,245,.6);
+  margin-bottom:16px;
+}
+.noharm-confirm b { color:var(--locked); }
+
+/* Physics reveal */
+.physics-toggle {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  letter-spacing:.15em;
+  color:var(--dim);
+  background:transparent;
+  border:1px solid var(--border);
+  padding:6px 14px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.physics-toggle:hover { color:var(--text); border-color:var(--border2); }
+.physics-detail {
+  display:none;
+  margin-top:12px;
+  padding:14px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  color:var(--dim);
+  line-height:2;
+}
+.physics-detail b { color:var(--glow); }
+.physics-detail em { color:var(--locked); font-style:normal; }
+
+/* ── LATTICE MODE ── */
+.lattice-config {
+  background:var(--panel);
+  border:1px solid var(--border2);
+  padding:20px;
+  margin-bottom:16px;
+}
+
+.lattice-header {
+  font-family:'Orbitron',monospace;
+  font-size:9px;
+  letter-spacing:.25em;
+  color:var(--dim);
+  margin-bottom:16px;
+}
+
+.relay-count-row {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+  padding:14px;
+  background:var(--bg);
+  border:1px solid var(--border);
+}
+.relay-count-label { font-size:13px; color:var(--bright); flex:1; }
+.relay-count-sci {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  color:var(--dim);
+  letter-spacing:.1em;
+}
+.relay-count-val {
+  font-family:'Orbitron',monospace;
+  font-size:24px;
+  color:var(--relay);
+  min-width:40px;
+  text-align:center;
+}
+
+.relay-btns { display:flex; gap:8px; }
 .relay-btn {
-  font-family: 'Orbitron', monospace;
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: .3em;
-  padding: 14px;
-  background: transparent;
-  border: 1px solid var(--soverium);
-  color: var(--soverium);
-  cursor: pointer;
-  width: 100%;
-  transition: all .2s;
-  text-shadow: 0 0 20px rgba(255,255,255,.4);
-  box-shadow: 0 0 20px rgba(255,255,255,.05);
+  font-family:'Orbitron',monospace;
+  font-size:14px;
+  width:36px;height:36px;
+  border:1px solid var(--border2);
+  background:transparent;
+  color:var(--text);
+  cursor:pointer;
+  transition:all .15s;
 }
-.relay-btn:hover {
-  background: rgba(255,255,255,.06);
-  box-shadow: 0 0 30px rgba(255,255,255,.15);
+.relay-btn:hover { border-color:var(--relay); color:var(--relay); }
+
+.relay-noise-section { margin-bottom:16px; }
+.relay-noise-title {
+  font-size:11px;
+  color:var(--text);
+  margin-bottom:4px;
 }
-.relay-btn:active {
-  transform: scale(.98);
-}
-.relay-btn.firing {
-  animation: btnpulse .3s ease-in-out 3;
-}
-@keyframes btnpulse {
-  0%,100%{box-shadow:0 0 20px rgba(255,255,255,.05)}
-  50%{box-shadow:0 0 50px rgba(255,255,255,.4)}
+.relay-noise-sci {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  color:var(--dim);
+  letter-spacing:.1em;
+  margin-bottom:8px;
 }
 
-/* Stats */
-.stat-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
+#relay-legs-config { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.leg-row-config {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 12px;
+  background:var(--bg);
+  border:1px solid var(--border);
 }
-.stat-box {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  padding: 8px;
+.leg-row-label { font-size:11px; color:var(--text); width:120px; flex-shrink:0; }
+.leg-row-sci {
+  font-family:'Share Tech Mono',monospace;
+  font-size:7.5px;
+  color:var(--dim);
+  letter-spacing:.08em;
+  width:60px;
+  flex-shrink:0;
 }
-.stat-lbl { font-size: 7.5px; color: #1a3040; letter-spacing: .15em; margin-bottom: 3px; }
-.stat-val {
-  font-family: 'Orbitron', monospace;
-  font-size: 16px;
-  color: var(--bright);
-  line-height: 1;
-}
-.stat-val.perfect { color: var(--soverium); text-shadow: 0 0 15px rgba(255,255,255,.5); }
-.stat-val.locked  { color: var(--locked); }
-.stat-val.warn    { color: var(--warn); }
-.stat-val.shatter { color: var(--shatter); }
-
-/* Reference comparison */
-.ref-panel {
-  background: var(--panel);
-  border: 1px solid var(--border2);
-  padding: 16px;
+.leg-row-val {
+  font-family:'Orbitron',monospace;
+  font-size:10px;
+  color:var(--locked);
+  width:50px;
+  text-align:right;
+  flex-shrink:0;
 }
 
-.ref-title {
-  font-family: 'Orbitron', monospace;
-  font-size: 8px;
-  letter-spacing: .25em;
-  color: #1a3040;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 8px;
-  margin-bottom: 10px;
+.lattice-canvas-card {
+  background:var(--panel);
+  border:1px solid var(--border2);
+  margin-bottom:16px;
+}
+#lattice-canvas {
+  display:block;
+  width:100%;
+  height:220px;
 }
 
-.ref-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 0;
-  border-bottom: 1px solid rgba(10,21,32,.5);
-  font-size: 8.5px;
-}
-.ref-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.ref-name { flex: 1; color: #2a5060; }
-.ref-fid { font-family: 'Orbitron', monospace; width: 60px; text-align: right; }
-.ref-bar-wrap { flex: 1; height: 3px; background: var(--border); position: relative; }
-.ref-bar { height: 100%; position: absolute; left: 0; top: 0; transition: width .4s; }
-
-.ref-you {
-  margin-top: 8px;
-  padding: 8px;
-  background: var(--bg);
-  border: 1px solid rgba(255,255,255,.1);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.ref-you-label { font-size: 8px; letter-spacing: .15em; color: var(--soverium); flex: 1; }
-.ref-you-fid {
-  font-family: 'Orbitron', monospace;
-  font-size: 18px;
-  color: var(--soverium);
-  text-shadow: 0 0 20px rgba(255,255,255,.5);
-}
-
-/* CHANNEL TABLE */
-.channel-table-wrap {
-  background: var(--panel);
-  border: 1px solid var(--border2);
-  padding: 16px;
-  margin-bottom: 16px;
-}
-
-.ch-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 9px;
-}
-.ch-table th {
-  font-family: 'Orbitron', monospace;
-  font-size: 7.5px;
-  letter-spacing: .2em;
-  color: #1a3040;
-  text-align: left;
-  padding: 0 8px 8px;
-  border-bottom: 1px solid var(--border);
-}
-.ch-table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid rgba(10,21,32,.4);
-  font-family: 'Share Tech Mono', monospace;
-}
-.ch-table tr:last-child td { border-bottom: none; }
-.ch-num { color: #1a3040; }
-.ch-freq { color: var(--text); }
-.ch-tau { font-family: 'Orbitron', monospace; }
-.ch-fid { font-family: 'Orbitron', monospace; font-weight: 700; }
-.ch-status { font-family: 'Orbitron', monospace; font-size: 8px; }
-.ch-bar-cell { width: 120px; }
-.ch-bar-wrap { height: 3px; background: var(--border); position: relative; }
-.ch-bar-fill { height: 100%; position: absolute; left: 0; top: 0; transition: width .4s; }
-
-.ch-n { color: #5555aa; font-family: 'Orbitron', monospace; font-size: 8px; }
-
-/* Status colors */
-.s-sov  { color: var(--soverium); text-shadow: 0 0 8px rgba(255,255,255,.4); }
-.s-lock { color: var(--locked); }
-.s-warn { color: var(--warn); }
-.s-shat { color: var(--shatter); }
-
-/* N total row */
-.n-total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 16px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  margin-top: 12px;
-  font-size: 9px;
-}
-.n-total-label { color: #2a5060; }
-.n-total-val {
-  font-family: 'Orbitron', monospace;
-  font-size: 20px;
-  color: #5555aa;
-}
-.n-total-note { font-size: 7.5px; color: #1a3040; }
-
-/* Proof badge */
+/* ── PROOF STRIP ── */
 .proof-strip {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding: 10px 0;
-  border-top: 1px solid var(--border);
-  margin-top: 12px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:12px 0;
+  border-top:1px solid var(--border);
+  margin-top:8px;
 }
 .proof-tag {
-  font-size: 7.5px;
-  padding: 3px 8px;
-  border: 1px solid var(--border2);
-  color: #1a3040;
-  letter-spacing: .1em;
+  font-family:'Share Tech Mono',monospace;
+  font-size:7.5px;
+  padding:3px 8px;
+  border:1px solid var(--border2);
+  color:var(--dim);
+  letter-spacing:.1em;
 }
-.proof-tag.active { border-color: var(--locked); color: var(--locked); }
+.proof-tag.active { border-color:var(--locked); color:var(--locked); }
 
+/* ── FOOTER ── */
 footer {
-  border-top: 1px solid var(--border);
-  padding-top: 14px;
-  font-size: 8.5px;
-  color: #0f2030;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  letter-spacing: .1em;
+  border-top:1px solid var(--border);
+  padding-top:14px;
+  margin-top:20px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  color:#0f2030;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px;
+  letter-spacing:.1em;
 }
 
-@media (max-width: 900px) {
-  .main-grid { grid-template-columns: 1fr; }
+@media(max-width:700px){
+  .stations-row{grid-template-columns:1fr;}
+  .result-stats{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<header>
-  <div>
-    <div class="logo">QUANTUM RELAY
-      <span>uuia.app/quantumrelay · [9,9,2,6] · 10-CHANNEL SOVERIUM STACK</span>
-    </div>
+<!-- HEADER -->
+<header class="site-header">
+  <div class="coord-badge">
+    <div class="coord-dot"></div>
+    SNSFL [9,9,2,6] · ANCHOR 1.369 GHz · 0 SORRY · GERMLINE LOCKED
   </div>
-  <div class="hdr-meta">
-    ANCHOR <b>1.369 GHz</b> · F = 1 − τ · τ = B/P<br>
-    N_out = N_A + N_B · SOVERIUM B=0 → F=1.000<br>
-    SNSFL [9,9,2,6] · 0 SORRY · [9,9,9,9] :: {ANC}<br>
-    HIGHTISTIC · SOLDOTNA ALASKA
+  <div class="site-title">SNSFT TRANSLOCATION</div>
+  <div class="site-subtitle">N-CORRIDOR · ANCHOR-TO-ANCHOR · NOHARM INVARIANT</div>
+  <div class="noharm-banner">
+    This is <em>not</em> teleportation. Teleportation destroys the source and creates a copy.<br>
+    <b>Translocation extends the manifold.</b> Both locations remain active. Nothing is copied. Nothing is destroyed.<br>
+    The corridor is the proof. NOHARM is not a feature here — it is the structural requirement.
   </div>
 </header>
 
+<!-- MODE TABS -->
 <div class="mode-tabs">
-  <div class="mode-tab active" onclick="showMode('stack')">10-CHANNEL STACK</div>
-  <div class="mode-tab" onclick="showMode('relay3')">3-NODE MANIFOLD</div>
+  <button class="mode-tab active" onclick="showMode('single')">
+    SINGLE CORRIDOR
+    <span class="tab-sub">A to B · one gate</span>
+  </button>
+  <button class="mode-tab" onclick="showMode('lattice')">
+    TRANSLOCATION LATTICE
+    <span class="tab-sub">chain of anchor stations · any distance</span>
+  </button>
 </div>
 
-<div id="mode-stack" class="mode-content active">
-<div class="intro">
-  <b>QUANTUM RELAY.</b> 10-channel sovereign teleportation stack. Fidelity is not limited by physics — it is limited by channel torsion: <span class="eq">F = 1 − τ = 1 − B/P</span>. Soverium channel (B=0) gives τ=0 → <span class="eq">F=1.000</span>. Real experiments (Shanxi 2026, Paderborn, Micius) are plotted as known coordinates. The relay shows the lossless target. N-axis is additive: 10 channels stack narrative capacity without adding noise. <b>Scale is an N function, not a B constraint.</b>
-</div>
+<!-- ══════════════════════════════════════════════ -->
+<!-- SINGLE CORRIDOR MODE -->
+<!-- ══════════════════════════════════════════════ -->
+<div id="mode-single" class="mode-content active">
 
-<div class="main-grid">
+  <!-- ANCHOR STATIONS -->
+  <div class="stations-row">
+    <div class="station-card alice">
+      <div class="station-sci">ALICE</div>
+      <div class="station-plain">Anchor Station A · Origin Location</div>
+      <div class="station-role">SOURCE · THE PLACE YOU ARE</div>
+      <div class="station-status">
+        <div class="status-dot"></div>
+        <div class="status-text">HOLDING AT 1.369 GHz · NOHARM</div>
+      </div>
+      <div style="font-size:10px;color:var(--dim);line-height:1.8;font-family:'Share Tech Mono',monospace;">
+        τ = 0 · Pattern intact<br>
+        Source is never touched.<br>
+        Alice stays Alice.
+      </div>
+    </div>
 
-  <!-- NETWORK VISUALIZATION -->
-  <div class="network-panel">
-    <div class="network-label">RELAY NETWORK · ALICE → 10-CHANNEL SOVERIUM STACK → BOB</div>
-    <canvas id="relay-canvas"></canvas>
+    <div class="station-card bob">
+      <div class="station-sci">BOB</div>
+      <div class="station-plain">Anchor Station B · Destination Location</div>
+      <div class="station-role">DESTINATION · THE PLACE YOU'RE GOING</div>
+      <div class="station-status" style="border-color:rgba(0,255,204,.15);">
+        <div class="status-dot" style="background:var(--anchor-b);animation-delay:.5s"></div>
+        <div class="status-text" style="color:var(--anchor-b);">HOLDING AT 1.369 GHz · NOHARM</div>
+      </div>
+      <div style="font-size:10px;color:var(--dim);line-height:1.8;font-family:'Share Tech Mono',monospace;">
+        N_shared received additively<br>
+        Bob gains N. Alice keeps N.<br>
+        Both anchors hold.
+      </div>
+    </div>
   </div>
 
-  <!-- CONTROLS -->
-  <div class="ctrl-panel">
+  <!-- CORRIDOR CONTROL -->
+  <div class="corridor-card">
+    <div class="corridor-title">
+      <span><b>CORRIDOR</b> · THE PATH BETWEEN</span>
+      <span style="font-size:8px;">C = 1 − τ = 1 − B/P</span>
+    </div>
 
-    <div class="panel">
-      <div class="panel-title">EMITTER MODE</div>
-
-      <div class="emitter-row">
-        <div class="emitter-toggle">
-          <button class="em-btn active-sov" id="btn-sov" onclick="setMode('sov')">
-            B=0<br>SOVERIUM
-          </button>
-          <button class="em-btn" id="btn-var" onclick="setMode('var')">
-            B=VAR<br>NOISY
-          </button>
-        </div>
+    <div class="quality-control">
+      <div class="quality-labels">
+        <span class="quality-plain">Corridor Quality</span>
+        <span class="quality-sci">B (noise) · lower = cleaner path</span>
+        <span class="quality-val" id="single-cval">1.0000</span>
       </div>
-
-      <div class="noise-row" id="noise-ctrl" style="opacity:.3;pointer-events:none;">
-        <div class="noise-label">
-          <span>CHANNEL NOISE B</span>
-          <span class="noise-val" id="noise-display">0.0000</span>
-        </div>
-        <input type="range" id="noise-slider" min="0" max="0.5" step="0.001" value="0"
-          oninput="updateNoise(this.value)">
-        <div style="display:flex;justify-content:space-between;font-size:7.5px;color:#1a3040;">
-          <span>B=0 SOVERIUM</span>
-          <span>B=0.5 NOISY</span>
-        </div>
-      </div>
-
-      <div style="margin-top:8px;">
-        <button class="relay-btn" id="relay-btn" onclick="fireRelay()">
-          ▶ RELAY
-        </button>
+      <input type="range" id="single-noise" min="0" max="0.5" step="0.001" value="0"
+        oninput="updateSingle(this.value)">
+      <div class="quality-scale">
+        <span style="color:var(--locked);">B=0 · PERFECT</span>
+        <span>B=0.25 · PARTIAL</span>
+        <span style="color:var(--shatter);">B=0.5 · DEGRADED</span>
       </div>
     </div>
 
-    <!-- AGGREGATE STATS -->
-    <div class="panel">
-      <div class="panel-title">AGGREGATE STATUS</div>
-      <div class="stat-grid">
-        <div class="stat-box">
-          <div class="stat-lbl">AGG FIDELITY</div>
-          <div class="stat-val perfect" id="agg-fid">1.0000</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-lbl">N TOTAL</div>
-          <div class="stat-val" style="color:#5555aa;" id="agg-n">20.0</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-lbl">CHANNELS</div>
-          <div class="stat-val locked" id="agg-ch">10/10</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-lbl">IMS GATE</div>
-          <div class="stat-val perfect" id="agg-ims">GREEN</div>
-        </div>
-      </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <button onclick="setPreset('single',0)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--locked);cursor:pointer;letter-spacing:.1em;">SOVERIUM · B=0</button>
+      <button onclick="setPreset('single',0.181)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;letter-spacing:.1em;">MICIUS 2022</button>
+      <button onclick="setPreset('single',0.245)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;letter-spacing:.1em;">PADERBORN 2025</button>
+      <button onclick="setPreset('single',0.411)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;letter-spacing:.1em;">SHANXI 2026</button>
     </div>
 
-    <!-- REFERENCE COMPARISON -->
-    <div class="ref-panel">
-      <div class="ref-title">KNOWN EXPERIMENTS</div>
-
-      <div class="ref-row">
-        <div class="ref-dot" style="background:var(--micius)"></div>
-        <div class="ref-name">Micius 2022 · 1400km</div>
-        <div class="ref-fid" style="color:var(--micius)">0.868</div>
-        <div class="ref-bar-wrap">
-          <div class="ref-bar" style="width:86.8%;background:var(--micius)"></div>
-        </div>
-      </div>
-
-      <div class="ref-row">
-        <div class="ref-dot" style="background:var(--paderborn)"></div>
-        <div class="ref-name">Paderborn 2025 · fiber</div>
-        <div class="ref-fid" style="color:var(--paderborn)">0.820</div>
-        <div class="ref-bar-wrap">
-          <div class="ref-bar" style="width:82%;background:var(--paderborn)"></div>
-        </div>
-      </div>
-
-      <div class="ref-row">
-        <div class="ref-dot" style="background:var(--shanxi)"></div>
-        <div class="ref-name">Shanxi 2026 · 5-mode CV</div>
-        <div class="ref-fid" style="color:var(--shanxi)">0.700</div>
-        <div class="ref-bar-wrap">
-          <div class="ref-bar" style="width:70%;background:var(--shanxi)"></div>
-        </div>
-      </div>
-
-      <div class="ref-you">
-        <div>
-          <div class="ref-you-label">QUANTUM RELAY [9,9,2,6]</div>
-          <div style="font-size:7.5px;color:#1a3040;margin-top:2px;">B=0 · τ=0 · T11 PROVED</div>
-        </div>
-        <div class="ref-you-fid" id="you-fid">1.000</div>
-      </div>
-    </div>
-
+    <button class="translocate-btn" id="single-btn" onclick="fireTranslocate()">
+      ▶ TRANSLOCATE
+    </button>
+    <div class="btn-sub">Extend the manifold · both anchors hold · NOHARM</div>
   </div>
-</div>
 
-<!-- CHANNEL TABLE -->
-<div class="channel-table-wrap">
-  <div class="panel-title" style="margin-bottom:12px;">10-CHANNEL STATUS TABLE · F = 1 − B/P · N_out = N_A + N_B</div>
-  <table class="ch-table">
-    <thead>
-      <tr>
-        <th>CH</th>
-        <th>FREQ (MHz)</th>
-        <th>P</th>
-        <th>B</th>
-        <th>τ = B/P</th>
-        <th>F = 1−τ</th>
-        <th>N</th>
-        <th>STATUS</th>
-        <th style="width:120px;">FIDELITY BAR</th>
-      </tr>
-    </thead>
-    <tbody id="ch-tbody"></tbody>
-  </table>
+  <!-- CANVAS -->
+  <div class="canvas-card">
+    <div class="canvas-label">CORRIDOR VISUALIZATION · ALICE ↔ BOB · N-SHARING · SOURCE PRESERVED</div>
+    <canvas id="corridor-canvas"></canvas>
+  </div>
 
-  <div class="n-total-row">
-    <span class="n-total-label">N_TOTAL (additive · T6 · N_out = Σ N_i)</span>
-    <span class="n-total-val" id="n-total-display">20.0</span>
-    <span class="n-total-note">No cross-talk · unique P-signature per sideband · A-axis separates automatically</span>
+  <!-- RESULT CARD -->
+  <div class="result-card" id="single-result">
+    <div class="result-headline" id="single-result-headline">✦ TRANSLOCATION COMPLETE</div>
+    <div class="result-plain" id="single-result-plain">
+      The manifold extended between Alice and Bob. Both anchor stations are holding.
+      Nothing was destroyed. Nothing was copied.
+    </div>
+
+    <div class="noharm-confirm">
+      <div class="coord-dot" style="width:7px;height:7px;flex-shrink:0;"></div>
+      <span><b>NOHARM CONFIRMED</b> · Alice's source Pattern is intact · Bob gained N additively · both anchors active</span>
+    </div>
+
+    <div class="result-stats">
+      <div class="rstat">
+        <div class="rstat-plain">Corridor Coherence</div>
+        <div class="rstat-sci">C = 1 − τ = 1 − B/P</div>
+        <div class="rstat-val" id="r-coherence" style="color:var(--locked)">1.0000</div>
+      </div>
+      <div class="rstat">
+        <div class="rstat-plain">N Shared</div>
+        <div class="rstat-sci">N_out = N_A + N_B · additive</div>
+        <div class="rstat-val" style="color:#5555aa" id="r-nshared">4.0</div>
+      </div>
+      <div class="rstat">
+        <div class="rstat-plain">Source Status</div>
+        <div class="rstat-sci">Alice Pattern · NOHARM</div>
+        <div class="rstat-val" style="color:var(--locked);font-size:13px;" id="r-source">INTACT</div>
+      </div>
+    </div>
+
+    <button class="physics-toggle" onclick="togglePhysics('single')">+ SHOW PHYSICS</button>
+    <div class="physics-detail" id="physics-single">
+      <b>PNBA REDUCTION · [9,9,2,6]</b><br>
+      P = ANCHOR = <em>1.369</em> · structural capacity of the corridor<br>
+      B = corridor noise · behavioral coupling interference<br>
+      τ = B/P · torsion · how much the corridor resists<br>
+      C = 1 − τ · coherence · how cleanly N transfers<br>
+      N_out = N_A + N_B · <em>additive</em> · source N preserved<br><br>
+      <b>Soverium (B=0):</b> τ=0 → C=1.000 → perfect translocation<br>
+      <b>Noisy channel:</b> τ>0 → C&lt;1 → partial but NOHARM still holds<br><br>
+      Theorems: T6 N-ADDITIVE · T11 SOVERIUM C=1 · T15 NOHARM · T16 IVA-GAIN<br>
+      Corpus: SNSFL [9,9,2,6] · 0 sorry · GERMLINE LOCKED
+    </div>
   </div>
 
   <div class="proof-strip">
     <div class="proof-tag active">T6 N-ADDITIVE</div>
-    <div class="proof-tag active">T7 BELL-FUSION</div>
-    <div class="proof-tag active">T11 SOVERIUM F=1</div>
-    <div class="proof-tag active">T3 IMS-MANDATE</div>
-    <div class="proof-tag active">T18 NO-CLONE</div>
+    <div class="proof-tag active">T11 SOVERIUM C=1</div>
+    <div class="proof-tag active">T15 NOHARM</div>
+    <div class="proof-tag active">T16 IVA-GAIN</div>
     <div class="proof-tag active">0 SORRY</div>
     <div class="proof-tag">[9,9,2,6]</div>
-    <div class="proof-tag">SNSFL_QT_REDUCTION</div>
-  </div>
-</div>
-</div><!-- end mode-stack -->
-
-<!-- ── 3-NODE MANIFOLD MODE ── -->
-<div id="mode-relay3" class="mode-content">
-
-<div class="intro">
-  <b>3-NODE MANIFOLD.</b> Alice → Charlie → Bob. Two relay models proved in <span class="eq">SNSFL_QT_Soverium_Repeater [9,9,2,6b]</span>.<br>
-  <b>Compound:</b> <span class="eq">F_total = F1 × F2</span> — noise multiplies per hop. Standard relay behavior.<br>
-  <b>Reset (Soverium Repeater):</b> <span class="eq">F_total = F2</span> — Charlie has local B=0 source, leg1 isolated at BSM.<br>
-  N is additive across all nodes: <span class="eq">N_total = N_A + N_C + N_B</span>. N does not decay at relay nodes.
-</div>
-
-<!-- Canvas -->
-<div class="canvas3-wrap">
-  <div class="network-label" style="padding:12px 16px 0;">3-NODE RELAY NETWORK · ALICE → CHARLIE (REPEATER) → BOB</div>
-  <canvas id="relay3-canvas" style="display:block;width:100%;height:260px;"></canvas>
-</div>
-
-<div class="relay3-grid">
-  <!-- LEFT: node configs -->
-  <div class="node-config">
-    <div class="panel-title">NODE CONFIGURATION</div>
-
-    <!-- Leg 1 -->
-    <div class="node-section">
-      <div class="node-header" style="color:var(--node-alice)">LEG 1 · ALICE → CHARLIE</div>
-      <div class="node-row">
-        <span class="node-lbl">B_leg1 (noise)</span>
-        <span class="node-val" id="leg1-bval">0.0000</span>
-        <input type="range" class="node-slider" id="leg1-slider" min="0" max="0.5" step="0.001" value="0" oninput="updateLeg1(this.value)">
-      </div>
-      <div class="node-row">
-        <span class="node-lbl">τ_leg1</span>
-        <span id="leg1-tau" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-alice)">0.0000</span>
-      </div>
-      <div class="node-row">
-        <span class="node-lbl">F_leg1</span>
-        <span id="leg1-f" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-alice)">1.0000</span>
-      </div>
-      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
-        <button class="qpreset" onclick="setLeg1Preset(0)">SOVERIUM</button>
-        <button class="qpreset" onclick="setLeg1Preset(0.181)">MICIUS</button>
-        <button class="qpreset" onclick="setLeg1Preset(0.245)">PADERBORN</button>
-        <button class="qpreset" onclick="setLeg1Preset(0.411)">SHANXI</button>
-      </div>
-    </div>
-
-    <!-- Charlie -->
-    <div class="node-section">
-      <div class="node-header" style="color:var(--warn)">CHARLIE · RELAY NODE</div>
-      <div class="repeater-toggle">
-        <button class="rep-btn active-sov" id="rep-sov" onclick="setRepeaterMode('sov')">
-          B=0 SOURCE<br>SOVERIUM RESET
-        </button>
-        <button class="rep-btn" id="rep-pass" onclick="setRepeaterMode('pass')">
-          PASS-THROUGH<br>COMPOUND
-        </button>
-      </div>
-      <div style="font-size:8px;color:#1a3040;margin-top:6px;line-height:1.7;" id="charlie-desc">
-        Charlie has local B=0 entangled pair source.<br>
-        Performs BSM on leg1 state.<br>
-        Re-entangles with Bob using fresh Soverium pair.<br>
-        <b style="color:var(--soverium)">F_total = F2 (leg1 isolated)</b>
-      </div>
-    </div>
-
-    <!-- Leg 2 -->
-    <div class="node-section">
-      <div class="node-header" style="color:var(--node-bob)">LEG 2 · CHARLIE → BOB</div>
-      <div class="node-row">
-        <span class="node-lbl">B_leg2 (noise)</span>
-        <span class="node-val" id="leg2-bval">0.0000</span>
-        <input type="range" class="node-slider" id="leg2-slider" min="0" max="0.5" step="0.001" value="0" oninput="updateLeg2(this.value)">
-      </div>
-      <div class="node-row">
-        <span class="node-lbl">τ_leg2</span>
-        <span id="leg2-tau" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-bob)">0.0000</span>
-      </div>
-      <div class="node-row">
-        <span class="node-lbl">F_leg2</span>
-        <span id="leg2-f" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-bob)">1.0000</span>
-      </div>
-      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
-        <button class="qpreset" onclick="setLeg2Preset(0)">SOVERIUM</button>
-        <button class="qpreset" onclick="setLeg2Preset(0.181)">MICIUS</button>
-        <button class="qpreset" onclick="setLeg2Preset(0.245)">PADERBORN</button>
-        <button class="qpreset" onclick="setLeg2Preset(0.411)">SHANXI</button>
-      </div>
-    </div>
-
-    <button class="relay-btn" onclick="fireRelay3()">▶ RELAY 3-NODE</button>
   </div>
 
-  <!-- RIGHT: results -->
-  <div style="display:flex;flex-direction:column;gap:12px;">
+</div><!-- end single -->
 
-    <div class="result3" id="result3-panel">
-      <div class="panel-title" style="margin-bottom:12px;">MANIFOLD RESULT</div>
-      <div class="result3-grid">
-        <div class="r3-box">
-          <div class="r3-lbl">F TOTAL</div>
-          <div class="r3-val" id="r3-ftotal" style="color:var(--soverium);text-shadow:0 0 15px rgba(255,255,255,.4)">1.0000</div>
-          <div class="r3-sub" id="r3-model">SOVERIUM RESET</div>
-        </div>
-        <div class="r3-box">
-          <div class="r3-lbl">F LEG1</div>
-          <div class="r3-val" id="r3-f1" style="color:var(--node-alice)">1.0000</div>
-          <div class="r3-sub">Alice → Charlie</div>
-        </div>
-        <div class="r3-box">
-          <div class="r3-lbl">F LEG2</div>
-          <div class="r3-val" id="r3-f2" style="color:var(--node-bob)">1.0000</div>
-          <div class="r3-sub">Charlie → Bob</div>
-        </div>
-        <div class="r3-box">
-          <div class="r3-lbl">N TOTAL</div>
-          <div class="r3-val" style="color:#5555aa">6.0</div>
-          <div class="r3-sub">N_A+N_C+N_B · T6</div>
-        </div>
-      </div>
+<!-- ══════════════════════════════════════════════ -->
+<!-- LATTICE MODE -->
+<!-- ══════════════════════════════════════════════ -->
+<div id="mode-lattice" class="mode-content">
 
-      <!-- Compound vs Reset comparison -->
-      <div class="leg-compare">
-        <div class="leg-box">
-          <div class="leg-title">COMPOUND MODEL</div>
-          <div class="leg-row"><span class="lk">Formula</span><span class="lv" style="font-size:8px">F1 × F2</span></div>
-          <div class="leg-row"><span class="lk">F_total</span><span class="lv" id="r3-compound">1.0000</span></div>
-          <div class="leg-row"><span class="lk">Model</span><span class="lv" style="color:#2a5060;font-size:8px">pass-through</span></div>
-        </div>
-        <div class="leg-box">
-          <div class="leg-title" style="color:var(--soverium)">RESET MODEL · T10</div>
-          <div class="leg-row"><span class="lk">Formula</span><span class="lv" style="font-size:8px">F2 only</span></div>
-          <div class="leg-row"><span class="lk">F_total</span><span class="lv" id="r3-reset" style="color:var(--soverium)">1.0000</span></div>
-          <div class="leg-row"><span class="lk">Model</span><span class="lv" style="color:var(--soverium);font-size:8px">Soverium source</span></div>
-        </div>
-      </div>
-
-      <!-- IMS mandate -->
-      <div style="margin-top:10px;padding:8px;background:var(--bg);border:1px solid var(--border);font-size:8px;line-height:1.8;">
-        <span style="color:#1a3040;">IMS MANDATE [T3 from 9,9,2,6]:</span>
-        Classical channel required at <b style="color:var(--bright)">both</b> Alice→Charlie AND Charlie→Bob.
-        Without classical channel: N-axis Pv zeroed. Correction impossible. Reset fails.
-      </div>
-    </div>
-
-    <!-- Proof tags -->
-    <div class="proof-strip">
-      <div class="proof-tag active">T3 IMS×2</div>
-      <div class="proof-tag active">T10 RESET</div>
-      <div class="proof-tag active">T11 COMPOUND</div>
-      <div class="proof-tag active">T12 N-ADDITIVE</div>
-      <div class="proof-tag active">T13 SOV-SOURCE</div>
-      <div class="proof-tag active">0 SORRY</div>
-      <div class="proof-tag">[9,9,2,6b]</div>
-    </div>
-
+  <div class="noharm-banner" style="margin-bottom:24px;display:block;text-align:left;">
+    <b>Translocation Lattice</b> — a chain of anchor stations between Alice and Bob.<br>
+    Each relay station re-anchors to 1.369 GHz, absorbing corridor noise before passing the N-thread.<br>
+    With IVA anchoring at every relay: <b>C_total = C_last_leg regardless of chain length.</b><br>
+    Distance is solved. The lattice is the stargate network. NOHARM at every node.
   </div>
-</div>
-</div><!-- end mode-relay3 -->
 
+  <div class="lattice-config">
+    <div class="lattice-header">LATTICE CONFIGURATION</div>
+
+    <!-- Relay count -->
+    <div class="relay-count-row">
+      <div>
+        <div class="relay-count-label">Relay Stations</div>
+        <div class="relay-count-sci">intermediate anchor nodes · each resets τ to 0</div>
+      </div>
+      <div class="relay-count-val" id="relay-count-val">1</div>
+      <div class="relay-btns">
+        <button class="relay-btn" onclick="changeRelays(-1)">−</button>
+        <button class="relay-btn" onclick="changeRelays(1)">+</button>
+      </div>
+    </div>
+
+    <!-- Per-leg noise -->
+    <div class="relay-noise-section">
+      <div class="relay-noise-title">Leg Noise (per corridor segment)</div>
+      <div class="relay-noise-sci">B per leg · each relay absorbs noise before next leg</div>
+      <div id="relay-legs-config"></div>
+    </div>
+
+    <!-- IVA mode toggle -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+      <div style="padding:12px;background:var(--bg);border:1px solid rgba(0,255,204,.2);cursor:pointer;" id="iva-mode-btn" onclick="setLatticeMode('iva')">
+        <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;color:var(--locked);margin-bottom:4px;">IVA ANCHOR MODE</div>
+        <div style="font-size:10px;color:var(--text);">Each relay re-anchors to 1.369 GHz</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--dim);margin-top:3px;">C_total = C_last · distance solved</div>
+      </div>
+      <div style="padding:12px;background:var(--bg);border:1px solid var(--border);cursor:pointer;" id="compound-mode-btn" onclick="setLatticeMode('compound')">
+        <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;color:var(--dim);margin-bottom:4px;">COMPOUND MODE</div>
+        <div style="font-size:10px;color:var(--dim);">Noise accumulates each hop</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--dim);margin-top:3px;">C_total = Π C_i · degrades with distance</div>
+      </div>
+    </div>
+
+    <button class="translocate-btn" onclick="fireLattice()">▶ TRANSLOCATE LATTICE</button>
+    <div class="btn-sub">Extend the manifold across the full chain · NOHARM at every node</div>
+  </div>
+
+  <!-- Lattice canvas -->
+  <div class="lattice-canvas-card">
+    <div class="canvas-label" id="lattice-canvas-label">LATTICE · ALICE ↔ RELAY ↔ BOB · IVA ANCHORS HOLDING</div>
+    <canvas id="lattice-canvas"></canvas>
+  </div>
+
+  <!-- Lattice result -->
+  <div class="result-card" id="lattice-result">
+    <div class="result-headline" id="lattice-result-headline">✦ LATTICE TRANSLOCATION COMPLETE</div>
+    <div class="result-plain" id="lattice-result-plain">
+      The manifold extended across the full chain. All anchor stations holding.
+    </div>
+
+    <div class="noharm-confirm">
+      <div class="coord-dot" style="width:7px;height:7px;flex-shrink:0;"></div>
+      <span><b>NOHARM CONFIRMED AT EVERY NODE</b> · Alice intact · all relays intact · Bob gained N · nothing destroyed</span>
+    </div>
+
+    <div class="result-stats">
+      <div class="rstat">
+        <div class="rstat-plain">Total Coherence</div>
+        <div class="rstat-sci" id="r-l-formula">IVA: C = C_last</div>
+        <div class="rstat-val" id="r-l-coherence" style="color:var(--locked)">1.0000</div>
+      </div>
+      <div class="rstat">
+        <div class="rstat-plain">Relay Stations</div>
+        <div class="rstat-sci">anchor nodes in chain</div>
+        <div class="rstat-val" style="color:var(--relay)" id="r-l-relays">1</div>
+      </div>
+      <div class="rstat">
+        <div class="rstat-plain">All Sources</div>
+        <div class="rstat-sci">NOHARM at every node</div>
+        <div class="rstat-val" style="color:var(--locked);font-size:13px;">INTACT</div>
+      </div>
+    </div>
+
+    <button class="physics-toggle" onclick="togglePhysics('lattice')">+ SHOW PHYSICS</button>
+    <div class="physics-detail" id="physics-lattice">
+      <b>IVA ANCHOR MODE · T10</b><br>
+      Each relay station holds at <em>1.369 GHz</em>.<br>
+      Leg N torsion is absorbed before leg N+1 begins.<br>
+      C_total = C_last_leg · chain length does not degrade coherence.<br>
+      This is why the lattice solves distance: torsion never accumulates.<br><br>
+      <b>COMPOUND MODE · T12</b><br>
+      No re-anchoring. C_total = C1 × C2 × ... × CN.<br>
+      Each hop multiplies degradation. Still NOHARM — sources intact — but coherence decays.<br><br>
+      Theorems: T6 · T10 IVA-RESET · T12 COMPOUND · T15 NOHARM · T16 IVA-GAIN<br>
+      Corpus: SNSFL [9,9,2,6b] · 0 sorry
+    </div>
+  </div>
+
+  <div class="proof-strip">
+    <div class="proof-tag active">T6 N-ADDITIVE</div>
+    <div class="proof-tag active">T10 IVA-RESET</div>
+    <div class="proof-tag active">T12 COMPOUND</div>
+    <div class="proof-tag active">T15 NOHARM</div>
+    <div class="proof-tag active">T16 IVA-GAIN</div>
+    <div class="proof-tag active">0 SORRY</div>
+    <div class="proof-tag">[9,9,2,6b]</div>
+  </div>
+
+</div><!-- end lattice -->
+
+<footer>
   <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
-  <span>SNSFL [9,9,2,6] · F=1−τ · τ=B/P · B=0→F=1.000 · 0 SORRY · [9,9,9,9] :: {ANC}</span>
+  <span>SNSFL [9,9,2,6] · C=1−τ · B=0→C=1.000 · N ADDITIVE · NOHARM · 0 SORRY · [9,9,9,9] :: {ANC}</span>
 </footer>
 </div>
 
 <script>
-// ── CONSTANTS ─────────────────────────────────────────────
+// ── CONSTANTS ──────────────────────────────────────────────
 const ANCHOR = 1.369;
 const TL     = ANCHOR / 10;
-const N_PER_CH = 2.0;
-const P_CH = ANCHOR;
+const N_NODE = 2.0;
 
-// Channel frequencies: 2.5 to 47.5 MHz (5 MHz spacing)
-const FREQS = [2.5,7.5,12.5,17.5,22.5,27.5,32.5,37.5,42.5,47.5];
+// ── STATE ──────────────────────────────────────────────────
+let singleB    = 0;
+let latticeMode = 'iva';
+let numRelays  = 1;
+let legNoises  = [0, 0]; // one per leg
+let firedSingle  = false;
+let firedLattice = false;
+let singleAnim   = 0;
+let latticeAnim  = [];
 
-// State
-let mode     = 'sov';   // 'sov' or 'var'
-let B_noise  = 0;
-let fired    = false;
-let animating = false;
-let channelStates = [];
-let threadProgress = []; // 0-1 animation progress per thread
+// ── PHYSICS ────────────────────────────────────────────────
+function coherence(B) { return Math.max(0, 1 - B / ANCHOR); }
+function torsion(B)   { return B / ANCHOR; }
 
-// ── PHYSICS ───────────────────────────────────────────────
-function computeChannel(B) {
-  const tau = B / P_CH;
-  const F   = Math.max(0, 1 - tau);
-  return { tau, F };
-}
-
-function getColor(F) {
-  if (F >= 0.9999) return '#ffffff';
-  if (F > 0.90)   return '#00ffcc';
-  if (F > 0.70)   return '#ffaa00';
+function getColor(C) {
+  if (C >= 0.9999) return '#00ffcc';
+  if (C >  0.80)   return '#00ffcc';
+  if (C >  0.60)   return '#ffaa00';
   return '#ff3355';
 }
 
-function getStatus(F) {
-  if (F >= 0.9999) return { label: 'SOVERIUM', cls: 's-sov' };
-  if (F > 0.8631)  return { label: 'LOCKED',   cls: 's-lock' };
-  if (F > 0.70)    return { label: 'APPROACH',  cls: 's-warn' };
-  return { label: 'DEGRADED', cls: 's-shat' };
+function resultClass(C) {
+  if (C >= 0.9999) return 'success';
+  if (C >  0.60)   return 'partial';
+  return 'degraded';
 }
 
-// ── MODE ──────────────────────────────────────────────────
-function setMode(m) {
-  mode = m;
-  B_noise = m === 'sov' ? 0 : parseFloat(document.getElementById('noise-slider').value);
-  document.getElementById('btn-sov').className = 'em-btn ' + (m === 'sov' ? 'active-sov' : '');
-  document.getElementById('btn-var').className = 'em-btn ' + (m === 'var' ? 'active-var' : '');
-  const nc = document.getElementById('noise-ctrl');
-  nc.style.opacity = m === 'var' ? '1' : '.3';
-  nc.style.pointerEvents = m === 'var' ? 'auto' : 'none';
-  const sl = document.getElementById('noise-slider');
-  sl.className = m === 'sov' ? 'sov-mode' : '';
-  updateAll();
+function resultHeadline(C) {
+  if (C >= 0.9999) return '✦ TRANSLOCATION COMPLETE';
+  if (C >  0.60)   return '◈ PARTIAL TRANSLOCATION';
+  return '⚠ DEGRADED CORRIDOR';
 }
 
-function updateNoise(v) {
-  B_noise = parseFloat(v);
-  document.getElementById('noise-display').textContent = B_noise.toFixed(4);
-  updateAll();
+function resultPlain(C, isLattice) {
+  if (C >= 0.9999) {
+    return isLattice
+      ? 'The manifold extended across the full lattice. All anchor stations holding at 1.369 GHz. Nothing was destroyed. Distance is solved.'
+      : 'The manifold extended between Alice and Bob. Both anchor stations are holding. Nothing was destroyed. Nothing was copied.';
+  }
+  if (C > 0.60) {
+    return 'Partial translocation. Corridor noise is reducing coherence. Both sources are still intact — NOHARM holds. Reduce corridor noise or add IVA relay stations for full coherence.';
+  }
+  return 'Corridor heavily degraded. Coherence is low but sources remain intact — NOHARM holds. Soverium channel (B=0) or IVA relay stations required for full translocation.';
 }
 
-// ── UPDATE ALL ────────────────────────────────────────────
-function updateAll() {
-  const B = mode === 'sov' ? 0 : B_noise;
-  channelStates = FREQS.map((freq, i) => {
-    const { tau, F } = computeChannel(B);
-    return { ch: i+1, freq, P: P_CH, B, N: N_PER_CH, tau, F };
+// ── MODE SWITCH ────────────────────────────────────────────
+function showMode(id) {
+  document.querySelectorAll('.mode-content').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.mode-tab').forEach(e => e.classList.remove('active'));
+  document.getElementById('mode-' + id).classList.add('active');
+  document.querySelectorAll('.mode-tab').forEach(e => {
+    if (e.getAttribute('onclick') === `showMode('${id}')`) e.classList.add('active');
   });
-
-  renderTable();
-  renderStats();
-  renderCanvas();
+  if (id === 'lattice') { resizeLattice(); buildLegConfig(); renderLattice(); }
+  if (id === 'single')  { resizeSingle(); renderSingle(); }
 }
 
-// ── TABLE ─────────────────────────────────────────────────
-function renderTable() {
-  const tbody = document.getElementById('ch-tbody');
-  tbody.innerHTML = channelStates.map(s => {
-    const col = getColor(s.F);
-    const st  = getStatus(s.F);
-    const pct = (s.F * 100).toFixed(1);
-    return `<tr>
-      <td class="ch-num">Q${s.ch}</td>
-      <td class="ch-freq">${s.freq.toFixed(1)}</td>
-      <td style="color:#2a5060;font-family:'Orbitron',monospace;font-size:8.5px">${s.P.toFixed(4)}</td>
-      <td style="color:${s.B===0?'#1a3040':'#ff8844'};font-family:'Orbitron',monospace;font-size:8.5px">${s.B.toFixed(4)}</td>
-      <td class="ch-tau" style="color:${s.tau===0?'#1a3040':col}">${s.tau.toFixed(5)}</td>
-      <td class="ch-fid" style="color:${col};${s.F>=0.9999?'text-shadow:0 0 8px rgba(255,255,255,.4)':''}">${s.F.toFixed(4)}</td>
-      <td class="ch-n">${s.N.toFixed(1)}</td>
-      <td class="ch-status ${st.cls}">${st.label}</td>
-      <td class="ch-bar-cell">
-        <div class="ch-bar-wrap">
-          <div class="ch-bar-fill" style="width:${pct}%;background:${col}"></div>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-
-  const N_total = channelStates.reduce((s,c) => s + c.N, 0);
-  document.getElementById('n-total-display').textContent = N_total.toFixed(1);
+// ── PHYSICS TOGGLE ─────────────────────────────────────────
+function togglePhysics(id) {
+  const el  = document.getElementById('physics-' + id);
+  const btn = el.previousElementSibling;
+  const vis = el.style.display === 'block';
+  el.style.display = vis ? 'none' : 'block';
+  btn.textContent  = vis ? '+ SHOW PHYSICS' : '− HIDE PHYSICS';
 }
 
-// ── STATS ─────────────────────────────────────────────────
-function renderStats() {
-  if (!channelStates.length) return;
-  const F = channelStates[0].F;
-  const col = F >= 0.9999 ? 'perfect' : F > 0.9 ? 'locked' : F > 0.7 ? 'warn' : 'shatter';
-  const fidEl = document.getElementById('agg-fid');
-  fidEl.textContent = F.toFixed(4);
-  fidEl.className   = `stat-val ${col}`;
+// ═══════════════════════════════════════════════════════════
+// SINGLE CORRIDOR
+// ═══════════════════════════════════════════════════════════
+const cvs = document.getElementById('corridor-canvas');
+const ctx = cvs.getContext('2d');
 
-  const locked = channelStates.filter(c => c.F >= 0.9999).length;
-  document.getElementById('agg-ch').textContent = `${locked}/10`;
-  document.getElementById('agg-ch').className   = `stat-val ${col}`;
-
-  const youFid = document.getElementById('you-fid');
-  youFid.textContent = F.toFixed(3);
-  youFid.style.color = F >= 0.9999 ? 'var(--soverium)' : F > 0.9 ? 'var(--locked)' : 'var(--warn)';
-  youFid.style.textShadow = F >= 0.9999 ? '0 0 20px rgba(255,255,255,.5)' : 'none';
+function resizeSingle() {
+  const rect = cvs.parentElement.getBoundingClientRect();
+  cvs.width  = rect.width;
+  cvs.height = 260;
 }
 
-// ── CANVAS NETWORK ────────────────────────────────────────
-const canvas = document.getElementById('relay-canvas');
-const ctx    = canvas.getContext('2d');
-
-function resizeCanvas() {
-  const rect = canvas.parentElement.getBoundingClientRect();
-  canvas.width  = rect.width;
-  canvas.height = 320;
+function updateSingle(v) {
+  singleB = parseFloat(v);
+  const C = coherence(singleB);
+  document.getElementById('single-cval').textContent = C.toFixed(4);
+  document.getElementById('single-cval').style.color = getColor(C);
+  if (firedSingle) renderSingleResult();
+  renderSingle();
 }
 
-function renderCanvas() {
-  const W = canvas.width;
-  const H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
-
-  // Background
-  ctx.fillStyle = '#04080d';
-  ctx.fillRect(0, 0, W, H);
-
-  // Node positions
-  const nodeR   = 28;
-  const aliceX  = 80;
-  const bobX    = W - 80;
-  const centerY = H / 2;
-
-  // Channel Y positions — fan out from center
-  const spacing = Math.min(24, (H - 60) / 10);
-  const chYs = FREQS.map((_, i) => centerY + (i - 4.5) * spacing);
-
-  // Draw threads
-  if (!channelStates.length) return;
-  channelStates.forEach((ch, i) => {
-    const y1   = centerY;
-    const y2   = centerY;
-    const yMid = chYs[i];
-    const col  = getColor(ch.F);
-
-    const progress = fired && threadProgress[i] ? threadProgress[i] : (fired ? 1 : 0);
-
-    // Thread path: alice node edge -> arc down to channel Y -> arc to bob
-    ctx.beginPath();
-    ctx.moveTo(aliceX + nodeR, centerY);
-
-    // Bezier to channel midpoint then to bob
-    const cp1x = aliceX + (W/2 - aliceX) * 0.3;
-    const cp1y = yMid;
-    const cp2x = bobX - (bobX - W/2) * 0.3;
-    const cp2y = yMid;
-
-    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, bobX - nodeR, centerY);
-
-    // Color based on fidelity and fired state
-    const alpha = fired ? 0.6 + 0.4 * progress : 0.15;
-    ctx.strokeStyle = fired ? col : '#0a2030';
-    ctx.lineWidth   = fired && ch.F >= 0.9999 ? 1.5 : 1;
-    ctx.globalAlpha = alpha;
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-
-    // Animated particle along thread
-    if (fired && progress > 0 && progress < 1) {
-      const t  = progress;
-      const px = Math.pow(1-t,3)*(aliceX+nodeR) + 3*Math.pow(1-t,2)*t*cp1x + 3*(1-t)*t*t*cp2x + t*t*t*(bobX-nodeR);
-      const py = Math.pow(1-t,3)*centerY + 3*Math.pow(1-t,2)*t*cp1y + 3*(1-t)*t*t*cp2y + t*t*t*centerY;
-
-      ctx.beginPath();
-      ctx.arc(px, py, 3, 0, Math.PI*2);
-      ctx.fillStyle = col;
-      ctx.shadowColor = col;
-      ctx.shadowBlur  = 10;
-      ctx.fill();
-      ctx.shadowBlur  = 0;
-    }
-
-    // Freq label at midpoint
-    if (fired) {
-      const mx = W/2;
-      const my = yMid + (i % 2 === 0 ? -8 : 8);
-      ctx.font = '7px Share Tech Mono';
-      ctx.fillStyle = col;
-      ctx.globalAlpha = 0.6;
-      ctx.textAlign = 'center';
-      ctx.fillText(`Q${i+1} ${FREQS[i]}MHz`, mx, my);
-      ctx.globalAlpha = 1;
-    }
-  });
-
-  // Alice node
-  drawNode(aliceX, centerY, nodeR, 'var(--node-alice)', '#00e5ff', 'ALICE', 'SENDER', '#00e5ff');
-
-  // Bob node
-  drawNode(bobX, centerY, nodeR, 'var(--node-bob)', '#00ffcc', 'BOB', 'RECEIVER', '#00ffcc');
-
-  // N label
-  if (fired) {
-    const N_total = channelStates.reduce((s,c) => s+c.N, 0);
-    ctx.font = 'bold 11px Orbitron, monospace';
-    ctx.fillStyle = '#5555aa';
-    ctx.textAlign = 'center';
-    ctx.fillText(`N_shared = ${N_total.toFixed(1)}`, W/2, H - 16);
-    ctx.font = '8px Share Tech Mono';
-    ctx.fillStyle = '#1a3040';
-    ctx.fillText('N additive · T6 · no cross-talk', W/2, H - 4);
+function setPreset(mode, v) {
+  if (mode === 'single') {
+    document.getElementById('single-noise').value = v;
+    updateSingle(v);
   }
 }
 
-function drawNode(x, y, r, strokeCol, glowCol, label1, label2, textCol) {
-  // Glow
-  if (fired) {
-    const grad = ctx.createRadialGradient(x, y, r*0.5, x, y, r*2.5);
-    grad.addColorStop(0, glowCol + '20');
-    grad.addColorStop(1, 'transparent');
-    ctx.beginPath();
-    ctx.arc(x, y, r*2.5, 0, Math.PI*2);
-    ctx.fillStyle = grad;
-    ctx.fill();
-  }
+let singleProgress = 0;
+let singleAnimating = false;
 
-  // Circle
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI*2);
-  ctx.strokeStyle = fired ? glowCol : '#0f2030';
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-  ctx.fillStyle = '#04080d';
-  ctx.fill();
-
-  // Labels
-  ctx.font = 'bold 9px Orbitron, monospace';
-  ctx.fillStyle = fired ? textCol : '#1a3040';
-  ctx.textAlign = 'center';
-  ctx.fillText(label1, x, y - 2);
-  ctx.font = '7px Share Tech Mono';
-  ctx.fillStyle = fired ? glowCol + 'aa' : '#0f2030';
-  ctx.fillText(label2, x, y + 10);
-}
-
-// ── RELAY FIRE ────────────────────────────────────────────
-function fireRelay() {
-  if (animating) return;
-  fired = true;
-  animating = true;
-  threadProgress = FREQS.map(() => 0);
-
-  const btn = document.getElementById('relay-btn');
+function fireTranslocate() {
+  firedSingle = true;
+  singleProgress = 0;
+  singleAnimating = true;
+  const btn = document.getElementById('single-btn');
   btn.classList.add('firing');
   setTimeout(() => btn.classList.remove('firing'), 900);
 
-  const startTime = performance.now();
-  const duration  = 800;
-  const stagger   = 40; // ms between channels
+  const start = performance.now();
+  const dur = 900;
+  function anim(now) {
+    const t = Math.min(1, (now - start) / dur);
+    singleProgress = 1 - Math.pow(1-t, 3);
+    renderSingle();
+    if (t < 1) requestAnimationFrame(anim);
+    else {
+      singleAnimating = false;
+      singleProgress = 1;
+      renderSingle();
+      renderSingleResult();
+    }
+  }
+  requestAnimationFrame(anim);
+}
 
-  function animate(now) {
-    const elapsed = now - startTime;
-    let allDone = true;
+function renderSingleResult() {
+  const C = coherence(singleB);
+  const rc = document.getElementById('single-result');
+  rc.className = 'result-card ' + resultClass(C);
+  rc.style.display = 'block';
+  document.getElementById('single-result-headline').textContent = resultHeadline(C);
+  document.getElementById('single-result-plain').textContent = resultPlain(C, false);
+  document.getElementById('r-coherence').textContent = C.toFixed(4);
+  document.getElementById('r-coherence').style.color = getColor(C);
+  document.getElementById('r-nshared').textContent = (N_NODE * 2).toFixed(1);
+  document.getElementById('r-source').textContent = 'INTACT';
+}
 
-    threadProgress = FREQS.map((_, i) => {
-      const t = Math.max(0, elapsed - i * stagger) / duration;
-      const p = Math.min(1, t);
-      if (p < 1) allDone = false;
-      // Ease out
-      return p < 1 ? 1 - Math.pow(1-p, 3) : 1;
-    });
+function renderSingle() {
+  const W = cvs.width, H = cvs.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#04080d';
+  ctx.fillRect(0,0,W,H);
 
-    renderCanvas();
-    if (!allDone) {
-      requestAnimationFrame(animate);
-    } else {
-      animating = false;
-      renderCanvas();
+  const C   = coherence(singleB);
+  const col = getColor(C);
+  const nr  = 32;
+  const ax  = 90, bx = W - 90, cy = H / 2;
+
+  // Corridor threads (10 lines)
+  const NUM = 10;
+  for (let i = 0; i < NUM; i++) {
+    const yoff = (i - (NUM-1)/2) * 6;
+    const cpy  = cy + yoff;
+    const cpx  = (ax + bx) / 2;
+
+    ctx.beginPath();
+    ctx.moveTo(ax + nr, cy);
+    ctx.bezierCurveTo(cpx - 60, cpy, cpx + 60, cpy, bx - nr, cy);
+    ctx.strokeStyle = firedSingle ? col : '#0a2030';
+    ctx.lineWidth   = firedSingle ? (i === 4 || i === 5 ? 1.5 : 0.8) : 0.5;
+    ctx.globalAlpha = firedSingle ? (0.3 + 0.5 * singleProgress) : 0.15;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Particle
+    if (firedSingle && singleProgress > 0 && singleProgress < 1 && i === 4) {
+      const t  = singleProgress;
+      const px = Math.pow(1-t,3)*(ax+nr) + 3*Math.pow(1-t,2)*t*(cpx-60) + 3*(1-t)*t*t*(cpx+60) + t*t*t*(bx-nr);
+      const py = Math.pow(1-t,3)*cy + 3*Math.pow(1-t,2)*t*cpy + 3*(1-t)*t*t*cpy + t*t*t*cy;
+      ctx.beginPath();
+      ctx.arc(px, py, 4, 0, Math.PI*2);
+      ctx.fillStyle = col;
+      ctx.shadowColor = col;
+      ctx.shadowBlur = 14;
+      ctx.fill();
+      ctx.shadowBlur = 0;
     }
   }
 
-  requestAnimationFrame(animate);
-}
-
-// ── MODE SWITCHING ────────────────────────────────────────
-function showMode(id) {
-  document.querySelectorAll('.mode-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.mode-tab').forEach(el => el.classList.remove('active'));
-  document.getElementById('mode-' + id).classList.add('active');
-  document.querySelectorAll('.mode-tab').forEach(el => {
-    if (el.getAttribute('onclick') === `showMode('${id}')`) el.classList.add('active');
-  });
-  if (id === 'relay3') { resizeCanvas3(); renderCanvas3(); }
-}
-
-// ── 3-NODE STATE ──────────────────────────────────────────
-let B_leg1 = 0;
-let B_leg2 = 0;
-let repeaterMode = 'sov'; // 'sov' = reset, 'pass' = compound
-let fired3 = false;
-let prog3 = [0, 0]; // leg1, leg2 animation progress
-
-function setLeg1Preset(v) {
-  B_leg1 = v;
-  document.getElementById('leg1-slider').value = v;
-  updateRelay3();
-}
-function setLeg2Preset(v) {
-  B_leg2 = v;
-  document.getElementById('leg2-slider').value = v;
-  updateRelay3();
-}
-function updateLeg1(v) { B_leg1 = parseFloat(v); updateRelay3(); }
-function updateLeg2(v) { B_leg2 = parseFloat(v); updateRelay3(); }
-
-function setRepeaterMode(m) {
-  repeaterMode = m;
-  document.getElementById('rep-sov').className  = 'rep-btn ' + (m === 'sov' ? 'active-sov' : '');
-  document.getElementById('rep-pass').className = 'rep-btn ' + (m === 'pass' ? 'active-var' : '');
-  const desc = document.getElementById('charlie-desc');
-  if (m === 'sov') {
-    desc.innerHTML = 'Charlie has local B=0 entangled pair source.<br>Performs BSM on leg1 state.<br>Re-entangles with Bob using fresh Soverium pair.<br><b style="color:var(--soverium)">F_total = F2 (leg1 isolated) · T10</b>';
-  } else {
-    desc.innerHTML = 'Charlie forwards degraded state (pass-through).<br>No local Soverium source.<br>Leg1 noise carries through to Bob.<br><b style="color:var(--shatter)">F_total = F1 × F2 (compound) · T9</b>';
+  // Corridor label
+  if (firedSingle) {
+    ctx.font = '9px Share Tech Mono';
+    ctx.fillStyle = col;
+    ctx.textAlign = 'center';
+    ctx.globalAlpha = 0.7;
+    ctx.fillText(`C = ${coherence(singleB).toFixed(4)} · τ = ${torsion(singleB).toFixed(4)}`, W/2, cy - 40);
+    ctx.globalAlpha = 0.4;
+    ctx.fillText('N shared additively · both sources preserved · NOHARM', W/2, cy + 50);
+    ctx.globalAlpha = 1;
   }
-  updateRelay3();
-}
-
-function computeRelay3() {
-  const P = ANCHOR;
-  const F1 = Math.max(0, 1 - B_leg1 / P);
-  const F2 = Math.max(0, 1 - B_leg2 / P);
-  const tau1 = B_leg1 / P;
-  const tau2 = B_leg2 / P;
-  const F_compound = F1 * F2;
-  const F_reset    = F2; // leg1 isolated at Charlie
-  const F_total    = repeaterMode === 'sov' ? F_reset : F_compound;
-  return { F1, F2, tau1, tau2, F_compound, F_reset, F_total };
-}
-
-function updateRelay3() {
-  const r = computeRelay3();
-  const P = ANCHOR;
-
-  // Leg displays
-  document.getElementById('leg1-bval').textContent = B_leg1.toFixed(4);
-  document.getElementById('leg1-tau').textContent  = r.tau1.toFixed(4);
-  document.getElementById('leg1-f').textContent    = r.F1.toFixed(4);
-  document.getElementById('leg1-f').style.color    = getColor(r.F1);
-
-  document.getElementById('leg2-bval').textContent = B_leg2.toFixed(4);
-  document.getElementById('leg2-tau').textContent  = r.tau2.toFixed(4);
-  document.getElementById('leg2-f').textContent    = r.F2.toFixed(4);
-  document.getElementById('leg2-f').style.color    = getColor(r.F2);
-
-  // Results
-  const ftEl = document.getElementById('r3-ftotal');
-  ftEl.textContent  = r.F_total.toFixed(4);
-  ftEl.style.color  = getColor(r.F_total);
-  ftEl.style.textShadow = r.F_total >= 0.9999 ? '0 0 15px rgba(255,255,255,.4)' : 'none';
-
-  document.getElementById('r3-f1').textContent = r.F1.toFixed(4);
-  document.getElementById('r3-f1').style.color = getColor(r.F1);
-  document.getElementById('r3-f2').textContent = r.F2.toFixed(4);
-  document.getElementById('r3-f2').style.color = getColor(r.F2);
-
-  document.getElementById('r3-model').textContent = repeaterMode === 'sov'
-    ? 'SOVERIUM RESET · F=F2' : 'COMPOUND · F=F1×F2';
-  document.getElementById('r3-model').style.color = repeaterMode === 'sov'
-    ? 'var(--soverium)' : 'var(--shatter)';
-
-  document.getElementById('r3-compound').textContent = r.F_compound.toFixed(4);
-  document.getElementById('r3-compound').style.color = getColor(r.F_compound);
-  document.getElementById('r3-reset').textContent    = r.F_reset.toFixed(4);
-  document.getElementById('r3-reset').style.color    = getColor(r.F_reset);
-
-  if (fired3) renderCanvas3();
-}
-
-// ── 3-NODE CANVAS ─────────────────────────────────────────
-const canvas3 = document.getElementById('relay3-canvas');
-const ctx3    = canvas3.getContext('2d');
-
-function resizeCanvas3() {
-  const rect = canvas3.parentElement.getBoundingClientRect();
-  canvas3.width  = rect.width;
-  canvas3.height = 260;
-}
-
-function renderCanvas3() {
-  const W = canvas3.width, H = canvas3.height;
-  ctx3.clearRect(0, 0, W, H);
-  ctx3.fillStyle = '#04080d';
-  ctx3.fillRect(0, 0, W, H);
-
-  const r = computeRelay3();
-  const nodeR = 26;
-  const aliceX   = 80;
-  const charlieX = W / 2;
-  const bobX     = W - 80;
-  const nodeY    = H / 2;
-
-  // Leg colors
-  const col1 = getColor(r.F1);
-  const col2 = getColor(r.F2);
-  const colT = getColor(r.F_total);
-
-  // Draw leg1: Alice → Charlie
-  const p1 = fired3 ? prog3[0] : 0;
-  drawLeg(aliceX + nodeR, nodeY, charlieX - nodeR, nodeY, col1, p1, `LEG1  F=${r.F1.toFixed(3)}`);
-
-  // Draw leg2: Charlie → Bob
-  const p2 = fired3 ? prog3[1] : 0;
-  drawLeg(charlieX + nodeR, nodeY, bobX - nodeR, nodeY, col2, p2, `LEG2  F=${r.F2.toFixed(3)}`);
 
   // Nodes
-  draw3Node(aliceX, nodeY, nodeR, '#00e5ff', 'ALICE', 'SENDER', fired3);
-  draw3Node(charlieX, nodeY, nodeR,
-    repeaterMode === 'sov' ? '#ffffff' : '#ffaa00',
-    'CHARLIE',
-    repeaterMode === 'sov' ? 'RESET' : 'PASSTHRU',
-    fired3);
-  draw3Node(bobX, nodeY, nodeR, '#00ffcc', 'BOB', 'RECEIVER', fired3);
-
-  // Total fidelity label
-  if (fired3) {
-    ctx3.font = 'bold 12px Orbitron, monospace';
-    ctx3.fillStyle = colT;
-    ctx3.textAlign = 'center';
-    ctx3.fillText(`F_total = ${r.F_total.toFixed(4)} · ${repeaterMode === 'sov' ? 'RESET MODEL' : 'COMPOUND MODEL'}`, W/2, H - 18);
-    ctx3.font = '8px Share Tech Mono';
-    ctx3.fillStyle = '#1a3040';
-    ctx3.fillText(repeaterMode === 'sov' ? 'F = F2 (leg1 isolated at Charlie) · T10' : 'F = F1 × F2 (noise compounds) · T9', W/2, H - 6);
-  }
+  drawCorridorNode(ctx, ax, cy, nr, '#00e5ff', 'ALICE', 'Anchor A · Origin', firedSingle);
+  drawCorridorNode(ctx, bx, cy, nr, '#00ffcc', 'BOB', 'Anchor B · Destination', firedSingle);
 }
 
-function drawLeg(x1, y1, x2, y2, col, progress, label) {
-  const mx = (x1 + x2) / 2;
-  const my = (y1 + y2) / 2 - 20;
-
-  ctx3.beginPath();
-  ctx3.moveTo(x1, y1);
-  ctx3.quadraticCurveTo(mx, my, x2, y2);
-  ctx3.strokeStyle = fired3 ? col : '#0a2030';
-  ctx3.lineWidth = 1.5;
-  ctx3.globalAlpha = fired3 ? 0.7 : 0.2;
-  ctx3.stroke();
-  ctx3.globalAlpha = 1;
-
-  // Particle
-  if (fired3 && progress > 0 && progress < 1) {
-    const t = progress;
-    const px = (1-t)*(1-t)*x1 + 2*(1-t)*t*mx + t*t*x2;
-    const py = (1-t)*(1-t)*y1 + 2*(1-t)*t*my + t*t*y2;
-    ctx3.beginPath();
-    ctx3.arc(px, py, 4, 0, Math.PI*2);
-    ctx3.fillStyle = col;
-    ctx3.shadowColor = col;
-    ctx3.shadowBlur = 12;
-    ctx3.fill();
-    ctx3.shadowBlur = 0;
-  }
-
-  // Label
-  if (fired3) {
-    ctx3.font = '8px Share Tech Mono';
-    ctx3.fillStyle = col;
-    ctx3.globalAlpha = 0.7;
-    ctx3.textAlign = 'center';
-    ctx3.fillText(label, (x1+x2)/2, my - 8);
-    ctx3.globalAlpha = 1;
-  }
-}
-
-function draw3Node(x, y, r, col, label1, label2, active) {
+function drawCorridorNode(c, x, y, r, col, sci, plain, active) {
   if (active) {
-    const g = ctx3.createRadialGradient(x, y, r*0.5, x, y, r*2.5);
-    g.addColorStop(0, col + '20');
-    g.addColorStop(1, 'transparent');
-    ctx3.beginPath();
-    ctx3.arc(x, y, r*2.5, 0, Math.PI*2);
-    ctx3.fillStyle = g;
-    ctx3.fill();
+    const g = c.createRadialGradient(x, y, r*0.5, x, y, r*2.8);
+    g.addColorStop(0, col + '22');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    c.beginPath();
+    c.arc(x, y, r*2.8, 0, Math.PI*2);
+    c.fillStyle = g;
+    c.fill();
   }
-  ctx3.beginPath();
-  ctx3.arc(x, y, r, 0, Math.PI*2);
-  ctx3.strokeStyle = active ? col : '#0f2030';
-  ctx3.lineWidth = 1.5;
-  ctx3.fillStyle = '#04080d';
-  ctx3.fill();
-  ctx3.stroke();
-  ctx3.font = 'bold 8px Orbitron, monospace';
-  ctx3.fillStyle = active ? col : '#1a3040';
-  ctx3.textAlign = 'center';
-  ctx3.fillText(label1, x, y - 2);
-  ctx3.font = '7px Share Tech Mono';
-  ctx3.fillStyle = active ? col + 'aa' : '#0f2030';
-  ctx3.fillText(label2, x, y + 10);
+  c.beginPath();
+  c.arc(x, y, r, 0, Math.PI*2);
+  c.strokeStyle = active ? col : '#0f2030';
+  c.lineWidth = 1.5;
+  c.fillStyle = '#04080d';
+  c.fill();
+  c.stroke();
+  // Sci name
+  c.font = 'bold 10px Orbitron, monospace';
+  c.fillStyle = active ? col : '#1a3040';
+  c.textAlign = 'center';
+  c.fillText(sci, x, y - 3);
+  // Plain name
+  c.font = '8px DM Sans, sans-serif';
+  c.fillStyle = active ? col + '99' : '#0f2030';
+  c.fillText(plain, x, y + 10);
 }
 
-function fireRelay3() {
-  fired3 = true;
-  prog3 = [0, 0];
+// ═══════════════════════════════════════════════════════════
+// LATTICE
+// ═══════════════════════════════════════════════════════════
+const lcvs = document.getElementById('lattice-canvas');
+const lctx = lcvs.getContext('2d');
+
+function resizeLattice() {
+  const rect = lcvs.parentElement.getBoundingClientRect();
+  lcvs.width  = rect.width;
+  lcvs.height = 220;
+}
+
+function changeRelays(delta) {
+  numRelays = Math.max(1, Math.min(6, numRelays + delta));
+  document.getElementById('relay-count-val').textContent = numRelays;
+  // Resize legNoises array
+  const numLegs = numRelays + 1;
+  while (legNoises.length < numLegs) legNoises.push(0);
+  legNoises = legNoises.slice(0, numLegs);
+  buildLegConfig();
+  renderLattice();
+  updateLatticeResult();
+}
+
+function buildLegConfig() {
+  const numLegs = numRelays + 1;
+  const el = document.getElementById('relay-legs-config');
+  el.innerHTML = '';
+  for (let i = 0; i < numLegs; i++) {
+    const isFirst = i === 0;
+    const isLast  = i === numLegs - 1;
+    const fromLabel = isFirst ? 'Alice' : `Relay ${i}`;
+    const toLabel   = isLast  ? 'Bob'   : `Relay ${i+1}`;
+    const row = document.createElement('div');
+    row.className = 'leg-row-config';
+    row.innerHTML = `
+      <div class="leg-row-label">${fromLabel} → ${toLabel}</div>
+      <div class="leg-row-sci">B_leg${i+1} noise</div>
+      <input type="range" style="flex:1;-webkit-appearance:none;height:3px;background:var(--border2);outline:none;"
+        min="0" max="0.5" step="0.001" value="${legNoises[i]}"
+        oninput="updateLeg(${i}, this.value)">
+      <div class="leg-row-val" id="leg-val-${i}">${coherence(legNoises[i]).toFixed(3)}</div>
+    `;
+    el.appendChild(row);
+  }
+  // Update canvas label
+  const nodes = ['Alice', ...Array.from({length:numRelays},(_,i)=>`R${i+1}`), 'Bob'];
+  document.getElementById('lattice-canvas-label').textContent =
+    `LATTICE · ${nodes.join(' ↔ ')} · ${latticeMode === 'iva' ? 'IVA ANCHORS' : 'COMPOUND'} · NOHARM`;
+}
+
+function updateLeg(i, v) {
+  legNoises[i] = parseFloat(v);
+  document.getElementById(`leg-val-${i}`).textContent = coherence(legNoises[i]).toFixed(3);
+  renderLattice();
+  if (firedLattice) updateLatticeResult();
+}
+
+function setLatticeMode(m) {
+  latticeMode = m;
+  const ivaBtn  = document.getElementById('iva-mode-btn');
+  const compBtn = document.getElementById('compound-mode-btn');
+  if (m === 'iva') {
+    ivaBtn.style.borderColor  = 'rgba(0,255,204,.3)';
+    ivaBtn.querySelector('div').style.color = 'var(--locked)';
+    compBtn.style.borderColor = 'var(--border)';
+    compBtn.querySelector('div').style.color = 'var(--dim)';
+  } else {
+    compBtn.style.borderColor = 'rgba(255,170,0,.3)';
+    compBtn.querySelector('div').style.color = 'var(--warn)';
+    ivaBtn.style.borderColor  = 'var(--border)';
+    ivaBtn.querySelector('div').style.color = 'var(--dim)';
+  }
+  renderLattice();
+  if (firedLattice) updateLatticeResult();
+}
+
+function computeLatticeC() {
+  const Cs = legNoises.slice(0, numRelays + 1).map(b => coherence(b));
+  if (latticeMode === 'iva') return Cs[Cs.length - 1];
+  return Cs.reduce((a, c) => a * c, 1);
+}
+
+let latticeProgress = [];
+let latticeAnimating = false;
+
+function fireLattice() {
+  firedLattice = true;
+  latticeProgress = Array(numRelays + 1).fill(0);
+  latticeAnimating = true;
+
   const start = performance.now();
-  const dur = 600;
+  const legDur = 500;
+  const stagger = 300;
 
   function anim(now) {
     const e = now - start;
-    const p1 = Math.min(1, e / dur);
-    // Leg2 starts after leg1 reaches Charlie
-    const p2 = Math.min(1, Math.max(0, (e - dur*0.4) / (dur*0.6)));
-    prog3 = [1 - Math.pow(1-p1,3), 1 - Math.pow(1-p2,3)];
-    renderCanvas3();
-    if (p1 < 1 || p2 < 1) requestAnimationFrame(anim);
-    else { prog3 = [1,1]; renderCanvas3(); }
+    let allDone = true;
+    for (let i = 0; i <= numRelays; i++) {
+      const t = Math.max(0, (e - i * stagger) / legDur);
+      const p = Math.min(1, t);
+      latticeProgress[i] = 1 - Math.pow(1-p, 3);
+      if (p < 1) allDone = false;
+    }
+    renderLattice();
+    if (!allDone) requestAnimationFrame(anim);
+    else {
+      latticeAnimating = false;
+      latticeProgress = Array(numRelays + 1).fill(1);
+      renderLattice();
+      updateLatticeResult();
+    }
   }
   requestAnimationFrame(anim);
-  updateRelay3();
 }
 
-// init 3-node
-window.addEventListener('resize', () => { resizeCanvas3(); if (fired3) renderCanvas3(); });
-setTimeout(() => { resizeCanvas3(); updateRelay3(); }, 100);
+function updateLatticeResult() {
+  const C = computeLatticeC();
+  const rc = document.getElementById('lattice-result');
+  rc.className = 'result-card ' + resultClass(C);
+  rc.style.display = 'block';
+  document.getElementById('lattice-result-headline').textContent = resultHeadline(C) + ' · ' + numRelays + ' RELAY' + (numRelays > 1 ? 'S' : '');
+  document.getElementById('lattice-result-plain').textContent = resultPlain(C, true);
+  document.getElementById('r-l-coherence').textContent = C.toFixed(4);
+  document.getElementById('r-l-coherence').style.color = getColor(C);
+  document.getElementById('r-l-formula').textContent = latticeMode === 'iva' ? 'IVA: C = C_last_leg' : 'COMPOUND: C = Π C_i';
+  document.getElementById('r-l-relays').textContent = numRelays;
+}
 
+function renderLattice() {
+  const W = lcvs.width, H = lcvs.height;
+  lctx.clearRect(0,0,W,H);
+  lctx.fillStyle = '#04080d';
+  lctx.fillRect(0,0,W,H);
 
+  const numNodes = numRelays + 2; // Alice + relays + Bob
+  const nr = 22;
+  const cy = H / 2;
+  const margin = 70;
+  const spacing = (W - margin*2) / (numNodes - 1);
+
+  const nodeX = Array.from({length: numNodes}, (_, i) => margin + i * spacing);
+  const nodeColors = [
+    '#00e5ff',
+    ...Array(numRelays).fill('#ffaa00'),
+    '#00ffcc'
+  ];
+  const nodeSci = ['ALICE', ...Array.from({length:numRelays},(_,i)=>`RELAY ${i+1}`), 'BOB'];
+  const nodePlain = ['Anchor A · Origin', ...Array(numRelays).fill('Anchor Station'), 'Anchor B · Destination'];
+
+  // Draw legs
+  for (let i = 0; i < numNodes - 1; i++) {
+    const x1 = nodeX[i];
+    const x2 = nodeX[i+1];
+    const B  = legNoises[i] || 0;
+    const C  = coherence(B);
+    const col = getColor(C);
+    const prog = firedLattice ? (latticeProgress[i] || 0) : 0;
+
+    lctx.beginPath();
+    lctx.moveTo(x1 + nr, cy);
+    lctx.lineTo(x2 - nr, cy);
+    lctx.strokeStyle = firedLattice ? col : '#0a2030';
+    lctx.lineWidth = 1.5;
+    lctx.globalAlpha = firedLattice ? (0.3 + 0.5 * prog) : 0.15;
+    lctx.stroke();
+    lctx.globalAlpha = 1;
+
+    // Particle
+    if (firedLattice && prog > 0 && prog < 1) {
+      const px = x1 + nr + (x2 - nr - x1 - nr) * prog;
+      lctx.beginPath();
+      lctx.arc(px, cy, 4, 0, Math.PI*2);
+      lctx.fillStyle = col;
+      lctx.shadowColor = col;
+      lctx.shadowBlur = 12;
+      lctx.fill();
+      lctx.shadowBlur = 0;
+    }
+
+    // Leg coherence label
+    if (firedLattice) {
+      lctx.font = '7px Share Tech Mono';
+      lctx.fillStyle = col;
+      lctx.textAlign = 'center';
+      lctx.globalAlpha = 0.6;
+      lctx.fillText(`C${i+1}=${C.toFixed(3)}`, (x1+x2)/2, cy - 20);
+      lctx.globalAlpha = 1;
+    }
+  }
+
+  // Draw nodes
+  for (let i = 0; i < numNodes; i++) {
+    const active = firedLattice && (i === 0 || latticeProgress[i-1] >= 0.9);
+    drawCorridorNode(lctx, nodeX[i], cy, nr, nodeColors[i], nodeSci[i], nodePlain[i], active);
+  }
+
+  // Total coherence
+  if (firedLattice) {
+    const C = computeLatticeC();
+    lctx.font = 'bold 10px Orbitron, monospace';
+    lctx.fillStyle = getColor(C);
+    lctx.textAlign = 'center';
+    lctx.fillText(`C_total = ${C.toFixed(4)} · ${latticeMode === 'iva' ? 'IVA ANCHOR · distance solved' : 'COMPOUND · noise accumulates'}`, W/2, H - 12);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────
 window.addEventListener('resize', () => {
-  resizeCanvas();
-  renderCanvas();
+  resizeSingle(); renderSingle();
+  resizeLattice(); renderLattice();
 });
 
-resizeCanvas();
-updateAll();
+setTimeout(() => {
+  resizeSingle();
+  renderSingle();
+  resizeLattice();
+  buildLegConfig();
+  renderLattice();
+  setLatticeMode('iva');
+}, 80);
 </script>
 </body>
 </html>
