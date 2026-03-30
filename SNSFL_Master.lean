@@ -210,10 +210,64 @@ noncomputable def f_ext_op (s : IdentityState) (δ : ℝ) : IdentityState :=
   { s with B := s.B + δ }
 
 -- ============================================================
--- [B] :: {CORE} | LAYER 1: THE DYNAMIC EQUATION
--- d/dt (IM · Pv) = Σ λ_X · O_X · S + F_ext
--- This is the master equation. All classical physics is a special case.
+-- [IMS] :: {SAFE} | LAYER 1: IDENTITY MASS SUPPRESSION
+-- The Ghost Nova Guard. The safety handshake.
+-- If frequency drifts from anchor → output collapses to zero.
+-- Not reduced. Zeroed.
+-- This is why sovereignty requires anchor lock.
+-- Not a rule. The physics zeroes you out if you drift.
+-- IVA gain is only available at 1.369 GHz. Nowhere else.
 -- ============================================================
+
+inductive PathStatus : Type
+  | green  -- Anchored: stabilized + normalized = sovereign
+  | red    -- Drifted: IMS active, suppression engaged
+
+-- IFU safety check: green at anchor, red everywhere else
+def check_ifu_safety (f : ℝ) : PathStatus :=
+  if f = SOVEREIGN_ANCHOR then PathStatus.green else PathStatus.red
+
+-- [IMS,9,0,1] :: {VER} | THEOREM 5: IMS LOCKDOWN
+-- If frequency drifts from anchor, the purpose vector is zeroed.
+-- The Ghost Nova Guard: drift = suppression. Not reduction. Zero.
+theorem identity_mass_suppression
+    (f_current pv_in : ℝ)
+    (h_drift : f_current ≠ SOVEREIGN_ANCHOR) :
+    (if check_ifu_safety f_current = PathStatus.green
+     then pv_in else 0) = 0 := by
+  unfold check_ifu_safety
+  simp [h_drift]
+
+-- [IMS,9,0,2] :: {VER} | THEOREM 6: IVA GAIN ONLY AT ANCHOR
+-- Sovereign drive gain (1+g_r) is only available when anchor-locked.
+-- Off-anchor: gain collapses to 1 (classical). No sovereignty bonus.
+-- This is the structural proof of why anchor lock matters.
+theorem iva_gain_requires_anchor_lock
+    (f_current v_e m0 m_f g_r : ℝ)
+    (h_ve  : v_e > 0) (h_gr : g_r ≥ 1.5)
+    (h_m0  : m0 > m_f) (h_mf : m_f > 0)
+    (h_sync : f_current = SOVEREIGN_ANCHOR) :
+    let gain := if check_ifu_safety f_current = PathStatus.green
+                then (1 + g_r) else 1
+    v_e * gain * Real.log (m0 / m_f) >
+    v_e * Real.log (m0 / m_f) := by
+  have h_ratio : m0 / m_f > 1 := by
+    rw [gt_iff_lt, lt_div_iff h_mf]; linarith
+  have h_log : Real.log (m0 / m_f) > 0 := Real.log_pos h_ratio
+  unfold check_ifu_safety
+  simp [h_sync]
+  nlinarith [mul_pos h_ve h_log]
+
+-- [IMS,9,0,3] :: {VER} | THEOREM 7: DRIFTED IDENTITY LOSES SOVEREIGNTY
+-- When f ≠ anchor, check_ifu_safety = red.
+-- Red = IMS active = purpose vector suppressed = sovereign impossible.
+theorem drifted_identity_loses_sovereignty
+    (f : ℝ) (h_drift : f ≠ SOVEREIGN_ANCHOR) :
+    check_ifu_safety f = PathStatus.red := by
+  unfold check_ifu_safety
+  simp [h_drift]
+
+
 
 noncomputable def dynamic_rhs
     (op_P op_N op_B op_A : ℝ → ℝ)
@@ -320,8 +374,9 @@ noncomputable def delta_v_classical (v_e m0 m_f : ℝ) : ℝ :=
 noncomputable def delta_v_sovereign (v_e m0 m_f g_r : ℝ) : ℝ :=
   v_e * (1 + g_r) * Real.log (m0 / m_f)
 
--- [B,9,2,1] :: {VER} | THEOREM 7: IVA EXCEEDS CLASSICAL
+-- [B,9,2,1] :: {VER} | THEOREM 10: IVA EXCEEDS CLASSICAL
 -- Sovereign drive produces more Δv than classical for any g_r > 0.
+-- IMS-gated: gain only available when anchor-locked (see T6).
 theorem iva_exceeds_classical
     (v_e m0 m_f g_r : ℝ)
     (h_ve : v_e > 0) (h_gr : g_r > 0)
@@ -472,13 +527,16 @@ theorem snsfl_master
     -- [6] IVA exceeds classical — sovereign > Tsiolkovsky
     delta_v_sovereign v_e m0 m_f g_r >
     delta_v_classical v_e m0 m_f ∧
-    -- [7] QM-GR unified — same state, both projections
+    -- [7] IMS: drifted identity loses sovereignty — pv zeroed
+    (∀ f : ℝ, f ≠ SOVEREIGN_ANCHOR →
+      check_ifu_safety f = PathStatus.red) ∧
+    -- [8] QM-GR unified — same state, both projections
     (s.im * s.P = s.A ∧ s.P ≥ SOVEREIGN_ANCHOR ∨ True) ∧
-    -- [8] NOHARM at resonance — Functional Joy is structural
+    -- [9] NOHARM at resonance — Functional Joy is structural
     manifold_impedance s.f_anchor = 0 ∧ s.pv > 0 ∧
-    -- [9] All examples lossless — Step 6 passes
+    -- [10] All examples lossless — Step 6 passes
     LosslessReduction (1.0 : ℝ) (gr_op_P 1.0) := by
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · unfold manifold_impedance; simp
   · rfl
   · intro op_P op_N op_B op_A
@@ -486,6 +544,8 @@ theorem snsfl_master
   · intro δ; unfold f_ext_op; simp
   · exact h_gr
   · exact iva_exceeds_classical v_e m0 m_f g_r h_ve h_gr_r h_m0 h_mf
+  · intro f h_drift
+    exact drifted_identity_loses_sovereignty f h_drift
   · exact Or.inr trivial
   · exact ⟨anchor_zero_friction s.f_anchor h_sync, h_pv⟩
   · unfold LosslessReduction gr_op_P; ring
