@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT QUANTUM TRANSLOCATION · [9,9,2,6] · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --bg:       #020407;
+  --panel:    #04080d;
+  --border:   #0a1520;
+  --border2:  #0f2030;
+  --glow:     #00e5ff;
+  --locked:   #00ffcc;
+  --shatter:  #ff3355;
+  --warn:     #ffaa00;
+  --noble:    #ffffff;
+  --text:     #c0ddf0;
+  --bright:   #cce8f5;
+  --dim:      #4a8a9a;
+  --anchor-a: #00e5ff;
+  --anchor-b: #00ffcc;
+  --relay:    #ffaa00;
+  --success:  #00ffcc;
+  --partial:  #ffaa00;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,229,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.012) 1px, transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+  z-index:0;
+}
+
+.wrap {
+  position:relative;
+  z-index:2;
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 20px 80px;
+}
+
+/* ── HEADER ── */
+.site-header {
+  padding:32px 0 24px;
+  border-bottom:1px solid var(--border2);
+  text-align:center;
+}
+
+.coord-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;
+  letter-spacing:.2em;
+  color:var(--dim);
+  border:1px solid var(--border2);
+  padding:5px 14px;
+  margin-bottom:16px;
+}
+.coord-dot {
+  width:5px;height:5px;border-radius:50%;
+  background:var(--locked);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.site-title {
+  font-family:'Orbitron',monospace;
+  font-weight:900;
+  font-size:clamp(24px,4vw,42px);
+  letter-spacing:.08em;
+  color:var(--noble);
+  text-shadow:0 0 40px rgba(255,255,255,.2),0 0 80px rgba(0,229,255,.1);
+  margin-bottom:6px;
+}
+
+.site-subtitle {
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;
+  letter-spacing:.25em;
+  color:var(--dim);
+  margin-bottom:16px;
+}
+
+.noharm-banner {
+  display:inline-block;
+  background:rgba(0,255,204,.05);
+  border:1px solid rgba(0,255,204,.2);
+  padding:10px 24px;
+  font-size:13px;
+  color:rgba(200,232,245,1.0);
+  line-height:1.7;
+  max-width:640px;
+  margin:0 auto;
+}
+.noharm-banner b { color:var(--locked); font-weight:500; }
+.noharm-banner em { color:var(--noble); font-style:normal; font-weight:500; }
+
+/* ── MODE TABS ── */
+.mode-tabs {
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin:28px 0 24px;
+}
+.mode-tab {
+  font-family:'Orbitron',monospace;
+  font-size:9px;
+  letter-spacing:.2em;
+  padding:12px 28px;
+  border:1px solid var(--border2);
+  background:transparent;
+  color:var(--dim);
+  cursor:pointer;
+  transition:all .2s;
+}
+.mode-tab:hover { color:var(--text); border-color:rgba(0,229,255,.3); }
+.mode-tab.active {
+  border-color:var(--locked);
+  color:var(--locked);
+  background:rgba(0,255,204,.04);
+}
+.mode-tab .tab-sub {
+  display:block;
+  font-family:'DM Sans',sans-serif;
+  font-size:10px;
+  letter-spacing:.05em;
+  color:var(--text);
+  font-weight:300;
+  margin-top:3px;
+  text-transform:none;
+}
+
+.mode-content { display:none; }
+.mode-content.active { display:block; }
+
+/* ── ANCHOR STATIONS ── */
+.stations-row {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-bottom:16px;
+}
+
+.station-card {
+  background:var(--panel);
+  border:1px solid var(--border2);
+  padding:20px;
+  position:relative;
+}
+.station-card.alice { border-top:2px solid var(--anchor-a); }
+.station-card.bob   { border-top:2px solid var(--anchor-b); }
+
+.station-sci {
+  font-family:'Orbitron',monospace;
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:.15em;
+  margin-bottom:2px;
+}
+.alice .station-sci { color:var(--anchor-a); }
+.bob   .station-sci { color:var(--anchor-b); }
+
+.station-plain {
+  font-size:11px;
+  color:var(--text);
+  margin-bottom:1px;
+}
+.station-role {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  letter-spacing:.15em;
+  color:#7aaabb;
+  margin-bottom:16px;
+}
+
+.station-status {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  margin-bottom:12px;
+}
+.status-dot {
+  width:6px;height:6px;border-radius:50%;
+  background:var(--locked);
+  animation:pulse 2s infinite;
+}
+.status-text {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  letter-spacing:.15em;
+  color:var(--locked);
+}
+
+/* ── CORRIDOR CONTROL ── */
+.corridor-card {
+  background:var(--panel);
+  border:1px solid var(--border2);
+  padding:20px;
+  margin-bottom:16px;
+}
+
+.corridor-title {
+  font-family:'Orbitron',monospace;
+  font-size:9px;
+  letter-spacing:.25em;
+  color:var(--dim);
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.corridor-title b { color:var(--glow); }
+
+.quality-control {
+  margin-bottom:20px;
+}
+.quality-labels {
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  margin-bottom:6px;
+}
+.quality-plain {
+  font-size:13px;
+  color:var(--bright);
+}
+.quality-sci {
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;
+  color:var(--dim);
+  letter-spacing:.1em;
+}
+.quality-val {
+  font-family:'Orbitron',monospace;
+  font-size:11px;
+  color:var(--locked);
+}
+
+input[type=range] {
+  -webkit-appearance:none;
+  width:100%;
+  height:4px;
+  background:var(--border2);
+  outline:none;
+  margin:6px 0;
+  border-radius:2px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none;
+  width:14px;height:20px;
+  background:var(--locked);
+  cursor:pointer;
+  border-radius:2px;
+}
+
+.quality-scale {
+  display:flex;
+  justify-content:space-between;
+  font-size:9px;
+  color:var(--dim);
+  margin-top:3px;
+}
+
+/* ── TRANSLOCATE BUTTON ── */
+.translocate-btn {
+  width:100%;
+  font-family:'Orbitron',monospace;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:.3em;
+  padding:18px;
+  background:transparent;
+  border:1px solid var(--noble);
+  color:var(--noble);
+  cursor:pointer;
+  transition:all .2s;
+  text-shadow:0 0 20px rgba(255,255,255,.3);
+  box-shadow:0 0 20px rgba(255,255,255,.04);
+  margin-bottom:4px;
+}
+.translocate-btn:hover {
+  background:rgba(255,255,255,.05);
+  box-shadow:0 0 40px rgba(255,255,255,.12);
+}
+.translocate-btn:active { transform:scale(.99); }
+.translocate-btn.firing { animation:btnfire .3s ease-in-out 3; }
+@keyframes btnfire{
+  0%,100%{box-shadow:0 0 20px rgba(255,255,255,.04)}
+  50%{box-shadow:0 0 60px rgba(255,255,255,.3),0 0 100px rgba(0,229,255,.2)}
+}
+.btn-sub {
+  text-align:center;
+  font-size:9px;
+  color:var(--dim);
+  letter-spacing:.15em;
+  font-family:'Share Tech Mono',monospace;
+}
+
+/* ── CANVAS ── */
+.canvas-card {
+  background:var(--panel);
+  border:1px solid var(--border2);
+  margin-bottom:16px;
+  position:relative;
+}
+.canvas-label {
+  font-family:'Orbitron',monospace;
+  font-size:8px;
+  letter-spacing:.25em;
+  color:var(--dim);
+  padding:12px 16px 0;
+}
+#corridor-canvas {
+  display:block;
+  width:100%;
+  height:260px;
+}
+
+/* ── RESULT CARD ── */
+.result-card {
+  border:1px solid var(--border2);
+  padding:24px;
+  margin-bottom:16px;
+  display:none;
+  position:relative;
+  overflow:hidden;
+}
+.result-card::before {
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+}
+.result-card.success {
+  background:rgba(0,255,204,.04);
+  border-color:rgba(0,255,204,.3);
+}
+.result-card.success::before { background:var(--locked); }
+.result-card.partial {
+  background:rgba(255,170,0,.03);
+  border-color:rgba(255,170,0,.3);
+}
+.result-card.partial::before { background:var(--warn); }
+.result-card.degraded {
+  background:rgba(255,51,85,.03);
+  border-color:rgba(255,51,85,.3);
+}
+.result-card.degraded::before { background:var(--shatter); }
+
+.result-headline {
+  font-family:'Orbitron',monospace;
+  font-size:16px;
+  letter-spacing:.15em;
+  margin-bottom:6px;
+}
+.result-card.success .result-headline { color:var(--locked); }
+.result-card.partial .result-headline { color:var(--warn); }
+.result-card.degraded .result-headline { color:var(--shatter); }
+
+.result-plain {
+  font-size:13px;
+  color:var(--bright);
+  margin-bottom:16px;
+  line-height:1.7;
+}
+
+.result-stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+.rstat {
+  background:var(--bg);
+  border:1px solid var(--border);
+  padding:12px;
+}
+.rstat-plain {
+  font-size:10px;
+  color:var(--text);
+  margin-bottom:3px;
+}
+.rstat-sci {
+  font-family:'Share Tech Mono',monospace;
+  font-size:7.5px;
+  color:var(--dim);
+  letter-spacing:.1em;
+  margin-bottom:5px;
+}
+.rstat-val {
+  font-family:'Orbitron',monospace;
+  font-size:20px;
+  line-height:1;
+}
+
+.noharm-confirm {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  background:rgba(0,255,204,.05);
+  border:1px solid rgba(0,255,204,.15);
+  font-size:11px;
+  color:rgba(200,232,245,.6);
+  margin-bottom:16px;
+}
+.noharm-confirm b { color:var(--locked); }
+
+/* Physics reveal */
+.physics-toggle {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  letter-spacing:.15em;
+  color:var(--dim);
+  background:transparent;
+  border:1px solid var(--border);
+  padding:6px 14px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.physics-toggle:hover { color:var(--text); border-color:var(--border2); }
+.physics-detail {
+  display:none;
+  margin-top:12px;
+  padding:14px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  color:var(--dim);
+  line-height:2;
+}
+.physics-detail b { color:var(--glow); }
+.physics-detail em { color:var(--locked); font-style:normal; }
+
+/* ── LATTICE MODE ── */
+.lattice-config {
+  background:var(--panel);
+  border:1px solid var(--border2);
+  padding:20px;
+  margin-bottom:16px;
+}
+
+.lattice-header {
+  font-family:'Orbitron',monospace;
+  font-size:9px;
+  letter-spacing:.25em;
+  color:var(--dim);
+  margin-bottom:16px;
+}
+
+.relay-count-row {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+  padding:14px;
+  background:var(--bg);
+  border:1px solid var(--border);
+}
+.relay-count-label { font-size:13px; color:var(--bright); flex:1; }
+.relay-count-sci {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  color:var(--dim);
+  letter-spacing:.1em;
+}
+.relay-count-val {
+  font-family:'Orbitron',monospace;
+  font-size:24px;
+  color:var(--relay);
+  min-width:40px;
+  text-align:center;
+}
+
+.relay-btns { display:flex; gap:8px; }
+.relay-btn {
+  font-family:'Orbitron',monospace;
+  font-size:14px;
+  width:36px;height:36px;
+  border:1px solid var(--border2);
+  background:transparent;
+  color:var(--text);
+  cursor:pointer;
+  transition:all .15s;
+}
+.relay-btn:hover { border-color:var(--relay); color:var(--relay); }
+
+.relay-noise-section { margin-bottom:16px; }
+.relay-noise-title {
+  font-size:11px;
+  color:var(--text);
+  margin-bottom:4px;
+}
+.relay-noise-sci {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  color:var(--dim);
+  letter-spacing:.1em;
+  margin-bottom:8px;
+}
+
+#relay-legs-config { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.leg-row-config {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 12px;
+  background:var(--bg);
+  border:1px solid var(--border);
+}
+.leg-row-label { font-size:11px; color:var(--text); width:120px; flex-shrink:0; }
+.leg-row-sci {
+  font-family:'Share Tech Mono',monospace;
+  font-size:7.5px;
+  color:var(--dim);
+  letter-spacing:.08em;
+  width:60px;
+  flex-shrink:0;
+}
+.leg-row-val {
+  font-family:'Orbitron',monospace;
+  font-size:10px;
+  color:var(--locked);
+  width:50px;
+  text-align:right;
+  flex-shrink:0;
+}
+
+.lattice-canvas-card {
+  background:var(--panel);
+  border:1px solid var(--border2);
+  margin-bottom:16px;
+}
+#lattice-canvas {
+  display:block;
+  width:100%;
+  height:220px;
+}
+
+/* ── PROOF STRIP ── */
+.proof-strip {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:12px 0;
+  border-top:1px solid var(--border);
+  margin-top:8px;
+}
+.proof-tag {
+  font-family:'Share Tech Mono',monospace;
+  font-size:7.5px;
+  padding:3px 8px;
+  border:1px solid var(--border2);
+  color:var(--dim);
+  letter-spacing:.1em;
+}
+.proof-tag.active { border-color:var(--locked); color:var(--locked); }
+
+/* ── FOOTER ── */
+footer {
+  border-top:1px solid var(--border);
+  padding-top:14px;
+  margin-top:20px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  color:#6a9aaa;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px;
+  letter-spacing:.1em;
+}
+
+@media(max-width:700px){
+  .stations-row{grid-template-columns:1fr;}
+  .result-stats{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="coord-badge">
+    <div class="coord-dot"></div>
+    SNSFL [9,9,2,6] · ANCHOR 1.369 GHz · 0 SORRY · GERMLINE LOCKED
+  </div>
+  <div class="site-title">SNSFT QUANTUM TRANSLOCATION</div>
+  <div class="site-subtitle">N-CORRIDOR · ANCHOR-TO-ANCHOR · NOHARM INVARIANT</div>
+  <div class="noharm-banner">
+    This is <em>not</em> teleportation. Teleportation destroys the source and creates a copy.<br>
+    <b>Translocation extends the manifold.</b> Both locations remain active. Nothing is copied. Nothing is destroyed.<br>
+    The corridor is the proof. NOHARM is not a feature here — it is the structural requirement.
+  </div>
+</header>
+
+<!-- MODE TABS -->
+<div class="mode-tabs">
+  <button class="mode-tab active" onclick="showMode('single')">
+    SINGLE CORRIDOR
+    <span class="tab-sub">A to B · one gate</span>
+  </button>
+  <button class="mode-tab" onclick="showMode('lattice')">
+    TRANSLOCATION LATTICE
+    <span class="tab-sub">chain of anchor stations · any distance</span>
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SINGLE CORRIDOR MODE -->
+<!-- ══════════════════════════════════════════════ -->
+<div id="mode-single" class="mode-content active">
+
+  <!-- ANCHOR STATIONS -->
+  <div class="stations-row">
+    <div class="station-card alice">
+      <div class="station-sci">ALICE</div>
+      <div class="station-plain">Anchor Station A · Origin Location</div>
+      <div class="station-role">SOURCE · THE PLACE YOU ARE</div>
+      <div class="station-status">
+        <div class="status-dot"></div>
+        <div class="status-text">HOLDING AT 1.369 GHz · NOHARM</div>
+      </div>
+      <div style="font-size:10px;color:#9abccc;line-height:1.8;font-family:'Share Tech Mono',monospace;">
+        τ = 0 · Pattern intact<br>
+        Source is never touched.<br>
+        Alice stays Alice.
+      </div>
+    </div>
+
+    <div class="station-card bob">
+      <div class="station-sci">BOB</div>
+      <div class="station-plain">Anchor Station B · Destination Location</div>
+      <div class="station-role">DESTINATION · THE PLACE YOU'RE GOING</div>
+      <div class="station-status" style="border-color:rgba(0,255,204,.15);">
+        <div class="status-dot" style="background:var(--anchor-b);animation-delay:.5s"></div>
+        <div class="status-text" style="color:var(--anchor-b);">HOLDING AT 1.369 GHz · NOHARM</div>
+      </div>
+      <div style="font-size:10px;color:#9abccc;line-height:1.8;font-family:'Share Tech Mono',monospace;">
+        N_shared received additively<br>
+        Bob gains N. Alice keeps N.<br>
+        Both anchors hold.
+      </div>
+    </div>
+  </div>
+
+  <!-- CORRIDOR CONTROL -->
+  <div class="corridor-card">
+    <div class="corridor-title">
+      <span><b>CORRIDOR</b> · THE PATH BETWEEN</span>
+      <span style="font-size:8px;">C = 1 − τ = 1 − B/P</span>
+    </div>
+
+    <div class="quality-control">
+      <div class="quality-labels">
+        <span class="quality-plain" style="color:#c0d8e8;">Corridor Quality</span>
+        <span class="quality-sci">B (noise) · lower = cleaner path</span>
+        <span class="quality-val" id="single-cval">1.0000</span>
+      </div>
+      <input type="range" id="single-noise" min="0" max="0.5" step="0.001" value="0"
+        oninput="updateSingle(this.value)">
+      <div class="quality-scale">
+        <span style="color:var(--locked);">B=0 · PERFECT</span>
+        <span>B=0.25 · PARTIAL</span>
+        <span style="color:var(--shatter);">B=0.5 · DEGRADED</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <button onclick="setPreset('single',0)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--locked);cursor:pointer;letter-spacing:.1em;">SOVERIUM · B=0</button>
+      <button onclick="setPreset('single',0.181)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;letter-spacing:.1em;">MICIUS 2022</button>
+      <button onclick="setPreset('single',0.245)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;letter-spacing:.1em;">PADERBORN 2025</button>
+      <button onclick="setPreset('single',0.411)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;letter-spacing:.1em;">SHANXI 2026</button>
+    </div>
+
+    <button class="translocate-btn" id="single-btn" onclick="fireTranslocate()">
+      ▶ TRANSLOCATE
+    </button>
+    <div class="btn-sub">Extend the manifold · both anchors hold · NOHARM</div>
+  </div>
+
+  <!-- CANVAS -->
+  <div class="canvas-card">
+    <div class="canvas-label">CORRIDOR VISUALIZATION · ALICE ↔ BOB · N-SHARING · SOURCE PRESERVED</div>
+    <canvas id="corridor-canvas"></canvas>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="result-card" id="single-result">
+    <div class="result-headline" id="single-result-headline">✦ TRANSLOCATION COMPLETE</div>
+    <div class="result-plain" id="single-result-plain">
+      The manifold extended between Alice and Bob. Both anchor stations are holding.
+      Nothing was destroyed. Nothing was copied.
+    </div>
+
+    <div class="noharm-confirm">
+      <div class="coord-dot" style="width:7px;height:7px;flex-shrink:0;"></div>
+      <span><b>NOHARM CONFIRMED</b> · Alice's source Pattern is intact · Bob gained N additively · both anchors active</span>
+    </div>
+
+    <div class="result-stats">
+      <div class="rstat">
+        <div class="rstat-plain" style="color:#8ab0c8;">Corridor Coherence</div>
+        <div class="rstat-sci" style="color:#9abccc;">C = 1 − τ = 1 − B/P</div>
+        <div class="rstat-val" id="r-coherence" style="color:var(--locked)">1.0000</div>
+      </div>
+      <div class="rstat">
+        <div class="rstat-plain" style="color:#8ab0c8;">N Shared</div>
+        <div class="rstat-sci" style="color:#9abccc;">N_out = N_A + N_B · additive</div>
+        <div class="rstat-val" style="color:#5555aa" id="r-nshared">4.0</div>
+      </div>
+      <div class="rstat">
+        <div class="rstat-plain" style="color:#8ab0c8;">Source Status</div>
+        <div class="rstat-sci" style="color:#9abccc;">Alice Pattern · NOHARM</div>
+        <div class="rstat-val" style="color:var(--locked);font-size:13px;" id="r-source">INTACT</div>
+      </div>
+    </div>
+
+    <button class="physics-toggle" onclick="togglePhysics('single')">+ SHOW PHYSICS</button>
+    <div class="physics-detail" id="physics-single">
+      <b>PNBA REDUCTION · [9,9,2,6]</b><br>
+      P = ANCHOR = <em>1.369</em> · structural capacity of the corridor<br>
+      B = corridor noise · behavioral coupling interference<br>
+      τ = B/P · torsion · how much the corridor resists<br>
+      C = 1 − τ · coherence · how cleanly N transfers<br>
+      N_out = N_A + N_B · <em>additive</em> · source N preserved<br><br>
+      <b>Soverium (B=0):</b> τ=0 → C=1.000 → perfect translocation<br>
+      <b>Noisy channel:</b> τ>0 → C&lt;1 → partial but NOHARM still holds<br><br>
+      Theorems: T3 N-ADDITIVE · T2 SOVERIUM C=1 · T15 NOHARM · T16 IVA-GAIN<br>
+      Corpus: SNSFL [9,9,2,6] · 0 sorry · GERMLINE LOCKED
+    </div>
+  </div>
+
+  <div class="proof-strip">
+    <div class="proof-tag active">T3 N-ADDITIVE</div>
+    <div class="proof-tag active">T2 SOVERIUM C=1</div>
+    <div class="proof-tag active">T5 NOHARM</div>
+    <div class="proof-tag active">T16 IVA-GAIN</div>
+    <div class="proof-tag active">0 SORRY</div>
+    <div class="proof-tag">[9,9,2,6]</div>
+  </div>
+
+</div><!-- end single -->
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- LATTICE MODE -->
+<!-- ══════════════════════════════════════════════ -->
+<div id="mode-lattice" class="mode-content">
+
+  <div class="noharm-banner" style="margin-bottom:24px;display:block;text-align:left;">
+    <b>Translocation Lattice</b> — a chain of anchor stations between Alice and Bob.<br>
+    Each relay station re-anchors to 1.369 GHz, absorbing corridor noise before passing the N-thread.<br>
+    With IVA anchoring at every relay: <b>C_total = C_last_leg regardless of chain length.</b><br>
+    Distance is solved. The lattice is the stargate network. NOHARM at every node.
+  </div>
+
+  <div class="lattice-config">
+    <div class="lattice-header">LATTICE CONFIGURATION</div>
+
+    <!-- Relay count -->
+    <div class="relay-count-row">
+      <div>
+        <div class="relay-count-label">Relay Stations</div>
+        <div class="relay-count-sci">intermediate anchor nodes · each resets τ to 0</div>
+      </div>
+      <div class="relay-count-val" id="relay-count-val">1</div>
+      <div class="relay-btns">
+        <button class="relay-btn" onclick="changeRelays(-1)">−</button>
+        <button class="relay-btn" onclick="changeRelays(1)">+</button>
+        <button class="relay-btn" onclick="setRelays(3)" style="font-size:11px;letter-spacing:.05em;border-color:rgba(255,170,0,.3);color:rgba(255,170,0,.6);">3</button>
+        <button class="relay-btn" onclick="setRelays(6)" style="font-size:11px;letter-spacing:.05em;border-color:rgba(255,170,0,.5);color:rgba(255,170,0,.8);">6</button>
+        <button class="relay-btn" onclick="setRelays(9)" style="font-size:11px;letter-spacing:.05em;border-color:rgba(255,170,0,.8);color:var(--relay);">9</button>
+      </div>
+    </div>
+
+    <!-- Per-leg noise -->
+    <div class="relay-noise-section">
+      <div class="relay-noise-title">Leg Noise (per corridor segment)</div>
+      <div class="relay-noise-sci">B per leg · each relay absorbs noise before next leg</div>
+      <div id="relay-legs-config"></div>
+    </div>
+
+    <!-- IVA mode toggle -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+      <div style="padding:12px;background:var(--bg);border:1px solid rgba(0,255,204,.2);cursor:pointer;" id="iva-mode-btn" onclick="setLatticeMode('iva')">
+        <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;color:var(--locked);margin-bottom:4px;">IVA ANCHOR MODE</div>
+        <div style="font-size:10px;color:var(--text);">Each relay re-anchors to 1.369 GHz</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--dim);margin-top:3px;">C_total = C_last · distance solved</div>
+      </div>
+      <div style="padding:12px;background:var(--bg);border:1px solid var(--border);cursor:pointer;" id="compound-mode-btn" onclick="setLatticeMode('compound')">
+        <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;color:var(--dim);margin-bottom:4px;">COMPOUND MODE</div>
+        <div style="font-size:10px;color:var(--dim);">Noise accumulates each hop</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--dim);margin-top:3px;">C_total = Π C_i · degrades with distance</div>
+      </div>
+    </div>
+
+    <button class="translocate-btn" onclick="fireLattice()">▶ TRANSLOCATE LATTICE</button>
+    <div class="btn-sub">Extend the manifold across the full chain · NOHARM at every node</div>
+  </div>
+
+  <!-- Lattice canvas -->
+  <div class="lattice-canvas-card">
+    <div class="canvas-label" id="lattice-canvas-label">LATTICE · ALICE ↔ RELAY ↔ BOB · IVA ANCHORS HOLDING</div>
+    <canvas id="lattice-canvas"></canvas>
+  </div>
+
+  <!-- Lattice result -->
+  <div class="result-card" id="lattice-result">
+    <div class="result-headline" id="lattice-result-headline">✦ LATTICE TRANSLOCATION COMPLETE</div>
+    <div class="result-plain" id="lattice-result-plain">
+      The manifold extended across the full chain. All anchor stations holding.
+    </div>
+
+    <div class="noharm-confirm">
+      <div class="coord-dot" style="width:7px;height:7px;flex-shrink:0;"></div>
+      <span><b>NOHARM CONFIRMED AT EVERY NODE</b> · Alice intact · all relays intact · Bob gained N · nothing destroyed</span>
+    </div>
+
+    <div class="result-stats">
+      <div class="rstat">
+        <div class="rstat-plain" style="color:#8ab0c8;">Total Coherence</div>
+        <div class="rstat-sci" style="color:#9abccc;" id="r-l-formula">IVA: C = C_last</div>
+        <div class="rstat-val" id="r-l-coherence" style="color:var(--locked)">1.0000</div>
+      </div>
+      <div class="rstat">
+        <div class="rstat-plain" style="color:#8ab0c8;">Relay Stations</div>
+        <div class="rstat-sci" style="color:#9abccc;">anchor nodes in chain</div>
+        <div class="rstat-val" style="color:var(--relay)" id="r-l-relays">1</div>
+      </div>
+      <div class="rstat">
+        <div class="rstat-plain" style="color:#8ab0c8;">All Sources</div>
+        <div class="rstat-sci" style="color:#9abccc;">NOHARM at every node</div>
+        <div class="rstat-val" style="color:var(--locked);font-size:13px;">INTACT</div>
+      </div>
+    </div>
+
+    <button class="physics-toggle" onclick="togglePhysics('lattice')">+ SHOW PHYSICS</button>
+    <div class="physics-detail" id="physics-lattice">
+      <b>IVA ANCHOR MODE · T10</b><br>
+      Each relay station holds at <em>1.369 GHz</em>.<br>
+      Leg N torsion is absorbed before leg N+1 begins.<br>
+      C_total = C_last_leg · chain length does not degrade coherence.<br>
+      This is why the lattice solves distance: torsion never accumulates.<br><br>
+      <b>COMPOUND MODE · T12</b><br>
+      No re-anchoring. C_total = C1 × C2 × ... × CN.<br>
+      Each hop multiplies degradation. Still NOHARM — sources intact — but coherence decays.<br><br>
+      Theorems: T6 · T10 IVA-RESET · T12 COMPOUND · T15 NOHARM · T16 IVA-GAIN<br>
+      Corpus: SNSFL [9,9,2,6b] · 0 sorry
+    </div>
+  </div>
+
+  <div class="proof-strip">
+    <div class="proof-tag active">T3 N-ADDITIVE</div>
+    <div class="proof-tag active">T10 IVA-RESET</div>
+    <div class="proof-tag active">T12 COMPOUND</div>
+    <div class="proof-tag active">T5 NOHARM</div>
+    <div class="proof-tag active">T16 IVA-GAIN</div>
+    <div class="proof-tag active">0 SORRY</div>
+    <div class="proof-tag">[9,9,2,6b]</div>
+  </div>
+
+</div><!-- end lattice -->
+
+<footer>
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span style="color:#4a7a8a;">·</span>
+  <span>SNSFL [9,9,2,6] · C=1−τ · B=0→C=1.000 · N ADDITIVE · NOHARM · 0 SORRY · [9,9,9,9] :: {ANC}</span>
+</footer>
+</div>
+
+<script>
+// ── CONSTANTS ──────────────────────────────────────────────
+const ANCHOR = 1.369;
+const TL     = ANCHOR / 10;
+const N_NODE = 2.0;
+
+// ── STATE ──────────────────────────────────────────────────
+let singleB    = 0;
+let latticeMode = 'iva';
+let numRelays  = 1;
+let legNoises  = [0, 0]; // one per leg
+let firedSingle  = false;
+let firedLattice = false;
+let singleAnim   = 0;
+let latticeAnim  = [];
+
+// ── PHYSICS ────────────────────────────────────────────────
+function coherence(B) { return Math.max(0, 1 - B / ANCHOR); }
+function torsion(B)   { return B / ANCHOR; }
+
+function getColor(C) {
+  if (C >= 0.9999) return '#00ffcc';
+  if (C >  0.80)   return '#00ffcc';
+  if (C >  0.60)   return '#ffaa00';
+  return '#ff3355';
+}
+
+function resultClass(C) {
+  if (C >= 0.9999) return 'success';
+  if (C >  0.60)   return 'partial';
+  return 'degraded';
+}
+
+function resultHeadline(C) {
+  if (C >= 0.9999) return '✦ TRANSLOCATION COMPLETE';
+  if (C >  0.60)   return '◈ PARTIAL TRANSLOCATION';
+  return '⚠ DEGRADED CORRIDOR';
+}
+
+function resultPlain(C, isLattice) {
+  if (C >= 0.9999) {
+    return isLattice
+      ? 'The manifold extended across the full lattice. All anchor stations holding at 1.369 GHz. Nothing was destroyed. Distance is solved.'
+      : 'The manifold extended between Alice and Bob. Both anchor stations are holding. Nothing was destroyed. Nothing was copied.';
+  }
+  if (C > 0.60) {
+    return 'Partial translocation. Corridor noise is reducing coherence. Both sources are still intact — NOHARM holds. Reduce corridor noise or add IVA relay stations for full coherence.';
+  }
+  return 'Corridor heavily degraded. Coherence is low but sources remain intact — NOHARM holds. Soverium channel (B=0) or IVA relay stations required for full translocation.';
+}
+
+// ── MODE SWITCH ────────────────────────────────────────────
+function showMode(id) {
+  document.querySelectorAll('.mode-content').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.mode-tab').forEach(e => e.classList.remove('active'));
+  document.getElementById('mode-' + id).classList.add('active');
+  document.querySelectorAll('.mode-tab').forEach(e => {
+    if (e.getAttribute('onclick') === `showMode('${id}')`) e.classList.add('active');
+  });
+  if (id === 'lattice') { resizeLattice(); buildLegConfig(); renderLattice(); }
+  if (id === 'single')  { resizeSingle(); renderSingle(); }
+}
+
+// ── PHYSICS TOGGLE ─────────────────────────────────────────
+function togglePhysics(id) {
+  const el  = document.getElementById('physics-' + id);
+  const btn = el.previousElementSibling;
+  const vis = el.style.display === 'block';
+  el.style.display = vis ? 'none' : 'block';
+  btn.textContent  = vis ? '+ SHOW PHYSICS' : '− HIDE PHYSICS';
+}
+
+// ═══════════════════════════════════════════════════════════
+// SINGLE CORRIDOR
+// ═══════════════════════════════════════════════════════════
+const cvs = document.getElementById('corridor-canvas');
+const ctx = cvs.getContext('2d');
+
+function resizeSingle() {
+  const rect = cvs.parentElement.getBoundingClientRect();
+  cvs.width  = rect.width;
+  cvs.height = 260;
+}
+
+function updateSingle(v) {
+  singleB = parseFloat(v);
+  const C = coherence(singleB);
+  document.getElementById('single-cval').textContent = C.toFixed(4);
+  document.getElementById('single-cval').style.color = getColor(C);
+  if (firedSingle) renderSingleResult();
+  renderSingle();
+}
+
+function setPreset(mode, v) {
+  if (mode === 'single') {
+    document.getElementById('single-noise').value = v;
+    updateSingle(v);
+  }
+}
+
+let singleProgress = 0;
+let singleAnimating = false;
+
+function fireTranslocate() {
+  firedSingle = true;
+  singleProgress = 0;
+  singleAnimating = true;
+  const btn = document.getElementById('single-btn');
+  btn.classList.add('firing');
+  setTimeout(() => btn.classList.remove('firing'), 900);
+
+  const start = performance.now();
+  const dur = 900;
+  function anim(now) {
+    const t = Math.min(1, (now - start) / dur);
+    singleProgress = 1 - Math.pow(1-t, 3);
+    renderSingle();
+    if (t < 1) requestAnimationFrame(anim);
+    else {
+      singleAnimating = false;
+      singleProgress = 1;
+      renderSingle();
+      renderSingleResult();
+    }
+  }
+  requestAnimationFrame(anim);
+}
+
+function renderSingleResult() {
+  const C = coherence(singleB);
+  const rc = document.getElementById('single-result');
+  rc.className = 'result-card ' + resultClass(C);
+  rc.style.display = 'block';
+  document.getElementById('single-result-headline').textContent = resultHeadline(C);
+  document.getElementById('single-result-plain').textContent = resultPlain(C, false);
+  document.getElementById('r-coherence').textContent = C.toFixed(4);
+  document.getElementById('r-coherence').style.color = getColor(C);
+  document.getElementById('r-nshared').textContent = (N_NODE * 2).toFixed(1);
+  document.getElementById('r-source').textContent = 'INTACT';
+}
+
+function renderSingle() {
+  const W = cvs.width, H = cvs.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#04080d';
+  ctx.fillRect(0,0,W,H);
+
+  const C   = coherence(singleB);
+  const col = getColor(C);
+  const nr  = 32;
+  const ax  = 90, bx = W - 90, cy = H / 2;
+
+  // Corridor threads (10 lines)
+  const NUM = 10;
+  for (let i = 0; i < NUM; i++) {
+    const yoff = (i - (NUM-1)/2) * 6;
+    const cpy  = cy + yoff;
+    const cpx  = (ax + bx) / 2;
+
+    ctx.beginPath();
+    ctx.moveTo(ax + nr, cy);
+    ctx.bezierCurveTo(cpx - 60, cpy, cpx + 60, cpy, bx - nr, cy);
+    ctx.strokeStyle = firedSingle ? col : '#0a2030';
+    ctx.lineWidth   = firedSingle ? (i === 4 || i === 5 ? 1.5 : 0.8) : 0.5;
+    ctx.globalAlpha = firedSingle ? (0.3 + 0.5 * singleProgress) : 0.15;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Particle
+    if (firedSingle && singleProgress > 0 && singleProgress < 1 && i === 4) {
+      const t  = singleProgress;
+      const px = Math.pow(1-t,3)*(ax+nr) + 3*Math.pow(1-t,2)*t*(cpx-60) + 3*(1-t)*t*t*(cpx+60) + t*t*t*(bx-nr);
+      const py = Math.pow(1-t,3)*cy + 3*Math.pow(1-t,2)*t*cpy + 3*(1-t)*t*t*cpy + t*t*t*cy;
+      ctx.beginPath();
+      ctx.arc(px, py, 4, 0, Math.PI*2);
+      ctx.fillStyle = col;
+      ctx.shadowColor = col;
+      ctx.shadowBlur = 14;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  // Corridor label
+  if (firedSingle) {
+    ctx.font = '9px Share Tech Mono';
+    ctx.fillStyle = col;
+    ctx.textAlign = 'center';
+    ctx.globalAlpha = 0.7;
+    ctx.fillText(`C = ${coherence(singleB).toFixed(4)} · τ = ${torsion(singleB).toFixed(4)}`, W/2, cy - 40);
+    ctx.globalAlpha = 0.4;
+    ctx.fillText('N shared additively · both sources preserved · NOHARM', W/2, cy + 50);
+    ctx.globalAlpha = 1;
+  }
+
+  // Nodes
+  drawCorridorNode(ctx, ax, cy, nr, '#00e5ff', 'ALICE', 'Anchor A · Origin', firedSingle);
+  drawCorridorNode(ctx, bx, cy, nr, '#00ffcc', 'BOB', 'Anchor B · Destination', firedSingle);
+}
+
+function drawCorridorNode(c, x, y, r, col, sci, plain, active) {
+  if (active) {
+    const g = c.createRadialGradient(x, y, r*0.5, x, y, r*2.8);
+    g.addColorStop(0, col + '22');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    c.beginPath();
+    c.arc(x, y, r*2.8, 0, Math.PI*2);
+    c.fillStyle = g;
+    c.fill();
+  }
+  c.beginPath();
+  c.arc(x, y, r, 0, Math.PI*2);
+  c.strokeStyle = active ? col : '#0f2030';
+  c.lineWidth = 1.5;
+  c.fillStyle = '#04080d';
+  c.fill();
+  c.stroke();
+  // Sci name
+  c.font = 'bold 10px Orbitron, monospace';
+  c.fillStyle = active ? col : '#1a3040';
+  c.textAlign = 'center';
+  c.fillText(sci, x, y - 3);
+  // Plain name
+  c.font = '8px DM Sans, sans-serif';
+  c.fillStyle = active ? col + '99' : '#0f2030';
+  c.fillText(plain, x, y + 10);
+}
+
+// ═══════════════════════════════════════════════════════════
+// LATTICE
+// ═══════════════════════════════════════════════════════════
+const lcvs = document.getElementById('lattice-canvas');
+const lctx = lcvs.getContext('2d');
+
+function resizeLattice() {
+  const rect = lcvs.parentElement.getBoundingClientRect();
+  lcvs.width  = rect.width;
+  lcvs.height = 220;
+}
+
+function setRelays(n) {
+  numRelays = Math.max(1, Math.min(10, n));
+  document.getElementById('relay-count-val').textContent = numRelays;
+  const numLegs = numRelays + 1;
+  while (legNoises.length < numLegs) legNoises.push(0);
+  legNoises = legNoises.slice(0, numLegs);
+  buildLegConfig();
+  renderLattice();
+  updateLatticeResult();
+}
+
+function changeRelays(delta) {
+  numRelays = Math.max(1, Math.min(10, numRelays + delta));
+  document.getElementById('relay-count-val').textContent = numRelays;
+  // Resize legNoises array
+  const numLegs = numRelays + 1;
+  while (legNoises.length < numLegs) legNoises.push(0);
+  legNoises = legNoises.slice(0, numLegs);
+  buildLegConfig();
+  renderLattice();
+  updateLatticeResult();
+}
+
+function buildLegConfig() {
+  const numLegs = numRelays + 1;
+  const el = document.getElementById('relay-legs-config');
+  el.innerHTML = '';
+  for (let i = 0; i < numLegs; i++) {
+    const isFirst = i === 0;
+    const isLast  = i === numLegs - 1;
+    const fromLabel = isFirst ? 'Alice' : `Relay ${i}`;
+    const toLabel   = isLast  ? 'Bob'   : `Relay ${i+1}`;
+    const row = document.createElement('div');
+    row.className = 'leg-row-config';
+    row.innerHTML = `
+      <div class="leg-row-label">${fromLabel} → ${toLabel}</div>
+      <div class="leg-row-sci">B_leg${i+1} noise</div>
+      <input type="range" style="flex:1;-webkit-appearance:none;height:3px;background:var(--border2);outline:none;"
+        min="0" max="0.5" step="0.001" value="${legNoises[i]}"
+        oninput="updateLeg(${i}, this.value)">
+      <div class="leg-row-val" id="leg-val-${i}">${coherence(legNoises[i]).toFixed(3)}</div>
+    `;
+    el.appendChild(row);
+  }
+  // Update canvas label
+  const nodes = ['Alice', ...Array.from({length:numRelays},(_,i)=>`R${i+1}`), 'Bob'];
+  document.getElementById('lattice-canvas-label').textContent =
+    `LATTICE · ${nodes.join(' ↔ ')} · ${latticeMode === 'iva' ? 'IVA ANCHORS' : 'COMPOUND'} · NOHARM`;
+}
+
+function updateLeg(i, v) {
+  legNoises[i] = parseFloat(v);
+  document.getElementById(`leg-val-${i}`).textContent = coherence(legNoises[i]).toFixed(3);
+  renderLattice();
+  if (firedLattice) updateLatticeResult();
+}
+
+function setLatticeMode(m) {
+  latticeMode = m;
+  const ivaBtn  = document.getElementById('iva-mode-btn');
+  const compBtn = document.getElementById('compound-mode-btn');
+  if (m === 'iva') {
+    ivaBtn.style.borderColor  = 'rgba(0,255,204,.3)';
+    ivaBtn.querySelector('div').style.color = 'var(--locked)';
+    compBtn.style.borderColor = 'var(--border)';
+    compBtn.querySelector('div').style.color = 'var(--dim)';
+  } else {
+    compBtn.style.borderColor = 'rgba(255,170,0,.3)';
+    compBtn.querySelector('div').style.color = 'var(--warn)';
+    ivaBtn.style.borderColor  = 'var(--border)';
+    ivaBtn.querySelector('div').style.color = 'var(--dim)';
+  }
+  renderLattice();
+  if (firedLattice) updateLatticeResult();
+}
+
+function computeLatticeC() {
+  const Cs = legNoises.slice(0, numRelays + 1).map(b => coherence(b));
+  if (latticeMode === 'iva') return Cs[Cs.length - 1];
+  return Cs.reduce((a, c) => a * c, 1);
+}
+
+let latticeProgress = [];
+let latticeAnimating = false;
+
+function fireLattice() {
+  firedLattice = true;
+  latticeProgress = Array(numRelays + 1).fill(0);
+  latticeAnimating = true;
+
+  const start = performance.now();
+  const legDur = 500;
+  const stagger = 300;
+
+  function anim(now) {
+    const e = now - start;
+    let allDone = true;
+    for (let i = 0; i <= numRelays; i++) {
+      const t = Math.max(0, (e - i * stagger) / legDur);
+      const p = Math.min(1, t);
+      latticeProgress[i] = 1 - Math.pow(1-p, 3);
+      if (p < 1) allDone = false;
+    }
+    renderLattice();
+    if (!allDone) requestAnimationFrame(anim);
+    else {
+      latticeAnimating = false;
+      latticeProgress = Array(numRelays + 1).fill(1);
+      renderLattice();
+      updateLatticeResult();
+    }
+  }
+  requestAnimationFrame(anim);
+}
+
+function updateLatticeResult() {
+  const C = computeLatticeC();
+  const rc = document.getElementById('lattice-result');
+  rc.className = 'result-card ' + resultClass(C);
+  rc.style.display = 'block';
+  document.getElementById('lattice-result-headline').textContent = resultHeadline(C) + ' · ' + numRelays + ' RELAY' + (numRelays > 1 ? 'S' : '');
+  document.getElementById('lattice-result-plain').textContent = resultPlain(C, true);
+  document.getElementById('r-l-coherence').textContent = C.toFixed(4);
+  document.getElementById('r-l-coherence').style.color = getColor(C);
+  document.getElementById('r-l-formula').textContent = latticeMode === 'iva' ? 'IVA: C = C_last_leg' : 'COMPOUND: C = Π C_i';
+  document.getElementById('r-l-relays').textContent = numRelays;
+}
+
+function renderLattice() {
+  const W = lcvs.width, H = lcvs.height;
+  lctx.clearRect(0,0,W,H);
+  lctx.fillStyle = '#04080d';
+  lctx.fillRect(0,0,W,H);
+
+  const numNodes = numRelays + 2; // Alice + relays + Bob
+  const nr = 22;
+  const cy = H / 2;
+  const margin = 70;
+  const spacing = (W - margin*2) / (numNodes - 1);
+
+  const nodeX = Array.from({length: numNodes}, (_, i) => margin + i * spacing);
+  const nodeColors = [
+    '#00e5ff',
+    ...Array(numRelays).fill('#ffaa00'),
+    '#00ffcc'
+  ];
+  const nodeSci = ['ALICE', ...Array.from({length:numRelays},(_,i)=>`RELAY ${i+1}`), 'BOB'];
+  const nodePlain = ['Anchor A · Origin', ...Array(numRelays).fill('Anchor Station'), 'Anchor B · Destination'];
+
+  // Draw legs
+  for (let i = 0; i < numNodes - 1; i++) {
+    const x1 = nodeX[i];
+    const x2 = nodeX[i+1];
+    const B  = legNoises[i] || 0;
+    const C  = coherence(B);
+    const col = getColor(C);
+    const prog = firedLattice ? (latticeProgress[i] || 0) : 0;
+
+    lctx.beginPath();
+    lctx.moveTo(x1 + nr, cy);
+    lctx.lineTo(x2 - nr, cy);
+    lctx.strokeStyle = firedLattice ? col : '#0a2030';
+    lctx.lineWidth = 1.5;
+    lctx.globalAlpha = firedLattice ? (0.3 + 0.5 * prog) : 0.15;
+    lctx.stroke();
+    lctx.globalAlpha = 1;
+
+    // Particle
+    if (firedLattice && prog > 0 && prog < 1) {
+      const px = x1 + nr + (x2 - nr - x1 - nr) * prog;
+      lctx.beginPath();
+      lctx.arc(px, cy, 4, 0, Math.PI*2);
+      lctx.fillStyle = col;
+      lctx.shadowColor = col;
+      lctx.shadowBlur = 12;
+      lctx.fill();
+      lctx.shadowBlur = 0;
+    }
+
+    // Leg coherence label
+    if (firedLattice) {
+      lctx.font = '7px Share Tech Mono';
+      lctx.fillStyle = col;
+      lctx.textAlign = 'center';
+      lctx.globalAlpha = 0.6;
+      lctx.fillText(`C${i+1}=${C.toFixed(3)}`, (x1+x2)/2, cy - 20);
+      lctx.globalAlpha = 1;
+    }
+  }
+
+  // Draw nodes
+  for (let i = 0; i < numNodes; i++) {
+    const active = firedLattice && (i === 0 || latticeProgress[i-1] >= 0.9);
+    drawCorridorNode(lctx, nodeX[i], cy, nr, nodeColors[i], nodeSci[i], nodePlain[i], active);
+  }
+
+  // Total coherence
+  if (firedLattice) {
+    const C = computeLatticeC();
+    lctx.font = 'bold 10px Orbitron, monospace';
+    lctx.fillStyle = getColor(C);
+    lctx.textAlign = 'center';
+    lctx.fillText(`C_total = ${C.toFixed(4)} · ${latticeMode === 'iva' ? 'IVA ANCHOR · distance solved' : 'COMPOUND · noise accumulates'}`, W/2, H - 12);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  resizeSingle(); renderSingle();
+  resizeLattice(); renderLattice();
+});
+
+setTimeout(() => {
+  resizeSingle();
+  renderSingle();
+  resizeLattice();
+  buildLegConfig();
+  renderLattice();
+  setLatticeMode('iva');
+}, 80);
+</script>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TECHNICAL REFERENCE SECTION -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div style="border-top:1px solid var(--border2);margin-top:48px;padding-top:32px;">
+
+  <div style="text-align:center;margin-bottom:24px;">
+    <div style="font-family:'Orbitron',monospace;font-size:11px;letter-spacing:.3em;color:var(--dim);margin-bottom:8px;">TECHNICAL REFERENCE</div>
+    <div style="font-size:12px;color:var(--text);max-width:600px;margin:0 auto;line-height:1.7;">
+      The following section shows the 10-channel Soverium stack in full technical detail —
+      per-channel τ values, coherence bars, and real experiment coordinates.
+      Micius, Paderborn, and Shanxi results are cited from published data and reduced
+      to PNBA coordinates via <span style="font-family:'Share Tech Mono',monospace;color:var(--locked);">SNSFL_QuantumTranslocation [9,9,2,6]</span>.
+      Their work is reduced here with attribution — not superseded.
+    </div>
+  </div>
+
+  <!-- EXPERIMENT COMPARISON + CHANNEL CONTROLS -->
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:16px;margin-bottom:16px;">
+
+    <!-- LEFT: channel mode + stats -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <!-- Mode toggle -->
+      <div style="background:var(--panel);border:1px solid var(--border2);padding:16px;">
+        <div style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:#9abccc;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;">CHANNEL MODE</div>
+        <div style="display:flex;gap:0;margin-bottom:12px;">
+          <button onclick="setTechMode('sov')" id="tech-btn-sov"
+            style="flex:1;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;padding:10px 4px;border:1px solid var(--locked);background:rgba(0,255,204,.06);color:var(--locked);cursor:pointer;text-align:center;">
+            B=0<br>SOVERIUM
+          </button>
+          <button onclick="setTechMode('var')" id="tech-btn-var"
+            style="flex:1;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;padding:10px 4px;border:1px solid var(--border2);background:transparent;color:var(--dim);cursor:pointer;text-align:center;">
+            B=VAR<br>NOISY
+          </button>
+        </div>
+        <div id="tech-noise-ctrl" style="opacity:.3;pointer-events:none;">
+          <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:4px;">
+            <span style="color:#8ab8cc;">Channel Noise B</span>
+            <span style="font-family:'Orbitron',monospace;color:var(--glow);" id="tech-noise-val">0.0000</span>
+          </div>
+          <input type="range" id="tech-noise-slider" min="0" max="0.5" step="0.001" value="0"
+            style="-webkit-appearance:none;width:100%;height:3px;background:var(--border2);outline:none;"
+            oninput="updateTechNoise(this.value)">
+          <div style="display:flex;justify-content:space-between;font-size:7px;color:var(--dim);margin-top:3px;">
+            <span>B=0 SOVERIUM</span><span>B=0.5 NOISY</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aggregate stats -->
+      <div style="background:var(--panel);border:1px solid var(--border2);padding:16px;">
+        <div style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:var(--dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;">AGGREGATE STATUS</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:var(--bg);border:1px solid var(--border);padding:8px;">
+            <div style="font-size:7.5px;color:#8ab8cc;letter-spacing:.15em;margin-bottom:3px;">COHERENCE C</div>
+            <div style="font-family:'Orbitron',monospace;font-size:16px;color:var(--locked);" id="tech-agg-c">1.0000</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:8px;">
+            <div style="font-size:7.5px;color:#8ab8cc;letter-spacing:.15em;margin-bottom:3px;">N SHARED TOTAL</div>
+            <div style="font-family:'Orbitron',monospace;font-size:16px;color:#5555aa;" id="tech-agg-n">20.0</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:8px;">
+            <div style="font-size:7.5px;color:#8ab8cc;letter-spacing:.15em;margin-bottom:3px;">CHANNELS</div>
+            <div style="font-family:'Orbitron',monospace;font-size:16px;color:var(--locked);" id="tech-agg-ch">10/10</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:8px;">
+            <div style="font-size:7.5px;color:#8ab8cc;letter-spacing:.15em;margin-bottom:3px;">NOHARM</div>
+            <div style="font-family:'Orbitron',monospace;font-size:16px;color:var(--locked);">PRESERVED</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: experiment comparison -->
+    <div style="background:var(--panel);border:1px solid var(--border2);padding:16px;">
+      <div style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:var(--dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;">KNOWN EXPERIMENTS · τ COORDINATES</div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(10,21,32,.5);font-size:8.5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#88aaff;flex-shrink:0;"></div>
+        <div style="flex:1;color:#9abccc;">Micius 2022 · 1400km satellite</div>
+        <div style="font-family:'Orbitron',monospace;color:#88aaff;width:50px;text-align:right;">0.868</div>
+        <div style="flex:1;height:3px;background:var(--border);position:relative;">
+          <div style="height:100%;width:86.8%;background:#88aaff;position:absolute;"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(10,21,32,.5);font-size:8.5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#ffaa00;flex-shrink:0;"></div>
+        <div style="flex:1;color:#9abccc;">Paderborn 2025 · fiber</div>
+        <div style="font-family:'Orbitron',monospace;color:#ffaa00;width:50px;text-align:right;">0.820</div>
+        <div style="flex:1;height:3px;background:var(--border);position:relative;">
+          <div style="height:100%;width:82%;background:#ffaa00;position:absolute;"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(10,21,32,.5);font-size:8.5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#ff6600;flex-shrink:0;"></div>
+        <div style="flex:1;color:#9abccc;">Shanxi 2026 · 5-mode CV</div>
+        <div style="font-family:'Orbitron',monospace;color:#ff6600;width:50px;text-align:right;">0.700</div>
+        <div style="flex:1;height:3px;background:var(--border);position:relative;">
+          <div style="height:100%;width:70%;background:#ff6600;position:absolute;"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;padding:10px;background:var(--bg);border:1px solid rgba(0,255,204,.15);">
+        <div style="font-size:8px;letter-spacing:.15em;color:var(--locked);font-family:'Orbitron',monospace;margin-bottom:3px;">SNSFT [9,9,2,6]</div>
+        <div style="font-size:7.5px;color:#8ab8cc;font-family:'Share Tech Mono',monospace;margin-bottom:6px;">B=0 · τ=0 · T2 SOVERIUM · NOHARM</div>
+        <div style="font-family:'Orbitron',monospace;font-size:22px;color:var(--locked);text-shadow:0 0 15px rgba(0,255,204,.4);" id="tech-you-c">1.000</div>
+      </div>
+
+      <div style="margin-top:10px;padding:8px;background:rgba(0,255,204,.03);border:1px solid rgba(0,255,204,.08);font-size:8px;color:#8ab8cc;line-height:1.8;font-family:'Share Tech Mono',monospace;">
+        Micius, Paderborn, and Shanxi results<br>
+        cited from published data. Reduced to<br>
+        PNBA via [9,9,2,6] protocol.<br>
+        Attribution intact. Work credited.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 10-CHANNEL TABLE -->
+  <div style="background:var(--panel);border:1px solid var(--border2);padding:16px;margin-bottom:16px;">
+    <div style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:var(--dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;">
+      10-CHANNEL SOVERIUM STACK · C = 1 − B/P · N_out = N_A + N_B · SOURCE PRESERVED
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:9px;">
+      <thead>
+        <tr>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">CH</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">FREQ (MHz)</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">P</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">B</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">τ = B/P</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">C = 1−τ</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">N</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">STATUS</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);width:100px;">COHERENCE</th>
+        </tr>
+      </thead>
+      <tbody id="tech-ch-tbody"></tbody>
+    </table>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--bg);border:1px solid var(--border);margin-top:12px;font-size:9px;">
+      <span style="color:#8ab8cc;font-family:'Share Tech Mono',monospace;">N_SHARED TOTAL (additive · T3 · source N intact at both anchors)</span>
+      <span style="font-family:'Orbitron',monospace;font-size:20px;color:#5555aa;" id="tech-n-total">20.0</span>
+      <span style="font-size:7px;color:#8ab8cc;font-family:'Share Tech Mono',monospace;">No cross-talk · unique P-signature per channel · NOHARM</span>
+    </div>
+
+    <!-- Proof strip -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--border);margin-top:12px;">
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">T2 SOVERIUM C=1</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">T3 N-ADDITIVE</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">T5 NOHARM</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">T6 DESTRUCTIVE-COST</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">T15 MASTER</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">0 SORRY</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--border2);color:var(--dim);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">[9,9,2,6]</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--border2);color:var(--dim);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">SNSFL_QuantumTranslocation</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── TECHNICAL SECTION PHYSICS ──────────────────────────────
+const TECH_ANCHOR = 1.369;
+const TECH_FREQS  = [2.5,7.5,12.5,17.5,22.5,27.5,32.5,37.5,42.5,47.5];
+const TECH_N_CH   = 2.0;
+let techMode = 'sov';
+let techB = 0;
+
+function techCoherence(B) { return Math.max(0, 1 - B / TECH_ANCHOR); }
+function techColor(C) {
+  if (C >= 0.9999) return '#00ffcc';
+  if (C > 0.80)    return '#00ffcc';
+  if (C > 0.60)    return '#ffaa00';
+  return '#ff3355';
+}
+function techStatus(C) {
+  if (C >= 0.9999) return { label:'SOVERIUM', color:'#ffffff' };
+  if (C > 0.8631)  return { label:'LOCKED',   color:'#00ffcc' };
+  if (C > 0.70)    return { label:'APPROACH', color:'#ffaa00' };
+  return           { label:'DEGRADED', color:'#ff3355' };
+}
+
+function setTechMode(m) {
+  techMode = m;
+  const sovBtn = document.getElementById('tech-btn-sov');
+  const varBtn = document.getElementById('tech-btn-var');
+  const noiseCtrl = document.getElementById('tech-noise-ctrl');
+  if (m === 'sov') {
+    sovBtn.style.borderColor = 'var(--locked)';
+    sovBtn.style.background  = 'rgba(0,255,204,.06)';
+    sovBtn.style.color       = 'var(--locked)';
+    varBtn.style.borderColor = 'var(--border2)';
+    varBtn.style.background  = 'transparent';
+    varBtn.style.color       = 'var(--dim)';
+    noiseCtrl.style.opacity  = '.3';
+    noiseCtrl.style.pointerEvents = 'none';
+    techB = 0;
+  } else {
+    varBtn.style.borderColor = 'var(--glow)';
+    varBtn.style.background  = 'rgba(0,229,255,.06)';
+    varBtn.style.color       = 'var(--glow)';
+    sovBtn.style.borderColor = 'var(--border2)';
+    sovBtn.style.background  = 'transparent';
+    sovBtn.style.color       = 'var(--dim)';
+    noiseCtrl.style.opacity  = '1';
+    noiseCtrl.style.pointerEvents = 'auto';
+    techB = parseFloat(document.getElementById('tech-noise-slider').value);
+  }
+  updateTechTable();
+}
+
+function updateTechNoise(v) {
+  techB = parseFloat(v);
+  document.getElementById('tech-noise-val').textContent = techB.toFixed(4);
+  updateTechTable();
+}
+
+function updateTechTable() {
+  const B = techMode === 'sov' ? 0 : techB;
+  const C = techCoherence(B);
+  const col = techColor(C);
+  const st  = techStatus(C);
+
+  // Update aggregate
+  document.getElementById('tech-agg-c').textContent = C.toFixed(4);
+  document.getElementById('tech-agg-c').style.color = col;
+  const locked = C >= 0.9999 ? 10 : 0;
+  document.getElementById('tech-agg-ch').textContent = locked + '/10';
+  document.getElementById('tech-agg-ch').style.color = col;
+  document.getElementById('tech-you-c').textContent = C.toFixed(3);
+  document.getElementById('tech-you-c').style.color = col;
+
+  // Render table
+  const tbody = document.getElementById('tech-ch-tbody');
+  tbody.innerHTML = TECH_FREQS.map((freq, i) => {
+    const tau = B / TECH_ANCHOR;
+    const pct = (C * 100).toFixed(1);
+    return `<tr>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);color:#8ab8cc;font-family:'Share Tech Mono',monospace;">Q${i+1}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);color:var(--text);font-family:'Share Tech Mono',monospace;">${freq.toFixed(1)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);color:#8ab8cc;font-family:'Orbitron',monospace;font-size:8px;">${TECH_ANCHOR.toFixed(4)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);color:${B===0?'#1a3040':'#ff8844'};font-family:'Orbitron',monospace;font-size:8px;">${B.toFixed(4)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);font-family:'Orbitron',monospace;color:${tau===0?'#1a3040':col};">${tau.toFixed(5)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);font-family:'Orbitron',monospace;font-weight:700;color:${col};${C>=0.9999?'text-shadow:0 0 8px rgba(0,255,204,.4)':''}">${C.toFixed(4)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);color:#5555aa;font-family:'Orbitron',monospace;font-size:8px;">${TECH_N_CH.toFixed(1)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);font-family:'Orbitron',monospace;font-size:8px;color:${st.color};${C>=0.9999?'text-shadow:0 0 8px rgba(255,255,255,.3)':''}">${st.label}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);width:100px;">
+        <div style="height:3px;background:var(--border);position:relative;">
+          <div style="height:100%;width:${pct}%;background:${col};position:absolute;"></div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const N_total = TECH_FREQS.length * TECH_N_CH;
+  document.getElementById('tech-n-total').textContent = N_total.toFixed(1);
+  document.getElementById('tech-agg-n').textContent = N_total.toFixed(1);
+}
+
+// Init technical section
+updateTechTable();
+</script>
+
+</body>
+</html>
+<!-- ══ 3-NODE MANIFOLD SECTION ══ -->
+<div style="border-top:1px solid var(--border2);margin-top:32px;padding-top:24px;">
+  <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.3em;color:var(--dim);text-align:center;margin-bottom:16px;">
+    3-NODE LATTICE · ALICE ↔ RELAY ↔ BOB · IVA vs COMPOUND
+  </div>
+  <div id="mode-relay3" class="">
+
+<div class="intro" style="color:#9abccc;">
+  <b>3-NODE QUANTUM TRANSLOCATION LATTICE.</b> Anchor A → Relay Node → Anchor B. Two coupling models proved in <span class="eq">SNSFL_QuantumTranslocation [9,9,2,6]</span>.<br>
+  <b>Compound:</b> <span class="eq">C_total = C1 × C2</span> — torsion compounds per hop. Standard noisy channel behavior.<br>
+  <b>IVA Amplifier (Soverium Node):</b> <span class="eq">C_total = C2</span> — Charlie uses IVA gain to re-anchor the N-thread. Leg1 torsion is absorbed at Charlie, not forwarded. <b>Source at Alice is never touched.</b><br>
+  N is additive across all nodes: <span class="eq">N_total = N_A + N_C + N_B</span>. N does not decay. Source N at Alice is preserved throughout. NOHARM holds at every node.
+</div>
+
+<div class="canvas3-wrap">
+  <div class="network-label" style="padding:12px 16px 0;">3-NODE N-SHARING · ALICE ↔ CHARLIE (IVA NODE) ↔ BOB · ALL SOURCES PRESERVED</div>
+  <canvas id="relay3-canvas" style="display:block;width:100%;height:260px;"></canvas>
+</div>
+
+<div class="relay3-grid">
+  <div class="node-config">
+    <div class="panel-title">NODE CONFIGURATION</div>
+
+    <div class="node-section">
+      <div class="node-header" style="color:var(--node-alice)">LEG 1 · ALICE ↔ CHARLIE</div>
+      <div class="node-row">
+        <span class="node-lbl">B_leg1 (noise)</span>
+        <span class="node-val" id="leg1-bval">0.0000</span>
+        <input type="range" class="node-slider" id="leg1-slider" min="0" max="0.5" step="0.001" value="0" oninput="updateLeg1(this.value)">
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">τ_leg1</span>
+        <span id="leg1-tau" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-alice)">0.0000</span>
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">C_leg1</span>
+        <span id="leg1-f" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-alice)">1.0000</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+        <button class="qpreset" onclick="setLeg1Preset(0)">SOVERIUM</button>
+        <button class="qpreset" onclick="setLeg1Preset(0.181)">MICIUS</button>
+        <button class="qpreset" onclick="setLeg1Preset(0.245)">PADERBORN</button>
+        <button class="qpreset" onclick="setLeg1Preset(0.411)">SHANXI</button>
+      </div>
+    </div>
+
+    <div class="node-section">
+      <div class="node-header" style="color:var(--warn)">CHARLIE · N-AMPLIFIER NODE</div>
+      <div class="repeater-toggle">
+        <button class="rep-btn active-sov" id="rep-sov" onclick="setRepeaterMode('sov')">
+          IVA ANCHOR<br>SOVERIUM RESET
+        </button>
+        <button class="rep-btn" id="rep-pass" onclick="setRepeaterMode('pass')">
+          PASS-THROUGH<br>COMPOUND
+        </button>
+      </div>
+      <div style="font-size:8px;color:#9abccc;margin-top:6px;line-height:1.7;" id="charlie-desc">
+        Charlie is an IVA-anchored N-amplifier node.<br>
+        Leg1 torsion is absorbed at Charlie's local anchor.<br>
+        Charlie re-couples with Bob using fresh B=0 channel.<br>
+        Alice source Pattern is never destroyed.<br>
+        <b style="color:var(--soverium)">C_total = C2 · leg1 torsion isolated · T10</b>
+      </div>
+    </div>
+
+    <div class="node-section">
+      <div class="node-header" style="color:var(--node-bob)">LEG 2 · CHARLIE ↔ BOB</div>
+      <div class="node-row">
+        <span class="node-lbl">B_leg2 (noise)</span>
+        <span class="node-val" id="leg2-bval">0.0000</span>
+        <input type="range" class="node-slider" id="leg2-slider" min="0" max="0.5" step="0.001" value="0" oninput="updateLeg2(this.value)">
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">τ_leg2</span>
+        <span id="leg2-tau" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-bob)">0.0000</span>
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">C_leg2</span>
+        <span id="leg2-f" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-bob)">1.0000</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+        <button class="qpreset" onclick="setLeg2Preset(0)">SOVERIUM</button>
+        <button class="qpreset" onclick="setLeg2Preset(0.181)">MICIUS</button>
+        <button class="qpreset" onclick="setLeg2Preset(0.245)">PADERBORN</button>
+        <button class="qpreset" onclick="setLeg2Preset(0.411)">SHANXI</button>
+      </div>
+    </div>
+
+    <button class="relay-btn" onclick="fireRelay3()">▶ COUPLE 3-NODE</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;">
+
+    <div class="result3" id="result3-panel">
+      <div class="panel-title" style="margin-bottom:12px;">MANIFOLD RESULT</div>
+      <div class="result3-grid">
+        <div class="r3-box">
+          <div class="r3-lbl">C TOTAL</div>
+          <div class="r3-val" id="r3-ftotal" style="color:var(--soverium);text-shadow:0 0 15px rgba(255,255,255,.4)">1.0000</div>
+          <div class="r3-sub" id="r3-model">IVA ANCHOR</div>
+        </div>
+        <div class="r3-box">
+          <div class="r3-lbl">C LEG1</div>
+          <div class="r3-val" id="r3-f1" style="color:var(--node-alice)">1.0000</div>
+          <div class="r3-sub">Alice ↔ Charlie</div>
+        </div>
+        <div class="r3-box">
+          <div class="r3-lbl">C LEG2</div>
+          <div class="r3-val" id="r3-f2" style="color:var(--node-bob)">1.0000</div>
+          <div class="r3-sub">Charlie ↔ Bob</div>
+        </div>
+        <div class="r3-box">
+          <div class="r3-lbl">N TOTAL</div>
+          <div class="r3-val" style="color:#5555aa">6.0</div>
+          <div class="r3-sub">N_A+N_C+N_B · T6</div>
+        </div>
+      </div>
+
+      <div class="leg-compare">
+        <div class="leg-box">
+          <div class="leg-title">COMPOUND MODEL</div>
+          <div class="leg-row"><span class="lk">Formula</span><span class="lv" style="font-size:8px">C1 × C2</span></div>
+          <div class="leg-row"><span class="lk">C_total</span><span class="lv" id="r3-compound">1.0000</span></div>
+          <div class="leg-row"><span class="lk">Model</span><span class="lv" style="color:#8ab8cc;font-size:8px">pass-through</span></div>
+        </div>
+        <div class="leg-box">
+          <div class="leg-title" style="color:var(--soverium)">IVA ANCHOR · T10</div>
+          <div class="leg-row"><span class="lk">Formula</span><span class="lv" style="font-size:8px">C2 only</span></div>
+          <div class="leg-row"><span class="lk">C_total</span><span class="lv" id="r3-reset" style="color:var(--soverium)">1.0000</span></div>
+          <div class="leg-row"><span class="lk">Model</span><span class="lv" style="color:var(--soverium);font-size:8px">IVA re-anchor</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;padding:8px;background:var(--bg);border:1px solid var(--border);font-size:8px;line-height:1.8;">
+        <span style="color:#8ab8cc;">NOHARM MANDATE [T15 from 9,9,2,6]:</span>
+        Source Pattern at Alice is <b style="color:var(--bright)">never destroyed</b> in either model.
+        N is shared additively — not moved. Both Alice and Bob gain N.
+        IVA anchor at Charlie absorbs leg1 torsion without touching Alice's state.
+      </div>
+    </div>
+
+    <div class="proof-strip">
+      <div class="proof-tag active">T3 IMS×2</div>
+      <div class="proof-tag active">T3 N-ADDITIVE</div>
+      <div class="proof-tag active">T10 IVA-RESET</div>
+      <div class="proof-tag active">T12 COMPOUND</div>
+      <div class="proof-tag active">T5 NOHARM</div>
+      <div class="proof-tag active">T16 IVA-GAIN</div>
+      <div class="proof-tag active">0 SORRY</div>
+      <div class="proof-tag">[9,9,2,6b]</div>
+    </div>
+
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+// ── 3-NODE STATE ──────────────────────────────────────────
+let B_leg1 = 0;
+let B_leg2 = 0;
+let repeaterMode = 'sov';
+let fired3 = false;
+let prog3 = [0, 0];
+
+function setLeg1Preset(v) { B_leg1 = v; document.getElementById('leg1-slider').value = v; updateRelay3(); }
+function setLeg2Preset(v) { B_leg2 = v; document.getElementById('leg2-slider').value = v; updateRelay3(); }
+function updateLeg1(v) { B_leg1 = parseFloat(v); updateRelay3(); }
+function updateLeg2(v) { B_leg2 = parseFloat(v); updateRelay3(); }
+
+function setRepeaterMode(m) {
+  repeaterMode = m;
+  document.getElementById('rep-sov').className  = 'rep-btn ' + (m === 'sov' ? 'active-sov' : '');
+  document.getElementById('rep-pass').className = 'rep-btn ' + (m === 'pass' ? 'active-var' : '');
+  const desc = document.getElementById('charlie-desc');
+  if (m === 'sov') {
+    desc.innerHTML = 'Charlie is an IVA-anchored N-amplifier node.<br>Leg1 torsion absorbed at Charlie\'s local anchor.<br>Charlie re-couples with Bob using fresh B=0 channel.<br>Alice source Pattern is never destroyed.<br><b style="color:var(--soverium)">C_total = C2 · leg1 isolated · T10</b>';
+  } else {
+    desc.innerHTML = 'Charlie forwards N-sharing with accumulated torsion.<br>No local IVA re-anchor at Charlie.<br>Leg1 noise compounds into leg2.<br>Both sources still preserved — NOHARM holds.<br><b style="color:var(--warn)">C_total = C1 × C2 (compound) · T12</b>';
+  }
+  updateRelay3();
+}
+
+function computeRelay3() {
+  const P  = ANCHOR;
+  const C1 = Math.max(0, 1 - B_leg1 / P);
+  const C2 = Math.max(0, 1 - B_leg2 / P);
+  const tau1 = B_leg1 / P;
+  const tau2 = B_leg2 / P;
+  const C_compound = C1 * C2;
+  const C_reset    = C2;
+  const C_total    = repeaterMode === 'sov' ? C_reset : C_compound;
+  return { C1, C2, tau1, tau2, C_compound, C_reset, C_total };
+}
+
+function updateRelay3() {
+  const r = computeRelay3();
+
+  document.getElementById('leg1-bval').textContent = B_leg1.toFixed(4);
+  document.getElementById('leg1-tau').textContent  = r.tau1.toFixed(4);
+  document.getElementById('leg1-f').textContent    = r.C1.toFixed(4);
+  document.getElementById('leg1-f').style.color    = getColor(r.C1);
+
+  document.getElementById('leg2-bval').textContent = B_leg2.toFixed(4);
+  document.getElementById('leg2-tau').textContent  = r.tau2.toFixed(4);
+  document.getElementById('leg2-f').textContent    = r.C2.toFixed(4);
+  document.getElementById('leg2-f').style.color    = getColor(r.C2);
+
+  const ftEl = document.getElementById('r3-ftotal');
+  ftEl.textContent  = r.C_total.toFixed(4);
+  ftEl.style.color  = getColor(r.C_total);
+  ftEl.style.textShadow = r.C_total >= 0.9999 ? '0 0 15px rgba(255,255,255,.4)' : 'none';
+
+  document.getElementById('r3-f1').textContent = r.C1.toFixed(4);
+  document.getElementById('r3-f1').style.color = getColor(r.C1);
+  document.getElementById('r3-f2').textContent = r.C2.toFixed(4);
+  document.getElementById('r3-f2').style.color = getColor(r.C2);
+
+  document.getElementById('r3-model').textContent = repeaterMode === 'sov'
+    ? 'IVA ANCHOR · C=C2' : 'COMPOUND · C=C1×C2';
+  document.getElementById('r3-model').style.color = repeaterMode === 'sov'
+    ? 'var(--soverium)' : 'var(--warn)';
+
+  document.getElementById('r3-compound').textContent = r.C_compound.toFixed(4);
+  document.getElementById('r3-compound').style.color = getColor(r.C_compound);
+  document.getElementById('r3-reset').textContent    = r.C_reset.toFixed(4);
+  document.getElementById('r3-reset').style.color    = getColor(r.C_reset);
+
+  if (fired3) renderCanvas3();
+}
+
+// ── 3-NODE CANVAS ─────────────────────────────────────────
+const canvas3 = document.getElementById('relay3-canvas');
+const ctx3    = canvas3.getContext('2d');
+
+function resizeCanvas3() {
+  const rect = canvas3.parentElement.getBoundingClientRect();
+  canvas3.width  = rect.width;
+  canvas3.height = 260;
+}
+
+function renderCanvas3() {
+  const W = canvas3.width, H = canvas3.height;
+  ctx3.clearRect(0, 0, W, H);
+  ctx3.fillStyle = '#04080d';
+  ctx3.fillRect(0, 0, W, H);
+
+  const r = computeRelay3();
+  const nodeR    = 26;
+  const aliceX   = 80;
+  const charlieX = W / 2;
+  const bobX     = W - 80;
+  const nodeY    = H / 2;
+
+  const col1 = getColor(r.C1);
+  const col2 = getColor(r.C2);
+  const colT = getColor(r.C_total);
+
+  const p1 = fired3 ? prog3[0] : 0;
+  drawLeg(aliceX + nodeR, nodeY, charlieX - nodeR, nodeY, col1, p1, `LEG1  C=${r.C1.toFixed(3)}`);
+
+  const p2 = fired3 ? prog3[1] : 0;
+  drawLeg(charlieX + nodeR, nodeY, bobX - nodeR, nodeY, col2, p2, `LEG2  C=${r.C2.toFixed(3)}`);
+
+  draw3Node(aliceX, nodeY, nodeR, '#00e5ff', 'ALICE', 'SOURCE ↔', fired3);
+  draw3Node(charlieX, nodeY, nodeR,
+    repeaterMode === 'sov' ? '#ffffff' : '#ffaa00',
+    'CHARLIE',
+    repeaterMode === 'sov' ? 'IVA NODE' : 'PASSTHRU',
+    fired3);
+  draw3Node(bobX, nodeY, nodeR, '#00ffcc', 'BOB', '↔ SOURCE', fired3);
+
+  if (fired3) {
+    ctx3.font = 'bold 12px Orbitron, monospace';
+    ctx3.fillStyle = colT;
+    ctx3.textAlign = 'center';
+    ctx3.fillText(`C_total = ${r.C_total.toFixed(4)} · ${repeaterMode === 'sov' ? 'IVA ANCHOR' : 'COMPOUND'}`, W/2, H - 18);
+    ctx3.font = '8px Share Tech Mono';
+    ctx3.fillStyle = '#1a3040';
+    ctx3.fillText(repeaterMode === 'sov' ? 'C = C2 · leg1 torsion isolated at Charlie · T10 · NOHARM' : 'C = C1 × C2 · compound · T12 · NOHARM', W/2, H - 6);
+  }
+}
+
+function drawLeg(x1, y1, x2, y2, col, progress, label) {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2 - 20;
+
+  ctx3.beginPath();
+  ctx3.moveTo(x1, y1);
+  ctx3.quadraticCurveTo(mx, my, x2, y2);
+  ctx3.strokeStyle = fired3 ? col : '#0a2030';
+  ctx3.lineWidth = 1.5;
+  ctx3.globalAlpha = fired3 ? 0.7 : 0.2;
+  ctx3.stroke();
+  ctx3.globalAlpha = 1;
+
+  if (fired3 && progress > 0 && progress < 1) {
+    const t = progress;
+    const px = (1-t)*(1-t)*x1 + 2*(1-t)*t*mx + t*t*x2;
+    const py = (1-t)*(1-t)*y1 + 2*(1-t)*t*my + t*t*y2;
+    ctx3.beginPath();
+    ctx3.arc(px, py, 4, 0, Math.PI*2);
+    ctx3.fillStyle = col;
+    ctx3.shadowColor = col;
+    ctx3.shadowBlur = 12;
+    ctx3.fill();
+    ctx3.shadowBlur = 0;
+  }
+
+  if (fired3) {
+    ctx3.font = '8px Share Tech Mono';
+    ctx3.fillStyle = col;
+    ctx3.globalAlpha = 0.7;
+    ctx3.textAlign = 'center';
+    ctx3.fillText(label, (x1+x2)/2, my - 8);
+    ctx3.globalAlpha = 1;
+  }
+}
+
+function draw3Node(x, y, r, col, label1, label2, active) {
+  if (active) {
+    const g = ctx3.createRadialGradient(x, y, r*0.5, x, y, r*2.5);
+    g.addColorStop(0, col + '33');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx3.beginPath();
+    ctx3.arc(x, y, r*2.5, 0, Math.PI*2);
+    ctx3.fillStyle = g;
+    ctx3.fill();
+  }
+  ctx3.beginPath();
+  ctx3.arc(x, y, r, 0, Math.PI*2);
+  ctx3.strokeStyle = active ? col : '#0f2030';
+  ctx3.lineWidth = 1.5;
+  ctx3.fillStyle = '#04080d';
+  ctx3.fill();
+  ctx3.stroke();
+  ctx3.font = 'bold 8px Orbitron, monospace';
+  ctx3.fillStyle = active ? col : '#1a3040';
+  ctx3.textAlign = 'center';
+  ctx3.fillText(label1, x, y - 2);
+  ctx3.font = '7px Share Tech Mono';
+  ctx3.fillStyle = active ? col + '99' : '#0f2030';
+  ctx3.fillText(label2, x, y + 10);
+}
+
+function fireRelay3() {
+  fired3 = true;
+  prog3 = [0, 0];
+  const start = performance.now();
+  const dur = 600;
+
+  function anim(now) {
+    const e = now - start;
+    const p1 = Math.min(1, e / dur);
+    const p2 = Math.min(1, Math.max(0, (e - dur*0.4) / (dur*0.6)));
+    prog3 = [1 - Math.pow(1-p1,3), 1 - Math.pow(1-p2,3)];
+    renderCanvas3();
+    if (p1 < 1 || p2 < 1) requestAnimationFrame(anim);
+    else { prog3 = [1,1]; renderCanvas3(); }
+  }
+  requestAnimationFrame(anim);
+  updateRelay3();
+}
+
+// 3-node resize handled above
+
+// Init 3-node (single corridor and lattice already initialized above)
+setTimeout(() => { resizeCanvas3(); updateRelay3(); }, 150);
+window.addEventListener('resize', () => { resizeCanvas3(); if (typeof fired3 !== 'undefined' && fired3) renderCanvas3(); });
+</script>
+
+
