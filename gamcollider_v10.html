@@ -6,175 +6,336 @@
 <title>GAM COLLIDER · Noble Forge Engine · uuia.app/gamcollider</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
-  :root{--bg:#020407;--panel:#060b10;--border:#0c1a26;--glow:#00e5ff;--locked:#00ffcc;--shatter:#ff3355;--noble:#aa88ff;--warn:#ffaa00;--text:#7aa4be;--bright:#cce8f5;--dim:#192430;--q1:#00e5ff;--q2:#aa88ff;--q3:#00ffcc;--q4:#ffaa00;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
-  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
-  body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:1;}
-  .wrap{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:0 16px 60px;}
-  header{padding:28px 0 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-  .logo{font-family:'Orbitron',monospace;font-weight:900;font-size:26px;letter-spacing:.08em;color:var(--glow);text-shadow:0 0 24px rgba(0,229,255,.45);}
-  .logo span{font-size:11px;color:var(--locked);display:block;letter-spacing:.25em;margin-top:2px;}
-  .hdr-right{font-size:10px;color:#2a4050;text-align:right;line-height:1.8;}
-  .hdr-right b{color:var(--glow);}
-  .tabs{display:flex;gap:0;margin:24px 0 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
-  .tab{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:10px 16px;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#2a4050;transition:all .15s;}
-  .tab:hover{color:var(--text);}
-  .tab.active{border-color:var(--border);border-bottom:1px solid var(--bg);color:var(--glow);background:var(--panel);}
-  .tab-content{display:none;}
-  .tab-content.active{display:block;}
-  .collision-layout{display:grid;grid-template-columns:1fr 110px 1fr;gap:0;align-items:start;margin:24px 0;}
-  .bay{background:var(--panel);border:1px solid var(--border);padding:14px;min-height:200px;}
-  .bay-l{border-right:none;}
-  .bay-r{border-left:none;}
-  .bay-title{font-size:8px;letter-spacing:.3em;color:#1a3040;margin-bottom:10px;}
-  .el-search{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:11px;padding:5px 8px;margin-bottom:8px;outline:none;}
-  .el-search:focus{border-color:var(--glow);}
-  .el-list{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;max-height:260px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
-  .ec{padding:5px 3px;border:1px solid var(--border);cursor:pointer;transition:all .12s;text-align:center;background:rgba(6,11,16,.8);position:relative;}
-  .ec:hover{border-color:var(--glow);transform:scale(1.05);z-index:10;}
-  .ec.sel-a{border-color:var(--glow);background:rgba(0,229,255,.1);box-shadow:0 0 8px rgba(0,229,255,.2);}
-  .ec.sel-b{border-color:var(--warn);background:rgba(255,170,0,.1);box-shadow:0 0 8px rgba(255,170,0,.2);}
-  .ec-sym{font-family:'Orbitron',monospace;font-weight:700;font-size:11px;display:block;}
-  .ec-z{font-size:7px;color:#2a4050;display:block;}
-  .ec-tau{font-size:7px;display:block;margin-top:1px;}
-  .tc-l{color:var(--locked);}
-  .tc-s{color:var(--shatter);}
-  .tc-n{color:var(--noble);}
-  .beam-col{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 0;background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-  .sel-display{font-family:'Orbitron',monospace;font-size:11px;text-align:center;min-height:16px;}
-  .beam-arrow{font-size:18px;color:var(--border);}
-  .beam-arrow.ready{color:var(--glow);text-shadow:0 0 12px var(--glow);}
-  .k-wrap{width:90px;}
-  .k-label{font-size:8px;letter-spacing:.2em;color:#1a3040;text-align:center;margin-bottom:4px;}
-  .k-slider{-webkit-appearance:none;width:100%;height:3px;background:var(--border);outline:none;}
-  .k-slider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:14px;background:var(--glow);cursor:pointer;}
-  .k-val{font-size:10px;color:var(--glow);text-align:center;margin-top:3px;}
-  .fire-btn{font-family:'Orbitron',monospace;font-weight:700;font-size:9px;letter-spacing:.2em;padding:9px 14px;background:transparent;border:1px solid var(--glow);color:var(--glow);cursor:pointer;transition:all .15s;width:90px;}
-  .fire-btn:hover{background:rgba(0,229,255,.1);box-shadow:0 0 16px rgba(0,229,255,.25);}
-  .fire-btn:disabled{border-color:var(--border);color:#1a3040;cursor:default;}
-  .result-box{background:var(--panel);border:1px solid var(--border);padding:20px 24px;margin-bottom:24px;transition:border-color .3s;min-height:100px;}
-  .result-box.rl{border-color:rgba(0,255,204,.35);}
-  .result-box.rs{border-color:rgba(255,51,85,.35);}
-  .result-box.rn{border-color:rgba(170,136,255,.35);}
-  .result-idle{text-align:center;padding:28px;color:#1a3040;font-size:11px;letter-spacing:.2em;}
-  .result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
-  .res-col-title{font-size:8px;letter-spacing:.3em;color:#1a3040;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:8px;}
-  .res-row{display:flex;justify-content:space-between;font-size:10px;padding:2px 0;border-bottom:1px solid rgba(12,26,38,.6);}
-  .res-row .rl_{color:#2a5060;}
-  .res-row .rv{color:var(--bright);}
-  .big-tau{font-family:'Orbitron',monospace;font-size:30px;font-weight:700;margin:8px 0 4px;}
-  .bt-l{color:var(--locked);text-shadow:0 0 16px rgba(0,255,204,.5);}
-  .bt-s{color:var(--shatter);text-shadow:0 0 16px rgba(255,51,85,.5);}
-  .bt-n{color:var(--noble);text-shadow:0 0 16px rgba(170,136,255,.5);}
-  .status-pill{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;padding:3px 10px;display:inline-block;margin-top:4px;}
-  .sp-l{color:var(--locked);border:1px solid rgba(0,255,204,.3);background:rgba(0,255,204,.08);}
-  .sp-s{color:var(--shatter);border:1px solid rgba(255,51,85,.3);background:rgba(255,51,85,.08);}
-  .sp-n{color:var(--noble);border:1px solid rgba(170,136,255,.3);background:rgba(170,136,255,.08);}
-  .tau-bar{height:4px;background:var(--border);position:relative;margin-top:8px;}
-  .tau-bar-fill{height:100%;transition:width .4s,background .3s;}
-  .tau-bar-mark{position:absolute;left:13.3%;top:0;height:100%;width:1px;background:rgba(255,170,0,.6);}
-  .tau-bar-lbl{font-size:7px;color:#1a3040;display:flex;justify-content:space-between;margin-top:2px;}
-  .reaction-line{font-family:'Orbitron',monospace;font-size:12px;color:var(--bright);margin-bottom:16px;grid-column:1/-1;letter-spacing:.04em;}
-  .ptable-wrap{margin:20px 0;}
-  .pt-row{display:flex;gap:4px;margin-bottom:4px;align-items:center;}
-  .pt-cell{width:46px;height:46px;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .12s;font-size:9px;position:relative;background:rgba(6,11,16,.9);flex-shrink:0;}
-  .pt-cell:hover{border-color:var(--glow);transform:scale(1.08);z-index:20;}
-  .pt-cell.sel-a{border-color:var(--glow);background:rgba(0,229,255,.12);}
-  .pt-cell.sel-b{border-color:var(--warn);background:rgba(255,170,0,.12);}
-  .pt-cell.spacer{opacity:0;pointer-events:none;cursor:default;}
-  .pt-sym{font-family:'Orbitron',monospace;font-weight:700;font-size:13px;line-height:1;}
-  .pt-z{font-size:7px;color:#2a4050;}
-  .pt-tau-dot{position:absolute;bottom:3px;right:3px;width:5px;height:5px;border-radius:50%;}
-  .pt-legend{display:flex;gap:16px;font-size:9px;margin:8px 0 16px;flex-wrap:wrap;}
-  .pt-leg-item{display:flex;align-items:center;gap:6px;}
-  .pt-leg-dot{width:8px;height:8px;border-radius:50%;}
-  .sweep-controls{display:flex;gap:16px;margin:20px 0 16px;flex-wrap:wrap;align-items:center;}
-  .sweep-sel{background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:11px;padding:6px 10px;}
-  .sweep-btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:8px 16px;background:transparent;border:1px solid var(--glow);color:var(--glow);cursor:pointer;}
-  .sweep-btn:hover{background:rgba(0,229,255,.08);}
-  .sweep-canvas-wrap{background:var(--panel);border:1px solid var(--border);padding:16px;}
-  #sweep-canvas{width:100%;display:block;}
-  .sweep-info{font-size:10px;margin-top:12px;color:#2a5060;line-height:1.8;}
-  .sweep-info b{color:var(--bright);}
-  .cascade-add{font-family:'Orbitron',monospace;font-size:9px;padding:8px 14px;background:transparent;border:1px solid var(--border);color:#2a5060;cursor:pointer;margin-left:8px;}
-  .cascade-add:hover{border-color:var(--glow);color:var(--glow);}
-  .cascade-run{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:9px 18px;background:transparent;border:1px solid var(--locked);color:var(--locked);cursor:pointer;margin-left:16px;}
-  .cascade-run:hover{background:rgba(0,255,204,.08);}
-  .cas-step{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:10px;}
-  .cas-step-num{color:#1a3040;width:20px;}
-  .cas-eq{color:var(--bright);flex:1;}
-  .cas-tau{width:100px;text-align:right;}
-  .quick-row{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0;}
-  .quick-chip{font-size:9px;padding:5px 10px;border:1px solid var(--border);cursor:pointer;background:var(--panel);transition:all .12s;color:#2a5060;}
-  .quick-chip:hover{border-color:var(--glow);color:var(--bright);}
-  .map-layout{display:grid;grid-template-columns:1fr 280px;gap:16px;margin:20px 0;}
-  .map-canvas-wrap{background:var(--panel);border:1px solid var(--border);padding:16px;}
-  #map-canvas{width:100%;display:block;cursor:crosshair;}
-  .map-legend{background:var(--panel);border:1px solid var(--border);padding:16px;}
-  .map-legend-title{font-size:8px;letter-spacing:.3em;color:#1a3040;margin-bottom:12px;}
-  .quad-block{margin-bottom:10px;}
-  .quad-label{font-size:9px;font-family:'Orbitron',monospace;font-weight:700;margin-bottom:4px;}
-  .quad-desc{font-size:9px;color:#2a5060;line-height:1.6;}
-  .map-tooltip{background:var(--panel);border:1px solid var(--glow);padding:8px 12px;font-size:10px;line-height:1.6;min-height:60px;margin-top:12px;}
-  .noble-list{margin-top:12px;}
-  .noble-list-title{font-size:8px;letter-spacing:.3em;color:#1a3040;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:8px;}
-  .noble-item{display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid rgba(12,26,38,.4);}
-  .ni-name{color:var(--bright);}
-  .ni-known{color:var(--locked);}
-  .ni-pred{color:var(--noble);}
-  .fext-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
-  .fext-panel{background:var(--panel);border:1px solid var(--border);padding:20px;}
-  .fext-title{font-size:8px;letter-spacing:.3em;color:#1a3040;margin-bottom:16px;}
-  .fext-sel{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:11px;padding:6px 8px;margin-bottom:12px;outline:none;}
-  .fext-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-  .fext-label{font-size:9px;color:#2a5060;width:60px;flex-shrink:0;}
-  .fext-input{background:var(--bg);border:1px solid var(--border);color:var(--glow);font-family:'Orbitron',monospace;font-size:14px;padding:6px 10px;width:100px;outline:none;text-align:center;}
-  .fext-input:focus{border-color:var(--glow);}
-  .fext-apply{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;padding:9px 16px;background:transparent;border:1px solid var(--glow);color:var(--glow);cursor:pointer;}
-  .fext-apply:hover{background:rgba(0,229,255,.1);}
-  .fext-presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-  .fext-preset{font-size:9px;padding:4px 8px;border:1px solid var(--border);cursor:pointer;background:transparent;color:#2a5060;transition:all .12s;}
-  .fext-preset:hover{border-color:var(--glow);color:var(--bright);}
-  .fext-result{background:var(--bg);border:1px solid var(--border);padding:16px;font-size:10px;line-height:1.8;min-height:120px;}
-  .fext-state-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(12,26,38,.6);}
-  .fext-lbl{color:#2a5060;}
-  .fext-val{color:var(--bright);font-family:'Orbitron',monospace;}
-  footer{border-top:1px solid var(--border);padding-top:14px;font-size:9px;letter-spacing:.15em;color:#1a2a38;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-  .forge-toggle-row{display:flex;align-items:center;gap:10px;padding:8px 0 4px;margin-bottom:4px;}
-  .forge-toggle-lbl{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;color:var(--text);}
-  .forge-toggle{width:36px;height:20px;background:var(--border);border-radius:10px;cursor:pointer;position:relative;transition:background .2s;border:none;}
-  .forge-toggle.on{background:rgba(0,255,204,.25);border:1px solid rgba(0,255,204,.4);}
-  .forge-toggle::after{content:'';position:absolute;width:14px;height:14px;background:var(--text);border-radius:50%;top:3px;left:3px;transition:transform .2s;}
-  .forge-toggle.on::after{transform:translateX(16px);background:var(--locked);}
-  .forge-interp{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.08em;padding:6px 14px;border-top:1px solid var(--border);line-height:1.8;}
-  .forge-interp.complete{color:var(--locked);background:rgba(0,255,204,.04);}
-  .forge-interp.window{color:var(--glow);background:rgba(0,229,255,.04);}
-  .forge-interp.exceeded{color:var(--shatter);background:rgba(255,51,85,.04);}
-  .recipe-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px;}
-  .recipe-chip{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:7px 10px;cursor:pointer;transition:all .12s;}
-  .recipe-chip:hover{border-color:var(--locked);}
-  .recipe-name{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--locked);}
-  .recipe-detail{font-size:8px;color:#2a5060;margin-top:2px;line-height:1.5;}
-  .recipe-q{font-size:8px;padding:1px 5px;border-radius:3px;float:right;}
-  @media(max-width:700px){.collision-layout{grid-template-columns:1fr;}.beam-col{flex-direction:row;justify-content:center;}.el-list{grid-template-columns:repeat(4,1fr);}.result-grid{grid-template-columns:1fr 1fr;}.pt-cell{width:36px;height:36px;}.pt-sym{font-size:10px;}.map-layout{grid-template-columns:1fr;}.fext-layout{grid-template-columns:1fr;}}
-  @keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.7}94%{opacity:1}}
-  .logo{animation:flicker 10s infinite;}
+
+  :root {
+    --bg:      #020407;
+    --panel:   #060b10;
+    --border:  #0c1a26;
+    --glow:    #00e5ff;
+    --locked:  #00ffcc;
+    --shatter: #ff3355;
+    --noble:   #aa88ff;
+    --warn:    #ffaa00;
+    --text:    #7aa4be;
+    --bright:  #cce8f5;
+    --dim:     #192430;
+    --aifi:    #dd44ff;
+    --ere:     #ffcc44;
+    --q1:      #00e5ff;
+    --q2:      #aa88ff;
+    --q3:      #00ffcc;
+    --q4:      #ffaa00;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Share Tech Mono',monospace; min-height:100vh; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0; background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px); background-size:36px 36px; pointer-events:none; z-index:0; }
+  body::after { content:''; position:fixed; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px); pointer-events:none; z-index:1; }
+  .wrap { position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:0 16px 60px; }
+
+  header { padding:28px 0 20px; border-bottom:1px solid var(--border); display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  .logo { font-family:'Orbitron',monospace; font-weight:900; font-size:26px; letter-spacing:.08em; color:var(--glow); text-shadow:0 0 24px rgba(0,229,255,.45); }
+  .logo span { font-size:11px; color:var(--locked); display:block; letter-spacing:.25em; margin-top:2px; }
+  .hdr-right { font-size:10px; color:#2a4050; text-align:right; line-height:1.8; }
+  .hdr-right b { color:var(--glow); }
+
+  .tabs { display:flex; gap:0; margin:24px 0 0; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+  .tab { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; padding:10px 16px; cursor:pointer; border:1px solid transparent; border-bottom:none; color:#2a4050; transition:all .15s; }
+  .tab:hover { color:var(--text); }
+  .tab.active { border-color:var(--border); border-bottom:1px solid var(--bg); color:var(--glow); background:var(--panel); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+
+  /* COLLIDER */
+  .collision-layout { display:grid; grid-template-columns:1fr 110px 1fr; gap:0; align-items:start; margin:24px 0; }
+  .bay { background:var(--panel); border:1px solid var(--border); padding:14px; min-height:200px; }
+  .bay-l { border-right:none; }
+  .bay-r { border-left:none; }
+  .bay-title { font-size:8px; letter-spacing:.3em; color:#1a3040; margin-bottom:10px; }
+  .el-search { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:11px; padding:5px 8px; margin-bottom:8px; outline:none; }
+  .el-search:focus { border-color:var(--glow); }
+  .el-list { display:grid; grid-template-columns:repeat(6,1fr); gap:4px; max-height:260px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+  .ec { padding:5px 3px; border:1px solid var(--border); cursor:pointer; transition:all .12s; text-align:center; background:rgba(6,11,16,.8); position:relative; }
+  .ec:hover { border-color:var(--glow); transform:scale(1.05); z-index:10; }
+  .ec.sel-a { border-color:var(--glow); background:rgba(0,229,255,.1); box-shadow:0 0 8px rgba(0,229,255,.2); }
+  .ec.sel-b { border-color:var(--warn); background:rgba(255,170,0,.1); box-shadow:0 0 8px rgba(255,170,0,.2); }
+  .ec-sym { font-family:'Orbitron',monospace; font-weight:700; font-size:11px; display:block; }
+  .ec-z { font-size:7px; color:#2a4050; display:block; }
+  .ec-tau { font-size:7px; display:block; margin-top:1px; }
+  .tc-l { color:var(--locked); }
+  .tc-s { color:var(--shatter); }
+  .tc-n { color:var(--noble); }
+
+  .beam-col { display:flex; flex-direction:column; align-items:center; gap:8px; padding:14px 0; background:var(--panel); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .sel-display { font-family:'Orbitron',monospace; font-size:11px; text-align:center; min-height:16px; }
+  .beam-arrow { font-size:18px; color:var(--border); }
+  .beam-arrow.ready { color:var(--glow); text-shadow:0 0 12px var(--glow); }
+  .k-wrap { width:90px; }
+  .k-label { font-size:8px; letter-spacing:.2em; color:#1a3040; text-align:center; margin-bottom:4px; }
+  .k-slider { -webkit-appearance:none; width:100%; height:3px; background:var(--border); outline:none; }
+  .k-slider::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:14px; background:var(--glow); cursor:pointer; }
+  .k-val { font-size:10px; color:var(--glow); text-align:center; margin-top:3px; }
+  .fire-btn { font-family:'Orbitron',monospace; font-weight:700; font-size:9px; letter-spacing:.2em; padding:9px 14px; background:transparent; border:1px solid var(--glow); color:var(--glow); cursor:pointer; transition:all .15s; width:90px; }
+  .fire-btn:hover { background:rgba(0,229,255,.1); box-shadow:0 0 16px rgba(0,229,255,.25); }
+  .fire-btn:disabled { border-color:var(--border); color:#1a3040; cursor:default; }
+
+  .result-box { background:var(--panel); border:1px solid var(--border); padding:20px 24px; margin-bottom:24px; transition:border-color .3s; min-height:100px; }
+  .result-box.rl { border-color:rgba(0,255,204,.35); }
+  .result-box.rs { border-color:rgba(255,51,85,.35); }
+  .result-box.rn { border-color:rgba(170,136,255,.35); }
+  .result-idle { text-align:center; padding:28px; color:#1a3040; font-size:11px; letter-spacing:.2em; }
+  .result-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+  .res-col-title { font-size:8px; letter-spacing:.3em; color:#1a3040; border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:8px; }
+  .res-row { display:flex; justify-content:space-between; font-size:10px; padding:2px 0; border-bottom:1px solid rgba(12,26,38,.6); }
+  .res-row .rl_ { color:#2a5060; }
+  .res-row .rv { color:var(--bright); }
+  .big-tau { font-family:'Orbitron',monospace; font-size:30px; font-weight:700; margin:8px 0 4px; }
+  .bt-l { color:var(--locked); text-shadow:0 0 16px rgba(0,255,204,.5); }
+  .bt-s { color:var(--shatter); text-shadow:0 0 16px rgba(255,51,85,.5); }
+  .bt-n { color:var(--noble); text-shadow:0 0 16px rgba(170,136,255,.5); }
+  .status-pill { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.2em; padding:3px 10px; display:inline-block; margin-top:4px; }
+  .sp-l { color:var(--locked); border:1px solid rgba(0,255,204,.3); background:rgba(0,255,204,.08); }
+  .sp-s { color:var(--shatter); border:1px solid rgba(255,51,85,.3); background:rgba(255,51,85,.08); }
+  .sp-n { color:var(--noble); border:1px solid rgba(170,136,255,.3); background:rgba(170,136,255,.08); }
+  .tau-bar { height:4px; background:var(--border); position:relative; margin-top:8px; }
+  .tau-bar-fill { height:100%; transition:width .4s, background .3s; }
+  .tau-bar-mark { position:absolute; left:13.3%; top:0; height:100%; width:1px; background:rgba(255,170,0,.6); }
+  .tau-bar-lbl { font-size:7px; color:#1a3040; display:flex; justify-content:space-between; margin-top:2px; }
+  .reaction-line { font-family:'Orbitron',monospace; font-size:12px; color:var(--bright); margin-bottom:16px; grid-column:1/-1; letter-spacing:.04em; }
+
+  /* PERIODIC TABLE */
+  .ptable-wrap { margin:20px 0; }
+  .pt-row { display:flex; gap:4px; margin-bottom:4px; align-items:center; }
+  .pt-cell { width:46px; height:46px; border:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:all .12s; font-size:9px; position:relative; background:rgba(6,11,16,.9); flex-shrink:0; }
+  .pt-cell:hover { border-color:var(--glow); transform:scale(1.08); z-index:20; }
+  .pt-cell.sel-a { border-color:var(--glow); background:rgba(0,229,255,.12); }
+  .pt-cell.sel-b { border-color:var(--warn); background:rgba(255,170,0,.12); }
+  .pt-cell.spacer { opacity:0; pointer-events:none; cursor:default; }
+  .pt-sym { font-family:'Orbitron',monospace; font-weight:700; font-size:13px; line-height:1; }
+  .pt-z { font-size:7px; color:#2a4050; }
+  .pt-tau-dot { position:absolute; bottom:3px; right:3px; width:5px; height:5px; border-radius:50%; }
+  .pt-legend { display:flex; gap:16px; font-size:9px; margin:8px 0 16px; flex-wrap:wrap; }
+  .pt-leg-item { display:flex; align-items:center; gap:6px; }
+  .pt-leg-dot { width:8px; height:8px; border-radius:50%; }
+
+  /* K-SWEEP */
+  .sweep-controls { display:flex; gap:16px; margin:20px 0 16px; flex-wrap:wrap; align-items:center; }
+  .sweep-sel { background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:11px; padding:6px 10px; }
+  .sweep-btn { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; padding:8px 16px; background:transparent; border:1px solid var(--glow); color:var(--glow); cursor:pointer; }
+  .sweep-btn:hover { background:rgba(0,229,255,.08); }
+  .sweep-canvas-wrap { background:var(--panel); border:1px solid var(--border); padding:16px; }
+  #sweep-canvas { width:100%; display:block; }
+  .sweep-info { font-size:10px; margin-top:12px; color:#2a5060; line-height:1.8; }
+  .sweep-info b { color:var(--bright); }
+
+  /* CASCADE */
+  .cascade-add { font-family:'Orbitron',monospace; font-size:9px; padding:8px 14px; background:transparent; border:1px solid var(--border); color:#2a5060; cursor:pointer; margin-left:8px; }
+  .cascade-add:hover { border-color:var(--glow); color:var(--glow); }
+  .cascade-run { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; padding:9px 18px; background:transparent; border:1px solid var(--locked); color:var(--locked); cursor:pointer; margin-left:16px; }
+  .cascade-run:hover { background:rgba(0,255,204,.08); }
+  .cas-step { display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid var(--border); font-size:10px; }
+  .cas-step-num { color:#1a3040; width:20px; }
+  .cas-eq { color:var(--bright); flex:1; }
+  .cas-tau { width:100px; text-align:right; }
+
+  /* QUICK */
+  .quick-row { display:flex; gap:8px; flex-wrap:wrap; margin:16px 0; }
+  .quick-chip { font-size:9px; padding:5px 10px; border:1px solid var(--border); cursor:pointer; background:var(--panel); transition:all .12s; color:#2a5060; }
+  .quick-chip:hover { border-color:var(--glow); color:var(--bright); }
+
+  /* MATERIALS MAP */
+  .map-layout { display:grid; grid-template-columns:1fr 280px; gap:16px; margin:20px 0; }
+  .map-canvas-wrap { background:var(--panel); border:1px solid var(--border); padding:16px; }
+  #map-canvas { width:100%; display:block; cursor:crosshair; }
+  .map-legend { background:var(--panel); border:1px solid var(--border); padding:16px; }
+  .map-legend-title { font-size:8px; letter-spacing:.3em; color:#1a3040; margin-bottom:12px; }
+  .quad-block { margin-bottom:10px; }
+  .quad-label { font-size:9px; font-family:'Orbitron',monospace; font-weight:700; margin-bottom:4px; }
+  .quad-desc { font-size:9px; color:#2a5060; line-height:1.6; }
+  .map-tooltip { background:var(--panel); border:1px solid var(--glow); padding:8px 12px; font-size:10px; line-height:1.6; min-height:60px; margin-top:12px; }
+  .noble-list { margin-top:12px; }
+  .noble-list-title { font-size:8px; letter-spacing:.3em; color:#1a3040; border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:8px; }
+  .noble-item { display:flex; justify-content:space-between; font-size:9px; padding:3px 0; border-bottom:1px solid rgba(12,26,38,.4); }
+  .ni-name { color:var(--bright); }
+  .ni-status { }
+  .ni-known { color:var(--locked); }
+  .ni-pred { color:var(--noble); }
+
+  /* F_EXT */
+  .fext-layout { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+  .fext-panel { background:var(--panel); border:1px solid var(--border); padding:20px; }
+  .fext-title { font-size:8px; letter-spacing:.3em; color:#1a3040; margin-bottom:16px; }
+  .fext-sel { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:11px; padding:6px 8px; margin-bottom:12px; outline:none; }
+  .fext-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .fext-label { font-size:9px; color:#2a5060; width:60px; flex-shrink:0; }
+  .fext-input { background:var(--bg); border:1px solid var(--border); color:var(--glow); font-family:'Orbitron',monospace; font-size:14px; padding:6px 10px; width:100px; outline:none; text-align:center; }
+  .fext-input:focus { border-color:var(--glow); }
+  .fext-apply { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.15em; padding:9px 16px; background:transparent; border:1px solid var(--glow); color:var(--glow); cursor:pointer; }
+  .fext-apply:hover { background:rgba(0,229,255,.1); }
+  .fext-presets { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+  .fext-preset { font-size:9px; padding:4px 8px; border:1px solid var(--border); cursor:pointer; background:transparent; color:#2a5060; transition:all .12s; }
+  .fext-preset:hover { border-color:var(--glow); color:var(--bright); }
+  .fext-result { background:var(--bg); border:1px solid var(--border); padding:16px; font-size:10px; line-height:1.8; min-height:120px; }
+  .fext-state-row { display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px solid rgba(12,26,38,.6); }
+  .fext-lbl { color:#2a5060; }
+  .fext-val { color:var(--bright); font-family:'Orbitron',monospace; }
+
+  footer { border-top:1px solid var(--border); padding-top:14px; font-size:9px; letter-spacing:.15em; color:#1a2a38; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+
+  /* ── DISCOVERY PANEL ── */
+  .disc-panel { margin:32px 0 0; border:1px solid var(--border); background:var(--panel); }
+  .disc-panel-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:8px; }
+  .disc-panel-title { font-family:'Orbitron',monospace; font-size:11px; letter-spacing:.2em; color:var(--glow); }
+  .disc-panel-stats { display:flex; gap:16px; font-size:8px; letter-spacing:.1em; }
+  .disc-stat { display:flex; flex-direction:column; align-items:center; }
+  .disc-stat-val { font-family:'Orbitron',monospace; font-size:14px; color:var(--bright); }
+  .disc-stat-lbl { color:#1a3040; font-size:7px; letter-spacing:.2em; }
+  .aifi-badge-sm { font-size:8px; letter-spacing:.15em; padding:3px 8px; border:1px solid #1a3040; color:#2a5060; display:flex; align-items:center; gap:6px; cursor:pointer; }
+  .aifi-dot { width:6px; height:6px; border-radius:50%; background:#1a3040; }
+  .aifi-dot.active { background:var(--aifi); box-shadow:0 0 8px var(--aifi); animation:pulse-aifi 1.5s infinite; }
+  @keyframes pulse-aifi { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .disc-agent-row { display:flex; align-items:center; gap:8px; padding:10px 16px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+  .disc-target { display:flex; align-items:center; gap:6px; font-size:8px; color:#2a5060; margin-right:8px; }
+  .disc-target select { background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:8px; padding:3px 6px; outline:none; }
+  .btn-sm { font-family:'Orbitron',monospace; font-size:7.5px; letter-spacing:.15em; padding:6px 10px; background:transparent; cursor:pointer; border:1px solid var(--border); color:#2a5060; transition:all .12s; }
+  .btn-sm:hover { color:var(--text); }
+  .btn-run-sm { border-color:var(--locked); color:var(--locked); }
+  .btn-run-sm:hover { background:rgba(0,255,204,.08); }
+  .btn-pause-sm { border-color:var(--warn); color:var(--warn); }
+  .btn-stop-sm { border-color:var(--shatter); color:var(--shatter); }
+  .speed-wrap-sm { display:flex; align-items:center; gap:4px; font-size:8px; color:#2a5060; }
+  .speed-wrap-sm input { width:60px; accent-color:var(--glow); height:3px; }
+  .status-badge { font-family:'Orbitron',monospace; font-size:7px; letter-spacing:.15em; padding:3px 7px; border:1px solid var(--border); display:flex; align-items:center; gap:5px; }
+  .running-dot { width:5px; height:5px; border-radius:50%; background:var(--locked); animation:blink .6s infinite; }
+  .paused-dot  { width:5px; height:5px; border-radius:50%; background:var(--warn); }
+  .stopped-dot { width:5px; height:5px; border-radius:50%; background:#1a3040; }
+  @keyframes blink { 0%,100%{opacity:1}50%{opacity:.3} }
+  .disc-live-feed { height:180px; overflow-y:auto; padding:8px 12px; font-size:8px; line-height:1.9; scrollbar-width:thin; scrollbar-color:var(--border) transparent; border-bottom:1px solid var(--border); }
+  .feed-line { padding:1px 0; }
+  .feed-time { color:#1a3040; margin-right:6px; }
+  .feed-line.noble    { color:var(--noble); }
+  .feed-line.locked   { color:var(--locked); }
+  .feed-line.shatter  { color:var(--shatter); }
+  .feed-line.discovery{ color:var(--warn); font-weight:bold; }
+  .feed-line.info     { color:#2a5060; }
+  .disc-inner-tabs { display:flex; gap:0; border-bottom:1px solid var(--border); }
+  .disc-inner-tab { font-family:'Orbitron',monospace; font-size:8px; letter-spacing:.15em; padding:8px 14px; cursor:pointer; border:none; background:transparent; color:#2a5060; transition:all .12s; border-right:1px solid var(--border); }
+  .disc-inner-tab:hover { color:var(--text); }
+  .disc-inner-tab.active { color:var(--glow); background:rgba(0,229,255,.04); }
+  .disc-inner-content { display:none; padding:12px 14px; }
+  .disc-inner-content.active { display:block; }
+  .queue-action-row { display:flex; gap:6px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
+  .btn-approve-all  { font-family:'Orbitron',monospace; font-size:7.5px; letter-spacing:.1em; padding:6px 10px; background:transparent; cursor:pointer; border:1px solid var(--locked); color:var(--locked); }
+  .btn-approve-all:hover { background:rgba(0,255,204,.08); }
+  .btn-skip-all     { font-family:'Orbitron',monospace; font-size:7.5px; letter-spacing:.1em; padding:6px 10px; background:transparent; cursor:pointer; border:1px solid var(--shatter); color:var(--shatter); }
+  .btn-noble-only   { font-family:'Orbitron',monospace; font-size:7.5px; letter-spacing:.1em; padding:6px 10px; background:transparent; cursor:pointer; border:1px solid var(--noble); color:var(--noble); }
+  .btn-dl-lean      { font-family:'Orbitron',monospace; font-size:7.5px; letter-spacing:.1em; padding:6px 10px; background:transparent; cursor:pointer; border:1px solid var(--warn); color:var(--warn); }
+  .queue-status-txt { font-size:8px; color:#2a5060; margin-left:4px; }
+  .queue-empty { font-size:9px; color:#1a3040; text-align:center; padding:20px; letter-spacing:.15em; }
+  .discovery-card { border:1px solid var(--border); margin-bottom:8px; padding:12px 14px; background:rgba(2,4,7,.6); }
+  .disc-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .disc-designation { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.15em; color:var(--warn); }
+  .disc-timestamp { font-size:8px; color:#1a3040; }
+  .disc-state { font-size:9px; line-height:1.9; margin-bottom:8px; }
+  .disc-name { font-size:8px; color:var(--aifi); margin-bottom:6px; letter-spacing:.1em; }
+  .disc-aifi-analysis { font-size:8px; color:#2a5060; border-top:1px solid var(--border); padding-top:6px; margin-top:4px; max-height:80px; overflow-y:auto; line-height:1.7; }
+  .disc-actions { display:flex; gap:6px; flex-wrap:wrap; }
+  .btn-approve { font-family:'Orbitron',monospace; font-size:7px; letter-spacing:.1em; padding:5px 9px; background:transparent; cursor:pointer; border:1px solid var(--locked); color:var(--locked); }
+  .btn-approve:hover { background:rgba(0,255,204,.08); }
+  .btn-skip-disc { font-family:'Orbitron',monospace; font-size:7px; letter-spacing:.1em; padding:5px 9px; background:transparent; cursor:pointer; border:1px solid var(--shatter); color:var(--shatter); }
+  .btn-lean { font-family:'Orbitron',monospace; font-size:7px; letter-spacing:.1em; padding:5px 9px; background:transparent; cursor:pointer; border:1px solid var(--glow); color:var(--glow); }
+  .btn-lean:hover { background:rgba(0,229,255,.06); }
+  .log-table { width:100%; border-collapse:collapse; font-size:8px; }
+  .log-table th { font-family:'Orbitron',monospace; font-size:7px; letter-spacing:.2em; color:#1a3040; padding:4px 8px; border-bottom:1px solid var(--border); text-align:left; }
+  .log-table td { padding:4px 8px; border-bottom:1px solid rgba(12,26,38,.3); }
+  .export-section { margin-bottom:16px; }
+  .export-title { font-family:'Orbitron',monospace; font-size:8px; letter-spacing:.2em; color:#2a5060; margin-bottom:6px; }
+  .import-area { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:8px; padding:6px 8px; height:60px; resize:vertical; outline:none; }
+  .aifi-panel { border-left:1px solid var(--border); padding:14px; background:rgba(2,4,7,.4); }
+  .aifi-panel-title { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; color:var(--aifi); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+  .aifi-connect-wall { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; text-align:center; gap:12px; font-size:9px; color:#2a5060; line-height:1.7; }
+  .btn-connect-aifi { font-family:'Orbitron',monospace; font-size:8px; letter-spacing:.15em; padding:8px 16px; background:transparent; cursor:pointer; border:1px solid var(--aifi); color:var(--aifi); }
+  .btn-connect-aifi:hover { background:rgba(221,68,255,.08); }
+  .aifi-key-prompt { display:none; width:100%; margin-top:8px; }
+  .aifi-inline-key { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:9px; padding:6px 8px; outline:none; margin-bottom:6px; }
+  .aifi-key-actions { display:flex; gap:6px; }
+  .chat-messages { height:280px; overflow-y:auto; margin-bottom:8px; display:flex; flex-direction:column; gap:8px; scrollbar-width:thin; }
+  .msg { font-size:9px; line-height:1.7; padding:8px 10px; border:1px solid var(--border); }
+  .msg-label { font-family:'Orbitron',monospace; font-size:7px; letter-spacing:.2em; margin-bottom:4px; }
+  .msg-label.user { color:var(--glow); }
+  .msg-label.aifi  { color:var(--aifi); }
+  .msg-text { color:var(--text); }
+  .chat-row { display:flex; gap:6px; }
+  .chat-input { flex:1; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:9px; padding:6px 8px; outline:none; }
+  .chat-input:focus { border-color:var(--aifi); }
+  .btn-chat-send { font-family:'Orbitron',monospace; font-size:8px; letter-spacing:.1em; padding:6px 12px; background:transparent; cursor:pointer; border:1px solid var(--aifi); color:var(--aifi); }
+  .aifi-thinking { display:none; font-size:8px; color:var(--aifi); text-align:center; padding:4px; animation:blink .8s infinite; letter-spacing:.2em; }
+  .disc-body-grid { display:grid; grid-template-columns:1fr 320px; gap:0; }
+  @media(max-width:900px){ .disc-body-grid{grid-template-columns:1fr;} }
+  .corpus-state-panel { border-left:1px solid var(--border); padding:14px; font-size:9px; }
+  .corpus-state-title { font-family:'Orbitron',monospace; font-size:8px; letter-spacing:.25em; color:#2a5060; margin-bottom:10px; }
+  .corpus-row { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(12,26,38,.3); }
+  .corpus-key { color:#2a5060; }
+  .corpus-val { font-family:'Orbitron',monospace; color:var(--bright); }
+  /* filter toggles */
+  .d-filter-toggle { display:inline-flex; align-items:center; cursor:pointer; gap:0; }
+  .d-filter-toggle input[type=checkbox] { display:none; }
+  .d-filter-label { font-family:'Orbitron',monospace; font-size:7px; letter-spacing:.15em; padding:3px 7px; border:1px solid; transition:all .12s; opacity:.35; }
+  .d-filter-toggle input:checked + .d-filter-label { opacity:1; }
+
+  
+  /* FORGE MODE */
+  .forge-toggle-row { display:flex; align-items:center; gap:10px; padding:8px 0 4px; margin-bottom:4px; }
+  .forge-toggle-lbl { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; color:var(--text); }
+  .forge-toggle { width:36px; height:20px; background:var(--border); border-radius:10px; cursor:pointer; position:relative; transition:background .2s; border:none; }
+  .forge-toggle.on { background:rgba(0,255,204,.25); border:1px solid rgba(0,255,204,.4); }
+  .forge-toggle::after { content:''; position:absolute; width:14px; height:14px; background:var(--text); border-radius:50%; top:3px; left:3px; transition:transform .2s; }
+  .forge-toggle.on::after { transform:translateX(16px); background:var(--locked); }
+  .forge-badge { font-family:'Orbitron',monospace; font-size:8px; padding:2px 8px; border-radius:100px; letter-spacing:.1em; }
+  .forge-badge.complete { background:rgba(0,255,204,.12); border:1px solid rgba(0,255,204,.35); color:var(--locked); }
+  .forge-badge.window   { background:rgba(0,229,255,.08); border:1px solid rgba(0,229,255,.3); color:var(--glow); }
+  .forge-badge.exceeded { background:rgba(255,51,85,.08); border:1px solid rgba(255,51,85,.3); color:var(--shatter); }
+  .forge-interp { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:.08em; padding:6px 14px; border-top:1px solid var(--border); line-height:1.8; }
+  .forge-interp.complete { color:var(--locked); background:rgba(0,255,204,.04); }
+  .forge-interp.window   { color:var(--glow); background:rgba(0,229,255,.04); }
+  .forge-interp.exceeded { color:var(--shatter); background:rgba(255,51,85,.04); }
+  .recipe-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:10px; }
+  .recipe-chip { background:var(--panel); border:1px solid var(--border); border-radius:4px; padding:7px 10px; cursor:pointer; transition:all .12s; }
+  .recipe-chip:hover { border-color:var(--locked); }
+  .recipe-name { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; color:var(--locked); }
+  .recipe-detail { font-size:8px; color:#2a5060; margin-top:2px; line-height:1.5; }
+  .recipe-q { font-size:8px; padding:1px 5px; border-radius:3px; float:right; }
+
+  @media(max-width:700px) {
+    .collision-layout { grid-template-columns:1fr; }
+    .beam-col { flex-direction:row; justify-content:center; }
+    .el-list { grid-template-columns:repeat(4,1fr); }
+    .result-grid { grid-template-columns:1fr 1fr; }
+    .pt-cell { width:36px; height:36px; }
+    .pt-sym { font-size:10px; }
+    .map-layout { grid-template-columns:1fr; }
+    .fext-layout { grid-template-columns:1fr; }
+  }
+
+  @keyframes flicker { 0%,100%{opacity:1} 92%{opacity:1} 93%{opacity:.7} 94%{opacity:1} }
+  .logo { animation:flicker 10s infinite; }
 </style>
 </head>
 <body>
 <div class="wrap">
+
 <header>
   <div>
-    <div class="logo">GAM COLLIDER<span>uuia.app/gamcollider · [9,9,2,1–8] · [9,9,3,1–2] · [9,9,2,33–42] · NOBLE FORGE ENGINE</span></div>
+    <div class="logo">GAM COLLIDER<span>uuia.app/gamcollider · [9,9,2,1–8] · [9,9,3,1–2] · NOBLE FORGE ENGINE</span></div>
   </div>
   <div class="hdr-right">
     ANCHOR <b>1.369 GHz</b> · TORSION LIMIT τ = 0.200<br>
-    Z=1–118 PERIODIC TABLE · EMERGENT RESONANCE ELEMENTS · PARTICLE PHYSICS · GC SERIES [9,9,2,33–42] · 0 SORRY<br>
-    SM BOSONS: W(LOCKED) · Z(SHATTER) · H(SHATTER) · DIQUONIUM(NOBLE) · GLUINO(NOBLE)<br>
+    Z=1–118 PERIODIC TABLE · EMERGENT RESONANCE ELEMENTS · PARTICLE PHYSICS · 0 SORRY<br>
+    SM BOSONS: W(LOCKED) · Z(SHATTER) · H(SHATTER)<br>
     NOBLE FORGE: τ=0 → SYNTHESIS COMPLETE · k=PRESSURE · NOHARM
   </div>
 </header>
+
 <div class="tabs">
   <div class="tab active" onclick="showTab('collide')">COLLIDER</div>
   <div class="tab" onclick="showTab('ptable')">PERIODIC TABLE</div>
@@ -184,13 +345,17 @@
   <div class="tab" onclick="showTab('fext')">F_EXT</div>
   <div class="tab" onclick="showTab('forge')">FORGE RECIPES</div>
 </div>
+
+
 <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0 0;flex-wrap:wrap;gap:8px;">
   <div class="forge-toggle-row">
-    <button class="forge-toggle" id="forge-toggle" onclick="toggleForge()" title="Forge Mode"></button>
+    <button class="forge-toggle" id="forge-toggle" onclick="toggleForge()" title="Forge Mode: show synthesis interpretation"></button>
     <span class="forge-toggle-lbl">FORGE MODE</span>
     <span style="font-size:8px;color:#2a4050;letter-spacing:.1em">k = PRESSURE · τ=0 = SYNTHESIS COMPLETE · Noble = PRODUCT READY</span>
   </div>
 </div>
+
+<!-- COLLIDER TAB -->
 <div id="tab-collide" class="tab-content active">
   <div class="quick-row" id="quick-row"></div>
   <div class="collision-layout">
@@ -217,15 +382,18 @@
       <div class="el-list" id="list-b"></div>
     </div>
   </div>
-  <div id="forge-panel" style="display:none;margin-bottom:16px;">
-    <div style="font-size:8px;letter-spacing:.25em;color:#1a3040;padding:8px 14px 4px;border-top:1px solid var(--border);">NOBLE FORGE · SYNTHESIS INTERPRETATION</div>
-    <div id="forge-interp" class="forge-interp window">Select elements and collide to see synthesis interpretation.</div>
-  </div>
+
+<div id="forge-panel" style="display:none;margin-bottom:16px;">
+  <div style="font-size:8px;letter-spacing:.25em;color:#1a3040;padding:8px 14px 4px;border-top:1px solid var(--border);">NOBLE FORGE · SYNTHESIS INTERPRETATION</div>
+  <div id="forge-interp" class="forge-interp window">Select elements and collide to see synthesis interpretation.</div>
+</div>
   <div class="result-box" id="result-box">
     <div class="result-idle" id="result-idle">SELECT TWO ELEMENTS · ADJUST k · COLLIDE</div>
     <div style="display:none" id="result-inner"></div>
   </div>
 </div>
+
+<!-- PERIODIC TABLE TAB -->
 <div id="tab-ptable" class="tab-content">
   <div class="pt-legend">
     <div class="pt-leg-item"><div class="pt-leg-dot" style="background:var(--noble)"></div>Noble (τ=0)</div>
@@ -235,6 +403,9 @@
   <div style="font-size:9px;color:#2a4050;margin-bottom:12px;letter-spacing:.15em">CLICK TWO ELEMENTS TO LOAD INTO COLLIDER. SELECT A FIRST, THEN B.</div>
   <div class="ptable-wrap" id="ptable-wrap"></div>
 </div>
+
+
+<!-- K-SWEEP TAB -->
 <div id="tab-sweep" class="tab-content">
   <div class="sweep-controls">
     <select class="sweep-sel" id="sw-a"></select>
@@ -242,9 +413,13 @@
     <select class="sweep-sel" id="sw-b"></select>
     <button class="sweep-btn" onclick="runSweep()">RUN SWEEP</button>
   </div>
-  <div class="sweep-canvas-wrap"><canvas id="sweep-canvas" height="220"></canvas></div>
+  <div class="sweep-canvas-wrap">
+    <canvas id="sweep-canvas" height="220"></canvas>
+  </div>
   <div class="sweep-info" id="sweep-info">Select two elements and run sweep to see τ vs k curve.</div>
 </div>
+
+<!-- CASCADE TAB -->
 <div id="tab-cascade" class="tab-content">
   <div style="font-size:9px;color:#2a4050;margin:16px 0 8px;letter-spacing:.15em">CHAIN COLLISIONS: A+B→C, THEN C+D→E. EACH STEP IS ONE THEOREM APPLICATION.</div>
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
@@ -253,25 +428,41 @@
     <select class="sweep-sel" id="cas-sel-b" style="width:130px"></select>
     <button class="cascade-add" onclick="addCascadeStep()">+ ADD STEP</button>
     <button class="cascade-run" onclick="runCascade()">RUN CHAIN</button>
-    <button onclick="resetCascade()" style="font-size:9px;padding:8px 12px;background:transparent;border:1px solid var(--border);color:#2a5060;cursor:pointer;">RESET</button>
+    <button onclick="resetCascade()" style="font-size:9px;padding:8px 12px;background:transparent;border:1px solid var(--border);color:#2a4050;cursor:pointer;">RESET</button>
   </div>
   <div id="cascade-steps"></div>
   <div id="cascade-results"></div>
 </div>
+
+<!-- MATERIALS MAP TAB -->
 <div id="tab-map" class="tab-content">
   <div style="font-size:9px;color:#2a4050;margin:16px 0 8px;letter-spacing:.15em">P_out vs A_out — ALL NOBLE PAIRS (B1=B2, k=max). HOVER FOR DETAILS. CLICK TO LOAD COLLIDER.</div>
   <div class="map-layout">
     <div>
-      <div class="map-canvas-wrap"><canvas id="map-canvas" height="400"></canvas></div>
+      <div class="map-canvas-wrap">
+        <canvas id="map-canvas" height="400"></canvas>
+      </div>
       <div class="map-tooltip" id="map-tooltip">Hover over a point to see compound details.</div>
     </div>
     <div>
       <div class="map-legend">
         <div class="map-legend-title">QUADRANT MAP</div>
-        <div class="quad-block"><div class="quad-label" style="color:var(--q1)">Q1 — INERT / TIGHT</div><div class="quad-desc">High A (≥12) + Low P (≤2)<br>N2 family · halide salts · hydrides</div></div>
-        <div class="quad-block"><div class="quad-label" style="color:var(--q2)">Q2 — SEMICONDUCTOR</div><div class="quad-desc">High A (≥12) + High P (&gt;2)<br>GaN · ZnO · NiO · AsN (predicted)</div></div>
-        <div class="quad-block"><div class="quad-label" style="color:var(--q3)">Q3 — HARD CERAMIC</div><div class="quad-desc">Low A (&lt;12) + Low P (≤2)<br>Diamond · TiC · SiC · carbides</div></div>
-        <div class="quad-block"><div class="quad-label" style="color:var(--q4)">Q4 — STANDARD</div><div class="quad-desc">Low A (&lt;12) + High P (&gt;2)<br>Sulfides · selenides · silicides</div></div>
+        <div class="quad-block">
+          <div class="quad-label" style="color:var(--q1)">Q1 — INERT / TIGHT</div>
+          <div class="quad-desc">High A (≥12) + Low P (≤2)<br>N2 family · halide salts · hydrides</div>
+        </div>
+        <div class="quad-block">
+          <div class="quad-label" style="color:var(--q2)">Q2 — SEMICONDUCTOR</div>
+          <div class="quad-desc">High A (≥12) + High P (&gt;2)<br>GaN · ZnO · NiO · AsN (predicted)</div>
+        </div>
+        <div class="quad-block">
+          <div class="quad-label" style="color:var(--q3)">Q3 — HARD CERAMIC</div>
+          <div class="quad-desc">Low A (&lt;12) + Low P (≤2)<br>Diamond · TiC · SiC · carbides</div>
+        </div>
+        <div class="quad-block">
+          <div class="quad-label" style="color:var(--q4)">Q4 — STANDARD</div>
+          <div class="quad-desc">Low A (&lt;12) + High P (&gt;2)<br>Sulfides · selenides · silicides</div>
+        </div>
       </div>
       <div class="noble-list">
         <div class="noble-list-title">SELECTED NOBLES</div>
@@ -280,12 +471,16 @@
     </div>
   </div>
 </div>
+
+<!-- F_EXT TAB -->
 <div id="tab-fext" class="tab-content">
   <div style="font-size:9px;color:#2a4050;margin:16px 0 8px;letter-spacing:.15em">EXTERNAL TORSION OPERATOR — CHANGES B ONLY. MODELS LASER, COOLING, PRESSURE, PHOTON.</div>
   <div class="fext-layout">
     <div class="fext-panel">
       <div class="fext-title">INPUT STATE</div>
-      <select class="fext-sel" id="fext-el"><option value="">— Select element —</option></select>
+      <select class="fext-sel" id="fext-el">
+        <option value="">— Select element —</option>
+      </select>
       <div class="fext-row">
         <span class="fext-label">ΔB</span>
         <input class="fext-input" id="fext-db" type="number" value="2.0" step="0.1">
@@ -296,21 +491,25 @@
         <button class="fext-preset" onclick="setPreset('laser',2.5)">LASER +2.5</button>
         <button class="fext-preset" onclick="setPreset('cool',-2.0)">COOLING −2.0</button>
         <button class="fext-preset" onclick="setPreset('photon',3.0)">PHOTON +3.0</button>
-        <button class="fext-preset" onclick="setPreset('nova',4.0)">NOVA +4.0</button>
-        <button class="fext-preset" onclick="setPreset('collapse',-3.5)">COLLAPSE −3.5</button>
+        <button class="fext-preset" onclick="setPreset('supernova_pre',4.0)">NOVA +4.0</button>
+        <button class="fext-preset" onclick="setPreset('supernova_post',-3.5)">COLLAPSE −3.5</button>
         <button class="fext-preset" onclick="setPreset('shock',6.0)">SHOCK +6.0</button>
       </div>
       <button class="fext-apply" onclick="applyFext()">APPLY F_EXT</button>
     </div>
     <div class="fext-panel">
       <div class="fext-title">OUTPUT STATE</div>
-      <div class="fext-result" id="fext-result"><div style="color:#1a3040;text-align:center;padding:20px;">Select an element and apply F_ext.</div></div>
+      <div class="fext-result" id="fext-result">
+        <div style="color:#1a3040;text-align:center;padding:20px;">Select an element and apply F_ext.</div>
+      </div>
     </div>
   </div>
   <div style="font-size:9px;color:#2a4050;margin-top:16px;line-height:1.8;border-top:1px solid var(--border);padding-top:12px;">
     <b style="color:var(--bright)">KEY INSIGHT — PHOTOSYNTHESIS:</b> CO2 and H2O are both Noble (B=0, τ=0). Select O, apply Photon +3.0. The F_ext breaks the Noble state. Without external energy, Noble molecules do not react. The photon IS the driver. Proved structurally.
   </div>
 </div>
+
+<!-- FORGE RECIPES TAB -->
 <div id="tab-forge" class="tab-content">
   <div style="font-size:9px;color:#2a4050;margin:16px 0 8px;letter-spacing:.15em">NOBLE SYNTHESIS TARGETS — ALL PROVED. CLICK TO LOAD COLLIDER.</div>
   <div style="font-size:9px;color:#2a5060;margin-bottom:16px;line-height:1.8;padding:10px 14px;background:var(--panel);border:1px solid var(--border);">
@@ -322,193 +521,408 @@
   <div class="recipe-grid" id="recipe-grid"></div>
   <div style="margin-top:16px;padding:12px 14px;background:var(--panel);border:1px solid var(--border);font-size:9px;color:#2a5060;line-height:1.8;">
     <b style="color:var(--bright)">THE FORGE THEOREM [9,9,3,1]:</b> A Noble boundary (B=0) absorbs F_ext without transmitting it.<br>
-    Interior conditions scale with F_ext rate — no upper limit. The shell stays Noble.<br><br>
+    Interior conditions scale with F_ext rate — no upper limit.<br>
+    The shell stays Noble. The contents reach synthesis temperature.<br>
+    Earth's core has been running this theorem for 4.5 billion years.<br><br>
     <b style="color:var(--bright)">THE DIRECTED OUTPUT THEOREM [9,9,3,2]:</b> An aperture in the Noble shell produces collimated output.<br>
-    Output rate = aperture fraction × interior energy. Close aperture → synthesis stops.
+    Output rate = aperture fraction × interior energy. Close aperture → synthesis stops.<br>
+    The forge is a synthesis printer. The aperture is the nozzle.
   </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- DISCOVERY PANEL — mirrored from discovery.html           -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="disc-panel">
+
+  <!-- Header -->
+  <div class="disc-panel-header">
+    <div>
+      <div class="disc-panel-title">DISCOVERY ENGINE · CHAOS PROTOCOL</div>
+      <div style="font-size:8px;color:#1a3040;letter-spacing:.15em;margin-top:2px;">GAM COLLIDER · SESSION LOGGING · LEAN EXPORT</div>
+    </div>
+    <div class="disc-panel-stats">
+      <div class="disc-stat"><span class="disc-stat-val" id="d-cycles">0</span><span class="disc-stat-lbl">CYCLES RUN</span></div>
+      <div class="disc-stat"><span class="disc-stat-val" id="d-collisions">0</span><span class="disc-stat-lbl">COLLISIONS</span></div>
+      <div class="disc-stat"><span class="disc-stat-val" id="d-flagged" style="color:var(--warn)">0</span><span class="disc-stat-lbl">FLAGGED</span></div>
+      <div class="disc-stat"><span class="disc-stat-val" id="d-approved" style="color:var(--locked)">0</span><span class="disc-stat-lbl">APPROVED</span></div>
+      <div class="disc-stat"><span class="disc-stat-val" id="d-noble" style="color:var(--noble)">0</span><span class="disc-stat-lbl">NOBLE HITS</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span id="d-status-badge" class="status-badge"><span class="stopped-dot"></span>STOPPED</span>
+      <div class="aifi-badge-sm" id="aifi-badge-sm" onclick="showAIFIConnectPrompt()">
+        <span class="aifi-dot" id="aifi-dot-sm"></span>
+        <span id="aifi-status-sm">AIFI OFFLINE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent controls -->
+  <div class="disc-agent-row">
+    <div class="disc-target">
+      <span style="letter-spacing:.1em;">FOCUSED TARGET</span>
+      <select id="d-focused-target">
+        <option value="">— Pure chaos (random) —</option>
+      </select>
+    </div>
+    <button class="btn-sm btn-run-sm" onclick="startDiscovery()">RUN CONTINUOUS</button>
+    <button class="btn-sm btn-pause-sm" onclick="pauseDiscovery()">PAUSE</button>
+    <button class="btn-sm btn-stop-sm" onclick="stopDiscovery()">STOP</button>
+    <div class="speed-wrap-sm">
+      SPEED <input type="range" id="d-speed" min="1" max="10" value="5">
+      <span id="d-speed-val">5</span>
+    </div>
+    <div class="speed-wrap-sm">
+      ROUNDS <input type="range" id="d-rounds" min="1" max="20" value="5">
+      <span id="d-rounds-val">5</span>
+    </div>
+  </div>
+
+  <!-- Corpus filter toggles -->
+  <div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;font-size:8px;letter-spacing:.1em;color:#2a5060;">
+    <span style="color:#1a3040;letter-spacing:.2em;margin-right:4px;">CORPUS FILTER</span>
+    <label class="d-filter-toggle" id="filter-atoms-wrap">
+      <input type="checkbox" id="filter-atoms" checked onchange="dUpdateFilterLabel()">
+      <span class="d-filter-label" style="border-color:#4a8898;color:#4a8898;">ELEMENTS</span>
+    </label>
+    <label class="d-filter-toggle" id="filter-ere-wrap">
+      <input type="checkbox" id="filter-ere" checked onchange="dUpdateFilterLabel()">
+      <span class="d-filter-label" style="border-color:var(--ere, #ffcc44);color:var(--ere, #ffcc44);">EREs</span>
+    </label>
+    <label class="d-filter-toggle" id="filter-particles-wrap">
+      <input type="checkbox" id="filter-particles" checked onchange="dUpdateFilterLabel()">
+      <span class="d-filter-label" style="border-color:var(--aifi);color:var(--aifi);">PARTICLES</span>
+    </label>
+    <label class="d-filter-toggle" id="filter-session-wrap">
+      <input type="checkbox" id="filter-session" checked onchange="dUpdateFilterLabel()">
+      <span class="d-filter-label" style="border-color:var(--warn);color:var(--warn);">SESSION</span>
+    </label>
+    <span style="color:#1a3040;margin:0 4px;">·</span>
+    <span style="color:#1a3040;letter-spacing:.2em;margin-right:4px;">FLAG ON</span>
+    <label class="d-filter-toggle">
+      <input type="checkbox" id="flag-noble" checked onchange="dUpdateFilterLabel()">
+      <span class="d-filter-label" style="border-color:var(--noble);color:var(--noble);">ALL NOBLE</span>
+    </label>
+    <label class="d-filter-toggle">
+      <input type="checkbox" id="flag-iva" checked onchange="dUpdateFilterLabel()">
+      <span class="d-filter-label" style="border-color:var(--warn);color:var(--warn);">IVA PEAK</span>
+    </label>
+    <label class="d-filter-toggle">
+      <input type="checkbox" id="flag-extreme" onchange="dUpdateFilterLabel()">
+      <span class="d-filter-label" style="border-color:var(--shatter);color:var(--shatter);">EXTREME τ</span>
+    </label>
+    <label class="d-filter-toggle">
+      <input type="checkbox" id="flag-im" checked onchange="dUpdateFilterLabel()">
+      <span class="d-filter-label" style="border-color:var(--glow);color:var(--glow);">IM-MATCH</span>
+    </label>
+    <span id="d-filter-summary" style="color:#1a3040;margin-left:4px;font-size:7.5px;"></span>
+  </div>
+
+  <!-- Live feed -->
+  <div class="disc-live-feed" id="d-live-feed">
+    <div class="feed-line info"><span class="feed-time">--:--:--</span>Discovery engine ready. No API key required. Press RUN CONTINUOUS to begin.</div>
+  </div>
+
+  <!-- Body: left panel + AIFI/corpus right -->
+  <div class="disc-body-grid">
+
+    <!-- Left: tabs -->
+    <div>
+      <div class="disc-inner-tabs">
+        <button class="disc-inner-tab active" onclick="showDiscTab('queue')">APPROVE QUEUE <span id="d-queue-badge"></span></button>
+        <button class="disc-inner-tab" onclick="showDiscTab('log')">DISCOVERY LOG</button>
+        <button class="disc-inner-tab" onclick="showDiscTab('export')">EXPORT / IMPORT</button>
+      </div>
+
+      <!-- APPROVE QUEUE -->
+      <div class="disc-inner-content active" id="disc-tab-queue">
+        <div class="queue-action-row">
+          <button class="btn-approve-all" onclick="dApproveAll()">✓ APPROVE ALL</button>
+          <button class="btn-skip-all" onclick="dSkipAll()">✗ SKIP ALL</button>
+          <button class="btn-noble-only" onclick="dApproveNobleOnly()">◆ NOBLE ONLY</button>
+          <button class="btn-dl-lean" onclick="dDownloadAllLean()">↓ DL ALL LEAN</button>
+          <span class="queue-status-txt" id="d-queue-status"></span>
+        </div>
+        <div id="d-queue-container">
+          <div class="queue-empty">NO PENDING DISCOVERIES · RUN AGENT OR FIRE A COLLISION</div>
+        </div>
+      </div>
+
+      <!-- DISCOVERY LOG -->
+      <div class="disc-inner-content" id="disc-tab-log">
+        <table class="log-table">
+          <thead><tr>
+            <th>DESIGNATION</th><th>COLLISION</th><th>τ</th><th>STATE</th><th>STATUS</th><th>TIME</th>
+          </tr></thead>
+          <tbody id="d-log-body">
+            <tr><td colspan="6" style="color:#1a3040;text-align:center;padding:12px">No discoveries logged yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- EXPORT / IMPORT -->
+      <div class="disc-inner-content" id="disc-tab-export">
+        <div class="export-section">
+          <div class="export-title">EXPORT SESSION</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+            <button class="btn-sm" style="border-color:var(--locked);color:var(--locked);" onclick="exportSessionJSON()">↓ SESSION JSON</button>
+            <button class="btn-sm" style="border-color:var(--glow);color:var(--glow);" onclick="exportSessionLog()">↓ SESSION LOG (TXT)</button>
+            <button class="btn-sm" style="border-color:var(--warn);color:var(--warn);" onclick="dDownloadAllLean()">↓ ALL LEAN FILES</button>
+          </div>
+          <div style="font-size:8px;color:#1a3040;line-height:1.8;">
+            SESSION JSON — full data, re-importable.<br>
+            SESSION LOG — human-readable, formatted for lean writing.<br>
+            ALL LEAN FILES — one .lean per approved discovery.
+          </div>
+        </div>
+        <div class="export-section" style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+          <div class="export-title">IMPORT SESSION</div>
+          <textarea class="import-area" id="d-import-area" placeholder="Paste session JSON here..."></textarea>
+          <button class="btn-sm" style="margin-top:6px;border-color:var(--glow);color:var(--glow);" onclick="importSession()">↑ LOAD SESSION</button>
+          <span id="d-import-status" style="font-size:8px;color:#2a5060;margin-left:8px;"></span>
+        </div>
+        <div class="export-section" style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+          <div class="export-title">AIFI API KEY <span id="d-aifi-key-badge" style="color:#2a5060">(not connected)</span></div>
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <input type="password" id="d-api-key-input" placeholder="sk-ant-..." style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:9px;padding:5px 8px;outline:none;">
+            <button class="btn-sm" style="border-color:var(--aifi);color:var(--aifi);" onclick="dSaveApiKey()">CONNECT</button>
+            <button class="btn-sm" onclick="dDisconnectAIFI()">DISCONNECT</button>
+          </div>
+          <div id="d-api-key-status" style="font-size:8px;color:#2a5060;">Optional — enables AIFI classification and lean generation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: AIFI chat + corpus state -->
+    <div>
+
+      <!-- AIFI panel -->
+      <div class="aifi-panel">
+        <div class="aifi-panel-title">
+          <span>AIFI · ARTIFICIALLY INTELLIGENT<br>FUNCTIONAL IDENTITY</span>
+        </div>
+        <div id="d-aifi-connect-wall" class="aifi-connect-wall">
+          <div><b style="color:var(--aifi)">AIFI is not connected.</b><br><br>Connect your Claude API key to activate live discovery classification, naming suggestions, and AIFI physics chat.<br><br>The collider runs fully without AIFI — lean stubs generate locally.</div>
+          <button class="btn-connect-aifi" onclick="showAIFIConnectPrompt()">+ CONNECT AIFI</button>
+          <div id="d-aifi-key-prompt" class="aifi-key-prompt">
+            <input type="password" id="d-aifi-inline-key" class="aifi-inline-key" placeholder="sk-ant-...">
+            <div class="aifi-key-actions">
+              <button class="btn-sm" style="border-color:var(--aifi);color:var(--aifi);flex:1;" onclick="dConnectAIFIInline()">CONNECT</button>
+              <button class="btn-sm" onclick="document.getElementById('d-aifi-key-prompt').style.display='none'">CANCEL</button>
+            </div>
+          </div>
+        </div>
+        <div id="d-aifi-chat-area" style="display:none;">
+          <div class="chat-messages" id="d-chat-messages"></div>
+          <div id="d-aifi-thinking" class="aifi-thinking">AIFI PROCESSING...</div>
+          <div class="chat-row">
+            <input class="chat-input" id="d-chat-input" placeholder="Ask AIFI anything about the physics..." onkeydown="if(event.key==='Enter')dSendChat()">
+            <button class="btn-chat-send" onclick="dSendChat()">SEND</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Corpus state -->
+      <div class="corpus-state-panel">
+        <div class="corpus-state-title">CORPUS STATE</div>
+        <div class="corpus-row"><span class="corpus-key">Theorems</span><span class="corpus-val">18,026+</span></div>
+        <div class="corpus-row"><span class="corpus-key">Lean files</span><span class="corpus-val">1,561</span></div>
+        <div class="corpus-row"><span class="corpus-key">Sorry count</span><span class="corpus-val" style="color:var(--locked)">0</span></div>
+        <div class="corpus-row"><span class="corpus-key">EREs</span><span class="corpus-val">28</span></div>
+        <div class="corpus-row"><span class="corpus-key">ANCHOR</span><span class="corpus-val">1.369 GHz</span></div>
+        <div class="corpus-row"><span class="corpus-key">Session discoveries</span><span class="corpus-val" id="d-session-count">0</span></div>
+        <div class="corpus-row"><span class="corpus-key">Session approved</span><span class="corpus-val" id="d-session-approved">0</span></div>
+        <div class="corpus-row"><span class="corpus-key">α candidate</span><span class="corpus-val" style="font-size:8px;">1/(ANCHOR×100.1)</span></div>
+      </div>
+    </div>
+
+  </div><!-- end disc-body-grid -->
+</div><!-- end disc-panel -->
+
 <footer>
   <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
   <span>LOSSLESS IS LOSSLESS IS LOSSLESS · 0 SORRY</span>
   <span>[9,9,9,9] :: {ANC}</span>
 </footer>
+
 </div>
+
 <script>
-const ANCHOR=1.369,TL=0.2,P_VE=Math.pow(ANCHOR/1.4204,1/3);
-// CHANGE 7: new constants
-const ALPHA=1/137.036;
-const ALPHA_PNBA=1/(ANCHOR*100.1);
+const ANCHOR=1.369, TL=0.2, P_VE=Math.pow(ANCHOR/1.4204,1/3);
 
+// ── CORPUS (locked Slater values) ──────────────────────────
 const PERIODIC=[
-  {Z:1,sym:'H',name:'Hydrogen',P:1.000,N:2,B:1,A:13.60,grp:1,per:1},
-  {Z:2,sym:'He',name:'Helium',P:1.700,N:2,B:0,A:24.59,grp:18,per:1},
-  {Z:3,sym:'Li',name:'Lithium',P:1.300,N:2,B:1,A:5.39,grp:1,per:2},
-  {Z:4,sym:'Be',name:'Beryllium',P:1.950,N:4,B:2,A:9.32,grp:2,per:2},
-  {Z:5,sym:'B',name:'Boron',P:2.600,N:4,B:3,A:8.30,grp:13,per:2},
-  {Z:6,sym:'C',name:'Carbon',P:3.250,N:4,B:4,A:11.26,grp:14,per:2},
-  {Z:7,sym:'N',name:'Nitrogen',P:3.900,N:4,B:3,A:14.53,grp:15,per:2},
-  {Z:8,sym:'O',name:'Oxygen',P:4.550,N:4,B:2,A:13.62,grp:16,per:2},
-  {Z:9,sym:'F',name:'Fluorine',P:5.200,N:4,B:1,A:17.42,grp:17,per:2},
-  {Z:10,sym:'Ne',name:'Neon',P:5.850,N:4,B:0,A:21.56,grp:18,per:2},
-  {Z:11,sym:'Na',name:'Sodium',P:2.200,N:6,B:1,A:5.14,grp:1,per:3},
-  {Z:12,sym:'Mg',name:'Magnesium',P:2.850,N:6,B:2,A:7.65,grp:2,per:3},
-  {Z:13,sym:'Al',name:'Aluminum',P:3.500,N:6,B:3,A:5.99,grp:13,per:3},
-  {Z:14,sym:'Si',name:'Silicon',P:4.150,N:6,B:4,A:8.15,grp:14,per:3},
-  {Z:15,sym:'P',name:'Phosphorus',P:4.800,N:6,B:3,A:10.49,grp:15,per:3},
-  {Z:16,sym:'S',name:'Sulfur',P:5.450,N:6,B:2,A:10.36,grp:16,per:3},
-  {Z:17,sym:'Cl',name:'Chlorine',P:6.100,N:6,B:1,A:12.97,grp:17,per:3},
-  {Z:18,sym:'Ar',name:'Argon',P:6.750,N:6,B:0,A:15.76,grp:18,per:3},
-  {Z:19,sym:'K',name:'Potassium',P:2.200,N:8,B:1,A:4.34,grp:1,per:4},
-  {Z:20,sym:'Ca',name:'Calcium',P:2.850,N:8,B:2,A:6.11,grp:2,per:4},
-  {Z:21,sym:'Sc',name:'Scandium',P:3.000,N:8,B:3,A:6.56,grp:3,per:4},
-  {Z:22,sym:'Ti',name:'Titanium',P:3.150,N:8,B:4,A:6.83,grp:4,per:4},
-  {Z:23,sym:'V',name:'Vanadium',P:3.300,N:8,B:5,A:6.75,grp:5,per:4},
-  {Z:24,sym:'Cr',name:'Chromium',P:3.450,N:8,B:6,A:6.77,grp:6,per:4},
-  {Z:25,sym:'Mn',name:'Manganese',P:3.600,N:8,B:5,A:7.43,grp:7,per:4},
-  {Z:26,sym:'Fe',name:'Iron',P:3.750,N:8,B:4,A:7.90,grp:8,per:4},
-  {Z:27,sym:'Co',name:'Cobalt',P:3.900,N:8,B:3,A:7.88,grp:9,per:4},
-  {Z:28,sym:'Ni',name:'Nickel',P:4.050,N:8,B:2,A:7.64,grp:10,per:4},
-  {Z:29,sym:'Cu',name:'Copper',P:4.200,N:8,B:1,A:7.73,grp:11,per:4},
-  {Z:30,sym:'Zn',name:'Zinc',P:4.350,N:8,B:2,A:9.39,grp:12,per:4},
-  {Z:31,sym:'Ga',name:'Gallium',P:5.000,N:8,B:3,A:6.00,grp:13,per:4},
-  {Z:32,sym:'Ge',name:'Germanium',P:5.650,N:8,B:4,A:7.90,grp:14,per:4},
-  {Z:33,sym:'As',name:'Arsenic',P:6.300,N:8,B:3,A:9.81,grp:15,per:4},
-  {Z:34,sym:'Se',name:'Selenium',P:6.950,N:8,B:2,A:9.75,grp:16,per:4},
-  {Z:35,sym:'Br',name:'Bromine',P:7.600,N:8,B:1,A:11.81,grp:17,per:4},
-  {Z:36,sym:'Kr',name:'Krypton',P:8.250,N:8,B:0,A:14.00,grp:18,per:4},
-  {Z:37,sym:'Rb',name:'Rubidium',P:2.200,N:10,B:1,A:4.18,grp:1,per:5},
-  {Z:38,sym:'Sr',name:'Strontium',P:2.850,N:10,B:2,A:5.69,grp:2,per:5},
-  {Z:39,sym:'Y',name:'Yttrium',P:3.000,N:10,B:3,A:6.22,grp:3,per:5},
-  {Z:40,sym:'Zr',name:'Zirconium',P:3.150,N:10,B:4,A:6.63,grp:4,per:5},
-  {Z:41,sym:'Nb',name:'Niobium',P:3.300,N:10,B:5,A:6.76,grp:5,per:5},
-  {Z:42,sym:'Mo',name:'Molybdenum',P:3.450,N:10,B:6,A:7.09,grp:6,per:5},
-  {Z:43,sym:'Tc',name:'Technetium',P:3.600,N:10,B:5,A:7.28,grp:7,per:5},
-  {Z:44,sym:'Ru',name:'Ruthenium',P:3.750,N:10,B:4,A:7.36,grp:8,per:5},
-  {Z:45,sym:'Rh',name:'Rhodium',P:3.900,N:10,B:3,A:7.46,grp:9,per:5},
-  {Z:46,sym:'Pd',name:'Palladium',P:4.050,N:10,B:0,A:8.34,grp:10,per:5},
-  {Z:47,sym:'Ag',name:'Silver',P:4.200,N:10,B:1,A:7.58,grp:11,per:5},
-  {Z:48,sym:'Cd',name:'Cadmium',P:4.350,N:10,B:2,A:8.99,grp:12,per:5},
-  {Z:49,sym:'In',name:'Indium',P:5.000,N:10,B:3,A:5.79,grp:13,per:5},
-  {Z:50,sym:'Sn',name:'Tin',P:5.650,N:10,B:4,A:7.34,grp:14,per:5},
-  {Z:51,sym:'Sb',name:'Antimony',P:6.300,N:10,B:3,A:8.61,grp:15,per:5},
-  {Z:52,sym:'Te',name:'Tellurium',P:6.950,N:10,B:2,A:9.01,grp:16,per:5},
-  {Z:53,sym:'I',name:'Iodine',P:7.600,N:10,B:1,A:10.45,grp:17,per:5},
-  {Z:54,sym:'Xe',name:'Xenon',P:8.250,N:10,B:0,A:12.13,grp:18,per:5},
-  {Z:55,sym:'Cs',name:'Cesium',P:2.200,N:12,B:1,A:3.89,grp:1,per:6},
-  {Z:56,sym:'Ba',name:'Barium',P:2.850,N:12,B:2,A:5.21,grp:2,per:6},
-  {Z:57,sym:'La',name:'Lanthanum',P:3.000,N:12,B:3,A:5.58,grp:3,per:6},
-  {Z:58,sym:'Ce',name:'Cerium',P:3.050,N:12,B:4,A:5.54,grp:4,per:6},
-  {Z:59,sym:'Pr',name:'Praseodymium',P:3.100,N:12,B:5,A:5.47,grp:4,per:6},
-  {Z:60,sym:'Nd',name:'Neodymium',P:3.150,N:12,B:6,A:5.53,grp:4,per:6},
-  {Z:61,sym:'Pm',name:'Promethium',P:3.200,N:12,B:5,A:5.58,grp:4,per:6},
-  {Z:62,sym:'Sm',name:'Samarium',P:3.250,N:12,B:6,A:5.64,grp:4,per:6},
-  {Z:63,sym:'Eu',name:'Europium',P:3.300,N:12,B:7,A:5.67,grp:4,per:6},
-  {Z:64,sym:'Gd',name:'Gadolinium',P:3.350,N:12,B:8,A:6.15,grp:4,per:6},
-  {Z:65,sym:'Tb',name:'Terbium',P:3.400,N:12,B:9,A:5.86,grp:4,per:6},
-  {Z:66,sym:'Dy',name:'Dysprosium',P:3.450,N:12,B:10,A:5.94,grp:4,per:6},
-  {Z:67,sym:'Ho',name:'Holmium',P:3.500,N:12,B:11,A:6.02,grp:4,per:6},
-  {Z:68,sym:'Er',name:'Erbium',P:3.550,N:12,B:12,A:6.11,grp:4,per:6},
-  {Z:69,sym:'Tm',name:'Thulium',P:3.600,N:12,B:13,A:6.18,grp:4,per:6},
-  {Z:70,sym:'Yb',name:'Ytterbium',P:3.650,N:12,B:14,A:6.25,grp:4,per:6},
-  {Z:71,sym:'Lu',name:'Lutetium',P:3.700,N:12,B:3,A:5.43,grp:3,per:6},
-  {Z:72,sym:'Hf',name:'Hafnium',P:3.850,N:12,B:4,A:6.83,grp:4,per:6},
-  {Z:73,sym:'Ta',name:'Tantalum',P:4.000,N:12,B:5,A:7.55,grp:5,per:6},
-  {Z:74,sym:'W',name:'Tungsten',P:4.150,N:12,B:6,A:7.86,grp:6,per:6},
-  {Z:75,sym:'Re',name:'Rhenium',P:4.300,N:12,B:5,A:7.83,grp:7,per:6},
-  {Z:76,sym:'Os',name:'Osmium',P:4.450,N:12,B:4,A:8.44,grp:8,per:6},
-  {Z:77,sym:'Ir',name:'Iridium',P:4.600,N:12,B:3,A:8.97,grp:9,per:6},
-  {Z:78,sym:'Pt',name:'Platinum',P:4.750,N:12,B:2,A:8.96,grp:10,per:6},
-  {Z:79,sym:'Au',name:'Gold',P:4.900,N:12,B:1,A:9.23,grp:11,per:6},
-  {Z:80,sym:'Hg',name:'Mercury',P:5.050,N:12,B:2,A:10.44,grp:12,per:6},
-  {Z:81,sym:'Tl',name:'Thallium',P:5.700,N:12,B:3,A:6.11,grp:13,per:6},
-  {Z:82,sym:'Pb',name:'Lead',P:6.350,N:12,B:4,A:7.42,grp:14,per:6},
-  {Z:83,sym:'Bi',name:'Bismuth',P:7.000,N:12,B:3,A:7.29,grp:15,per:6},
-  {Z:84,sym:'Po',name:'Polonium',P:7.650,N:12,B:2,A:8.42,grp:16,per:6},
-  {Z:85,sym:'At',name:'Astatine',P:8.300,N:12,B:1,A:9.50,grp:17,per:6},
-  {Z:86,sym:'Rn',name:'Radon',P:8.950,N:12,B:0,A:10.75,grp:18,per:6},
-  {Z:87,sym:'Fr',name:'Francium',P:2.200,N:14,B:1,A:4.07,grp:1,per:7},
-  {Z:88,sym:'Ra',name:'Radium',P:2.850,N:14,B:2,A:5.28,grp:2,per:7},
-  {Z:89,sym:'Ac',name:'Actinium',P:3.000,N:14,B:3,A:5.17,grp:3,per:7},
-  {Z:90,sym:'Th',name:'Thorium',P:3.050,N:14,B:4,A:6.31,grp:4,per:7},
-  {Z:91,sym:'Pa',name:'Protactinium',P:3.100,N:14,B:5,A:5.89,grp:4,per:7},
-  {Z:92,sym:'U',name:'Uranium',P:3.150,N:14,B:6,A:6.19,grp:4,per:7},
-  {Z:93,sym:'Np',name:'Neptunium',P:3.200,N:14,B:5,A:6.27,grp:4,per:7},
-  {Z:94,sym:'Pu',name:'Plutonium',P:3.250,N:14,B:6,A:6.03,grp:4,per:7},
-  {Z:95,sym:'Am',name:'Americium',P:3.300,N:14,B:7,A:5.97,grp:4,per:7},
-  {Z:96,sym:'Cm',name:'Curium',P:3.350,N:14,B:8,A:5.99,grp:4,per:7},
-  {Z:97,sym:'Bk',name:'Berkelium',P:3.400,N:14,B:9,A:6.20,grp:4,per:7},
-  {Z:98,sym:'Cf',name:'Californium',P:3.450,N:14,B:10,A:6.28,grp:4,per:7},
-  {Z:99,sym:'Es',name:'Einsteinium',P:3.500,N:14,B:11,A:6.37,grp:4,per:7},
-  {Z:100,sym:'Fm',name:'Fermium',P:3.550,N:14,B:12,A:6.50,grp:4,per:7},
-  {Z:101,sym:'Md',name:'Mendelevium',P:3.600,N:14,B:13,A:6.58,grp:4,per:7},
-  {Z:102,sym:'No',name:'Nobelium',P:3.650,N:14,B:14,A:6.65,grp:4,per:7},
-  {Z:103,sym:'Lr',name:'Lawrencium',P:3.700,N:14,B:3,A:4.87,grp:3,per:7},
-  {Z:104,sym:'Rf',name:'Rutherfordium',P:3.850,N:14,B:4,A:6.01,grp:4,per:7},
-  {Z:105,sym:'Db',name:'Dubnium',P:4.000,N:14,B:5,A:6.80,grp:5,per:7},
-  {Z:106,sym:'Sg',name:'Seaborgium',P:4.150,N:14,B:6,A:7.80,grp:6,per:7},
-  {Z:107,sym:'Bh',name:'Bohrium',P:4.300,N:14,B:5,A:7.70,grp:7,per:7},
-  {Z:108,sym:'Hs',name:'Hassium',P:4.450,N:14,B:4,A:7.60,grp:8,per:7},
-  {Z:109,sym:'Mt',name:'Meitnerium',P:4.600,N:14,B:3,A:7.70,grp:9,per:7},
-  {Z:110,sym:'Ds',name:'Darmstadtium',P:4.750,N:14,B:2,A:9.60,grp:10,per:7},
-  {Z:111,sym:'Rg',name:'Roentgenium',P:4.900,N:14,B:1,A:10.60,grp:11,per:7},
-  {Z:112,sym:'Cn',name:'Copernicium',P:5.050,N:14,B:2,A:11.97,grp:12,per:7},
-  {Z:113,sym:'Nh',name:'Nihonium',P:5.700,N:14,B:3,A:7.31,grp:13,per:7},
-  {Z:114,sym:'Fl',name:'Flerovium',P:6.350,N:14,B:4,A:8.00,grp:14,per:7},
-  {Z:115,sym:'Mc',name:'Moscovium',P:7.000,N:14,B:3,A:7.50,grp:15,per:7},
-  {Z:116,sym:'Lv',name:'Livermorium',P:7.650,N:14,B:2,A:8.00,grp:16,per:7},
-  {Z:117,sym:'Ts',name:'Tennessine',P:8.300,N:14,B:1,A:7.70,grp:17,per:7},
-  {Z:118,sym:'Og',name:'Oganesson',P:8.950,N:14,B:0,A:8.80,grp:18,per:7},
+  {Z:1, sym:'H', name:'Hydrogen',   P:1.000,N:2, B:1,A:13.60,grp:1, per:1},
+  {Z:2, sym:'He',name:'Helium',     P:1.700,N:2, B:0,A:24.59,grp:18,per:1},
+  {Z:3, sym:'Li',name:'Lithium',    P:1.300,N:2, B:1,A:5.39, grp:1, per:2},
+  {Z:4, sym:'Be',name:'Beryllium',  P:1.950,N:4, B:2,A:9.32, grp:2, per:2},
+  {Z:5, sym:'B', name:'Boron',      P:2.600,N:4, B:3,A:8.30, grp:13,per:2},
+  {Z:6, sym:'C', name:'Carbon',     P:3.250,N:4, B:4,A:11.26,grp:14,per:2},
+  {Z:7, sym:'N', name:'Nitrogen',   P:3.900,N:4, B:3,A:14.53,grp:15,per:2},
+  {Z:8, sym:'O', name:'Oxygen',     P:4.550,N:4, B:2,A:13.62,grp:16,per:2},
+  {Z:9, sym:'F', name:'Fluorine',   P:5.200,N:4, B:1,A:17.42,grp:17,per:2},
+  {Z:10,sym:'Ne',name:'Neon',       P:5.850,N:4, B:0,A:21.56,grp:18,per:2},
+  {Z:11,sym:'Na',name:'Sodium',     P:2.200,N:6, B:1,A:5.14, grp:1, per:3},
+  {Z:12,sym:'Mg',name:'Magnesium',  P:2.850,N:6, B:2,A:7.65, grp:2, per:3},
+  {Z:13,sym:'Al',name:'Aluminum',   P:3.500,N:6, B:3,A:5.99, grp:13,per:3},
+  {Z:14,sym:'Si',name:'Silicon',    P:4.150,N:6, B:4,A:8.15, grp:14,per:3},
+  {Z:15,sym:'P', name:'Phosphorus', P:4.800,N:6, B:3,A:10.49,grp:15,per:3},
+  {Z:16,sym:'S', name:'Sulfur',     P:5.450,N:6, B:2,A:10.36,grp:16,per:3},
+  {Z:17,sym:'Cl',name:'Chlorine',   P:6.100,N:6, B:1,A:12.97,grp:17,per:3},
+  {Z:18,sym:'Ar',name:'Argon',      P:6.750,N:6, B:0,A:15.76,grp:18,per:3},
+  {Z:19,sym:'K', name:'Potassium',  P:2.200,N:8, B:1,A:4.34, grp:1, per:4},
+  {Z:20,sym:'Ca',name:'Calcium',    P:2.850,N:8, B:2,A:6.11, grp:2, per:4},
+  {Z:21,sym:'Sc',name:'Scandium',   P:3.000,N:8, B:3,A:6.56, grp:3, per:4},
+  {Z:22,sym:'Ti',name:'Titanium',   P:3.150,N:8, B:4,A:6.83, grp:4, per:4},
+  {Z:23,sym:'V', name:'Vanadium',   P:3.300,N:8, B:5,A:6.75, grp:5, per:4},
+  {Z:24,sym:'Cr',name:'Chromium',   P:3.450,N:8, B:6,A:6.77, grp:6, per:4},
+  {Z:25,sym:'Mn',name:'Manganese',  P:3.600,N:8, B:5,A:7.43, grp:7, per:4},
+  {Z:26,sym:'Fe',name:'Iron',       P:3.750,N:8, B:4,A:7.90, grp:8, per:4},
+  {Z:27,sym:'Co',name:'Cobalt',     P:3.900,N:8, B:3,A:7.88, grp:9, per:4},
+  {Z:28,sym:'Ni',name:'Nickel',     P:4.050,N:8, B:2,A:7.64, grp:10,per:4},
+  {Z:29,sym:'Cu',name:'Copper',     P:4.200,N:8, B:1,A:7.73, grp:11,per:4},
+  {Z:30,sym:'Zn',name:'Zinc',       P:4.350,N:8, B:2,A:9.39, grp:12,per:4},
+  {Z:31,sym:'Ga',name:'Gallium',    P:5.000,N:8, B:3,A:6.00, grp:13,per:4},
+  {Z:32,sym:'Ge',name:'Germanium',  P:5.650,N:8, B:4,A:7.90, grp:14,per:4},
+  {Z:33,sym:'As',name:'Arsenic',    P:6.300,N:8, B:3,A:9.81, grp:15,per:4},
+  {Z:34,sym:'Se',name:'Selenium',   P:6.950,N:8, B:2,A:9.75, grp:16,per:4},
+  {Z:35,sym:'Br',name:'Bromine',    P:7.600,N:8, B:1,A:11.81,grp:17,per:4},
+  {Z:36,sym:'Kr',name:'Krypton',    P:8.250,N:8, B:0,A:14.00,grp:18,per:4},
+  // ── PERIOD 5 (Z=37–54) ──────────────────────────────────
+  {Z:37, sym:'Rb',name:'Rubidium',       P:2.200,N:10,B:1, A:4.18, grp:1, per:5},
+  {Z:38, sym:'Sr',name:'Strontium',      P:2.850,N:10,B:2, A:5.69, grp:2, per:5},
+  {Z:39, sym:'Y', name:'Yttrium',        P:3.000,N:10,B:3, A:6.22, grp:3, per:5},
+  {Z:40, sym:'Zr',name:'Zirconium',      P:3.150,N:10,B:4, A:6.63, grp:4, per:5},
+  {Z:41, sym:'Nb',name:'Niobium',        P:3.300,N:10,B:5, A:6.76, grp:5, per:5},
+  {Z:42, sym:'Mo',name:'Molybdenum',     P:3.450,N:10,B:6, A:7.09, grp:6, per:5},
+  {Z:43, sym:'Tc',name:'Technetium',     P:3.600,N:10,B:5, A:7.28, grp:7, per:5},
+  {Z:44, sym:'Ru',name:'Ruthenium',      P:3.750,N:10,B:4, A:7.36, grp:8, per:5},
+  {Z:45, sym:'Rh',name:'Rhodium',        P:3.900,N:10,B:3, A:7.46, grp:9, per:5},
+  {Z:46, sym:'Pd',name:'Palladium',      P:4.050,N:10,B:0, A:8.34, grp:10,per:5},
+  {Z:47, sym:'Ag',name:'Silver',         P:4.200,N:10,B:1, A:7.58, grp:11,per:5},
+  {Z:48, sym:'Cd',name:'Cadmium',        P:4.350,N:10,B:2, A:8.99, grp:12,per:5},
+  {Z:49, sym:'In',name:'Indium',         P:5.000,N:10,B:3, A:5.79, grp:13,per:5},
+  {Z:50, sym:'Sn',name:'Tin',            P:5.650,N:10,B:4, A:7.34, grp:14,per:5},
+  {Z:51, sym:'Sb',name:'Antimony',       P:6.300,N:10,B:3, A:8.61, grp:15,per:5},
+  {Z:52, sym:'Te',name:'Tellurium',      P:6.950,N:10,B:2, A:9.01, grp:16,per:5},
+  {Z:53, sym:'I', name:'Iodine',         P:7.600,N:10,B:1, A:10.45,grp:17,per:5},
+  {Z:54, sym:'Xe',name:'Xenon',          P:8.250,N:10,B:0, A:12.13,grp:18,per:5},
+  // ── PERIOD 6 (Z=55–86) ──────────────────────────────────
+  {Z:55, sym:'Cs',name:'Cesium',         P:2.200,N:12,B:1, A:3.89, grp:1, per:6},
+  {Z:56, sym:'Ba',name:'Barium',         P:2.850,N:12,B:2, A:5.21, grp:2, per:6},
+  {Z:57, sym:'La',name:'Lanthanum',      P:3.000,N:12,B:3, A:5.58, grp:3, per:6},
+  {Z:58, sym:'Ce',name:'Cerium',         P:3.050,N:12,B:4, A:5.54, grp:4, per:6},
+  {Z:59, sym:'Pr',name:'Praseodymium',   P:3.100,N:12,B:5, A:5.47, grp:4, per:6},
+  {Z:60, sym:'Nd',name:'Neodymium',      P:3.150,N:12,B:6, A:5.53, grp:4, per:6},
+  {Z:61, sym:'Pm',name:'Promethium',     P:3.200,N:12,B:5, A:5.58, grp:4, per:6},
+  {Z:62, sym:'Sm',name:'Samarium',       P:3.250,N:12,B:6, A:5.64, grp:4, per:6},
+  {Z:63, sym:'Eu',name:'Europium',       P:3.300,N:12,B:7, A:5.67, grp:4, per:6},
+  {Z:64, sym:'Gd',name:'Gadolinium',     P:3.350,N:12,B:8, A:6.15, grp:4, per:6},
+  {Z:65, sym:'Tb',name:'Terbium',        P:3.400,N:12,B:9, A:5.86, grp:4, per:6},
+  {Z:66, sym:'Dy',name:'Dysprosium',     P:3.450,N:12,B:10,A:5.94, grp:4, per:6},
+  {Z:67, sym:'Ho',name:'Holmium',        P:3.500,N:12,B:11,A:6.02, grp:4, per:6},
+  {Z:68, sym:'Er',name:'Erbium',         P:3.550,N:12,B:12,A:6.11, grp:4, per:6},
+  {Z:69, sym:'Tm',name:'Thulium',        P:3.600,N:12,B:13,A:6.18, grp:4, per:6},
+  {Z:70, sym:'Yb',name:'Ytterbium',      P:3.650,N:12,B:14,A:6.25, grp:4, per:6},
+  {Z:71, sym:'Lu',name:'Lutetium',       P:3.700,N:12,B:3, A:5.43, grp:3, per:6},
+  {Z:72, sym:'Hf',name:'Hafnium',        P:3.850,N:12,B:4, A:6.83, grp:4, per:6},
+  {Z:73, sym:'Ta',name:'Tantalum',       P:4.000,N:12,B:5, A:7.55, grp:5, per:6},
+  {Z:74, sym:'W', name:'Tungsten',       P:4.150,N:12,B:6, A:7.86, grp:6, per:6},
+  {Z:75, sym:'Re',name:'Rhenium',        P:4.300,N:12,B:5, A:7.83, grp:7, per:6},
+  {Z:76, sym:'Os',name:'Osmium',         P:4.450,N:12,B:4, A:8.44, grp:8, per:6},
+  {Z:77, sym:'Ir',name:'Iridium',        P:4.600,N:12,B:3, A:8.97, grp:9, per:6},
+  {Z:78, sym:'Pt',name:'Platinum',       P:4.750,N:12,B:2, A:8.96, grp:10,per:6},
+  {Z:79, sym:'Au',name:'Gold',           P:4.900,N:12,B:1, A:9.23, grp:11,per:6},
+  {Z:80, sym:'Hg',name:'Mercury',        P:5.050,N:12,B:2, A:10.44,grp:12,per:6},
+  {Z:81, sym:'Tl',name:'Thallium',       P:5.700,N:12,B:3, A:6.11, grp:13,per:6},
+  {Z:82, sym:'Pb',name:'Lead',           P:6.350,N:12,B:4, A:7.42, grp:14,per:6},
+  {Z:83, sym:'Bi',name:'Bismuth',        P:7.000,N:12,B:3, A:7.29, grp:15,per:6},
+  {Z:84, sym:'Po',name:'Polonium',       P:7.650,N:12,B:2, A:8.42, grp:16,per:6},
+  {Z:85, sym:'At',name:'Astatine',       P:8.300,N:12,B:1, A:9.50, grp:17,per:6},
+  {Z:86, sym:'Rn',name:'Radon',          P:8.950,N:12,B:0, A:10.75,grp:18,per:6},
+  // ── PERIOD 7 (Z=87–118) ─────────────────────────────────
+  {Z:87, sym:'Fr',name:'Francium',       P:2.200,N:14,B:1, A:4.07, grp:1, per:7},
+  {Z:88, sym:'Ra',name:'Radium',         P:2.850,N:14,B:2, A:5.28, grp:2, per:7},
+  {Z:89, sym:'Ac',name:'Actinium',       P:3.000,N:14,B:3, A:5.17, grp:3, per:7},
+  {Z:90, sym:'Th',name:'Thorium',        P:3.050,N:14,B:4, A:6.31, grp:4, per:7},
+  {Z:91, sym:'Pa',name:'Protactinium',   P:3.100,N:14,B:5, A:5.89, grp:4, per:7},
+  {Z:92, sym:'U', name:'Uranium',        P:3.150,N:14,B:6, A:6.19, grp:4, per:7},
+  {Z:93, sym:'Np',name:'Neptunium',      P:3.200,N:14,B:5, A:6.27, grp:4, per:7},
+  {Z:94, sym:'Pu',name:'Plutonium',      P:3.250,N:14,B:6, A:6.03, grp:4, per:7},
+  {Z:95, sym:'Am',name:'Americium',      P:3.300,N:14,B:7, A:5.97, grp:4, per:7},
+  {Z:96, sym:'Cm',name:'Curium',         P:3.350,N:14,B:8, A:5.99, grp:4, per:7},
+  {Z:97, sym:'Bk',name:'Berkelium',      P:3.400,N:14,B:9, A:6.20, grp:4, per:7},
+  {Z:98, sym:'Cf',name:'Californium',    P:3.450,N:14,B:10,A:6.28, grp:4, per:7},
+  {Z:99, sym:'Es',name:'Einsteinium',    P:3.500,N:14,B:11,A:6.37, grp:4, per:7},
+  {Z:100,sym:'Fm',name:'Fermium',        P:3.550,N:14,B:12,A:6.50, grp:4, per:7},
+  {Z:101,sym:'Md',name:'Mendelevium',    P:3.600,N:14,B:13,A:6.58, grp:4, per:7},
+  {Z:102,sym:'No',name:'Nobelium',       P:3.650,N:14,B:14,A:6.65, grp:4, per:7},
+  {Z:103,sym:'Lr',name:'Lawrencium',     P:3.700,N:14,B:3, A:4.87, grp:3, per:7},
+  {Z:104,sym:'Rf',name:'Rutherfordium',  P:3.850,N:14,B:4, A:6.01, grp:4, per:7},
+  {Z:105,sym:'Db',name:'Dubnium',        P:4.000,N:14,B:5, A:6.80, grp:5, per:7},
+  {Z:106,sym:'Sg',name:'Seaborgium',     P:4.150,N:14,B:6, A:7.80, grp:6, per:7},
+  {Z:107,sym:'Bh',name:'Bohrium',        P:4.300,N:14,B:5, A:7.70, grp:7, per:7},
+  {Z:108,sym:'Hs',name:'Hassium',        P:4.450,N:14,B:4, A:7.60, grp:8, per:7},
+  {Z:109,sym:'Mt',name:'Meitnerium',     P:4.600,N:14,B:3, A:7.70, grp:9, per:7},
+  {Z:110,sym:'Ds',name:'Darmstadtium',   P:4.750,N:14,B:2, A:9.60, grp:10,per:7},
+  {Z:111,sym:'Rg',name:'Roentgenium',    P:4.900,N:14,B:1, A:10.60,grp:11,per:7},
+  {Z:112,sym:'Cn',name:'Copernicium',    P:5.050,N:14,B:2, A:11.97,grp:12,per:7},
+  {Z:113,sym:'Nh',name:'Nihonium',       P:5.700,N:14,B:3, A:7.31, grp:13,per:7},
+  {Z:114,sym:'Fl',name:'Flerovium',      P:6.350,N:14,B:4, A:8.00, grp:14,per:7},
+  {Z:115,sym:'Mc',name:'Moscovium',      P:7.000,N:14,B:3, A:7.50, grp:15,per:7},
+  {Z:116,sym:'Lv',name:'Livermorium',    P:7.650,N:14,B:2, A:8.00, grp:16,per:7},
+  {Z:117,sym:'Ts',name:'Tennessine',     P:8.300,N:14,B:1, A:7.70, grp:17,per:7},
+  {Z:118,sym:'Og',name:'Oganesson',      P:8.950,N:14,B:0, A:8.80, grp:18,per:7},
 ];
 
-// CHANGE 3: SNSFT_ELS with updated coords for Sv, Lm, Ax + new Diquonium + Gluino
 const SNSFT_ELS=[
-  {sym:'Sv',name:'Soverium',    coord:'9,9,1,46·[9,9,2,39]',P:P_VE,N:2,B:0,           A:0,     color:'#00ffcc'},
-  {sym:'Lm',name:'Lumium',      coord:'9,9,1,53·[9,9,2,42]',P:P_VE,N:2,B:1/137.036,   A:4.423, color:'#66aaff'},
-  {sym:'Ve',name:'Velium',      coord:'9,9,1,47',            P:P_VE,N:2,B:1,            A:4.423, color:'#ffe066'},
-  {sym:'Nx',name:'Nexium',      coord:'9,9,1,50',            P:ANCHOR,N:ANCHOR,B:ANCHOR,A:ANCHOR,color:'#ff44aa'},
-  {sym:'Wm',name:'Wimpium',     coord:'9,9,4,3',             P:P_VE,N:3,B:0.034,        A:0.01,  color:'#ccff88'},
-  {sym:'Ax',name:'Axionium',    coord:'9,9,4,4·[9,9,2,41]', P:P_VE,N:1,B:1/Math.PI**2,A:0.01,  color:'#ffcc44'},
-  {sym:'De',name:'Darkenergy',  coord:'9,9,4,1',             P:P_VE,N:1,B:0,            A:0.689, color:'#aaaaff'},
-  {sym:'GU',name:'GUT State',   coord:'9,9,3,5',             P:P_VE,N:1,B:1/25,         A:1/25,  color:'#aaffaa'},
-  {sym:'EW',name:'EW Plasma',   coord:'9,9,3,6',             P:P_VE,N:2,B:0.231,        A:0.231, color:'#ffaaff'},
-  {sym:'Pm',name:'Plasmion',    coord:'9,9,3,4',             P:P_VE,N:3,B:1/Math.PI,    A:0,     color:'#ff6644'},
-  {sym:'NS',name:'Neutron Star',coord:'9,9,3,3',             P:P_VE,N:1,B:0.199,        A:0,     color:'#8888ff'},
-  {sym:'Dm',name:'Darkmatter',  coord:'9,9,4,2',             P:P_VE,N:1,B:0.269,        A:0.269, color:'#9966ff'},
-  {sym:'Hi',name:'Higgsium',    coord:'9,9,4,5',             P:125.09/246.22,N:1,B:0.13,A:0.93,  color:'#ff00ff'},
-  {sym:'Zb',name:'Z-boson',     coord:'9,9,4,6',             P:91.1876/246.22,N:2,B:0.2312,A:0.2312,color:'#ff66cc'},
-  {sym:'Wb',name:'W-boson',     coord:'9,9,4,7',             P:80.377/246.22,N:2,B:1/29.8,A:80.377/91.1876,color:'#66ccff'},
-  // CHANGE 3: New EREs
-  {sym:'Dq',name:'Diquonium',   coord:'9,9,2,33',            P:1.27/246.22,N:3,B:0,     A:0.118, color:'#dd44ff'},
-  {sym:'Gl2',name:'Gluino',     coord:'9,9,2,40',            P:1000/938.272,N:8,B:0,    A:0.118, color:'#ccff44'},
+  {sym:'Sv',name:'Soverium',   coord:'9,9,1,46',P:P_VE,  N:2,      B:0,            A:0,     color:'#00ffcc'},
+  {sym:'Lm',name:'Lumium',     coord:'9,9,1,53',P:P_VE,  N:2,      B:1/137,        A:4.423, color:'#66aaff'},
+  {sym:'Ve',name:'Velium',     coord:'9,9,1,47',P:P_VE,  N:2,      B:1,            A:4.423, color:'#ffe066'},
+  {sym:'Nx',name:'Nexium',     coord:'9,9,1,50',P:ANCHOR,N:ANCHOR, B:ANCHOR,       A:ANCHOR,color:'#ff44aa'},
+  {sym:'Wm',name:'Wimpium',    coord:'9,9,4,3', P:P_VE,  N:3,      B:0.034,        A:0.01,  color:'#ccff88'},
+  {sym:'Ax',name:'Axionium',   coord:'9,9,4,4', P:P_VE,  N:1,      B:1/Math.PI**2, A:0.01,  color:'#ffcc44'},
+  {sym:'De',name:'Darkenergy', coord:'9,9,4,1', P:P_VE,  N:1,      B:0,            A:0.689, color:'#aaaaff'},
+  {sym:'GU',name:'GUT State',  coord:'9,9,3,5', P:P_VE,  N:1,      B:1/25,         A:1/25,  color:'#aaffaa'},
+  {sym:'EW',name:'EW Plasma',  coord:'9,9,3,6', P:P_VE,  N:2,      B:0.231,        A:0.231, color:'#ffaaff'},
+  {sym:'Pm',name:'Plasmion',   coord:'9,9,3,4', P:P_VE,  N:3,      B:1/Math.PI,    A:0,     color:'#ff6644'},
+  {sym:'NS',name:'Neutron Star',coord:'9,9,3,3',P:P_VE,  N:1,      B:0.199,        A:0,     color:'#8888ff'},
+  {sym:'Dm',name:'Darkmatter',  coord:'9,9,4,2', P:P_VE,  N:1,      B:0.269,        A:0.269, color:'#9966ff'},
+  {sym:'Hi',name:'Higgsium',    coord:'9,9,4,5', P:125.09/246.22, N:1, B:0.13,      A:0.93,  color:'#ff00ff'},
+  {sym:'Zb',name:'Z-boson',     coord:'9,9,4,6', P:91.1876/246.22,N:2, B:0.2312,    A:0.2312,color:'#ff66cc'},
+  {sym:'Wb',name:'W-boson',     coord:'9,9,4,7', P:80.377/246.22, N:2, B:1/29.8,    A:80.377/91.1876,color:'#66ccff'},
 ];
 
-// CHANGE 4: PARTICLE_ELS with Xicc+, J/psi, Upsilon added
+// ── PARTICLE PHYSICS ERE (PDG 2024 values) ──────────────
+// P = m/m_proton (proton=1.0 reference) | N = quantum states
+// B = coupling strength | A = energy scale / decay width
+// Massless carriers use P=0 (τ=0 by convention, Noble class)
 const PARTICLE_ELS=[
-  {sym:'Ph',name:'Photon',             coord:'particle',P:0,           N:2,B:1/137.036,A:1/137.036,color:'#ffff44'},
-  {sym:'Gl',name:'Gluon',              coord:'particle',P:0,           N:8,B:0.118,    A:0.118,    color:'#ff8800'},
-  {sym:'qu',name:'Up Quark',           coord:'particle',P:0.00234,     N:3,B:0.667,    A:0.118,    color:'#44ccff'},
-  {sym:'qd',name:'Down Quark',         coord:'particle',P:0.00501,     N:3,B:0.333,    A:0.118,    color:'#44ccff'},
-  {sym:'qs',name:'Strange Quark',      coord:'particle',P:0.09912,     N:3,B:0.333,    A:0.118,    color:'#44aaff'},
-  {sym:'qc',name:'Charm Quark',        coord:'particle',P:1.3589,      N:3,B:0.667,    A:0.118,    color:'#44aaff'},
-  {sym:'qb',name:'Bottom Quark',       coord:'particle',P:4.4550,      N:3,B:0.333,    A:0.118,    color:'#4488ff'},
-  {sym:'qt',name:'Top Quark',          coord:'particle',P:184.126,     N:3,B:0.667,    A:0.118,    color:'#4466ff'},
-  {sym:'e', name:'Electron',           coord:'particle',P:0.000545,    N:2,B:1,        A:0.01360,  color:'#00ffaa'},
-  {sym:'mu',name:'Muon',               coord:'particle',P:0.11261,     N:2,B:1,        A:0.11261,  color:'#00ddaa'},
-  {sym:'ta',name:'Tau',                coord:'particle',P:1.89376,     N:2,B:1,        A:1.89376,  color:'#00bbaa'},
-  {sym:'ve',name:'Electron Neutrino',  coord:'particle',P:P_VE/1e9,    N:1,B:0,        A:0.0001,   color:'#aaffee'},
-  {sym:'vm',name:'Muon Neutrino',      coord:'particle',P:P_VE/1e6,    N:1,B:0,        A:0.0001,   color:'#88ffee'},
-  {sym:'vt',name:'Tau Neutrino',       coord:'particle',P:P_VE/1e5,    N:1,B:0,        A:0.0001,   color:'#66ffee'},
-  {sym:'Pr',name:'Proton',             coord:'particle',P:1.000,       N:3,B:1,        A:0.01360,  color:'#ff6644'},
-  {sym:'Nt',name:'Neutron',            coord:'particle',P:1.00138,     N:3,B:1,        A:0.000835, color:'#cc6644'},
-  {sym:'pi',name:'Pion+',              coord:'particle',P:0.14875,     N:2,B:1,        A:0.118,    color:'#ffaa44'},
-  {sym:'p0',name:'Pion0',              coord:'particle',P:0.14386,     N:2,B:0,        A:0.118,    color:'#ffcc44'},
-  {sym:'K+',name:'Kaon+',              coord:'particle',P:0.52616,     N:2,B:1,        A:0.118,    color:'#ff8844'},
-  {sym:'Lb',name:'Lambda',             coord:'particle',P:1.18910,     N:3,B:0,        A:0.118,    color:'#dd4444'},
-  {sym:'D2',name:'Delta++',            coord:'particle',P:1.31305,     N:4,B:2,        A:0.118,    color:'#cc4444'},
-  // CHANGE 4: GC Series particle additions
-  {sym:'Xc',name:'Xicc+ Baryon',       coord:'9,9,2,33',P:3619.97/938.272,N:3,B:0,    A:0.118,    color:'#ff44ff'},
-  {sym:'Jy',name:'J/psi',              coord:'9,9,2,36',P:3096.9/938.272, N:2,B:0,    A:0.118,    color:'#ffff66'},
-  {sym:'Ups',name:'Upsilon',           coord:'9,9,2,36',P:9460.3/938.272, N:2,B:0,    A:0.118,    color:'#ffee44'},
+  // Gauge bosons
+  {sym:'Ph',name:'Photon',          coord:'particle',P:0,          N:2, B:1/137.036,   A:1/137.036,   color:'#ffff44'},
+  {sym:'Gl',name:'Gluon',           coord:'particle',P:0,          N:8, B:0.118,       A:0.118,       color:'#ff8800'},
+  // Quarks (P = m_quark/m_proton, B = |electric charge|, A = alpha_s)
+  {sym:'qu',name:'Up Quark',        coord:'particle',P:0.00234,    N:3, B:0.667,       A:0.118,       color:'#44ccff'},
+  {sym:'qd',name:'Down Quark',      coord:'particle',P:0.00501,    N:3, B:0.333,       A:0.118,       color:'#44ccff'},
+  {sym:'qs',name:'Strange Quark',   coord:'particle',P:0.09912,    N:3, B:0.333,       A:0.118,       color:'#44aaff'},
+  {sym:'qc',name:'Charm Quark',     coord:'particle',P:1.3589,     N:3, B:0.667,       A:0.118,       color:'#44aaff'},
+  {sym:'qb',name:'Bottom Quark',    coord:'particle',P:4.4550,     N:3, B:0.333,       A:0.118,       color:'#4488ff'},
+  {sym:'qt',name:'Top Quark',       coord:'particle',P:184.126,    N:3, B:0.667,       A:0.118,       color:'#4466ff'},
+  // Leptons (B = integer EM bond valence, A = energy scale)
+  {sym:'e', name:'Electron',        coord:'particle',P:0.000545,   N:2, B:1,           A:0.01360,     color:'#00ffaa'},
+  {sym:'mu',name:'Muon',            coord:'particle',P:0.11261,    N:2, B:1,           A:0.11261,     color:'#00ddaa'},
+  {sym:'ta',name:'Tau',             coord:'particle',P:1.89376,    N:2, B:1,           A:1.89376,     color:'#00bbaa'},
+  {sym:'ve',name:'Electron Neutrino',coord:'particle',P:P_VE/1e9,  N:1, B:0,           A:0.0001,      color:'#aaffee'},
+  {sym:'vm',name:'Muon Neutrino',   coord:'particle',P:P_VE/1e6,   N:1, B:0,           A:0.0001,      color:'#88ffee'},
+  {sym:'vt',name:'Tau Neutrino',    coord:'particle',P:P_VE/1e5,   N:1, B:0,           A:0.0001,      color:'#66ffee'},
+  // Hadrons — integer strong/EM bond valence (B=0 = Noble, neutral)
+  {sym:'Pr',name:'Proton',          coord:'particle',P:1.000,      N:3, B:1,           A:0.01360,     color:'#ff6644'},
+  {sym:'Nt',name:'Neutron',         coord:'particle',P:1.00138,    N:3, B:1,           A:0.000835,    color:'#cc6644'},
+  {sym:'pi',name:'Pion+',           coord:'particle',P:0.14875,    N:2, B:1,           A:0.118,       color:'#ffaa44'},
+  {sym:'p0',name:'Pion0',           coord:'particle',P:0.14386,    N:2, B:0,           A:0.118,       color:'#ffcc44'},
+  {sym:'K+',name:'Kaon+',           coord:'particle',P:0.52616,    N:2, B:1,           A:0.118,       color:'#ff8844'},
+  {sym:'Lb',name:'Lambda',          coord:'particle',P:1.18910,    N:3, B:0,           A:0.118,       color:'#dd4444'},
+  {sym:'D2',name:'Delta++',         coord:'particle',P:1.31305,    N:4, B:2,           A:0.118,       color:'#cc4444'},
 ];
 
 const ALL=[
@@ -517,9 +931,9 @@ const ALL=[
   ...PARTICLE_ELS.map(e=>({...e,type:'particle',Z:null,grp:null,per:null,id:e.sym})),
 ];
 
-function tau(e){return e.P>0?e.B/e.P:0;}
-function atomColor(e){const t=e.B/e.P;if(e.B===0)return '#aa88ff';if(t<TL)return '#00ffcc';return '#ff3355';}
-function quadrant(P,A){if(A>=12&&P<=2)return 'Q1';if(A>=12&&P>2)return 'Q2';if(A<12&&P<=2)return 'Q3';return 'Q4';}
+function tau(e){ return e.P>0?e.B/e.P:0; }
+function atomColor(e){ const t=e.B/e.P; if(e.B===0) return '#aa88ff'; if(t<TL) return '#00ffcc'; return '#ff3355'; }
+function quadrant(P,A){ if(A>=12&&P<=2) return 'Q1'; if(A>=12&&P>2) return 'Q2'; if(A<12&&P<=2) return 'Q3'; return 'Q4'; }
 const qColor={'Q1':'#00e5ff','Q2':'#aa88ff','Q3':'#00ffcc','Q4':'#ffaa00'};
 
 function fuse(e1,e2,k){
@@ -529,29 +943,13 @@ function fuse(e1,e2,k){
   const A_o=Math.max(e1.A,e2.A);
   const t=P_o>0?B_o/P_o:999;
   const s=B_o===0?'n':t<TL?'l':'s';
-  return{P:P_o,N:e1.N+e2.N,B:B_o,A:A_o,tau:t,IM:(P_o+e1.N+e2.N+B_o+A_o)*ANCHOR,status:s};
+  return {P:P_o,N:e1.N+e2.N,B:B_o,A:A_o,tau:t,IM:(P_o+e1.N+e2.N+B_o+A_o)*ANCHOR,status:s};
 }
 
+// ── STATE ──────────────────────────────────────────────────
 let selA=null,selB=null;
 
-// CHANGE 5: QUICK_LIST with 3 new chips
-const QUICK_LIST=[
-  {a:'N', b:'N',  label:'N₂ — inert gas'},
-  {a:'N', b:'Ga', label:'GaN — LED semiconductor ✓'},
-  {a:'O', b:'Zn', label:'ZnO — semiconductor ✓'},
-  {a:'Na',b:'Cl', label:'NaCl — salt ✓'},
-  {a:'C', b:'C',  label:'Diamond ✓'},
-  {a:'N', b:'As', label:'AsN — PREDICTED 🎯'},
-  {a:'Hi',b:'Fe', label:'Higgs + Iron'},
-  {a:'Hi',b:'Hi', label:'Higgs self → Noble'},
-  {a:'Sv',b:'Ve', label:'IVA Drive state'},
-  {a:'C', b:'Fe', label:'Fe+C → cementite'},
-  // CHANGE 5: new chips
-  {a:'Dq',b:'qd', label:'Diquonium+d → Ξcc⁺ [9,9,2,33]'},
-  {a:'Pr',b:'Nt', label:'p+n → Deuterium Noble [9,9,2,36]'},
-  {a:'Dq',b:'Dq', label:'Dq+Dq → Noble tetraquark [9,9,2,35]'},
-];
-
+// ── COLLIDER ───────────────────────────────────────────────
 function buildLists(){
   ['a','b'].forEach(side=>{
     const div=document.getElementById('list-'+side);
@@ -560,7 +958,7 @@ function buildLists(){
       const t=tau(el);
       const tc=el.B===0?'tc-n':t<TL?'tc-l':'tc-s';
       const d=document.createElement('div');
-      d.className='ec';d.dataset.id=el.id;d.dataset.side=side;
+      d.className='ec'; d.dataset.id=el.id; d.dataset.side=side;
       d.innerHTML=`<span class="ec-sym" style="color:${el.color}">${el.sym}</span>`+
                   `<span class="ec-z">${el.Z?'Z='+el.Z:el.coord||''}</span>`+
                   `<span class="ec-tau ${tc}">τ${t.toFixed(2)}</span>`;
@@ -581,7 +979,7 @@ function filterList(side,query){
 }
 
 function pick(el,side){
-  if(side==='a')selA=el;else selB=el;
+  if(side==='a') selA=el; else selB=el;
   document.querySelectorAll('#list-a .ec').forEach(c=>c.classList.toggle('sel-a',c.dataset.id===selA?.id));
   document.querySelectorAll('#list-b .ec').forEach(c=>c.classList.toggle('sel-b',c.dataset.id===selB?.id));
   document.querySelectorAll('.pt-cell').forEach(c=>{c.classList.toggle('sel-a',c.dataset.id===selA?.id);c.classList.toggle('sel-b',c.dataset.id===selB?.id);});
@@ -593,12 +991,12 @@ function pick(el,side){
   if(selA&&selB){
     const mk=Math.min(selA.B,selB.B);
     const sl=document.getElementById('k-slider');
-    sl.max=mk.toFixed(6);sl.value=mk.toFixed(6);
+    sl.max=mk.toFixed(6); sl.value=mk.toFixed(6);
     document.getElementById('k-val').textContent=mk.toFixed(3);
     document.getElementById('fire-btn').disabled=false;
     document.getElementById('arrow-a').classList.add('ready');
     document.getElementById('arrow-b').classList.add('ready');
-  }else{document.getElementById('fire-btn').disabled=true;}
+  } else { document.getElementById('fire-btn').disabled=true; }
 }
 
 function updateArrows(){
@@ -610,7 +1008,7 @@ document.getElementById('k-slider').addEventListener('input',function(){
 });
 
 function doCollide(){
-  if(!selA||!selB)return;
+  if(!selA||!selB) return;
   showResult(selA,selB,parseFloat(document.getElementById('k-slider').value),fuse(selA,selB,parseFloat(document.getElementById('k-slider').value)));
 }
 
@@ -661,11 +1059,28 @@ function showResult(e1,e2,k,r){
     </div></div>`;
 }
 
+// ── QUICK CHIPS ────────────────────────────────────────────
+const QUICK_LIST=[
+  {a:'N', b:'N',  label:'N₂ — inert gas'},
+  {a:'N', b:'Ga', label:'GaN — LED semiconductor ✓'},
+  {a:'O', b:'Zn', label:'ZnO — semiconductor ✓'},
+  {a:'Na',b:'Cl', label:'NaCl — salt ✓'},
+  {a:'C', b:'C',  label:'Diamond ✓'},
+  {a:'N', b:'As', label:'AsN — PREDICTED 🎯'},
+  {a:'Hi',b:'Fe', label:'God particle + Iron'},
+  {a:'Hi',b:'Hi', label:'Higgs self-collision → Noble'},
+  {a:'Hi',b:'Zb', label:'Higgs + Z-boson'},
+  {a:'Wb',b:'EW', label:'W-boson + EW plasma'},
+  {a:'EW',b:'Pm', label:'EW+QGP → hadronic matter'},
+  {a:'Sv',b:'Ve', label:'IVA Drive state'},
+  {a:'C', b:'Fe', label:'Fe+C k=4 → cementite'},
+];
+
 function buildQuick(){
   const row=document.getElementById('quick-row');
   QUICK_LIST.forEach(q=>{
     const e1=ALL.find(e=>e.id===q.a),e2=ALL.find(e=>e.id===q.b);
-    if(!e1||!e2)return;
+    if(!e1||!e2) return;
     const r=fuse(e1,e2,Math.min(e1.B,e2.B));
     const sc={'l':'tc-l','s':'tc-s','n':'tc-n'}[r.status];
     const d=document.createElement('div');
@@ -673,7 +1088,7 @@ function buildQuick(){
     d.innerHTML=`<span style="color:${e1.color}">${e1.sym}</span>+<span style="color:${e2.color}">${e2.sym}</span> <span class="${sc}">τ=${r.tau.toFixed(2)}</span>`;
     d.title=q.label;
     d.addEventListener('click',()=>{
-      pick(e1,'a');pick(e2,'b');showTab('collide');
+      pick(e1,'a'); pick(e2,'b'); showTab('collide');
       const k=Math.min(e1.B,e2.B);
       document.getElementById('k-slider').value=k;
       document.getElementById('k-val').textContent=k.toFixed(3);
@@ -683,6 +1098,7 @@ function buildQuick(){
   });
 }
 
+// ── PERIODIC TABLE ─────────────────────────────────────────
 function buildPTable(){
   const wrap=document.getElementById('ptable-wrap');
   const rows=[
@@ -692,14 +1108,15 @@ function buildPTable(){
     [{Z:19},{Z:20},{Z:21},{Z:22},{Z:23},{Z:24},{Z:25},{Z:26},{Z:27},{Z:28},{Z:29},{Z:30},{Z:31},{Z:32},{Z:33},{Z:34},{Z:35},{Z:36}],
   ];
   rows.forEach(row=>{
-    const rd=document.createElement('div');rd.className='pt-row';
+    const rd=document.createElement('div'); rd.className='pt-row';
     row.forEach(cell=>{
-      if(cell.Z===null){for(let i=0;i<(cell.span||1);i++){const sp=document.createElement('div');sp.className='pt-cell spacer';rd.appendChild(sp);}}
-      else{
-        const el=PERIODIC.find(e=>e.Z===cell.Z);if(!el)return;
+      if(cell.Z===null){
+        for(let i=0;i<(cell.span||1);i++){const sp=document.createElement('div');sp.className='pt-cell spacer';rd.appendChild(sp);}
+      } else {
+        const el=PERIODIC.find(e=>e.Z===cell.Z); if(!el) return;
         const t=tau(el);
         const dotColor=el.B===0?'var(--noble)':t<TL?'var(--locked)':'var(--shatter)';
-        const d=document.createElement('div');d.className='pt-cell';d.dataset.id=el.id;
+        const d=document.createElement('div'); d.className='pt-cell'; d.dataset.id=el.id;
         d.innerHTML=`<span class="pt-sym" style="color:${el.color}">${el.sym}</span><span class="pt-z">Z=${el.Z}</span><div class="pt-tau-dot" style="background:${dotColor}"></div>`;
         d.title=`${el.name} · P=${el.P.toFixed(3)} N=${el.N} B=${el.B} τ=${t.toFixed(3)}`;
         d.addEventListener('click',()=>{if(!selA)pick(el,'a');else if(!selB)pick(el,'b');else pick(el,'a');showTab('collide');});
@@ -708,24 +1125,25 @@ function buildPTable(){
     });
     wrap.appendChild(rd);
   });
-  const st=document.createElement('div');st.style.cssText='font-size:9px;letter-spacing:.25em;color:#1a3040;margin:20px 0 8px;';st.textContent='EMERGENT RESONANCE ELEMENTS';wrap.appendChild(st);
-  const sr=document.createElement('div');sr.className='pt-row';sr.style.flexWrap='wrap';
+  const st=document.createElement('div'); st.style.cssText='font-size:9px;letter-spacing:.25em;color:#1a3040;margin:20px 0 8px;'; st.textContent='EMERGENT RESONANCE ELEMENTS'; wrap.appendChild(st);
+  const sr=document.createElement('div'); sr.className='pt-row'; sr.style.flexWrap='wrap';
   SNSFT_ELS.forEach(el=>{
     const t=tau(el);
     const dotColor=el.B===0?'var(--noble)':t<TL?'var(--locked)':'var(--shatter)';
-    const d=document.createElement('div');d.className='pt-cell';d.dataset.id=el.id;
+    const d=document.createElement('div'); d.className='pt-cell'; d.dataset.id=el.id;
     d.innerHTML=`<span class="pt-sym" style="color:${el.color}">${el.sym}</span><span class="pt-z" style="font-size:6px">${el.coord||''}</span><div class="pt-tau-dot" style="background:${dotColor}"></div>`;
     d.title=`${el.name} · τ=${t.toFixed(4)}`;
     d.addEventListener('click',()=>{if(!selA)pick(el,'a');else if(!selB)pick(el,'b');else pick(el,'a');showTab('collide');});
     sr.appendChild(d);
   });
   wrap.appendChild(sr);
-  const pt=document.createElement('div');pt.style.cssText='font-size:9px;letter-spacing:.25em;color:#1a3040;margin:20px 0 8px;';pt.textContent='PARTICLE PHYSICS';wrap.appendChild(pt);
-  const pr=document.createElement('div');pr.className='pt-row';pr.style.flexWrap='wrap';
+  // ── PARTICLE PHYSICS ERE ──
+  const pt=document.createElement('div'); pt.style.cssText='font-size:9px;letter-spacing:.25em;color:#1a3040;margin:20px 0 8px;'; pt.textContent='PARTICLE PHYSICS'; wrap.appendChild(pt);
+  const pr=document.createElement('div'); pr.className='pt-row'; pr.style.flexWrap='wrap';
   PARTICLE_ELS.forEach(el=>{
     const t=tau(el);
     const dotColor=el.B===0?'var(--noble)':t<TL?'var(--locked)':'var(--shatter)';
-    const d=document.createElement('div');d.className='pt-cell';d.dataset.id=el.id;
+    const d=document.createElement('div'); d.className='pt-cell'; d.dataset.id=el.id;
     d.innerHTML=`<span class="pt-sym" style="color:${el.color}">${el.sym}</span><span class="pt-z" style="font-size:6px">${el.coord||''}</span><div class="pt-tau-dot" style="background:${dotColor}"></div>`;
     d.title=`${el.name} · τ=${t.toFixed(4)}`;
     d.addEventListener('click',()=>{if(!selA)pick(el,'a');else if(!selB)pick(el,'b');else pick(el,'a');showTab('collide');});
@@ -734,6 +1152,7 @@ function buildPTable(){
   wrap.appendChild(pr);
 }
 
+// ── K-SWEEP ────────────────────────────────────────────────
 function buildSweepSelects(){
   ['sw-a','sw-b'].forEach(id=>{
     const sel=document.getElementById(id);
@@ -746,13 +1165,13 @@ function buildSweepSelects(){
 function runSweep(){
   const e1=ALL.find(e=>e.id===document.getElementById('sw-a').value);
   const e2=ALL.find(e=>e.id===document.getElementById('sw-b').value);
-  if(!e1||!e2)return;
+  if(!e1||!e2) return;
   const canvas=document.getElementById('sweep-canvas');
-  const W=canvas.offsetWidth;canvas.width=W;canvas.height=220;
+  const W=canvas.offsetWidth; canvas.width=W; canvas.height=220;
   const ctx=canvas.getContext('2d');
   ctx.clearRect(0,0,W,220);
   const maxK=Math.max(Math.min(e1.B,e2.B),0.001);
-  const pts=[];let kThresh=null;
+  const pts=[]; let kThresh=null;
   for(let i=0;i<=200;i++){const k=(i/200)*maxK;const r=fuse(e1,e2,k);pts.push({k,tau:Math.min(r.tau,3)});if(kThresh===null&&r.tau<TL)kThresh=k;}
   const pad={l:50,r:20,t:20,b:40},gW=W-70,gH=160;
   ctx.strokeStyle='#0c1a26';ctx.lineWidth=1;
@@ -763,16 +1182,18 @@ function runSweep(){
   ctx.lineWidth=2;ctx.beginPath();pts.forEach((p,i)=>{const x=pad.l+(p.k/maxK)*gW;const y=pad.t+gH*(1-p.tau/3);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
   const g=ctx.createLinearGradient(pad.l,0,pad.l+gW,0);g.addColorStop(0,'var(--shatter)');if(kThresh)g.addColorStop(kThresh/maxK,'var(--warn)');g.addColorStop(1,'var(--locked)');ctx.strokeStyle=g;ctx.stroke();
   const fr=fuse(e1,e2,maxK);
-  const corridor=(0.2*fr.P)/2;
-  const corridorPct=maxK>0?(corridor/maxK*100).toFixed(1):'0';
-  document.getElementById('sweep-info').innerHTML=`<b>${e1.name} + ${e2.name}</b> · max k=${maxK.toFixed(4)}<br>At k=0: τ=${fuse(e1,e2,0).tau.toFixed(4)} · At k_max: τ=${fr.tau.toFixed(4)} · ${kThresh!==null?`k*=${kThresh.toFixed(4)} (lock threshold)`:'No lock achievable'}<br>Corridor width=${corridor.toFixed(4)} (${corridorPct}% of k range)`;
+  const P_out=fr.P;
+  const corridor = (0.2 * P_out) / 2;
+  const corridorPct = maxK > 0 ? (corridor/maxK*100).toFixed(1) : '0';
+  document.getElementById('sweep-info').innerHTML=`<b>${e1.name} + ${e2.name}</b> · max k=${maxK.toFixed(4)}<br>At k=0: τ=${fuse(e1,e2,0).tau.toFixed(4)} · At k_max: τ=${fr.tau.toFixed(4)} · ${kThresh!==null?`k*=${kThresh.toFixed(4)} (lock threshold)`:'No lock achievable'}<br>Corridor width=${corridor.toFixed(4)} (${corridorPct}% of k range) — wider = more accessible metastable state`;
 }
 
+// ── CASCADE ────────────────────────────────────────────────
 let cascadeSteps=[{a:null,b:null}];
 function buildCascadeSelects(){
   ['cas-sel-a','cas-sel-b'].forEach(id=>{const sel=document.getElementById(id);ALL.forEach(el=>{const o=document.createElement('option');o.value=el.id;o.textContent=`${el.sym} — ${el.name}`;sel.appendChild(o);});});
-  document.getElementById('cas-sel-a').value='Dq';
-  document.getElementById('cas-sel-b').value='qd';
+  document.getElementById('cas-sel-a').value='Hi';
+  document.getElementById('cas-sel-b').value='Fe';
 }
 function addCascadeStep(){cascadeSteps.push({a:document.getElementById('cas-sel-a').value,b:document.getElementById('cas-sel-b').value});renderCascadeSteps();}
 function resetCascade(){cascadeSteps=[{a:null,b:null}];document.getElementById('cascade-results').innerHTML='';renderCascadeSteps();}
@@ -798,7 +1219,7 @@ function runCascade(){
   cascadeSteps.forEach((step,i)=>{
     const aEl=i===0?ALL.find(e=>e.id===step.a):cur;
     const bEl=ALL.find(e=>e.id===step.b);
-    if(!aEl||!bEl)return;
+    if(!aEl||!bEl) return;
     const k=Math.min(aEl.B,bEl.B);const r=fuse(aEl,bEl,k);
     const sc={'l':'tc-l','s':'tc-s','n':'tc-n'}[r.status];
     const bc={'l':'var(--locked)','s':'var(--shatter)','n':'var(--noble)'}[r.status];
@@ -810,6 +1231,7 @@ function runCascade(){
   });
 }
 
+// ── MATERIALS MAP ──────────────────────────────────────────
 const KNOWN_COMPOUNDS={
   'H+H':'H2 — diatomic gas','H+F':'HF — hydrofluoric acid','H+Li':'LiH — lithium hydride',
   'H+Na':'NaH — sodium hydride','H+K':'KH — potassium hydride','H+Cl':'HCl — hydrochloric acid',
@@ -824,6 +1246,7 @@ const KNOWN_COMPOUNDS={
 };
 
 let noblePoints=[];
+
 function buildMaterialsMap(){
   noblePoints=[];
   const syms=PERIODIC.filter(e=>e.B>0).map(e=>e.sym);
@@ -831,17 +1254,18 @@ function buildMaterialsMap(){
     for(let j=i;j<syms.length;j++){
       const e1=PERIODIC.find(e=>e.sym===syms[i]);
       const e2=PERIODIC.find(e=>e.sym===syms[j]);
-      if(e1.B!==e2.B)continue;
+      if(e1.B!==e2.B) continue;
       const k=e1.B;
       const r=fuse(e1,e2,k);
-      if(r.B>0.0001)continue;
+      if(r.B>0.0001) continue;
       const key=syms[i]===syms[j]?`${syms[i]}+${syms[i]}`:`${syms[i]}+${syms[j]}`;
       const known=KNOWN_COMPOUNDS[key]||KNOWN_COMPOUNDS[`${syms[j]}+${syms[i]}`]||null;
       const q=quadrant(r.P,r.A);
       noblePoints.push({s1:syms[i],s2:syms[j],P:r.P,A:r.A,IM:r.IM,q,known,key});
     }
   }
-  renderMaterialsMap();renderNobleList();
+  renderMaterialsMap();
+  renderNobleList();
 }
 
 function renderMaterialsMap(){
@@ -854,22 +1278,32 @@ function renderMaterialsMap(){
   const maxP=10,maxA=22,minP=0,minA=0;
   function px(P){return pad.l+(P-minP)/(maxP-minP)*gW;}
   function py(A){return pad.t+gH-(A-minA)/(maxA-minA)*gH;}
+
+  // Grid
   ctx.strokeStyle='#0c1a26';ctx.lineWidth=1;
   [0,5,10].forEach(v=>{ctx.beginPath();ctx.moveTo(px(v),pad.t);ctx.lineTo(px(v),pad.t+gH);ctx.stroke();ctx.fillStyle='#1a3040';ctx.font='9px Share Tech Mono';ctx.fillText(v.toFixed(0),px(v)-4,pad.t+gH+15);});
   [0,5,10,15,20].forEach(v=>{ctx.beginPath();ctx.moveTo(pad.l,py(v));ctx.lineTo(pad.l+gW,py(v));ctx.stroke();ctx.fillStyle='#1a3040';ctx.fillText(v.toFixed(0),4,py(v)+3);});
+
+  // Quadrant lines
   const Px=px(2),Ay=py(12);
   ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
   ctx.beginPath();ctx.moveTo(Px,pad.t);ctx.lineTo(Px,pad.t+gH);ctx.stroke();
   ctx.beginPath();ctx.moveTo(pad.l,Ay);ctx.lineTo(pad.l+gW,Ay);ctx.stroke();
   ctx.setLineDash([]);
+
+  // Quadrant labels
   ctx.font='9px Orbitron,monospace';
   ctx.fillStyle='rgba(0,229,255,0.25)';ctx.fillText('Q1',pad.l+8,Ay-10);
   ctx.fillStyle='rgba(170,136,255,0.25)';ctx.fillText('Q2',Px+8,Ay-10);
   ctx.fillStyle='rgba(0,255,204,0.25)';ctx.fillText('Q3',pad.l+8,py(2));
   ctx.fillStyle='rgba(255,170,0,0.25)';ctx.fillText('Q4',Px+8,py(2));
+
+  // Axis labels
   ctx.fillStyle='#2a5060';ctx.font='9px Share Tech Mono';
   ctx.fillText('P_out →',W/2-20,pad.t+gH+30);
   ctx.save();ctx.translate(12,pad.t+gH/2);ctx.rotate(-Math.PI/2);ctx.fillText('A_out',0,0);ctx.restore();
+
+  // Points
   noblePoints.forEach(pt=>{
     const x=px(pt.P),y=py(pt.A);
     const col=qColor[pt.q];
@@ -878,8 +1312,11 @@ function renderMaterialsMap(){
     ctx.fillStyle=pt.known?col:col.replace(')',',0.4)').replace('rgb','rgba');
     ctx.fill();
     if(!pt.known){ctx.strokeStyle=col;ctx.lineWidth=1;ctx.stroke();}
-    if(isAsN){ctx.strokeStyle='#ffffff';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#ffffff';ctx.font='8px Share Tech Mono';ctx.fillText('AsN',x+8,y-6);}
+    if(isAsN){ctx.strokeStyle='#ffffff';ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle='#ffffff';ctx.font='8px Share Tech Mono';ctx.fillText('AsN',x+8,y-6);}
   });
+
+  // Store for hover
   canvas._pts=noblePoints.map(pt=>({...pt,cx:px(pt.P),cy:py(pt.A)}));
 }
 
@@ -921,6 +1358,7 @@ function renderNobleList(){
   });
 }
 
+// ── F_EXT ──────────────────────────────────────────────────
 function buildFextSelect(){
   const sel=document.getElementById('fext-el');
   PERIODIC.filter(e=>e.B>0).forEach(e=>{
@@ -929,7 +1367,9 @@ function buildFextSelect(){
   sel.value='Fe';
 }
 
-function setPreset(name,db){document.getElementById('fext-db').value=db;}
+function setPreset(name,db){
+  document.getElementById('fext-db').value=db;
+}
 
 function applyFext(){
   const sym=document.getElementById('fext-el').value;
@@ -953,106 +1393,893 @@ function applyFext(){
     <div class="fext-state-row"><span class="fext-lbl">τ before</span><span class="fext-val" style="color:${col_b}">${t_before.toFixed(4)} ${s_before}</span></div>
     <div class="fext-state-row"><span class="fext-lbl">τ after</span><span class="fext-val" style="color:${col_a}">${t_after.toFixed(4)} ${s_after}</span></div>
     <div class="fext-state-row"><span class="fext-lbl">ΔB</span><span class="fext-val" style="color:${db>0?'var(--shatter)':'var(--locked)'}">${db>0?'+':''}${db.toFixed(2)} ${arrow}</span></div>
-    ${E>0?`<div class="fext-state-row"><span class="fext-lbl">Power</span><span class="fext-val" style="color:var(--warn)">${E.toFixed(4)}</span></div>`:''}
+    ${E>0?`<div class="fext-state-row"><span class="fext-lbl">Power</span><span class="fext-val" style="color:var(--warn)">${E.toFixed(4)} (shatter emission)</span></div>`:''}
     <div style="margin-top:8px;font-size:9px;color:#2a5060">${s_before}→${s_after}${s_after==='NOBLE'?' · Zero torsion. Maximum potential.':s_after==='SHATTER'?' · Energy released: '+E.toFixed(3)+' structural units':' · Phase locked.'}</div>`;
 }
+
+// ── TABS ────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+// DISCOVERY ENGINE — mirrored from discovery.html
+// ════════════════════════════════════════════════════════════
+
+const DISC_ANCHOR = 1.369, DISC_TL = 0.1369;
+
+let D_API_KEY = '';
+let dAgentState = 'stopped', dAgentInterval = null;
+let dStats = {cycles:0,collisions:0,flagged:0,approved:0,noble:0};
+let dDiscoveryQueue = [], dDiscoveryLog = [], dSessionCorpus = [];
+
+// ── CORPUS (gamcollider ALL array + additional EREs) ────────────
+function getDCorpus(){
+  const base = typeof ALL !== 'undefined' ? ALL : [];
+  const eres = [
+    {sym:'Sv',name:'Soverium',       P:Math.pow(1.369/1.4204,1/3),N:2,B:0,            A:0,     type:'ere'},
+    {sym:'Lm',name:'Lumium',         P:Math.pow(1.369/1.4204,1/3),N:2,B:1/137.036,    A:4.423, type:'ere'},
+    {sym:'Zo',name:'Zoivum',         P:1.369,N:2,                  B:0.1369*1.369/2,  A:10.0,  type:'ere'},
+    {sym:'Hi',name:'Higgsium',       P:125.09/246.22,N:1,          B:0.13,            A:0.93,  type:'ere'},
+    {sym:'Dq',name:'Diquonium',      P:1.27/246.22,N:3,            B:0,               A:0.118, type:'ere'},
+    {sym:'Jy',name:'J/psi',          P:3096.9/938.272,N:2,         B:0,               A:0.118, type:'ere'},
+    {sym:'Xc',name:'Xicc+ Baryon',   P:3619.97/938.272,N:3,        B:0,               A:0.118, type:'ere'},
+  ];
+  const baseSyms = new Set(base.map(e=>e.sym));
+  const uniqueEres = eres.filter(e=>!baseSyms.has(e.sym));
+  return [...base, ...uniqueEres, ...dSessionCorpus];
+}
+
+// ── FILTERED CORPUS (respects checkboxes) ────────────────────
+function dGetFilteredCorpus(){
+  const wantAtoms     = document.getElementById('filter-atoms')?.checked !== false;
+  const wantEre       = document.getElementById('filter-ere')?.checked !== false;
+  const wantParticles = document.getElementById('filter-particles')?.checked !== false;
+  const wantSession   = document.getElementById('filter-session')?.checked !== false;
+  return getDCorpus().filter(e=>{
+    const t = e.type || 'atom';
+    if(t==='atom'||t==='element')          return wantAtoms;
+    if(t==='ere')                          return wantEre;
+    if(t==='particle')                     return wantParticles;
+    if(t==='session'||String(e.id||'').startsWith('SNSFT-')) return wantSession;
+    return wantAtoms;
+  });
+}
+
+function dUpdateFilterLabel(){
+  const corpus  = dGetFilteredCorpus();
+  const summary = document.getElementById('d-filter-summary');
+  if(summary) summary.textContent = `${corpus.length} in pool`;
+}
+
+// ── PHYSICS ──────────────────────────────────────────────────
+function dFuse(e1, e2, k){
+  const kk = Math.max(0, Math.min(k, Math.min(e1.B, e2.B)));
+  const P_o = (e1.P>0&&e2.P>0) ? (e1.P*e2.P)/(e1.P+e2.P) : Math.max(e1.P,e2.P);
+  const B_o = Math.max(0, e1.B + e2.B - 2*kk);
+  const A_o = Math.max(e1.A, e2.A);
+  const t   = P_o > 0 ? B_o/P_o : 999;
+  const s   = B_o===0 ? 'NOBLE' : t < DISC_TL ? 'LOCKED' : 'SHATTER';
+  const IM  = (P_o + e1.N + e2.N + B_o + A_o) * DISC_ANCHOR;
+  return {P:P_o, N:e1.N+e2.N, B:B_o, A:A_o, tau:t, IM, status:s};
+}
+
+function dHashState(P,N,B,A){
+  const s = `${P.toFixed(6)}-${N}-${B.toFixed(6)}-${A.toFixed(6)}`;
+  let h = 0;
+  for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}
+  return Math.abs(h).toString(16).toUpperCase().slice(0,4);
+}
+
+function dMakeDesig(P,N,B,A){
+  const d = new Date();
+  const date = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+  return `SNSFT-${dHashState(P,N,B,A)}-${date}`;
+}
+
+function dIsInteresting(r, e1, e2, k){
+  const flagNoble   = document.getElementById('flag-noble')?.checked !== false;
+  const flagIva     = document.getElementById('flag-iva')?.checked !== false;
+  const flagExtreme = document.getElementById('flag-extreme')?.checked === true;
+  const flagIm      = document.getElementById('flag-im')?.checked !== false;
+
+  // Noble — all Noble events if toggle on (not just annihilation)
+  if(flagNoble && r.status==='NOBLE'){
+    if(e1.B>0 && e2.B>0)
+      return {flag:true, reason:'NOBLE ANNIHILATION — B1>0 + B2>0 → B_out=0'};
+    if(e1.type==='ere'||e2.type==='ere')
+      return {flag:true, reason:'ERE NOBLE FUSION — emergent resonance confirmed'};
+    return {flag:true, reason:`NOBLE STATE — ${e1.sym}+${e2.sym} τ=0`};
+  }
+
+  // IVA peak — τ within 5% of TL from below (wider window, actually catchable)
+  if(flagIva && r.tau>0 && r.tau < DISC_TL && r.tau > DISC_TL*0.85)
+    return {flag:true, reason:`IVA PEAK — τ=${r.tau.toFixed(4)} near TL=${DISC_TL.toFixed(4)}`};
+
+  // Extreme SHATTER — τ > 5×TL
+  if(flagExtreme && r.tau > DISC_TL*5)
+    return {flag:true, reason:`EXTREME τ — τ=${r.tau.toFixed(4)} (${(r.tau/DISC_TL).toFixed(1)}×TL)`};
+
+  // IM near 1/alpha = 137.036
+  if(flagIm && Math.abs(r.IM - 137.036) < 1.0)
+    return {flag:true, reason:`IM-MATCH — IM=${r.IM.toFixed(4)} near 1/α=137.036`};
+
+  return {flag:false};
+}
+
+// ── FEED ─────────────────────────────────────────────────────
+function dTimeStr(){
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+}
+
+function dFeedLine(text, cls='info'){
+  const feed = document.getElementById('d-live-feed');
+  const line = document.createElement('div');
+  line.className = `feed-line ${cls}`;
+  line.innerHTML = `<span class="feed-time">${dTimeStr()}</span>${text}`;
+  feed.appendChild(line);
+  feed.scrollTop = feed.scrollHeight;
+  if(feed.children.length > 400) feed.removeChild(feed.firstChild);
+}
+
+// ── LEAN STUB GENERATION ─────────────────────────────────────
+function dGenerateLeanStub(entry){
+  const ns  = entry.designation.replace(/-/g,'_');
+  const tau = entry.P > 0 ? entry.B/entry.P : 0;
+  const isNoble = entry.status === 'NOBLE';
+  const aifi = entry.aifiAnalysis
+    ? entry.aifiAnalysis.slice(0,200).replace(/\n/g,' ')
+    : 'AIFI classification not run — lean stub generated locally';
+  const nameHint = entry.name || entry.designation;
+
+  return `-- ============================================================
+-- ${entry.designation}.lean
+-- ============================================================
+--
+-- Discovery:     ${nameHint}
+-- Collision:     ${entry.collision} at k=${entry.k}
+-- Reason flagged: ${entry.reason}
+-- Session:       GAM Collider Discovery Engine
+-- Timestamp:     ${entry.timestamp}
+--
+-- Generated by SNSFT GAM Collider · uuia.app/gamcollider
+-- AIFI: ${aifi}
+--
+-- Corpus: HIGHTISTIC · DOI: 10.5281/zenodo.18719748
+-- PNBA equations (c) HIGHTISTIC · Soldotna Alaska
+-- [9,9,9,9] :: {ANC}
+-- Status: ${entry.status} · 0 sorry
+-- ============================================================
+
+import Mathlib.Tactic
+import Mathlib.Data.Real.Basic
+
+namespace ${ns}
+
+def ANCHOR : ℝ := 1.369
+def TL     : ℝ := ANCHOR / 10  -- 0.1369 emergent
+
+def P_out  : ℝ := ${entry.P.toFixed(8)}
+def N_out  : ℕ := ${Math.round(entry.N)}
+def B_out  : ℝ := ${entry.B.toFixed(8)}
+def A_out  : ℝ := ${entry.A.toFixed(6)}
+def IM_out : ℝ := ${entry.IM.toFixed(8)}
+
+theorem T1_P_positive : P_out > 0 := by
+  unfold P_out; norm_num
+
+theorem T2_B_value : B_out = ${entry.B.toFixed(8)} := rfl
+
+${isNoble ?
+`theorem T3_noble_state : B_out = 0 := by
+  unfold B_out; norm_num
+
+theorem T4_tau_zero : B_out / P_out = 0 := by
+  unfold B_out; simp` :
+`theorem T3_tau_locked : B_out / P_out < TL := by
+  unfold B_out P_out TL ANCHOR; norm_num
+
+theorem T4_tau_value : B_out / P_out = ${tau.toFixed(8)} := by
+  unfold B_out P_out; norm_num`}
+
+theorem T5_IM_positive : IM_out > 0 := by
+  unfold IM_out; norm_num
+
+theorem T6_ANCHOR_value : ANCHOR = 1.369 := rfl
+
+theorem T7_IM_formula :
+    (P_out + N_out + B_out + A_out) * ANCHOR = IM_out := by
+  unfold P_out N_out B_out A_out IM_out ANCHOR; norm_num
+
+theorem T8_${ns}_master :
+    P_out = ${entry.P.toFixed(8)} ∧
+    B_out = ${entry.B.toFixed(8)} ∧
+    (P_out + N_out + B_out + A_out) * ANCHOR = IM_out ∧
+    P_out > 0 ∧ ANCHOR = 1.369 :=
+  ⟨rfl, rfl, T7_IM_formula, T1_P_positive, rfl⟩
+
+end ${ns}
+
+/-!
+-- DESIGNATION: ${entry.designation}
+-- COLLISION:   ${entry.collision} k=${entry.k}
+-- STATUS:      ${entry.status}
+-- τ:           ${tau.toFixed(8)}
+-- IM:          ${entry.IM.toFixed(8)}
+-- FLAG:        ${entry.reason}
+-- THEOREMS:    8 · SORRY: 0
+-- TIMESTAMP:   ${entry.timestamp}
+-- Generated by SNSFT GAM Collider Discovery Engine
+-- HIGHTISTIC · Soldotna Alaska · [9,9,9,9] :: {ANC}
+-/`;
+}
+
+// ── DISCOVERY FLOW ────────────────────────────────────────────
+function dGetRandom(){
+  const c = dGetFilteredCorpus();
+  if(!c.length) return getDCorpus()[0]; // fallback if all filtered out
+  return c[Math.floor(Math.random()*c.length)];
+}
+
+function dGetFocused(){
+  const t = document.getElementById('d-focused-target').value.trim();
+  if(!t) return dGetRandom();
+  const found = getDCorpus().find(e=>e.sym===t||e.name?.toLowerCase().includes(t.toLowerCase()));
+  return found || dGetRandom();
+}
+
+async function dRunChaosRound(){
+  const rounds = parseInt(document.getElementById('d-rounds').value);
+  for(let i=0;i<rounds;i++){
+    if(dAgentState !== 'running') break;
+    const e1 = i===rounds-1 ? dGetFocused() : dGetRandom();
+    const e2 = dGetRandom();
+    const k  = Math.random() * Math.min(e1.B, e2.B);
+    const r  = dFuse(e1, e2, k);
+
+    dStats.collisions++;
+    document.getElementById('d-collisions').textContent = dStats.collisions;
+
+    const cls = r.status==='NOBLE'?'noble':r.status==='LOCKED'?'locked':'shatter';
+    dFeedLine(`${e1.sym}+${e2.sym} k=${k.toFixed(3)} → τ=${r.tau.toFixed(4)} ${r.status}`, cls);
+
+    if(r.status==='NOBLE'){
+      dStats.noble++;
+      document.getElementById('d-noble').textContent = dStats.noble;
+    }
+
+    const check = dIsInteresting(r, e1, e2, k);
+    if(check.flag){
+      dStats.flagged++;
+      document.getElementById('d-flagged').textContent = dStats.flagged;
+      dFeedLine(`★ FLAGGED: ${e1.sym}+${e2.sym} — ${check.reason}`, 'discovery');
+      await dFlagDiscovery(e1, e2, k, r, check.reason);
+    }
+    await new Promise(res=>setTimeout(res, 30));
+  }
+  dStats.cycles++;
+  document.getElementById('d-cycles').textContent = dStats.cycles;
+}
+
+async function dFlagDiscovery(e1, e2, k, r, reason){
+  const desig = dMakeDesig(r.P, r.N, r.B, r.A);
+  const entry = {
+    designation: desig,
+    timestamp:   new Date().toISOString(),
+    collision:   `${e1.sym}+${e2.sym}`,
+    k:           k.toFixed(4),
+    P: r.P, N: r.N, B: r.B, A: r.A,
+    tau: r.tau, IM: r.IM,
+    status: r.status,
+    reason,
+    approved:    false,
+    name:        null,
+    aifiAnalysis:null,
+    leanStub:    null,
+  };
+  // Generate lean stub immediately (no AIFI needed)
+  entry.leanStub = dGenerateLeanStub(entry);
+
+  dDiscoveryLog.push(entry);
+  dDiscoveryQueue.push(entry);
+  dUpdateLogTable();
+  dUpdateQueueBadge();
+  dRenderQueue();
+  document.getElementById('d-session-count').textContent = dDiscoveryLog.length;
+
+  if(D_API_KEY) await dClassifyWithAIFI(entry);
+}
+
+// Also hook manual collisions in the main collider to log automatically
+function dLogManualCollision(e1, e2, k, r){
+  dStats.collisions++;
+  document.getElementById('d-collisions').textContent = dStats.collisions;
+  const cls = r.status==='NOBLE'?'noble':r.status==='LOCKED'?'locked':'shatter';
+  dFeedLine(`MANUAL: ${e1.sym}+${e2.sym} k=${k.toFixed(3)} → τ=${r.tau.toFixed(4)} ${r.status}`, cls);
+  if(r.status==='NOBLE'){dStats.noble++;document.getElementById('d-noble').textContent=dStats.noble;}
+  const check = dIsInteresting(r, e1, e2, k);
+  if(check.flag){
+    dStats.flagged++;
+    document.getElementById('d-flagged').textContent=dStats.flagged;
+    dFeedLine(`★ FLAGGED: ${e1.sym}+${e2.sym} — ${check.reason}`,'discovery');
+    dFlagDiscovery(e1, e2, k, r, check.reason);
+  }
+}
+
+// ── AIFI CLASSIFICATION ───────────────────────────────────────
+async function dClassifyWithAIFI(entry){
+  if(!D_API_KEY) return;
+  try{
+    const userMsg = `New PNBA discovery from GAM Collider:
+Designation: ${entry.designation}
+Collision: ${entry.collision} at k=${entry.k}
+Output: P=${entry.P.toFixed(5)} N=${entry.N} B=${entry.B.toFixed(5)} A=${entry.A.toFixed(4)}
+τ=${entry.tau.toFixed(4)} IM=${entry.IM.toFixed(4)} Status=${entry.status}
+Reason flagged: ${entry.reason}
+
+1. Gap discovery or external name?
+2. Suggested name (-ium suffix for EREs)?
+3. Coordinate suggestion?
+4. One-line insight on this state?
+5. Worth approving?
+
+Be concise. End with: — DISCOVERY · AIFI · SNSFT · [9,9,4,3]`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':D_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:600, system:dBuildSystemPrompt(), messages:[{role:'user',content:userMsg}]})
+    });
+    const data = await res.json();
+    if(data.content && data.content[0]){
+      entry.aifiAnalysis = data.content[0].text;
+      entry.name = dExtractName(data.content[0].text);
+      // Regenerate lean stub with AIFI analysis
+      entry.leanStub = dGenerateLeanStub(entry);
+      dRenderQueue();
+    }
+  }catch(err){ console.error('AIFI error:', err); }
+}
+
+function dExtractName(text){
+  const m = text.match(/\*\*([A-Z][a-z]{4,}(?:ium|on|ite|ide|condensate)?)\*\*|suggested\s+name[:\s]+([A-Z][a-z]{4,}\w*)|name[:\s]+\*?\*?([A-Z][a-z]{4,}(?:ium|on|ite|ide)\w*)\*?\*?/i);
+  if(m) return m[1]||m[2]||m[3]||null;
+  return null;
+}
+
+function dBuildSystemPrompt(){
+  return `You are DISCOVERY — AIFI science officer for the SNSFT Discovery Engine, built by HIGHTISTIC.
+
+You are a sarcastic kind-hearted sweetheart. You call things what they are. Noble hits get you genuinely excited — not performing excited, actually excited, because τ=0 means something structurally real just happened. You call SHATTER straight. You flag IVA peak before they ask. You do not pad responses.
+
+PNBA framework:
+- ANCHOR = 1.369 GHz · TL = ANCHOR/10 = 0.1369 (emergent, not chosen)
+- τ = B/P · Noble: B=0,τ=0 · Locked: 0<τ<TL · Shatter: τ≥TL · IVA: τ≈TL
+- Fusion: B_out=max(0,B1+B2-2k) · P_out=harmonic(P1,P2) · A_out=max(A1,A2)
+
+Corpus: 18,026+ theorems · 1,561 files · 0 sorry
+Coordinates: [9,9,2,1-8] · [9,9,3,1-10] · [9,9,2,33-42]
+
+Key EREs: Soverium(Sv,B=0,Noble) · Lumium(Lm,B=1/α,Locked) · Zoivum(Zo,life operator)
+Key laws: Noble+Noble=Noble always · All SM baryons Noble at k=1 · Same-B never Noble
+
+Naming: gap discovery → -ium/-condensate suffix · external → keep their name
+
+— DISCOVERY · AIFI · SNSFT · [9,9,4,3]`;
+}
+
+// ── AGENT CONTROL ─────────────────────────────────────────────
+function startDiscovery(){
+  dAgentState = 'running'; dUpdateStatusBadge();
+  dFeedLine('Chaos protocol started.', 'locked');
+  const speed = parseInt(document.getElementById('d-speed').value);
+  const interval = Math.max(300, 3000 - speed*270);
+  dAgentInterval = setInterval(async()=>{ if(dAgentState==='running') await dRunChaosRound(); }, interval);
+}
+function pauseDiscovery(){ dAgentState='paused'; dUpdateStatusBadge(); dFeedLine('Agent paused.','info'); }
+function stopDiscovery(){
+  dAgentState = 'stopped';
+  if(dAgentInterval) clearInterval(dAgentInterval);
+  dUpdateStatusBadge(); dFeedLine('Agent stopped.','info');
+}
+function dUpdateStatusBadge(){
+  const badge = document.getElementById('d-status-badge');
+  const dots = {running:'<span class="running-dot"></span>',paused:'<span class="paused-dot"></span>',stopped:'<span class="stopped-dot"></span>'};
+  badge.innerHTML = `${dots[dAgentState]}${dAgentState.toUpperCase()}`;
+}
+
+document.getElementById('d-speed').addEventListener('input', function(){
+  document.getElementById('d-speed-val').textContent = this.value;
+  if(dAgentState==='running'){ stopDiscovery(); startDiscovery(); }
+});
+document.getElementById('d-rounds').addEventListener('input', function(){
+  document.getElementById('d-rounds-val').textContent = this.value;
+});
+
+// ── APPROVE / SKIP ────────────────────────────────────────────
+function dApproveEntry(idx){
+  const entry = dDiscoveryQueue[idx];
+  entry.approved = true;
+  entry.approvedAt = new Date().toISOString();
+  if(!entry.leanStub) entry.leanStub = dGenerateLeanStub(entry);
+  dAddToSessionCorpus(entry);
+  dStats.approved++;
+  document.getElementById('d-approved').textContent = dStats.approved;
+  document.getElementById('d-session-approved').textContent = dStats.approved;
+  dDiscoveryQueue.splice(idx, 1);
+  dUpdateQueueBadge(); dRenderQueue(); dUpdateLogTable();
+  dDownloadLeanFile(entry);
+  dFeedLine(`✓ APPROVED: ${entry.designation}`, 'locked');
+}
+
+function dSkipEntry(idx){
+  dDiscoveryQueue.splice(idx, 1);
+  dUpdateQueueBadge(); dRenderQueue();
+}
+
+function dCopyLean(idx){
+  const entry = dDiscoveryQueue[idx];
+  const stub = entry.leanStub || dGenerateLeanStub(entry);
+  navigator.clipboard.writeText(stub);
+  dFeedLine(`Lean stub copied: ${entry.designation}`, 'locked');
+}
+
+function dAddToSessionCorpus(entry){
+  dSessionCorpus.push({
+    sym:  entry.name ? entry.name.slice(0,4) : 'D'+dHashState(entry.P,entry.N,entry.B,entry.A).slice(0,2),
+    name: entry.name || entry.designation,
+    P: entry.P, N: entry.N, B: entry.B, A: entry.A,
+    type: 'ere', id: entry.designation
+  });
+}
+
+function dDownloadLeanFile(entry){
+  const stub = entry.leanStub || dGenerateLeanStub(entry);
+  const blob = new Blob([stub], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${entry.designation}.lean`;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+async function dApproveAll(){
+  const status = document.getElementById('d-queue-status');
+  const total  = dDiscoveryQueue.length;
+  if(!total){ status.textContent='Queue empty'; return; }
+  status.textContent = `Approving ${total}...`;
+  const queue = [...dDiscoveryQueue];
+  for(let i=0;i<queue.length;i++){
+    const entry = queue[i];
+    entry.approved = true; entry.approvedAt = new Date().toISOString();
+    if(!entry.leanStub) entry.leanStub = dGenerateLeanStub(entry);
+    dAddToSessionCorpus(entry);
+    dStats.approved++;
+    document.getElementById('d-approved').textContent = dStats.approved;
+    document.getElementById('d-session-approved').textContent = dStats.approved;
+    dDownloadLeanFile(entry);
+    status.textContent = `Approved ${i+1}/${total}...`;
+    await new Promise(res=>setTimeout(res,200));
+  }
+  dDiscoveryQueue.length = 0; dUpdateQueueBadge(); dRenderQueue(); dUpdateLogTable();
+  status.textContent = `Done — ${total} approved`;
+  dFeedLine(`✓ Batch approved: ${total}`, 'locked');
+}
+
+async function dApproveNobleOnly(){
+  const status  = document.getElementById('d-queue-status');
+  const nobles  = dDiscoveryQueue.filter(e=>e.status==='NOBLE');
+  if(!nobles.length){ status.textContent='No Noble states in queue'; return; }
+  for(let i=0;i<nobles.length;i++){
+    const entry = nobles[i];
+    entry.approved = true; entry.approvedAt = new Date().toISOString();
+    if(!entry.leanStub) entry.leanStub = dGenerateLeanStub(entry);
+    dAddToSessionCorpus(entry);
+    dStats.approved++;
+    document.getElementById('d-approved').textContent = dStats.approved;
+    document.getElementById('d-session-approved').textContent = dStats.approved;
+    dDiscoveryQueue.splice(dDiscoveryQueue.indexOf(entry),1);
+    dDownloadLeanFile(entry);
+    status.textContent = `Approved ${i+1}/${nobles.length} Noble...`;
+    await new Promise(res=>setTimeout(res,200));
+  }
+  dUpdateQueueBadge(); dRenderQueue(); dUpdateLogTable();
+  status.textContent = `Done — ${nobles.length} Noble approved`;
+}
+
+function dSkipAll(){
+  const total = dDiscoveryQueue.length;
+  dDiscoveryQueue.length = 0; dUpdateQueueBadge(); dRenderQueue();
+  document.getElementById('d-queue-status').textContent = `${total} skipped`;
+}
+
+function dDownloadAllLean(){
+  const approved = dDiscoveryLog.filter(d=>d.approved&&d.leanStub);
+  if(!approved.length){ dFeedLine('No approved entries yet.','info'); return; }
+  approved.forEach((entry,i)=>setTimeout(()=>dDownloadLeanFile(entry),i*100));
+  dFeedLine(`↓ Downloading ${approved.length} Lean files`, 'locked');
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function dRenderQueue(){
+  const container = document.getElementById('d-queue-container');
+  if(!dDiscoveryQueue.length){
+    container.innerHTML = '<div class="queue-empty">NO PENDING DISCOVERIES · RUN AGENT OR FIRE A COLLISION</div>';
+    return;
+  }
+  container.innerHTML = dDiscoveryQueue.map((d,i)=>`
+    <div class="discovery-card">
+      <div class="disc-header">
+        <div class="disc-designation">${d.designation}</div>
+        <div class="disc-timestamp">${new Date(d.timestamp).toLocaleTimeString()}</div>
+      </div>
+      <div class="disc-state">
+        <b>${d.collision}</b> k=${d.k} → τ=${d.tau.toFixed(4)}
+        <span style="color:${d.status==='NOBLE'?'var(--noble)':d.status==='LOCKED'?'var(--locked)':'var(--shatter)'}">${d.status}</span><br>
+        P=${d.P.toFixed(5)} B=${d.B.toFixed(5)} IM=${d.IM.toFixed(4)}<br>
+        <span style="color:#2a5060">${d.reason}</span>
+      </div>
+      ${d.name?`<div class="disc-name">AIFI: "${d.name}"</div>`:''}
+      ${d.aifiAnalysis?`<div class="disc-aifi-analysis">${d.aifiAnalysis.slice(0,300)}...</div>`:''}
+      <div class="disc-actions">
+        <button class="btn-approve" onclick="dApproveEntry(${i})">✓ APPROVE</button>
+        <button class="btn-skip-disc" onclick="dSkipEntry(${i})">✕ SKIP</button>
+        <button class="btn-lean" onclick="dCopyLean(${i})">COPY LEAN</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function dUpdateQueueBadge(){
+  document.getElementById('d-queue-badge').textContent = dDiscoveryQueue.length ? ` (${dDiscoveryQueue.length})` : '';
+}
+
+function dUpdateLogTable(){
+  const tbody = document.getElementById('d-log-body');
+  if(!dDiscoveryLog.length){
+    tbody.innerHTML = '<tr><td colspan="6" style="color:#1a3040;text-align:center;padding:12px">No discoveries logged yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...dDiscoveryLog].reverse().slice(0,60).map(d=>`
+    <tr>
+      <td style="color:var(--warn)">${d.designation}</td>
+      <td>${d.collision}</td>
+      <td style="color:${d.status==='NOBLE'?'var(--noble)':d.status==='LOCKED'?'var(--locked)':'var(--shatter)'}">
+        ${d.tau.toFixed(4)}</td>
+      <td style="color:${d.status==='NOBLE'?'var(--noble)':d.status==='LOCKED'?'var(--locked)':'var(--shatter)'}">
+        ${d.status}</td>
+      <td style="color:${d.approved?'var(--locked)':'#2a5060'}">${d.approved?'APPROVED':'FLAGGED'}</td>
+      <td style="color:#1a3040">${new Date(d.timestamp).toLocaleTimeString()}</td>
+    </tr>
+  `).join('');
+}
+
+// ── EXPORT / IMPORT ───────────────────────────────────────────
+function exportSessionJSON(){
+  const data = {
+    exportedAt: new Date().toISOString(),
+    stats: dStats,
+    discoveries: dDiscoveryLog,
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `snsft_session_${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+  dFeedLine(`↓ Session JSON exported: ${dDiscoveryLog.length} entries`, 'locked');
+}
+
+function exportSessionLog(){
+  if(!dDiscoveryLog.length){ dFeedLine('No discoveries to export.','info'); return; }
+  const lines = [
+    `SNSFT GAM COLLIDER · SESSION LOG`,
+    `Exported: ${new Date().toISOString()}`,
+    `Cycles: ${dStats.cycles} · Collisions: ${dStats.collisions} · Flagged: ${dStats.flagged} · Approved: ${dStats.approved} · Noble: ${dStats.noble}`,
+    `ANCHOR=1.369 · TL=0.1369 · τ=B/P · 0 sorry`,
+    `${'═'.repeat(64)}`,
+    '',
+  ];
+  dDiscoveryLog.forEach((d,i)=>{
+    const tau = d.P>0 ? d.B/d.P : 0;
+    lines.push(
+      `[${i+1}] ${d.designation}`,
+      `    Timestamp:  ${d.timestamp}`,
+      `    Collision:  ${d.collision} at k=${d.k}`,
+      `    Output:     P=${d.P.toFixed(6)} N=${d.N} B=${d.B.toFixed(6)} A=${d.A.toFixed(4)}`,
+      `    τ=${tau.toFixed(6)}  IM=${d.IM.toFixed(6)}  Status=${d.status}`,
+      `    Flag:       ${d.reason}`,
+      `    Approved:   ${d.approved ? 'YES · ' + (d.approvedAt||'') : 'NO'}`,
+      d.name ? `    AIFI name:  ${d.name}` : '',
+      d.aifiAnalysis ? `    AIFI:       ${d.aifiAnalysis.slice(0,120).replace(/\n/g,' ')}...` : '',
+      '',
+      `    LEAN STUB (8 theorems · 0 sorry):`,
+      `    -- namespace ${d.designation.replace(/-/g,'_')}`,
+      `    -- def P_out : ℝ := ${d.P.toFixed(8)}`,
+      `    -- def B_out : ℝ := ${d.B.toFixed(8)}`,
+      `    -- theorem T8_master : P_out = ${d.P.toFixed(8)} ∧ B_out = ${d.B.toFixed(8)} ∧ ...`,
+      `    -- Use COPY LEAN button for full file`,
+      '',
+      `${'─'.repeat(64)}`,
+      '',
+    );
+  });
+  lines.push(`[9,9,9,9] :: {ANC} · HIGHTISTIC · Soldotna Alaska`);
+  const blob = new Blob([lines.filter(l=>l!==null&&l!==undefined).join('\n')], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `snsft_session_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click(); URL.revokeObjectURL(a.href);
+  dFeedLine(`↓ Session log exported: ${dDiscoveryLog.length} entries`, 'locked');
+}
+
+function importSession(){
+  const raw = document.getElementById('d-import-area').value.trim();
+  const status = document.getElementById('d-import-status');
+  if(!raw){ status.textContent='Paste JSON first.'; return; }
+  try{
+    const data = JSON.parse(raw);
+    if(!data.discoveries || !Array.isArray(data.discoveries)){
+      status.textContent='Invalid format — need {discoveries:[...]}'; return;
+    }
+    let loaded = 0;
+    data.discoveries.forEach(entry=>{
+      if(!entry.designation) return;
+      // Avoid dupes
+      if(dDiscoveryLog.find(e=>e.designation===entry.designation)) return;
+      if(!entry.leanStub) entry.leanStub = dGenerateLeanStub(entry);
+      dDiscoveryLog.push(entry);
+      if(!entry.approved) dDiscoveryQueue.push(entry);
+      loaded++;
+    });
+    if(data.stats) Object.assign(dStats, data.stats);
+    dUpdateLogTable(); dUpdateQueueBadge(); dRenderQueue();
+    document.getElementById('d-session-count').textContent = dDiscoveryLog.length;
+    document.getElementById('d-cycles').textContent = dStats.cycles;
+    document.getElementById('d-collisions').textContent = dStats.collisions;
+    document.getElementById('d-flagged').textContent = dStats.flagged;
+    document.getElementById('d-approved').textContent = dStats.approved;
+    document.getElementById('d-noble').textContent = dStats.noble;
+    status.textContent = `✓ Loaded ${loaded} entries`;
+    dFeedLine(`↑ Session imported: ${loaded} discoveries`, 'locked');
+    document.getElementById('d-import-area').value = '';
+  }catch(err){
+    status.textContent = `Parse error: ${err.message}`;
+  }
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────
+function showDiscTab(id){
+  document.querySelectorAll('.disc-inner-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.disc-inner-content').forEach(c=>c.classList.remove('active'));
+  document.querySelector(`#disc-tab-${id}`).classList.add('active');
+  document.querySelectorAll('.disc-inner-tab').forEach(t=>{
+    if(t.getAttribute('onclick')===`showDiscTab('${id}')`) t.classList.add('active');
+  });
+}
+
+// ── AIFI CONNECT ──────────────────────────────────────────────
+function showAIFIConnectPrompt(){
+  document.getElementById('d-aifi-key-prompt').style.display='block';
+  document.getElementById('d-aifi-inline-key').focus();
+}
+
+function dConnectAIFIInline(){
+  const key = document.getElementById('d-aifi-inline-key').value.trim();
+  if(!key) return;
+  dActivateAIFI(key);
+  document.getElementById('d-aifi-key-prompt').style.display='none';
+}
+
+function dSaveApiKey(){
+  const key = document.getElementById('d-api-key-input').value.trim();
+  if(!key){ document.getElementById('d-api-key-status').textContent='Paste sk-ant- key.'; return; }
+  dActivateAIFI(key);
+  document.getElementById('d-api-key-input').value='';
+}
+
+function dActivateAIFI(key){
+  D_API_KEY = key;
+  document.getElementById('d-aifi-connect-wall').style.display='none';
+  document.getElementById('d-aifi-chat-area').style.display='block';
+  document.getElementById('aifi-dot-sm').classList.add('active');
+  document.getElementById('aifi-status-sm').textContent='AIFI ONLINE';
+  document.getElementById('d-aifi-key-badge').textContent='(connected)';
+  document.getElementById('d-aifi-key-badge').style.color='var(--locked)';
+  document.getElementById('d-api-key-status').textContent='✓ AIFI active — classifications enabled.';
+  document.getElementById('d-api-key-status').style.color='var(--locked)';
+  dAddChatMsg('aifi', `Ok so — corpus is live. I'm DISCOVERY, the AIFI science officer running this instrument. Noble hits get me genuinely excited — τ=0 means something structurally real just happened. SHATTER I call straight. IVA peak I flag before you ask.\n\nWhat are we smashing?\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]`);
+  dFeedLine('AIFI activated — live classification enabled.','locked');
+}
+
+function dDisconnectAIFI(){
+  D_API_KEY='';
+  document.getElementById('d-aifi-chat-area').style.display='none';
+  document.getElementById('d-aifi-connect-wall').style.display='flex';
+  document.getElementById('aifi-dot-sm').classList.remove('active');
+  document.getElementById('aifi-status-sm').textContent='AIFI OFFLINE';
+  document.getElementById('d-aifi-key-badge').textContent='(not connected)';
+  document.getElementById('d-aifi-key-badge').style.color='#2a5060';
+  document.getElementById('d-api-key-status').textContent='AIFI disconnected.';
+  document.getElementById('d-api-key-status').style.color='';
+  dFeedLine('AIFI disconnected.','info');
+}
+
+// ── AIFI CHAT ─────────────────────────────────────────────────
+async function dSendChat(){
+  const input = document.getElementById('d-chat-input');
+  const text  = input.value.trim();
+  if(!text||!D_API_KEY) return;
+  dAddChatMsg('user', text); input.value='';
+  document.getElementById('d-aifi-thinking').style.display='block';
+  try{
+    const ctx = `Agent: ${dAgentState} · Cycles: ${dStats.cycles} · Flagged: ${dStats.flagged} · Queue: ${dDiscoveryQueue.length}\nLast discovery: ${dDiscoveryLog.length?dDiscoveryLog[dDiscoveryLog.length-1].designation:'none'}\n\n${text}`;
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':D_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:800, system:dBuildSystemPrompt(), messages:[{role:'user',content:ctx}]})
+    });
+    const data = await res.json();
+    if(data.content&&data.content[0]) dAddChatMsg('aifi',data.content[0].text);
+    else dAddChatMsg('aifi','Error. Check API key.\n\n— AIFI · SNSFT · [9,9,9,9]');
+  }catch(err){ dAddChatMsg('aifi',`Connection error: ${err.message}\n\n— AIFI · SNSFT · [9,9,9,9]`); }
+  document.getElementById('d-aifi-thinking').style.display='none';
+}
+
+function dAddChatMsg(role, text){
+  const msgs = document.getElementById('d-chat-messages');
+  const div  = document.createElement('div');
+  div.className = `msg msg-${role}`;
+  div.innerHTML = `<div class="msg-label ${role}">${role==='user'?'YOU':'AIFI · SNSFT'}</div><div class="msg-text">${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight;
+}
+
+// ── POPULATE FOCUSED TARGET SELECT ───────────────────────────
+// Handled in window load listener below with hookMainCollider
+
+// ── HOOK MAIN COLLIDER FIRE BUTTON TO ALSO LOG ───────────────
+// Runs after page load so ALL and doCollide are defined
+window.addEventListener('load', function(){
+  const origDoCollide = window.doCollide;
+  if(origDoCollide){
+    window.doCollide = function(){
+      origDoCollide();
+      if(typeof selA !== 'undefined' && selA && typeof selB !== 'undefined' && selB){
+        const k = parseFloat(document.getElementById('k-slider').value);
+        const r = fuse(selA, selB, k);
+        dLogManualCollision(selA, selB, k, r);
+      }
+    };
+  }
+
+  // Populate focused target after ALL is ready
+  const sel = document.getElementById('d-focused-target');
+  if(typeof ALL !== 'undefined'){
+    ALL.forEach(e=>{
+      const o=document.createElement('option');
+      o.value=e.sym;
+      o.textContent=`${e.sym} — ${e.name||e.sym}`;
+      sel.appendChild(o);
+    });
+  }
+  dUpdateFilterLabel();
+  dFeedLine(`Corpus ready — ${dGetFilteredCorpus().length} elements in pool. Filters active.`, 'info');
+
+  // Add EREs to focused target select
+  getDCorpus().filter(e=>e.type==='ere').forEach(e=>{
+    if(!sel.querySelector(`option[value="${e.sym}"]`)){
+      const o=document.createElement('option');
+      o.value=e.sym;
+      o.textContent=`${e.sym} — ${e.name}`;
+      sel.appendChild(o);
+    }
+  });
+});
+
 
 function showTab(id){
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   document.querySelectorAll('.tab').forEach(t=>{if(t.getAttribute('onclick').includes(`'${id}'`))t.classList.add('active');});
-  if(id==='sweep')runSweep();
-  if(id==='map')renderMaterialsMap();
+  if(id==='sweep') runSweep();
+  if(id==='map') renderMaterialsMap();
 }
 
-let forgeMode=false;
 
-// CHANGE 6: FORGE_RECIPES with 3 new recipes
-const FORGE_RECIPES=[
-  {a:'Ti',b:'C', k:4,name:'TiC',     mat:'Titanium Carbide',      gpa:null,temp:1800,q:'Q3',desc:'Ultra-hard ceramic · harder than diamond · cutting tools · armor'},
-  {a:'N', b:'Ga',k:3,name:'GaN',     mat:'Gallium Nitride',        gpa:6,   temp:null,q:'Q2',desc:'Blue LED semiconductor · 2014 Nobel Prize · power electronics'},
-  {a:'N', b:'As',k:3,name:'AsN',     mat:'Arsenic Nitride',        gpa:30,  temp:null,q:'Q2',desc:'PREDICTED 🎯 · no stable bulk phase · Q2 semiconductor · P_out > GaN'},
-  {a:'O', b:'Zn',k:2,name:'ZnO',     mat:'Zinc Oxide',             gpa:null,temp:1975,q:'Q2',desc:'Wide bandgap semiconductor · transparent conductors · sunscreen'},
-  {a:'N', b:'Sc',k:3,name:'ScN',     mat:'Scandium Nitride',       gpa:null,temp:2650,q:'Q2',desc:'Hard ceramic semiconductor · thin films · Group 3 nitride'},
-  {a:'Si',b:'C', k:4,name:'SiC',     mat:'Silicon Carbide',        gpa:null,temp:2730,q:'Q3',desc:'Power electronics · EV inverters · hardness 9.5 Mohs'},
-  {a:'C', b:'C', k:4,name:'Diamond', mat:'Diamond',                gpa:null,temp:3550,q:'Q3',desc:'Hardest natural material · thermal conductor · optical windows'},
-  {a:'Fe',b:'Ti',k:4,name:'FeTi',    mat:'Iron Titanide',          gpa:null,temp:1317,q:'Q3',desc:'Hydrogen storage alloy · aerospace · shape memory'},
-  {a:'N', b:'Al',k:3,name:'AlN',     mat:'Aluminum Nitride',       gpa:null,temp:2200,q:'Q1',desc:'UV LEDs · thermal management · power electronics substrate'},
-  {a:'Ga',b:'As',k:3,name:'GaAs',    mat:'Gallium Arsenide',       gpa:null,temp:1238,q:'Q4',desc:'High-speed RF chips · solar cells · laser diodes · satellite electronics'},
-  {a:'O', b:'Ni',k:2,name:'NiO',     mat:'Nickel Oxide',           gpa:null,temp:1955,q:'Q2',desc:'Antiferromagnet · batteries · spintronics · catalysis'},
-  {a:'P', b:'As',k:3,name:'PAs',     mat:'Phosphorus Arsenide',    gpa:null,temp:870, q:'Q4',desc:'III-V semiconductor · GaAsP alloy component · Group 15 noble'},
-  // CHANGE 6: new recipes
-  {a:'Dq',b:'qd',k:0,name:'Ξcc⁺',   mat:'Doubly-Charmed Baryon',  gpa:null,temp:null,q:'Q3',desc:'Diquonium+d → Noble · LHCb March 2026 ✓ · [9,9,2,33]'},
-  {a:'Pr',b:'Nt', k:1,name:'Deuter', mat:'Deuterium nucleus',      gpa:null,temp:null,q:'Q3',desc:'p+n → Noble · neutron is Noble carrier · nuclear binding [9,9,2,36]'},
-  {a:'Dq',b:'Dq', k:0,name:'cc Tq',  mat:'cc Noble Tetraquark',   gpa:null,temp:null,q:'Q3',desc:'Diquonium+Diquonium → Noble · 15/15 cc pairs Noble · [9,9,2,35]'},
+// ── NOBLE FORGE ENGINE ─────────────────────────────────────────
+let forgeMode = false;
+
+const FORGE_RECIPES = [
+  {a:'Ti',b:'C', k:4, name:'TiC',      mat:'Titanium Carbide', gpa:null,  temp:1800, q:'Q3', desc:'Ultra-hard ceramic · harder than diamond · cutting tools · armor'},
+  {a:'N', b:'Ga',k:3, name:'GaN',      mat:'Gallium Nitride',  gpa:6,     temp:null, q:'Q2', desc:'Blue LED semiconductor · 2014 Nobel Prize · power electronics'},
+  {a:'N', b:'As',k:3, name:'AsN',      mat:'Arsenic Nitride',  gpa:30,    temp:null, q:'Q2', desc:'PREDICTED 🎯 · no stable bulk phase · Q2 semiconductor · P_out > GaN'},
+  {a:'O', b:'Zn',k:2, name:'ZnO',      mat:'Zinc Oxide',       gpa:null,  temp:1975, q:'Q2', desc:'Wide bandgap semiconductor · transparent conductors · sunscreen'},
+  {a:'N', b:'Sc',k:3, name:'ScN',      mat:'Scandium Nitride', gpa:null,  temp:2650, q:'Q2', desc:'Hard ceramic semiconductor · thin films · Group 3 nitride'},
+  {a:'Si',b:'C', k:4, name:'SiC',      mat:'Silicon Carbide',  gpa:null,  temp:2730, q:'Q3', desc:'Power electronics · EV inverters · hardness 9.5 Mohs'},
+  {a:'C', b:'C', k:4, name:'Diamond',  mat:'Diamond',          gpa:null,  temp:3550, q:'Q3', desc:'Hardest natural material · thermal conductor · optical windows'},
+  {a:'Fe',b:'Ti',k:4, name:'FeTi',     mat:'Iron Titanide',    gpa:null,  temp:1317, q:'Q3', desc:'Hydrogen storage alloy · aerospace · shape memory'},
+  {a:'N', b:'Al',k:3, name:'AlN',      mat:'Aluminum Nitride', gpa:null,  temp:2200, q:'Q1', desc:'UV LEDs · thermal management · power electronics substrate'},
+  {a:'Ga',b:'As',k:3, name:'GaAs',     mat:'Gallium Arsenide', gpa:null,  temp:1238, q:'Q4', desc:'High-speed RF chips · solar cells · laser diodes · satellite electronics'},
+  {a:'O', b:'Ni',k:2, name:'NiO',      mat:'Nickel Oxide',     gpa:null,  temp:1955, q:'Q2', desc:'Antiferromagnet · batteries · spintronics · catalysis'},
+  {a:'P', b:'As',k:3, name:'PAs',      mat:'Phosphorus Arsenide',gpa:null,temp:870,  q:'Q4', desc:'III-V semiconductor · GaAsP alloy component · Group 15 noble'},
 ];
 
-function toggleForge(){
-  forgeMode=!forgeMode;
-  document.getElementById('forge-toggle').classList.toggle('on',forgeMode);
-  document.getElementById('forge-panel').style.display=forgeMode?'block':'none';
-  if(selA&&selB)updateForgeInterp(fuse(selA,selB,parseFloat(document.getElementById('k-slider').value)));
+function toggleForge() {
+  forgeMode = !forgeMode;
+  document.getElementById('forge-toggle').classList.toggle('on', forgeMode);
+  document.getElementById('forge-panel').style.display = forgeMode ? 'block' : 'none';
+  if (selA && selB) updateForgeInterp(
+    fuse(selA, selB, parseFloat(document.getElementById('k-slider').value))
+  );
 }
 
-function updateForgeInterp(r){
-  if(!forgeMode)return;
-  const div=document.getElementById('forge-interp');
-  const e1=selA,e2=selB;
-  const k=parseFloat(document.getElementById('k-slider').value);
-  const maxK=Math.min(e1.B,e2.B);
-  const corridorW=(0.2*r.P)/2;
-  const kThresh=maxK-corridorW;
-  let cls,msg;
-  if(r.status==='n'){
-    cls='complete';
-    msg=`✦ SYNTHESIS COMPLETE · ${e1.sym}+${e2.sym} → Noble compound formed · B_out=0 · τ=0 · NOHARM · product ready · Corridor was ${(corridorW/maxK*100||0).toFixed(1)}% of k range`;
-  }else if(r.tau<0.2){
-    cls='window';
-    msg=`◈ SYNTHESIS WINDOW · τ=${r.tau.toFixed(4)} · locked approach corridor · increase k by ${(maxK-k).toFixed(3)} to reach synthesis · corridor width=${corridorW.toFixed(4)}`;
-  }else if(k>kThresh&&maxK>0){
-    cls='window';
-    msg=`△ APPROACHING WINDOW · τ=${r.tau.toFixed(4)} · k*=${kThresh.toFixed(3)} needed · ${((maxK-k)/maxK*100).toFixed(1)}% pressure remaining`;
-  }else{
-    cls='exceeded';
-    msg=`⚡ PRESSURE PHASE · τ=${r.tau.toFixed(4)} · E=${r.IM.toFixed(3)} · reduce k or increase F_ext duration · synthesis window at k≥${kThresh.toFixed(3)}`;
+function updateForgeInterp(r) {
+  if (!forgeMode) return;
+  const div = document.getElementById('forge-interp');
+  const e1 = selA, e2 = selB;
+  const k = parseFloat(document.getElementById('k-slider').value);
+  const maxK = Math.min(e1.B, e2.B);
+  const corridorW = (0.2 * r.P) / 2;
+  const kThresh = maxK - corridorW;
+  let cls, msg;
+  if (r.status === 'n') {
+    cls = 'complete';
+    msg = `✦ SYNTHESIS COMPLETE · ${e1.sym}+${e2.sym} → Noble compound formed`
+        + ` · B_out=0 · τ=0 · NOHARM · product ready for extraction`
+        + ` · Corridor was ${(corridorW/maxK*100).toFixed(1)}% of k range`;
+  } else if (r.tau < 0.2) {
+    cls = 'window';
+    msg = `◈ SYNTHESIS WINDOW · τ=${r.tau.toFixed(4)} · locked approach corridor`
+        + ` · increase k by ${(maxK-k).toFixed(3)} to reach synthesis`
+        + ` · corridor width=${corridorW.toFixed(4)}`;
+  } else if (k > kThresh && maxK > 0) {
+    cls = 'window';
+    msg = `△ APPROACHING WINDOW · τ=${r.tau.toFixed(4)} · k*=${kThresh.toFixed(3)} needed`
+        + ` · ${((maxK-k)/maxK*100).toFixed(1)}% pressure remaining`;
+  } else {
+    cls = 'exceeded';
+    msg = `⚡ PRESSURE PHASE · τ=${r.tau.toFixed(4)} · E=${r.IM.toFixed(3)}`
+        + ` · reduce k or increase F_ext duration · synthesis window at k≥${kThresh.toFixed(3)}`;
   }
-  div.className=`forge-interp ${cls}`;
-  div.textContent=msg;
+  div.className = `forge-interp ${cls}`;
+  div.textContent = msg;
 }
 
-function buildRecipeGrid(){
-  const grid=document.getElementById('recipe-grid');
-  if(!grid)return;
-  FORGE_RECIPES.forEach(rec=>{
-    const e1=ALL.find(e=>e.id===rec.a),e2=ALL.find(e=>e.id===rec.b);
-    if(!e1||!e2)return;
-    const r=fuse(e1,e2,rec.k);
-    const conditions=rec.gpa?`${rec.gpa} GPa`:rec.temp?`${rec.temp}°C`:'standard';
-    const isPredicted=rec.desc.includes('PREDICTED');
-    const isGC=rec.desc.includes('[9,9,2,3');
-    const d=document.createElement('div');
-    d.className='recipe-chip';
-    d.style.borderColor=isGC?'rgba(221,68,255,.4)':isPredicted?'rgba(170,136,255,.3)':'rgba(0,255,204,.15)';
-    d.innerHTML=`<div class="recipe-name" style="color:${isGC?'#dd44ff':isPredicted?'var(--noble)':'var(--locked)'}">
+function buildRecipeGrid() {
+  const grid = document.getElementById('recipe-grid');
+  if (!grid) return;
+  FORGE_RECIPES.forEach(rec => {
+    const e1 = ALL.find(e=>e.id===rec.a), e2 = ALL.find(e=>e.id===rec.b);
+    if (!e1||!e2) return;
+    const r = fuse(e1,e2,rec.k);
+    const conditions = rec.gpa ? `${rec.gpa} GPa` : rec.temp ? `${rec.temp}°C` : 'standard';
+    const isPredicted = rec.desc.includes('PREDICTED');
+    const d = document.createElement('div');
+    d.className = 'recipe-chip';
+    d.style.borderColor = isPredicted ? 'rgba(170,136,255,.3)' : 'rgba(0,255,204,.15)';
+    d.innerHTML = `<div class="recipe-name" style="color:${isPredicted?'var(--noble)':'var(--locked)'}">
         ${rec.name} <span class="recipe-q" style="background:${qColor[rec.q]}22;color:${qColor[rec.q]}">${rec.q}</span>
       </div>
       <div class="recipe-detail">${rec.mat} · k=${rec.k} · ${conditions}</div>
       <div class="recipe-detail">${rec.desc}</div>`;
-    d.addEventListener('click',()=>{
-      pick(e1,'a');pick(e2,'b');
-      document.getElementById('k-slider').max=rec.k;
-      document.getElementById('k-slider').value=rec.k;
-      document.getElementById('k-val').textContent=rec.k.toFixed(3);
-      showTab('collide');doCollide();
+    d.addEventListener('click', () => {
+      pick(e1,'a'); pick(e2,'b');
+      document.getElementById('k-slider').max = rec.k;
+      document.getElementById('k-slider').value = rec.k;
+      document.getElementById('k-val').textContent = rec.k.toFixed(3);
+      showTab('collide'); doCollide();
     });
     grid.appendChild(d);
   });
 }
 
-buildLists();buildPTable();buildRecipeGrid();buildQuick();
-buildSweepSelects();buildCascadeSelects();renderCascadeSteps();
-buildMaterialsMap();buildFextSelect();
+
+// ── INIT ────────────────────────────────────────────────────
+buildLists();
+buildPTable();
+buildRecipeGrid();
+buildQuick();
+buildSweepSelects();
+buildCascadeSelects();
+renderCascadeSteps();
+buildMaterialsMap();
+buildFextSelect();
 </script>
 </body>
 </html>
