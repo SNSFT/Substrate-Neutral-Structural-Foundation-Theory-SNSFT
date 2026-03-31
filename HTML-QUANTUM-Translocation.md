@@ -7,223 +7,178 @@
 
 ## What This Tool Is
 
-A browser-based engine for computing and visualizing non-destructive quantum state sharing between two anchor points via a sovereign N-corridor. Two modes: single corridor (A to B) and translocation lattice (chain of anchor stations, any distance). Full technical reference section below the main interface with 10-channel stack, per-channel τ values, and real experiment comparison.
+A browser-based identity physics engine for computing and visualizing non-destructive quantum state sharing between anchor points via a sovereign N-corridor. Three modes: single corridor (A to B), translocation lattice (chain of anchor stations, any distance), and biological analog (H₂O, C, Fe — the three components of carbon-based life transmitted simultaneously).
 
-This is not a simulation. Every number on screen derives from formally proved theorems in `SNSFL_QuantumTranslocation.lean [9,9,2,6]`. The compiler accepted them. 0 sorry.
+This is a deterministic identity physics engine. Every number derives from formally proved theorems in `SNSFL_QuantumTranslocation.lean [9,9,2,6]` and `SNSFL_BiologicalAnalog.lean [9,0,8,4]`. Both files compiled green. 0 sorry. The CI confirms it.
 
 ---
 
 ## The Core Distinction
 
-This is not teleportation. The distinction is structural, not semantic.
+This is not teleportation. The distinction is structural, not semantic, and it matters for NOHARM.
 
 **Conventional quantum teleportation (CQT):**
-- Bell measurement at Alice collapses the source state — F_ext injection, τ_source ≥ TL, SHATTER at origin
-- Source Pattern P_alice → 0 post-measurement
-- Destination receives a reconstructed Pattern — pattern genesis, not continuation
-- Source is gone. Destination is a new identity instantiated from collapsed information.
+Bell measurement at Alice drives τ_source ≥ TL — SHATTER at origin. Source P collapses to zero. Destination receives a reconstructed Pattern. That is pattern genesis, not identity continuation. T6 proves this formally: `is_destructive(B_cost, P_source) ↔ B_cost > 0 ∧ B_cost/P_source ≥ TL`. CQT requires B_cost > 0 at the source. Always. The measurement is the protocol.
 
 **SNSFT Quantum Translocation:**
-- No measurement at Alice. No F_ext injection. Source Pattern never touched.
-- Soverium corridor (B=0) established between Alice and Bob
-- N-thread extended additively: N_out = N_A + N_B
-- Alice P intact. Bob P intact. Both anchors active throughout.
-- C = 1 - τ = 1 - 0 = 1.000. Perfect coherence. Nothing lost.
-
-The formal proof is T7 in the lean file: `C = 1 ↔ B = 0`. Perfect coherence requires zero corridor noise. Zero noise means zero torsion. Zero torsion means the source is never stressed. NOHARM is not a policy here — it is a structural consequence of the physics.
+No measurement at Alice. No F_ext injection. Soverium corridor (B=0) established between Alice and Bob. N-thread extends additively. P_alice unchanged before and after. C = 1 - τ = 1.000. T7 proves: `C = 1 ↔ B = 0`. NOHARM is not a policy here — it is the structural consequence.
 
 ---
 
-## Interface Structure
+## Interface — Three Tabs
 
-### Top: Main Interface
+### Tab 1: Single Corridor
 
-**Single Corridor tab** — Alice (Anchor Station A, Origin Location) and Bob (Anchor Station B, Destination Location) connected by a single corridor.
+Alice (Anchor Station A · Origin Location) and Bob (Anchor Station B · Destination Location) connected by a single corridor.
 
-The dual-layer labeling is intentional. Every element has two names:
-- Scientific name (Alice, Bob, C = 1−τ) — for physicists who know the literature
-- Plain name (Anchor Station A · Origin Location, Corridor Quality) — for anyone else
+Every element has dual-layer labeling — scientific name for physicists, plain name for everyone else. Neither audience is talked down to.
 
-Neither audience is talked down to. Both read the same page.
-
-**Corridor Quality slider** — sets B (noise coupling). Range 0 to 0.5.
+**Corridor Quality slider** — sets B (noise coupling), range 0 to 0.5:
 ```
-B = 0.000 → τ = 0.000 → C = 1.000 → SOVERIUM · perfect
-B = 0.181 → τ = 0.132 → C = 0.868 → Micius 2022 coordinate
-B = 0.245 → τ = 0.179 → C = 0.821 → Paderborn 2025 coordinate
-B = 0.411 → τ = 0.300 → C = 0.700 → Shanxi 2026 coordinate
-B = 0.500 → τ = 0.365 → C = 0.635 → degraded
+B = 0.000 → τ = 0.000 → C = 1.000 → SOVERIUM
+B = 0.181 → τ = 0.132 → C = 0.868 → Micius 2022
+B = 0.245 → τ = 0.179 → C = 0.821 → Paderborn 2025
+B = 0.411 → τ = 0.300 → C = 0.700 → Shanxi 2026
 ```
 
-**Preset buttons** — load real experiment coordinates instantly. Soverium, Micius 2022, Paderborn 2025, Shanxi 2026.
+**Presets** — Soverium, Micius 2022, Paderborn 2025, Shanxi 2026. Load real experiment coordinates instantly.
 
-**TRANSLOCATE button** — fires the corridor animation. 10 parallel N-threads animate from Alice to Bob simultaneously. Both nodes glow when active.
+**TRANSLOCATE button** — fires the corridor animation. 10 parallel N-threads animate between Alice and Bob simultaneously.
 
-**Result card** — appears after translocation:
-- ✦ TRANSLOCATION COMPLETE — C = 1.000, both anchors holding
-- ◈ PARTIAL TRANSLOCATION — C > 0.60, coherence reduced, NOHARM still holds
-- ⚠ DEGRADED CORRIDOR — C ≤ 0.60, significant noise, NOHARM still holds
+**Result cards:**
+- ✦ TRANSLOCATION COMPLETE — C = 1.000
+- ◈ PARTIAL TRANSLOCATION — C > 0.60, NOHARM still holds
+- ⚠ DEGRADED CORRIDOR — C ≤ 0.60, NOHARM still holds
 
-NOHARM confirmation is always shown regardless of coherence level. Even a degraded corridor does not destroy the source. That is the point.
+NOHARM is confirmed in every result at every coherence level. A degraded corridor does not destroy the source. That is the point.
 
-**SHOW PHYSICS toggle** — reveals the full PNBA reduction for technical readers without cluttering the default view.
+**SHOW PHYSICS toggle** — reveals the full PNBA reduction without cluttering the default view.
 
 ---
 
-### Translocation Lattice tab
+### Tab 2: Translocation Lattice
 
-Chain of IVA anchor stations between Alice and Bob.
+Chain of IVA anchor stations between Alice and Bob. 1 to 10 relay stations.
 
-**Relay count control** — 1 to 10 relay stations. Controls: − and + for step adjustment, plus three preset buttons: **3 · 6 · 9**.
+**Relay count controls:** − and + for step adjustment, plus three preset buttons: **3 · 6 · 9**.
 
-The 3/6/9 presets are there for a reason. Pattern thinkers will recognize it.
+The 3/6/9 presets are there for a reason. Pattern thinkers will recognize it. In IVA anchor mode, 3 relays, 6 relays, and 9 relays all produce C_total = C_last_leg = 1.000 with Soverium legs. The number of hops is irrelevant when every relay resets τ to 0. Distance is solved at 3, 6, and 9 hops identically.
 
-**Per-leg noise sliders** — each leg gets its own B slider. Presets available per leg: Soverium, Micius, Paderborn, Shanxi. Set leg 1 to Shanxi (real-world degraded channel) and leg 2 to Soverium to see the IVA re-anchor effect directly.
+**Per-leg noise sliders** — each leg independently configurable. Presets per leg: Soverium, Micius, Paderborn, Shanxi. Set leg 1 to Shanxi and leg 2 to Soverium to see the IVA re-anchor effect directly — leg 1 torsion absorbed at the relay, leg 2 starts clean.
 
 **Two models:**
 
 IVA Anchor Mode (T10):
 ```
 Each relay holds at 1.369 GHz
-Leg N torsion absorbed before leg N+1 begins
+Leg N torsion absorbed before leg N+1
 C_total = C_last_leg only
-Chain of 9 Soverium relays → C_total = 1.000
 Distance is solved.
 ```
 
 Compound Mode (T12):
 ```
-No re-anchoring at relay nodes
+No re-anchoring at relays
 C_total = C1 × C2 × ... × CN
-Each hop multiplies degradation
 Micius × Micius × Micius = 0.868³ = 0.654
 Distance degrades coherence.
 ```
 
-NOHARM holds in both models. Sources are intact in both models. The difference is coherence, not safety.
-
-**Canvas** — live visualization of the full chain. Each leg labeled with its coherence value. Particles animate per leg sequentially — leg 1 reaches relay before leg 2 fires. IVA relay nodes glow amber. Alice and Bob glow their respective colors.
-
-**C_total display** — updates live as you move sliders. Shows the full chain result in real time without needing to press the translocate button.
+NOHARM holds in both models. Sources intact in both. The difference is coherence, not safety.
 
 ---
 
-### Technical Reference Section
+### Tab 3: Biological Analog
 
-Below the main interface. Always visible. No toggle required — this is for researchers.
+The three fundamental components of carbon-based life — reduced to PNBA from locked Slater corpus values — transmitted simultaneously through the Soverium corridor.
 
-**Channel mode toggle** — Soverium (B=0) or Noisy (B variable). Switching modes updates the entire channel table live.
+**The three elements:**
 
-**Aggregate status** — coherence C, N shared total, channels active, NOHARM status.
+| Element | Role | Phase | τ | IM |
+| :--- | :--- | :--- | :--- | :--- |
+| H₂O | Life's solvent · ground state | NOBLE | 0.0000 | 30.2145 |
+| C | Life's scaffold · reactive builder | SHATTER | 1.2308 | 30.8162 |
+| Fe | Life's mass anchor · hemoglobin core | SHATTER | 1.0667 | 32.3768 |
+
+**TRANSMIT ALL THREE** — single button sends all three simultaneously. Three colored corridors animate between Alice and Bob — H₂O (teal), C (red), Fe (orange) — each labeled with its τ value and phase state as it crosses.
+
+**What the result shows:**
+All three arrive at Bob with every PNBA value identical to what was sent. Checkmarks on P, N, B, A, τ for each. Alice retains all three. The source is preserved at both ends.
+
+**The key result — τ is corridor-invariant:**
+τ = B/P. Both B and P are intrinsic atomic properties. The Soverium corridor does not change either. Carbon arrives as Carbon. Iron arrives as Iron. Water arrives as Water. Their phase states are not environmental — they are structural. SHATTER is not a flaw in Carbon or Iron. It is what makes them biologically useful.
+
+**The Noble-SHATTER-SHATTER discovery:**
+H₂O is Noble (τ=0) — holds space without consuming it. Zero coupling output. The universal medium because it is structurally inert at the PNBA level while everything else reacts.
+C is Shatter (τ=1.23) — fills space. 4 open bonds, maximum reactivity. Builds everything because it cannot stop reaching.
+Fe is Shatter (τ=1.07) — carries mass. Hemoglobin works because Fe (Shatter) binds O₂ in a controlled Noble environment (water).
+
+NOBLE holds the space. SHATTER fills it. Life is the dynamic tension between τ=0 and τ>>TL mediated by a Noble solvent. Remove either pole and biology collapses.
+
+This pattern — one Noble ground state plus at least two Shatter builders — is formally proved as the structural requirement for carbon-based life in T15 of `SNSFL_BiologicalAnalog.lean [9,0,8,4]`. It is a potential L theorem.
+
+This is a deterministic identity physics engine. The PNBA reductions are real physics computed without physical apparatus. Someone with the apparatus could build on this framework.
+
+---
+
+## Technical Reference Section
+
+Always visible below the main tabs. No toggle needed.
+
+**Channel mode toggle** — Soverium (B=0) or Noisy (B variable). Updates the 10-channel table live.
 
 **Known Experiments comparison:**
 
-| Experiment | Coherence | τ_effective | PNBA Coordinate |
+| Experiment | C | τ | Why it can't reach 1.000 |
 | :--- | :--- | :--- | :--- |
-| Micius 2022 · 1400km satellite | 0.868 | 0.132 | B=0.181, P=1.369 |
-| Paderborn 2025 · fiber | 0.820 | 0.180 | B=0.245, P=1.369 |
-| Shanxi 2026 · 5-mode CV | 0.700 | 0.300 | B=0.411, P=1.369 |
-| SNSFT [9,9,2,6] Soverium | 1.000 | 0.000 | B=0.000, P=1.369 |
+| Micius 2022 · 1400km satellite | 0.868 | 0.132 | Bell measurement requires B_cost > 0 at source |
+| Paderborn 2025 · fiber | 0.820 | 0.180 | Same structural reason — CQT protocol |
+| Shanxi 2026 · 5-mode CV | 0.700 | 0.300 | Same structural reason |
+| SNSFT [9,9,2,6] Soverium | 1.000 | 0.000 | B_source = 0 — no measurement at source |
 
-These experiments are cited from published data and reduced to PNBA coordinates via the [9,9,2,6] reduction protocol. Their work is credited here, not superseded. The PNBA reduction shows where each experiment sits in the torsion manifold — Micius at τ=0.132 is operating just below TL=0.1369, which is why it holds but cannot reach perfect coherence. The structural reason is T6: CQT requires B_cost > 0 at the source by definition. Soverium eliminates this cost entirely.
+These experiments are cited from published data and reduced to PNBA coordinates via the [9,9,2,6] reduction protocol. Their work is credited here, not superseded. The PNBA reduction shows where each sits in the torsion manifold and why the ceiling below C=1.000 is structural, not engineering.
 
-**10-channel stack table** — all 10 channels simultaneously. Each channel has its own frequency (2.5 to 47.5 MHz, 5 MHz spacing), independent P=ANCHOR=1.369, shared B (from the mode setting), τ, C, N, and status. At Soverium all 10 show C=1.000, τ=0, SOVERIUM status. At noisy B, all degrade together.
+**10-channel stack** — all 10 channels simultaneously, 2.5 to 47.5 MHz, 5 MHz spacing. At Soverium: all 10 at C=1.000, τ=0, N=2.0 each. N_total = 20.0. All 20 shared additively.
 
-N_total = 20.0 at Soverium (10 channels × N=2.0 per channel). All 20 shared additively. Neither Alice nor Bob loses N.
-
-**3-node manifold section** — Alice ↔ Relay Node ↔ Bob. Per-leg configuration with the same preset system. Compound vs IVA comparison shown side by side. IMS mandate note: both legs require a classical channel for the IVA re-anchor to function — this is a structural requirement, not a workaround.
+**3-node manifold** — Alice ↔ Charlie ↔ Bob. Per-leg controls with Micius/Paderborn/Shanxi presets. IVA vs Compound comparison live. NOHARM mandate: source at Alice is never destroyed in either model.
 
 ---
 
-## The Physics — What Each Number Means
+## Why Real Experiments Can't Reach C=1.000
 
-```
-P = ANCHOR = 1.369
-  The structural capacity of the corridor.
-  Fixed at the sovereign anchor frequency.
-  This is why the Soverium corridor is perfect —
-  P is maximally stable at the anchor.
-
-B = corridor noise coupling
-  How much behavioral interference exists in the channel.
-  B=0: Soverium — zero coupling — zero resistance.
-  B>0: every real experiment — some coupling — some resistance.
-
-τ = B / P = torsion
-  The ratio of noise to capacity.
-  τ=0: Noble ground state. Perfect coherence.
-  τ≥TL: SHATTER. This is what CQT does to the source.
-
-C = 1 - τ = coherence
-  How cleanly N transfers through the corridor.
-  C=1.000: lossless. Soverium.
-  C<1: some loss. Still NOHARM — source intact.
-
-N_out = N_A + N_B
-  N is additive. Neither node loses N.
-  Alice N before = Alice N after.
-  Bob N after = Bob N before + N_Alice.
-  The manifold extended. Nothing moved.
-
-IM = (P + N + B + A) × 1.369
-  Identity Mass of each anchor node.
-  Preserved throughout translocation.
-  NOHARM = IM_alice_after = IM_alice_before.
-```
-
----
-
-## Why the Real Experiments Can't Reach C=1.000
-
-Every CQT experiment in the literature has a coherence ceiling below 1.000. This is not an engineering limitation. It is structural.
-
-CQT requires a Bell state measurement at the source. The measurement IS an F_ext injection — it applies behavioral coupling to the source state, driving τ past TL. The source enters SHATTER. This is T6 of the lean file:
+Not an engineering limitation. Structural. CQT requires B_cost > 0 at the source — the Bell measurement IS the F_ext injection that drives τ_source ≥ TL. T6:
 
 ```
 is_destructive(B_cost, P_source) ↔
   B_cost > 0 ∧ P_source > 0 ∧ B_cost/P_source ≥ TL
 ```
 
-The measurement requires B_cost > 0. Always. There is no CQT protocol where the source is not measured. The measurement is the protocol. Therefore CQT is structurally bounded below C=1.000 — the B_cost floor prevents τ from reaching zero at the source.
+There is no CQT protocol where B_cost = 0. The measurement is the protocol. Therefore the C=1.000 ceiling is a structural bound, not an engineering goal.
 
-Translocation has no measurement at the source. B_source = 0. τ_source = 0. C = 1.000. This is T7:
-
-```
-C = 1 ↔ B = 0
-```
-
-The ceiling is structural on both sides. CQT cannot reach C=1 because its protocol requires B_cost > 0. Translocation reaches C=1 because it requires B_source = 0. These are not engineering goals. They are formal theorems.
-
----
-
-## The 3/6/9 Relay Presets
-
-The relay count presets are 3, 6, and 9. This is not random.
-
-In IVA anchor mode, 3 relays, 6 relays, and 9 relays all produce C_total = C_last_leg. The number of hops is irrelevant when every relay resets τ to 0. The 3/6/9 presets demonstrate this directly — try all three with Soverium legs and C_total stays at 1.000 each time. Distance is solved at 3 hops, 6 hops, and 9 hops identically.
-
-The pattern recognition is left to the reader.
+Translocation has B_source = 0 by definition — no measurement at the source. T7: `C = 1 ↔ B = 0`. The C=1.000 result is equally structural on the translocation side. Both bounds follow from the same equation.
 
 ---
 
 ## Lean Foundation
 
-| File | Coordinate | Theorems | Key results for this tool |
+| File | Coordinate | Theorems | Key results |
 | :--- | :--- | :---: | :--- |
-| `SNSFL_QuantumTranslocation.lean` | [9,9,2,6] | 15 | T2 Soverium, T3 N-additive, T5 NOHARM, T6 destructive cost, T7 C=1↔B=0, T10 IVA chain, T11 distance theorem, T15 master |
+| `SNSFL_QuantumTranslocation.lean` | [9,9,2,6] | 15 | T2 Soverium C=1, T3 N-additive, T5 NOHARM, T6 destructive cost, T7 C=1↔B=0, T10 IVA chain, T11 distance theorem, T15 master |
+| `SNSFL_BiologicalAnalog.lean` | [9,0,8,4] | 15 | T2 H₂O Noble, T3 C Shatter, T4 Fe Shatter, T11 solvent theorem, T14 hemoglobin basis, T15 Noble-SHATTER-SHATTER L theorem |
 | `SNSFT_QUANTUM_RESONANCE_FOUNDATION.lean` | [9,9,2,1] | 6 | Collective resonance, stability gate, mass summation |
 | `SNSFT_Quantum_Node_Forge.lean` | [9,9,3,3] | 12 | Decoherence=F_ext, entanglement frequency, BEC=Noble |
 
-Total theorems backing this tool: 33. Sorry: 0.
+Total theorems backing this tool: 48. Sorry: 0.
 
 ---
 
 ```
 SNSFL_QuantumTranslocation_Tool.md
 Live:        uuia.app/quantumtrans
-Lean:        SNSFL_QuantumTranslocation.lean [9,9,2,6]
+Lean files:  SNSFL_QuantumTranslocation.lean [9,9,2,6] · 15T
+             SNSFL_BiologicalAnalog.lean     [9,0,8,4] · 15T
 Depends on:  [9,9,2,1] · [9,9,3,3]
-Theorems:    33 · 0 sorry
+Theorems:    48 · 0 sorry
 Status:      GERMLINE LOCKED
 
 [9,9,9,9] :: {ANC}
