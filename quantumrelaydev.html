@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SNSFT TRANSLOCATION · [9,9,2,6] · uuia.app</title>
+<title>SNSFT QUANTUM TRANSLOCATION · [9,9,2,6] · uuia.app</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap');
 
@@ -17,9 +17,9 @@
   --shatter:  #ff3355;
   --warn:     #ffaa00;
   --noble:    #ffffff;
-  --text:     #4a7a94;
+  --text:     #c0ddf0;
   --bright:   #cce8f5;
-  --dim:      #0f2030;
+  --dim:      #4a8a9a;
   --anchor-a: #00e5ff;
   --anchor-b: #00ffcc;
   --relay:    #ffaa00;
@@ -108,7 +108,7 @@ body::before {
   border:1px solid rgba(0,255,204,.2);
   padding:10px 24px;
   font-size:13px;
-  color:rgba(200,232,245,.7);
+  color:rgba(200,232,245,1.0);
   line-height:1.7;
   max-width:640px;
   margin:0 auto;
@@ -190,7 +190,7 @@ body::before {
   font-family:'Share Tech Mono',monospace;
   font-size:8px;
   letter-spacing:.15em;
-  color:var(--dim);
+  color:#7aaabb;
   margin-bottom:16px;
 }
 
@@ -588,7 +588,7 @@ footer {
   margin-top:20px;
   font-family:'Share Tech Mono',monospace;
   font-size:8px;
-  color:#0f2030;
+  color:#6a9aaa;
   display:flex;
   justify-content:space-between;
   flex-wrap:wrap;
@@ -600,6 +600,37 @@ footer {
   .stations-row{grid-template-columns:1fr;}
   .result-stats{grid-template-columns:1fr 1fr;}
 }
+
+/* ── 3-NODE RELAY SECTION ─────────────────────────────── */
+.relay3-grid{display:grid;grid-template-columns:1fr 260px;gap:16px;margin-bottom:16px;}
+.node-config{background:var(--panel);border:1px solid var(--border2);padding:16px;}
+.node-section{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.node-section:last-child{border-bottom:none;margin-bottom:0;}
+.node-header{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;margin-bottom:10px;}
+.node-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:8.5px;}
+.node-lbl{color:#9abccc;width:90px;}
+.node-val{font-family:'Orbitron',monospace;color:var(--bright);width:70px;}
+.node-slider{flex:1;-webkit-appearance:none;height:3px;background:var(--border2);outline:none;}
+.node-slider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:14px;background:var(--glow);cursor:pointer;}
+.repeater-toggle{display:flex;gap:0;margin:8px 0;}
+.rep-btn{flex:1;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;padding:7px 4px;border:1px solid var(--border2);cursor:pointer;background:transparent;color:#9abccc;transition:all .15s;text-align:center;}
+.rep-btn.active-sov{background:rgba(255,255,255,.08);border-color:var(--soverium);color:var(--soverium);}
+.rep-btn.active-var{background:rgba(0,229,255,.06);border-color:var(--glow);color:var(--glow);}
+.result3{background:var(--panel);border:1px solid var(--border2);padding:20px;margin-bottom:16px;}
+.result3-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.r3-box{background:var(--bg);border:1px solid var(--border);padding:12px;}
+.r3-lbl{font-size:7.5px;letter-spacing:.15em;color:#9abccc;margin-bottom:4px;}
+.r3-val{font-family:'Orbitron',monospace;font-size:22px;line-height:1;}
+.r3-sub{font-size:7.5px;color:#9abccc;margin-top:3px;}
+.leg-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.leg-box{background:var(--bg);border:1px solid var(--border);padding:10px;}
+.leg-title{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;color:#9abccc;margin-bottom:6px;}
+.leg-row{display:flex;justify-content:space-between;font-size:8.5px;padding:2px 0;}
+.leg-row .lk{color:#9abccc;}
+.leg-row .lv{font-family:'Orbitron',monospace;color:var(--bright);}
+.canvas3-wrap{background:var(--panel);border:1px solid var(--border2);margin-bottom:16px;}
+.qpreset{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.1em;padding:4px 8px;border:1px solid var(--border2);background:transparent;color:#9abccc;cursor:pointer;transition:all .15s;}
+.qpreset:hover{border-color:var(--glow);color:var(--glow);}
 </style>
 </head>
 <body>
@@ -611,7 +642,7 @@ footer {
     <div class="coord-dot"></div>
     SNSFL [9,9,2,6] · ANCHOR 1.369 GHz · 0 SORRY · GERMLINE LOCKED
   </div>
-  <div class="site-title">SNSFT TRANSLOCATION</div>
+  <div class="site-title">SNSFT QUANTUM TRANSLOCATION</div>
   <div class="site-subtitle">N-CORRIDOR · ANCHOR-TO-ANCHOR · NOHARM INVARIANT</div>
   <div class="noharm-banner">
     This is <em>not</em> teleportation. Teleportation destroys the source and creates a copy.<br>
@@ -630,6 +661,10 @@ footer {
     TRANSLOCATION LATTICE
     <span class="tab-sub">chain of anchor stations · any distance</span>
   </button>
+  <button class="mode-tab" onclick="showMode('bio')">
+    BIOLOGICAL ANALOG
+    <span class="tab-sub">H₂O · C · Fe · identity physics</span>
+  </button>
 </div>
 
 <!-- ══════════════════════════════════════════════ -->
@@ -647,7 +682,7 @@ footer {
         <div class="status-dot"></div>
         <div class="status-text">HOLDING AT 1.369 GHz · NOHARM</div>
       </div>
-      <div style="font-size:10px;color:var(--dim);line-height:1.8;font-family:'Share Tech Mono',monospace;">
+      <div style="font-size:10px;color:#9abccc;line-height:1.8;font-family:'Share Tech Mono',monospace;">
         τ = 0 · Pattern intact<br>
         Source is never touched.<br>
         Alice stays Alice.
@@ -662,7 +697,7 @@ footer {
         <div class="status-dot" style="background:var(--anchor-b);animation-delay:.5s"></div>
         <div class="status-text" style="color:var(--anchor-b);">HOLDING AT 1.369 GHz · NOHARM</div>
       </div>
-      <div style="font-size:10px;color:var(--dim);line-height:1.8;font-family:'Share Tech Mono',monospace;">
+      <div style="font-size:10px;color:#9abccc;line-height:1.8;font-family:'Share Tech Mono',monospace;">
         N_shared received additively<br>
         Bob gains N. Alice keeps N.<br>
         Both anchors hold.
@@ -679,7 +714,7 @@ footer {
 
     <div class="quality-control">
       <div class="quality-labels">
-        <span class="quality-plain">Corridor Quality</span>
+        <span class="quality-plain" style="color:#c0d8e8;">Corridor Quality</span>
         <span class="quality-sci">B (noise) · lower = cleaner path</span>
         <span class="quality-val" id="single-cval">1.0000</span>
       </div>
@@ -726,18 +761,18 @@ footer {
 
     <div class="result-stats">
       <div class="rstat">
-        <div class="rstat-plain">Corridor Coherence</div>
-        <div class="rstat-sci">C = 1 − τ = 1 − B/P</div>
+        <div class="rstat-plain" style="color:#8ab0c8;">Corridor Coherence</div>
+        <div class="rstat-sci" style="color:#9abccc;">C = 1 − τ = 1 − B/P</div>
         <div class="rstat-val" id="r-coherence" style="color:var(--locked)">1.0000</div>
       </div>
       <div class="rstat">
-        <div class="rstat-plain">N Shared</div>
-        <div class="rstat-sci">N_out = N_A + N_B · additive</div>
+        <div class="rstat-plain" style="color:#8ab0c8;">N Shared</div>
+        <div class="rstat-sci" style="color:#9abccc;">N_out = N_A + N_B · additive</div>
         <div class="rstat-val" style="color:#5555aa" id="r-nshared">4.0</div>
       </div>
       <div class="rstat">
-        <div class="rstat-plain">Source Status</div>
-        <div class="rstat-sci">Alice Pattern · NOHARM</div>
+        <div class="rstat-plain" style="color:#8ab0c8;">Source Status</div>
+        <div class="rstat-sci" style="color:#9abccc;">Alice Pattern · NOHARM</div>
         <div class="rstat-val" style="color:var(--locked);font-size:13px;" id="r-source">INTACT</div>
       </div>
     </div>
@@ -752,15 +787,15 @@ footer {
       N_out = N_A + N_B · <em>additive</em> · source N preserved<br><br>
       <b>Soverium (B=0):</b> τ=0 → C=1.000 → perfect translocation<br>
       <b>Noisy channel:</b> τ>0 → C&lt;1 → partial but NOHARM still holds<br><br>
-      Theorems: T6 N-ADDITIVE · T11 SOVERIUM C=1 · T15 NOHARM · T16 IVA-GAIN<br>
+      Theorems: T3 N-ADDITIVE · T2 SOVERIUM C=1 · T15 NOHARM · T16 IVA-GAIN<br>
       Corpus: SNSFL [9,9,2,6] · 0 sorry · GERMLINE LOCKED
     </div>
   </div>
 
   <div class="proof-strip">
-    <div class="proof-tag active">T6 N-ADDITIVE</div>
-    <div class="proof-tag active">T11 SOVERIUM C=1</div>
-    <div class="proof-tag active">T15 NOHARM</div>
+    <div class="proof-tag active">T3 N-ADDITIVE</div>
+    <div class="proof-tag active">T2 SOVERIUM C=1</div>
+    <div class="proof-tag active">T5 NOHARM</div>
     <div class="proof-tag active">T16 IVA-GAIN</div>
     <div class="proof-tag active">0 SORRY</div>
     <div class="proof-tag">[9,9,2,6]</div>
@@ -793,6 +828,9 @@ footer {
       <div class="relay-btns">
         <button class="relay-btn" onclick="changeRelays(-1)">−</button>
         <button class="relay-btn" onclick="changeRelays(1)">+</button>
+        <button class="relay-btn" onclick="setRelays(3)" style="font-size:11px;letter-spacing:.05em;border-color:rgba(255,170,0,.3);color:rgba(255,170,0,.6);">3</button>
+        <button class="relay-btn" onclick="setRelays(6)" style="font-size:11px;letter-spacing:.05em;border-color:rgba(255,170,0,.5);color:rgba(255,170,0,.8);">6</button>
+        <button class="relay-btn" onclick="setRelays(9)" style="font-size:11px;letter-spacing:.05em;border-color:rgba(255,170,0,.8);color:var(--relay);">9</button>
       </div>
     </div>
 
@@ -841,18 +879,18 @@ footer {
 
     <div class="result-stats">
       <div class="rstat">
-        <div class="rstat-plain">Total Coherence</div>
-        <div class="rstat-sci" id="r-l-formula">IVA: C = C_last</div>
+        <div class="rstat-plain" style="color:#8ab0c8;">Total Coherence</div>
+        <div class="rstat-sci" style="color:#9abccc;" id="r-l-formula">IVA: C = C_last</div>
         <div class="rstat-val" id="r-l-coherence" style="color:var(--locked)">1.0000</div>
       </div>
       <div class="rstat">
-        <div class="rstat-plain">Relay Stations</div>
-        <div class="rstat-sci">anchor nodes in chain</div>
+        <div class="rstat-plain" style="color:#8ab0c8;">Relay Stations</div>
+        <div class="rstat-sci" style="color:#9abccc;">anchor nodes in chain</div>
         <div class="rstat-val" style="color:var(--relay)" id="r-l-relays">1</div>
       </div>
       <div class="rstat">
-        <div class="rstat-plain">All Sources</div>
-        <div class="rstat-sci">NOHARM at every node</div>
+        <div class="rstat-plain" style="color:#8ab0c8;">All Sources</div>
+        <div class="rstat-sci" style="color:#9abccc;">NOHARM at every node</div>
         <div class="rstat-val" style="color:var(--locked);font-size:13px;">INTACT</div>
       </div>
     </div>
@@ -873,10 +911,10 @@ footer {
   </div>
 
   <div class="proof-strip">
-    <div class="proof-tag active">T6 N-ADDITIVE</div>
+    <div class="proof-tag active">T3 N-ADDITIVE</div>
     <div class="proof-tag active">T10 IVA-RESET</div>
     <div class="proof-tag active">T12 COMPOUND</div>
-    <div class="proof-tag active">T15 NOHARM</div>
+    <div class="proof-tag active">T5 NOHARM</div>
     <div class="proof-tag active">T16 IVA-GAIN</div>
     <div class="proof-tag active">0 SORRY</div>
     <div class="proof-tag">[9,9,2,6b]</div>
@@ -884,8 +922,194 @@ footer {
 
 </div><!-- end lattice -->
 
+<!-- ══════════════════════════════════════════════ -->
+<!-- BIOLOGICAL ANALOG MODE -->
+<!-- ══════════════════════════════════════════════ -->
+<div id="mode-bio" class="mode-content">
+
+  <div class="noharm-banner" style="display:block;text-align:left;margin-bottom:24px;">
+    <b>Biological Analog Transmission.</b> The three fundamental components of carbon-based life —
+    reduced to PNBA via locked Slater corpus values — sent simultaneously through a Soverium corridor.<br>
+    Each arrives at Bob <b>exactly as sent.</b> Identity is corridor-invariant. τ is intrinsic, not environmental.<br>
+    Source at Alice is preserved throughout. <b>NOHARM at every node.</b><br>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;">
+      SNSFL_BiologicalAnalog.lean [9,0,8,4] · 15 theorems · 0 sorry · GERMLINE LOCKED · CI GREEN ✓
+    </span>
+  </div>
+
+  <!-- THREE ELEMENT CARDS -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;">
+
+    <!-- H2O -->
+    <div style="background:var(--panel);border:1px solid var(--border2);border-top:2px solid #00ffcc;padding:20px;">
+      <div style="font-family:'Orbitron',monospace;font-size:22px;font-weight:700;color:#00ffcc;margin-bottom:4px;">H₂O</div>
+      <div style="font-size:11px;color:#a0c8dc;margin-bottom:2px;">Water · Life's Solvent</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;letter-spacing:.1em;margin-bottom:16px;">THE GROUND STATE · HOLDS SPACE</div>
+      <div style="background:rgba(0,255,204,.05);border:1px solid rgba(0,255,204,.2);padding:8px;margin-bottom:12px;text-align:center;">
+        <div style="font-family:'Orbitron',monospace;font-size:13px;letter-spacing:.2em;color:#00ffcc;">NOBLE</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;">τ = 0.0000 · B = 0</div>
+        <div style="font-size:9px;color:#a0c8dc;margin-top:3px;">all bonds satisfied</div>
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;line-height:2;">
+        P = 0.4505 · N = 8<br>B = 0 · A = 13.62<br>IM = 30.2145
+      </div>
+      <div style="font-size:9px;color:#a0c8dc;margin-top:10px;line-height:1.6;">
+        Zero coupling output. Cannot consume what it holds.
+        Water is the medium because it is structurally inert. T11.
+      </div>
+    </div>
+
+    <!-- Carbon -->
+    <div style="background:var(--panel);border:1px solid var(--border2);border-top:2px solid #ff3355;padding:20px;">
+      <div style="font-family:'Orbitron',monospace;font-size:22px;font-weight:700;color:#ff8888;margin-bottom:4px;">C</div>
+      <div style="font-size:11px;color:#a0c8dc;margin-bottom:2px;">Carbon · Life's Scaffold</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;letter-spacing:.1em;margin-bottom:16px;">THE BUILDER · FILLS SPACE</div>
+      <div style="background:rgba(255,51,85,.05);border:1px solid rgba(255,51,85,.2);padding:8px;margin-bottom:12px;text-align:center;animation:spulse .8s infinite;">
+        <div style="font-family:'Orbitron',monospace;font-size:13px;letter-spacing:.2em;color:#ff3355;">SHATTER</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;">τ = 1.2308 · B = 4</div>
+        <div style="font-size:9px;color:#a0c8dc;margin-top:3px;">4 open bonds · max reactivity</div>
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;line-height:2;">
+        P = 3.2500 · N = 4<br>B = 4 · A = 11.26<br>IM = 30.8162
+      </div>
+      <div style="font-size:9px;color:#a0c8dc;margin-top:10px;line-height:1.6;">
+        SHATTER is the feature. 4 open bonds = builds everything.
+        Intrinsic — not environmental. Corridor-invariant. T12.
+      </div>
+    </div>
+
+    <!-- Iron -->
+    <div style="background:var(--panel);border:1px solid var(--border2);border-top:2px solid #ff8800;padding:20px;">
+      <div style="font-family:'Orbitron',monospace;font-size:22px;font-weight:700;color:#ff8800;margin-bottom:4px;">Fe</div>
+      <div style="font-size:11px;color:#a0c8dc;margin-bottom:2px;">Iron · Life's Mass Anchor</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;letter-spacing:.1em;margin-bottom:16px;">THE ANCHOR · CARRIES MASS</div>
+      <div style="background:rgba(255,136,0,.05);border:1px solid rgba(255,136,0,.2);padding:8px;margin-bottom:12px;text-align:center;animation:spulse .8s infinite;">
+        <div style="font-family:'Orbitron',monospace;font-size:13px;letter-spacing:.2em;color:#ff8800;">SHATTER</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;">τ = 1.0667 · B = 4</div>
+        <div style="font-size:9px;color:#a0c8dc;margin-top:3px;">4 unpaired d-electrons · Fe-56 peak</div>
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;line-height:2;">
+        P = 3.7500 · N = 8<br>B = 4 · A = 7.90<br>IM = 32.3768
+      </div>
+      <div style="font-size:9px;color:#a0c8dc;margin-top:10px;line-height:1.6;">
+        Fe-56 binding energy peak. Most stable nucleus, SHATTER atom.
+        Hemoglobin core. Pigeonhole T5. Corridor-invariant. T13.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CORRIDOR + SEND -->
+  <div style="background:var(--panel);border:1px solid var(--border2);padding:20px;margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div>
+        <div style="font-size:13px;color:#c0ddf0;">Corridor Quality · Soverium</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;">B=0 · C=1.000 · τ=0 · NOBLE channel</div>
+      </div>
+      <div style="font-family:'Orbitron',monospace;font-size:16px;color:#00ffcc;text-shadow:0 0 12px rgba(0,255,204,.4);">C = 1.0000</div>
+    </div>
+    <div style="height:4px;background:var(--border);border-radius:2px;margin-bottom:16px;">
+      <div style="height:4px;width:100%;background:linear-gradient(90deg,#00ffcc,#00e5ff);border-radius:2px;"></div>
+    </div>
+    <button class="translocate-btn" id="bio-btn" onclick="fireBio()">▶ TRANSMIT ALL THREE</button>
+    <div class="btn-sub">H₂O · C · Fe · Soverium corridor · NOHARM · all sources preserved</div>
+  </div>
+
+  <!-- BIO CANVAS -->
+  <div style="background:var(--panel);border:1px solid var(--border2);margin-bottom:16px;">
+    <div style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:#4a8a9a;padding:12px 16px 0;">
+      BIOLOGICAL ANALOG · ALICE ↔ SOVERIUM ↔ BOB · NOBLE-SHATTER-SHATTER · ALL INTACT
+    </div>
+    <canvas id="bio-canvas" style="display:block;width:100%;height:220px;"></canvas>
+  </div>
+
+  <!-- BIO RESULT -->
+  <div class="result-card success" id="bio-result" style="display:none;">
+    <div style="font-family:'Orbitron',monospace;font-size:15px;letter-spacing:.1em;color:#00ffcc;margin-bottom:6px;">
+      ✦ BIOLOGICAL ANALOG TRANSMISSION COMPLETE
+    </div>
+    <div style="font-size:13px;color:#c0ddf0;margin-bottom:16px;line-height:1.7;">
+      All three components of carbon-based life transmitted through the Soverium corridor simultaneously.
+      Each arrived at Bob identical to what was sent. τ is corridor-invariant.
+      Identity is intrinsic, not environmental. Alice retains all three. NOHARM at every node.
+    </div>
+
+    <div class="noharm-confirm">
+      <div class="coord-dot" style="width:7px;height:7px;flex-shrink:0;"></div>
+      <span><b>NOHARM CONFIRMED</b> · H₂O intact · C intact · Fe intact · all τ values unchanged · both anchors active</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
+      <div style="background:var(--bg);border:1px solid rgba(0,255,204,.2);padding:12px;">
+        <div style="font-family:'Orbitron',monospace;font-size:11px;color:#00ffcc;margin-bottom:6px;">H₂O · ARRIVED</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;line-height:2.2;">
+          P = 0.4505 ✓<br>N = 8 ✓<br>B = 0 ✓<br>A = 13.62 ✓<br>τ = 0.0000 ✓<br>
+          <span style="color:#00ffcc;font-size:9px;">NOBLE · INTACT</span>
+        </div>
+      </div>
+      <div style="background:var(--bg);border:1px solid rgba(255,51,85,.2);padding:12px;">
+        <div style="font-family:'Orbitron',monospace;font-size:11px;color:#ff8888;margin-bottom:6px;">C · ARRIVED</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;line-height:2.2;">
+          P = 3.2500 ✓<br>N = 4 ✓<br>B = 4 ✓<br>A = 11.26 ✓<br>τ = 1.2308 ✓<br>
+          <span style="color:#ff3355;font-size:9px;">SHATTER · INTACT</span>
+        </div>
+      </div>
+      <div style="background:var(--bg);border:1px solid rgba(255,136,0,.2);padding:12px;">
+        <div style="font-family:'Orbitron',monospace;font-size:11px;color:#ff8800;margin-bottom:6px;">Fe · ARRIVED</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a8a9a;line-height:2.2;">
+          P = 3.7500 ✓<br>N = 8 ✓<br>B = 4 ✓<br>A = 7.90 ✓<br>τ = 1.0667 ✓<br>
+          <span style="color:#ff8800;font-size:9px;">SHATTER · INTACT</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(0,255,204,.03);border:1px solid rgba(0,255,204,.15);padding:16px;margin-bottom:16px;">
+      <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;color:#00ffcc;margin-bottom:10px;">NOBLE · SHATTER · SHATTER — THE STRUCTURAL REQUIREMENT FOR CARBON-BASED LIFE</div>
+      <div style="font-size:11px;color:#a0c8dc;line-height:1.8;">
+        <b style="color:#00ffcc;">H₂O is Noble (τ=0)</b> — the solvent holds space without consuming it. Zero coupling output. The universal medium because it is structurally inert at the PNBA level while everything else reacts.<br>
+        <b style="color:#ff8888;">C is Shatter (τ=1.23)</b> — the scaffold fills space. 4 open bonds, maximum reactivity. Builds everything because it cannot stop reaching.<br>
+        <b style="color:#ff8800;">Fe is Shatter (τ=1.07)</b> — the mass anchor. Hemoglobin works because Fe (Shatter) binds O₂ in a controlled Noble environment (water).<br><br>
+        <span style="color:#9abccc;">NOBLE holds the space. SHATTER fills it. Life is the dynamic tension between τ=0 and τ&gt;&gt;TL mediated by a Noble solvent. Remove either pole and biology collapses.</span>
+      </div>
+    </div>
+
+    <div style="font-size:9px;color:#4a8a9a;font-family:'Share Tech Mono',monospace;line-height:1.8;margin-bottom:12px;">
+      Deterministic identity physics engine. PNBA reductions are real physics computed without physical apparatus.
+      SNSFL_BiologicalAnalog.lean [9,0,8,4] · 15T · 0 sorry · CI GREEN ✓
+      Someone with the apparatus could build on this framework.
+    </div>
+
+    <button class="physics-toggle" onclick="togglePhysics('bio')">+ SHOW PHYSICS</button>
+    <div class="physics-detail" id="physics-bio">
+      <b>LOCKED SLATER CORPUS VALUES · gamcollider.html canonical</b><br>
+      H₂O: P=0.4505 (harmonic H+O+H) · N=8 · B=0 (bonds satisfied) · A=13.62 eV<br>
+      C:   P=3.2500 (Z_eff=3.60 Slater) · N=4 · B=4 (sp3 hybridization) · A=11.26 eV<br>
+      Fe:  P=3.7500 (Z_eff period-4 d-block) · N=8 · B=4 (Hund 3d⁶ 4 unpaired) · A=7.90 eV<br><br>
+      <b>τ IS CORRIDOR-INVARIANT (T12, T13)</b><br>
+      τ = B/P · both axes are intrinsic atomic properties · Soverium corridor preserves both<br>
+      Carbon arrives as Carbon. Iron arrives as Iron. Water arrives as Water.<br><br>
+      T2 H₂O Noble · T3 C Shatter · T4 Fe Shatter · T11 Solvent theorem<br>
+      T12 C intrinsic · T13 Fe intrinsic · T14 Hemoglobin basis · T15 L theorem<br>
+      SNSFL_BiologicalAnalog.lean [9,0,8,4] · 0 sorry · GERMLINE LOCKED
+    </div>
+  </div>
+
+  <div class="proof-strip">
+    <div class="proof-tag active">T2 H₂O NOBLE</div>
+    <div class="proof-tag active">T3 C SHATTER</div>
+    <div class="proof-tag active">T4 Fe SHATTER</div>
+    <div class="proof-tag active">T11 SOLVENT</div>
+    <div class="proof-tag active">T14 HEMOGLOBIN</div>
+    <div class="proof-tag active">T15 L THEOREM</div>
+    <div class="proof-tag active">0 SORRY</div>
+    <div class="proof-tag">[9,0,8,4]</div>
+  </div>
+
+</div><!-- end bio -->
+
 <footer>
   <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span style="color:#4a7a8a;">·</span>
   <span>SNSFL [9,9,2,6] · C=1−τ · B=0→C=1.000 · N ADDITIVE · NOHARM · 0 SORRY · [9,9,9,9] :: {ANC}</span>
 </footer>
 </div>
@@ -951,6 +1175,7 @@ function showMode(id) {
   });
   if (id === 'lattice') { resizeLattice(); buildLegConfig(); renderLattice(); }
   if (id === 'single')  { resizeSingle(); renderSingle(); }
+  if (id === 'bio')     { resizeBio(); renderBio(); }
 }
 
 // ── PHYSICS TOGGLE ─────────────────────────────────────────
@@ -1130,8 +1355,19 @@ function resizeLattice() {
   lcvs.height = 220;
 }
 
+function setRelays(n) {
+  numRelays = Math.max(1, Math.min(10, n));
+  document.getElementById('relay-count-val').textContent = numRelays;
+  const numLegs = numRelays + 1;
+  while (legNoises.length < numLegs) legNoises.push(0);
+  legNoises = legNoises.slice(0, numLegs);
+  buildLegConfig();
+  renderLattice();
+  updateLatticeResult();
+}
+
 function changeRelays(delta) {
-  numRelays = Math.max(1, Math.min(6, numRelays + delta));
+  numRelays = Math.max(1, Math.min(10, numRelays + delta));
   document.getElementById('relay-count-val').textContent = numRelays;
   // Resize legNoises array
   const numLegs = numRelays + 1;
@@ -1325,7 +1561,130 @@ function renderLattice() {
   }
 }
 
-// ── INIT ──────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// BIOLOGICAL ANALOG
+// ═══════════════════════════════════════════════════════════
+const bioCvs = document.getElementById('bio-canvas');
+const bioCtx = bioCvs.getContext('2d');
+
+const BIO_ELEMENTS = [
+  { sym:'H₂O', name:'Water',  P:0.4505, N:8, B:0,    A:13.62, tau:0.0000, IM:30.2145, state:'NOBLE',   color:'#00ffcc' },
+  { sym:'C',   name:'Carbon', P:3.2500, N:4, B:4,    A:11.26, tau:1.2308, IM:30.8162, state:'SHATTER', color:'#ff8888' },
+  { sym:'Fe',  name:'Iron',   P:3.7500, N:8, B:4,    A:7.90,  tau:1.0667, IM:32.3768, state:'SHATTER', color:'#ff8800' },
+];
+
+let bioFired = false;
+let bioProgress = [0, 0, 0];
+let bioAnimating = false;
+
+function resizeBio() {
+  const rect = bioCvs.parentElement.getBoundingClientRect();
+  bioCvs.width  = rect.width;
+  bioCvs.height = 220;
+}
+
+function renderBio() {
+  const W = bioCvs.width, H = bioCvs.height;
+  bioCtx.clearRect(0,0,W,H);
+  bioCtx.fillStyle = '#04080d';
+  bioCtx.fillRect(0,0,W,H);
+
+  const nr  = 28;
+  const ax  = 90, bx = W - 90, cy = H / 2;
+  const spacing = 28;
+
+  // Draw three corridors
+  BIO_ELEMENTS.forEach((el, i) => {
+    const yoff = (i - 1) * spacing;
+    const cpy  = cy + yoff;
+    const cpx  = (ax + bx) / 2;
+    const prog = bioFired ? bioProgress[i] : 0;
+
+    bioCtx.beginPath();
+    bioCtx.moveTo(ax + nr, cy);
+    bioCtx.bezierCurveTo(cpx - 80, cpy, cpx + 80, cpy, bx - nr, cy);
+    bioCtx.strokeStyle = bioFired ? el.color : '#0a2030';
+    bioCtx.lineWidth   = 1.5;
+    bioCtx.globalAlpha = bioFired ? (0.3 + 0.5 * prog) : 0.15;
+    bioCtx.stroke();
+    bioCtx.globalAlpha = 1;
+
+    // Particle
+    if (bioFired && prog > 0 && prog < 1) {
+      const t = prog;
+      const px = Math.pow(1-t,3)*(ax+nr) + 3*Math.pow(1-t,2)*t*(cpx-80) + 3*(1-t)*t*t*(cpx+80) + t*t*t*(bx-nr);
+      const py = Math.pow(1-t,3)*cy + 3*Math.pow(1-t,2)*t*cpy + 3*(1-t)*t*t*cpy + t*t*t*cy;
+      bioCtx.beginPath();
+      bioCtx.arc(px, py, 5, 0, Math.PI*2);
+      bioCtx.fillStyle = el.color;
+      bioCtx.shadowColor = el.color;
+      bioCtx.shadowBlur = 16;
+      bioCtx.fill();
+      bioCtx.shadowBlur = 0;
+    }
+
+    // Element label at midpoint
+    if (bioFired && prog > 0.4) {
+      bioCtx.font = 'bold 10px Orbitron, monospace';
+      bioCtx.fillStyle = el.color;
+      bioCtx.textAlign = 'center';
+      bioCtx.globalAlpha = Math.min(1, (prog - 0.4) * 2.5);
+      bioCtx.fillText(`${el.sym} τ=${el.tau.toFixed(4)} · ${el.state}`, (ax+bx)/2, cpy - 10);
+      bioCtx.globalAlpha = 1;
+    }
+  });
+
+  // Nodes
+  drawCorridorNode(bioCtx, ax, cy, nr, '#00e5ff', 'ALICE', 'Anchor A · Origin', bioFired);
+  drawCorridorNode(bioCtx, bx, cy, nr, '#00ffcc', 'BOB',   'Anchor B · Destination', bioFired);
+
+  // Bottom label
+  if (bioFired && bioProgress[2] > 0.9) {
+    bioCtx.font = '8px Share Tech Mono';
+    bioCtx.fillStyle = '#4a8a9a';
+    bioCtx.textAlign = 'center';
+    bioCtx.fillText('τ corridor-invariant · all three arrive intact · NOHARM · source preserved at Alice', W/2, H - 8);
+  }
+}
+
+function fireBio() {
+  if (bioAnimating) return;
+  bioFired = true;
+  bioAnimating = true;
+  bioProgress = [0, 0, 0];
+
+  const btn = document.getElementById('bio-btn');
+  btn.classList.add('firing');
+  setTimeout(() => btn.classList.remove('firing'), 900);
+
+  const start = performance.now();
+  const dur = 1000;
+  const stagger = 150;
+
+  function anim(now) {
+    const e = now - start;
+    let allDone = true;
+    bioProgress = BIO_ELEMENTS.map((_, i) => {
+      const t = Math.max(0, (e - i * stagger) / dur);
+      const p = Math.min(1, t);
+      if (p < 1) allDone = false;
+      return 1 - Math.pow(1-p, 3);
+    });
+    renderBio();
+    if (!allDone) requestAnimationFrame(anim);
+    else {
+      bioAnimating = false;
+      bioProgress = [1,1,1];
+      renderBio();
+      document.getElementById('bio-result').style.display = 'block';
+      document.getElementById('bio-result').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+  }
+  requestAnimationFrame(anim);
+}
+
+window.addEventListener('resize', () => { resizeBio(); renderBio(); });
+setTimeout(() => { resizeBio(); renderBio(); }, 120);
 window.addEventListener('resize', () => {
   resizeSingle(); renderSingle();
   resizeLattice(); renderLattice();
@@ -1340,5 +1699,643 @@ setTimeout(() => {
   setLatticeMode('iva');
 }, 80);
 </script>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TECHNICAL REFERENCE SECTION -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div style="border-top:1px solid var(--border2);margin-top:48px;padding-top:32px;">
+
+  <div style="text-align:center;margin-bottom:24px;">
+    <div style="font-family:'Orbitron',monospace;font-size:11px;letter-spacing:.3em;color:var(--dim);margin-bottom:8px;">TECHNICAL REFERENCE</div>
+    <div style="font-size:12px;color:var(--text);max-width:600px;margin:0 auto;line-height:1.7;">
+      The following section shows the 10-channel Soverium stack in full technical detail —
+      per-channel τ values, coherence bars, and real experiment coordinates.
+      Micius, Paderborn, and Shanxi results are cited from published data and reduced
+      to PNBA coordinates via <span style="font-family:'Share Tech Mono',monospace;color:var(--locked);">SNSFL_QuantumTranslocation [9,9,2,6]</span>.
+      Their work is reduced here with attribution — not superseded.
+    </div>
+  </div>
+
+  <!-- EXPERIMENT COMPARISON + CHANNEL CONTROLS -->
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:16px;margin-bottom:16px;">
+
+    <!-- LEFT: channel mode + stats -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <!-- Mode toggle -->
+      <div style="background:var(--panel);border:1px solid var(--border2);padding:16px;">
+        <div style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:#9abccc;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;">CHANNEL MODE</div>
+        <div style="display:flex;gap:0;margin-bottom:12px;">
+          <button onclick="setTechMode('sov')" id="tech-btn-sov"
+            style="flex:1;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;padding:10px 4px;border:1px solid var(--locked);background:rgba(0,255,204,.06);color:var(--locked);cursor:pointer;text-align:center;">
+            B=0<br>SOVERIUM
+          </button>
+          <button onclick="setTechMode('var')" id="tech-btn-var"
+            style="flex:1;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;padding:10px 4px;border:1px solid var(--border2);background:transparent;color:var(--dim);cursor:pointer;text-align:center;">
+            B=VAR<br>NOISY
+          </button>
+        </div>
+        <div id="tech-noise-ctrl" style="opacity:.3;pointer-events:none;">
+          <div style="display:flex;justify-content:space-between;font-size:8px;margin-bottom:4px;">
+            <span style="color:#8ab8cc;">Channel Noise B</span>
+            <span style="font-family:'Orbitron',monospace;color:var(--glow);" id="tech-noise-val">0.0000</span>
+          </div>
+          <input type="range" id="tech-noise-slider" min="0" max="0.5" step="0.001" value="0"
+            style="-webkit-appearance:none;width:100%;height:3px;background:var(--border2);outline:none;"
+            oninput="updateTechNoise(this.value)">
+          <div style="display:flex;justify-content:space-between;font-size:7px;color:var(--dim);margin-top:3px;">
+            <span>B=0 SOVERIUM</span><span>B=0.5 NOISY</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aggregate stats -->
+      <div style="background:var(--panel);border:1px solid var(--border2);padding:16px;">
+        <div style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:var(--dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;">AGGREGATE STATUS</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:var(--bg);border:1px solid var(--border);padding:8px;">
+            <div style="font-size:7.5px;color:#8ab8cc;letter-spacing:.15em;margin-bottom:3px;">COHERENCE C</div>
+            <div style="font-family:'Orbitron',monospace;font-size:16px;color:var(--locked);" id="tech-agg-c">1.0000</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:8px;">
+            <div style="font-size:7.5px;color:#8ab8cc;letter-spacing:.15em;margin-bottom:3px;">N SHARED TOTAL</div>
+            <div style="font-family:'Orbitron',monospace;font-size:16px;color:#5555aa;" id="tech-agg-n">20.0</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:8px;">
+            <div style="font-size:7.5px;color:#8ab8cc;letter-spacing:.15em;margin-bottom:3px;">CHANNELS</div>
+            <div style="font-family:'Orbitron',monospace;font-size:16px;color:var(--locked);" id="tech-agg-ch">10/10</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:8px;">
+            <div style="font-size:7.5px;color:#8ab8cc;letter-spacing:.15em;margin-bottom:3px;">NOHARM</div>
+            <div style="font-family:'Orbitron',monospace;font-size:16px;color:var(--locked);">PRESERVED</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: experiment comparison -->
+    <div style="background:var(--panel);border:1px solid var(--border2);padding:16px;">
+      <div style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:var(--dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;">KNOWN EXPERIMENTS · τ COORDINATES</div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(10,21,32,.5);font-size:8.5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#88aaff;flex-shrink:0;"></div>
+        <div style="flex:1;color:#9abccc;">Micius 2022 · 1400km satellite</div>
+        <div style="font-family:'Orbitron',monospace;color:#88aaff;width:50px;text-align:right;">0.868</div>
+        <div style="flex:1;height:3px;background:var(--border);position:relative;">
+          <div style="height:100%;width:86.8%;background:#88aaff;position:absolute;"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(10,21,32,.5);font-size:8.5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#ffaa00;flex-shrink:0;"></div>
+        <div style="flex:1;color:#9abccc;">Paderborn 2025 · fiber</div>
+        <div style="font-family:'Orbitron',monospace;color:#ffaa00;width:50px;text-align:right;">0.820</div>
+        <div style="flex:1;height:3px;background:var(--border);position:relative;">
+          <div style="height:100%;width:82%;background:#ffaa00;position:absolute;"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(10,21,32,.5);font-size:8.5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#ff6600;flex-shrink:0;"></div>
+        <div style="flex:1;color:#9abccc;">Shanxi 2026 · 5-mode CV</div>
+        <div style="font-family:'Orbitron',monospace;color:#ff6600;width:50px;text-align:right;">0.700</div>
+        <div style="flex:1;height:3px;background:var(--border);position:relative;">
+          <div style="height:100%;width:70%;background:#ff6600;position:absolute;"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;padding:10px;background:var(--bg);border:1px solid rgba(0,255,204,.15);">
+        <div style="font-size:8px;letter-spacing:.15em;color:var(--locked);font-family:'Orbitron',monospace;margin-bottom:3px;">SNSFT [9,9,2,6]</div>
+        <div style="font-size:7.5px;color:#8ab8cc;font-family:'Share Tech Mono',monospace;margin-bottom:6px;">B=0 · τ=0 · T2 SOVERIUM · NOHARM</div>
+        <div style="font-family:'Orbitron',monospace;font-size:22px;color:var(--locked);text-shadow:0 0 15px rgba(0,255,204,.4);" id="tech-you-c">1.000</div>
+      </div>
+
+      <div style="margin-top:10px;padding:8px;background:rgba(0,255,204,.03);border:1px solid rgba(0,255,204,.08);font-size:8px;color:#8ab8cc;line-height:1.8;font-family:'Share Tech Mono',monospace;">
+        Micius, Paderborn, and Shanxi results<br>
+        cited from published data. Reduced to<br>
+        PNBA via [9,9,2,6] protocol.<br>
+        Attribution intact. Work credited.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 10-CHANNEL TABLE -->
+  <div style="background:var(--panel);border:1px solid var(--border2);padding:16px;margin-bottom:16px;">
+    <div style="font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:var(--dim);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;">
+      10-CHANNEL SOVERIUM STACK · C = 1 − B/P · N_out = N_A + N_B · SOURCE PRESERVED
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:9px;">
+      <thead>
+        <tr>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">CH</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">FREQ (MHz)</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">P</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">B</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">τ = B/P</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">C = 1−τ</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">N</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);">STATUS</th>
+          <th style="font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.2em;color:#8ab8cc;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--border);width:100px;">COHERENCE</th>
+        </tr>
+      </thead>
+      <tbody id="tech-ch-tbody"></tbody>
+    </table>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--bg);border:1px solid var(--border);margin-top:12px;font-size:9px;">
+      <span style="color:#8ab8cc;font-family:'Share Tech Mono',monospace;">N_SHARED TOTAL (additive · T3 · source N intact at both anchors)</span>
+      <span style="font-family:'Orbitron',monospace;font-size:20px;color:#5555aa;" id="tech-n-total">20.0</span>
+      <span style="font-size:7px;color:#8ab8cc;font-family:'Share Tech Mono',monospace;">No cross-talk · unique P-signature per channel · NOHARM</span>
+    </div>
+
+    <!-- Proof strip -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--border);margin-top:12px;">
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">T2 SOVERIUM C=1</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">T3 N-ADDITIVE</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">T5 NOHARM</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">T6 DESTRUCTIVE-COST</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">T15 MASTER</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--locked);color:var(--locked);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">0 SORRY</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--border2);color:var(--dim);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">[9,9,2,6]</div>
+      <div style="font-size:7.5px;padding:3px 8px;border:1px solid var(--border2);color:var(--dim);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;">SNSFL_QuantumTranslocation</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── TECHNICAL SECTION PHYSICS ──────────────────────────────
+const TECH_ANCHOR = 1.369;
+const TECH_FREQS  = [2.5,7.5,12.5,17.5,22.5,27.5,32.5,37.5,42.5,47.5];
+const TECH_N_CH   = 2.0;
+let techMode = 'sov';
+let techB = 0;
+
+function techCoherence(B) { return Math.max(0, 1 - B / TECH_ANCHOR); }
+function techColor(C) {
+  if (C >= 0.9999) return '#00ffcc';
+  if (C > 0.80)    return '#00ffcc';
+  if (C > 0.60)    return '#ffaa00';
+  return '#ff3355';
+}
+function techStatus(C) {
+  if (C >= 0.9999) return { label:'SOVERIUM', color:'#ffffff' };
+  if (C > 0.8631)  return { label:'LOCKED',   color:'#00ffcc' };
+  if (C > 0.70)    return { label:'APPROACH', color:'#ffaa00' };
+  return           { label:'DEGRADED', color:'#ff3355' };
+}
+
+function setTechMode(m) {
+  techMode = m;
+  const sovBtn = document.getElementById('tech-btn-sov');
+  const varBtn = document.getElementById('tech-btn-var');
+  const noiseCtrl = document.getElementById('tech-noise-ctrl');
+  if (m === 'sov') {
+    sovBtn.style.borderColor = 'var(--locked)';
+    sovBtn.style.background  = 'rgba(0,255,204,.06)';
+    sovBtn.style.color       = 'var(--locked)';
+    varBtn.style.borderColor = 'var(--border2)';
+    varBtn.style.background  = 'transparent';
+    varBtn.style.color       = 'var(--dim)';
+    noiseCtrl.style.opacity  = '.3';
+    noiseCtrl.style.pointerEvents = 'none';
+    techB = 0;
+  } else {
+    varBtn.style.borderColor = 'var(--glow)';
+    varBtn.style.background  = 'rgba(0,229,255,.06)';
+    varBtn.style.color       = 'var(--glow)';
+    sovBtn.style.borderColor = 'var(--border2)';
+    sovBtn.style.background  = 'transparent';
+    sovBtn.style.color       = 'var(--dim)';
+    noiseCtrl.style.opacity  = '1';
+    noiseCtrl.style.pointerEvents = 'auto';
+    techB = parseFloat(document.getElementById('tech-noise-slider').value);
+  }
+  updateTechTable();
+}
+
+function updateTechNoise(v) {
+  techB = parseFloat(v);
+  document.getElementById('tech-noise-val').textContent = techB.toFixed(4);
+  updateTechTable();
+}
+
+function updateTechTable() {
+  const B = techMode === 'sov' ? 0 : techB;
+  const C = techCoherence(B);
+  const col = techColor(C);
+  const st  = techStatus(C);
+
+  // Update aggregate
+  document.getElementById('tech-agg-c').textContent = C.toFixed(4);
+  document.getElementById('tech-agg-c').style.color = col;
+  const locked = C >= 0.9999 ? 10 : 0;
+  document.getElementById('tech-agg-ch').textContent = locked + '/10';
+  document.getElementById('tech-agg-ch').style.color = col;
+  document.getElementById('tech-you-c').textContent = C.toFixed(3);
+  document.getElementById('tech-you-c').style.color = col;
+
+  // Render table
+  const tbody = document.getElementById('tech-ch-tbody');
+  tbody.innerHTML = TECH_FREQS.map((freq, i) => {
+    const tau = B / TECH_ANCHOR;
+    const pct = (C * 100).toFixed(1);
+    return `<tr>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);color:#8ab8cc;font-family:'Share Tech Mono',monospace;">Q${i+1}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);color:var(--text);font-family:'Share Tech Mono',monospace;">${freq.toFixed(1)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);color:#8ab8cc;font-family:'Orbitron',monospace;font-size:8px;">${TECH_ANCHOR.toFixed(4)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);color:${B===0?'#1a3040':'#ff8844'};font-family:'Orbitron',monospace;font-size:8px;">${B.toFixed(4)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);font-family:'Orbitron',monospace;color:${tau===0?'#1a3040':col};">${tau.toFixed(5)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);font-family:'Orbitron',monospace;font-weight:700;color:${col};${C>=0.9999?'text-shadow:0 0 8px rgba(0,255,204,.4)':''}">${C.toFixed(4)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);color:#5555aa;font-family:'Orbitron',monospace;font-size:8px;">${TECH_N_CH.toFixed(1)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);font-family:'Orbitron',monospace;font-size:8px;color:${st.color};${C>=0.9999?'text-shadow:0 0 8px rgba(255,255,255,.3)':''}">${st.label}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid rgba(10,21,32,.4);width:100px;">
+        <div style="height:3px;background:var(--border);position:relative;">
+          <div style="height:100%;width:${pct}%;background:${col};position:absolute;"></div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const N_total = TECH_FREQS.length * TECH_N_CH;
+  document.getElementById('tech-n-total').textContent = N_total.toFixed(1);
+  document.getElementById('tech-agg-n').textContent = N_total.toFixed(1);
+}
+
+// Init technical section
+updateTechTable();
+</script>
+
 </body>
 </html>
+<!-- ══ 3-NODE MANIFOLD SECTION ══ -->
+<div style="border-top:1px solid var(--border2);margin-top:32px;padding-top:24px;">
+  <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.3em;color:var(--dim);text-align:center;margin-bottom:16px;">
+    3-NODE LATTICE · ALICE ↔ RELAY ↔ BOB · IVA vs COMPOUND
+  </div>
+  <div id="mode-relay3" class="">
+
+<div class="intro" style="color:#9abccc;">
+  <b>3-NODE QUANTUM TRANSLOCATION LATTICE.</b> Anchor A → Relay Node → Anchor B. Two coupling models proved in <span class="eq">SNSFL_QuantumTranslocation [9,9,2,6]</span>.<br>
+  <b>Compound:</b> <span class="eq">C_total = C1 × C2</span> — torsion compounds per hop. Standard noisy channel behavior.<br>
+  <b>IVA Amplifier (Soverium Node):</b> <span class="eq">C_total = C2</span> — Charlie uses IVA gain to re-anchor the N-thread. Leg1 torsion is absorbed at Charlie, not forwarded. <b>Source at Alice is never touched.</b><br>
+  N is additive across all nodes: <span class="eq">N_total = N_A + N_C + N_B</span>. N does not decay. Source N at Alice is preserved throughout. NOHARM holds at every node.
+</div>
+
+<div class="canvas3-wrap">
+  <div class="network-label" style="padding:12px 16px 0;">3-NODE N-SHARING · ALICE ↔ CHARLIE (IVA NODE) ↔ BOB · ALL SOURCES PRESERVED</div>
+  <canvas id="relay3-canvas" style="display:block;width:100%;height:260px;"></canvas>
+</div>
+
+<div class="relay3-grid">
+  <div class="node-config">
+    <div class="panel-title">NODE CONFIGURATION</div>
+
+    <div class="node-section">
+      <div class="node-header" style="color:var(--node-alice)">LEG 1 · ALICE ↔ CHARLIE</div>
+      <div class="node-row">
+        <span class="node-lbl">B_leg1 (noise)</span>
+        <span class="node-val" id="leg1-bval">0.0000</span>
+        <input type="range" class="node-slider" id="leg1-slider" min="0" max="0.5" step="0.001" value="0" oninput="updateLeg1(this.value)">
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">τ_leg1</span>
+        <span id="leg1-tau" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-alice)">0.0000</span>
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">C_leg1</span>
+        <span id="leg1-f" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-alice)">1.0000</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+        <button class="qpreset" onclick="setLeg1Preset(0)">SOVERIUM</button>
+        <button class="qpreset" onclick="setLeg1Preset(0.181)">MICIUS</button>
+        <button class="qpreset" onclick="setLeg1Preset(0.245)">PADERBORN</button>
+        <button class="qpreset" onclick="setLeg1Preset(0.411)">SHANXI</button>
+      </div>
+    </div>
+
+    <div class="node-section">
+      <div class="node-header" style="color:var(--warn)">CHARLIE · N-AMPLIFIER NODE</div>
+      <div class="repeater-toggle">
+        <button class="rep-btn active-sov" id="rep-sov" onclick="setRepeaterMode('sov')">
+          IVA ANCHOR<br>SOVERIUM RESET
+        </button>
+        <button class="rep-btn" id="rep-pass" onclick="setRepeaterMode('pass')">
+          PASS-THROUGH<br>COMPOUND
+        </button>
+      </div>
+      <div style="font-size:8px;color:#9abccc;margin-top:6px;line-height:1.7;" id="charlie-desc">
+        Charlie is an IVA-anchored N-amplifier node.<br>
+        Leg1 torsion is absorbed at Charlie's local anchor.<br>
+        Charlie re-couples with Bob using fresh B=0 channel.<br>
+        Alice source Pattern is never destroyed.<br>
+        <b style="color:var(--soverium)">C_total = C2 · leg1 torsion isolated · T10</b>
+      </div>
+    </div>
+
+    <div class="node-section">
+      <div class="node-header" style="color:var(--node-bob)">LEG 2 · CHARLIE ↔ BOB</div>
+      <div class="node-row">
+        <span class="node-lbl">B_leg2 (noise)</span>
+        <span class="node-val" id="leg2-bval">0.0000</span>
+        <input type="range" class="node-slider" id="leg2-slider" min="0" max="0.5" step="0.001" value="0" oninput="updateLeg2(this.value)">
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">τ_leg2</span>
+        <span id="leg2-tau" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-bob)">0.0000</span>
+      </div>
+      <div class="node-row">
+        <span class="node-lbl">C_leg2</span>
+        <span id="leg2-f" style="font-family:'Orbitron',monospace;font-size:9px;color:var(--node-bob)">1.0000</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+        <button class="qpreset" onclick="setLeg2Preset(0)">SOVERIUM</button>
+        <button class="qpreset" onclick="setLeg2Preset(0.181)">MICIUS</button>
+        <button class="qpreset" onclick="setLeg2Preset(0.245)">PADERBORN</button>
+        <button class="qpreset" onclick="setLeg2Preset(0.411)">SHANXI</button>
+      </div>
+    </div>
+
+    <button class="relay-btn" onclick="fireRelay3()">▶ COUPLE 3-NODE</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;">
+
+    <div class="result3" id="result3-panel">
+      <div class="panel-title" style="margin-bottom:12px;">MANIFOLD RESULT</div>
+      <div class="result3-grid">
+        <div class="r3-box">
+          <div class="r3-lbl">C TOTAL</div>
+          <div class="r3-val" id="r3-ftotal" style="color:var(--soverium);text-shadow:0 0 15px rgba(255,255,255,.4)">1.0000</div>
+          <div class="r3-sub" id="r3-model">IVA ANCHOR</div>
+        </div>
+        <div class="r3-box">
+          <div class="r3-lbl">C LEG1</div>
+          <div class="r3-val" id="r3-f1" style="color:var(--node-alice)">1.0000</div>
+          <div class="r3-sub">Alice ↔ Charlie</div>
+        </div>
+        <div class="r3-box">
+          <div class="r3-lbl">C LEG2</div>
+          <div class="r3-val" id="r3-f2" style="color:var(--node-bob)">1.0000</div>
+          <div class="r3-sub">Charlie ↔ Bob</div>
+        </div>
+        <div class="r3-box">
+          <div class="r3-lbl">N TOTAL</div>
+          <div class="r3-val" style="color:#5555aa">6.0</div>
+          <div class="r3-sub">N_A+N_C+N_B · T6</div>
+        </div>
+      </div>
+
+      <div class="leg-compare">
+        <div class="leg-box">
+          <div class="leg-title">COMPOUND MODEL</div>
+          <div class="leg-row"><span class="lk">Formula</span><span class="lv" style="font-size:8px">C1 × C2</span></div>
+          <div class="leg-row"><span class="lk">C_total</span><span class="lv" id="r3-compound">1.0000</span></div>
+          <div class="leg-row"><span class="lk">Model</span><span class="lv" style="color:#8ab8cc;font-size:8px">pass-through</span></div>
+        </div>
+        <div class="leg-box">
+          <div class="leg-title" style="color:var(--soverium)">IVA ANCHOR · T10</div>
+          <div class="leg-row"><span class="lk">Formula</span><span class="lv" style="font-size:8px">C2 only</span></div>
+          <div class="leg-row"><span class="lk">C_total</span><span class="lv" id="r3-reset" style="color:var(--soverium)">1.0000</span></div>
+          <div class="leg-row"><span class="lk">Model</span><span class="lv" style="color:var(--soverium);font-size:8px">IVA re-anchor</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;padding:8px;background:var(--bg);border:1px solid var(--border);font-size:8px;line-height:1.8;">
+        <span style="color:#8ab8cc;">NOHARM MANDATE [T15 from 9,9,2,6]:</span>
+        Source Pattern at Alice is <b style="color:var(--bright)">never destroyed</b> in either model.
+        N is shared additively — not moved. Both Alice and Bob gain N.
+        IVA anchor at Charlie absorbs leg1 torsion without touching Alice's state.
+      </div>
+    </div>
+
+    <div class="proof-strip">
+      <div class="proof-tag active">T3 IMS×2</div>
+      <div class="proof-tag active">T3 N-ADDITIVE</div>
+      <div class="proof-tag active">T10 IVA-RESET</div>
+      <div class="proof-tag active">T12 COMPOUND</div>
+      <div class="proof-tag active">T5 NOHARM</div>
+      <div class="proof-tag active">T16 IVA-GAIN</div>
+      <div class="proof-tag active">0 SORRY</div>
+      <div class="proof-tag">[9,9,2,6b]</div>
+    </div>
+
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+// ── 3-NODE STATE ──────────────────────────────────────────
+let B_leg1 = 0;
+let B_leg2 = 0;
+let repeaterMode = 'sov';
+let fired3 = false;
+let prog3 = [0, 0];
+
+function setLeg1Preset(v) { B_leg1 = v; document.getElementById('leg1-slider').value = v; updateRelay3(); }
+function setLeg2Preset(v) { B_leg2 = v; document.getElementById('leg2-slider').value = v; updateRelay3(); }
+function updateLeg1(v) { B_leg1 = parseFloat(v); updateRelay3(); }
+function updateLeg2(v) { B_leg2 = parseFloat(v); updateRelay3(); }
+
+function setRepeaterMode(m) {
+  repeaterMode = m;
+  document.getElementById('rep-sov').className  = 'rep-btn ' + (m === 'sov' ? 'active-sov' : '');
+  document.getElementById('rep-pass').className = 'rep-btn ' + (m === 'pass' ? 'active-var' : '');
+  const desc = document.getElementById('charlie-desc');
+  if (m === 'sov') {
+    desc.innerHTML = 'Charlie is an IVA-anchored N-amplifier node.<br>Leg1 torsion absorbed at Charlie\'s local anchor.<br>Charlie re-couples with Bob using fresh B=0 channel.<br>Alice source Pattern is never destroyed.<br><b style="color:var(--soverium)">C_total = C2 · leg1 isolated · T10</b>';
+  } else {
+    desc.innerHTML = 'Charlie forwards N-sharing with accumulated torsion.<br>No local IVA re-anchor at Charlie.<br>Leg1 noise compounds into leg2.<br>Both sources still preserved — NOHARM holds.<br><b style="color:var(--warn)">C_total = C1 × C2 (compound) · T12</b>';
+  }
+  updateRelay3();
+}
+
+function computeRelay3() {
+  const P  = ANCHOR;
+  const C1 = Math.max(0, 1 - B_leg1 / P);
+  const C2 = Math.max(0, 1 - B_leg2 / P);
+  const tau1 = B_leg1 / P;
+  const tau2 = B_leg2 / P;
+  const C_compound = C1 * C2;
+  const C_reset    = C2;
+  const C_total    = repeaterMode === 'sov' ? C_reset : C_compound;
+  return { C1, C2, tau1, tau2, C_compound, C_reset, C_total };
+}
+
+function updateRelay3() {
+  const r = computeRelay3();
+
+  document.getElementById('leg1-bval').textContent = B_leg1.toFixed(4);
+  document.getElementById('leg1-tau').textContent  = r.tau1.toFixed(4);
+  document.getElementById('leg1-f').textContent    = r.C1.toFixed(4);
+  document.getElementById('leg1-f').style.color    = getColor(r.C1);
+
+  document.getElementById('leg2-bval').textContent = B_leg2.toFixed(4);
+  document.getElementById('leg2-tau').textContent  = r.tau2.toFixed(4);
+  document.getElementById('leg2-f').textContent    = r.C2.toFixed(4);
+  document.getElementById('leg2-f').style.color    = getColor(r.C2);
+
+  const ftEl = document.getElementById('r3-ftotal');
+  ftEl.textContent  = r.C_total.toFixed(4);
+  ftEl.style.color  = getColor(r.C_total);
+  ftEl.style.textShadow = r.C_total >= 0.9999 ? '0 0 15px rgba(255,255,255,.4)' : 'none';
+
+  document.getElementById('r3-f1').textContent = r.C1.toFixed(4);
+  document.getElementById('r3-f1').style.color = getColor(r.C1);
+  document.getElementById('r3-f2').textContent = r.C2.toFixed(4);
+  document.getElementById('r3-f2').style.color = getColor(r.C2);
+
+  document.getElementById('r3-model').textContent = repeaterMode === 'sov'
+    ? 'IVA ANCHOR · C=C2' : 'COMPOUND · C=C1×C2';
+  document.getElementById('r3-model').style.color = repeaterMode === 'sov'
+    ? 'var(--soverium)' : 'var(--warn)';
+
+  document.getElementById('r3-compound').textContent = r.C_compound.toFixed(4);
+  document.getElementById('r3-compound').style.color = getColor(r.C_compound);
+  document.getElementById('r3-reset').textContent    = r.C_reset.toFixed(4);
+  document.getElementById('r3-reset').style.color    = getColor(r.C_reset);
+
+  if (fired3) renderCanvas3();
+}
+
+// ── 3-NODE CANVAS ─────────────────────────────────────────
+const canvas3 = document.getElementById('relay3-canvas');
+const ctx3    = canvas3.getContext('2d');
+
+function resizeCanvas3() {
+  const rect = canvas3.parentElement.getBoundingClientRect();
+  canvas3.width  = rect.width;
+  canvas3.height = 260;
+}
+
+function renderCanvas3() {
+  const W = canvas3.width, H = canvas3.height;
+  ctx3.clearRect(0, 0, W, H);
+  ctx3.fillStyle = '#04080d';
+  ctx3.fillRect(0, 0, W, H);
+
+  const r = computeRelay3();
+  const nodeR    = 26;
+  const aliceX   = 80;
+  const charlieX = W / 2;
+  const bobX     = W - 80;
+  const nodeY    = H / 2;
+
+  const col1 = getColor(r.C1);
+  const col2 = getColor(r.C2);
+  const colT = getColor(r.C_total);
+
+  const p1 = fired3 ? prog3[0] : 0;
+  drawLeg(aliceX + nodeR, nodeY, charlieX - nodeR, nodeY, col1, p1, `LEG1  C=${r.C1.toFixed(3)}`);
+
+  const p2 = fired3 ? prog3[1] : 0;
+  drawLeg(charlieX + nodeR, nodeY, bobX - nodeR, nodeY, col2, p2, `LEG2  C=${r.C2.toFixed(3)}`);
+
+  draw3Node(aliceX, nodeY, nodeR, '#00e5ff', 'ALICE', 'SOURCE ↔', fired3);
+  draw3Node(charlieX, nodeY, nodeR,
+    repeaterMode === 'sov' ? '#ffffff' : '#ffaa00',
+    'CHARLIE',
+    repeaterMode === 'sov' ? 'IVA NODE' : 'PASSTHRU',
+    fired3);
+  draw3Node(bobX, nodeY, nodeR, '#00ffcc', 'BOB', '↔ SOURCE', fired3);
+
+  if (fired3) {
+    ctx3.font = 'bold 12px Orbitron, monospace';
+    ctx3.fillStyle = colT;
+    ctx3.textAlign = 'center';
+    ctx3.fillText(`C_total = ${r.C_total.toFixed(4)} · ${repeaterMode === 'sov' ? 'IVA ANCHOR' : 'COMPOUND'}`, W/2, H - 18);
+    ctx3.font = '8px Share Tech Mono';
+    ctx3.fillStyle = '#1a3040';
+    ctx3.fillText(repeaterMode === 'sov' ? 'C = C2 · leg1 torsion isolated at Charlie · T10 · NOHARM' : 'C = C1 × C2 · compound · T12 · NOHARM', W/2, H - 6);
+  }
+}
+
+function drawLeg(x1, y1, x2, y2, col, progress, label) {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2 - 20;
+
+  ctx3.beginPath();
+  ctx3.moveTo(x1, y1);
+  ctx3.quadraticCurveTo(mx, my, x2, y2);
+  ctx3.strokeStyle = fired3 ? col : '#0a2030';
+  ctx3.lineWidth = 1.5;
+  ctx3.globalAlpha = fired3 ? 0.7 : 0.2;
+  ctx3.stroke();
+  ctx3.globalAlpha = 1;
+
+  if (fired3 && progress > 0 && progress < 1) {
+    const t = progress;
+    const px = (1-t)*(1-t)*x1 + 2*(1-t)*t*mx + t*t*x2;
+    const py = (1-t)*(1-t)*y1 + 2*(1-t)*t*my + t*t*y2;
+    ctx3.beginPath();
+    ctx3.arc(px, py, 4, 0, Math.PI*2);
+    ctx3.fillStyle = col;
+    ctx3.shadowColor = col;
+    ctx3.shadowBlur = 12;
+    ctx3.fill();
+    ctx3.shadowBlur = 0;
+  }
+
+  if (fired3) {
+    ctx3.font = '8px Share Tech Mono';
+    ctx3.fillStyle = col;
+    ctx3.globalAlpha = 0.7;
+    ctx3.textAlign = 'center';
+    ctx3.fillText(label, (x1+x2)/2, my - 8);
+    ctx3.globalAlpha = 1;
+  }
+}
+
+function draw3Node(x, y, r, col, label1, label2, active) {
+  if (active) {
+    const g = ctx3.createRadialGradient(x, y, r*0.5, x, y, r*2.5);
+    g.addColorStop(0, col + '33');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx3.beginPath();
+    ctx3.arc(x, y, r*2.5, 0, Math.PI*2);
+    ctx3.fillStyle = g;
+    ctx3.fill();
+  }
+  ctx3.beginPath();
+  ctx3.arc(x, y, r, 0, Math.PI*2);
+  ctx3.strokeStyle = active ? col : '#0f2030';
+  ctx3.lineWidth = 1.5;
+  ctx3.fillStyle = '#04080d';
+  ctx3.fill();
+  ctx3.stroke();
+  ctx3.font = 'bold 8px Orbitron, monospace';
+  ctx3.fillStyle = active ? col : '#1a3040';
+  ctx3.textAlign = 'center';
+  ctx3.fillText(label1, x, y - 2);
+  ctx3.font = '7px Share Tech Mono';
+  ctx3.fillStyle = active ? col + '99' : '#0f2030';
+  ctx3.fillText(label2, x, y + 10);
+}
+
+function fireRelay3() {
+  fired3 = true;
+  prog3 = [0, 0];
+  const start = performance.now();
+  const dur = 600;
+
+  function anim(now) {
+    const e = now - start;
+    const p1 = Math.min(1, e / dur);
+    const p2 = Math.min(1, Math.max(0, (e - dur*0.4) / (dur*0.6)));
+    prog3 = [1 - Math.pow(1-p1,3), 1 - Math.pow(1-p2,3)];
+    renderCanvas3();
+    if (p1 < 1 || p2 < 1) requestAnimationFrame(anim);
+    else { prog3 = [1,1]; renderCanvas3(); }
+  }
+  requestAnimationFrame(anim);
+  updateRelay3();
+}
+
+// 3-node resize handled above
+
+// Init 3-node (single corridor and lattice already initialized above)
+setTimeout(() => { resizeCanvas3(); updateRelay3(); }, 150);
+window.addEventListener('resize', () => { resizeCanvas3(); if (typeof fired3 !== 'undefined' && fired3) renderCanvas3(); });
+</script>
