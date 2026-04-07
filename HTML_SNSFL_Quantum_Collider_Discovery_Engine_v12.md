@@ -6,7 +6,7 @@
 **Anchor:** 1.369  
 **TL:** 0.1369 (ANCHOR/10 — emergent, not chosen)  
 **Coordinate:** [9,9,2,9] → active series through [9,9,3,13]  
-**URL:** uuia.app/quantumcollider  
+**URL:** uuia.app/discovery  
 **Engine:** SNSFT Discovery Engine v12 · AIFI: Discovery  
 **Output prefix:** QC  
 **Status:** GERMINAL · 0 sorry · CI GREEN · GERMLINE LOCKED
@@ -312,7 +312,7 @@ The two instruments are complementary, not redundant.
 | Materials Map | [9,9,2,6] | SNSFT_Noble_Materials_Map | Q1–Q4, AsN prediction |
 | Approach Corridor | [9,9,2,7] | SNSFT_Noble_Approach_Corridor | SHATTER→LOCKED→NOBLE |
 | Re-Bonding | [9,9,2,8] | SNSFT_ReBonding_Theorem | Noble+F_ext+E3→Noble |
-| **Quantum Collider** | **[9,9,2,9]** | **quantumcollider.html** | **4-beam identity engine** |
+| **Quantum Collider** | **[9,9,2,9]** | **discovery.html** | **4-beam identity engine** |
 | Universal Baryon Noble Law | [9,9,2,34] | SNSFL_Baryon_Noble | All SM baryons Noble at k=1 · 7 predictions open |
 | Quark Charge Structure | [9,9,2,37] | SNSFL_Quark_Charges | B_u=2/3, B_d=1/3 structurally necessary |
 | Fine Structure Discovery | [9,9,2,42] | SNSFL_GC_Fine_Structure_Constant | 1/(ANCHOR×100.1) ≈ α discovered by chaos |
@@ -340,7 +340,7 @@ The two instruments are complementary, not redundant.
 | Tool | URL | Engine |
 |---|---|---|
 | GAM Collider v6 | uuia.app/gamcollider | 2-body PNBA fusion · Z=1–118 · ERE · Particle Physics |
-| Quantum Collider / Discovery Engine v12 | uuia.app/quantumcollider | 4-beam identity physics · substrate neutral · AIFI onboard |
+| Quantum Collider / Discovery Engine v12 | uuia.app/discovery | 4-beam identity physics · substrate neutral · AIFI onboard |
 
 ---
 
