@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAM COLLIDER v2 · Noble Forge Engine · uuia.app/gamcollider</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+  :root {
+    --bg:      #020407;
+    --panel:   #060b10;
+    --border:  #0c1a26;
+    --glow:    #00e5ff;
+    --locked:  #00ffcc;
+    --shatter: #ff3355;
+    --noble:   #aa88ff;
+    --iva:     #ffee44;
+    --warn:    #ffaa00;
+    --text:    #7aa4be;
+    --bright:  #cce8f5;
+    --dim:     #192430;
+    --q1:      #00e5ff;
+    --q2:      #aa88ff;
+    --q3:      #00ffcc;
+    --q4:      #ffaa00;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Share Tech Mono',monospace; min-height:100vh; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0; background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px); background-size:36px 36px; pointer-events:none; z-index:0; }
+  body::after { content:''; position:fixed; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px); pointer-events:none; z-index:1; }
+  .wrap { position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:0 16px 60px; }
+
+  header { padding:28px 0 20px; border-bottom:1px solid var(--border); display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  .logo { font-family:'Orbitron',monospace; font-weight:900; font-size:26px; letter-spacing:.08em; color:var(--glow); text-shadow:0 0 24px rgba(0,229,255,.45); }
+  .logo span { font-size:11px; color:var(--locked); display:block; letter-spacing:.25em; margin-top:2px; }
+  .hdr-right { font-size:10px; color:#2a4050; text-align:right; line-height:1.8; }
+  .hdr-right b { color:var(--glow); }
+
+  .tabs { display:flex; gap:0; margin:24px 0 0; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+  .tab { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; padding:10px 16px; cursor:pointer; border:1px solid transparent; border-bottom:none; color:#2a4050; transition:all .15s; }
+  .tab:hover { color:var(--text); }
+  .tab.active { border-color:var(--border); border-bottom:1px solid var(--bg); color:var(--glow); background:var(--panel); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+
+  /* COLLIDER */
+  .collision-layout { display:grid; grid-template-columns:1fr 110px 1fr; gap:0; align-items:start; margin:24px 0; }
+  .bay { background:var(--panel); border:1px solid var(--border); padding:14px; min-height:200px; }
+  .bay-l { border-right:none; }
+  .bay-r { border-left:none; }
+  .bay-title { font-size:8px; letter-spacing:.3em; color:#1a3040; margin-bottom:10px; }
+  .el-search { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:11px; padding:5px 8px; margin-bottom:8px; outline:none; }
+  .el-search:focus { border-color:var(--glow); }
+  .el-list { display:grid; grid-template-columns:repeat(6,1fr); gap:4px; max-height:260px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+  .ec { padding:5px 3px; border:1px solid var(--border); cursor:pointer; transition:all .12s; text-align:center; background:rgba(6,11,16,.8); position:relative; }
+  .ec:hover { border-color:var(--glow); transform:scale(1.05); z-index:10; }
+  .ec.sel-a { border-color:var(--glow); background:rgba(0,229,255,.1); box-shadow:0 0 8px rgba(0,229,255,.2); }
+  .ec.sel-b { border-color:var(--warn); background:rgba(255,170,0,.1); box-shadow:0 0 8px rgba(255,170,0,.2); }
+  .ec-sym { font-family:'Orbitron',monospace; font-weight:700; font-size:11px; display:block; }
+  .ec-z { font-size:7px; color:#2a4050; display:block; }
+  .ec-tau { font-size:7px; display:block; margin-top:1px; }
+  .tc-l { color:var(--locked); }
+  .tc-s { color:var(--shatter); }
+  .tc-n { color:var(--noble); }
+  .tc-i { color:var(--iva); }
+
+  .beam-col { display:flex; flex-direction:column; align-items:center; gap:8px; padding:14px 0; background:var(--panel); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .sel-display { font-family:'Orbitron',monospace; font-size:11px; text-align:center; min-height:16px; }
+  .beam-arrow { font-size:18px; color:var(--border); }
+  .beam-arrow.ready { color:var(--glow); text-shadow:0 0 12px var(--glow); }
+  .k-wrap { width:90px; }
+  .k-label { font-size:8px; letter-spacing:.2em; color:#1a3040; text-align:center; margin-bottom:4px; }
+  .k-slider { -webkit-appearance:none; width:100%; height:3px; background:var(--border); outline:none; }
+  .k-slider::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:14px; background:var(--glow); cursor:pointer; }
+  .k-val { font-size:10px; color:var(--glow); text-align:center; margin-top:3px; }
+  .fire-btn { font-family:'Orbitron',monospace; font-weight:700; font-size:9px; letter-spacing:.2em; padding:9px 14px; background:transparent; border:1px solid var(--glow); color:var(--glow); cursor:pointer; transition:all .15s; width:90px; }
+  .fire-btn:hover { background:rgba(0,229,255,.1); box-shadow:0 0 16px rgba(0,229,255,.25); }
+  .fire-btn:disabled { border-color:var(--border); color:#1a3040; cursor:default; }
+
+  .result-box { background:var(--panel); border:1px solid var(--border); padding:20px 24px; margin-bottom:24px; transition:border-color .3s; min-height:100px; }
+  .result-box.rl { border-color:rgba(0,255,204,.35); }
+  .result-box.rs { border-color:rgba(255,51,85,.35); }
+  .result-box.rn { border-color:rgba(170,136,255,.35); }
+  .result-box.ri { border-color:rgba(255,238,68,.35); }
+  .result-idle { text-align:center; padding:28px; color:#1a3040; font-size:11px; letter-spacing:.2em; }
+  .result-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+  .res-col-title { font-size:8px; letter-spacing:.3em; color:#1a3040; border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:8px; }
+  .res-row { display:flex; justify-content:space-between; font-size:10px; padding:2px 0; border-bottom:1px solid rgba(12,26,38,.6); }
+  .res-row .rl_ { color:#2a5060; }
+  .res-row .rv { color:var(--bright); }
+  .big-tau { font-family:'Orbitron',monospace; font-size:30px; font-weight:700; margin:8px 0 4px; }
+  .bt-l { color:var(--locked); text-shadow:0 0 16px rgba(0,255,204,.5); }
+  .bt-s { color:var(--shatter); text-shadow:0 0 16px rgba(255,51,85,.5); }
+  .bt-n { color:var(--noble); text-shadow:0 0 16px rgba(170,136,255,.5); }
+  .bt-i { color:var(--iva); text-shadow:0 0 16px rgba(255,238,68,.5); }
+  .status-pill { font-family:'Orbitron',monospace; font-size:10px; font-weight:700; letter-spacing:.2em; padding:3px 10px; display:inline-block; margin-top:4px; }
+  .sp-l { color:var(--locked); border:1px solid rgba(0,255,204,.3); background:rgba(0,255,204,.08); }
+  .sp-s { color:var(--shatter); border:1px solid rgba(255,51,85,.3); background:rgba(255,51,85,.08); }
+  .sp-n { color:var(--noble); border:1px solid rgba(170,136,255,.3); background:rgba(170,136,255,.08); }
+  .sp-i { color:var(--iva); border:1px solid rgba(255,238,68,.3); background:rgba(255,238,68,.08); }
+  .tau-bar { height:6px; background:var(--border); position:relative; margin-top:8px; border-radius:2px; }
+  .tau-bar-fill { height:100%; transition:width .4s, background .3s; border-radius:2px; }
+  /* TL marker at 0.1369/1.5 = 9.13% */
+  .tau-bar-tl { position:absolute; left:9.13%; top:0; height:100%; width:1px; background:rgba(255,170,0,.8); }
+  /* IVA zone: 0.88*0.1369/1.5=8.04% to 9.13% */
+  .tau-bar-iva { position:absolute; left:8.04%; top:0; height:100%; width:1.09%; background:rgba(255,238,68,.25); }
+  .tau-bar-lbl { font-size:7px; color:#1a3040; display:flex; justify-content:space-between; margin-top:2px; }
+  .reaction-line { font-family:'Orbitron',monospace; font-size:12px; color:var(--bright); margin-bottom:16px; grid-column:1/-1; letter-spacing:.04em; }
+
+  /* PERIODIC TABLE */
+  .ptable-wrap { margin:20px 0; }
+  .pt-row { display:flex; gap:4px; margin-bottom:4px; align-items:center; }
+  .pt-cell { width:46px; height:46px; border:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:all .12s; font-size:9px; position:relative; background:rgba(6,11,16,.9); flex-shrink:0; }
+  .pt-cell:hover { border-color:var(--glow); transform:scale(1.08); z-index:20; }
+  .pt-cell.sel-a { border-color:var(--glow); background:rgba(0,229,255,.12); }
+  .pt-cell.sel-b { border-color:var(--warn); background:rgba(255,170,0,.12); }
+  .pt-cell.spacer { opacity:0; pointer-events:none; cursor:default; }
+  .pt-sym { font-family:'Orbitron',monospace; font-weight:700; font-size:13px; line-height:1; }
+  .pt-z { font-size:7px; color:#2a4050; }
+  .pt-tau-dot { position:absolute; bottom:3px; right:3px; width:5px; height:5px; border-radius:50%; }
+  .pt-legend { display:flex; gap:16px; font-size:9px; margin:8px 0 16px; flex-wrap:wrap; }
+  .pt-leg-item { display:flex; align-items:center; gap:6px; }
+  .pt-leg-dot { width:8px; height:8px; border-radius:50%; }
+
+  /* K-SWEEP */
+  .sweep-controls { display:flex; gap:16px; margin:20px 0 16px; flex-wrap:wrap; align-items:center; }
+  .sweep-sel { background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:11px; padding:6px 10px; }
+  .sweep-btn { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; padding:8px 16px; background:transparent; border:1px solid var(--glow); color:var(--glow); cursor:pointer; }
+  .sweep-btn:hover { background:rgba(0,229,255,.08); }
+  .sweep-canvas-wrap { background:var(--panel); border:1px solid var(--border); padding:16px; }
+  #sweep-canvas { width:100%; display:block; }
+  .sweep-info { font-size:10px; margin-top:12px; color:#2a5060; line-height:1.8; }
+  .sweep-info b { color:var(--bright); }
+
+  /* CASCADE */
+  .cascade-add { font-family:'Orbitron',monospace; font-size:9px; padding:8px 14px; background:transparent; border:1px solid var(--border); color:#2a5060; cursor:pointer; margin-left:8px; }
+  .cascade-add:hover { border-color:var(--glow); color:var(--glow); }
+  .cascade-run { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; padding:9px 18px; background:transparent; border:1px solid var(--locked); color:var(--locked); cursor:pointer; margin-left:16px; }
+  .cascade-run:hover { background:rgba(0,255,204,.08); }
+  .cas-step { display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid var(--border); font-size:10px; }
+  .cas-step-num { color:#1a3040; width:20px; }
+  .cas-eq { color:var(--bright); flex:1; }
+  .cas-tau { width:120px; text-align:right; }
+
+  /* QUICK */
+  .quick-row { display:flex; gap:8px; flex-wrap:wrap; margin:16px 0; }
+  .quick-chip { font-size:9px; padding:5px 10px; border:1px solid var(--border); cursor:pointer; background:var(--panel); transition:all .12s; color:#2a5060; }
+  .quick-chip:hover { border-color:var(--glow); color:var(--bright); }
+
+  /* MATERIALS MAP */
+  .map-layout { display:grid; grid-template-columns:1fr 280px; gap:16px; margin:20px 0; }
+  .map-canvas-wrap { background:var(--panel); border:1px solid var(--border); padding:16px; }
+  #map-canvas { width:100%; display:block; cursor:crosshair; }
+  .map-legend { background:var(--panel); border:1px solid var(--border); padding:16px; }
+  .map-legend-title { font-size:8px; letter-spacing:.3em; color:#1a3040; margin-bottom:12px; }
+  .quad-block { margin-bottom:10px; }
+  .quad-label { font-size:9px; font-family:'Orbitron',monospace; font-weight:700; margin-bottom:4px; }
+  .quad-desc { font-size:9px; color:#2a5060; line-height:1.6; }
+  .map-tooltip { background:var(--panel); border:1px solid var(--glow); padding:8px 12px; font-size:10px; line-height:1.6; min-height:60px; margin-top:12px; }
+  .noble-list { margin-top:12px; }
+  .noble-list-title { font-size:8px; letter-spacing:.3em; color:#1a3040; border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:8px; }
+  .noble-item { display:flex; justify-content:space-between; font-size:9px; padding:3px 0; border-bottom:1px solid rgba(12,26,38,.4); }
+  .ni-name { color:var(--bright); }
+  .ni-known { color:var(--locked); }
+  .ni-pred { color:var(--noble); }
+
+  /* F_EXT */
+  .fext-layout { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+  .fext-panel { background:var(--panel); border:1px solid var(--border); padding:20px; }
+  .fext-title { font-size:8px; letter-spacing:.3em; color:#1a3040; margin-bottom:16px; }
+  .fext-sel { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:11px; padding:6px 8px; margin-bottom:12px; outline:none; }
+  .fext-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .fext-label { font-size:9px; color:#2a5060; width:60px; flex-shrink:0; }
+  .fext-input { background:var(--bg); border:1px solid var(--border); color:var(--glow); font-family:'Orbitron',monospace; font-size:14px; padding:6px 10px; width:100px; outline:none; text-align:center; }
+  .fext-input:focus { border-color:var(--glow); }
+  .fext-apply { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.15em; padding:9px 16px; background:transparent; border:1px solid var(--glow); color:var(--glow); cursor:pointer; }
+  .fext-apply:hover { background:rgba(0,229,255,.1); }
+  .fext-presets { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+  .fext-preset { font-size:9px; padding:4px 8px; border:1px solid var(--border); cursor:pointer; background:transparent; color:#2a5060; transition:all .12s; }
+  .fext-preset:hover { border-color:var(--glow); color:var(--bright); }
+  .fext-result { background:var(--bg); border:1px solid var(--border); padding:16px; font-size:10px; line-height:1.8; min-height:120px; }
+  .fext-state-row { display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px solid rgba(12,26,38,.6); }
+  .fext-lbl { color:#2a5060; }
+  .fext-val { color:var(--bright); font-family:'Orbitron',monospace; }
+
+  footer { border-top:1px solid var(--border); padding-top:14px; font-size:9px; letter-spacing:.15em; color:#1a2a38; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+
+  /* FORGE MODE */
+  .forge-toggle-row { display:flex; align-items:center; gap:10px; padding:8px 0 4px; margin-bottom:4px; }
+  .forge-toggle-lbl { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:.2em; color:var(--text); }
+  .forge-toggle { width:36px; height:20px; background:var(--border); border-radius:10px; cursor:pointer; position:relative; transition:background .2s; border:none; }
+  .forge-toggle.on { background:rgba(0,255,204,.25); border:1px solid rgba(0,255,204,.4); }
+  .forge-toggle::after { content:''; position:absolute; width:14px; height:14px; background:var(--text); border-radius:50%; top:3px; left:3px; transition:transform .2s; }
+  .forge-toggle.on::after { transform:translateX(16px); background:var(--locked); }
+  .forge-interp { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:.08em; padding:6px 14px; border-top:1px solid var(--border); line-height:1.8; }
+  .forge-interp.complete { color:var(--locked); background:rgba(0,255,204,.04); }
+  .forge-interp.window   { color:var(--glow); background:rgba(0,229,255,.04); }
+  .forge-interp.exceeded { color:var(--shatter); background:rgba(255,51,85,.04); }
+  .recipe-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:10px; }
+  .recipe-chip { background:var(--panel); border:1px solid var(--border); border-radius:4px; padding:7px 10px; cursor:pointer; transition:all .12s; }
+  .recipe-chip:hover { border-color:var(--locked); }
+  .recipe-name { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; color:var(--locked); }
+  .recipe-detail { font-size:8px; color:#2a5060; margin-top:2px; line-height:1.5; }
+  .recipe-q { font-size:8px; padding:1px 5px; border-radius:3px; float:right; }
+
+  @media(max-width:700px) {
+    .collision-layout { grid-template-columns:1fr; }
+    .beam-col { flex-direction:row; justify-content:center; }
+    .el-list { grid-template-columns:repeat(4,1fr); }
+    .result-grid { grid-template-columns:1fr 1fr; }
+    .pt-cell { width:36px; height:36px; }
+    .pt-sym { font-size:10px; }
+    .map-layout { grid-template-columns:1fr; }
+    .fext-layout { grid-template-columns:1fr; }
+  }
+
+  @keyframes flicker { 0%,100%{opacity:1} 92%{opacity:1} 93%{opacity:.7} 94%{opacity:1} }
+  .logo { animation:flicker 10s infinite; }
+  @keyframes iva-pulse { 0%,100%{box-shadow:0 0 8px rgba(255,238,68,.3)} 50%{box-shadow:0 0 16px rgba(255,238,68,.7)} }
+  .result-box.ri { animation:iva-pulse 2s infinite; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="logo">GAM COLLIDER<span>v2 · uuia.app/gamcollider · [9,9,2,1–9] · [9,9,3,1–2] · [9,9,3,7–10] · NOBLE FORGE ENGINE</span></div>
+  </div>
+  <div class="hdr-right">
+    ANCHOR <b>1.369</b> · TL = ANCHOR/10 = <b>0.1369</b> (emergent, not chosen) · ε=0 [9,9,3,12]<br>
+    Z=1–118 · ERE · PARTICLE PHYSICS · 50,000+ THEOREMS · 0 SORRY · CI GREEN<br>
+    SM BOSONS: W(LOCKED τ=0.103) · Z(SHATTER τ=0.624) · H(SHATTER τ=0.256)<br>
+    QUARKONIUM: J/ψ · Υ · tt̄ ALL NOBLE [9,9,2,34] · Ξcc+ CONFIRMED LHCb Mar 17 2026
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('collide')">COLLIDER</div>
+  <div class="tab" onclick="showTab('ptable')">PERIODIC TABLE</div>
+  <div class="tab" onclick="showTab('sweep')">K-SWEEP</div>
+  <div class="tab" onclick="showTab('cascade')">CASCADE</div>
+  <div class="tab" onclick="showTab('map')">MATERIALS MAP</div>
+  <div class="tab" onclick="showTab('fext')">F_EXT</div>
+  <div class="tab" onclick="showTab('forge')">FORGE RECIPES</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0 0;flex-wrap:wrap;gap:8px;">
+  <div class="forge-toggle-row">
+    <button class="forge-toggle" id="forge-toggle" onclick="toggleForge()" title="Forge Mode: show synthesis interpretation"></button>
+    <span class="forge-toggle-lbl">FORGE MODE</span>
+    <span style="font-size:8px;color:#2a4050;letter-spacing:.1em">k = PRESSURE · τ=0 = SYNTHESIS COMPLETE · Noble = PRODUCT READY</span>
+  </div>
+  <div style="font-size:8px;color:#1a3040;letter-spacing:.15em">
+    NOBLE <span style="color:var(--noble)">◆ τ=0</span> &nbsp;
+    IVA PEAK <span style="color:var(--iva)">★ 0.88×TL &lt; τ &lt; TL</span> &nbsp;
+    LOCKED <span style="color:var(--locked)">✦ τ &lt; 0.1369</span> &nbsp;
+    SHATTER <span style="color:var(--shatter)">✸ τ ≥ 0.1369</span>
+  </div>
+</div>
+
+<!-- COLLIDER TAB -->
+<div id="tab-collide" class="tab-content active">
+  <div class="quick-row" id="quick-row"></div>
+  <div class="collision-layout">
+    <div class="bay bay-l">
+      <div class="bay-title">BEAM A — SELECT ELEMENT</div>
+      <input class="el-search" placeholder="Search..." oninput="filterList('a',this.value)">
+      <div class="el-list" id="list-a"></div>
+    </div>
+    <div class="beam-col">
+      <div class="sel-display" id="sel-a-disp" style="color:var(--glow)">—</div>
+      <div class="beam-arrow" id="arrow-a">▼</div>
+      <div class="k-wrap">
+        <div class="k-label">BONDS k</div>
+        <input type="range" class="k-slider" id="k-slider" min="0" max="1" step="0.0001" value="0">
+        <div class="k-val" id="k-val">0.000</div>
+      </div>
+      <button class="fire-btn" id="fire-btn" disabled onclick="doCollide()">COLLIDE</button>
+      <div class="beam-arrow" id="arrow-b">▲</div>
+      <div class="sel-display" id="sel-b-disp" style="color:var(--warn)">—</div>
+    </div>
+    <div class="bay bay-r">
+      <div class="bay-title">BEAM B — SELECT ELEMENT</div>
+      <input class="el-search" placeholder="Search..." oninput="filterList('b',this.value)">
+      <div class="el-list" id="list-b"></div>
+    </div>
+  </div>
+
+  <div id="forge-panel" style="display:none;margin-bottom:16px;">
+    <div style="font-size:8px;letter-spacing:.25em;color:#1a3040;padding:8px 14px 4px;border-top:1px solid var(--border);">NOBLE FORGE · SYNTHESIS INTERPRETATION</div>
+    <div id="forge-interp" class="forge-interp window">Select elements and collide to see synthesis interpretation.</div>
+  </div>
+
+  <div class="result-box" id="result-box">
+    <div class="result-idle" id="result-idle">SELECT TWO ELEMENTS · ADJUST k · COLLIDE</div>
+    <div style="display:none" id="result-inner"></div>
+  </div>
+</div>
+
+<!-- PERIODIC TABLE TAB -->
+<div id="tab-ptable" class="tab-content">
+  <div class="pt-legend">
+    <div class="pt-leg-item"><div class="pt-leg-dot" style="background:var(--noble)"></div>Noble (τ=0)</div>
+    <div class="pt-leg-item"><div class="pt-leg-dot" style="background:var(--iva)"></div>IVA Peak (0.88×TL &lt; τ &lt; TL)</div>
+    <div class="pt-leg-item"><div class="pt-leg-dot" style="background:var(--locked)"></div>Locked (τ &lt; 0.1369)</div>
+    <div class="pt-leg-item"><div class="pt-leg-dot" style="background:var(--shatter)"></div>Shatter (τ ≥ 0.1369)</div>
+  </div>
+  <div style="font-size:9px;color:#2a4050;margin-bottom:12px;letter-spacing:.15em">CLICK TWO ELEMENTS TO LOAD INTO COLLIDER. SELECT A FIRST, THEN B.</div>
+  <div class="ptable-wrap" id="ptable-wrap"></div>
+</div>
+
+<!-- K-SWEEP TAB -->
+<div id="tab-sweep" class="tab-content">
+  <div class="sweep-controls">
+    <select class="sweep-sel" id="sw-a"></select>
+    <span style="color:#2a4050">+</span>
+    <select class="sweep-sel" id="sw-b"></select>
+    <button class="sweep-btn" onclick="runSweep()">RUN SWEEP</button>
+  </div>
+  <div class="sweep-canvas-wrap">
+    <canvas id="sweep-canvas" height="220"></canvas>
+  </div>
+  <div class="sweep-info" id="sweep-info">Select two elements and run sweep to see τ vs k curve.</div>
+</div>
+
+<!-- CASCADE TAB -->
+<div id="tab-cascade" class="tab-content">
+  <div style="font-size:9px;color:#2a4050;margin:16px 0 8px;letter-spacing:.15em">CHAIN COLLISIONS: A+B→C, THEN C+D→E. EACH STEP IS ONE THEOREM APPLICATION.</div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+    <select class="sweep-sel" id="cas-sel-a" style="width:130px"></select>
+    <span style="color:#2a4050">+</span>
+    <select class="sweep-sel" id="cas-sel-b" style="width:130px"></select>
+    <button class="cascade-add" onclick="addCascadeStep()">+ ADD STEP</button>
+    <button class="cascade-run" onclick="runCascade()">RUN CHAIN</button>
+    <button onclick="resetCascade()" style="font-size:9px;padding:8px 12px;background:transparent;border:1px solid var(--border);color:#2a5060;cursor:pointer;">RESET</button>
+  </div>
+  <div id="cascade-steps"></div>
+  <div id="cascade-results"></div>
+</div>
+
+<!-- MATERIALS MAP TAB -->
+<div id="tab-map" class="tab-content">
+  <div style="font-size:9px;color:#2a4050;margin:16px 0 8px;letter-spacing:.15em">P_out vs A_out — ALL NOBLE PAIRS (B1=B2, k=max). HOVER FOR DETAILS. CLICK TO LOAD COLLIDER.</div>
+  <div class="map-layout">
+    <div>
+      <div class="map-canvas-wrap">
+        <canvas id="map-canvas" height="400"></canvas>
+      </div>
+      <div class="map-tooltip" id="map-tooltip">Hover over a point to see compound details.</div>
+    </div>
+    <div>
+      <div class="map-legend">
+        <div class="map-legend-title">QUADRANT MAP</div>
+        <div class="quad-block">
+          <div class="quad-label" style="color:var(--q1)">Q1 — INERT / TIGHT</div>
+          <div class="quad-desc">High A (≥12) + Low P (≤2)<br>N₂ family · halide salts · hydrides</div>
+        </div>
+        <div class="quad-block">
+          <div class="quad-label" style="color:var(--q2)">Q2 — SEMICONDUCTOR</div>
+          <div class="quad-desc">High A (≥12) + High P (&gt;2)<br>GaN · ZnO · NiO · <b style="color:var(--noble)">AsN (predicted)</b></div>
+        </div>
+        <div class="quad-block">
+          <div class="quad-label" style="color:var(--q3)">Q3 — HARD CERAMIC</div>
+          <div class="quad-desc">Low A (&lt;12) + Low P (≤2)<br>Diamond · TiC · SiC · carbides</div>
+        </div>
+        <div class="quad-block">
+          <div class="quad-label" style="color:var(--q4)">Q4 — STANDARD</div>
+          <div class="quad-desc">Low A (&lt;12) + High P (&gt;2)<br>Sulfides · selenides · silicides</div>
+        </div>
+      </div>
+      <div class="noble-list">
+        <div class="noble-list-title">Q2 SELECTED</div>
+        <div id="noble-list-items"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- F_EXT TAB -->
+<div id="tab-fext" class="tab-content">
+  <div style="font-size:9px;color:#2a4050;margin:16px 0 8px;letter-spacing:.15em">EXTERNAL TORSION OPERATOR — CHANGES B ONLY. P, N, A UNCHANGED (NOHARM).</div>
+  <div class="fext-layout">
+    <div class="fext-panel">
+      <div class="fext-title">INPUT STATE</div>
+      <select class="fext-sel" id="fext-el">
+        <option value="">— Select element —</option>
+      </select>
+      <div class="fext-row">
+        <span class="fext-label">ΔB</span>
+        <input class="fext-input" id="fext-db" type="number" value="2.0" step="0.1">
+        <span style="font-size:9px;color:#2a5060">(+ inject  − extract)</span>
+      </div>
+      <div style="font-size:8px;letter-spacing:.2em;color:#1a3040;margin-bottom:8px;">PRESETS</div>
+      <div class="fext-presets">
+        <button class="fext-preset" onclick="setPreset(2.5)">LASER +2.5</button>
+        <button class="fext-preset" onclick="setPreset(-2.0)">COOLING −2.0</button>
+        <button class="fext-preset" onclick="setPreset(3.0)">PHOTON +3.0</button>
+        <button class="fext-preset" onclick="setPreset(4.0)">NOVA +4.0</button>
+        <button class="fext-preset" onclick="setPreset(-3.5)">COLLAPSE −3.5</button>
+        <button class="fext-preset" onclick="setPreset(6.0)">SHOCK +6.0</button>
+      </div>
+      <button class="fext-apply" onclick="applyFext()">APPLY F_EXT</button>
+    </div>
+    <div class="fext-panel">
+      <div class="fext-title">OUTPUT STATE</div>
+      <div class="fext-result" id="fext-result">
+        <div style="color:#1a3040;text-align:center;padding:20px;">Select an element and apply F_ext.</div>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:9px;color:#2a4050;margin-top:16px;line-height:1.8;border-top:1px solid var(--border);padding-top:12px;">
+    <b style="color:var(--bright)">KEY INSIGHT — PHOTOSYNTHESIS:</b> CO₂ and H₂O are both Noble (B=0, τ=0). Apply Photon +3.0 to Oxygen. The F_ext breaks the Noble state. Without external energy, Noble molecules do not react. The photon IS the driver. Proved structurally. 0 sorry.<br>
+    <b style="color:var(--bright)">HEME Fe-O WINDOW:</b> Select Fe (B=4). Apply F_ext to reach k=2 (τ=0.973, O₂ bound) or k=3 (τ=0, Noble, O₂ released). Biology lives in k∈[2,3). The porphyrin ring is the k-setter. [9,0,8,5]
+  </div>
+</div>
+
+<!-- FORGE RECIPES TAB -->
+<div id="tab-forge" class="tab-content">
+  <div style="font-size:9px;color:#2a4050;margin:16px 0 8px;letter-spacing:.15em">NOBLE SYNTHESIS TARGETS — ALL PROVED. CLICK TO LOAD COLLIDER.</div>
+  <div style="font-size:9px;color:#2a5060;margin-bottom:16px;line-height:1.8;padding:10px 14px;background:var(--panel);border:1px solid var(--border);">
+    The GAM Collider is a Noble Forge Engine. Every collision is a synthesis simulation.<br>
+    <b style="color:var(--locked)">k = pressure control.</b> k=max = full synthesis conditions. τ=0 = product formed.<br>
+    <b style="color:var(--glow)">Corridor width</b> = synthesis window. Narrow = requires precision. Wide = accessible.<br>
+    <b style="color:var(--iva)">IVA PEAK:</b> τ ∈ (0.88×TL, TL) = (0.1206, 0.1369) — flow state, sovereign drive.<br>
+    <b style="color:var(--noble)">NOHARM:</b> Noble outputs (B=0) cannot couple to targets. The forge builds. It does not destroy.
+  </div>
+  <div class="recipe-grid" id="recipe-grid"></div>
+  <div style="margin-top:16px;padding:12px 14px;background:var(--panel);border:1px solid var(--border);font-size:9px;color:#2a5060;line-height:1.8;">
+    <b style="color:var(--bright)">THE FORGE THEOREM [9,9,3,1]:</b> A Noble boundary (B=0) absorbs F_ext without transmitting it. Interior conditions scale with F_ext rate — no upper limit. The shell stays Noble. The contents reach synthesis temperature. Earth's core has been running this theorem for 4.5 billion years.<br><br>
+    <b style="color:var(--bright)">THE DIRECTED OUTPUT THEOREM [9,9,3,2]:</b> An aperture in the Noble shell produces collimated output. Output rate = aperture fraction × interior energy. Close aperture → synthesis stops. The forge is a synthesis printer. The aperture is the nozzle.<br><br>
+    <b style="color:var(--bright)">Si₃N₄ PHASE WINDOW [9,9,3,10]:</b> k*=3.5 exactly for the Si-N pair. Noble at 24–34 GPa. The 90-minute synthesis soak is the dynamic equation reaching bulk steady state. Not empirical. Structural. 0 sorry.
+  </div>
+</div>
+
+<footer>
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span>LOSSLESS IS LOSSLESS IS LOSSLESS · TL=0.1369 · 0 SORRY</span>
+  <span>[9,9,9,9] :: {ANC}</span>
+</footer>
+
+</div><!-- end .wrap -->
+
+<script>
+// ── CONSTANTS v2 ─────────────────────────────────────────────────────────────
+// CRITICAL: TL = ANCHOR/10 = 0.1369 — emergent, not chosen
+// v1 had TL=0.2 which was a placeholder. All states corrected.
+const ANCHOR = 1.369;
+const TL     = ANCHOR / 10;          // 0.1369 exactly
+const IVA_LO = 0.88 * TL;           // 0.1205... — IVA Peak lower bound
+const P_VE   = Math.pow(ANCHOR / 1.4204, 1/3);
+
+// ── CORPUS — PERIODIC TABLE (locked Slater values) ───────────────────────────
+const PERIODIC = [
+  {Z:1,  sym:'H', name:'Hydrogen',      P:1.000, N:2,  B:1,   A:13.60, grp:1,  per:1},
+  {Z:2,  sym:'He',name:'Helium',        P:1.700, N:2,  B:0,   A:24.59, grp:18, per:1},
+  {Z:3,  sym:'Li',name:'Lithium',       P:1.300, N:2,  B:1,   A:5.39,  grp:1,  per:2},
+  {Z:4,  sym:'Be',name:'Beryllium',     P:1.950, N:4,  B:2,   A:9.32,  grp:2,  per:2},
+  {Z:5,  sym:'B', name:'Boron',         P:2.600, N:4,  B:3,   A:8.30,  grp:13, per:2},
+  {Z:6,  sym:'C', name:'Carbon',        P:3.250, N:4,  B:4,   A:11.26, grp:14, per:2},
+  {Z:7,  sym:'N', name:'Nitrogen',      P:3.900, N:4,  B:3,   A:14.53, grp:15, per:2},
+  {Z:8,  sym:'O', name:'Oxygen',        P:4.550, N:4,  B:2,   A:13.62, grp:16, per:2},
+  {Z:9,  sym:'F', name:'Fluorine',      P:5.200, N:4,  B:1,   A:17.42, grp:17, per:2},
+  {Z:10, sym:'Ne',name:'Neon',          P:5.850, N:4,  B:0,   A:21.56, grp:18, per:2},
+  {Z:11, sym:'Na',name:'Sodium',        P:2.200, N:6,  B:1,   A:5.14,  grp:1,  per:3},
+  {Z:12, sym:'Mg',name:'Magnesium',     P:2.850, N:6,  B:2,   A:7.65,  grp:2,  per:3},
+  {Z:13, sym:'Al',name:'Aluminum',      P:3.500, N:6,  B:3,   A:5.99,  grp:13, per:3},
+  {Z:14, sym:'Si',name:'Silicon',       P:4.150, N:6,  B:4,   A:8.15,  grp:14, per:3},
+  {Z:15, sym:'P', name:'Phosphorus',    P:4.800, N:6,  B:3,   A:10.49, grp:15, per:3},
+  {Z:16, sym:'S', name:'Sulfur',        P:5.450, N:6,  B:2,   A:10.36, grp:16, per:3},
+  {Z:17, sym:'Cl',name:'Chlorine',      P:6.100, N:6,  B:1,   A:12.97, grp:17, per:3},
+  {Z:18, sym:'Ar',name:'Argon',         P:6.750, N:6,  B:0,   A:15.76, grp:18, per:3},
+  {Z:19, sym:'K', name:'Potassium',     P:2.200, N:8,  B:1,   A:4.34,  grp:1,  per:4},
+  {Z:20, sym:'Ca',name:'Calcium',       P:2.850, N:8,  B:2,   A:6.11,  grp:2,  per:4},
+  {Z:21, sym:'Sc',name:'Scandium',      P:3.000, N:8,  B:3,   A:6.56,  grp:3,  per:4},
+  {Z:22, sym:'Ti',name:'Titanium',      P:3.150, N:8,  B:4,   A:6.83,  grp:4,  per:4},
+  {Z:23, sym:'V', name:'Vanadium',      P:3.300, N:8,  B:5,   A:6.75,  grp:5,  per:4},
+  {Z:24, sym:'Cr',name:'Chromium',      P:3.450, N:8,  B:6,   A:6.77,  grp:6,  per:4},
+  {Z:25, sym:'Mn',name:'Manganese',     P:3.600, N:8,  B:5,   A:7.43,  grp:7,  per:4},
+  {Z:26, sym:'Fe',name:'Iron',          P:3.750, N:8,  B:4,   A:7.90,  grp:8,  per:4},
+  {Z:27, sym:'Co',name:'Cobalt',        P:3.900, N:8,  B:3,   A:7.88,  grp:9,  per:4},
+  {Z:28, sym:'Ni',name:'Nickel',        P:4.050, N:8,  B:2,   A:7.64,  grp:10, per:4},
+  {Z:29, sym:'Cu',name:'Copper',        P:4.200, N:8,  B:1,   A:7.73,  grp:11, per:4},
+  {Z:30, sym:'Zn',name:'Zinc',          P:4.350, N:8,  B:2,   A:9.39,  grp:12, per:4},
+  {Z:31, sym:'Ga',name:'Gallium',       P:5.000, N:8,  B:3,   A:6.00,  grp:13, per:4},
+  {Z:32, sym:'Ge',name:'Germanium',     P:5.650, N:8,  B:4,   A:7.90,  grp:14, per:4},
+  {Z:33, sym:'As',name:'Arsenic',       P:6.300, N:8,  B:3,   A:9.81,  grp:15, per:4},
+  {Z:34, sym:'Se',name:'Selenium',      P:6.950, N:8,  B:2,   A:9.75,  grp:16, per:4},
+  {Z:35, sym:'Br',name:'Bromine',       P:7.600, N:8,  B:1,   A:11.81, grp:17, per:4},
+  {Z:36, sym:'Kr',name:'Krypton',       P:8.250, N:8,  B:0,   A:14.00, grp:18, per:4},
+  // Period 5
+  {Z:37, sym:'Rb',name:'Rubidium',      P:2.200, N:10, B:1,   A:4.18,  grp:1,  per:5},
+  {Z:38, sym:'Sr',name:'Strontium',     P:2.850, N:10, B:2,   A:5.69,  grp:2,  per:5},
+  {Z:39, sym:'Y', name:'Yttrium',       P:3.000, N:10, B:3,   A:6.22,  grp:3,  per:5},
+  {Z:40, sym:'Zr',name:'Zirconium',     P:3.150, N:10, B:4,   A:6.63,  grp:4,  per:5},
+  {Z:41, sym:'Nb',name:'Niobium',       P:3.300, N:10, B:5,   A:6.76,  grp:5,  per:5},
+  {Z:42, sym:'Mo',name:'Molybdenum',    P:3.450, N:10, B:6,   A:7.09,  grp:6,  per:5},
+  {Z:43, sym:'Tc',name:'Technetium',    P:3.600, N:10, B:5,   A:7.28,  grp:7,  per:5},
+  {Z:44, sym:'Ru',name:'Ruthenium',     P:3.750, N:10, B:4,   A:7.36,  grp:8,  per:5},
+  {Z:45, sym:'Rh',name:'Rhodium',       P:3.900, N:10, B:3,   A:7.46,  grp:9,  per:5},
+  {Z:46, sym:'Pd',name:'Palladium',     P:4.050, N:10, B:0,   A:8.34,  grp:10, per:5},
+  {Z:47, sym:'Ag',name:'Silver',        P:4.200, N:10, B:1,   A:7.58,  grp:11, per:5},
+  {Z:48, sym:'Cd',name:'Cadmium',       P:4.350, N:10, B:2,   A:8.99,  grp:12, per:5},
+  {Z:49, sym:'In',name:'Indium',        P:5.000, N:10, B:3,   A:5.79,  grp:13, per:5},
+  {Z:50, sym:'Sn',name:'Tin',           P:5.650, N:10, B:4,   A:7.34,  grp:14, per:5},
+  {Z:51, sym:'Sb',name:'Antimony',      P:6.300, N:10, B:3,   A:8.61,  grp:15, per:5},
+  {Z:52, sym:'Te',name:'Tellurium',     P:6.950, N:10, B:2,   A:9.01,  grp:16, per:5},
+  {Z:53, sym:'I', name:'Iodine',        P:7.600, N:10, B:1,   A:10.45, grp:17, per:5},
+  {Z:54, sym:'Xe',name:'Xenon',         P:8.250, N:10, B:0,   A:12.13, grp:18, per:5},
+  // Period 6
+  {Z:55, sym:'Cs',name:'Cesium',        P:2.200, N:12, B:1,   A:3.89,  grp:1,  per:6},
+  {Z:56, sym:'Ba',name:'Barium',        P:2.850, N:12, B:2,   A:5.21,  grp:2,  per:6},
+  {Z:57, sym:'La',name:'Lanthanum',     P:3.000, N:12, B:3,   A:5.58,  grp:3,  per:6},
+  {Z:58, sym:'Ce',name:'Cerium',        P:3.050, N:12, B:4,   A:5.54,  grp:4,  per:6},
+  {Z:59, sym:'Pr',name:'Praseodymium',  P:3.100, N:12, B:5,   A:5.47,  grp:4,  per:6},
+  {Z:60, sym:'Nd',name:'Neodymium',     P:3.150, N:12, B:6,   A:5.53,  grp:4,  per:6},
+  {Z:61, sym:'Pm',name:'Promethium',    P:3.200, N:12, B:5,   A:5.58,  grp:4,  per:6},
+  {Z:62, sym:'Sm',name:'Samarium',      P:3.250, N:12, B:6,   A:5.64,  grp:4,  per:6},
+  {Z:63, sym:'Eu',name:'Europium',      P:3.300, N:12, B:7,   A:5.67,  grp:4,  per:6},
+  {Z:64, sym:'Gd',name:'Gadolinium',    P:3.350, N:12, B:8,   A:6.15,  grp:4,  per:6},
+  {Z:65, sym:'Tb',name:'Terbium',       P:3.400, N:12, B:9,   A:5.86,  grp:4,  per:6},
+  {Z:66, sym:'Dy',name:'Dysprosium',    P:3.450, N:12, B:10,  A:5.94,  grp:4,  per:6},
+  {Z:67, sym:'Ho',name:'Holmium',       P:3.500, N:12, B:11,  A:6.02,  grp:4,  per:6},
+  {Z:68, sym:'Er',name:'Erbium',        P:3.550, N:12, B:12,  A:6.11,  grp:4,  per:6},
+  {Z:69, sym:'Tm',name:'Thulium',       P:3.600, N:12, B:13,  A:6.18,  grp:4,  per:6},
+  {Z:70, sym:'Yb',name:'Ytterbium',     P:3.650, N:12, B:14,  A:6.25,  grp:4,  per:6},
+  {Z:71, sym:'Lu',name:'Lutetium',      P:3.700, N:12, B:3,   A:5.43,  grp:3,  per:6},
+  {Z:72, sym:'Hf',name:'Hafnium',       P:3.850, N:12, B:4,   A:6.83,  grp:4,  per:6},
+  {Z:73, sym:'Ta',name:'Tantalum',      P:4.000, N:12, B:5,   A:7.55,  grp:5,  per:6},
+  {Z:74, sym:'W', name:'Tungsten',      P:4.150, N:12, B:6,   A:7.86,  grp:6,  per:6},
+  {Z:75, sym:'Re',name:'Rhenium',       P:4.300, N:12, B:5,   A:7.83,  grp:7,  per:6},
+  {Z:76, sym:'Os',name:'Osmium',        P:4.450, N:12, B:4,   A:8.44,  grp:8,  per:6},
+  {Z:77, sym:'Ir',name:'Iridium',       P:4.600, N:12, B:3,   A:8.97,  grp:9,  per:6},
+  {Z:78, sym:'Pt',name:'Platinum',      P:4.750, N:12, B:2,   A:8.96,  grp:10, per:6},
+  {Z:79, sym:'Au',name:'Gold',          P:4.900, N:12, B:1,   A:9.23,  grp:11, per:6},
+  {Z:80, sym:'Hg',name:'Mercury',       P:5.050, N:12, B:2,   A:10.44, grp:12, per:6},
+  {Z:81, sym:'Tl',name:'Thallium',      P:5.700, N:12, B:3,   A:6.11,  grp:13, per:6},
+  {Z:82, sym:'Pb',name:'Lead',          P:6.350, N:12, B:4,   A:7.42,  grp:14, per:6},
+  {Z:83, sym:'Bi',name:'Bismuth',       P:7.000, N:12, B:3,   A:7.29,  grp:15, per:6},
+  {Z:84, sym:'Po',name:'Polonium',      P:7.650, N:12, B:2,   A:8.42,  grp:16, per:6},
+  {Z:85, sym:'At',name:'Astatine',      P:8.300, N:12, B:1,   A:9.50,  grp:17, per:6},
+  {Z:86, sym:'Rn',name:'Radon',         P:8.950, N:12, B:0,   A:10.75, grp:18, per:6},
+  // Period 7
+  {Z:87, sym:'Fr',name:'Francium',      P:2.200, N:14, B:1,   A:4.07,  grp:1,  per:7},
+  {Z:88, sym:'Ra',name:'Radium',        P:2.850, N:14, B:2,   A:5.28,  grp:2,  per:7},
+  {Z:89, sym:'Ac',name:'Actinium',      P:3.000, N:14, B:3,   A:5.17,  grp:3,  per:7},
+  {Z:90, sym:'Th',name:'Thorium',       P:3.050, N:14, B:4,   A:6.31,  grp:4,  per:7},
+  {Z:91, sym:'Pa',name:'Protactinium',  P:3.100, N:14, B:5,   A:5.89,  grp:4,  per:7},
+  {Z:92, sym:'U', name:'Uranium',       P:3.150, N:14, B:6,   A:6.19,  grp:4,  per:7},
+  {Z:93, sym:'Np',name:'Neptunium',     P:3.200, N:14, B:5,   A:6.27,  grp:4,  per:7},
+  {Z:94, sym:'Pu',name:'Plutonium',     P:3.250, N:14, B:6,   A:6.03,  grp:4,  per:7},
+  {Z:95, sym:'Am',name:'Americium',     P:3.300, N:14, B:7,   A:5.97,  grp:4,  per:7},
+  {Z:96, sym:'Cm',name:'Curium',        P:3.350, N:14, B:8,   A:5.99,  grp:4,  per:7},
+  {Z:97, sym:'Bk',name:'Berkelium',     P:3.400, N:14, B:9,   A:6.20,  grp:4,  per:7},
+  {Z:98, sym:'Cf',name:'Californium',   P:3.450, N:14, B:10,  A:6.28,  grp:4,  per:7},
+  {Z:99, sym:'Es',name:'Einsteinium',   P:3.500, N:14, B:11,  A:6.37,  grp:4,  per:7},
+  {Z:100,sym:'Fm',name:'Fermium',       P:3.550, N:14, B:12,  A:6.50,  grp:4,  per:7},
+  {Z:101,sym:'Md',name:'Mendelevium',   P:3.600, N:14, B:13,  A:6.58,  grp:4,  per:7},
+  {Z:102,sym:'No',name:'Nobelium',      P:3.650, N:14, B:14,  A:6.65,  grp:4,  per:7},
+  {Z:103,sym:'Lr',name:'Lawrencium',    P:3.700, N:14, B:3,   A:4.87,  grp:3,  per:7},
+  {Z:104,sym:'Rf',name:'Rutherfordium', P:3.850, N:14, B:4,   A:6.01,  grp:4,  per:7},
+  {Z:105,sym:'Db',name:'Dubnium',       P:4.000, N:14, B:5,   A:6.80,  grp:5,  per:7},
+  {Z:106,sym:'Sg',name:'Seaborgium',    P:4.150, N:14, B:6,   A:7.80,  grp:6,  per:7},
+  {Z:107,sym:'Bh',name:'Bohrium',       P:4.300, N:14, B:5,   A:7.70,  grp:7,  per:7},
+  {Z:108,sym:'Hs',name:'Hassium',       P:4.450, N:14, B:4,   A:7.60,  grp:8,  per:7},
+  {Z:109,sym:'Mt',name:'Meitnerium',    P:4.600, N:14, B:3,   A:7.70,  grp:9,  per:7},
+  {Z:110,sym:'Ds',name:'Darmstadtium',  P:4.750, N:14, B:2,   A:9.60,  grp:10, per:7},
+  {Z:111,sym:'Rg',name:'Roentgenium',   P:4.900, N:14, B:1,   A:10.60, grp:11, per:7},
+  {Z:112,sym:'Cn',name:'Copernicium',   P:5.050, N:14, B:2,   A:11.97, grp:12, per:7},
+  {Z:113,sym:'Nh',name:'Nihonium',      P:5.700, N:14, B:3,   A:7.31,  grp:13, per:7},
+  {Z:114,sym:'Fl',name:'Flerovium',     P:6.350, N:14, B:4,   A:8.00,  grp:14, per:7},
+  {Z:115,sym:'Mc',name:'Moscovium',     P:7.000, N:14, B:3,   A:7.50,  grp:15, per:7},
+  {Z:116,sym:'Lv',name:'Livermorium',   P:7.650, N:14, B:2,   A:8.00,  grp:16, per:7},
+  {Z:117,sym:'Ts',name:'Tennessine',    P:8.300, N:14, B:1,   A:7.70,  grp:17, per:7},
+  {Z:118,sym:'Og',name:'Oganesson',     P:8.950, N:14, B:0,   A:8.80,  grp:18, per:7},
+];
+
+// ── ERE (Emergent Resonance Elements) ────────────────────────────────────────
+const SNSFT_ELS = [
+  {sym:'Sv', name:'Soverium',     coord:'9,9,1,46', P:P_VE,          N:2,      B:0,              A:0,            color:'#00ffcc'},
+  {sym:'Lm', name:'Lumium',       coord:'9,9,1,53', P:P_VE,          N:2,      B:1/137,          A:4.423,        color:'#66aaff'},
+  {sym:'Ve', name:'Velium',       coord:'9,9,1,47', P:P_VE,          N:2,      B:1,              A:4.423,        color:'#ffe066'},
+  {sym:'Nx', name:'Nexium',       coord:'9,9,1,50', P:ANCHOR,        N:ANCHOR, B:ANCHOR,         A:ANCHOR,       color:'#ff44aa'},
+  {sym:'Zo', name:'Zoivum',       coord:'9,9,1,56', P:ANCHOR,        N:2,      B:TL*ANCHOR/2,    A:ANCHOR/TL,    color:'#44ffaa'},
+  {sym:'Zc', name:'Zoivum Cond.', coord:'9,9,1,57', P:ANCHOR/2,      N:4,      B:0,              A:ANCHOR/TL,    color:'#22dd88'},
+  {sym:'Wm', name:'Wimpium',      coord:'9,9,4,3',  P:P_VE,          N:3,      B:0.034,          A:0.01,         color:'#ccff88'},
+  {sym:'Ax', name:'Axionium',     coord:'9,9,4,4',  P:P_VE,          N:1,      B:1/Math.PI**2,   A:0.01,         color:'#ffcc44'},
+  {sym:'De', name:'Darkenergy',   coord:'9,9,4,1',  P:P_VE,          N:1,      B:0,              A:0.689,        color:'#aaaaff'},
+  {sym:'Dm', name:'Darkmatter',   coord:'9,9,4,2',  P:P_VE,          N:1,      B:0.269,          A:0.269,        color:'#9966ff'},
+  {sym:'GU', name:'GUT State',    coord:'9,9,3,5',  P:P_VE,          N:1,      B:1/25,           A:1/25,         color:'#aaffaa'},
+  {sym:'EW', name:'EW Plasma',    coord:'9,9,3,6',  P:P_VE,          N:2,      B:0.231,          A:0.231,        color:'#ffaaff'},
+  {sym:'Pm', name:'Plasmion',     coord:'9,9,3,4',  P:P_VE,          N:3,      B:1/Math.PI,      A:0,            color:'#ff6644'},
+  {sym:'NS', name:'Neutron Star', coord:'9,9,3,3',  P:P_VE,          N:1,      B:0.199,          A:0,            color:'#8888ff'},
+  {sym:'Hi', name:'Higgsium',     coord:'9,9,4,5',  P:125.09/246.22, N:1,      B:0.13,           A:0.93,         color:'#ff00ff'},
+  {sym:'Zb', name:'Z-boson',      coord:'9,9,4,6',  P:91.1876/246.22,N:2,      B:0.2312,         A:0.2312,       color:'#ff66cc'},
+  {sym:'Wb', name:'W-boson',      coord:'9,9,4,7',  P:80.377/246.22, N:2,      B:1/29.8,         A:80.377/91.1876,color:'#66ccff'},
+  {sym:'Dq', name:'Diquonium',    coord:'9,9,2,33', P:1.27/246.22,   N:3,      B:0,              A:0.118,        color:'#cc88ff'},
+  {sym:'SP', name:'Sov.Peak',     coord:'9,9,2,29', P:17.963,        N:12,     B:0,              A:1.18,         color:'#ffddaa'},
+  {sym:'Li2',name:'Limium',       coord:'9,9,2,44', P:0.37547,       N:13,     B:0.05122,        A:6.845,        color:'#88ffdd'},
+];
+
+// ── PARTICLE PHYSICS (PDG 2024) ───────────────────────────────────────────────
+const PARTICLE_ELS = [
+  // Gauge bosons
+  {sym:'Ph', name:'Photon',           coord:'particle', P:0,           N:2,  B:1/137.036, A:1/137.036, color:'#ffff44'},
+  {sym:'Gl', name:'Gluon',            coord:'particle', P:0,           N:8,  B:0.118,     A:0.118,     color:'#ff8800'},
+  // Quarks
+  {sym:'qu', name:'Up Quark',         coord:'particle', P:0.00234,     N:3,  B:0.667,     A:0.118,     color:'#44ccff'},
+  {sym:'qd', name:'Down Quark',       coord:'particle', P:0.00501,     N:3,  B:0.333,     A:0.118,     color:'#44ccff'},
+  {sym:'qs', name:'Strange Quark',    coord:'particle', P:0.09912,     N:3,  B:0.333,     A:0.118,     color:'#44aaff'},
+  {sym:'qc', name:'Charm Quark',      coord:'particle', P:1.3589,      N:3,  B:0.667,     A:0.118,     color:'#44aaff'},
+  {sym:'qb', name:'Bottom Quark',     coord:'particle', P:4.4550,      N:3,  B:0.333,     A:0.118,     color:'#4488ff'},
+  {sym:'qt', name:'Top Quark',        coord:'particle', P:184.126,     N:3,  B:0.667,     A:0.118,     color:'#4466ff'},
+  // Leptons
+  {sym:'e',  name:'Electron',         coord:'particle', P:0.000545,    N:2,  B:1,         A:0.01360,   color:'#00ffaa'},
+  {sym:'mu', name:'Muon',             coord:'particle', P:0.11261,     N:2,  B:1,         A:0.11261,   color:'#00ddaa'},
+  {sym:'ta', name:'Tau',              coord:'particle', P:1.89376,     N:2,  B:1,         A:1.89376,   color:'#00bbaa'},
+  {sym:'ve', name:'e-Neutrino',       coord:'particle', P:P_VE/1e9,    N:1,  B:0,         A:0.0001,    color:'#aaffee'},
+  // Hadrons
+  {sym:'Pr', name:'Proton',           coord:'particle', P:1.000,       N:3,  B:1,         A:0.01360,   color:'#ff6644'},
+  {sym:'Nt', name:'Neutron',          coord:'particle', P:1.00138,     N:3,  B:1,         A:0.000835,  color:'#cc6644'},
+  {sym:'pi', name:'Pion+',            coord:'particle', P:0.14875,     N:2,  B:1,         A:0.118,     color:'#ffaa44'},
+  {sym:'p0', name:'Pion0',            coord:'particle', P:0.14386,     N:2,  B:0,         A:0.118,     color:'#ffcc44'},
+  // Quarkonium — all Noble at k=1 [9,9,2,34], confirmed
+  {sym:'Jy', name:'J/ψ (1974)',       coord:'9,9,2,34', P:3096.9/938.272,  N:2, B:0, A:0.118, color:'#ff88ff'},
+  {sym:'Ups',name:'Υ (1977)',         coord:'9,9,2,34', P:9460.3/938.272,  N:2, B:0, A:0.118, color:'#cc88ff'},
+  {sym:'Tt', name:'Toponium (2026)',  coord:'9,9,2,34', P:346000/938.272,  N:2, B:0, A:0.118, color:'#aa66ff'},
+  // Ξcc+ — LHCb Mar 17 2026, Lean filed Mar 19
+  {sym:'Xc', name:'Ξcc+ LHCb 2026',  coord:'9,9,2,34', P:3621.55/938.272, N:3, B:0, A:0.118, color:'#ff9944'},
+  // Lambda, Delta++
+  {sym:'Lb', name:'Lambda',           coord:'particle', P:1.18910,     N:3,  B:0,         A:0.118,     color:'#dd4444'},
+  {sym:'D2', name:'Delta++',          coord:'particle', P:1.31305,     N:4,  B:2,         A:0.118,     color:'#cc4444'},
+];
+
+const ALL = [
+  ...PERIODIC.map(e  => ({...e, type:'atom',     color:atomColor(e), id:e.sym})),
+  ...SNSFT_ELS.map(e => ({...e, type:'snsft',    Z:null, grp:null, per:null, id:e.sym})),
+  ...PARTICLE_ELS.map(e=>({...e,type:'particle', Z:null, grp:null, per:null, id:e.sym})),
+];
+
+// ── PHYSICS ───────────────────────────────────────────────────────────────────
+function getTau(e) { return e.P > 0 ? e.B / e.P : 0; }
+
+function getStatus(B, P) {
+  if (B === 0) return 'n';                              // Noble
+  const t = P > 0 ? B / P : 999;
+  if (t >= TL) return 's';                              // Shatter
+  if (t > IVA_LO) return 'i';                          // IVA Peak
+  return 'l';                                           // Locked
+}
+
+function atomColor(e) {
+  const s = getStatus(e.B, e.P);
+  return {n:'#aa88ff', i:'#ffee44', l:'#00ffcc', s:'#ff3355'}[s];
+}
+
+function quadrant(P, A) {
+  if (A >= 12 && P <= 2) return 'Q1';
+  if (A >= 12 && P >  2) return 'Q2';
+  if (A <  12 && P <= 2) return 'Q3';
+  return 'Q4';
+}
+const qColor = {'Q1':'#00e5ff','Q2':'#aa88ff','Q3':'#00ffcc','Q4':'#ffaa00'};
+
+function fuse(e1, e2, k) {
+  const kk = Math.max(0, Math.min(k, Math.min(e1.B, e2.B)));
+  const P_o = (e1.P > 0 && e2.P > 0) ? (e1.P * e2.P) / (e1.P + e2.P) : Math.max(e1.P, e2.P);
+  const B_o = Math.max(0, e1.B + e2.B - 2 * kk);
+  const A_o = Math.max(e1.A, e2.A);
+  const t   = P_o > 0 ? B_o / P_o : (B_o > 0 ? 999 : 0);
+  const s   = getStatus(B_o, P_o);
+  const IM  = (P_o + e1.N + e2.N + B_o + A_o) * ANCHOR;
+  return {P:P_o, N:e1.N + e2.N, B:B_o, A:A_o, tau:t, IM, status:s};
+}
+
+// State display helpers
+const STATUS_TEXT  = {n:'◆ NOBLE STATE', i:'★ IVA PEAK', l:'✦ PHASE LOCKED', s:'✸ SHATTER'};
+const STATUS_COLOR = {n:'var(--noble)',  i:'var(--iva)', l:'var(--locked)',   s:'var(--shatter)'};
+const TAU_CLASS    = {n:'bt-n',          i:'bt-i',       l:'bt-l',            s:'bt-s'};
+const PILL_CLASS   = {n:'sp-n',          i:'sp-i',       l:'sp-l',            s:'sp-s'};
+const BOX_CLASS    = {n:'rn',            i:'ri',         l:'rl',              s:'rs'};
+const TAU_CLASS_EL = {n:'tc-n',          i:'tc-i',       l:'tc-l',            s:'tc-s'};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let selA = null, selB = null;
+
+// ── COLLIDER LISTS ────────────────────────────────────────────────────────────
+function buildLists() {
+  ['a','b'].forEach(side => {
+    const div = document.getElementById('list-' + side);
+    div.innerHTML = '';
+    ALL.forEach(el => {
+      const t  = getTau(el);
+      const s  = getStatus(el.B, el.P);
+      const tc = TAU_CLASS_EL[s];
+      const d  = document.createElement('div');
+      d.className = 'ec'; d.dataset.id = el.id; d.dataset.side = side;
+      d.innerHTML = `<span class="ec-sym" style="color:${el.color}">${el.sym}</span>`
+                  + `<span class="ec-z">${el.Z ? 'Z='+el.Z : (el.coord||'')}</span>`
+                  + `<span class="ec-tau ${tc}">τ${t.toFixed(2)}</span>`;
+      d.title = `${el.name} — P=${el.P.toFixed(4)} N=${el.N} B=${el.B.toFixed(5)} A=${el.A.toFixed(3)}`;
+      d.addEventListener('click', () => pick(el, side));
+      div.appendChild(d);
+    });
+  });
+}
+
+function filterList(side, query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll(`#list-${side} .ec`).forEach(c => {
+    const el = ALL.find(e => e.id === c.dataset.id);
+    const m  = el && (el.sym.toLowerCase().includes(q) || el.name.toLowerCase().includes(q) || (el.Z && String(el.Z).includes(q)));
+    c.style.display = m ? '' : 'none';
+  });
+}
+
+function pick(el, side) {
+  if (side === 'a') selA = el; else selB = el;
+  document.querySelectorAll('#list-a .ec').forEach(c => c.classList.toggle('sel-a', c.dataset.id === selA?.id));
+  document.querySelectorAll('#list-b .ec').forEach(c => c.classList.toggle('sel-b', c.dataset.id === selB?.id));
+  document.querySelectorAll('.pt-cell').forEach(c => {
+    c.classList.toggle('sel-a', c.dataset.id === selA?.id);
+    c.classList.toggle('sel-b', c.dataset.id === selB?.id);
+  });
+  document.getElementById('sel-a-disp').textContent = selA ? selA.sym : '—';
+  document.getElementById('sel-b-disp').textContent = selB ? selB.sym : '—';
+  document.getElementById('sel-a-disp').style.color = selA ? selA.color : 'var(--glow)';
+  document.getElementById('sel-b-disp').style.color = selB ? selB.color : 'var(--warn)';
+  updateArrows();
+  if (selA && selB) {
+    const mk = Math.min(selA.B, selB.B);
+    const sl = document.getElementById('k-slider');
+    sl.max = Math.max(mk, 0.0001).toFixed(6);
+    sl.value = mk.toFixed(6);
+    document.getElementById('k-val').textContent = mk.toFixed(3);
+    document.getElementById('fire-btn').disabled = false;
+    document.getElementById('arrow-a').classList.add('ready');
+    document.getElementById('arrow-b').classList.add('ready');
+  } else {
+    document.getElementById('fire-btn').disabled = true;
+  }
+}
+
+function updateArrows() {
+  ['a','b'].forEach(s => {
+    const el = s === 'a' ? selA : selB;
+    document.getElementById('arrow-' + s).classList.toggle('ready', !!el);
+  });
+}
+
+document.getElementById('k-slider').addEventListener('input', function() {
+  document.getElementById('k-val').textContent = parseFloat(this.value).toFixed(3);
+});
+
+function doCollide() {
+  if (!selA || !selB) return;
+  const k = parseFloat(document.getElementById('k-slider').value);
+  showResult(selA, selB, k, fuse(selA, selB, k));
+}
+
+function showResult(e1, e2, k, r) {
+  updateForgeInterp(r);
+  const box   = document.getElementById('result-box');
+  const inner = document.getElementById('result-inner');
+  document.getElementById('result-idle').style.display = 'none';
+  inner.style.display = 'block';
+  box.className = 'result-box ' + BOX_CLASS[r.status];
+
+  const bc  = STATUS_COLOR[r.status];
+  const tc  = TAU_CLASS[r.status];
+  const sc  = PILL_CLASS[r.status];
+  const st  = STATUS_TEXT[r.status];
+  const pct = Math.min(100, (r.tau / 1.5) * 100);
+
+  // IVA zone annotation
+  const ivaNote = r.status === 'i'
+    ? `<div style="font-size:9px;color:var(--iva);margin-top:4px;letter-spacing:.1em">★ IVA PEAK · τ=${r.tau.toFixed(4)} = ${(r.tau/TL*100).toFixed(1)}% of TL · sovereign drive corridor</div>`
+    : '';
+
+  const t1  = getTau(e1);
+  const t2  = getTau(e2);
+  const s1  = getStatus(e1.B, e1.P);
+  const s2  = getStatus(e2.B, e2.P);
+
+  inner.innerHTML = `<div class="result-grid">
+    <div class="reaction-line">
+      <span style="color:${e1.color}">${e1.sym}</span>
+      <span style="color:#1a3040"> + </span>
+      <span style="color:${e2.color}">${e2.sym}</span>
+      <span style="color:#1a3040"> → </span>
+      <span style="color:${bc}">[${r.P.toFixed(4)}, ${r.N.toFixed(2)}, ${r.B.toFixed(5)}, ${r.A.toFixed(4)}]</span>
+      <span style="color:#1a3040;font-size:9px"> k=${k.toFixed(3)}</span>
+    </div>
+    <div>
+      <div class="res-col-title">INPUT A · ${e1.name}</div>
+      <div class="res-row"><span class="rl_">P</span><span class="rv">${e1.P.toFixed(5)}</span></div>
+      <div class="res-row"><span class="rl_">N</span><span class="rv">${e1.N}</span></div>
+      <div class="res-row"><span class="rl_">B</span><span class="rv">${e1.B.toFixed(5)}</span></div>
+      <div class="res-row"><span class="rl_">A</span><span class="rv">${e1.A.toFixed(4)}</span></div>
+      <div class="res-row"><span class="rl_">τ</span><span class="rv ${TAU_CLASS_EL[s1]}">${t1.toFixed(4)}</span></div>
+      <div class="res-row"><span class="rl_">IM</span><span class="rv">${((e1.P+e1.N+e1.B+e1.A)*ANCHOR).toFixed(4)}</span></div>
+    </div>
+    <div>
+      <div class="res-col-title">INPUT B · ${e2.name}</div>
+      <div class="res-row"><span class="rl_">P</span><span class="rv">${e2.P.toFixed(5)}</span></div>
+      <div class="res-row"><span class="rl_">N</span><span class="rv">${e2.N}</span></div>
+      <div class="res-row"><span class="rl_">B</span><span class="rv">${e2.B.toFixed(5)}</span></div>
+      <div class="res-row"><span class="rl_">A</span><span class="rv">${e2.A.toFixed(4)}</span></div>
+      <div class="res-row"><span class="rl_">τ</span><span class="rv ${TAU_CLASS_EL[s2]}">${t2.toFixed(4)}</span></div>
+      <div class="res-row"><span class="rl_">IM</span><span class="rv">${((e2.P+e2.N+e2.B+e2.A)*ANCHOR).toFixed(4)}</span></div>
+    </div>
+    <div>
+      <div class="res-col-title">OUTPUT · TL=0.1369</div>
+      <div class="res-row"><span class="rl_">P_out</span><span class="rv">${r.P.toFixed(5)}</span></div>
+      <div class="res-row"><span class="rl_">N_out</span><span class="rv">${r.N}</span></div>
+      <div class="res-row"><span class="rl_">B_out</span><span class="rv">${r.B.toFixed(5)}</span></div>
+      <div class="res-row"><span class="rl_">A_out</span><span class="rv">${r.A.toFixed(4)}</span></div>
+      <div class="res-row"><span class="rl_">IM</span><span class="rv">${r.IM.toFixed(4)}</span></div>
+      <div class="big-tau ${tc}">τ=${r.tau > 99 ? '∞' : r.tau.toFixed(4)}</div>
+      <div class="tau-bar">
+        <div class="tau-bar-iva"></div>
+        <div class="tau-bar-tl"></div>
+        <div class="tau-bar-fill" style="width:${pct}%;background:${bc}"></div>
+      </div>
+      <div class="tau-bar-lbl">
+        <span>0</span>
+        <span style="color:var(--iva)">IVA</span>
+        <span style="color:var(--warn)">TL=0.1369</span>
+        <span>1.5+</span>
+      </div>
+      <div class="status-pill ${sc}">${st}</div>
+      ${ivaNote}
+    </div>
+  </div>`;
+}
+
+// ── QUICK CHIPS ───────────────────────────────────────────────────────────────
+const QUICK_LIST = [
+  {a:'N',  b:'N',   label:'N₂ — inert gas'},
+  {a:'N',  b:'Ga',  label:'GaN — LED semiconductor ✓'},
+  {a:'O',  b:'Zn',  label:'ZnO — semiconductor ✓'},
+  {a:'Na', b:'Cl',  label:'NaCl — table salt ✓'},
+  {a:'C',  b:'C',   label:'Diamond ✓'},
+  {a:'N',  b:'As',  label:'AsN — PREDICTED 🎯'},
+  {a:'Hi', b:'Hi',  label:'Higgs self-collision → Noble (Higgs condensate)'},
+  {a:'Hi', b:'Zo',  label:'Higgs × Zoivum → IVA Peak [9,9,2,47]'},
+  {a:'Jy', b:'Sv',  label:'J/ψ + Soverium → Noble'},
+  {a:'qt', b:'qt',  label:'Toponium tt̄ → Noble [9,9,2,34]'},
+  {a:'qc', b:'qc',  label:'Charmonium J/ψ → Noble'},
+  {a:'qb', b:'qb',  label:'Bottomonium Υ → Noble'},
+  {a:'EW', b:'Pm',  label:'EW+QGP → hadronic matter'},
+  {a:'Sv', b:'Ve',  label:'IVA Drive state'},
+  {a:'Si', b:'Si',  label:'Si+Si Noble annihilation (Apr 7 2026)'},
+];
+
+function buildQuick() {
+  const row = document.getElementById('quick-row');
+  QUICK_LIST.forEach(q => {
+    const e1 = ALL.find(e => e.id === q.a);
+    const e2 = ALL.find(e => e.id === q.b);
+    if (!e1 || !e2) return;
+    const r  = fuse(e1, e2, Math.min(e1.B, e2.B));
+    const sc = TAU_CLASS_EL[r.status];
+    const d  = document.createElement('div');
+    d.className = 'quick-chip';
+    d.innerHTML = `<span style="color:${e1.color}">${e1.sym}</span>+<span style="color:${e2.color}">${e2.sym}</span> <span class="${sc}">τ=${r.tau > 99 ? '∞' : r.tau.toFixed(2)}</span>`;
+    d.title = q.label;
+    d.addEventListener('click', () => {
+      pick(e1, 'a'); pick(e2, 'b'); showTab('collide');
+      const k = Math.min(e1.B, e2.B);
+      const sl = document.getElementById('k-slider');
+      sl.max = Math.max(k, 0.0001).toFixed(6);
+      sl.value = k.toFixed(6);
+      document.getElementById('k-val').textContent = k.toFixed(3);
+      doCollide();
+    });
+    row.appendChild(d);
+  });
+}
+
+// ── PERIODIC TABLE ────────────────────────────────────────────────────────────
+function buildPTable() {
+  const wrap = document.getElementById('ptable-wrap');
+  const rows = [
+    [{Z:1},{Z:null,span:16},{Z:2}],
+    [{Z:3},{Z:4},{Z:null,span:10},{Z:5},{Z:6},{Z:7},{Z:8},{Z:9},{Z:10}],
+    [{Z:11},{Z:12},{Z:null,span:10},{Z:13},{Z:14},{Z:15},{Z:16},{Z:17},{Z:18}],
+    [{Z:19},{Z:20},{Z:21},{Z:22},{Z:23},{Z:24},{Z:25},{Z:26},{Z:27},{Z:28},{Z:29},{Z:30},{Z:31},{Z:32},{Z:33},{Z:34},{Z:35},{Z:36}],
+  ];
+  rows.forEach(row => {
+    const rd = document.createElement('div'); rd.className = 'pt-row';
+    row.forEach(cell => {
+      if (cell.Z === null) {
+        for (let i = 0; i < (cell.span||1); i++) { const sp = document.createElement('div'); sp.className = 'pt-cell spacer'; rd.appendChild(sp); }
+      } else {
+        const el = PERIODIC.find(e => e.Z === cell.Z); if (!el) return;
+        const s = getStatus(el.B, el.P);
+        const dotColor = {n:'var(--noble)', i:'var(--iva)', l:'var(--locked)', s:'var(--shatter)'}[s];
+        const d = document.createElement('div'); d.className = 'pt-cell'; d.dataset.id = el.id;
+        d.innerHTML = `<span class="pt-sym" style="color:${el.color}">${el.sym}</span><span class="pt-z">Z=${el.Z}</span><div class="pt-tau-dot" style="background:${dotColor}"></div>`;
+        d.title = `${el.name} · P=${el.P.toFixed(3)} N=${el.N} B=${el.B} τ=${getTau(el).toFixed(3)}`;
+        d.addEventListener('click', () => { if (!selA) pick(el,'a'); else if (!selB) pick(el,'b'); else pick(el,'a'); showTab('collide'); });
+        rd.appendChild(d);
+      }
+    });
+    wrap.appendChild(rd);
+  });
+
+  const addSection = (label, arr) => {
+    const st = document.createElement('div'); st.style.cssText = 'font-size:9px;letter-spacing:.25em;color:#1a3040;margin:20px 0 8px;'; st.textContent = label; wrap.appendChild(st);
+    const sr = document.createElement('div'); sr.className = 'pt-row'; sr.style.flexWrap = 'wrap';
+    arr.forEach(el => {
+      const s = getStatus(el.B, el.P);
+      const dotColor = {n:'var(--noble)', i:'var(--iva)', l:'var(--locked)', s:'var(--shatter)'}[s];
+      const d = document.createElement('div'); d.className = 'pt-cell'; d.dataset.id = el.id;
+      d.innerHTML = `<span class="pt-sym" style="color:${el.color}">${el.sym}</span><span class="pt-z" style="font-size:6px">${el.coord||''}</span><div class="pt-tau-dot" style="background:${dotColor}"></div>`;
+      d.title = `${el.name} · τ=${getTau(el).toFixed(4)}`;
+      d.addEventListener('click', () => { if (!selA) pick(el,'a'); else if (!selB) pick(el,'b'); else pick(el,'a'); showTab('collide'); });
+      sr.appendChild(d);
+    });
+    wrap.appendChild(sr);
+  };
+
+  addSection('EMERGENT RESONANCE ELEMENTS', SNSFT_ELS);
+  addSection('PARTICLE PHYSICS', PARTICLE_ELS);
+}
+
+// ── K-SWEEP ───────────────────────────────────────────────────────────────────
+function buildSweepSelects() {
+  ['sw-a','sw-b'].forEach(id => {
+    const sel = document.getElementById(id);
+    ALL.forEach(el => { const o = document.createElement('option'); o.value = el.id; o.textContent = `${el.sym} — ${el.name}`; sel.appendChild(o); });
+  });
+  document.getElementById('sw-a').value = 'N';
+  document.getElementById('sw-b').value = 'Ga';
+}
+
+function runSweep() {
+  const e1 = ALL.find(e => e.id === document.getElementById('sw-a').value);
+  const e2 = ALL.find(e => e.id === document.getElementById('sw-b').value);
+  if (!e1 || !e2) return;
+  const canvas = document.getElementById('sweep-canvas');
+  const W = canvas.offsetWidth; canvas.width = W; canvas.height = 220;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,220);
+  const maxK = Math.max(Math.min(e1.B, e2.B), 0.001);
+  const pts = []; let kLock = null, kIVA = null;
+  for (let i = 0; i <= 200; i++) {
+    const k = (i/200) * maxK;
+    const r = fuse(e1, e2, k);
+    const t = Math.min(r.tau, 3);
+    pts.push({k, tau:t, status:r.status});
+    if (kLock === null && r.tau < TL)   kLock = k;
+    if (kIVA  === null && r.tau < TL && r.tau > IVA_LO) kIVA = k;
+  }
+  const pad = {l:50,r:20,t:20,b:40}, gW = W-70, gH = 160;
+  ctx.strokeStyle = '#0c1a26'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.t + gH*(1 - i/5);
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+gW,y); ctx.stroke();
+    ctx.fillStyle = '#1a3040'; ctx.font = '9px Share Tech Mono'; ctx.fillText((i/5*3).toFixed(1), 4, y+3);
+  }
+  for (let i = 0; i <= 5; i++) {
+    const x = pad.l + gW*i/5;
+    ctx.beginPath(); ctx.moveTo(x,pad.t); ctx.lineTo(x,pad.t+gH); ctx.stroke();
+    ctx.fillStyle = '#1a3040'; ctx.fillText((maxK*i/5).toFixed(3), x-12, 220-8);
+  }
+  // IVA zone band
+  const ivaLoY = pad.t + gH*(1 - IVA_LO/3);
+  const tlY    = pad.t + gH*(1 - TL/3);
+  ctx.fillStyle = 'rgba(255,238,68,0.07)';
+  ctx.fillRect(pad.l, tlY, gW, ivaLoY - tlY);
+  // TL line
+  ctx.strokeStyle = 'rgba(255,170,0,0.6)'; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(pad.l,tlY); ctx.lineTo(pad.l+gW,tlY); ctx.stroke();
+  ctx.fillStyle = 'rgba(255,170,0,0.8)'; ctx.font = '8px Share Tech Mono'; ctx.fillText(`TL=${TL.toFixed(4)}`, pad.l+gW+2, tlY+3);
+  // IVA_LO line
+  ctx.strokeStyle = 'rgba(255,238,68,0.4)';
+  ctx.beginPath(); ctx.moveTo(pad.l,ivaLoY); ctx.lineTo(pad.l+gW,ivaLoY); ctx.stroke();
+  ctx.setLineDash([]);
+  // kLock marker
+  if (kLock !== null) {
+    const kx = pad.l + (kLock/maxK)*gW;
+    ctx.strokeStyle = 'rgba(0,255,204,0.4)'; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(kx,pad.t); ctx.lineTo(kx,pad.t+gH); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  // Curve
+  ctx.lineWidth = 2; ctx.beginPath();
+  pts.forEach((p,i) => {
+    const x = pad.l + (p.k/maxK)*gW;
+    const y = pad.t + gH*(1 - p.tau/3);
+    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  const g = ctx.createLinearGradient(pad.l,0,pad.l+gW,0);
+  g.addColorStop(0,'var(--shatter)');
+  if (kLock) g.addColorStop(kLock/maxK,'var(--warn)');
+  g.addColorStop(1,'var(--locked)');
+  ctx.strokeStyle = g; ctx.stroke();
+
+  const fr = fuse(e1, e2, maxK);
+  const corridorW = (TL * fr.P) / 2;
+  document.getElementById('sweep-info').innerHTML =
+    `<b>${e1.name} + ${e2.name}</b> · max k=${maxK.toFixed(4)}<br>`
+    + `At k=0: τ=${fuse(e1,e2,0).tau.toFixed(4)} · At k_max: τ=${fr.tau.toFixed(4)}<br>`
+    + (kLock !== null ? `k*=${kLock.toFixed(4)} (Locked threshold) · ` : 'No lock achievable · ')
+    + `Corridor width=${corridorW.toFixed(4)} · IVA zone: (${IVA_LO.toFixed(4)}, ${TL.toFixed(4)})`;
+}
+
+// ── CASCADE ───────────────────────────────────────────────────────────────────
+let cascadeSteps = [{a:null,b:null}];
+
+function buildCascadeSelects() {
+  ['cas-sel-a','cas-sel-b'].forEach(id => {
+    const sel = document.getElementById(id);
+    ALL.forEach(el => { const o = document.createElement('option'); o.value = el.id; o.textContent = `${el.sym} — ${el.name}`; sel.appendChild(o); });
+  });
+  document.getElementById('cas-sel-a').value = 'Hi';
+  document.getElementById('cas-sel-b').value = 'Fe';
+}
+
+function addCascadeStep() {
+  cascadeSteps.push({a: document.getElementById('cas-sel-a').value, b: document.getElementById('cas-sel-b').value});
+  renderCascadeSteps();
+}
+
+function resetCascade() { cascadeSteps = [{a:null,b:null}]; document.getElementById('cascade-results').innerHTML = ''; renderCascadeSteps(); }
+
+function renderCascadeSteps() {
+  const div = document.getElementById('cascade-steps'); div.innerHTML = '';
+  cascadeSteps.forEach((step, i) => {
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:6px;';
+    row.innerHTML = `<span style="color:#1a3040;font-size:9px;width:20px">${i+1}.</span>`;
+    ['a','b'].forEach(s => {
+      const sel = document.createElement('select'); sel.className = 'sweep-sel'; sel.style.width = '130px';
+      ALL.forEach(el => { const o = document.createElement('option'); o.value = el.id; o.textContent = `${el.sym} — ${el.name}`; if (step[s] === el.id) o.selected = true; sel.appendChild(o); });
+      sel.addEventListener('change', e => { cascadeSteps[i][s] = e.target.value; });
+      row.appendChild(sel);
+      if (s === 'a') row.insertAdjacentHTML('beforeend','<span style="color:#1a3040">+</span>');
+    });
+    if (i > 0) { const rm = document.createElement('button'); rm.textContent = '✕'; rm.style.cssText = 'background:transparent;border:none;color:#1a3040;cursor:pointer;font-size:12px;'; rm.onclick = () => { cascadeSteps.splice(i,1); renderCascadeSteps(); }; row.appendChild(rm); }
+    div.appendChild(row);
+  });
+}
+
+function runCascade() {
+  const results = document.getElementById('cascade-results'); results.innerHTML = '';
+  let cur = null;
+  cascadeSteps.forEach((step, i) => {
+    const aEl = i === 0 ? ALL.find(e => e.id === step.a) : cur;
+    const bEl = ALL.find(e => e.id === step.b);
+    if (!aEl || !bEl) return;
+    const k = Math.min(aEl.B, bEl.B);
+    const r = fuse(aEl, bEl, k);
+    const bc = STATUS_COLOR[r.status];
+    const st = {n:'NOBLE', i:'IVA PEAK', l:'LOCKED', s:'SHATTER'}[r.status];
+    const tc = TAU_CLASS_EL[r.status];
+    const row = document.createElement('div'); row.className = 'cas-step';
+    row.innerHTML = `<span class="cas-step-num">${i+1}</span>`
+      + `<span class="cas-eq"><span style="color:${aEl.color||'var(--text)'}">${aEl.sym||'[prev]'}</span>`
+      + `<span style="color:#1a3040"> + </span><span style="color:${bEl.color||'var(--text)'}">${bEl.sym}</span>`
+      + `<span style="color:#1a3040"> → </span><span style="color:${bc}">[${r.P.toFixed(3)}, ${r.N.toFixed(1)}, ${r.B.toFixed(4)}, ${r.A.toFixed(3)}]</span></span>`
+      + `<span class="cas-tau ${tc}">τ=${r.tau > 99 ? '∞' : r.tau.toFixed(4)} ${st}</span>`;
+    results.appendChild(row);
+    cur = {sym:`[S${i+1}]`, name:`Step ${i+1}`, P:r.P, N:r.N, B:r.B, A:r.A, color:'var(--glow)', id:`__s${i}__`};
+  });
+}
+
+// ── MATERIALS MAP ─────────────────────────────────────────────────────────────
+const KNOWN_COMPOUNDS = {
+  'H+H':'H₂ — diatomic gas','H+F':'HF — hydrofluoric acid','H+Li':'LiH — lithium hydride',
+  'H+Na':'NaH — sodium hydride','H+K':'KH — potassium hydride','H+Cl':'HCl — hydrochloric acid',
+  'H+Br':'HBr — hydrobromic acid','Na+Cl':'NaCl — table salt','K+Cl':'KCl — potassium chloride',
+  'Li+Cl':'LiCl — lithium chloride','N+N':'N₂ — nitrogen gas','N+Co':'CoN — thin film only',
+  'N+Mn':'MnN — metastable','N+Sc':'ScN — hard ceramic ✓','N+Ga':'GaN — LED semiconductor ✓',
+  'N+In':'InP (via In+P) — 1550nm fiber laser ✓','O+S':'SO — reactive','O+Ca':'CaO — quicklime',
+  'O+Ni':'NiO — antiferromagnet ✓','O+Zn':'ZnO — semiconductor ✓','O+Hg':'HgTe-related — JWST IR ✓',
+  'C+C':'Diamond/graphene ✓','C+Fe':'Cementite Fe₃C','C+Ti':'TiC — ultra-hard ceramic ✓',
+  'C+Si':'SiC — silicon carbide ✓','Ti+Si':'TiSi₂ — VLSI silicide ✓',
+  'Fe+Si':'FeSi₂ — thermoelectric','Zn+Se':'ZnSe — semiconductor ✓',
+  'Nb+Nb':'Nb — Tc=9.3K · every MRI magnet ✓','Ag+Au':'Electrum — first money ~600 BC ✓',
+};
+
+let noblePoints = [];
+
+function buildMaterialsMap() {
+  noblePoints = [];
+  const syms = PERIODIC.filter(e => e.B > 0).map(e => e.sym);
+  for (let i = 0; i < syms.length; i++) {
+    for (let j = i; j < syms.length; j++) {
+      const e1 = PERIODIC.find(e => e.sym === syms[i]);
+      const e2 = PERIODIC.find(e => e.sym === syms[j]);
+      if (e1.B !== e2.B) continue;
+      const r = fuse(e1, e2, e1.B);
+      if (r.B > 0.0001) continue;
+      const key    = syms[i]===syms[j] ? `${syms[i]}+${syms[i]}` : `${syms[i]}+${syms[j]}`;
+      const known  = KNOWN_COMPOUNDS[key] || KNOWN_COMPOUNDS[`${syms[j]}+${syms[i]}`] || null;
+      const q      = quadrant(r.P, r.A);
+      noblePoints.push({s1:syms[i], s2:syms[j], P:r.P, A:r.A, IM:r.IM, q, known, key});
+    }
+  }
+  renderMaterialsMap();
+  renderNobleList();
+}
+
+function renderMaterialsMap() {
+  const canvas = document.getElementById('map-canvas');
+  const W = canvas.offsetWidth||600; canvas.width = W; canvas.height = 400;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,400);
+  const pad = {l:50,r:20,t:20,b:40}, gW = W-70, gH = 340;
+  const maxP=10, maxA=22;
+  function px(P) { return pad.l + (P/maxP)*gW; }
+  function py(A) { return pad.t + gH - (A/maxA)*gH; }
+  // Grid
+  ctx.strokeStyle = '#0c1a26'; ctx.lineWidth = 1;
+  [0,5,10].forEach(v => { ctx.beginPath(); ctx.moveTo(px(v),pad.t); ctx.lineTo(px(v),pad.t+gH); ctx.stroke(); ctx.fillStyle='#1a3040'; ctx.font='9px Share Tech Mono'; ctx.fillText(v,px(v)-4,pad.t+gH+15); });
+  [0,5,10,15,20].forEach(v => { ctx.beginPath(); ctx.moveTo(pad.l,py(v)); ctx.lineTo(pad.l+gW,py(v)); ctx.stroke(); ctx.fillStyle='#1a3040'; ctx.fillText(v,4,py(v)+3); });
+  // Quadrant dividers
+  const Px = px(2), Ay = py(12);
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(Px,pad.t); ctx.lineTo(Px,pad.t+gH); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(pad.l,Ay); ctx.lineTo(pad.l+gW,Ay); ctx.stroke();
+  ctx.setLineDash([]);
+  // Labels
+  ctx.font = '9px Orbitron,monospace';
+  ['Q1','Q2','Q3','Q4'].forEach((q,i) => {
+    ctx.fillStyle = qColor[q]+'44';
+    const x = i%2===0 ? pad.l+8 : Px+8;
+    const y = i<2 ? Ay-10 : py(2);
+    ctx.fillText(q, x, y);
+  });
+  ctx.fillStyle = '#2a5060'; ctx.font = '9px Share Tech Mono';
+  ctx.fillText('P_out →', W/2-20, pad.t+gH+30);
+  ctx.save(); ctx.translate(12,pad.t+gH/2); ctx.rotate(-Math.PI/2); ctx.fillText('A_out',0,0); ctx.restore();
+  // Points
+  noblePoints.forEach(pt => {
+    const x = px(pt.P), y = py(pt.A);
+    const col = qColor[pt.q];
+    const isAsN = pt.key==='N+As'||pt.key==='As+N';
+    const isHighlight = pt.known && (pt.key.includes('Nb')||pt.key.includes('Ag+Au')||pt.key.includes('Au+Ag'));
+    ctx.beginPath(); ctx.arc(x, y, isAsN?7:isHighlight?5:4, 0, Math.PI*2);
+    ctx.fillStyle = pt.known ? col : col.replace('#','rgba(').replace(/(..)(..)(..)/, (_,r,g,b)=>`${parseInt(r,16)},${parseInt(g,16)},${parseInt(b,16)},0.4)`);
+    if (!pt.known) ctx.fillStyle = 'transparent';
+    ctx.fill();
+    if (!pt.known) { ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.stroke(); }
+    if (isAsN) { ctx.strokeStyle='#ffffff'; ctx.lineWidth=2; ctx.stroke(); ctx.fillStyle='#ffffff'; ctx.font='8px Share Tech Mono'; ctx.fillText('AsN',x+8,y-6); }
+  });
+  canvas._pts = noblePoints.map(pt => ({...pt, cx:px(pt.P), cy:py(pt.A)}));
+}
+
+document.getElementById('map-canvas').addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+  const pts = this._pts||[];
+  let closest = null, minD = 20;
+  pts.forEach(pt => { const d = Math.hypot(pt.cx-mx, pt.cy-my); if (d<minD){minD=d;closest=pt;} });
+  const tip = document.getElementById('map-tooltip');
+  if (closest) {
+    const status = closest.known ? `<span style="color:var(--locked)">KNOWN ✓</span>` : `<span style="color:var(--noble)">PREDICTED 🎯</span>`;
+    tip.innerHTML = `<b style="color:var(--bright)">${closest.key}</b> ${status}<br>P_out=${closest.P.toFixed(4)} A_out=${closest.A.toFixed(2)} IM=${closest.IM.toFixed(3)} ${closest.q}<br><span style="color:#2a5060">${closest.known||'No stable bulk phase in literature'}</span>`;
+    tip.style.borderColor = qColor[closest.q];
+  }
+});
+
+document.getElementById('map-canvas').addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+  const pts = this._pts||[];
+  let closest = null, minD = 20;
+  pts.forEach(pt => { const d = Math.hypot(pt.cx-mx, pt.cy-my); if (d<minD){minD=d;closest=pt;} });
+  if (closest) {
+    const e1 = ALL.find(e=>e.id===closest.s1), e2 = ALL.find(e=>e.id===closest.s2);
+    if (e1&&e2) { pick(e1,'a'); pick(e2,'b'); showTab('collide'); doCollide(); }
+  }
+});
+
+function renderNobleList() {
+  const div = document.getElementById('noble-list-items');
+  const q2  = noblePoints.filter(p=>p.q==='Q2').sort((a,b)=>b.A-a.A);
+  q2.slice(0,10).forEach(pt => {
+    const row = document.createElement('div'); row.className = 'noble-item';
+    const cls = pt.known ? 'ni-known' : 'ni-pred';
+    const tag = pt.known ? '✓' : '🎯';
+    row.innerHTML = `<span class="ni-name">${pt.key}</span><span class="${cls}">${tag} A=${pt.A.toFixed(1)}</span>`;
+    div.appendChild(row);
+  });
+}
+
+// ── F_EXT ──────────────────────────────────────────────────────────────────────
+function buildFextSelect() {
+  const sel = document.getElementById('fext-el');
+  PERIODIC.filter(e => e.B > 0).forEach(e => {
+    const t = getTau(e);
+    const s = getStatus(e.B, e.P);
+    const sLabel = {n:'NOBLE', i:'IVA', l:'LOCKED', s:'SHATTER'}[s];
+    const o = document.createElement('option'); o.value = e.sym;
+    o.textContent = `${e.sym} — ${e.name} (B=${e.B} τ=${t.toFixed(3)} ${sLabel})`;
+    sel.appendChild(o);
+  });
+  sel.value = 'Fe';
+}
+
+function setPreset(db) { document.getElementById('fext-db').value = db; }
+
+function applyFext() {
+  const sym  = document.getElementById('fext-el').value;
+  const db   = parseFloat(document.getElementById('fext-db').value);
+  const el   = PERIODIC.find(e => e.sym === sym);
+  if (!el) { return; }
+  const t_before = el.B / el.P;
+  const B_after  = Math.max(0, el.B + db);
+  const t_after  = B_after / el.P;
+  const E        = Math.max(0, (t_after - TL)) * el.P**2;
+  const s_before = getStatus(el.B, el.P);
+  const s_after  = getStatus(B_after, el.P);
+  const sLabel   = {n:'NOBLE', i:'IVA PEAK', l:'LOCKED', s:'SHATTER'};
+  const col_b    = STATUS_COLOR[s_before];
+  const col_a    = STATUS_COLOR[s_after];
+  const arrow    = db > 0 ? '↑ torsion spike' : '↓ torsion drop';
+  document.getElementById('fext-result').innerHTML = `
+    <div class="fext-state-row"><span class="fext-lbl">Element</span><span class="fext-val">${el.sym} (${el.name})</span></div>
+    <div class="fext-state-row"><span class="fext-lbl">P</span><span class="fext-val">${el.P.toFixed(4)}</span></div>
+    <div class="fext-state-row"><span class="fext-lbl">B before</span><span class="fext-val">${el.B.toFixed(4)}</span></div>
+    <div class="fext-state-row"><span class="fext-lbl">B after</span><span class="fext-val">${B_after.toFixed(4)}</span></div>
+    <div class="fext-state-row"><span class="fext-lbl">τ before</span><span class="fext-val" style="color:${col_b}">${t_before.toFixed(4)} ${sLabel[s_before]}</span></div>
+    <div class="fext-state-row"><span class="fext-lbl">τ after</span><span class="fext-val" style="color:${col_a}">${t_after.toFixed(4)} ${sLabel[s_after]}</span></div>
+    <div class="fext-state-row"><span class="fext-lbl">ΔB</span><span class="fext-val" style="color:${db>0?'var(--shatter)':'var(--locked)'}">${db>0?'+':''}${db.toFixed(2)} ${arrow}</span></div>
+    <div class="fext-state-row"><span class="fext-lbl">TL</span><span class="fext-val" style="color:var(--warn)">0.1369 (ANCHOR/10)</span></div>
+    ${E>0?`<div class="fext-state-row"><span class="fext-lbl">Power</span><span class="fext-val" style="color:var(--warn)">${E.toFixed(4)} (shatter emission)</span></div>`:''}
+    <div style="margin-top:8px;font-size:9px;color:#2a5060">${sLabel[s_before]}→${sLabel[s_after]}${s_after==='n'?' · Zero torsion. Maximum potential.':s_after==='i'?' · IVA Peak. Sovereign drive corridor.':s_after==='s'?' · Energy released: '+E.toFixed(3)+' structural units.':' · Phase locked.'}</div>`;
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => { if (t.getAttribute('onclick').includes(`'${id}'`)) t.classList.add('active'); });
+  if (id === 'sweep') runSweep();
+  if (id === 'map')   renderMaterialsMap();
+}
+
+// ── NOBLE FORGE ENGINE ────────────────────────────────────────────────────────
+let forgeMode = false;
+
+const FORGE_RECIPES = [
+  {a:'N',  b:'Ga', k:3, name:'GaN',        mat:'Gallium Nitride',      gpa:6,    temp:null, q:'Q2', desc:'Blue LEDs · power electronics · 2014 Nobel Prize'},
+  {a:'N',  b:'As', k:3, name:'AsN',        mat:'Arsenic Nitride',      gpa:30,   temp:null, q:'Q2', desc:'PREDICTED 🎯 · no stable bulk phase · P_out > GaN · structural twin of SbN'},
+  {a:'N',  b:'Sb', k:3, name:'SbN',        mat:'Antimony Nitride',     gpa:30,   temp:null, q:'Q2', desc:'PREDICTED 🎯 · structural twin of AsN · P_out identical = 2.4088'},
+  {a:'O',  b:'Zn', k:2, name:'ZnO',        mat:'Zinc Oxide',           gpa:null, temp:1975, q:'Q2', desc:'Wide bandgap semiconductor · transparent conductors'},
+  {a:'O',  b:'Ni', k:2, name:'NiO',        mat:'Nickel Oxide',         gpa:null, temp:1955, q:'Q2', desc:'Antiferromagnet · batteries · spintronics · catalysis'},
+  {a:'N',  b:'Sc', k:3, name:'ScN',        mat:'Scandium Nitride',     gpa:null, temp:2650, q:'Q2', desc:'Hard ceramic semiconductor · thin films'},
+  {a:'N',  b:'Al', k:3, name:'AlN',        mat:'Aluminum Nitride',     gpa:null, temp:2200, q:'Q1', desc:'UV LEDs · thermal management · power electronics substrate'},
+  {a:'Ti', b:'C',  k:4, name:'TiC',        mat:'Titanium Carbide',     gpa:null, temp:1800, q:'Q3', desc:'Ultra-hard ceramic · cutting tools · armor'},
+  {a:'Si', b:'C',  k:4, name:'SiC',        mat:'Silicon Carbide',      gpa:null, temp:2730, q:'Q3', desc:'Power electronics · EV inverters · hardness 9.5 Mohs'},
+  {a:'C',  b:'C',  k:4, name:'Diamond',    mat:'Diamond',              gpa:null, temp:3550, q:'Q3', desc:'Hardest natural material · thermal conductor · optical windows'},
+  {a:'Ga', b:'As', k:3, name:'GaAs',       mat:'Gallium Arsenide',     gpa:null, temp:1238, q:'Q4', desc:'High-speed RF · solar cells · laser diodes · satellite electronics'},
+  {a:'Nb', b:'Nb', k:5, name:'Nb',         mat:'Niobium (self-Noble)', gpa:null, temp:2477, q:'Q3', desc:'Tc=9.3K · every MRI superconducting magnet · same-B Noble'},
+  {a:'Ag', b:'Au', k:1, name:'Electrum',   mat:'Electrum (Ag+Au)',     gpa:null, temp:null, q:'Q4', desc:'First money in human history (~600 BC) · same-B=1 Noble'},
+  {a:'Si', b:'N',  k:3, name:'γ-Si₃N₄',   mat:'Silicon Nitride γ',    gpa:24,   temp:1800, q:'Q3', desc:'k*=3.5 exact · 90min soak = bulk equilibration · 5nm CMOS spacer [9,9,3,10]'},
+  {a:'Fe', b:'O',  k:2, name:'Heme(k=2)',  mat:'Heme Fe-O (O₂ bound)', gpa:null, temp:37,  q:null, desc:'k=2: τ=0.973 O₂ bound SHATTER-active · k=3: Noble O₂ released [9,0,8,5]'},
+];
+
+function toggleForge() {
+  forgeMode = !forgeMode;
+  document.getElementById('forge-toggle').classList.toggle('on', forgeMode);
+  document.getElementById('forge-panel').style.display = forgeMode ? 'block' : 'none';
+  if (selA && selB) updateForgeInterp(fuse(selA, selB, parseFloat(document.getElementById('k-slider').value)));
+}
+
+function updateForgeInterp(r) {
+  if (!forgeMode) return;
+  const div   = document.getElementById('forge-interp');
+  const k     = parseFloat(document.getElementById('k-slider').value);
+  const maxK  = selA && selB ? Math.min(selA.B, selB.B) : 0;
+  const corridorW = (TL * r.P) / 2;
+  let cls, msg;
+  if (r.status === 'n') {
+    cls = 'complete';
+    msg = `✦ SYNTHESIS COMPLETE · ${selA.sym}+${selB.sym} → Noble · B_out=0 · τ=0 · NOHARM · product ready`
+        + ` · Corridor was ${maxK>0?(corridorW/maxK*100).toFixed(1):0}% of k range`;
+  } else if (r.status === 'i') {
+    cls = 'window';
+    msg = `★ IVA PEAK CORRIDOR · τ=${r.tau.toFixed(4)} = ${(r.tau/TL*100).toFixed(1)}% of TL`
+        + ` · sovereign drive zone · increase k by ${(maxK-k).toFixed(3)} to reach Noble synthesis`;
+  } else if (r.tau < TL) {
+    cls = 'window';
+    msg = `◈ SYNTHESIS WINDOW · τ=${r.tau.toFixed(4)} · locked approach corridor`
+        + ` · increase k by ${(maxK-k).toFixed(3)} to reach synthesis`
+        + ` · corridor width=${corridorW.toFixed(4)}`;
+  } else {
+    cls = 'exceeded';
+    msg = `⚡ PRESSURE PHASE · τ=${r.tau.toFixed(4)} · IM=${r.IM.toFixed(3)}`
+        + ` · synthesis window at k≥${(maxK-corridorW).toFixed(3)} · TL=0.1369`;
+  }
+  div.className = `forge-interp ${cls}`;
+  div.textContent = msg;
+}
+
+function buildRecipeGrid() {
+  const grid = document.getElementById('recipe-grid');
+  if (!grid) return;
+  FORGE_RECIPES.forEach(rec => {
+    const e1 = ALL.find(e=>e.id===rec.a), e2 = ALL.find(e=>e.id===rec.b);
+    if (!e1||!e2) return;
+    const r = fuse(e1, e2, rec.k);
+    const conditions = rec.gpa ? `${rec.gpa} GPa` : rec.temp ? `${rec.temp}°C` : 'standard';
+    const isPredicted = rec.desc.includes('PREDICTED');
+    const d = document.createElement('div');
+    d.className = 'recipe-chip';
+    const qcol = rec.q ? qColor[rec.q] : 'var(--text)';
+    d.style.borderColor = isPredicted ? 'rgba(170,136,255,.3)' : 'rgba(0,255,204,.15)';
+    d.innerHTML = `<div class="recipe-name" style="color:${isPredicted?'var(--noble)':'var(--locked)'}">
+        ${rec.name}${rec.q?` <span class="recipe-q" style="background:${qcol}22;color:${qcol}">${rec.q}</span>`:''}
+      </div>
+      <div class="recipe-detail">${rec.mat} · k=${rec.k} · ${conditions}</div>
+      <div class="recipe-detail">${rec.desc}</div>`;
+    d.addEventListener('click', () => {
+      pick(e1,'a'); pick(e2,'b');
+      const sl = document.getElementById('k-slider');
+      sl.max = Math.max(rec.k, 0.0001).toFixed(6);
+      sl.value = rec.k.toFixed(6);
+      document.getElementById('k-val').textContent = rec.k.toFixed(3);
+      showTab('collide'); doCollide();
+    });
+    grid.appendChild(d);
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildLists();
+buildPTable();
+buildRecipeGrid();
+buildQuick();
+buildSweepSelects();
+buildCascadeSelects();
+renderCascadeSteps();
+buildMaterialsMap();
+buildFextSelect();
+</script>
+</body>
+</html>
