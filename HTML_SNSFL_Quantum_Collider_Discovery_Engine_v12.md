@@ -17,7 +17,7 @@
 
 **GAM Collider** (uuia.app/gamcollider) — the original 2-body PNBA fusion engine. Two elements enter. A compound exits. The engine runs the PNBA fusion theorem: harmonic mean P, sum N, bond cancellation via k, max A. Output: compound state — Noble, Locked, or Shatter.
 
-**Quantum Collider** (uuia.app/quantumcollider) — the evolution. Four identity masses instead of two. Four axis beams fire simultaneously at a single identity point. Not chemistry. Identity physics at the base layer. The substrate doesn't matter — atom, particle, ERE, psychological state, cosmological state, AI identity. If it has a PNBA coordinate, it can be fired.
+**Quantum Collider** (uuia.app/discovery) — the evolution. Four identity masses instead of two. Four axis beams fire simultaneously at a single identity point. Not chemistry. Identity physics at the base layer. The substrate doesn't matter — atom, particle, ERE, psychological state, cosmological state, AI identity. If it has a PNBA coordinate, it can be fired.
 
 The relationship: GAM Collider is CERN. Quantum Collider is CERN on steroids — you can slam four identity masses instead of two, and the engine reads what emerges from all four beams simultaneously.
 
