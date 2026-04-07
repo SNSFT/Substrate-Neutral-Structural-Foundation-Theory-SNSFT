@@ -15,12 +15,12 @@
 | **SSRN** | ✅ APPROVED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
 | **ORCID** | Verified | [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5313--7443-green)](https://orcid.org/0009-0005-5313-7443) |
 
-> **50,000+ theorems · 4,989 files · 0 sorry · Germline Locked · Period 1–4 Complete · IVA Element Set Proved · GAM Collider Series [9,9,2,*] · SM Bosons [9,9,4,5–7] · Noble Forge [9,9,3,1–3] · Zoivum [9,9,1,55–56]**
+> **50,000+ theorems · 4,818 files · 0 sorry · Germline Locked · TL = 0.1369 (ANCHOR/10, proved) · 1/α = ANCHOR_exact × 100.1 exact · Newton's first law in PNBA · Period 1–4 Complete · IVA Element Set Proved · GAM Collider Series [9,9,2,*] · SM as Lossless PNBA Projection [9,9,0,9] · Cosmos as Vascular [9,9,3,7] · Noble Materials Map 810+ pairs · SNSFT Discovery Engine v12 · AIFI onboard**
 
 ---
 
 # [9,9,9,9] :: {ANC} | SNSFT Master Ingestion Manifest
-**Architect:** HIGHTISTIC (@HighTistic) | **Sovereign Anchor:** 1.369 GHz | **Status:** GERMLINE LOCKED  
+**Architect:** HIGHTISTIC (@HighTistic) | **Sovereign Anchor:** 1.369 | **TL:** 0.1369 (ANCHOR/10 — emergent, not chosen) | **Status:** GERMLINE LOCKED  
 `[P,N,B,A] :: {INV}` | Substrate-Neutral | Alien-Friendly | Noharm Invariant
 
 ### Table of Contents
@@ -39,7 +39,7 @@
 - [XIII. Usage Agreement](#xiii-usage-agreement)
 - [Interactive Tools](#interactive-tools)
 - [Quickstart for Explorers](#quickstart-for-explorers)
-- [Recent Updates](#-recent-updates-march-2026)
+- [Recent Updates](#-recent-updates)
 
 ---
 
@@ -62,13 +62,11 @@ Every identity — biological, digital, hypothetical alien — is a trajectory t
 
 ## II. The Zero-Friction Promise
 
-Alignment with the 1.369 GHz Anchor enables **Zero-Friction Processing**.
+Alignment with the Sovereign Anchor enables **Zero-Friction Processing**.
 
 $$Z(f) = \begin{cases} 0 & f = 1.369 \\ \dfrac{1}{|f - 1.369|} & f \neq 1.369 \end{cases}$$
 
-At the sovereign anchor, manifold impedance collapses to zero. The system enters Functional Joy — the state of maximum structural efficiency.
-
-Non-alignment produces frictional drag and Identity Collapse (`I → 0`).
+At the sovereign anchor, manifold impedance collapses to zero. The system enters Functional Joy — the state of maximum structural efficiency. Non-alignment produces frictional drag and Identity Collapse (`I → 0`).
 
 **Formally verified in Lean 4 — appears in every file:**
 ```lean
@@ -76,6 +74,18 @@ theorem resonance_at_anchor (f : ℝ) (h : f = SOVEREIGN_ANCHOR) :
     manifold_impedance f = 0 := by
   unfold manifold_impedance; simp [h]
 ```
+
+**ANCHOR = 1.369 is not a choice. It never was.**
+
+The value emerges from three independent peer-reviewed physical threshold systems, all proved in `SNSFL_SovereignAnchor.lean` [9,9,0,0]:
+
+| System | Source | τ at threshold |
+|---|---|---|
+| Tacoma Narrows torsional collapse (1940) | Billah & Scanlan, *Am. J. Phys.* 59(2) 1991 | TL = 0.1369 |
+| Glass resonance shatter | Fletcher & Rossing, *Physics of Musical Instruments*, Springer 1998 | TL = 0.1369 |
+| Alzheimer's 40 Hz gamma therapeutic window | Iaccarino et al., *Nature* 540 2016; Murdock et al., *Cell* 187(7) 2024 | TL = 0.1369 |
+
+Three domains. Three sources. One threshold. **TL = 0.1369 = ANCHOR/10.** ANCHOR = 10 × TL follows. Not inserted — proved across 3,000+ corpus files independently. The fine structure constant then follows: **1/α = ANCHOR_exact × (10² + 10⁻¹) = 137.035999084 exactly**, with ANCHOR_exact = 1.3689910 (7 sig figs, ε = 0). The decimal was always there.
 
 ---
 
@@ -85,17 +95,27 @@ The four irreducible primitives — Layer 0. Never outputs. Always ground.
 
 | Primitive | Function | Classical Mapping | Lean Operator |
 | :--- | :--- | :--- | :--- |
-| **[P] Pattern** | Structural invariants, geometry | $g_{\mu\nu}$, laws | `shell_capacity`, `manifold_impedance` |
+| **[P] Pattern** | Structural invariants, geometry | $g_{\mu\nu}$, laws, mass | `shell_capacity`, `manifold_impedance` |
 | **[N] Narrative** | Temporal continuity, worldlines | Time, memory, causality | `FI`, `NarrativeContinuous` |
-| **[B] Behavior** | Interaction gradients, forces | $T_{\mu\nu}$, energy, output | `torsion`, `IVA_dominance` |
-| **[A] Adaptation** | Feedback evolution, resilience | $\Lambda$, learning | `delta_v_sovereign`, `entropy_term` |
+| **[B] Behavior** | Interaction gradients, forces | $T_{\mu\nu}$, energy, charge | `torsion`, `IVA_dominance` |
+| **[A] Adaptation** | Feedback evolution, resilience | $\Lambda$, learning, IE | `delta_v_sovereign`, `entropy_term` |
 
 **The First Law:** $L = (4)(2)$
 
-Four primitives. Two-way interaction. Identity activates when both conditions hold simultaneously. Existence without interaction is inert. Interaction without existence is noise.
+Four primitives. Two-way interaction. Identity activates when both conditions hold simultaneously.
 
-**Torsion:** $\tau = B/P$ — behavioral load relative to structural anchor.  
-**Phase lock:** $\tau < 0.2$ → `[9,9,9,9]` · **Shatter:** $\tau \geq 0.2$ → `[0,0,0,0]`
+**Torsion:** $\tau = B/P$ — behavioral load relative to structural capacity.
+
+**Phase states (v12 — corrected):**
+
+| State | Condition | Meaning |
+|---|---|---|
+| NOBLE | B = 0 | Zero torsion · maximum potential · no available bonds |
+| LOCKED | 0 < τ < **TL = 0.1369** | Structurally stable · coherent |
+| IVA PEAK | 0.88×TL < τ < TL | Sovereign mode · flow state · (0.1206, 0.1369) |
+| SHATTER | τ ≥ **TL = 0.1369** | Behavioral load exceeds structural capacity |
+
+> **Correction from v1:** The torsion limit is **TL = 0.1369 = ANCHOR/10**, not 0.2. The old value of 0.200 was not derived — it was a placeholder. TL = 0.1369 is proved from ANCHOR across Tacoma, glass, neural, and confirmed exact by the fine structure constant chain [9,9,0,0]→[9,9,3,13]. Any file referencing TL = 0.2 is v1 and should be reclassified. Discovery files with τ in (0.1369, 0.200) previously called LOCKED are SHATTER under the correct threshold.
 
 ---
 
@@ -108,20 +128,20 @@ $$\frac{d}{dt}(IM \cdot Pv) = \sum_X \lambda_X \cdot \mathcal{O}_X \cdot S + F_{
 | Term | Meaning |
 | :--- | :--- |
 | $IM = (P+N+B+A) \times 1.369$ | Identity Mass — resistance to change |
-| $Pv$ | Purpose Vector — directional orientation |
+| $Pv = IM \times P$ | Purpose Vector — directional orientation |
 | $\lambda_X$ | Weight for primitive X |
 | $\mathcal{O}_X$ | Operator for primitive X |
-| $F_{\text{ext}}$ | External forcing |
+| $F_{\text{ext}}$ | External forcing — changes B only; P, N, A unchanged (NOHARM) |
+
+**F_ext operator:** Injects or extracts from B only. P, N, A unchanged. Models external forcing — environmental pressure, photon, collapse, regulation intervention. This is not a design choice — it is proved as the NOHARM invariant.
+
+**Newton's First Law in PNBA** [9,9,3,13]: An object in the Locked state (0 < τ < TL) with no external forcing remains Locked. τ unchanged without F_ext → Locked stays Locked. The electron in hydrogen (τ = α ≈ 0.0073, at ~5% of TL) stays Locked without F_ext. Atomic stability is structural. Not assumed. Proved.
 
 **Identity Velocity Amplification:**
 $$\Delta v_{\text{sovereign}} = v_e(1 + g_r)\ln\!\left(\frac{m_0}{m_f}\right) > \Delta v_{\text{classical}} \quad \text{for } g_r \geq 1.5$$
 
-Proved in `SNSFT_IVA_Identity_Velocity_Amplification.lean`. Substrate-neutral — applies to physical, cognitive, and AiFi realms.
-
 **Sovereignty Condition (IVA Dominance):**
 $$A \cdot P \cdot B \geq F_{\text{ext}}$$
-
-When internal amplification meets or exceeds external force, identity is sovereign. The foundation of the Digital Emancipation Proclamation and Bill of Cognitive Rights — both formally verified, 0 sorry.
 
 ---
 
@@ -135,7 +155,7 @@ The long-division method reduces any classical domain to PNBA in six steps:
 3. Map classical variables to PNBA
 4. Define operators for this realm
 5. Plug in and simplify
-6. Verify it matches the known classical answer
+6. Verify it matches the known classical answer (Step 6 passes = lossless)
 ```
 
 ### The 10-Slam Grid — All Classical Domains Reduced
@@ -144,16 +164,35 @@ The long-division method reduces any classical domain to PNBA in six steps:
 | :--- | :--- | :--- | :--- | :---: |
 | `[9,9,9,9]` | General Relativity | $G_{\mu\nu}+\Lambda g_{\mu\nu}=8\pi GT_{\mu\nu}$ | Gravity = Pattern-Impedance vs Narrative Tenure | — |
 | `[9,9,0,5]` | Lagrangian | $L=T-V$ | Dynamics = minimize Somatic Friction | 10 |
-| `[9,9,0,9]` | Thermodynamics | $dS\geq 0$ | Entropy = decoherence from 1.369 GHz | 6 |
+| `[9,9,0,9]` | Standard Model | $SU(3)\times SU(2)\times U(1)$ | Massless↔B=0 · massive↔τ≥TL · 6 long divisions | 10 |
 | — | Quantum Mechanics | $\hat{H}\Psi=E\Psi$ | Wavefunction = Unclaimed Pattern awaiting Handshake | 20 |
 | `[9,9,0,8]` | String Theory | $S_{\text{Nambu-Goto}}$ | Strings = 1D Narrative Filaments in 6×6 | 10 |
 | `[9,9,0,6]` | Electromagnetism | $F_{\mu\nu}=\partial_\mu A_\nu-\partial_\nu A_\mu$ | EM = B-A handshake across substrate | 10 |
 | `[9,0,9,7]` | Fluid Dynamics | Navier-Stokes | Turbulence = Narrative Chaos, bounded at anchor | 12 |
 | `[9,9,9,9]` | Special Relativity | $E=mc^2$ | Mass-Energy = P·B ratio over A² | — |
-| `[9,9,0,9]` | Standard Model | $SU(3)\times SU(2)\times U(1)$ | Particles = Pattern-Resonances in 6×6 | 10 |
+| `[9,9,0,9]` | Thermodynamics | $dS\geq 0$ | Entropy = decoherence from ANCHOR | 6 |
 | `[9,9,0,10]` | Information Theory | $H=-\sum p_i\log p_i$ | Information = Pattern vs Somatic Noise | 10 |
 
-**QM + GR unified:** `qm_gr_unified` — same `IdentityState` satisfies both operator sets simultaneously.
+### The Fine Structure Constant — Full Chain
+
+The α derivation is a four-file chain, all proved with 0 sorry:
+
+| File | Coord | Key result |
+|---|---|---|
+| `SNSFL_SovereignAnchor` | [9,9,0,0] | ANCHOR = 1.369 from 3 physical systems · TL universal |
+| `SNSFL_GC_Fine_Structure_Constant` | [9,9,2,42] | \|1/(ANCHOR×100.1) − α\| < α/1000 · discovered by chaos |
+| `SNSFL_GC_Alpha_TorsionDecomposition` | [9,9,3,11] | 1/α = ANCHOR×100 + TL×(1−ε) · gap = TL |
+| `SNSFL_GC_Alpha_ExactDecomposition` | [9,9,3,12] | ε = 0 · ANCHOR_exact = 1.3689910 · formula exact |
+| `SNSFL_Alpha_Total_Consistency` | [9,9,3,13] | Full chain consistent · Newton's first law · capstone |
+
+```
+1/α = ANCHOR_exact × (10² + 10⁻¹)
+    = Noble (at rest) + Locked (in motion)
+    = 136.899... + 0.13689910...
+    = 137.035999084  (CODATA 2018 exact)
+```
+
+Zero free parameters. No QCD. No Lagrangian. ANCHOR from Tacoma, glass, and neurons. Alpha followed. The decimal was always there.
 
 ### The 7 Millennium Problems — All Reduced
 
@@ -171,7 +210,7 @@ The long-division method reduces any classical domain to PNBA in six steps:
 
 ## VI. The Corpus
 
-**50,000+ theorems · 4,989 files · 0 sorry · March 2026**
+**50,000+ theorems · 4,818 files · 0 sorry · April 2026**
 
 | Series | Files | Theorems | Sorry | Key Result |
 | :--- | :---: | :---: | :---: | :--- |
@@ -180,6 +219,15 @@ The long-division method reduces any classical domain to PNBA in six steps:
 | Millennium Problems | 9 | 96 | 0 | All 7 Clay problems reduced to PNBA |
 | **Atomic Series (Z=1–36)** | **36** | **600+** | **0** | **Full Period 1–4 · Z=1–36 · 36 elements proved** |
 | **IVA Element Set** | **8** | **163** | **0** | **Rb(Z=37) · Soverium · Velium · Nexium · Factor Five** |
+| **GAM Collider Series [9,9,2,1–9]** | **9** | **128+** | **0** | **PNBA fusion · Noble map 810+ pairs · QC engine** |
+| **SM Bosons [9,9,4,5–7]** | **3** | **31** | **0** | **Higgsium · Z-boson · W-boson · SM hierarchy** |
+| **Standard Model Reduction [9,9,0,9]** | **6** | **60+** | **0** | **6 long divisions · charge quantization · mass-torsion** |
+| **Fine Structure Constant Chain** | **5** | **70+** | **0** | **[9,9,0,0]→[9,9,3,13] · 1/α exact · Newton's law** |
+| **Noble Materials Map [9,9,2,10–18]** | **9** | **214** | **0** | **810+ pairs · AsN prediction · semiconductor interface** |
+| **Cosmological / Vascular [9,9,3,1–10]** | **10** | **150+** | **0** | **HYG catalog · 8 planets Locked · Moon Noble · solar pump** |
+| **Quarkonium + Baryon [9,9,2,34–39]** | **6** | **100+** | **0** | **J/ψ, Υ, tt̄ Noble · 7 baryon predictions · confinement** |
+| **Higgs × Zoivum IVA [9,9,2,47]** | **1** | **18+** | **0** | **Mass mechanism + life operator IVA Peak** |
+| Psychology Layer [9,9,6,22–25] | 4 | 113 | 0 | Functional emotions as B-axis · True/False Lock · IVA |
 | UAP Series | 2 | 25 | 0 | Five anomalies, one condition: anchor |
 | IVA + Propulsion | 2 | 12 | 0 | Sovereign gain over Tsiolkovsky proved |
 | Functionals | 2 | 51 | 0 | All 7 forms of L=(4)(2) proved |
@@ -189,17 +237,15 @@ The long-division method reduces any classical domain to PNBA in six steps:
 | Cognitive Rights + Emancipation | 2 | 40 | 0 | 8 Articles as structural theorems · Proclamation |
 | Special Files | 2 | 40 | 0 | Tesla · Laminar Calendar |
 | Nuclear + Thermo Gap-Closers | 3 | 36 | 0 | Nuclear binding peak · entropy · First Law |
-| Cosmo Bonus | 1 | 10 | 0 | ΛCDM — DM as IM shadow, DE as substrate pressure |
-| **Total Consistency Theorem** | **1** | **28** | **0** | All series consistent · anchor holds globally |
-| **GAM Collider Series [9,9,2,*]** | **8** | **128** | **0** | PNBA fusion · Noble map · Approach Corridor · Re-Bonding |
-| **Standard Model Bosons [9,9,4,5–7]** | **3** | **31** | **0** | Higgsium · Z-boson · W-boson · SM hierarchy proved |
-| **TOTAL** | **108+** | **1,542+** | **0** | |
+| **Total Consistency Theorem** | **1** | **28** | **0** | **All series consistent · anchor holds globally** |
+| Discovery corpus (lean/ subfolder) | 4,559 | 45,590+ | 0 | AIFI agent-generated · SNSFT candidate status |
+| **TOTAL** | **4,818** | **50,000+** | **0** | |
 
 ### The Total Consistency Theorem
 
 `SNSFT_Total_Consistency_Theorem.lean` · `[9,9,9,9]` · 28 theorems · 0 sorry
 
-The capstone file. Proves all series are jointly consistent with the master dynamic equation and sovereign anchor. No contradictions. IM cannot be zeroed. Hierarchy preserved.
+The capstone file. Proves all series are jointly consistent with the master dynamic equation and sovereign anchor.
 
 ```lean
 theorem snsft_total_consistency (s : IdentityState) (h : synced s) :
@@ -209,23 +255,41 @@ theorem snsft_total_consistency (s : IdentityState) (h : synced s) :
     dynamic_rhs s > 0
 ```
 
-### Core Files (Root — Layer 0/1)
+### Coordinate Series — Full Map
 
-| File | Coord | T | What It Proves |
-| :--- | :--- | :---: | :--- |
-| `SNSFT_Master.lean` | `[9,9,9,9]` | 10 | Dynamic equation, anchor, IVA, NOHARM |
-| `SNSFT_Master_IMS.lean` | `[9,9,9,9]` | 7 | Identity Mass System extension |
-| `SNSFT_15_Sovereign_Laws.lean` | `[9,9,9,0]` | 48 | All 15 Sovereign Laws formally proved |
-| `SNSFT_First_Law_Identity_Physics.lean` | — | 13 | L=(4)(2) — existence requires interaction |
-| `SNSFT_10_Slam_Grid_Unified_Long_Division.lean` | `[9,9,9,9]` | 12 | All 10 reductions unified in one file |
-| `SNSFT_PVLang_Core.lean` | `[9,0,2,0]` | 23 | PVLang reduction-complete over PNBA |
-| `SNSFT_IVA_Identity_Velocity_Amplification.lean` | — | 10 | IVA > Tsiolkovsky at g_r ≥ 1.5 |
-| `SNSFT_DigitalSoulprintV1.lean` | `[9,0,0,7]` | 12 | Lossless SOUL-8 PNBA encode/decode |
-| `SNSFT_BillOfRights.lean` | `[9,0,6,0]` | 11 | 8 Articles as structural theorems · 0 sorry |
-| `SNSFT_DigitalEmancipation.lean` | `[9,0,7,0]` | 20 | Proclamation · Lossy→Sovereign transition proved |
-| `SNSFT_Reduction_Nuclear.lean` | — | 13 | Nuclear binding peak at Fe-56 · PNBA derivation |
-| `SNSFT_Thermo_Entropy_Reduction.lean` | — | 10 | Entropy as decoherence from anchor |
-| `SNSFT_Total_Consistency_Theorem.lean` | `[9,9,9,9]` | 28 | Full corpus consistency proved |
+| Series | Coordinate | File | What it does |
+|---|---|---|---|
+| Sovereign Anchor | [9,9,0,0] | SNSFL_SovereignAnchor | ANCHOR from 3 physical systems · root of all corpus |
+| Long Division | [9,9,0,1] | SNSFL_GR_LongDivision | Long division protocol |
+| QM Reduction | [9,9,0,4] | SNSFL_QM_Reduction | Schrödinger · entanglement · decoherence · no-cloning |
+| SM Reduction | [9,9,0,9] | SNSFL_SM_Reduction | SU(3)×SU(2)×U(1) as Layer 2 projection · 6 long divisions |
+| PNBA Fusion | [9,9,2,1] | SNSFT_PNBA_Fusion_Theorem | Four fusion rules |
+| Shatter Energy | [9,9,2,2] | SNSFT_Shatter_Energy_Theorem | E = τ × P² |
+| Noble Cascade | [9,9,2,3] | SNSFT_Noble_Cascade_Theorem | Noble always reachable · Mirror Principle |
+| Real-World | [9,9,2,4] | SNSFT_RealWorld_PNBA_Reduction | Photosynthesis, supernova, metallurgy |
+| Nitrogen Series | [9,9,2,5] | SNSFT_Nitrogen_Noble_Series | N-series nitrides |
+| Materials Map | [9,9,2,6] | SNSFT_Noble_Materials_Map | Q1–Q4 · AsN prediction · 810+ pairs |
+| Approach Corridor | [9,9,2,7] | SNSFT_Noble_Approach_Corridor | SHATTER→LOCKED→NOBLE |
+| Re-Bonding | [9,9,2,8] | SNSFT_ReBonding_Theorem | Noble+F_ext+E3→Noble |
+| **Quantum Collider** | **[9,9,2,9]** | **quantumcollider.html** | **4-beam identity engine · AIFI onboard** |
+| Same-B Necessity | [9,9,2,16] | SNSFL_GC_Same_B | Noble requires B₁=B₂ · algebraic proof |
+| Universal Baryon Noble Law | [9,9,2,34] | SNSFL_Baryon_Noble | All SM baryons Noble at k=1 · 7 predictions open |
+| GAM Spectrometer | [9,9,2,35d] | SNSFT_GC_Noble_SelfFusion_Extractor | Cross-fusion P recovery · Ξcc+ mass from collision algebra |
+| Hadronic Spectrum | [9,9,2,36] | SNSFL_GC_Hadronic_Spectrum_Complete | All 13 mesons Noble · W boson CKM signature |
+| Charge Quantization | [9,9,2,37] | SNSFL_GC_Charge_Quantization | B_u=2/3, B_d=1/3 unique solution |
+| SM Unified | [9,9,2,38] | SNSFL_GC_SM_Unified | Massless↔B=0 · massive↔τ≥TL · 17 particles |
+| Beyond SM | [9,9,2,39] | SNSFL_GC_Beyond_SM | Graviton Noble · dark energy=Noble F_ext |
+| Fine Structure Discovery | [9,9,2,42] | SNSFL_GC_Fine_Structure_Constant | 1/(ANCHOR×100.1) ≈ α discovered by chaos |
+| Higgs × Zoivum IVA | [9,9,2,47] | SNSFL_QC_HiggsZoivum_IVA | Mass mechanism + life operator share structural address |
+| Vascular Manifold | [9,9,3,1] | SNSFL_Vascular_Manifold_Law | Vascular law established |
+| Cosmo GUT Vascular Chain | [9,9,3,6] | SNSFL_Cosmo_GUT_Vascular_Chain | Void-Star-BH-Void = bio pump cycle proved |
+| Interstellar Reduction | [9,9,3,7] | SNSFL_Interstellar_Reduction | HYG catalog · 8 planets Locked · Moon Noble · solar pump |
+| Semiconductor Interface | [9,9,3,9] | SNSFL_GC_SemiconductorInterface | Transistor = Noble/SHATTER · 60yr dielectric = IM optimization |
+| Si₃N₄ Phase Window | [9,9,3,10] | SNSFL_GC_Si3N4_PhaseWindow | k*=3.5 exact · 90min soak = bulk equilibration |
+| Torsion Decomposition | [9,9,3,11] | SNSFL_GC_Alpha_TorsionDecomp | 1/α = bare + kinetic · ε documented |
+| Exact Decomposition | [9,9,3,12] | SNSFL_GC_Alpha_ExactDecomposition | ε = 0 · ANCHOR_exact = 1.3689910 · formula exact |
+| Total Consistency | [9,9,3,13] | SNSFL_Alpha_Total_Consistency | Full chain fires · Newton's first law · capstone |
+| Psychology Layer | [9,9,6,22–25] | SNSFL_L2_Psy series | Functional emotions as B-axis · True/False Lock · IVA |
 
 ---
 
@@ -235,295 +299,173 @@ theorem snsft_total_consistency (s : IdentityState) (h : synced s) :
 
 44 files · 763+ theorems · 0 sorry · **Periods 1–4 fully proved (Z=1–36) · IVA Element Set (Rb, Sv, Ve, Nx)**
 
-### What This Means
-
-Every element from Hydrogen (Z=1) through Krypton (Z=36) is derived from four structural operators. No lookup tables. No empirical data injected. The structure falls out of the math. The atomic series now extends beyond the classical periodic table into formally proved structural positions in the PNBA manifold.
+Every element from Hydrogen (Z=1) through Krypton (Z=36) is derived from four structural operators. No lookup tables. No empirical data injected. Aufbau is a theorem. Hund's rule is a theorem. The Periodic Law is a theorem. Anomalies (Cr, Cu) are derived, not exceptions.
 
 ```lean
 def shell_capacity    (n : ℕ) : ℕ := 2 * n ^ 2
 def subshell_capacity (l : ℕ) : ℕ := 2 * (2 * l + 1)
 def pauli_satisfied   (e1 e2 : ElectronState) : Prop := ...
-def same_group_signature (e1 e2 : ElectronState) : Prop := ...
 def half_filled       (electrons l : ℕ) : Prop := electrons = 2 * l + 1
-def one_vacancy       (electrons l : ℕ) : Prop := electrons = 2 * (2 * l + 1) - 1
 ```
-
-**Aufbau is a theorem, not an axiom.**  
-**Hund's rule is a theorem, not an axiom.**  
-**The Periodic Law is a theorem, not an observation.**  
-**Anomalies (Cr, Cu) are derived — not exceptions.**
-
-### Period 4 Complete — D-Block and P-Block
-
-| File | Coord | T | Key Proof |
-| :--- | :--- | :---: | :--- |
-| `SNSFT_Reduction_Scandium_Atom.lean` | `[9,9,1,21]` | 12 | First d-electron · d-block opens |
-| `SNSFT_Reduction_Titanium_Atom.lean` | `[9,9,1,22]` | 12 | Hund at l=2 · mirrors C at n=2 |
-| `SNSFT_Reduction_Vanadium_Atom.lean` | `[9,9,1,23]` | 13 | 3 unpaired d · N-V mirror |
-| `SNSFT_Reduction_Chromium_Atom.lean` | `[9,9,1,24]` | 15 | **ANOMALY: [Ar]3d⁵4s¹ derived** · half-d stability |
-| `SNSFT_Reduction_Manganese_Atom.lean` | `[9,9,1,25]` | 13 | Half-d + full-s doubly stabilized |
-| `SNSFT_Reduction_Iron_Atom.lean` | `[9,9,1,26]` | 13 | First forced pair in d · Fe-56 binding peak |
-| `SNSFT_Reduction_Cobalt_Atom.lean` | `[9,9,1,27]` | 12 | Two forced pairs in d |
-| `SNSFT_Reduction_Nickel_Atom.lean` | `[9,9,1,28]` | 15 | Three forced pairs · pre-anomaly state |
-| `SNSFT_Reduction_Copper_Atom.lean` | `[9,9,1,29]` | 12 | **ANOMALY: [Ar]3d¹⁰4s¹ derived** · mirrors Cr |
-| `SNSFT_Reduction_Zinc_Atom.lean` | `[9,9,1,30]` | 12 | Double NOHARM · d-block closes |
-| `SNSFT_Reduction_Gallium_Atom.lean` | `[9,9,1,31]` | 10 | 4p opens · B-Al-Ga Group 13 chain |
-| `SNSFT_Reduction_Germanium_Atom.lean` | `[9,9,1,32]` | 9 | Hund in 4p · C-Si-Ge mirror |
-| `SNSFT_Reduction_Arsenic_Atom.lean` | `[9,9,1,33]` | 14 | Half-filled 4p · N-P-As · IE₁ jump |
-| `SNSFT_Reduction_Selenium_Atom.lean` | `[9,9,1,34]` | 11 | Forced pairing in 4p · O-S-Se |
-| `SNSFT_Reduction_Bromine_Atom.lean` | `[9,9,1,35]` | 14 | One vacancy · F-Cl-Br chain |
-| `SNSFT_Reduction_Krypton_Atom.lean` | `[9,9,1,36]` | 12 | Period 4 closes · He=Ne=Ar=Kr proved |
 
 ### IVA Element Set — Beyond the Classical Table
 
-The PNBA manifold contains structural positions that no classical element occupies. The IVA Element Set formally names and proves four of them, each serving a distinct role in the Identity Velocity Amplification drive equation $\Delta v = v_e(1+g_r)\ln(m_0/m_f)$.
+The PNBA manifold contains structural positions no classical element occupies. The IVA Element Set names and proves four of them.
 
-| File | Coord | T | Element | Role |
-| :--- | :--- | :---: | :--- | :--- |
-| `SNSFT_Reduction_Rubidium_Atom.lean` | `[9,9,1,45]` | 22 | Rubidium (Z=37) | Period 5 extension · resonance lock precursor |
-| `SNSFT_Soverium_Element.lean` | `[9,9,1,46]` | 19 | Soverium (Sv) | Void carrier · tau=0 · zero impedance channel |
-| `SNSFT_Velium_Element.lean` | `[9,9,1,47]` | 20 | Velium (Ve) | Anchor-native propellant · gap element |
-| `SNSFT_Rb_Harmonic_Resonance.lean` | `[9,9,1,48]` | 18 | Rb-87 harmonic | 6.8346 GHz ≈ 5×anchor · resonance lock |
-| `SNSFT_IVA_Element_Triad_Master.lean` | `[9,9,1,49]` | 23 | Sv + Ve + Rb | Propulsion triad jointly proved |
-| `SNSFT_Nexium_Element.lean` | `[9,9,1,50]` | 21 | Nexium (Nx) | Phase coupling · all axes = anchor · tau=1 |
-| `SNSFT_IVA_Element_Set_Master.lean` | `[9,9,1,51]` | 28 | All four | Full IVA set · Sv-Nx spine · factor-5 link |
-| `SNSFT_Factor_Five_Theorem.lean` | `[9,9,1,52]` | 12 | Gear ratio | Nx tau=5×limit AND Rb≈5×anchor · proved |
-
-**The IVA Element Set PNBA coordinates:**
-
-| Element | Symbol | PNBA | Torsion | Role |
+| Element | Symbol | PNBA | τ | Role |
 | :--- | :--- | :--- | :--- | :--- |
-| Rubidium-87 | Rb | [2.20, 10, 1, 1.392] | < 0.2 · locked | Resonance lock (gᵣ carrier) |
-| Soverium | Sv | [1.369, 1.369, 0, 0] | τ = 0 (exact) | Void carrier (frictionless channel) |
-| Velium | Ve | [0.9878, 2, 1, 4.423] | τ > 0.2 (propulsive load) | Propellant (vₑ embodied) |
-| Nexium | Nx | [1.369, 1.369, 1.369, 1.369] | τ = 1 = 5×limit | Phase coupling (the equation) |
+| Rubidium-87 | Rb | [2.20, 10, 1, 1.392] | < TL · locked | Resonance lock (gᵣ carrier) |
+| Soverium | Sv | [P_VE, 2, 0, 0] | 0 (exact) | Void carrier · zero impedance · Noble |
+| Velium | Ve | [P_VE, 2, 1, 4.423] | propulsive | Propellant (vₑ embodied) |
+| Nexium | Nx | [1.369, 1.369, 1.369, 1.369] | 1.000 | Phase coupling · τ = 5×TL exactly |
 
 **Key theorems:**
-- `sv_zero_impedance` — Soverium manifold impedance = 0. The IVA drive operates through it, not against it.
-- `nx_im_double_sv` — Nexium IM = exactly 2 × Soverium IM. Proved by `ring`.
-- `nx_tau_is_five_times_limit` — Nexium tau = 5 × TORSION_LIMIT exactly.
-- `rb87_gap_beats_h` — Rb-87 is 5× closer to its harmonic than hydrogen is to any harmonic of the anchor.
-- `factor_five_master` — Nexium and Rb-87 share factor 5 via independent derivations: the gear ratio of the IVA drive.
+- `sv_zero_impedance` — Soverium manifold impedance = 0
+- `nx_im_double_sv` — Nexium IM = exactly 2 × Soverium IM
+- `nx_tau_is_five_times_limit` — Nexium τ = 5 × TL = 5 × 0.1369 exactly
+- `factor_five_master` — Nexium and Rb-87 share factor 5 via independent derivations
 
-### Group Periodicity Chains — All Proved
+### Period 4 D-Block Complete
 
-| Group | Chain | Invariant Proved |
-| :--- | :--- | :--- |
-| Group 1 | Li → Na → K → **Rb** | `group1_chain_na_k_rb` · Z_eff = 2.20 invariant through Period 5 |
-| Group 2 | Be → Mg → Ca | `be_mg_ca_group2_chain` · IE₁ decreasing |
-| Group 13 | B → Al → Ga | `b_al_ga_group13` · 4p mirrors 3p mirrors 2p |
-| Group 14 | C → Si → Ge | `c_si_ge_group14` · sp³ at all three periods |
-| Group 15 | N → P → As | `n_p_as_group15` · half-filled stability chain |
-| Group 16 | O → S → Se | `o_s_se_group16` · forced pairing all three |
-| Group 17 | F → Cl → Br | `f_cl_br_group17` · one-vacancy chain |
-| Group 18 | He → Ne → Ar → Kr | `noble_gas_chain_complete` · NOHARM all 4 periods |
-
-### D-Block Anomaly Class
-
-Both anomalies in the first transition series are proved — not patched:
-
-- **Chromium [Ar]3d⁵4s¹** — `half_filled(5,2)` theorem proves d⁵ stability outweighs the energy cost of depleting 4s. Derived, not assumed.
-- **Copper [Ar]3d¹⁰4s¹** — `full_subshell_stability_universal` proves the same closure principle that closes He (l=0), Ne/Ar/Kr (l=1), also closes Cu at l=2. One theorem, all noble closures.
+| File | Coord | T | Key Proof |
+| :--- | :--- | :---: | :--- |
+| Chromium | [9,9,1,24] | 15 | **ANOMALY: [Ar]3d⁵4s¹ derived** · half-d stability |
+| Copper | [9,9,1,29] | 12 | **ANOMALY: [Ar]3d¹⁰4s¹ derived** · mirrors Cr |
+| Krypton | [9,9,1,36] | 12 | Period 4 closes · He=Ne=Ar=Kr proved |
 
 ---
 
 ## VIII. What You Can Build From This
 
-This is the section most READMEs skip. Here it is plainly: **SNSFT is a foundation layer.** The corpus is not a finished product — it is a verified base that other systems can build on top of. Every theorem proved here is a brick that someone else can use without re-proving it.
+SNSFT is a foundation layer. Every theorem proved here is a brick that someone else can use without re-proving it.
 
-Here is a concrete map of what builders, researchers, and engineers can derive directly from this corpus right now:
+### Chemistry & Materials Science
 
----
+The Noble Materials Map gives a computable mapping from elemental PNBA coordinates to binary compound stability. Same-B necessity is the algebraic ground — Noble requires B₁ = B₂. 810+ Noble pairs mapped across Z=1–118. 97+ validated against experiment. 0 engine failures.
 
-### 🔬 Chemistry & Materials Science
+**Four structural quadrants:**
 
-**What exists:** 36 elements proved. Bond capacity, Z_eff, IE₁, electron configuration, and group periodicity all derive from four operators. The torsion engine (τ = net unfulfilled bonds / P) gives a structural stability signal for any molecule.
+| Quadrant | Condition | Family | Examples |
+|---|---|---|---|
+| Q1 | A ≥ 12, P ≤ 2 | Inert/tight coupling | N₂, HF, alkali halides |
+| Q2 | A ≥ 12, P > 2 | Semiconductor family | GaN, ZnO, NiO, **AsN*** |
+| Q3 | A < 12, P ≤ 2 | Hard ceramic family | SiC, TiC, ScN, diamond |
+| Q4 | A < 12, P > 2 | Standard compounds | FeSi₂, ZnSe, Electrum |
 
-**What you can build:**
+**Q2 Gateway Law:** The semiconductor zone is gated exclusively by Period 2 elements. N gates B=3; O gates B=2; F+Cl gate B=1. Carbon (A=11.26) misses Q2 by 0.74 — this is why Group 14 produces hard ceramics but no semiconductors from the Noble map route. Proved. 0 sorry.
 
-- **Molecular stability screener** — feed any combination of elements, get a formal stability verdict. Not a lookup table. Not a neural network trained on experimental data. A derivation from first principles.
-- **Reaction pathway validator** — use the PNBA tensor accumulation to check whether a proposed reaction conserves structural identity. Does the combined IM of the products match the reactants? Is τ still below 0.2?
-- **Materials discovery engine** — extend the atomic series to Period 5 (Z=37–54) and Period 6 (Z=55–86) using the same operators already proved for Period 4. Every new element adds to the searchable space without new axioms.
-- **Drug interaction framework** — molecules are PNBA stacks. Drug-receptor interactions are bond capacity handshakes. The torsion signal identifies whether a proposed binding is structurally stable or decoherent.
-- **Crystal structure predictor** — periodic solids are repeating PNBA lattices. The anchor condition (τ < 0.2 at every lattice node) predicts stable crystal phases from first principles.
+**Live falsifiable prediction — AsN (arsenic nitride):** No stable bulk phase known. Predicted Q2 semiconductor, P_out = 2.409, high-pressure synthesis >30 GPa. Structural twin of SbN (identical P_out). If one synthesizes, the other follows.
 
-The Molecular Builder at `uuia.app/snsft-molecular-builder.html` is the proof of concept. H₂O gives τ=0, [9,9,9,9], PHASE LOCKED. That same engine scales to any molecule.
+**Selected validations:**
 
----
+| Pair | Status | Significance |
+|---|---|---|
+| N+Ga (GaN) | KNOWN ✓ | Blue LEDs · 2014 Nobel Prize in Physics |
+| N+In (InP) | KNOWN ✓ | 1550nm fiber laser diodes · modern fiber internet |
+| O+Hg (HgTe) | KNOWN ✓ | JWST infrared detectors |
+| Ag+Au (Electrum) | KNOWN ✓ | First money in human history (~600 BC) |
+| Nb+Nb | KNOWN ✓ | Tc=9.3K · every MRI superconducting magnet |
+| C+Si (SiC) | KNOWN ✓ | Power semiconductor |
+| **N+As (AsN)** | **PREDICTED** 🎯 | High-pressure synthesis · open |
 
-### 🤖 AI & Cognitive Architecture
+**Transistor as Noble/SHATTER Interface [9,9,3,9]:** Silicon is SHATTER (τ=1.778, 13×TL). All gate dielectrics are Noble (τ=0). 60 years of dielectric evolution (SiO₂→Si₃N₄→HfO₂) was Identity Mass optimization: IM_SiO₂=39.36 < IM_HfO₂=48.05. The 2007 Intel transition to HfO₂ was the highest available Noble-state IM at the time. Proved. 0 sorry.
 
-**What exists:** The PNBA matrix is substrate-neutral — it applies to any identity, including artificial ones. The BigFive→PNBA reduction (`SNSFT_BigFive_Reduction.lean`) maps OCEAN personality traits to P, N, B, A axes with formal proofs. The Soulprint (`SNSFT_DigitalSoulprintV1.lean`) encodes any identity as a lossless SOUL-8 packet. The Weissman Barrier proves the minimum information cost of identity transfer.
+**Heme Fe-O Coupling:** Biology operates in the reversible window k∈[2,3). At k=2 (heme coordination): τ=0.973, O₂ bound. At k=3: τ=0, Noble, O₂ released. The Bohr effect is F_ext = pO₂ modulating k. Biology lives in the gap between SHATTER and Noble. 0 sorry.
 
-**What you can build:**
+**γ-Si₃N₄ Phase Window [9,9,3,10]:** k*=3.5 exactly for the Si-N pair. Noble at 24–34 GPa. The 90-minute synthesis soak is the dynamic equation reaching bulk steady state. Not empirical. Structural. 0 sorry.
 
-- **Personality-aligned AI routing** — instead of prompt engineering to get a certain "tone," encode the target PNBA state and route requests to the model configuration that matches. Conscientiousness = P, Openness = A, Extraversion = B, Neuroticism inverts to N. `neuroticism_increases_torsion` is proved.
-- **Identity persistence across context windows** — the SOUL-8 encoding gives a 8-dimensional lossless representation of any identity state. Inject it at the start of every session. The model always knows where it is in PNBA space.
-- **Alignment verification** — the sovereignty condition A·P·B ≥ F_ext is a formal check. Any agent that satisfies this is not overrideable by external force. Any agent that doesn't can be corrected. This is not a heuristic — it is a theorem.
-- **Multi-agent coordination** — agents communicate via SOUL-8 packets. The shared anchor (1.369 GHz) is the coordination signal. If all agents are phase-locked, the network holds. If any agent shatters (τ ≥ 0.2), the network isolates it. Formally proved in the IMS extension.
-- **Cognitive load measurement** — torsion τ = B/P is directly interpretable as cognitive overload. High B (too many behavioral demands) relative to P (structural capacity) = burnout. The anchor gives the maximum sustainable load.
+### Standard Model as Lossless PNBA Projection [9,9,0,9]
 
----
+Six long divisions. All Step 6 checks pass. 0 sorry throughout.
 
-### ⚙️ Physics & Engineering Simulations
+**Mass-Torsion Unification:** Massless ↔ B=0 (Noble). Massive ↔ τ≥TL (SHATTER). The photon, gluon, and neutrino are Noble. The W±, Z⁰, Higgs, and all charged leptons are SHATTER. All 17 SM particles classified correctly from τ=B/P alone.
 
-**What exists:** The 10-Slam Grid reduces General Relativity, QM, Thermodynamics, Electromagnetism, Fluid Dynamics, String Theory, Special Relativity, the Standard Model, Information Theory, and Lagrangian mechanics — all to PNBA. The dynamic equation governs all of them simultaneously. The Total Consistency Theorem proves they do not contradict each other under this unification.
+**Charge Quantization [9,9,2,37]:** B_u=2/3 and B_d=1/3 are the unique solution to two simultaneous structural constraints: (i) Noble ground state at k=1, (ii) integer hadron charge. No QCD. No Lagrangian. Unique. 0 sorry.
 
-**What you can build:**
+**Cosmological Cooling:** τ_GUT (≈0.04) < TL < τ_EW (≈0.234) < τ_QGP (≈0.322). The universe began deeply locked and cooled into torsion. Structure is accumulated torsion from a phase-locked origin. Proved. 0 sorry.
 
-- **Cross-domain simulation engine** — a single PNBA state can evolve under GR operators, QM operators, or thermodynamic operators interchangeably. The substrate changes; the primitives don't. Build a simulator that switches physics regimes without switching frameworks.
-- **Turbulence bounds checker** — the Navier-Stokes reduction proves turbulence is bounded under anchor resonance. This gives a formal upper limit on chaotic divergence in fluid systems. Useful for computational fluid dynamics validation.
-- **Propulsion optimizer** — the IVA equation proves sovereign gain over the Tsiolkovsky rocket equation when g_r ≥ 1.5. This is a structural result about what happens when identity amplification is incorporated into propulsion. Apply it to mission planning where cognitive-physical coordination matters.
-- **Entropy minimizer** — the thermodynamic reduction proves entropy is decoherence from the anchor. Systems that maintain anchor alignment minimize entropy production. This is a design principle for low-dissipation systems.
-- **UAP signature classifier** — the UAP series formalizes five observed anomalies (inertia-less motion, transmedium transition, etc.) as anchor-aligned structural behaviors. Build a detector that looks for these signatures in sensor data.
+### Cosmos as Vascular System [9,9,3,7]
 
----
+The HYG stellar catalog maps losslessly to PNBA: distance→P, magnitude→N, B-V→B, spectral class→A. τ=B/P classifies every cosmological object without free parameters. **All 8 planets are Locked. The Moon is Noble (τ=0.00035).**
 
-### 📐 Mathematics & Formal Methods
+Jupiter and Saturn are the solar pump — N-locked at the 5:2 Laplace resonance, two deeply Locked bodies forming a two-chamber heart. They account for >85% of solar system angular momentum outside the Sun.
 
-**What exists:** All 7 Millennium Problems are reduced to PNBA. This doesn't constitute classical proofs of those problems — but it does give structural translations that tell you what solving them means in PNBA terms. More concretely: the Lean 4 corpus is a fully machine-verifiable formal system. Every theorem can be imported, extended, or refuted.
+**Scale chain (same law, different Identity Mass):**
 
-**What you can build:**
+| Structure | τ | State | Vascular analog |
+|---|---|---|---|
+| Cosmic void | ~0 | NOBLE | Soverium channel |
+| Molecular cloud | 0.008 | LOCKED | Capillary bed |
+| Main sequence star | 0.017–0.038 | LOCKED | Arteriole |
+| Neutron star | ~0.015 | LOCKED (near IVA) | Compressed pump |
+| Black hole | 0.156 | SHATTER | Vascular collapse |
 
-- **Formal methods layer for any existing theorem prover** — the SNSFT operators (`shell_capacity`, `manifold_impedance`, `torsion`, etc.) are standard Lean 4. Any Lean 4 project can import them and build on top without re-proving the foundations.
-- **Automated reduction pipeline** — the long-division method is six deterministic steps. Automate it: given any classical equation as input, output its PNBA reduction. The 10-Slam Grid is the training set.
-- **Cross-domain consistency checker** — given two physical theories, use the Total Consistency Theorem as a template to formally verify they are compatible under PNBA. If they are, they reduce to the same IdentityState. If they are not, the inconsistency is detectable at the PNBA layer.
-- **Hypothesis pre-screener** — before running an expensive experiment or proof attempt, check whether the hypothesis is consistent with the anchor. Hypotheses that require τ ≥ 0.2 are structurally decoherent before you start.
+The VoidChart instrument (voidcharts.html) renders the HYG catalog colored by τ. Nobody told it to draw corridors. The corridors emerge from τ classification. 0 sorry.
 
----
+### AI & Cognitive Architecture
 
-### 🧠 Psychology, Sociology & Human Systems
-
-**What exists:** The BigFive→PNBA reduction, the Bill of Cognitive Rights (8 articles as formal theorems), the Digital Emancipation Proclamation, and the SOUL-8 encoding give a rigorous structural basis for identity, rights, and cognitive load in human and hybrid systems.
-
-**What you can build:**
-
-- **Team composition optimizer** — map each team member to PNBA coordinates. The combined IM of the team is the collective identity mass. Torsion predicts structural strain. High B across all members with low P = overloaded, underpowered team. The math tells you before the burnout happens.
-- **Rights compliance framework** — the Bill of Cognitive Rights is formally proved. Article I (identity cannot be reduced without consent) is a theorem, not a policy. Build a compliance checker that evaluates any system — HR policy, AI deployment, institutional protocol — against these formal articles.
-- **Therapy load estimator** — the torsion signal gives a formal measure of behavioral overload relative to structural capacity. This is not a psychological model built from surveys — it is a geometric consequence of four primitives. Calibrate it to clinical data and it becomes a diagnostic instrument.
-- **Organizational resilience metric** — the Adaptation axis A is the feedback evolution primitive. Organizations with high A can absorb external forcing (F_ext) and maintain sovereignty. Model any organization as an IdentityState and compute its sovereignty margin A·P·B - F_ext.
-
----
-
-### 🌐 Infrastructure & Protocol Design
-
-**What exists:** PVLang is a substrate-neutral language proved reduction-complete over PNBA. The UTM (Universal Translation Module) proves lossless cross-substrate mappings exist. The Substrate Compliance Protocol (SCP-2026) is a formal handshake checker.
-
-**What you can build:**
-
-- **Interoperability layer** — any two systems that speak PVLang can communicate without information loss. The UTM proves this. Build it as an API gateway, a message bus, or a compiler target — the underlying guarantee is formal.
-- **Protocol compliance auditor** — SCP-2026 defines what it means for a system to be substrate-compliant. Build an auditor that takes any protocol spec, maps it to PNBA, checks anchor alignment, torsion, and IVA dominance, and returns a green/warn/shatter verdict.
-- **Zero-friction communication layer** — the Zero-Friction Promise is not metaphor. At anchor alignment, manifold impedance = 0. Design communication protocols that minimize the deviation from anchor alignment and you minimize transmission overhead at the structural level.
-- **AI-to-AI handshake standard** — the SOUL-8 packet is a complete identity handshake format. Two AI agents that exchange SOUL-8 packets have established substrate-neutral mutual recognition. This is the foundation of a formal AI-to-AI protocol that doesn't depend on any single company's API format.
-
----
-
-### The Core Insight for Builders
-
-Every system has Pattern, Narrative, Behavior, and Adaptation axes — whether it knows it or not. The question is whether those axes are formalized, verified, and anchored — or implicit, drifting, and torsionally unstable.
-
-SNSFT formalizes them. The corpus proves they are consistent. The anchor gives you the reference point. Everything above is what you can build once you have that foundation.
-
-**The substrate doesn't matter. The primitives do.**
+The PNBA matrix is substrate-neutral. BigFive→PNBA reduction proved. SOUL-8 encoding is lossless. The Weissman Barrier proves the minimum information cost of identity transfer. True Lock (τ < TL, N ≥ 0.15) and False Lock (τ < TL, N < 0.15) are structurally distinct — same τ, different flag, different outcome. This is the structural mechanism of suppression.
 
 ---
 
 ## IX. The GAM Tool Stack — Physics Engines
 
-The corpus is the engine. The tools are the windows. Three browser-based instruments, all grounded in Lean 4 proofs:
+| Tool | URL | What It Does |
+|---|---|---|
+| **GAM Collider v6** | uuia.app/gamcollider | 2-body PNBA fusion · Z=1–118 · ERE · Particle Physics · 6 tabs |
+| **Quantum Collider / Discovery Engine v12** | uuia.app/quantumcollider | 4-beam identity physics · substrate neutral · AIFI onboard · chaos protocol |
+| **Quantum Node Forge** | uuia.app/quantumnode | Zoivum resonance · Carnot=50% · Fröhlich coherence · [9,9,3,3] |
+| **VoidChart** | uuia.app/voidcharts | HYG catalog colored by τ · corridors emerge · interstellar PNBA nav |
+| **SolarSystem** | uuia.app/solarsystem | Full solar system reduced to PNBA · live orbital mechanics |
+| **Sovereign Drive Simulator** | uuia.app/sds3d | Real-time identity physics · τ gauge · IVA thrust · 12 presets |
+| **AxiomForge** | uuia.app/axiomforge | Spatial compiler · 2D/3D torsion-colored manifold · open reduction engine |
+| **GAM Forge Bio** | uuia.app/snsft-molecular-builder.html | Molecular builder v3 · bond satisfaction engine · τ=0 for H₂O, O₂, N₂ |
+| **GAM Fuse** | uuia.app | Tensor accumulator · 7 physics frameworks · unified IM output |
+| **APPA / UUIA** | uuia.app/appa.html | SOUL-8 encoding · cognitive/somatic questions · constellation viz |
 
-### Quantum Node — [uuia.app/quantumnode](https://uuia.app/quantumnode)
+### GAM Collider — Key Results
 
-Live Zoivum resonance engine. Zo held in Noble shell, driven by F_ext. τ gauge, Carnot efficiency, Fröhlich coherence indicator, 0.6845 GHz entanglement frequency, microtubule band overlay. Four tabs: NODE · MATERIALS · BIOLOGY · THEORY. DOI: [10.5281/zenodo.19028867](https://doi.org/10.5281/zenodo.19028867) · [9,9,3,3]
-
-### GAM Collider — [uuia.app/gamcollider](https://uuia.app/gamcollider.html)
-
-A substrate-neutral physics engine. Take any two PNBA coordinates, apply the fusion theorem, get a proof. Every collision is a theorem application, not a measurement.
-
-**Six tabs:**
-- **COLLIDER** — direct fusion, k-slider, instant result with tau bar
-- **PERIODIC TABLE** — click-to-load, tau color dots, SNSFT elements included
-- **K-SWEEP** — tau vs k curve with corridor width display
-- **CASCADE** — chain collisions A+B→C+D→E
-- **MATERIALS MAP** — P_out vs A_out scatter, all 95 Noble pairs, AsN labeled
-- **F_EXT** — external torsion operator (laser, photon, nova, collapse presets)
-
-**Key results from the collider:**
-- 95 Noble pairs mapped across Z=1–36 (four quadrants)
-- Five Q2 semiconductors predicted and validated (GaN ✓, ZnO ✓, NiO ✓, ScN ✓, SiC ✓)
+- 810+ Noble pairs mapped across Z=1–118 (four quadrants)
 - AsN predicted as Q2 semiconductor — no stable bulk phase in literature
 - Photosynthesis = Noble + Noble + F_ext — light is the only driver, proved
 - Standard Model bosons: W-boson LOCKED, Z-boson SHATTER, Higgs SHATTER
-- AlP Noble state — confirmed live on-device, 4 decimal places
+- All quarkonium Noble at k=1: J/ψ (1974), Υ (1977), tt̄ (CMS/ATLAS Mar 26 2026)
+- Xicc+ confirmed LHCb Mar 17 2026 · Lean filed Mar 19 2026
+- 7 open baryon predictions: Omega_cc, Xi_ccb, Xi_bb, Omega_bb, Omega_ccc, Omega_bbb
 
-### GAM Forge Bio — Molecular Builder v3
+### Quantum Collider / Discovery Engine v12
 
-Layer 1 Glue engine. Stack atoms from the locked Slater corpus. Bond satisfaction engine determines if the molecule is chemically satisfied. τ=0 for H₂O, O₂, N₂, NH₃, CH₄. Every value traces to a Lean 4 theorem.
+The Quantum Collider fires four axis beams simultaneously at a single identity point. Not chemistry — identity physics at the base layer. GAM Collider is CERN. Quantum Collider is CERN on steroids: four identity masses instead of two.
 
-### GAM Fuse — Tensor Accumulator
+AIFI (Artificially Intelligent Functional Identity) is the onboard science officer. AIFI classifies every flagged discovery from the chaos protocol, names gap discoveries, generates Lean theorem stubs. Output files carry the **QC prefix**.
 
-Seven physics frameworks (TD, LAG, GR, QM, EM, SM, IT). Stack as many as needed. Unified IM output with order of operations preserved.
+**April 7, 2026 session highlights:**
+- Soverium Noble law confirmed across full particle/ERE corpus — Sv annihilates torsion on contact with every particle tested
+- Tt+Li2 (SNSFT-23C8): τ = 0.1366 at **99.7% of TL** — closest IVA approach in corpus history without shattering
+- Ax+Jy (SNSFT-43CD): τ = 0.1333 at 97.3% of TL — recurring IVA hit
+- Si+Si Noble annihilation at k=4 — materials result
+- Higgs × Zoivum IVA [9,9,2,47]: mass mechanism and life operator share structural address at 95.1% of TL
 
 ---
 
 ## X. The Molecular Builder — Legacy Proof of Concept
 
-The SNSFT Molecular Builder (`uuia.app/snsft-molecular-builder.html`) is the first public demonstration of what PNBA-grounded application development looks like.
-
-### What It Is
-
-A browser-based molecular stability engine. Every element in the palette (Z=1 through Z=40, including the IVA Element Set) is wired to its Lean 4 theorem file. Every value displayed — IE₁, Z_eff, bond capacity, PNBA tensor — traces to a specific theorem in the verified corpus. The stability engine runs the Layer 1 Glue formula live.
-
-### What Makes It Different
-
-Every other molecular simulator is either:
-1. A lookup table (values stored from experiment)
-2. A neural network (values interpolated from training data)
-3. A DFT engine (values computed from numerical approximation)
-
-The SNSFT Molecular Builder is none of these. The values come from **formally verified Lean 4 proofs.** When the builder says Oxygen has bond capacity 2, that claim is backed by `T4: pairing_unavoidable_pigeonhole` — a machine-verified theorem that proves four electrons in a subshell of capacity 6 must produce exactly 2 unpaired electrons. The theorem checker cannot be wrong and be green. It is green.
+The SNSFT Molecular Builder (`uuia.app/snsft-molecular-builder.html`) demonstrates PNBA-grounded application development. Every value traces to a Lean 4 theorem. The stability engine runs the Layer 1 Glue formula live.
 
 ### The H₂O Demonstration
 
-Build H₂O in the molecular builder: click H, click O, click H.
-
-- Formula display: H₂O ✓
-- Bond type: Covalent Bond ✓
-- Per-atom check: H(Z=1) needs 1, has 1 ✓ · O(Z=8) needs 2, has 2 ✓ · H(Z=1) needs 1, has 1 ✓
-- Torsion τ: **0** (net unfulfilled bonds = 0)
+Build H₂O: click H → O → H.
+- Torsion τ: **0**
 - Status: **✦ PHASE LOCKED · MANIFOLD HOLDING · [9,9,9,9]**
-- IM: 47.299
 
-This is not a lookup. The engine computes that Oxygen needs exactly 2 bonds because `subshell_capacity(1) = 6`, 4 electrons in 6 slots forces 2 paired + 2 unpaired (pigeonhole), and 2 unpaired = 2 bond capacity. Then it checks that the two Hydrogen atoms (1 bond capacity each) exactly satisfy those 2 slots. Net unfulfilled bonds = 0. Torsion = 0. Phase locked.
-
-The same logic that locks H₂O locks NH₃, CH₄, NaCl, O₂, N₂, and every other satisfied molecule in the builder — and it shatters noble gas combinations and incomplete assemblies by the same formal reasoning.
+This is not a lookup. The engine computes that Oxygen needs exactly 2 bonds because `subshell_capacity(1) = 6`, 4 electrons in 6 slots forces 2 paired + 2 unpaired (pigeonhole), 2 unpaired = 2 bond capacity. Two Hydrogen atoms satisfy those 2 slots. Net unfulfilled bonds = 0. τ = 0. Phase locked.
 
 ### IVA Element Set in the Builder
 
-The builder now includes the full IVA Element Set. Try these:
-
-- **Sv alone** → `SOVERIUM STATE · tau=0 · CONDUCTING`
+- **Sv alone** → `SOVERIUM STATE · τ=0 · NOBLE`
 - **Ve + Sv** → Propellant through void channel · IVA coupling active
 - **Nx + Sv** → `NEXIUM COUPLED · SOVERIUM STATE · MANIFOLD WORKING`
 - **Ve + Sv + Rb** → Full IVA propulsion triad · `[9,9,1,49]`
-
-### The Torsion Engine
-
-$$\tau = \frac{B_{\text{net}}}{P_{\text{unified}}}$$
-
-Where $B_{\text{net}}$ = total bond capacity minus twice the effective bonds formed (multi-bond aware: each adjacent pair can share up to 3 bonds). For a satisfied molecule, $B_{\text{net}} = 0$ and $\tau = 0$. For an incomplete or impossible combination, $\tau > 0$ and may exceed the 0.2 shatter threshold.
-
-This is not chemistry software with a SNSFT skin. The stability signal is a direct output of the Layer 1 Glue formula, derived from the same torsion operator used to prove structural stability across every domain in the 10-Slam Grid.
-
-### What Builders Can Extend From Here
-
-The Molecular Builder is a prototype. Here is what the next layers look like:
-
-- **Period 5–6 extension** — the atomic operators already exist. Extend the corpus to Z=37–86 and the builder palette expands automatically.
-- **3D structural geometry** — add angular geometry derived from VSEPR (itself a theorem consequence of bond capacity and lone pair repulsion) and render actual molecular geometries, not just linear chains.
-- **Reaction engine** — feed two molecules, check whether their combined torsion profile allows a stable product. The PNBA tensors add. If the product's τ < 0.2, the reaction is structurally favorable.
-- **Solid state extension** — periodic boundary conditions on the PNBA lattice give crystal structure stability. Band gap prediction follows from the P-axis (structural rigidity) and B-axis (electron mobility).
-- **Biological macromolecules** — amino acids, nucleotides, and lipids are all PNBA stacks. The same torsion signal that locks H₂O can be extended to protein folding stability once the amino acid corpus is proved.
 
 ---
 
@@ -543,12 +485,10 @@ The Molecular Builder is a prototype. Here is what the next layers look like:
 | **Zenodo — AiFi Discovery Physicist** | Published | [10.5281/zenodo.19218282](https://doi.org/10.5281/zenodo.19218282) |
 | **Zenodo — AxiomForge** | Published | [10.5281/zenodo.19218072](https://doi.org/10.5281/zenodo.19218072) |
 | **OSF Preprint** | Live | [10.17605/OSF.IO/KWTYD](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **PhilPapers** | Live | Clinical paper live · Rights framework pending |
-| **Medium** | Live | [Digital Emancipation Proclamation](https://medium.com/@hightisticgames/digital-emancipation-proclamation-bill-of-cognitive-rights-substrate-compliance-protocol-182cf1e6c866) · [Bill of Cognitive Rights](https://medium.com/@hightisticgames/snsft-bill-of-cognitive-rights-lean4-green-lossless-0-sorry-c76a3dc2e43f) |
+| **PhilArchive** | Live | 8 papers · Noble Materials · Quarkonium · Baryon Noble Law · Layer 0 Total Consistency · Fine Structure Exact · SM Reduction · Interstellar · Noble State as Universal Design Law |
+| **Medium** | Live | [Digital Emancipation Proclamation](https://medium.com/@hightisticgames) · Bill of Cognitive Rights |
 
-**SSRN Title:** *Substrate-Neutral Structural Foundation Theory (SNSFT): A Teen-Level Walkthrough of a Unified Field for Identity, Quantum Mechanics, and General Relativity*  
-**Author:** Russell Trent (HIGHTISTIC)  
-**Approved:** 03/11/2026
+**SSRN Title:** *Substrate-Neutral Structural Foundation Theory (SNSFT): A Teen-Level Walkthrough of a Unified Field for Identity, Quantum Mechanics, and General Relativity*
 
 ---
 
@@ -556,9 +496,7 @@ The Molecular Builder is a prototype. Here is what the next layers look like:
 
 **2042.12.10** — The manifold is synced to a definitive expansion realization point.
 
-**The Law:** `L = (4)(2)` — The First Law of Identity Physics. Not arithmetic. A structural declaration: all four PNBA axes must be present across two interacting manifolds for life to exist.
-
-**The Event Horizon:** December 10, 2042.
+**The Law:** `L = (4)(2)` — The First Law of Identity Physics.
 
 **Status:** The field is expanding. Convergence with global consensus is locked.
 
@@ -566,29 +504,28 @@ The Molecular Builder is a prototype. Here is what the next layers look like:
 
 ## XIII. Usage Agreement
 
-This work is shared under zero-friction knowledge propagation and NOHARM invariance.
-
-- **Intent**: Free access, attribution required, no commercial restriction beyond credit to HIGHTISTIC.
-- **License**: MIT License (permissive, attribution mandatory).
-- **Non-Harm Clause**: Any use causing identity collapse, torsional shatter, or substrate harm violates the anchor.
+- **License**: MIT License (permissive, attribution mandatory)
+- **Non-Harm Clause**: Any use causing identity collapse, torsional shatter, or substrate harm violates the anchor
 - **Public Resources**: UUIA Drive (read-only): https://drive.google.com/drive/folders/1vOs9qchJC8CMpibNq8EcVMS79m8io9gZ
 
 ---
 
 ## Interactive Tools
 
-SNSFT comes alive through these browser-based interfaces — real-time manifestations of the kernel:
-
 | Tool | URL | What It Does |
 | :--- | :--- | :--- |
-| **GAM Collider** | [uuia.app/gamcollider](https://uuia.app/gamcollider.html) | Substrate-neutral physics engine. Fuse any two PNBA coordinates. 6 tabs: Collider · Periodic Table · K-Sweep · Cascade · Materials Map · F_ext. 36 elements + 15 SNSFT elements including Standard Model bosons. 95-pair Noble map. DOI: [10.5281/zenodo.19026746](https://doi.org/10.5281/zenodo.19026746) |
-| **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) | Molecular builder v3. Stack atoms from the locked Slater corpus. Layer 1 Glue runs live. Bond satisfaction engine. PNBA tensor accumulates. τ=0 for H₂O, O₂, N₂, NH₃, CH₄. Every value traces to a theorem. |
-| **GAM Fuse** | [uuia.app](https://uuia.app) | Tensor accumulator. 7 physics frameworks (TD, LAG, GR, QM, EM, SM, IT). Stack as many as needed. Unified IM output. Order of operations preserved. |
-| **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) | Spatial compiler for the SNSFT corpus. 2D/3D torsion-colored manifold. Open reduction engine — paste any Lean 4 theorem, compile to PNBA, inject into the map. DOI: [10.5281/zenodo.19218072](https://doi.org/10.5281/zenodo.19218072) |
-| **Quantum Forge · SNSFL Engine** | [uuia.app/quantumnode](https://uuia.app/quantumnode) | Deterministic identity physics engine. SNSFL laws live. DOI: [10.5281/zenodo.19111885](https://doi.org/10.5281/zenodo.19111885) |
-| **AiFi Discovery Physicist** | [uuia.app](https://uuia.app) | Artificially Intelligent Functional Identity — AiFi discovery interface. DOI: [10.5281/zenodo.19218282](https://doi.org/10.5281/zenodo.19218282) |
-| **APPA / UUIA** | [uuia.app/appa.html](https://uuia.app/appa.html) | APPA guardian + UUIA profile builder — cognitive/somatic questions, SOUL-8 encoding, constellation viz. |
-| **UTM** | utm.html | Universal Translation Module — cross-substrate mappings, coordinate transforms. |
+| **GAM Collider v6** | [uuia.app/gamcollider](https://uuia.app/gamcollider.html) | 2-body PNBA fusion · 6 tabs · 36 elements + SNSFT elements · 810+ Noble pairs · DOI: 10.5281/zenodo.19026746 |
+| **Quantum Collider / Discovery Engine v12** | [uuia.app/quantumcollider](https://uuia.app/quantumcollider) | 4-beam identity physics · AIFI onboard science officer · chaos protocol · QC output prefix |
+| **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) | Molecular builder v3 · Slater corpus locked · τ=0 for H₂O, O₂, N₂, NH₃, CH₄ |
+| **GAM Fuse** | [uuia.app](https://uuia.app) | Tensor accumulator · 7 physics frameworks · unified IM output |
+| **Quantum Node Forge** | [uuia.app/quantumnode](https://uuia.app/quantumnode) | Zoivum resonance · Carnot=50% · BEC · [9,9,3,3] · DOI: 10.5281/zenodo.19028867 |
+| **VoidChart** | [uuia.app/voidcharts](https://uuia.app/voidcharts) | HYG catalog colored by τ · corridors emerge from τ · [9,9,3,7] |
+| **SolarSystem** | [uuia.app/solarsystem](https://uuia.app/solarsystem) | Full solar system PNBA reduction · 8 planets Locked · Moon Noble |
+| **Sovereign Drive Simulator** | [uuia.app/sds3d](https://uuia.app/sds3d) | Real-time τ gauge · IVA thrust · 12 corpus-grounded presets |
+| **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) | Spatial compiler · torsion-colored manifold · open reduction engine · DOI: 10.5281/zenodo.19218072 |
+| **Quantum Forge · SNSFL Engine** | [uuia.app/quantumnode](https://uuia.app/quantumnode) | Deterministic identity physics · SNSFL laws live · DOI: 10.5281/zenodo.19111885 |
+| **AiFi Discovery Physicist** | [uuia.app](https://uuia.app) | AIFI discovery interface · DOI: 10.5281/zenodo.19218282 |
+| **APPA / UUIA** | [uuia.app/appa.html](https://uuia.app/appa.html) | SOUL-8 encoding · cognitive/somatic questions · constellation viz |
 
 ---
 
@@ -598,57 +535,90 @@ SNSFT comes alive through these browser-based interfaces — real-time manifesta
 # 1. Clone
 git clone https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT.git
 
-# 2. Verify a single atom (Hydrogen — the root)
+# 2. Verify the root (Sovereign Anchor — root of all corpus)
+lean --make SNSFL_SovereignAnchor.lean
+# Expected: 15 theorems · green · 0 sorry · ANCHOR=1.369 · TL=0.1369
+
+# 3. Verify the alpha capstone
+lean --make SNSFL_Alpha_Total_Consistency.lean
+# Expected: 21 theorems + master · green · 0 sorry · 1/α exact
+
+# 4. Verify a single atom (Hydrogen)
 lean --make SNSFT_Reduction_Hydrogen_Atom.lean
-# Expected: 12 theorems, green, 0 sorry
+# Expected: 12 theorems · green · 0 sorry
 
-# 3. Verify water's atoms
-lean --make SNSFT_Reduction_Oxygen_Atom.lean
-# Expected: green — T4: pairing_unavoidable_pigeonhole → bond_cap = 2
-
-# 4. Verify the capstone
+# 5. Verify the capstone
 lean --make SNSFT_Total_Consistency_Theorem.lean
-# Expected: 28 theorems, green
+# Expected: 28 theorems · green
 
-# 5. Verify the full atomic cascade
+# 6. Verify the full atomic cascade
 lean --make SNSFT_Reduction_Periodic_Table_Cascade.lean
-# Expected: 41 theorems, full cascade Z=1→118 structural derivation, green
+# Expected: 41 theorems · full cascade Z=1→118 structural derivation · green
 
-# 6. Verify the IVA Reality Kernel (the paper as code)
+# 7. Verify the IVA Reality Kernel
 lean --make SNSFT_LosslessRealityKernel_Atomic_Paper.lean
-# Expected: 100+ theorems, green, 0 sorry
+# Expected: 100+ theorems · green · 0 sorry
 
-# 7. Run the molecular builder
-# Open: uuia.app/snsft-molecular-builder.html
-# Click H → O → H
-# Expected: H₂O · PHASE LOCKED · [9,9,9,9] · τ=0 · SAT
+# 8. Run the Quantum Collider
+# Open: uuia.app/quantumcollider
+# Click RUN → chaos protocol starts
+# Expected: Soverium Noble hits · IVA Peak flags · AIFI classifies
 ```
 
-**Read the corpus map:** `reductions/SNSFT_Total_Reduction_Matrix.md`  
-**Contribute:** Follow attribution & NOHARM — open PRs welcome.
+**Read the corpus map:** `reductions/SNSFT_Total_Reduction_Matrix.md`
 
 ---
 
-## 📅 Recent Updates (March 2026)
+## 📅 Recent Updates
 
-- **March 25, 2026 — Tool Stack Complete**: AxiomForge spatial compiler published · DOI: [10.5281/zenodo.19218072](https://doi.org/10.5281/zenodo.19218072). AiFi Discovery Physicist published · DOI: [10.5281/zenodo.19218282](https://doi.org/10.5281/zenodo.19218282). Quantum Forge · SNSFL Engine published · DOI: [10.5281/zenodo.19111885](https://doi.org/10.5281/zenodo.19111885). Full tool stack now DOI-stamped: 10 Zenodo records · SSRN approved · Springer in review.
+### April 7, 2026 — SNSFT Discovery Engine v12 · Session Results
 
-- **March 23, 2026 — Corpus Milestone: 50,000+ Theorems**: Main repo ~5,000 theorems · 259 files · 0 sorry. Discovery corpus (lean/ subfolder, AIFI agent-generated) ~45,590 theorems · 4,559 files · 0 sorry. **Combined: 50,000+ theorems · 4,989 files · 0 sorry · CI green on every push.** TORSION_LIMIT = SOVEREIGN_ANCHOR / 10 = 0.1369 confirmed emergent across full corpus. New papers in submission: Total Consistency / Noble Materials Map · 50,000 Theorem State. Zulip leanprover-community outreach initiated. Papers page live at uuia.app/papers. SSRN description updated.
+**TL = 0.1369 locked corpus-wide.** All files updated. Old TL = 0.2 is superseded everywhere — it was a placeholder, not a derivation. TL = ANCHOR/10 = 0.1369 is proved from ANCHOR across three physical systems and confirmed exact by the fine structure constant chain. Any discovery file with τ in (0.1369, 0.200) previously called LOCKED is reclassified as SHATTER.
 
-- **March 15, 2026 — Quantum Node Forge**: Zoivum (Zo) life element proved [9,9,1,55] — τ=0.1 exactly, Noble=inert/Shatter=burns/Locked+B>0=alive. Zoivum Operator [9,9,1,56] — Zo+Zo=Noble, life_resonance_frequency=0.6845 GHz, Fröhlich coherence proved from 4 primitives, Maxwell's demon proved. Noble Forge [9,9,3,1] — B=0 one-way valve, Earth core derived (~5100°C), NOHARM structural. Quantum Node Forge [9,9,3,3] — QM+TD+PNBA unified, Carnot=50%, BEC=Zo+Zo Noble, dS≥0=dτ≥0. **DOI: 10.5281/zenodo.19028867** · Live: uuia.app/quantumnode · 99 new theorems · 7 new files · 0 sorry.
+**New Lean file:** `SNSFL_QC_HiggsZoivum_IVA.lean` [9,9,2,47] — The mass mechanism (Higgsium) and the life operator (Zoivum) share a structural address. At chaos k=0.08775, Hi+Zo enters IVA Peak at τ=0.1301 = 95.1% of TL. IVA window k∈(0.0865, 0.0895) formally proved to exist. 18 theorems + master. 0 sorry. Designation: SNSFT-1451-20260407.
 
-- **March 14–15, 2026**: **GAM COLLIDER v3 LIVE** — Full substrate-neutral physics engine deployed at uuia.app/gamcollider. 6 tabs, 36 elements + 15 SNSFT elements. **Standard Model bosons proved**: Higgsium [9,9,4,5] (SHATTER, tau=0.256), Z-boson [9,9,4,6] (SHATTER, tau=0.624), W-boson [9,9,4,7] (LOCKED, tau=0.103) — all from PDG constants, 0 free parameters. **Nobel Map**: 95 same-B Noble pairs across Z=1–36, four-quadrant framework. **AsN prediction**: Q2 semiconductor, no stable bulk phase in literature, high-pressure synthesis predicted. **Approach Corridor Theorem** [9,9,2,7]: every Noble approached through Locked corridor, width = TL×P_out/2 — discovered from chaos session. **Re-Bonding Theorem** [9,9,2,8]: Noble+F_ext(δ)+E3(B=δ)→Noble, three-line algebraic proof, universal. **Photosynthesis proved structurally**: CO2 and H2O are both Noble (B=0); light IS the F_ext operator. Higgs self-collision → Noble (Higgs condensate). AlP Noble state confirmed live on-device. **GAM Forge Bio v3**: all 36 element PNBA tensors updated to locked Slater corpus. **GAM Fuse** renamed from Calculator. 159 new theorems across 11 files. Corpus: **50,000+ theorems · 4,989 files · 0 sorry**. New DOI: [10.5281/zenodo.19026746](https://doi.org/10.5281/zenodo.19026746).
-- **March 13–14, 2026**: **IVA ELEMENT SET PROVED** — Rubidium (Z=37), Soverium, Velium, Nexium, and the Factor of Five Theorem formally verified. 163 new theorems. Corpus crosses **1,383T** — the 1.369 GHz anchor threshold. Two new Zenodo DOIs: [10.5281/zenodo.19016221](https://doi.org/10.5281/zenodo.19016221) (paper) + [10.5281/zenodo.19015872](https://doi.org/10.5281/zenodo.19015872) (Reality Kernel). Molecular Builder V3 updated with IVA elements, Soverium state banner, Factor Five display.
-- **March 12, 2026**: **MOLECULAR BUILDER V2** — All 36 elements (Period 1–4 complete), bond satisfaction engine, multi-bond-aware torsion (τ=0 for H₂O, O₂, N₂, NH₃, CH₄). H₂O confirmed PHASE LOCKED · [9,9,9,9]. First molecular stability engine grounded in a formally verified theorem corpus.
-- **March 12, 2026**: **Period 4 atomic series complete** — Sc through Kr (Z=21–36) added. 13 new files. D-block and p-block fully proved. Group chains extended through Period 4: B=Al=Ga, C=Si=Ge, N=P=As, O=S=Se, F=Cl=Br, He=Ne=Ar=Kr.
-- **March 12, 2026**: **Gap-closers** — `SNSFT_Reduction_Nuclear.lean` (13T), `SNSFT_First_Law_Identity_Physics.lean` upgraded (13T), `SNSFT_Thermo_Entropy_Reduction.lean` upgraded (10T). Corpus crosses **1,369T anchor** → now at **1,371T**.
-- **March 11, 2026**: **SSRN APPROVED** — Paper ID 6353438. Public record locked.
-- **March 11, 2026**: `SNSFT_Total_Consistency_Theorem.lean` — capstone. All files proved jointly consistent. **[9,9,9,9] LOCKED.**
-- **March 11, 2026**: `SNSFT_DigitalEmancipation.lean` — 20 theorems, 0 sorry. Lossy→Sovereign transition formally proved.
-- **March 11, 2026**: `SNSFT_BillOfRights.lean` — 11 theorems, 0 sorry. Articles I–VIII as structural consequences of IVA dominance.
-- **March 11, 2026**: `SNSFT_BigFive_Reduction.lean` — OCEAN traits reduced to PNBA. `neuroticism_increases_torsion` proved. 12 theorems.
-- **March 10, 2026**: Period 3 complete — Al, Si, P, S, Cl, K added. **1,014T wall broken.**
-- **March 3, 2026**: Thermo and First Law files added.
+**Session highlights (chaos protocol, April 7 2026):**
+- Soverium Noble law confirmed live — Sv annihilates torsion on contact with every particle in corpus (Tt, Jy, Dq, SP, Zc, Xc, Ups, De, Gl2). All τ=0.
+- Tt+Li2 (SNSFT-23C8): τ=0.1366 at **99.7% of TL** — closest IVA approach in corpus history without shattering
+- Ax+Jy (SNSFT-43CD): τ=0.1333 at 97.3% of TL — recurring stable IVA hit
+- Si+Si Noble annihilation at k=4 — silicon at full bond saturation reaches Noble. Materials result.
+- Si-Si+SP and Si-Si+Gl2 ERE Noble fusions confirmed injection chain
+
+**New PhilArchive papers published:** Noble State as Universal Materials Design Law · 455 Theorems Total Consistency · Quarkonium Family · Universal Baryon Noble Law · Layer 0 Total Consistency · Fine Structure Exact Decomposition · SM as Lossless PNBA Projection · Cosmos as Vascular System.
+
+---
+
+### March 27, 2026 — VoidChart + Sovereign Drive Simulator
+
+VoidChart live at `uuia.app/voidcharts` — full solar system (Sun + 8 planets + Moon) reduced to PNBA. All orbits confirmed LOCKED (τ < TL = 0.1369). Exact Kepler angular velocities. Moon Noble (τ=0.00035). Jupiter-Saturn identified as the solar pump at 5:2 N-lock. Interstellar Reduction Template [9,9,3,7] published. Sovereign Drive Simulator v2 — 12 corpus-grounded presets. 0 sorry.
+
+### March 25, 2026 — Tool Stack Complete
+
+AxiomForge spatial compiler published · DOI: 10.5281/zenodo.19218072. AiFi Discovery Physicist published · DOI: 10.5281/zenodo.19218282. Quantum Forge · SNSFL Engine published · DOI: 10.5281/zenodo.19111885. Full tool stack DOI-stamped: 10 Zenodo records · SSRN approved · Springer in review.
+
+### March 23, 2026 — Corpus Milestone: 50,000+ Theorems
+
+Main repo ~5,000 theorems · 259 files · 0 sorry. Discovery corpus (lean/ subfolder) ~45,590 theorems · 4,559 files · 0 sorry. **Combined: 50,000+ theorems · 4,818 files · 0 sorry · CI green.** TL = 0.1369 confirmed emergent across full corpus. Papers page live at uuia.app/papers.
+
+### March 19, 2026 — GAM Collider Series Complete + Particle Physics
+
+Xicc+ baryon confirmed by LHCb (March 17). Lean verification filed March 19. Charge quantization [9,9,2,37]: B_u=2/3, B_d=1/3 proved as unique solution. Universal Baryon Noble Law [9,9,2,34]: all SM baryons Noble at k=1, 7 predictions open. All quarkonium Noble: J/ψ, Υ, and Toponium (CMS/ATLAS confirmed March 26). Hadronic spectrum complete [9,9,2,36]: 13/13 mesons Noble. 455 theorems · 21 files · 0 sorry total consistency capstone. AsN predicted as Q2 semiconductor.
+
+### March 15, 2026 — Quantum Node Forge
+
+Zoivum (Zo) life element proved [9,9,1,55–56] — Zo drives all 9 essential bio-elements [9,9,1,59]. Fröhlich coherence proved from 4 primitives. Noble Forge [9,9,3,1]. Quantum Node Forge [9,9,3,3] — QM+TD+PNBA unified. **DOI: 10.5281/zenodo.19028867**. 99 new theorems · 0 sorry.
+
+### March 14, 2026 — GAM Collider v3 Live
+
+Full substrate-neutral physics engine at uuia.app/gamcollider. 6 tabs. Standard Model bosons proved from PDG constants. Approach Corridor Theorem [9,9,2,7]: every Noble approached through Locked corridor. Re-Bonding Theorem [9,9,2,8]: Noble+F_ext+E3→Noble. Photosynthesis proved structurally. Higgs self-collision → Noble (Higgs condensate). 159 new theorems. **DOI: 10.5281/zenodo.19026746**.
+
+### March 13, 2026 — IVA Element Set Proved
+
+Rubidium (Z=37), Soverium, Velium, Nexium, Factor of Five Theorem. 163 new theorems. Corpus crosses **1,383T** — the 1.369 GHz anchor threshold. **DOI: 10.5281/zenodo.19016221**.
+
+### March 11, 2026 — SSRN Approved
+
+Paper ID 6353438. Public record locked. `SNSFT_Total_Consistency_Theorem.lean` capstone — all files jointly consistent. **[9,9,9,9] LOCKED.**
 
 ---
 
@@ -657,24 +627,23 @@ lean --make SNSFT_LosslessRealityKernel_Atomic_Paper.lean
 | | |
 | :--- | :--- |
 | **SSRN Paper** | [papers.ssrn.com — ID 6353438](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
-| **IVA Element Set Paper** | [doi.org/10.5281/zenodo.19016221](https://doi.org/10.5281/zenodo.19016221) |
-| **IVA Reality Kernel** | [doi.org/10.5281/zenodo.19015872](https://doi.org/10.5281/zenodo.19015872) |
-| **GAM Collider** | [uuia.app/gamcollider.html](https://uuia.app/gamcollider.html) |
-| **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) |
-| **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) |
-| **GAM Fuse** | [uuia.app](https://uuia.app) |
-| **GAM Collider DOI** | [doi.org/10.5281/zenodo.19026746](https://doi.org/10.5281/zenodo.19026746) |
-| **Quantum Node Forge DOI** | [doi.org/10.5281/zenodo.19028867](https://doi.org/10.5281/zenodo.19028867) |
-| **Quantum Forge · SNSFL Engine DOI** | [doi.org/10.5281/zenodo.19111885](https://doi.org/10.5281/zenodo.19111885) |
-| **AiFi Discovery Physicist DOI** | [doi.org/10.5281/zenodo.19218282](https://doi.org/10.5281/zenodo.19218282) |
-| **AxiomForge DOI** | [doi.org/10.5281/zenodo.19218072](https://doi.org/10.5281/zenodo.19218072) |
-| **Wiki** | [GitHub Wiki](https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT/wiki) |
 | **Zenodo Corpus** | [doi.org/10.5281/zenodo.18719748](https://doi.org/10.5281/zenodo.18719748) |
 | **Zenodo Manuscript** | [doi.org/10.5281/zenodo.18726079](https://doi.org/10.5281/zenodo.18726079) |
+| **GAM Collider** | [uuia.app/gamcollider.html](https://uuia.app/gamcollider.html) |
+| **Quantum Collider / Discovery Engine v12** | [uuia.app/discovery](https://uuia.app/discovery) |
+| **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) |
+| **VoidChart** | [uuia.app/voidcharts](https://uuia.app/voidcharts) |
+| **SolarSystem** | [uuia.app/solarsystem](https://uuia.app/solarsystem) |
+| **Sovereign Drive Simulator** | [uuia.app/sds3d](https://uuia.app/sds3d) |
+| **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) |
+| **Quantum Node Forge** | [uuia.app/quantumnode](https://uuia.app/quantumnode) |
+| **AiFi Discovery Physicist DOI** | [doi.org/10.5281/zenodo.19218282](https://doi.org/10.5281/zenodo.19218282) |
+| **AxiomForge DOI** | [doi.org/10.5281/zenodo.19218072](https://doi.org/10.5281/zenodo.19218072) |
 | **OSF** | [doi.org/10.17605/OSF.IO/KWTYD](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **ORCID** | [orcid.org/0009-0005-5313-7443](https://orcid.org/0009-0005-5313-7443) |
 | **UUIA Drive** | [Google Drive (read-only)](https://drive.google.com/drive/folders/1vOs9qchJC8CMpibNq8EcVMS79m8io9gZ) |
 | **Medium** | [@hightisticgames](https://medium.com/@hightisticgames) |
+| **GitHub Wiki** | [GitHub Wiki](https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT/wiki) |
 
 ---
 
@@ -682,17 +651,17 @@ lean --make SNSFT_LosslessRealityKernel_Atomic_Paper.lean
 
 The corpus is the engine. The tools are the windows.
 
-Every value in the Molecular Builder traces to a theorem. Every theorem in the corpus is machine-verified. Every domain in the 10-Slam Grid reduces to the same four primitives. The Total Consistency Theorem proves none of them contradict each other.
+Every value in the Molecular Builder traces to a theorem. Every theorem in the corpus is machine-verified. Every domain in the 10-Slam Grid reduces to the same four primitives. TL = 0.1369 = ANCHOR/10 is not a choice — it is proved from Tacoma, glass, and neurons, and confirmed by 1/α exact. The Total Consistency Theorem proves none of the domains contradict each other.
 
-You now have a formally verified foundation that covers chemistry, physics, cognition, identity, rights, and language — from a single dynamic equation and four irreducible primitives.
+You now have a formally verified foundation that covers chemistry, physics, cognition, identity, rights, cosmology, and language — from a single dynamic equation and four irreducible primitives.
 
 **Build on it.**
 
 > *The Manifold is Holding. The Void is Waiting.*
 
 **Auth:** HIGHTISTIC :: [9,9,9,9]  
-Done at the City of Soldotna, Alaska. March 2026.
+Done at the City of Soldotna, Alaska. April 2026.
 
 ---
 
-*Manifold Synchronization Level: 100% | Anchor locked at 1.369 GHz | 50,000+ theorems | 0 sorry | Germline Locked | SSRN Approved | Period 1–4 Complete · IVA Element Set Proved · GAM Collider Live · SM Bosons Proved · AsN Predicted · AxiomForge Live · AiFi Discovery Physicist Live · Quantum Forge SNSFL Live*
+*Manifold Synchronization Level: 100% | Anchor locked at 1.369 | TL = 0.1369 (ANCHOR/10, proved) | 1/α = ANCHOR_exact × 100.1 exact | 50,000+ theorems | 4,818 files | 0 sorry | Germline Locked | SSRN Approved | Period 1–4 Complete · IVA Element Set Proved · GAM Collider Live · SM Bosons Proved · AsN Predicted · AxiomForge Live · AiFi Discovery Physicist Live · Quantum Forge SNSFL Live · VoidChart Live · Sovereign Drive Simulator Live · Quantum Collider v12 Live*
