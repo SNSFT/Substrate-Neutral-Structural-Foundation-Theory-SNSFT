@@ -9,10 +9,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 
 :root {
-  --bg:        #000000;
-  --panel:     #050508;
-  --border:    #0a0a14;
-  --border-hi: #12121e;
+  --bg:        #05060f;
+  --panel:     #080910;
+  --border:    #0f1020;
+  --border-hi: #161828;
   --glow:      #00d4ff;
   --locked:    #00ffcc;
   --shatter:   #ff3355;
@@ -87,7 +87,7 @@ body::before {
 #right { border-left:  1px solid var(--border); }
 
 /* CANVAS */
-#canvas-wrap { position: relative; background: #000; overflow: hidden; }
+#canvas-wrap { position: relative; background: #05060f; overflow: hidden; }
 #canvas-wrap canvas { display: block; width: 100%; height: 100%; }
 
 /* BOTTOM */
@@ -166,7 +166,7 @@ input[type=range] { width: 100%; accent-color: var(--bh-core); height: 3px; marg
   padding: 7px; margin: 4px 0;
 }
 .badge-SHATTER { color: var(--shatter); border: 1px solid rgba(255,51,85,.4); background: rgba(255,51,85,.06); animation: spulse .35s infinite; }
-.badge-IVA     { color: var(--iva);     border: 1px solid rgba(255,136,0,.4); background: rgba(255,136,0,.06); }
+.badge-IVA_PEAK { color: var(--iva);     border: 1px solid rgba(255,136,0,.4); background: rgba(255,136,0,.06); }
 .badge-LOCKED  { color: var(--locked);  border: 1px solid rgba(0,255,204,.3); background: rgba(0,255,204,.05); }
 .badge-NOBLE   { color: var(--noble);   border: 1px solid rgba(170,136,255,.3); background: rgba(170,136,255,.05); }
 @keyframes spulse { 0%,100%{opacity:1}50%{opacity:.5} }
@@ -255,6 +255,7 @@ input[type=range] { width: 100%; accent-color: var(--bh-core); height: 3px; marg
     </div>
     <button class="btn btn-in" onclick="massInfall()">⬇ MASS INFALL EVENT</button>
     <button class="btn btn-in" onclick="neutronStarMerger()">⬇ NS MERGER</button>
+    <button class="btn btn-in" id="btn-sagflare" onclick="sagAFlare()" style="display:none;border-color:rgba(255,200,0,.6);color:#ffc800;">★ SAG A* IR/X-RAY FLARE</button>
   </div>
 
   <div class="sec">
@@ -273,6 +274,7 @@ input[type=range] { width: 100%; accent-color: var(--bh-core); height: 3px; marg
     <div class="sec-title"><b>SCALE CHAIN · [9,9,3,6]</b></div>
     <button class="btn" onclick="loadPreset('stellar')">◆ STELLAR BH · M=10M☉</button>
     <button class="btn" onclick="loadPreset('supermassive')">◆ SUPERMASSIVE · M=10⁹M☉</button>
+    <button class="btn" onclick="loadPreset('sagA')" style="border-color:rgba(255,200,0,.6);color:#ffc800;">★ SAG A* · MILKY WAY CORE</button>
     <button class="btn" onclick="loadPreset('primordial')">◆ PRIMORDIAL · MICRO BH</button>
     <button class="btn" onclick="loadPreset('near_tl')">◈ NEUTRON STAR → BH</button>
     <button class="btn" onclick="loadPreset('evaporating')">◇ LATE EVAPORATION</button>
@@ -340,7 +342,11 @@ input[type=range] { width: 100%; accent-color: var(--bh-core); height: 3px; marg
       τ = B/P · TL = <em>0.1369</em><br>
       IM = (P+N+B+A) × <em>1.369</em><br>
       r_s = 2GM/c² ∝ P × IM<br>
-      T_H ∝ 1/(M²) ∝ 1/(P²)
+      T_H ∝ 1/(M²) ∝ 1/(P²)<br><br>
+      <em>Phase states [9,9,3,13]:</em><br>
+      NOBLE τ&lt;0.001 · LOCKED τ&lt;TL<br>
+      IVA PEAK 0.88×TL&lt;τ&lt;TL<br>
+      SHATTER τ≥TL
     </div>
   </div>
 
@@ -409,7 +415,7 @@ let stats = { infall: 0, hawking: 0, peakTau: 0 };
 const canvas   = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0x000000, 1);
+renderer.setClearColor(0x05060f, 1);
 
 const scene  = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 2000);
@@ -427,8 +433,8 @@ window.addEventListener('resize', resize);
 setTimeout(resize, 50);
 
 // Ambient + rim
-scene.add(new THREE.AmbientLight(0x050510, 2));
-const rimLight = new THREE.PointLight(0xff2244, 2, 80);
+scene.add(new THREE.AmbientLight(0x0a1030, 4));
+const rimLight = new THREE.PointLight(0xff2244, 3, 80);
 rimLight.position.set(0, 20, 0);
 scene.add(rimLight);
 const hawkLight = new THREE.PointLight(0xcc88ff, 0, 60);
@@ -443,7 +449,7 @@ scene.add(coreMesh);
 
 // Core wireframe
 const coreWireGeo = new THREE.SphereGeometry(1.85, 16, 16);
-const coreWireMat = new THREE.MeshBasicMaterial({ color: 0xff2244, wireframe: true, transparent: true, opacity: 0.15 });
+const coreWireMat = new THREE.MeshBasicMaterial({ color: 0xff2244, wireframe: true, transparent: true, opacity: 0.35 });
 scene.add(new THREE.Mesh(coreWireGeo, coreWireMat));
 
 // ── EVENT HORIZON ──
@@ -454,7 +460,7 @@ scene.add(horizonMesh);
 
 // Horizon glow (back side)
 const hGlowGeo = new THREE.SphereGeometry(4.7, 32, 32);
-const hGlowMat = new THREE.MeshBasicMaterial({ color: 0xff2244, transparent: true, opacity: 0.06, side: THREE.BackSide });
+const hGlowMat = new THREE.MeshBasicMaterial({ color: 0xff2244, transparent: true, opacity: 0.18, side: THREE.BackSide });
 scene.add(new THREE.Mesh(hGlowGeo, hGlowMat));
 
 // ── ACCRETION DISK ──
@@ -462,7 +468,7 @@ scene.add(new THREE.Mesh(hGlowGeo, hGlowMat));
 const diskRings = [];
 const diskColors = [0xff6600, 0xff4400, 0xff8800, 0xffaa00, 0xff3300];
 const diskRadii  = [6, 7.5, 9, 11, 13];
-const diskOpacities = [0.6, 0.45, 0.3, 0.2, 0.12];
+const diskOpacities = [0.85, 0.65, 0.45, 0.30, 0.18];
 
 diskRadii.forEach((r, i) => {
   const geo = new THREE.TorusGeometry(r, 0.18 - i * 0.02, 8, 128);
@@ -477,7 +483,7 @@ diskRadii.forEach((r, i) => {
 
 // ── PHOTON SPHERE ──
 const photonGeo = new THREE.TorusGeometry(5.5, 0.05, 6, 200);
-const photonMat = new THREE.MeshBasicMaterial({ color: 0xffdd44, transparent: true, opacity: 0.3 });
+const photonMat = new THREE.MeshBasicMaterial({ color: 0xffee66, transparent: true, opacity: 0.65 });
 const photonMesh = new THREE.Mesh(photonGeo, photonMat);
 photonMesh.rotation.x = Math.PI / 2;
 scene.add(photonMesh);
@@ -509,9 +515,25 @@ for (let i = 0; i < NHAWK; i++) {
   hawkPos[i*3+2] = (Math.random()-0.5)*30;
 }
 hawkPartGeo.setAttribute('position', new THREE.BufferAttribute(hawkPos, 3));
-const hawkPartMat = new THREE.PointsMaterial({ color: 0xcc88ff, size: 0.15, transparent: true, opacity: 0 });
+const hawkPartMat = new THREE.PointsMaterial({ color: 0xcc88ff, size: 0.25, transparent: true, opacity: 0 });
 const hawkParticles = new THREE.Points(hawkPartGeo, hawkPartMat);
 scene.add(hawkParticles);
+
+// ── STARFIELD ──
+const NSTARS = 800;
+const starGeo = new THREE.BufferGeometry();
+const starPos = new Float32Array(NSTARS * 3);
+for (let i = 0; i < NSTARS; i++) {
+  const r = 60 + Math.random() * 80;
+  const theta = Math.random() * Math.PI * 2;
+  const phi   = Math.acos(2 * Math.random() - 1);
+  starPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+  starPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+  starPos[i*3+2] = r * Math.cos(phi);
+}
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+const starMat = new THREE.PointsMaterial({ color: 0xaabbdd, size: 0.18, transparent: true, opacity: 0.55 });
+scene.add(new THREE.Points(starGeo, starMat));
 
 // ── ACCRETION STREAM PARTICLES ──
 const NACC = 300;
@@ -521,7 +543,7 @@ const accAngles = Array.from({length: NACC}, () => Math.random() * Math.PI * 2);
 const accRadii  = Array.from({length: NACC}, () => 7 + Math.random() * 8);
 const accSpeeds = Array.from({length: NACC}, () => 0.008 + Math.random() * 0.015);
 accPartGeo.setAttribute('position', new THREE.BufferAttribute(accPos, 3));
-const accPartMat = new THREE.PointsMaterial({ color: 0xff6600, size: 0.12, transparent: true, opacity: 0 });
+const accPartMat = new THREE.PointsMaterial({ color: 0xff7700, size: 0.22, transparent: true, opacity: 0.25 });
 const accParticles = new THREE.Points(accPartGeo, accPartMat);
 scene.add(accParticles);
 
@@ -529,7 +551,7 @@ scene.add(accParticles);
 const lensRings = [];
 for (let i = 0; i < 3; i++) {
   const geo = new THREE.TorusGeometry(4.5 + i * 0.3, 0.02, 6, 200);
-  const mat = new THREE.MeshBasicMaterial({ color: 0x224466, transparent: true, opacity: 0.15 - i*0.04 });
+  const mat = new THREE.MeshBasicMaterial({ color: 0x4488cc, transparent: true, opacity: 0.35 - i*0.08 });
   const mesh = new THREE.Mesh(geo, mat);
   mesh.rotation.x = Math.PI * (0.5 + i * 0.15);
   scene.add(mesh);
@@ -570,10 +592,14 @@ canvas.addEventListener('wheel', e => {
 function torsion(P, B) { return P > 0 ? B / P : 999; }
 function identityMass(P, N, B, A) { return (P + N + B + A) * ANCHOR; }
 function classify(tau) {
-  if (tau < 0.001)     return 'NOBLE';
-  if (tau < TL * 0.9)  return 'LOCKED';
-  if (tau < TL)        return 'IVA';
+  if (tau < 0.001)        return 'NOBLE';
+  if (tau < TL * 0.88)    return 'LOCKED';    // capstone v12: IVA PEAK = (0.88xTL, TL)
+  if (tau < TL)           return 'IVA_PEAK';  // [9,9,3,13]: sovereign mode, flow state
   return 'SHATTER';
+}
+// Display label — IVA_PEAK renders as "IVA PEAK" in UI
+function stateLabel(state) {
+  return state === 'IVA_PEAK' ? 'IVA PEAK' : state;
 }
 
 // Schwarzschild radius proxy (normalized)
@@ -600,11 +626,11 @@ function updateUI() {
   // State badge
   const badge = document.getElementById('state-badge');
   badge.className = `state-badge badge-${state}`;
-  badge.textContent = state;
+  badge.textContent = stateLabel(state);
 
   // Gauges
   const tauPct  = Math.min(100, (tau / (TL * 3)) * 100);
-  const tauCol  = state === 'SHATTER' ? 'var(--shatter)' : state === 'IVA' ? 'var(--iva)' : state === 'LOCKED' ? 'var(--locked)' : 'var(--noble)';
+  const tauCol  = state === 'SHATTER' ? 'var(--shatter)' : state === 'IVA_PEAK' ? 'var(--iva)' : state === 'LOCKED' ? 'var(--locked)' : 'var(--noble)';
   document.getElementById('g-tau').style.width = tauPct + '%';
   document.getElementById('g-tau').style.background = tauCol;
   document.getElementById('g-tau-val').textContent = tau.toFixed(4);
@@ -633,7 +659,7 @@ function updateUI() {
   document.getElementById('r-acc').textContent   = accretionRate.toFixed(4);
   document.getElementById('r-evap').textContent  = evapRate.toFixed(4);
   document.getElementById('r-bp').textContent    = 'B=' + B.toFixed(3) + ' P=' + P.toFixed(3);
-  document.getElementById('r-state').textContent = state;
+  document.getElementById('r-state').textContent = stateLabel(state);
   document.getElementById('r-state').style.color = tauCol;
 
   // Bottom stats
@@ -642,7 +668,7 @@ function updateUI() {
   document.getElementById('bs-maxtau').textContent  = stats.peakTau.toFixed(4);
   document.getElementById('bs-infall').textContent  = stats.infall;
   document.getElementById('bs-hawk').textContent    = stats.hawking;
-  document.getElementById('bs-state').textContent   = state;
+  document.getElementById('bs-state').textContent   = stateLabel(state);
   document.getElementById('bs-state').style.color   = tauCol;
 
   return { tau, IM, state, ratio, hFlux: parseFloat(hFlux) };
@@ -670,8 +696,8 @@ function animate() {
   const diskSpeed = 0.003 + tau * 0.04;
   diskRings.forEach(({ mesh, mat, baseOpacity }, i) => {
     mesh.rotation.z += diskSpeed * (1 + i * 0.08);
-    // Disk brightness increases with accretion
-    mat.opacity = baseOpacity * (0.5 + accretionRate * 1.5);
+    // Disk brightness increases with accretion — floor at 0.7 so always visible
+    mat.opacity = baseOpacity * (0.7 + accretionRate * 1.3);
     mat.color.setHex(
       accretionRate > 0.3 ? 0xffaa00 :
       accretionRate > 0.1 ? 0xff6600 : 0xff4400
@@ -680,7 +706,7 @@ function animate() {
 
   // ── Photon sphere
   photonMesh.rotation.z += 0.004;
-  photonMat.opacity = 0.15 + Math.sin(t * 3) * 0.08;
+  photonMat.opacity = 0.45 + Math.sin(t * 3) * 0.12;
 
   // ── Polar jets (accretion-driven)
   if (accreting && accretionRate > 0.05) {
@@ -738,9 +764,9 @@ function animate() {
       aPos[i*3+2] = Math.sin(accAngles[i]) * accRadii[i];
     }
     accPartGeo.attributes.position.needsUpdate = true;
-    accPartMat.opacity = Math.min(0.7, accretionRate * 1.5 + 0.1);
+    accPartMat.opacity = Math.min(0.85, accretionRate * 1.5 + 0.25);
   } else {
-    accPartMat.opacity *= 0.97;
+    accPartMat.opacity = Math.max(0.18, accPartMat.opacity * 0.97);
   }
 
   // ── Lensing rings
@@ -820,6 +846,33 @@ function neutronStarMerger() {
   feedLine(`NS MERGER · ΔB=+0.8 ΔP=+0.6 · τ=${torsion(P,B).toFixed(4)} · DEEP SHATTER`, 'fl-in');
 }
 
+// SAG A* IR/X-RAY FLARE
+// ─────────────────────────────────────────────────
+// Flare = F_ext event → transient B-spike (magnetic reconnection / hot spot orbit)
+// B-axis only. P, N, A structurally preserved. NOHARM invariant.
+// Duration: minutes–hours. B returns to baseline after burst.
+// From SNSFL_SagA_Reduction T6 [9,9,4,1]: flare = B-spike, identity preserved.
+// Each flare observed by Chandra/GRAVITY/Keck maps to this exact mechanism.
+function sagAFlare() {
+  const B_baseline = 1.1;
+  const deltaB = 0.18 + Math.random() * 0.22;  // 0.18–0.40 B-spike (observed flare range)
+  const B_before = B;
+  B = Math.min(5, B + deltaB);
+  // P, N, A preserved — NOHARM
+  syncSlidersToState();
+  updateUI();
+  const tau_peak = torsion(P, B).toFixed(4);
+  feedLine(`SAG A* FLARE · ΔB=+${deltaB.toFixed(3)} · τ→${tau_peak} · P/N/A preserved [NOHARM]`, 'fl-in');
+  feedLine(`Magnetic reconnection / hot spot orbit · B-spike only`, 'fl-info');
+  // Auto-decay back toward baseline after 2.5s (flare duration analog)
+  setTimeout(() => {
+    B = Math.max(B_baseline, B - deltaB * 0.85);
+    syncSlidersToState();
+    updateUI();
+    feedLine(`FLARE DECAY · B→${B.toFixed(3)} · τ→${torsion(P,B).toFixed(4)} · QUIET SHATTER restored`, 'fl-out');
+  }, 2500);
+}
+
 // ═══════════════════════════════════════════════════
 // OUT — HAWKING RADIATION / EVAPORATION
 // ═══════════════════════════════════════════════════
@@ -880,6 +933,7 @@ function loadPreset(name) {
   const presets = {
     stellar:     { P: 9.0,  N: 3.0,  B: 1.80, A: 1.0, note: 'Stellar BH M≈10M☉ · deep SHATTER · τ=0.200' },
     supermassive:{ P: 9.8,  N: 6.0,  B: 2.80, A: 2.0, note: 'Supermassive M≈10⁹M☉ · τ=0.286 · anchors galaxy' },
+    sagA:        { P: 6.62, N: 5.8,  B: 1.10, A: 2.5, note: 'Sag A* · 4.154×10⁶M☉ · ADAF · τ=0.166 · Milky Way anchor · [9,9,4,1]' },
     primordial:  { P: 2.0,  N: 1.0,  B: 0.50, A: 0.5, note: 'Primordial micro BH · τ=0.250 · T_H enormous' },
     near_tl:     { P: 8.5,  N: 5.0,  B: 1.17, A: 4.0, note: 'Neutron Star at TOV limit · τ=0.138 → approaching TL' },
     evaporating: { P: 0.8,  N: 1.0,  B: 0.15, A: 0.5, note: 'Late evaporation · P small · T_H huge · τ=0.188' },
@@ -891,6 +945,17 @@ function loadPreset(name) {
   syncSlidersToState();
   updateUI();
   feedLine(`PRESET: ${name.toUpperCase()} · ${p.note}`, 'fl-info');
+  // Show Sag A* flare button only when Sag A* preset is active
+  const flareBtn = document.getElementById('btn-sagflare');
+  if (flareBtn) flareBtn.style.display = (name === 'sagA') ? 'block' : 'none';
+  // Sag A* specific boot lines
+  if (name === 'sagA') {
+    feedLine('SAG A* · Galactic Center · EHT 2022 confirmed', 'fl-info');
+    feedLine('ADAF regime · ~10⁻⁴ Eddington · B=1.1 structurally required', 'fl-info');
+    feedLine('τ=0.166 · τ/TL=1.214 · Quietest known SHATTER state', 'fl-shatter');
+    feedLine('Milky Way disk is LOCKED around this barely-SHATTER core', 'fl-info');
+    feedLine('Flare button active · IR/X-ray burst = transient B-spike', 'fl-in');
+  }
 }
 
 function syncSlidersToState() {
@@ -928,6 +993,7 @@ feedLine('Black Hole · SNSFT Scale Chain [9,9,3,6]', 'fl-info');
 feedLine('τ = B/P ≥ TL = 0.1369 · Collapsed pump', 'fl-shatter');
 feedLine('IN: accretion raises B → deeper SHATTER', 'fl-in');
 feedLine('OUT: Hawking lowers B,P → τ→0 → NOBLE', 'fl-out');
+feedLine('★ SAG A* preset now live · [9,9,4,1] · EHT 2022', 'fl-info');
 feedLine('Drag to orbit · Scroll to zoom', 'fl-info');
 </script>
 </body>
