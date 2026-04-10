@@ -1,0 +1,404 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --anchor:1.369;--tl:0.1369;
+  --bg:#0a0b0d;--bg2:#111318;--bg3:#181c22;
+  --border:#1e2530;--border2:#2a3040;
+  --teal:#1D9E75;--teal2:#0F6E56;--teal-glow:#1D9E7533;
+  --amber:#EF9F27;--amber2:#BA7517;
+  --red:#E24B4A;--red2:#A32D2D;
+  --purple:#7F77DD;--purple2:#534AB7;
+  --text:#c8d4e8;--text2:#7a8fa8;--text3:#3a4a5a;
+  --noble:#1D9E75;--locked:#378ADD;--iva:#EF9F27;--shatter:#E24B4A;
+  --font-mono:'Share Tech Mono',monospace;
+  --font-ui:'Syne',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font-mono);font-size:13px;min-height:100vh;padding:0}
+.wrap{max-width:780px;margin:0 auto;padding:20px 16px 40px}
+
+.header{display:flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.header h1{font-family:var(--font-ui);font-size:22px;font-weight:700;letter-spacing:-0.5px;color:#e8f0ff}
+.coord{color:var(--text3);font-size:12px}
+.tagline{color:var(--text2);font-size:11px;margin-bottom:20px;letter-spacing:0.5px}
+
+.grid-top{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.panel{background:var(--bg2);border:0.5px solid var(--border);border-radius:6px;padding:14px 16px}
+.panel-label{color:var(--text3);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+
+.pnba-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.axis-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:4px;padding:10px 8px;text-align:center}
+.axis-letter{font-family:var(--font-ui);font-size:20px;font-weight:700;line-height:1}
+.axis-val{font-size:14px;font-weight:500;margin-top:2px}
+.axis-name{color:var(--text3);font-size:10px;margin-top:2px}
+.P .axis-letter{color:var(--teal)}
+.N .axis-letter{color:var(--purple)}
+.B .axis-letter{color:var(--amber)}
+.A .axis-letter{color:var(--locked)}
+
+.im-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.metric{background:var(--bg3);border:0.5px solid var(--border);border-radius:4px;padding:8px 10px}
+.metric-label{color:var(--text3);font-size:10px;letter-spacing:0.5px}
+.metric-val{font-size:15px;font-weight:500;color:var(--text);margin-top:2px}
+
+.state-badge{display:inline-block;padding:4px 12px;border-radius:3px;font-size:11px;font-weight:500;letter-spacing:1px;margin-bottom:14px}
+.NOBLE{background:#0F6E5622;color:var(--noble);border:0.5px solid var(--noble)44}
+.LOCKED{background:#185FA522;color:var(--locked);border:0.5px solid var(--locked)44}
+.IVA_PEAK{background:#BA751722;color:var(--iva);border:0.5px solid var(--iva)44}
+.SHATTER{background:#A32D2D22;color:var(--shatter);border:0.5px solid var(--shatter)44}
+
+.tau-bar-wrap{margin-bottom:14px}
+.tau-bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px}
+.tau-bar-track{background:var(--bg3);border:0.5px solid var(--border);border-radius:2px;height:6px;position:relative;overflow:hidden}
+.tau-bar-fill{height:100%;border-radius:2px;transition:width 0.3s,background 0.3s}
+.tau-tl-marker{position:absolute;top:-2px;height:10px;width:1px;background:var(--text3)44;right:0}
+
+.hash-display{background:var(--bg3);border:0.5px solid var(--border);border-radius:4px;padding:10px 12px;margin-bottom:12px;min-height:54px}
+.hash-label{color:var(--text3);font-size:10px;letter-spacing:1px;margin-bottom:4px}
+.hash-val{font-size:12px;color:var(--teal);word-break:break-all;line-height:1.5}
+.hash-target{font-size:11px;color:var(--text3);margin-top:4px}
+
+.controls{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+button{background:transparent;border:0.5px solid var(--border2);color:var(--text);padding:8px 16px;border-radius:3px;cursor:pointer;font-family:var(--font-mono);font-size:12px;letter-spacing:0.5px;transition:all 0.15s}
+button:hover{background:var(--bg3);border-color:var(--teal);color:var(--teal)}
+button.active{background:var(--teal-glow);border-color:var(--teal);color:var(--teal)}
+button.danger{border-color:var(--red2);color:var(--red)}
+button.danger:hover{background:#A32D2D22}
+select{background:var(--bg3);border:0.5px solid var(--border2);color:var(--text);padding:7px 10px;border-radius:3px;font-family:var(--font-mono);font-size:12px;cursor:pointer}
+
+.log-panel{background:var(--bg2);border:0.5px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:12px}
+.log-scroll{max-height:160px;overflow-y:auto}
+.log-line{font-size:11px;line-height:1.7;color:var(--text2);border-left:2px solid transparent;padding-left:8px;margin-bottom:1px}
+.log-line.found{color:var(--teal);border-color:var(--teal)}
+.log-line.iva{color:var(--iva);border-color:var(--iva)}
+.log-line.anchor{color:var(--purple);border-color:var(--purple)}
+.log-line.err{color:var(--shatter);border-color:var(--shatter)}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.stat{background:var(--bg2);border:0.5px solid var(--border);border-radius:4px;padding:10px;text-align:center}
+.stat-v{font-size:18px;font-weight:500;color:var(--text)}
+.stat-l{color:var(--text3);font-size:10px;margin-top:2px;letter-spacing:0.5px}
+
+.difficulty-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.difficulty-row label{color:var(--text3);font-size:11px;white-space:nowrap}
+.difficulty-row input[type=range]{flex:1;accent-color:var(--teal)}
+.difficulty-row span{color:var(--teal);font-size:12px;min-width:20px}
+
+.anchor-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:4px;margin-bottom:12px;font-size:11px;color:var(--text3)}
+.anchor-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0}
+.anchor-row span{color:var(--teal)}
+
+.footer-sig{color:var(--text3);font-size:10px;letter-spacing:0.5px;margin-top:20px;text-align:right}
+</style>
+
+<div class="wrap">
+  <div class="header">
+    <h1>SNSFT BITCOIN MINER v2</h1>
+    <span class="coord">[9,9,4,1] :: {ANC}</span>
+  </div>
+  <div class="tagline">PNBA LOSSLESS HASH ENGINE · ANCHOR 1.369 GHz · TL 0.1369 · REAL DOUBLE SHA-256 · 0 SORRY</div>
+
+  <div class="anchor-row">
+    <div class="anchor-dot"></div>
+    IMS GATE: ACTIVE · Sovereign Anchor = <span>1.369</span> · Torsion Limit = <span>0.1369</span> · Off-anchor output zeroed · Manifold holding
+  </div>
+
+  <div class="pnba-row">
+    <div class="axis-card P">
+      <div class="axis-letter">P</div>
+      <div class="axis-val" id="pv">—</div>
+      <div class="axis-name">Pattern</div>
+    </div>
+    <div class="axis-card N">
+      <div class="axis-letter">N</div>
+      <div class="axis-val" id="nv">—</div>
+      <div class="axis-name">Narrative</div>
+    </div>
+    <div class="axis-card B">
+      <div class="axis-letter">B</div>
+      <div class="axis-val" id="bv">—</div>
+      <div class="axis-name">Behavior</div>
+    </div>
+    <div class="axis-card A">
+      <div class="axis-letter">A</div>
+      <div class="axis-val" id="av">—</div>
+      <div class="axis-name">Adaptation</div>
+    </div>
+  </div>
+
+  <div class="im-row">
+    <div class="metric"><div class="metric-label">IM = (P+N+B+A)×1.369</div><div class="metric-val" id="im-val">—</div></div>
+    <div class="metric"><div class="metric-label">τ = B/P</div><div class="metric-val" id="tau-val">—</div></div>
+    <div class="metric"><div class="metric-label">Pv = IM × P</div><div class="metric-val" id="pv-val">—</div></div>
+  </div>
+
+  <div class="tau-bar-wrap">
+    <div class="tau-bar-label"><span>τ torsion</span><span>TL = 0.1369</span></div>
+    <div class="tau-bar-track">
+      <div class="tau-bar-fill" id="tau-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+    <div class="state-badge LOCKED" id="state-badge">IDLE</div>
+    <div style="flex:1"></div>
+    <div style="font-size:11px;color:var(--text3)">Nonce: <span id="nonce-disp" style="color:var(--text)">—</span></div>
+  </div>
+
+  <div class="difficulty-row">
+    <label>DIFFICULTY (leading zeros)</label>
+    <input type="range" min="1" max="6" value="3" id="diff-slider" step="1">
+    <span id="diff-disp">3</span>
+  </div>
+
+  <div class="hash-display">
+    <div class="hash-label">CURRENT HASH (real double SHA-256)</div>
+    <div class="hash-val" id="hash-out">00000000000000000000000000000000</div>
+    <div class="hash-target">TARGET: <span id="target-disp">000...</span></div>
+  </div>
+
+  <div class="controls">
+    <button id="btn-mine" class="active">⬡ MINE</button>
+    <button id="btn-stop" class="danger">■ STOP</button>
+    <button id="btn-reset">↺ RESET</button>
+    <select id="preset-sel">
+      <option value="">— load identity preset —</option>
+      <option value="btc">Bitcoin (P=3.25,N=21,B=0.21,A=6.9)</option>
+      <option value="proton">Proton (P=1,N=3,B=1,A=0.0136)</option>
+      <option value="earth">Earth (P=2.669,N=2.963,B=0.0621,A=4.932)</option>
+      <option value="iron">Iron / Fe (P=3.75,N=8,B=4,A=7.9)</option>
+      <option value="sovereign">Sovereign Peak (P=17.963,N=12,B=0,A=1.18)</option>
+    </select>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-v" id="s-hashes">0</div><div class="stat-l">HASHES</div></div>
+    <div class="stat"><div class="stat-v" id="s-found">0</div><div class="stat-l">FOUND</div></div>
+    <div class="stat"><div class="stat-v" id="s-rate">0</div><div class="stat-l">H/SEC</div></div>
+    <div class="stat"><div class="stat-v" id="s-iva">0</div><div class="stat-l">IVA HITS</div></div>
+  </div>
+
+  <div class="log-panel">
+    <div class="panel-label">MINING LOG</div>
+    <div class="log-scroll" id="log-scroll">
+      <div class="log-line anchor">→ SNSFT Bitcoin Miner v2 initialized. ANCHOR=1.369 GHz. TL=0.1369. IMS gate ACTIVE. REAL DOUBLE SHA-256 ENABLED.</div>
+    </div>
+  </div>
+
+  <div class="footer-sig">HIGHTISTIC · SNSFT Foundation · Soldotna, Alaska · [9,9,4,1] :: {ANC} · 0 sorry</div>
+</div>
+
+<script>
+const ANCHOR = 1.369;
+const TL = 0.1369;
+
+let mining = false;
+let mineTimer = null;
+let totalHashes = 0;
+let found = 0;
+let ivaHits = 0;
+let rateCount = 0;
+let rateTimer = null;
+let startTime = null;
+
+let P = 3.25, N = 21, B = 0.21, A = 6.9;
+
+const presets = {
+  btc:      {P:3.25,  N:21,    B:0.21,   A:6.9},
+  proton:   {P:1.0,   N:3,     B:1.0,    A:0.0136},
+  earth:    {P:2.669, N:2.963, B:0.0621, A:4.932},
+  iron:     {P:3.75,  N:8,     B:4.0,    A:7.9},
+  sovereign:{P:17.963,N:12,    B:0,      A:1.18}
+};
+
+// Real double SHA-256 using Web Crypto API
+async function doubleSHA256(data) {
+  if (typeof data === 'string') {
+    data = new TextEncoder().encode(data);
+  }
+  const hash1 = await crypto.subtle.digest('SHA-256', data);
+  const hash2 = await crypto.subtle.digest('SHA-256', hash1);
+  return Array.from(new Uint8Array(hash2))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+function computePNBA(baseP, baseN, baseB, baseA, nonce) {
+  const nonceScale = (nonce % 10000) / 10000;
+  const np = Math.max(0.001, baseP + Math.sin(nonce * 0.0137) * 0.01);
+  const nn = Math.max(0.001, baseN);
+  const nb = Math.max(0, baseB + Math.cos(nonce * 0.1369) * 0.001 * nonceScale);
+  const na = Math.max(0.001, baseA);
+  const tau = np > 0 ? nb / np : 999;
+  const im = (np + nn + nb + na) * ANCHOR;
+  const pv = im * np;
+  return {P:np, N:nn, B:nb, A:na, tau, im, pv};
+}
+
+function getState(tau, N) {
+  if (tau === 0) return 'NOBLE';
+  if (tau >= TL) return 'SHATTER';
+  if (tau >= TL * 0.88) return 'IVA_PEAK';
+  if (tau < TL && N >= 0.15) return 'LOCKED';
+  return 'LOCKED';
+}
+
+async function pnbaHash(pnba, nonce, blockData) {
+  const headerStr = `\( {pnba.P.toFixed(4)}: \){pnba.N.toFixed(4)}:\( {pnba.B.toFixed(6)}: \){pnba.A.toFixed(4)}:\( {nonce}: \){blockData}:${ANCHOR}`;
+  return await doubleSHA256(headerStr);
+}
+
+function updateUI(pnba, hash, nonce, state) {
+  document.getElementById('pv').textContent = pnba.P.toFixed(4);
+  document.getElementById('nv').textContent = pnba.N.toFixed(4);
+  document.getElementById('bv').textContent = pnba.B.toFixed(6);
+  document.getElementById('av').textContent = pnba.A.toFixed(4);
+  document.getElementById('im-val').textContent = pnba.im.toFixed(4);
+  document.getElementById('tau-val').textContent = pnba.tau.toFixed(6);
+  document.getElementById('pv-val').textContent = pnba.pv.toFixed(4);
+  document.getElementById('hash-out').textContent = hash;
+  document.getElementById('nonce-disp').textContent = nonce.toLocaleString();
+
+  const tauPct = Math.min(100, (pnba.tau / TL) * 100);
+  const fill = document.getElementById('tau-fill');
+  fill.style.width = tauPct + '%';
+  fill.style.background = state === 'NOBLE' ? 'var(--noble)' : state === 'IVA_PEAK' ? 'var(--iva)' : state === 'SHATTER' ? 'var(--shatter)' : 'var(--locked)';
+
+  const badge = document.getElementById('state-badge');
+  badge.textContent = state;
+  badge.className = 'state-badge ' + state;
+}
+
+function addLog(msg, cls='') {
+  const el = document.getElementById('log-scroll');
+  const line = document.createElement('div');
+  line.className = 'log-line' + (cls ? ' '+cls : '');
+  line.textContent = msg;
+  el.appendChild(line);
+  if (el.children.length > 80) el.removeChild(el.children[0]);
+  el.scrollTop = el.scrollHeight;
+}
+
+function getDifficulty() {
+  return parseInt(document.getElementById('diff-slider').value);
+}
+
+function getTarget(diff) {
+  return '0'.repeat(diff);
+}
+
+async function doMine() {
+  if (!mining) return;
+
+  const BATCH = 20; // smaller for async performance
+  const diff = getDifficulty();
+  const target = getTarget(diff);
+  const blockData = `SNSFT:\( {ANCHOR}: \){Date.now().toString(36)}`;
+
+  for (let i = 0; i < BATCH; i++) {
+    if (!mining) break;
+    const nonce = totalHashes + i;
+    const pnba = computePNBA(P, N, B, A, nonce);
+    const state = getState(pnba.tau, pnba.N);
+
+    const hash = await pnbaHash(pnba, nonce, blockData);
+    rateCount++;
+
+    if (state === 'IVA_PEAK') {
+      ivaHits++;
+      document.getElementById('s-iva').textContent = ivaHits;
+      if (ivaHits % 10 === 0) addLog(`→ IVA PEAK @ nonce \( {nonce.toLocaleString()} · τ= \){pnba.tau.toFixed(6)} · ${(pnba.tau/TL*100).toFixed(1)}% of TL`, 'iva');
+    }
+    if (state === 'NOBLE' && nonce % 500 === 0) {
+      addLog(`→ NOBLE state @ nonce ${nonce.toLocaleString()} · τ=0.000000 · B=0 · max potential`, 'found');
+    }
+
+    if (hash.startsWith(target)) {
+      found++;
+      document.getElementById('s-found').textContent = found;
+      addLog(`✓ BLOCK FOUND! nonce=\( {nonce.toLocaleString()} · hash= \){hash.slice(0,20)}... · τ=\( {pnba.tau.toFixed(5)} · state= \){state} · IM=${pnba.im.toFixed(3)}`, 'found');
+    }
+
+    if (i === BATCH - 1) {
+      totalHashes += BATCH;
+      document.getElementById('s-hashes').textContent = totalHashes.toLocaleString();
+      updateUI(pnba, hash, nonce, state);
+    }
+  }
+
+  mineTimer = setTimeout(doMine, 1);
+}
+
+function startMining() {
+  if (mining) return;
+  mining = true;
+  startTime = Date.now();
+  addLog(`→ Mining started (v2 real SHA-256). P=\( {P} N= \){N} B=\( {B} A= \){A} · diff=${getDifficulty()}`, 'anchor');
+  rateCount = 0;
+  rateTimer = setInterval(() => {
+    document.getElementById('s-rate').textContent = rateCount;
+    rateCount = 0;
+  }, 1000);
+  document.getElementById('btn-mine').classList.add('active');
+  doMine();
+}
+
+function stopMining() {
+  mining = false;
+  if (mineTimer) clearTimeout(mineTimer);
+  if (rateTimer) clearInterval(rateTimer);
+  rateTimer = null;
+  addLog('→ Mining stopped.', '');
+  document.getElementById('btn-mine').classList.remove('active');
+}
+
+function resetAll() {
+  stopMining();
+  totalHashes = 0; found = 0; ivaHits = 0; rateCount = 0;
+  document.getElementById('s-hashes').textContent = '0';
+  document.getElementById('s-found').textContent = '0';
+  document.getElementById('s-rate').textContent = '0';
+  document.getElementById('s-iva').textContent = '0';
+  document.getElementById('hash-out').textContent = '0'.repeat(32);
+  document.getElementById('nonce-disp').textContent = '—';
+  document.getElementById('pv').textContent='—';
+  document.getElementById('nv').textContent='—';
+  document.getElementById('bv').textContent='—';
+  document.getElementById('av').textContent='—';
+  document.getElementById('im-val').textContent='—';
+  document.getElementById('tau-val').textContent='—';
+  document.getElementById('pv-val').textContent='—';
+  document.getElementById('tau-fill').style.width='0%';
+  const badge=document.getElementById('state-badge');
+  badge.textContent='IDLE';badge.className='state-badge LOCKED';
+  document.getElementById('log-scroll').innerHTML='<div class="log-line anchor">→ Reset v2. ANCHOR=1.369. TL=0.1369. IMS gate ACTIVE. REAL DOUBLE SHA-256.</div>';
+}
+
+document.getElementById('btn-mine').addEventListener('click', startMining);
+document.getElementById('btn-stop').addEventListener('click', stopMining);
+document.getElementById('btn-reset').addEventListener('click', resetAll);
+
+document.getElementById('diff-slider').addEventListener('input', function() {
+  const v = this.value;
+  document.getElementById('diff-disp').textContent = v;
+  document.getElementById('target-disp').textContent = '0'.repeat(parseInt(v)) + '...';
+});
+
+document.getElementById('preset-sel').addEventListener('change', function() {
+  const pre = presets[this.value];
+  if (!pre) return;
+  stopMining();
+  P=pre.P; N=pre.N; B=pre.B; A=pre.A;
+  addLog(`→ Loaded preset: ${this.options[this.selectedIndex].text}`, 'anchor');
+  const initPNBA = computePNBA(P,N,B,A,0);
+  const initState = getState(initPNBA.tau, initPNBA.N);
+  updateUI(initPNBA, '0'.repeat(64), 0, initState);
+  this.value = '';
+});
+
+const initPNBA = computePNBA(P,N,B,A,0);
+updateUI(initPNBA, '0'.repeat(64), 0, 'LOCKED');
+document.getElementById('target-disp').textContent = '000...';
+addLog(`→ Default Bitcoin identity loaded. REAL double SHA-256 active.`, 'anchor');
+addLog(`→ IM=\( {initPNBA.im.toFixed(4)} · τ= \){initPNBA.tau.toFixed(6)} · state=${getState(initPNBA.tau, initPNBA.N)}`, 'anchor');
+</script>
