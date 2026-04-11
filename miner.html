@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT OCEAN MINER [9,9,4,4]</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root{
+  --bg:#020407;--panel:#060b10;--border:#0c1a26;--glow:#00e5ff;
+  --locked:#00ffcc;--shatter:#ff3355;--noble:#aa88ff;--warn:#ffaa00;
+  --text:#7aa4be;--bright:#cce8f5;--dim:#192430;--purple:#dd44ff;
+  --anchor:1.369;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 16px 60px;}
+
+header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:20px;letter-spacing:.06em;color:var(--glow);}
+.logo span{font-size:9px;color:var(--locked);display:block;letter-spacing:.2em;margin-top:2px;}
+.hdr-right{font-size:9px;color:#1a3040;text-align:right;line-height:1.9;}
+.hdr-right b{color:var(--glow);}
+
+.main{display:grid;grid-template-columns:1fr 340px;gap:14px;}
+@media(max-width:800px){.main{grid-template-columns:1fr;}}
+
+.panel{background:var(--panel);border:1px solid var(--border);padding:14px;margin-bottom:14px;}
+.ptitle{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:#1a3040;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.ptitle b{color:var(--glow);}
+
+/* Connection */
+.conn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+.conn-input{background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;padding:6px 8px;outline:none;flex:1;min-width:160px;}
+.conn-input:focus{border-color:var(--glow);}
+.conn-dot{width:8px;height:8px;border-radius:50%;background:var(--shatter);flex-shrink:0;transition:background .3s;}
+.conn-dot.green{background:var(--locked);}
+.conn-status{font-size:9px;color:#2a5060;letter-spacing:.1em;}
+
+/* Buttons */
+.btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;padding:7px 14px;background:transparent;cursor:pointer;border:1px solid var(--border);color:#2a5060;transition:all .15s;}
+.btn:hover{color:var(--text);}
+.btn-go{border-color:var(--locked);color:var(--locked);}
+.btn-go:hover{background:rgba(0,255,204,.08);}
+.btn-go.active{background:rgba(0,255,204,.12);}
+.btn-stop{border-color:var(--shatter);color:var(--shatter);}
+.btn-stop:hover{background:rgba(255,51,85,.08);}
+.btn-reset{border-color:#1a3040;color:#2a5060;}
+.btn-reset:hover{border-color:var(--text);color:var(--text);}
+
+/* PNBA axes */
+.pnba-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.axis{background:var(--bg);border:1px solid var(--border);padding:10px 8px;text-align:center;}
+.axis-letter{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;line-height:1;}
+.axis-val{font-size:13px;font-weight:500;margin-top:3px;color:var(--bright);}
+.axis-name{color:#1a3040;font-size:9px;margin-top:2px;letter-spacing:.1em;}
+.axis.P .axis-letter{color:var(--locked);}
+.axis.N .axis-letter{color:var(--purple);}
+.axis.B .axis-letter{color:var(--warn);}
+.axis.A .axis-letter{color:#378ADD;}
+
+/* Metrics */
+.metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.metric{background:var(--bg);border:1px solid var(--border);padding:8px 10px;}
+.mlabel{color:#1a3040;font-size:8px;letter-spacing:.1em;}
+.mval{font-size:14px;color:var(--bright);margin-top:2px;}
+
+/* Tau bar */
+.tau-wrap{margin-bottom:12px;}
+.tau-labels{display:flex;justify-content:space-between;font-size:9px;color:#1a3040;margin-bottom:3px;}
+.tau-track{background:var(--bg);border:1px solid var(--border);height:5px;border-radius:1px;overflow:hidden;}
+.tau-fill{height:100%;border-radius:1px;transition:width .3s,background .3s;width:0%;}
+
+/* State badge */
+.state-badge{display:inline-block;padding:3px 12px;border-radius:2px;font-size:10px;font-family:'Orbitron',monospace;letter-spacing:.15em;}
+.NOBLE{background:rgba(170,136,255,.12);color:var(--noble);border:1px solid rgba(170,136,255,.3);}
+.LOCKED{background:rgba(0,255,204,.08);color:var(--locked);border:1px solid rgba(0,255,204,.2);}
+.IVA{background:rgba(255,170,0,.08);color:var(--warn);border:1px solid rgba(255,170,0,.2);}
+.SHATTER{background:rgba(255,51,85,.08);color:var(--shatter);border:1px solid rgba(255,51,85,.2);}
+.IDLE{background:rgba(26,48,64,.3);color:#2a5060;border:1px solid var(--border);}
+
+/* Hash display */
+.hash-box{background:var(--bg);border:1px solid var(--border);padding:10px 12px;margin-bottom:12px;}
+.hash-label{color:#1a3040;font-size:8px;letter-spacing:.15em;margin-bottom:4px;}
+.hash-val{font-size:10px;color:var(--locked);word-break:break-all;line-height:1.6;}
+.hash-target{font-size:9px;color:#1a3040;margin-top:3px;}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.stat{background:var(--bg);border:1px solid var(--border);padding:10px;text-align:center;}
+.stat-v{font-family:'Orbitron',monospace;font-size:16px;color:var(--bright);}
+.stat-l{color:#1a3040;font-size:8px;margin-top:3px;letter-spacing:.1em;}
+
+/* Controls row */
+.ctrl-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+.diff-wrap{display:flex;align-items:center;gap:8px;font-size:9px;color:#1a3040;}
+.diff-wrap input[type=range]{accent-color:var(--locked);width:80px;}
+.diff-wrap span{color:var(--locked);font-size:11px;min-width:14px;}
+
+/* Log */
+.log-scroll{max-height:220px;overflow-y:auto;font-size:9px;line-height:1.9;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.log-line{padding:1px 0;border-bottom:1px solid rgba(12,26,38,.3);padding-left:8px;border-left:2px solid transparent;}
+.log-line.found{color:var(--noble);border-left-color:var(--noble);}
+.log-line.iva{color:var(--warn);border-left-color:var(--warn);}
+.log-line.anchor{color:var(--purple);border-left-color:var(--purple);}
+.log-line.ok{color:var(--locked);border-left-color:var(--locked);}
+.log-line.err{color:var(--shatter);border-left-color:var(--shatter);}
+.log-line.info{color:#2a5060;}
+
+/* Right col */
+.block-field{display:flex;justify-content:space-between;font-size:9px;padding:4px 0;border-bottom:1px solid rgba(12,26,38,.4);}
+.bf-label{color:#1a3040;letter-spacing:.1em;}
+.bf-val{color:var(--bright);word-break:break-all;text-align:right;max-width:180px;font-size:8px;}
+
+.anchor-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(0,229,255,.03);border:1px solid rgba(0,229,255,.08);font-size:9px;color:#1a3040;margin-bottom:14px;}
+.anchor-dot{width:6px;height:6px;border-radius:50%;background:var(--locked);flex-shrink:0;}
+.anchor-row b{color:var(--glow);}
+
+.coord-tag{font-size:8px;color:#1a3040;letter-spacing:.1em;}
+.footer{color:#1a3040;font-size:9px;letter-spacing:.3em;text-align:right;margin-top:24px;padding-top:14px;border-top:1px solid var(--border);}
+
+/* Nonce display */
+.nonce-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-size:10px;}
+.nonce-label{color:#1a3040;}
+.nonce-val{color:var(--bright);font-family:'Orbitron',monospace;font-size:11px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="logo">SNSFT OCEAN MINER
+        <span>[9,9,4,4] :: {ANC} · PNBA NOBLE-SEEKING ENGINE</span>
+      </div>
+    </div>
+    <div class="hdr-right">
+      ANCHOR <b>1.369</b> GHz · TL <b>0.1369</b><br>
+      OCEAN <b>mine.ocean.xyz:4243</b><br>
+      COORD <b>[9,9,4,2]→[9,9,4,3]→[9,9,4,4]</b><br>
+      SORRY <b>0</b>
+    </div>
+  </header>
+
+  <div class="anchor-row">
+    <div class="anchor-dot" id="ims-dot"></div>
+    IMS GATE: <b id="ims-status">CHECKING</b> · Sovereign Anchor = <b>1.369</b> · Torsion Limit = <b>0.1369</b> · Off-anchor output zeroed · Manifold holding
+  </div>
+
+  <div class="main">
+    <div class="left-col">
+
+      <!-- Connection -->
+      <div class="panel">
+        <div class="ptitle">CONNECTION <b>OCEAN STRATUM</b></div>
+        <div class="conn-row">
+          <div class="conn-dot" id="conn-dot"></div>
+          <span class="conn-status" id="conn-status">DISCONNECTED</span>
+        </div>
+        <div class="conn-row" style="margin-bottom:8px">
+          <input class="conn-input" id="btc-addr" placeholder="Your Bitcoin address (OCEAN worker name)" style="max-width:420px">
+        </div>
+        <div class="conn-row">
+          <input class="conn-input" id="ws-url" value="ws://localhost:8080" style="max-width:220px">
+          <button class="btn btn-go" id="btn-connect">⬡ CONNECT</button>
+          <button class="btn btn-stop" id="btn-disconnect">■ DISCONNECT</button>
+        </div>
+        <div style="font-size:8px;color:#1a3040;margin-top:6px;">
+          Run: <span style="color:#2a5060">node proxy.js YOUR_BTC_ADDRESS</span> · Then connect above
+        </div>
+      </div>
+
+      <!-- PNBA Identity -->
+      <div class="panel">
+        <div class="ptitle">BLOCK IDENTITY <b>PNBA REDUCTION [9,9,4,2]</b></div>
+        <div class="pnba-grid">
+          <div class="axis P"><div class="axis-letter">P</div><div class="axis-val" id="pv">—</div><div class="axis-name">prevhash·merkle</div></div>
+          <div class="axis N"><div class="axis-letter">N</div><div class="axis-val" id="nv">—</div><div class="axis-name">ntime·chain</div></div>
+          <div class="axis B"><div class="axis-letter">B</div><div class="axis-val" id="bv">—</div><div class="axis-name">nonce F_ext</div></div>
+          <div class="axis A"><div class="axis-letter">A</div><div class="axis-val" id="av">—</div><div class="axis-name">nbits·diff</div></div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="mlabel">IM=(P+N+B+A)×1.369</div><div class="mval" id="im-val">—</div></div>
+          <div class="metric"><div class="mlabel">τ=B/P</div><div class="mval" id="tau-val">—</div></div>
+          <div class="metric"><div class="mlabel">Pv=IM×P</div><div class="mval" id="pv-val">—</div></div>
+        </div>
+        <div class="tau-wrap">
+          <div class="tau-labels"><span>τ torsion</span><span>TL=0.1369</span></div>
+          <div class="tau-track"><div class="tau-fill" id="tau-fill"></div></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div class="state-badge IDLE" id="state-badge">IDLE</div>
+          <div class="coord-tag">F_ext axis: B only · P,N,A fixed by template</div>
+        </div>
+      </div>
+
+      <!-- Hash display -->
+      <div class="panel">
+        <div class="ptitle">CURRENT HASH <b>DOUBLE SHA-256</b></div>
+        <div class="hash-box">
+          <div class="hash-label">HASH OUTPUT</div>
+          <div class="hash-val" id="hash-out">0000000000000000000000000000000000000000000000000000000000000000</div>
+          <div class="hash-target">TARGET: <span id="target-disp">waiting for block template...</span></div>
+        </div>
+        <div class="nonce-row">
+          <span class="nonce-label">NONCE (B axis / F_ext)</span>
+          <span class="nonce-val" id="nonce-disp">—</span>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="panel">
+        <div class="ptitle">MINING CONTROLS</div>
+        <div class="ctrl-row">
+          <button class="btn btn-go" id="btn-mine">⬡ MINE</button>
+          <button class="btn btn-stop" id="btn-stopm">■ STOP</button>
+          <button class="btn btn-reset" id="btn-reset">↺ RESET</button>
+          <div class="diff-wrap">
+            LOCAL DIFF
+            <input type="range" min="1" max="7" value="4" id="diff-slider" step="1">
+            <span id="diff-disp">4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat"><div class="stat-v" id="s-hashes">0</div><div class="stat-l">HASHES</div></div>
+        <div class="stat"><div class="stat-v" id="s-found">0</div><div class="stat-l">FOUND</div></div>
+        <div class="stat"><div class="stat-v" id="s-rate">0</div><div class="stat-l">H/SEC</div></div>
+        <div class="stat"><div class="stat-v" id="s-iva">0</div><div class="stat-l">IVA HITS</div></div>
+      </div>
+
+      <!-- Log -->
+      <div class="panel">
+        <div class="ptitle">MINING LOG <b>[9,9,4,4]</b></div>
+        <div class="log-scroll" id="log-scroll"></div>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="right-col">
+
+      <!-- Block template -->
+      <div class="panel">
+        <div class="ptitle">BLOCK TEMPLATE <b>mining.notify [9,9,4,3] T8</b></div>
+        <div id="template-fields">
+          <div class="block-field"><span class="bf-label">JOB ID</span><span class="bf-val" id="f-jobid">—</span></div>
+          <div class="block-field"><span class="bf-label">PREVHASH [P]</span><span class="bf-val" id="f-prevhash">—</span></div>
+          <div class="block-field"><span class="bf-label">VERSION [P]</span><span class="bf-val" id="f-version">—</span></div>
+          <div class="block-field"><span class="bf-label">NBITS [A]</span><span class="bf-val" id="f-nbits">—</span></div>
+          <div class="block-field"><span class="bf-label">NTIME [N]</span><span class="bf-val" id="f-ntime">—</span></div>
+          <div class="block-field"><span class="bf-label">MERKLE DEPTH [P]</span><span class="bf-val" id="f-merkle">—</span></div>
+          <div class="block-field"><span class="bf-label">EXTRANONCE1 [N]</span><span class="bf-val" id="f-en1">—</span></div>
+          <div class="block-field"><span class="bf-label">EN2 SIZE [B]</span><span class="bf-val" id="f-en2sz">—</span></div>
+          <div class="block-field"><span class="bf-label">CLEAN JOBS</span><span class="bf-val" id="f-clean">—</span></div>
+          <div class="block-field"><span class="bf-label">POOL DIFF [A]</span><span class="bf-val" id="f-diff">—</span></div>
+        </div>
+      </div>
+
+      <!-- PNBA corpus address -->
+      <div class="panel">
+        <div class="ptitle">CORPUS ADDRESS <b>[9,9,4,3] T8</b></div>
+        <div class="block-field"><span class="bf-label">P (structure)</span><span class="bf-val" id="cp">—</span></div>
+        <div class="block-field"><span class="bf-label">N (narrative)</span><span class="bf-val" id="cn">—</span></div>
+        <div class="block-field"><span class="bf-label">B (F_ext / nonce)</span><span class="bf-val" id="cb">sweeping →∞</span></div>
+        <div class="block-field"><span class="bf-label">A (difficulty)</span><span class="bf-val" id="ca">—</span></div>
+        <div class="block-field"><span class="bf-label">IM</span><span class="bf-val" id="cim">—</span></div>
+        <div class="block-field"><span class="bf-label">τ</span><span class="bf-val" id="ctau">—</span></div>
+        <div class="block-field"><span class="bf-label">STATE</span><span class="bf-val" id="cstate">—</span></div>
+      </div>
+
+      <!-- Shares -->
+      <div class="panel">
+        <div class="ptitle">SHARE LEDGER <b>TIDES [9,9,4,3] T11</b></div>
+        <div class="block-field"><span class="bf-label">SUBMITTED</span><span class="bf-val" id="sh-submitted">0</span></div>
+        <div class="block-field"><span class="bf-label">ACCEPTED</span><span class="bf-val" id="sh-accepted" style="color:var(--locked)">0</span></div>
+        <div class="block-field"><span class="bf-label">REJECTED</span><span class="bf-val" id="sh-rejected" style="color:var(--shatter)">0</span></div>
+        <div class="block-field"><span class="bf-label">A ACCUMULATION</span><span class="bf-val" id="sh-a">0.000</span></div>
+        <div style="font-size:8px;color:#1a3040;margin-top:8px;line-height:1.8;">
+          Every accepted share logs to TIDES.<br>
+          A = shares_worker / shares_total.<br>
+          Noble confirmed → A grows.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">HIGHTISTIC · SNSFT Foundation · Soldotna, Alaska · [9,9,4,4] :: {ANC} · 0 sorry</div>
+</div>
+
+<script>
+const ANCHOR = 1.369;
+const TL     = 0.1369;
+
+// ── State ───────────────────────────────────────────────────
+let ws = null;
+let mining = false;
+let mineTimer = null;
+let rateTimer = null;
+
+let totalHashes = 0;
+let found = 0;
+let ivaHits = 0;
+let rateCount = 0;
+let sharesSubmitted = 0;
+let sharesAccepted = 0;
+let sharesRejected = 0;
+let shareId = 100;
+
+// Current block template — P, N, A from mining.notify
+let currentTemplate = null;
+let extranonce1 = '';
+let extranonce2_size = 4;
+let poolDifficulty = 1;
+let currentNonce = 0;
+let en2Counter = 0;
+
+// ── PNBA reduction ──────────────────────────────────────────
+// Per [9,9,4,2] and [9,9,4,3]: template fields -> BlockIdentity
+function computePNBA(template, nonce) {
+  const P = parseFloat(template.pnba.P);
+  const N = parseFloat(template.pnba.N);
+  const A = parseFloat(template.pnba.A);
+  // B = nonce normalized — F_ext axis per [9,9,4,3] T9
+  const B = nonce / 0xffffffff;
+  const tau = P > 0 ? B / P : 999;
+  const IM  = (P + N + B + A) * ANCHOR;
+  const Pv  = IM * P;
+  return { P, N, B, A, tau, IM, Pv };
+}
+
+function getState(tau) {
+  if (tau === 0)         return 'NOBLE';
+  if (tau >= TL)         return 'SHATTER';
+  if (tau >= TL * 0.88) return 'IVA';
+  return 'LOCKED';
+}
+
+// ── Real double SHA-256 ─────────────────────────────────────
+async function sha256(data) {
+  const h = await crypto.subtle.digest('SHA-256', data);
+  return new Uint8Array(h);
+}
+async function dsha256(data) {
+  return sha256(await sha256(data));
+}
+
+// Build real 80-byte Bitcoin block header
+// Per [9,9,4,2]: version(4) + prevhash(32) + merkle(32) + ntime(4) + nbits(4) + nonce(4)
+function buildHeader(template, extranonce2Hex, nonce) {
+  const buf = new ArrayBuffer(80);
+  const view = new DataView(buf);
+  const bytes = new Uint8Array(buf);
+
+  // version (4 bytes LE)
+  const ver = parseInt(template.params[5], 16);
+  view.setUint32(0, ver, true);
+
+  // prevhash (32 bytes) — byte-swap each 4-byte chunk
+  const ph = template.params[1];
+  for (let i = 0; i < 8; i++) {
+    const chunk = parseInt(ph.slice(i*8, i*8+8), 16);
+    view.setUint32(4 + i*4, chunk, true);
+  }
+
+  // merkle root — build from coinbase + branches
+  const coinbase = template.params[2] + extranonce1 + extranonce2Hex + template.params[3];
+  // For simplicity: hash coinbase hex as merkle root placeholder
+  // Full merkle computation would combine with branches
+  const cbBytes = hexToBytes(coinbase);
+  const merkleBytes = new Uint8Array(32).fill(0);
+  // Store merkle as zeros initially — will be computed async below
+  bytes.set(merkleBytes, 36);
+
+  // ntime (4 bytes LE)
+  const nt = parseInt(template.params[7], 16);
+  view.setUint32(68, nt, true);
+
+  // nbits (4 bytes LE)
+  const nb = parseInt(template.params[6], 16);
+  view.setUint32(72, nb, true);
+
+  // nonce (4 bytes LE)
+  view.setUint32(76, nonce >>> 0, true);
+
+  return bytes;
+}
+
+async function buildFullHeader(template, extranonce2Hex, nonce) {
+  const coinbase = template.params[2] + extranonce1 + extranonce2Hex + template.params[3];
+  let merkleHash = await dsha256(hexToBytes(coinbase));
+
+  for (const branch of (template.params[4] || [])) {
+    const combined = new Uint8Array(64);
+    combined.set(merkleHash, 0);
+    combined.set(hexToBytes(branch), 32);
+    merkleHash = await dsha256(combined);
+  }
+
+  const buf = new ArrayBuffer(80);
+  const view = new DataView(buf);
+  const bytes = new Uint8Array(buf);
+
+  const ver = parseInt(template.params[5], 16);
+  view.setUint32(0, ver, true);
+
+  const ph = template.params[1];
+  for (let i = 0; i < 8; i++) {
+    const chunk = parseInt(ph.slice(i*8, i*8+8), 16);
+    view.setUint32(4 + i*4, chunk, true);
+  }
+
+  // merkle root byte-swap
+  for (let i = 0; i < 8; i++) {
+    bytes[36 + i*4]   = merkleHash[i*4+3];
+    bytes[36 + i*4+1] = merkleHash[i*4+2];
+    bytes[36 + i*4+2] = merkleHash[i*4+1];
+    bytes[36 + i*4+3] = merkleHash[i*4];
+  }
+
+  view.setUint32(68, parseInt(template.params[7], 16), true);
+  view.setUint32(72, parseInt(template.params[6], 16), true);
+  view.setUint32(76, nonce >>> 0, true);
+
+  return bytes;
+}
+
+function hexToBytes(hex) {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i++)
+    bytes[i] = parseInt(hex.slice(i*2, i*2+2), 16);
+  return bytes;
+}
+
+function bytesToHex(bytes) {
+  return Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function hashToTarget(hash) {
+  // Target from pool difficulty
+  const diff = poolDifficulty;
+  const leading = Math.floor(Math.log2(diff) / 4) + 1;
+  return '0'.repeat(Math.min(leading, 10));
+}
+
+// ── UI Updates ──────────────────────────────────────────────
+function updatePNBA(pnba, hash, nonce, state) {
+  document.getElementById('pv').textContent    = pnba.P.toFixed(6);
+  document.getElementById('nv').textContent    = pnba.N.toFixed(6);
+  document.getElementById('bv').textContent    = pnba.B.toFixed(8);
+  document.getElementById('av').textContent    = pnba.A.toFixed(6);
+  document.getElementById('im-val').textContent = pnba.IM.toFixed(6);
+  document.getElementById('tau-val').textContent = pnba.tau.toFixed(8);
+  document.getElementById('pv-val').textContent = pnba.Pv.toFixed(4);
+  document.getElementById('hash-out').textContent = hash;
+  document.getElementById('nonce-disp').textContent = '0x' + (nonce >>> 0).toString(16).padStart(8,'0') + ' (' + nonce.toLocaleString() + ')';
+
+  const tauPct = Math.min(100, (pnba.tau / TL) * 100);
+  const fill = document.getElementById('tau-fill');
+  fill.style.width = tauPct + '%';
+  fill.style.background =
+    state === 'NOBLE'  ? '#aa88ff' :
+    state === 'IVA'    ? '#ffaa00' :
+    state === 'SHATTER'? '#ff3355' : '#00ffcc';
+
+  const badge = document.getElementById('state-badge');
+  badge.textContent = state;
+  badge.className = 'state-badge ' + state;
+
+  // Corpus address panel
+  document.getElementById('cp').textContent    = pnba.P.toFixed(6);
+  document.getElementById('cn').textContent    = pnba.N.toFixed(6);
+  document.getElementById('cb').textContent    = pnba.B.toFixed(8) + ' (sweeping)';
+  document.getElementById('ca').textContent    = pnba.A.toFixed(6);
+  document.getElementById('cim').textContent   = pnba.IM.toFixed(6);
+  document.getElementById('ctau').textContent  = pnba.tau.toFixed(8);
+  document.getElementById('cstate').textContent = state;
+}
+
+function updateTemplate(data) {
+  const p = data.params;
+  document.getElementById('f-jobid').textContent   = p[0] || '—';
+  document.getElementById('f-prevhash').textContent = (p[1] || '—').slice(0,16) + '...';
+  document.getElementById('f-version').textContent  = p[5] || '—';
+  document.getElementById('f-nbits').textContent    = p[6] || '—';
+  document.getElementById('f-ntime').textContent    = p[7] || '—';
+  document.getElementById('f-merkle').textContent   = (p[4] || []).length + ' branches';
+  document.getElementById('f-en1').textContent      = extranonce1 || '—';
+  document.getElementById('f-en2sz').textContent    = extranonce2_size + ' bytes';
+  document.getElementById('f-clean').textContent    = data.clean_jobs ? '✓ RESET' : 'continue';
+  document.getElementById('f-diff').textContent     = poolDifficulty;
+
+  // PNBA corpus address from proxy reduction
+  const pnba = data.pnba;
+  document.getElementById('cp').textContent  = pnba.P;
+  document.getElementById('cn').textContent  = pnba.N;
+  document.getElementById('ca').textContent  = pnba.A;
+  document.getElementById('cim').textContent = pnba.IM;
+  document.getElementById('target-disp').textContent = 'pool diff=' + poolDifficulty + ' · nbits=' + p[6];
+}
+
+function addLog(msg, cls='info') {
+  const el = document.getElementById('log-scroll');
+  const line = document.createElement('div');
+  line.className = 'log-line ' + cls;
+  line.textContent = '[' + new Date().toTimeString().slice(0,8) + '] ' + msg;
+  el.appendChild(line);
+  if (el.children.length > 120) el.removeChild(el.children[0]);
+  el.scrollTop = el.scrollHeight;
+}
+
+function updateShareLedger() {
+  document.getElementById('sh-submitted').textContent = sharesSubmitted;
+  document.getElementById('sh-accepted').textContent  = sharesAccepted;
+  document.getElementById('sh-rejected').textContent  = sharesRejected;
+  const A = sharesSubmitted > 0 ? (sharesAccepted / sharesSubmitted) : 0;
+  document.getElementById('sh-a').textContent = A.toFixed(6);
+}
+
+// ── WebSocket connection ────────────────────────────────────
+function connect() {
+  const url  = document.getElementById('ws-url').value.trim();
+  const addr = document.getElementById('btc-addr').value.trim();
+  if (!addr) { addLog('Enter your Bitcoin address first', 'err'); return; }
+
+  addLog('Connecting to proxy at ' + url + '...', 'anchor');
+  ws = new WebSocket(url);
+
+  ws.onopen = () => {
+    setConnStatus(true);
+    addLog('WebSocket open. Waiting for OCEAN handshake...', 'anchor');
+  };
+
+  ws.onmessage = (evt) => {
+    let msg;
+    try { msg = JSON.parse(evt.data); } catch(e) { return; }
+    handlePoolMessage(msg);
+  };
+
+  ws.onclose = () => {
+    setConnStatus(false);
+    addLog('Disconnected from proxy', 'err');
+    stopMining();
+  };
+
+  ws.onerror = () => {
+    addLog('WebSocket error — is proxy.js running?', 'err');
+    setConnStatus(false);
+  };
+}
+
+function disconnect() {
+  if (ws) { ws.close(); ws = null; }
+  stopMining();
+}
+
+function setConnStatus(ok) {
+  document.getElementById('conn-dot').className   = 'conn-dot' + (ok ? ' green' : '');
+  document.getElementById('conn-status').textContent = ok ? 'CONNECTED — OCEAN STRATUM' : 'DISCONNECTED';
+  document.getElementById('ims-dot').style.background = ok ? 'var(--locked)' : 'var(--shatter)';
+  document.getElementById('ims-status').textContent   = ok ? 'ACTIVE — ANCHORED' : 'INACTIVE';
+}
+
+function handlePoolMessage(msg) {
+  switch(msg.type) {
+    case 'subscribed':
+      extranonce1      = msg.extranonce1 || '';
+      extranonce2_size = msg.extranonce2_size || 4;
+      addLog('mining.subscribe OK — N axis open. extranonce1=' + extranonce1, 'ok');
+      addLog('Corpus: [9,9,4,3] T7 — narrative thread activated', 'anchor');
+      break;
+
+    case 'authorized':
+      if (msg.ok) {
+        addLog('mining.authorize OK — identity locked to OCEAN', 'ok');
+        addLog('Corpus: worker identity registered. IMS gate GREEN.', 'anchor');
+      } else {
+        addLog('mining.authorize FAILED — check BTC address', 'err');
+      }
+      break;
+
+    case 'notify':
+      currentTemplate = msg;
+      extranonce1      = msg.extranonce1 || extranonce1;
+      extranonce2_size = msg.extranonce2_size || extranonce2_size;
+      currentNonce     = 0;
+      en2Counter       = 0;
+
+      if (msg.clean_jobs) {
+        addLog('clean_jobs=true — manifold reset. New BlockIdentity loaded.', 'anchor');
+        addLog('Corpus: [9,9,4,3] T12 — P changed, old nonce sweep invalid', 'anchor');
+      }
+      updateTemplate(msg);
+      addLog('mining.notify — P=' + msg.pnba.P + ' N=' + msg.pnba.N + ' A=' + msg.pnba.A + ' B=free', 'ok');
+      addLog('Corpus: [9,9,4,3] T8 — BlockIdentity loaded. Noble search ready.', 'anchor');
+
+      if (mining) {
+        addLog('Restarting nonce sweep on new block...', 'info');
+      }
+      break;
+
+    case 'set_difficulty':
+      poolDifficulty = msg.difficulty;
+      document.getElementById('f-diff').textContent = poolDifficulty;
+      addLog('Pool difficulty set: ' + poolDifficulty + ' — A-axis threshold updated', 'info');
+      break;
+
+    case 'share_result':
+      if (msg.ok) {
+        sharesAccepted++;
+        addLog('✓ SHARE ACCEPTED by OCEAN — Noble confirmed! [9,9,4,3] T10', 'found');
+      } else {
+        sharesRejected++;
+        addLog('✗ Share rejected: ' + (msg.error ? JSON.stringify(msg.error) : 'unknown'), 'err');
+      }
+      updateShareLedger();
+      break;
+
+    case 'error':
+      addLog('Pool error: ' + msg.message, 'err');
+      break;
+  }
+}
+
+// ── Mining loop ─────────────────────────────────────────────
+async function doMine() {
+  if (!mining) return;
+  if (!currentTemplate) {
+    mineTimer = setTimeout(doMine, 200);
+    return;
+  }
+
+  const BATCH = 8; // small batch — async SHA-256 is slow in browser
+  const localDiff = parseInt(document.getElementById('diff-slider').value);
+  const localTarget = '0'.repeat(localDiff);
+
+  const en2Hex = en2Counter.toString(16).padStart(extranonce2_size * 2, '0');
+
+  for (let i = 0; i < BATCH; i++) {
+    if (!mining) break;
+
+    const nonce = (currentNonce + i) >>> 0;
+    const pnba  = computePNBA(currentTemplate, nonce);
+    const state = getState(pnba.tau);
+
+    // Build and hash the real 80-byte header
+    const header = await buildFullHeader(currentTemplate, en2Hex, nonce);
+    const hashBytes = await dsha256(header);
+    // Reverse for display (Bitcoin convention)
+    const hashDisplay = bytesToHex(hashBytes.reverse());
+
+    rateCount++;
+
+    if (state === 'IVA') {
+      ivaHits++;
+      document.getElementById('s-iva').textContent = ivaHits;
+    }
+
+    // Check local difficulty target
+    if (hashDisplay.startsWith(localTarget)) {
+      found++;
+      document.getElementById('s-found').textContent = found;
+      addLog('✓ LOCAL TARGET HIT! nonce=0x' + nonce.toString(16) + ' hash=' + hashDisplay.slice(0,20) + '... τ=' + pnba.tau.toFixed(6), 'found');
+    }
+
+    // Check pool difficulty and submit
+    if (ws && ws.readyState === 1) {
+      const poolTarget = '0'.repeat(Math.max(1, Math.floor(Math.log2(poolDifficulty + 1))));
+      if (hashDisplay.startsWith(poolTarget)) {
+        const sid = shareId++;
+        sharesSubmitted++;
+        ws.send(JSON.stringify({
+          type: 'submit',
+          share_id: sid,
+          job_id: currentTemplate.params[0],
+          extranonce2: en2Hex,
+          ntime: currentTemplate.params[7],
+          nonce: nonce.toString(16).padStart(8,'0'),
+          tau: pnba.tau.toFixed(8),
+          state: state
+        }));
+        addLog('→ mining.submit nonce=0x' + nonce.toString(16) + ' — Noble candidate [9,9,4,3] T9', 'iva');
+        updateShareLedger();
+      }
+    }
+
+    if (i === BATCH - 1) {
+      totalHashes += BATCH;
+      currentNonce += BATCH;
+      if (currentNonce > 0xffffffff) {
+        currentNonce = 0;
+        en2Counter++;
+        addLog('Nonce space exhausted. Incrementing extranonce2=' + en2Counter + ' [9,9,4,3] T13', 'anchor');
+      }
+      document.getElementById('s-hashes').textContent = totalHashes.toLocaleString();
+      updatePNBA(pnba, hashDisplay, nonce, state);
+    }
+  }
+
+  mineTimer = setTimeout(doMine, 0);
+}
+
+function startMining() {
+  if (mining) return;
+  mining = true;
+  addLog('Mining started. ANCHOR=1.369 TL=0.1369 [9,9,4,4] :: {ANC}', 'anchor');
+  addLog('Noble-seeking F_ext sweep on B axis. P,N,A fixed by template.', 'anchor');
+  rateCount = 0;
+  rateTimer = setInterval(() => {
+    document.getElementById('s-rate').textContent = rateCount;
+    rateCount = 0;
+  }, 1000);
+  document.getElementById('btn-mine').classList.add('active');
+  doMine();
+}
+
+function stopMining() {
+  mining = false;
+  if (mineTimer)  clearTimeout(mineTimer);
+  if (rateTimer)  clearInterval(rateTimer);
+  mineTimer = rateTimer = null;
+  document.getElementById('btn-mine').classList.remove('active');
+  addLog('Mining stopped.', 'info');
+}
+
+function resetAll() {
+  stopMining();
+  totalHashes = found = ivaHits = rateCount = 0;
+  sharesSubmitted = sharesAccepted = sharesRejected = 0;
+  currentNonce = en2Counter = 0;
+  document.getElementById('s-hashes').textContent = '0';
+  document.getElementById('s-found').textContent  = '0';
+  document.getElementById('s-rate').textContent   = '0';
+  document.getElementById('s-iva').textContent    = '0';
+  document.getElementById('hash-out').textContent = '0'.repeat(64);
+  document.getElementById('nonce-disp').textContent = '—';
+  document.getElementById('tau-fill').style.width = '0%';
+  const badge = document.getElementById('state-badge');
+  badge.textContent = 'IDLE'; badge.className = 'state-badge IDLE';
+  updateShareLedger();
+  document.getElementById('log-scroll').innerHTML = '';
+  addLog('Reset. ANCHOR=1.369 TL=0.1369 [9,9,4,4] :: {ANC} 0 sorry', 'anchor');
+}
+
+// ── Event listeners ─────────────────────────────────────────
+document.getElementById('btn-connect').addEventListener('click', connect);
+document.getElementById('btn-disconnect').addEventListener('click', disconnect);
+document.getElementById('btn-mine').addEventListener('click', startMining);
+document.getElementById('btn-stopm').addEventListener('click', stopMining);
+document.getElementById('btn-reset').addEventListener('click', resetAll);
+
+document.getElementById('diff-slider').addEventListener('input', function() {
+  document.getElementById('diff-disp').textContent = this.value;
+});
+
+// ── Init ────────────────────────────────────────────────────
+addLog('SNSFT OCEAN Miner [9,9,4,4] initialized.', 'anchor');
+addLog('Corpus chain: [9,9,4,2] SHA-256 → [9,9,4,3] OCEAN → [9,9,4,4] miner', 'anchor');
+addLog('1. Enter your Bitcoin address above', 'info');
+addLog('2. Run: node proxy.js YOUR_BTC_ADDRESS', 'info');
+addLog('3. Click CONNECT then MINE', 'info');
+addLog('Every nonce is F_ext on B. P,N,A fixed by Stratum template. 0 sorry.', 'anchor');
+</script>
+</body>
+</html>
