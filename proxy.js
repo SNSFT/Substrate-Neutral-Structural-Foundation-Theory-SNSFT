@@ -10,7 +10,7 @@ const http = require('http');
 const crypto = require('crypto');
 
 const OCEAN_HOST = 'mine.ocean.xyz';
-const OCEAN_PORT = 4243;
+const OCEAN_PORT = 3334;
 const WS_PORT    = 8080;
 const ANCHOR     = 1.369;
 const TL         = 0.1369;
