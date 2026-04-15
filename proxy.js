@@ -7,12 +7,9 @@ const OCEAN_PORT = 3334;
 const WS_PORT    = 8080;
 const WORKER_ADDR = process.argv[2] || 'YOUR_BTC_ADDRESS';
 
-console.log(`[STRATUM] Connecting to ${OCEAN_HOST} for ${WORKER_ADDR}`);
-
 const server = http.createServer();
 
 server.on('upgrade', (req, socket) => {
-  // WebSocket Handshake
   const key = req.headers['sec-websocket-key'];
   const accept = crypto.createHash('sha1').update(key + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').digest('base64');
   socket.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + accept + '\r\n\r\n');
@@ -29,7 +26,6 @@ server.on('upgrade', (req, socket) => {
     lines.forEach(line => {
       if (!line.trim()) return;
       let msg = JSON.parse(line);
-      
       if (msg.id === 1) {
         tcp.write(JSON.stringify({id: 2, method: 'mining.authorize', params: [WORKER_ADDR + '.snsft', 'x']}) + '\n');
         socket.write(wsFrame(JSON.stringify({type: 'subscribed', extranonce1: msg.result[1], extranonce2_size: msg.result[2]})));
@@ -48,13 +44,11 @@ server.on('upgrade', (req, socket) => {
   socket.on('data', (data) => {
     const frame = wsParseFrame(data);
     if (!frame) return;
-    let parsed;
-    try { parsed = JSON.parse(frame); } catch(e) { return; }
+    const parsed = JSON.parse(frame);
 
     if (parsed.type === 'submit') {
-      // THE FIX: STRICT STRATUM OUTPUT. 5 PARAMS ONLY.
-      // [worker, job_id, extranonce2, ntime, nonce]
-      const submitPayload = {
+      // MANDATORY OCEAN/STRATUM FORMAT: EXACTLY 5 PARAMETERS
+      const submit = {
         id: parsed.share_id,
         method: 'mining.submit',
         params: [
@@ -62,21 +56,19 @@ server.on('upgrade', (req, socket) => {
           parsed.job_id,
           parsed.extranonce2,
           parsed.ntime,
-          parsed.nonce
+          parsed.nonce // THIS IS THE LAST PARAMETER
         ]
       };
       
-      tcp.write(JSON.stringify(submitPayload) + '\n');
-      console.log(`[→] SUBMIT | Nonce: ${parsed.nonce} | Job: ${parsed.job_id}`);
+      tcp.write(JSON.stringify(submit) + '\n');
+      console.log(`[→] SUBMIT | Nonce: ${parsed.nonce}`);
     }
   });
 
-  tcp.on('error', (e) => console.log(`TCP Error: ${e.message}`));
   tcp.on('close', () => socket.destroy());
   socket.on('close', () => tcp.destroy());
 });
 
-// Minimal WebSocket Frame Support
 function wsFrame(data) {
   const p = Buffer.from(data);
   const h = Buffer.alloc(2);
@@ -87,11 +79,8 @@ function wsFrame(data) {
 function wsParseFrame(buf) {
   if (buf.length < 2) return null;
   const len = buf[1] & 0x7f;
-  let offset = 2;
-  if (len === 126) offset = 4;
-  else if (len === 127) offset = 10;
-  const mask = buf.slice(offset, offset + 4);
-  const data = buf.slice(offset + 4, offset + 4 + len);
+  const mask = buf.slice(2, 6);
+  const data = buf.slice(6, 6 + len);
   const res = Buffer.alloc(len);
   for (let i = 0; i < len; i++) res[i] = data[i] ^ mask[i % 4];
   return res.toString();
