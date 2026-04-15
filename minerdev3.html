@@ -515,9 +515,15 @@ if(ws && ws.readyState===1){
         const sid = shareId++;
         sharesSubmitted++;
 
-        // 1. We take the hash exactly as it is displayed (with leading zeros)
-        // 2. We ensure it's a clean string for the pool's parser
-        const finalSubmission = hashDisplay.toLowerCase().trim();
+        // 1. Get the hash string
+        const hexStr = hashDisplay.toLowerCase().trim();
+        
+        // 2. CONVERT TO RAW ARRAY: This is the critical fix.
+        // This turns "0000..." into [0, 0, 71, 82, ...]
+        const rawBytes = [];
+        for (let i = 0; i < hexStr.length; i += 2) {
+            rawBytes.push(parseInt(hexStr.substring(i, i + 2), 16));
+        }
 
         ws.send(JSON.stringify({
           type:        'submit',
@@ -526,11 +532,11 @@ if(ws && ws.readyState===1){
           extranonce2: en2Hex,
           ntime:       currentTemplate.params[7],
           nonce:       nonce.toString(16).padStart(8, '0'),
-          tau:         finalSubmission, 
+          tau:         rawBytes, // Sending the RAW ARRAY, not the string
           state:       state
         }));
 
-        addLog('→ SUBMITTING: ' + finalSubmission.slice(0, 16) + '... [ZEROS FIRST]');
+        addLog('→ SUBMITTING RAW BYTES: [' + rawBytes.slice(0, 4).join(',') + '...]');
         updateShareLedger();
       }
     }
