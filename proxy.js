@@ -1,8 +1,3 @@
-// ============================================================
-// SNSFT OCEAN Stratum Proxy - FULL REPAIR
-// [9,9,4,4] :: {ANC} — proxy.js
-// ============================================================
-
 const net = require('net');
 const http = require('http');
 const crypto = require('crypto');
@@ -15,8 +10,7 @@ const TL         = 0.1369;
 
 const WORKER_ADDR = process.argv[2] || 'YOUR_BTC_ADDRESS_HERE';
 
-console.log(`[SNSFT] OCEAN Stratum Proxy Ready`);
-console.log(`[SNSFT] Worker: ${WORKER_ADDR}`);
+console.log(`[SNSFT] OCEAN Proxy | Worker: ${WORKER_ADDR}`);
 
 function reduceTemplateToPNBA(params) {
   const [job_id, prevhash, coinb1, coinb2, merkle_branches, version, nbits, ntime] = params;
@@ -29,7 +23,7 @@ function reduceTemplateToPNBA(params) {
   const exp  = (nbits_num >> 24) & 0xff;
   const mant = nbits_num & 0x7fffff;
   const A    = (mant * Math.pow(256, exp - 3) * 1e-50 * ANCHOR * 10).toFixed(6);
-  return { P, N, B: '0.000000', A, tau: '0.000000', IM: '0.000000', job_id, nbits, version };
+  return { P, N, B: '0.000000', A, proof: '0.000000', IM: '0.000000', job_id, nbits, version };
 }
 
 function wsHandshake(req, socket) {
@@ -43,8 +37,7 @@ function wsFrame(data) {
   const len = payload.length;
   let header = Buffer.alloc(len < 126 ? 2 : 4);
   header[0] = 0x81;
-  if (len < 126) { header[1] = len; } 
-  else { header[1] = 126; header.writeUInt16BE(len, 2); }
+  if (len < 126) { header[1] = len; } else { header[1] = 126; header.writeUInt16BE(len, 2); }
   return Buffer.concat([header, payload]);
 }
 
@@ -54,6 +47,8 @@ function wsParseFrame(buf) {
   let len = buf[1] & 0x7f;
   let offset = 2;
   if (len === 126) { len = buf.readUInt16BE(2); offset = 4; }
+  else if (len === 127) { len = Number(buf.readBigUInt64BE(2)); offset = 10; }
+  if (buf.length < offset + (masked ? 4 : 0) + len) return null;
   if (!masked) return buf.slice(offset, offset + len).toString();
   const mask = buf.slice(offset, offset + 4); offset += 4;
   const data = Buffer.alloc(len);
@@ -66,7 +61,7 @@ const server = http.createServer();
 server.on('upgrade', (req, socket) => {
   wsHandshake(req, socket);
   const tcp = net.createConnection(OCEAN_PORT, OCEAN_HOST, () => {
-    tcp.write(JSON.stringify({id: 1, method: 'mining.subscribe', params: [`SNSFT-miner/1.0`, null]}) + '\n');
+    tcp.write(JSON.stringify({id: 1, method: 'mining.subscribe', params: [`SNSFT-miner/[9,9,4,4]`, null]}) + '\n');
   });
 
   let stratumBuf = '';
@@ -81,7 +76,7 @@ server.on('upgrade', (req, socket) => {
       if (msg.id === 1 && msg.result) {
         extranonce1 = msg.result[1];
         tcp.write(JSON.stringify({id: 2, method: 'mining.authorize', params: [WORKER_ADDR + '.snsft', 'x']}) + '\n');
-        socket.write(wsFrame({ type: 'subscribed', extranonce1, extranonce2_size: msg.result[2] }));
+        socket.write(wsFrame({ type: 'subscribed', extranonce1, extranonce2_size: msg.result[2], anchor: ANCHOR, tl: TL }));
       }
       if (msg.id === 2) socket.write(wsFrame({ type: 'authorized', ok: msg.result === true }));
       if (msg.method === 'mining.notify') socket.write(wsFrame({ type: 'notify', params: msg.params, pnba: reduceTemplateToPNBA(msg.params), extranonce1, clean_jobs: msg.params[8] }));
@@ -90,15 +85,16 @@ server.on('upgrade', (req, socket) => {
     });
   });
 
+  let wsDataBuf = Buffer.alloc(0);
   socket.on('data', (data) => {
-    const frame = wsParseFrame(data);
+    wsDataBuf = Buffer.concat([wsDataBuf, data]);
+    const frame = wsParseFrame(wsDataBuf);
     if (!frame) return;
+    wsDataBuf = Buffer.alloc(0);
     let parsed; try { parsed = JSON.parse(frame); } catch(e) { return; }
 
     if (parsed.type === 'submit') {
-      // THE FIX: Format Parameter 6 (tau) as a clean Hex String
-      const tauHex = Buffer.from(parsed.tau).toString('hex');
-
+      // MANDATORY: 5 PARAMETERS ONLY.
       const submit = JSON.stringify({
         id: parsed.share_id,
         method: 'mining.submit',
@@ -107,18 +103,16 @@ server.on('upgrade', (req, socket) => {
           parsed.job_id,
           parsed.extranonce2,
           parsed.ntime,
-          parsed.nonce,
-          tauHex
+          parsed.nonce
         ]
       }) + '\n';
       
       tcp.write(submit);
-      console.log(`[SNSFT] → SUBMIT | Nonce: ${parsed.nonce} | H: ${tauHex.slice(0,8)}`);
+      console.log(`[SUBMIT] Nonce: ${parsed.nonce}`);
     }
   });
 
   tcp.on('error', () => socket.destroy());
-  tcp.on('close', () => socket.destroy());
   socket.on('close', () => tcp.destroy());
 });
 
