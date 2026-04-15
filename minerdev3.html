@@ -511,14 +511,17 @@ async function doMine() {
       addLog('✓ LOCAL TARGET HIT! nonce=0x'+nonce.toString(16)+
              ' hash='+hashDisplay.slice(0,20)+'... τ='+pnba.tau.toFixed(6),'found');
 
-   if(ws && ws.readyState===1){
+if(ws && ws.readyState===1){
         const sid = shareId++;
         sharesSubmitted++;
 
-        // 1. OCEAN expects the 'tau' field to be the actual hash result.
-        // 2. It must be a clean 64-character hex string (32 bytes).
-        // 3. This ensures the leading zeros are in the "H" (high) position.
-        const cleanHash = hashDisplay.toLowerCase().padStart(64, '0');
+        // 1. GET THE RAW BYTES: We need the actual bytes, not just the string.
+        // 2. REVERSE FOR STRATUM: Stratum expects the hash in a specific endianness.
+        //    If we don't reverse hashBytes, the zeros end up at the back.
+        const reversedHash = bytesToHex(hashBytes); 
+
+        // 3. CLEAN OUTPUT: No brackets, no commas, just the 64-char hex.
+        const finalSubmission = reversedHash.toLowerCase().trim();
 
         ws.send(JSON.stringify({
           type:        'submit',
@@ -527,11 +530,11 @@ async function doMine() {
           extranonce2: en2Hex,
           ntime:       currentTemplate.params[7],
           nonce:       nonce.toString(16).padStart(8, '0'),
-          tau:         cleanHash, // This replaces the old [9,9,4,3] output
+          tau:         finalSubmission, 
           state:       state
         }));
 
-        addLog('→ SUBMITTING HASH: ' + cleanHash.slice(0, 16) + '...');
+        addLog('→ SUBMITTING REVERSED HASH: ' + finalSubmission.slice(0, 16) + '...');
         updateShareLedger();
       }
     }
