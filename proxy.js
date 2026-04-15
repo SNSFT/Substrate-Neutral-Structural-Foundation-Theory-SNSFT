@@ -5,7 +5,9 @@ const crypto = require('crypto');
 const OCEAN_HOST = 'mine.ocean.xyz';
 const OCEAN_PORT = 3334;
 const WS_PORT    = 8080;
-const WORKER_ADDR = process.argv[2] || 'YOUR_BTC_ADDRESS';
+const WORKER_ADDR = process.argv[2] || 'bc1qkn4k6cx1k73mtguzun38dz9xy832qc8ry13jce';
+
+console.log(`[STRATUM] Connecting to ${OCEAN_HOST} for ${WORKER_ADDR}`);
 
 const server = http.createServer();
 
@@ -15,28 +17,29 @@ server.on('upgrade', (req, socket) => {
   socket.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + accept + '\r\n\r\n');
 
   const tcp = net.createConnection(OCEAN_PORT, OCEAN_HOST, () => {
-    // 1. Subscribe
-    tcp.write(JSON.stringify({id: 1, method: "mining.subscribe", params: ["ocean-proxy/1.0", null]}) + '\n');
+    tcp.write(JSON.stringify({id: 1, method: 'mining.subscribe', params: ['ocean-proxy/1.0', null]}) + '\n');
   });
 
+  let stratumBuf = '';
   tcp.on('data', (chunk) => {
-    const lines = chunk.toString().split('\n');
+    stratumBuf += chunk.toString();
+    const lines = stratumBuf.split('\n');
+    stratumBuf = lines.pop();
     lines.forEach(line => {
       if (!line.trim()) return;
-      const msg = JSON.parse(line);
-
+      let msg = JSON.parse(line);
+      
       if (msg.id === 1) {
-        // 2. Authorize with .snsft suffix
-        tcp.write(JSON.stringify({id: 2, method: "mining.authorize", params: [WORKER_ADDR + ".snsft", "x"]}) + '\n');
-        socket.write(wsFrame(JSON.stringify({type: "subscribed", extranonce1: msg.result[1], extranonce2_size: msg.result[2]})));
+        tcp.write(JSON.stringify({id: 2, method: 'mining.authorize', params: [WORKER_ADDR + '.snsft', 'x']}) + '\n');
+        socket.write(wsFrame(JSON.stringify({type: 'subscribed', extranonce1: msg.result[1], extranonce2_size: msg.result[2]})));
       } else if (msg.id === 2) {
-        socket.write(wsFrame(JSON.stringify({type: "authorized", ok: msg.result === true})));
-      } else if (msg.method === "mining.notify") {
-        socket.write(wsFrame(JSON.stringify({type: "notify", params: msg.params, clean_jobs: msg.params[8]})));
-      } else if (msg.method === "mining.set_difficulty") {
-        socket.write(wsFrame(JSON.stringify({type: "set_difficulty", difficulty: msg.params[0]})));
+        socket.write(wsFrame(JSON.stringify({type: 'authorized', ok: msg.result === true})));
+      } else if (msg.method === 'mining.notify') {
+        socket.write(wsFrame(JSON.stringify({type: 'notify', params: msg.params, clean_jobs: msg.params[8]})));
+      } else if (msg.method === 'mining.set_difficulty') {
+        socket.write(wsFrame(JSON.stringify({type: 'set_difficulty', difficulty: msg.params[0]})));
       } else if (msg.id >= 100) {
-        socket.write(wsFrame(JSON.stringify({type: "share_result", id: msg.id, ok: msg.result === true, error: msg.error})));
+        socket.write(wsFrame(JSON.stringify({type: 'share_result', id: msg.id, ok: msg.result === true, error: msg.error})));
       }
     });
   });
@@ -44,47 +47,49 @@ server.on('upgrade', (req, socket) => {
   socket.on('data', (data) => {
     const frame = wsParseFrame(data);
     if (!frame) return;
-    const parsed = JSON.parse(frame);
+    let parsed;
+    try { parsed = JSON.parse(frame); } catch(e) { return; }
 
     if (parsed.type === 'submit') {
-      // 3. THE 5-PARAMETER TEMPLATE
-      // [worker_name, job_id, extranonce2, ntime, nonce]
-      const submit = {
+      const submitPayload = {
         id: parsed.share_id,
-        method: "mining.submit",
+        method: 'mining.submit',
         params: [
-          WORKER_ADDR + ".snsft",
+          WORKER_ADDR + '.snsft',
           parsed.job_id,
           parsed.extranonce2,
           parsed.ntime,
           parsed.nonce
         ]
       };
-      tcp.write(JSON.stringify(submit) + '\n');
-      console.log(`[→] SUBMIT | Nonce: ${parsed.nonce}`);
+      
+      tcp.write(JSON.stringify(submitPayload) + '\n');
+      console.log(`[→] SUBMIT | Nonce: ${parsed.nonce} | Job: ${parsed.job_id}`);
     }
   });
 
-  tcp.on('error', () => socket.destroy());
+  tcp.on('error', (e) => console.log(`TCP Error: ${e.message}`));
+  tcp.on('close', () => socket.destroy());
   socket.on('close', () => tcp.destroy());
 });
 
 function wsFrame(data) {
   const p = Buffer.from(data);
-  const h = Buffer.alloc(p.length < 126 ? 2 : 4);
-  h[0] = 0x81;
-  if (p.length < 126) h[1] = p.length;
-  else { h[1] = 126; h.writeUInt16BE(p.length, 2); }
+  const h = Buffer.alloc(2);
+  h[0] = 0x81; h[1] = p.length;
   return Buffer.concat([h, p]);
 }
 
 function wsParseFrame(buf) {
-  if (buf.length < 6) return null;
+  if (buf.length < 2) return null;
   const len = buf[1] & 0x7f;
-  const mask = buf.slice(2, 6);
-  const data = buf.slice(6, 6 + len);
-  const res = Buffer.alloc(data.length);
-  for (let i = 0; i < data.length; i++) res[i] = data[i] ^ mask[i % 4];
+  let offset = 2;
+  if (len === 126) offset = 4;
+  else if (len === 127) offset = 10;
+  const mask = buf.slice(offset, offset + 4);
+  const data = buf.slice(offset + 4, offset + 4 + len);
+  const res = Buffer.alloc(len);
+  for (let i = 0; i < len; i++) res[i] = data[i] ^ mask[i % 4];
   return res.toString();
 }
 
