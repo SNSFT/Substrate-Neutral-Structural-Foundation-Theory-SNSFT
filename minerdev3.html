@@ -515,28 +515,30 @@ if(ws && ws.readyState===1){
         const sid = shareId++;
         sharesSubmitted++;
 
-        // 1. Get the hash string
+        // 1. NONCE: Must be exactly 8 hex chars. No more, no less.
+        const cleanNonce = nonce.toString(16).padStart(8, '0');
+
+        // 2. TAU: Create the raw byte array from the hash
         const hexStr = hashDisplay.toLowerCase().trim();
-        
-        // 2. CONVERT TO RAW ARRAY: This is the critical fix.
-        // This turns "0000..." into [0, 0, 71, 82, ...]
         const rawBytes = [];
         for (let i = 0; i < hexStr.length; i += 2) {
             rawBytes.push(parseInt(hexStr.substring(i, i + 2), 16));
         }
 
+        // 3. THE PACKET: Send tau as a raw array. 
+        // The proxy needs to see this as a JSON array, not a string.
         ws.send(JSON.stringify({
           type:        'submit',
           share_id:    sid,
           job_id:      currentTemplate.params[0],
           extranonce2: en2Hex,
           ntime:       currentTemplate.params[7],
-          nonce:       nonce.toString(16).padStart(8, '0'),
-          tau:         rawBytes, // Sending the RAW ARRAY, not the string
-          state:       state
+          nonce:       cleanNonce, 
+          tau:         rawBytes,
+          state:       'LOCKED' 
         }));
 
-        addLog('→ SUBMITTING RAW BYTES: [' + rawBytes.slice(0, 4).join(',') + '...]');
+        addLog('→ SUBMITTING: Nonce=' + cleanNonce + ' Tau[0,1]=' + rawBytes[0] + ',' + rawBytes[1]);
         updateShareLedger();
       }
     }
