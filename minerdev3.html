@@ -515,13 +515,9 @@ if(ws && ws.readyState===1){
         const sid = shareId++;
         sharesSubmitted++;
 
-        // 1. GET THE RAW BYTES: We need the actual bytes, not just the string.
-        // 2. REVERSE FOR STRATUM: Stratum expects the hash in a specific endianness.
-        //    If we don't reverse hashBytes, the zeros end up at the back.
-        const reversedHash = bytesToHex(hashBytes); 
-
-        // 3. CLEAN OUTPUT: No brackets, no commas, just the 64-char hex.
-        const finalSubmission = reversedHash.toLowerCase().trim();
+        // 1. We take the hash exactly as it is displayed (with leading zeros)
+        // 2. We ensure it's a clean string for the pool's parser
+        const finalSubmission = hashDisplay.toLowerCase().trim();
 
         ws.send(JSON.stringify({
           type:        'submit',
@@ -534,7 +530,7 @@ if(ws && ws.readyState===1){
           state:       state
         }));
 
-        addLog('→ SUBMITTING REVERSED HASH: ' + finalSubmission.slice(0, 16) + '...');
+        addLog('→ SUBMITTING: ' + finalSubmission.slice(0, 16) + '... [ZEROS FIRST]');
         updateShareLedger();
       }
     }
