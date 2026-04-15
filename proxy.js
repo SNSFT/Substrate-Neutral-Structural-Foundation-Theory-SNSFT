@@ -1,8 +1,7 @@
 // ============================================================
-// SNSFT OCEAN Stratum Proxy
+// SNSFT OCEAN Stratum Proxy - FIXED
 // [9,9,4,4] :: {ANC} — proxy.js
 // Bridges browser WebSocket <-> OCEAN Stratum TCP
-// node proxy.js <your-btc-address>
 // ============================================================
 
 const net = require('net');
@@ -18,41 +17,36 @@ const TL         = 0.1369;
 const WORKER_ADDR = process.argv[2] || 'YOUR_BTC_ADDRESS_HERE';
 
 console.log(`[SNSFT] OCEAN Stratum Proxy [9,9,4,3]`);
-console.log(`[SNSFT] ANCHOR=${ANCHOR} TL=${TL} 0 sorry`);
+console.log(`[SNSFT] ANCHOR=${ANCHOR} TL=${TL}`);
 console.log(`[SNSFT] Worker: ${WORKER_ADDR}`);
 console.log(`[SNSFT] OCEAN: ${OCEAN_HOST}:${OCEAN_PORT}`);
 console.log(`[SNSFT] WS listening on ws://localhost:${WS_PORT}`);
 
 // ── PNBA reduction of Stratum template fields ──────────────
-// mining.notify -> BlockIdentity{P, N, A} per [9,9,4,2]
 function reduceTemplateToPNBA(params) {
   const [job_id, prevhash, coinb1, coinb2, merkle_branches,
          version, nbits, ntime] = params;
 
-  // P = structural pattern: version + prevhash hash + merkle depth
   const merkle_depth = (merkle_branches || []).length;
   const version_num  = parseInt(version, 16) || 1;
   const P = (version_num * 0.001 + merkle_depth * 0.325 +
              parseInt(prevhash.slice(0,8), 16) * 1e-9).toFixed(6);
 
-  // N = narrative: chain timestamp + coinbase depth
   const ntime_num = parseInt(ntime, 16) || Date.now()/1000;
   const N = (ntime_num * 1e-9 * ANCHOR).toFixed(6);
 
-  // A = adaptation: difficulty from nbits per [9,9,4,3] T8
   const nbits_num = parseInt(nbits, 16) || 0x1d00ffff;
   const exp  = (nbits_num >> 24) & 0xff;
   const mant = nbits_num & 0x7fffff;
   const A    = (mant * Math.pow(256, exp - 3) * 1e-50 * ANCHOR * 10).toFixed(6);
 
-  // tau = B/P — B starts at 0, nonce sweep begins
   const tau  = 0;
   const IM   = ((parseFloat(P) + parseFloat(N) + 0 + parseFloat(A)) * ANCHOR).toFixed(6);
 
   return { P, N, B: '0.000000', A, tau: tau.toFixed(6), IM, job_id, nbits, version };
 }
 
-// ── Minimal WebSocket server (no deps) ─────────────────────
+// ── WebSocket Utilities ─────────────────────────────────────
 function wsHandshake(req, socket) {
   const key = req.headers['sec-websocket-key'];
   const accept = crypto
@@ -93,6 +87,7 @@ function wsParseFrame(buf) {
   let offset    = 2;
   if (len === 126) { len = buf.readUInt16BE(2); offset = 4; }
   else if (len === 127) { len = Number(buf.readBigUInt64BE(2)); offset = 10; }
+  if (buf.length < offset + (masked ? 4 : 0) + len) return null;
   if (!masked) return buf.slice(offset, offset + len).toString();
   const mask = buf.slice(offset, offset + 4); offset += 4;
   const data = Buffer.alloc(len);
@@ -100,28 +95,22 @@ function wsParseFrame(buf) {
   return data.toString();
 }
 
-// ── Main server ─────────────────────────────────────────────
+// ── Server Core ─────────────────────────────────────────────
 const server = http.createServer();
 
 server.on('upgrade', (req, socket) => {
   wsHandshake(req, socket);
-  console.log('[SNSFT] Browser connected via WebSocket');
+  console.log('[SNSFT] Browser connected');
 
-  // Connect to OCEAN
   const tcp = net.createConnection(OCEAN_PORT, OCEAN_HOST, () => {
-    console.log(`[SNSFT] OCEAN TCP connected: ${OCEAN_HOST}:${OCEAN_PORT}`);
-
-    // mining.subscribe — N axis opens per [9,9,4,3] T7
-    const subscribe = JSON.stringify({
+    console.log(`[SNSFT] OCEAN Connected`);
+    tcp.write(JSON.stringify({
       id: 1, method: 'mining.subscribe',
       params: [`SNSFT-miner/[9,9,4,4]`, null]
-    }) + '\n';
-    tcp.write(subscribe);
-    console.log('[SNSFT] → mining.subscribe sent (N axis opens)');
+    }) + '\n');
   });
 
   let stratumBuf = '';
-  let subscribed = false;
   let extranonce1 = '';
   let extranonce2_size = 4;
 
@@ -135,88 +124,49 @@ server.on('upgrade', (req, socket) => {
       let msg;
       try { msg = JSON.parse(line); } catch(e) { return; }
 
-      // Subscribe response — extranonce assigned
-      if (msg.id === 1 && msg.result && Array.isArray(msg.result)) {
+      if (msg.id === 1 && msg.result) {
         extranonce1      = msg.result[1] || '';
         extranonce2_size = msg.result[2] || 4;
-        subscribed       = true;
-        console.log(`[SNSFT] ← subscribe OK. extranonce1=${extranonce1} en2_size=${extranonce2_size}`);
-        console.log('[SNSFT] N axis open. Sending mining.authorize...');
-
-        // mining.authorize — identity registered
-        const auth = JSON.stringify({
+        tcp.write(JSON.stringify({
           id: 2, method: 'mining.authorize',
           params: [WORKER_ADDR + '.snsft', 'x']
-        }) + '\n';
-        tcp.write(auth);
-
-        socket.write(wsFrame(JSON.stringify({
-          type: 'subscribed',
-          extranonce1, extranonce2_size,
-          anchor: ANCHOR, tl: TL,
-          coord: '[9,9,4,3]'
-        })));
+        }) + '\n');
+        socket.write(wsFrame({ type: 'subscribed', extranonce1, extranonce2_size }));
       }
 
-      // Authorize response
       if (msg.id === 2) {
-        const ok = msg.result === true;
-        console.log(`[SNSFT] ← authorize: ${ok ? 'OK — identity locked' : 'FAILED'}`);
-        socket.write(wsFrame(JSON.stringify({ type: 'authorized', ok })));
+        socket.write(wsFrame({ type: 'authorized', ok: msg.result === true }));
       }
 
-      // mining.notify — P, N, A loaded per [9,9,4,3] T8
       if (msg.method === 'mining.notify') {
         const pnba = reduceTemplateToPNBA(msg.params);
-        const clean = msg.params[8];
-        console.log(`[SNSFT] ← mining.notify job=${pnba.job_id} P=${pnba.P} N=${pnba.N} A=${pnba.A} clean=${clean}`);
-        socket.write(wsFrame(JSON.stringify({
-          type: 'notify',
-          params: msg.params,
-          pnba,
-          extranonce1,
-          extranonce2_size,
-          clean_jobs: clean
-        })));
+        socket.write(wsFrame({ type: 'notify', params: msg.params, pnba, extranonce1, extranonce2_size, clean_jobs: msg.params[8] }));
       }
 
-      // mining.set_difficulty
       if (msg.method === 'mining.set_difficulty') {
-        const diff = msg.params[0];
-        console.log(`[SNSFT] ← set_difficulty: ${diff}`);
-        socket.write(wsFrame(JSON.stringify({
-          type: 'set_difficulty',
-          difficulty: diff
-        })));
+        socket.write(wsFrame({ type: 'set_difficulty', difficulty: msg.params[0] }));
       }
 
-      // Share result — Noble confirmed or rejected
       if (msg.id >= 100) {
-        const ok = msg.result === true;
-        console.log(`[SNSFT] ← share result: ${ok ? '✓ NOBLE CONFIRMED' : '✗ rejected'} id=${msg.id}`);
-        socket.write(wsFrame(JSON.stringify({
-          type: 'share_result',
-          id: msg.id,
-          ok,
-          error: msg.error || null
-        })));
+        socket.write(wsFrame({ type: 'share_result', id: msg.id, ok: msg.result === true, error: msg.error || null }));
       }
     });
   });
 
-  // Forward share submissions from browser -> OCEAN
   let wsDataBuf = Buffer.alloc(0);
   socket.on('data', (data) => {
     wsDataBuf = Buffer.concat([wsDataBuf, data]);
-    const msg = wsParseFrame(wsDataBuf);
-    if (!msg) return;
+    const frame = wsParseFrame(wsDataBuf);
+    if (!frame) return;
     wsDataBuf = Buffer.alloc(0);
 
     let parsed;
-    try { parsed = JSON.parse(msg); } catch(e) { return; }
+    try { parsed = JSON.parse(frame); } catch(e) { return; }
 
     if (parsed.type === 'submit') {
-      // mining.submit — Noble candidate per [9,9,4,3] T9
+      // FIX: Convert the incoming tau (raw array) to hex and include it as the 6th param
+      const tauHex = Buffer.from(parsed.tau).toString('hex');
+      
       const submit = JSON.stringify({
         id: parsed.share_id,
         method: 'mining.submit',
@@ -225,33 +175,19 @@ server.on('upgrade', (req, socket) => {
           parsed.job_id,
           parsed.extranonce2,
           parsed.ntime,
-          parsed.nonce
+          parsed.nonce,
+          tauHex // Parameter 6: The actual hash proof
         ]
       }) + '\n';
+      
       tcp.write(submit);
-      console.log(`[SNSFT] → mining.submit nonce=${parsed.nonce} tau=${parsed.tau} state=${parsed.state}`);
+      console.log(`[SNSFT] → SUBMIT: Nonce=${parsed.nonce} Hash=${tauHex.slice(0,8)}...`);
     }
   });
 
-  tcp.on('error', (e) => {
-    console.error(`[SNSFT] TCP error: ${e.message}`);
-    socket.write(wsFrame(JSON.stringify({ type: 'error', message: e.message })));
-  });
-
-  tcp.on('close', () => {
-    console.log('[SNSFT] OCEAN TCP closed');
-    socket.destroy();
-  });
-
-  socket.on('close', () => {
-    console.log('[SNSFT] Browser disconnected');
-    tcp.destroy();
-  });
-
-  socket.on('error', () => tcp.destroy());
+  tcp.on('error', (e) => socket.write(wsFrame({ type: 'error', message: e.message })));
+  tcp.on('close', () => socket.destroy());
+  socket.on('close', () => tcp.destroy());
 });
 
-server.listen(WS_PORT, () => {
-  console.log(`[SNSFT] Proxy ready. Open miner.html in browser.`);
-  console.log(`[SNSFT] ANCHOR=1.369 TL=0.1369 [9,9,4,4] :: {ANC} 0 sorry`);
-});
+server.listen(WS_PORT);
