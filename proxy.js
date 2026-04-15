@@ -10,7 +10,7 @@ const TL         = 0.1369;
 
 const WORKER_ADDR = process.argv[2] || 'YOUR_BTC_ADDRESS_HERE';
 
-console.log(`[SNSFT] OCEAN Proxy | Worker: ${WORKER_ADDR}`);
+console.log(`[SNSFT] OCEAN Proxy | ANCHOR=${ANCHOR} TL=${TL}`);
 
 function reduceTemplateToPNBA(params) {
   const [job_id, prevhash, coinb1, coinb2, merkle_branches, version, nbits, ntime] = params;
@@ -23,7 +23,7 @@ function reduceTemplateToPNBA(params) {
   const exp  = (nbits_num >> 24) & 0xff;
   const mant = nbits_num & 0x7fffff;
   const A    = (mant * Math.pow(256, exp - 3) * 1e-50 * ANCHOR * 10).toFixed(6);
-  return { P, N, B: '0.000000', A, proof: '0.000000', IM: '0.000000', job_id, nbits, version };
+  return { P, N, B: '0.000000', A, tau: '0.000000', IM: '0.000000', job_id, nbits, version };
 }
 
 function wsHandshake(req, socket) {
@@ -94,7 +94,16 @@ server.on('upgrade', (req, socket) => {
     let parsed; try { parsed = JSON.parse(frame); } catch(e) { return; }
 
     if (parsed.type === 'submit') {
-      // MANDATORY: 5 PARAMETERS ONLY.
+      // SNSFT REQUIREMENT: PARAMETER 6 (tau) MUST BE HEX STRING
+      let tauHex = "";
+      if (typeof parsed.tau === 'string' && parsed.tau.includes(',')) {
+        const bytes = parsed.tau.split(',').map(x => parseInt(x.trim(), 10));
+        tauHex = Buffer.from(bytes).toString('hex');
+      } else {
+        tauHex = Buffer.from(parsed.tau).toString('hex');
+      }
+
+      // SNSFT Stratum Standard: 7 total parameters [worker, job, en2, time, nonce, tau, state]
       const submit = JSON.stringify({
         id: parsed.share_id,
         method: 'mining.submit',
@@ -103,12 +112,14 @@ server.on('upgrade', (req, socket) => {
           parsed.job_id,
           parsed.extranonce2,
           parsed.ntime,
-          parsed.nonce
+          parsed.nonce,
+          tauHex,
+          parsed.state
         ]
       }) + '\n';
       
       tcp.write(submit);
-      console.log(`[SUBMIT] Nonce: ${parsed.nonce}`);
+      console.log(`[SNSFT] → SUBMIT | Nonce: ${parsed.nonce} | H: ${tauHex.slice(0,8)}...`);
     }
   });
 
