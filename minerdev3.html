@@ -511,14 +511,14 @@ async function doMine() {
       addLog('✓ LOCAL TARGET HIT! nonce=0x'+nonce.toString(16)+
              ' hash='+hashDisplay.slice(0,20)+'... τ='+pnba.tau.toFixed(6),'found');
 
-      if(ws && ws.readyState===1){
+   if(ws && ws.readyState===1){
         const sid = shareId++;
         sharesSubmitted++;
-        
-        // --- FIXED FORMATTING BLOCK FOR PROXY ---
-        // We send the 'tau' field as a clean 64-char hex string to ensure the proxy
-        // sees a 00 prefix and avoids the H-not-zero error.
-        const candidateHex = "0000" + nonce.toString(16).padStart(8, '0').padEnd(56, '0');
+
+        // 1. OCEAN expects the 'tau' field to be the actual hash result.
+        // 2. It must be a clean 64-character hex string (32 bytes).
+        // 3. This ensures the leading zeros are in the "H" (high) position.
+        const cleanHash = hashDisplay.toLowerCase().padStart(64, '0');
 
         ws.send(JSON.stringify({
           type:        'submit',
@@ -527,13 +527,11 @@ async function doMine() {
           extranonce2: en2Hex,
           ntime:       currentTemplate.params[7],
           nonce:       nonce.toString(16).padStart(8, '0'),
-          tau:         candidateHex, // Sending clean hex instead of decimal string
+          tau:         cleanHash, // This replaces the old [9,9,4,3] output
           state:       state
         }));
-        // ----------------------------------------
 
-        addLog('→ mining.submit nonce=0x'+nonce.toString(16)+
-               ' en2='+en2Hex+' — Noble candidate submitted [9,9,4,3] T9','iva');
+        addLog('→ SUBMITTING HASH: ' + cleanHash.slice(0, 16) + '...');
         updateShareLedger();
       }
     }
