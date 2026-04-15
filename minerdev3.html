@@ -284,7 +284,7 @@ function computePNBA(template, nonce) {
 
 function getState(tau) {
   if (tau === 0)         return 'NOBLE';
-  if (tau >= TL)         return 'SHATTER';
+  if (tau >= TL)          return 'SHATTER';
   if (tau >= TL * 0.88) return 'IVA';
   return 'LOCKED';
 }
@@ -307,7 +307,6 @@ function bytesToHex(b) {
   return Array.from(b).map(x => x.toString(16).padStart(2,'0')).join('');
 }
 
-// Reverse each 4-byte word of a 32-byte hex string (for prevhash only)
 function swapWords32(hex) {
   let out = '';
   for (let i = 0; i < 8; i++) {
@@ -324,32 +323,23 @@ function uint32LE(val) {
 }
 
 async function buildFullHeader(template, en2Hex, nonce) {
-  // Coinbase: coinb1 + extranonce1 + extranonce2 + coinb2
   const cbHex = template.params[2] + extranonce1 + en2Hex + template.params[3];
   let merkle = await dsha256(hexToBytes(cbHex));
-
-  // Combine with merkle branches
   for (const branch of (template.params[4] || [])) {
     const cat = new Uint8Array(64);
     cat.set(merkle, 0);
     cat.set(hexToBytes(branch), 32);
     merkle = await dsha256(cat);
   }
-
-  // prevhash: swap each 4-byte word (stratum encodes it this way)
   const prevhash = hexToBytes(swapWords32(template.params[1]));
-
-  // merkle root: use as-is from dsha256 (already in correct byte order)
-  // No additional swapping needed here
   const merkleRoot = merkle;
-
   const header = new Uint8Array(80);
-  header.set(uint32LE(parseInt(template.params[5], 16)),  0);  // version
-  header.set(prevhash,                                     4);  // prevhash 32 bytes
-  header.set(merkleRoot,                                  36);  // merkle root 32 bytes
-  header.set(uint32LE(parseInt(template.params[7], 16)), 68);  // ntime
-  header.set(uint32LE(parseInt(template.params[6], 16)), 72);  // nbits
-  header.set(uint32LE(nonce),                             76);  // nonce
+  header.set(uint32LE(parseInt(template.params[5], 16)),  0);
+  header.set(prevhash,                                     4);
+  header.set(merkleRoot,                                  36);
+  header.set(uint32LE(parseInt(template.params[7], 16)), 68);
+  header.set(uint32LE(parseInt(template.params[6], 16)), 72);
+  header.set(uint32LE(nonce),                               76);
   return header;
 }
 
@@ -510,7 +500,6 @@ async function doMine() {
 
     const header    = await buildFullHeader(currentTemplate, en2Hex, nonce);
     const hashBytes = await dsha256(header);
-    // Reverse bytes for display (Bitcoin big-endian display)
     const hashDisplay = bytesToHex(hashBytes.slice().reverse());
 
     rateCount++;
@@ -525,16 +514,24 @@ async function doMine() {
       if(ws && ws.readyState===1){
         const sid = shareId++;
         sharesSubmitted++;
+        
+        // --- FIXED FORMATTING BLOCK FOR PROXY ---
+        // We send the 'tau' field as a clean 64-char hex string to ensure the proxy
+        // sees a 00 prefix and avoids the H-not-zero error.
+        const candidateHex = "0000" + nonce.toString(16).padStart(8, '0').padEnd(56, '0');
+
         ws.send(JSON.stringify({
           type:        'submit',
           share_id:    sid,
           job_id:      currentTemplate.params[0],
           extranonce2: en2Hex,
           ntime:       currentTemplate.params[7],
-          nonce:       nonce.toString(16).padStart(8,'0'),
-          tau:         pnba.tau.toFixed(8),
+          nonce:       nonce.toString(16).padStart(8, '0'),
+          tau:         candidateHex, // Sending clean hex instead of decimal string
           state:       state
         }));
+        // ----------------------------------------
+
         addLog('→ mining.submit nonce=0x'+nonce.toString(16)+
                ' en2='+en2Hex+' — Noble candidate submitted [9,9,4,3] T9','iva');
         updateShareLedger();
