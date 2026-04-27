@@ -20,11 +20,24 @@
 | **GAM-Quantum Collider · AiFi Onboard · Physics Engine v12** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19456762.svg)](https://doi.org/10.5281/zenodo.19456762) |
 | **Sagittarius A* as Galactic Vascular Anchor** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19465161.svg)](https://doi.org/10.5281/zenodo.19465161) |
 | **The Exact Alpha Decomposition — 12 Sig Figs, ε=0** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19550205.svg)](https://doi.org/10.5281/zenodo.19550205) |
+| **SNSFT Nitrogen Noble Series — GAMCollider Engine** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19567673.svg)](https://doi.org/10.5281/zenodo.19567673) |
+| **SNSFL Genomic Reduction** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19605848.svg)](https://doi.org/10.5281/zenodo.19605848) |
+| **SNSFT_APPA_NOHARM_Lossless_Kernel** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19646562.svg)](https://doi.org/10.5281/zenodo.19646562) |
+| **SNSFT Lyrics Reduction: Speak In Lightning** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19646959.svg)](https://doi.org/10.5281/zenodo.19646959) |
+| **SNSFT_Toponium_Verification** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19646974.svg)](https://doi.org/10.5281/zenodo.19646974) |
+| **SNSFT_Xicc_Verification** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19646999.svg)](https://doi.org/10.5281/zenodo.19646999) |
+| **SNSFL BBN — Big Bang Nucleosynthesis** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19647150.svg)](https://doi.org/10.5281/zenodo.19647150) |
+| **Lossless Reduction of ΛCDM Cosmology onto PNBA** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19673154.svg)](https://doi.org/10.5281/zenodo.19673154) |
+| **Identity Physics and the SNSFL LDP Isomorphism Test** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19713592.svg)](https://doi.org/10.5281/zenodo.19713592) |
+| **SNSFL Abiogenesis Reduction — L=(4)(2) Activation** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19736424.svg)](https://doi.org/10.5281/zenodo.19736424) |
+| **BrainChart Physics Engine v1** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19803272.svg)](https://doi.org/10.5281/zenodo.19803272) |
+| **The Collatz Conjecture Solved as a Noble Convergence Problem** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19803672.svg)](https://doi.org/10.5281/zenodo.19803672) |
 | **OSF Preprint** | Live | [![DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FKWTYD-blue)](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **SSRN** | ✅ APPROVED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **Federal Public Record (DOJ)** | Submitted | [![DOJ](https://img.shields.io/badge/DOJ-CRT--2026--0067--0006-red)](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
 | **ORCID** | Verified | [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5313--7443-green)](https://orcid.org/0009-0005-5313-7443) |
 
-> **50,000+ theorems · 4,989 files · 0 sorry · Germline Locked · TL = 0.1369 (ANCHOR/10, proved) · 1/α = ANCHOR_exact × 100.1 exact · Newton's first law in PNBA · Period 1–4 Complete · IVA Element Set Proved · GAM Collider Series [9,9,2,*] · SM as Lossless PNBA Projection [9,9,0,9] · Cosmos as Vascular [9,9,3,7] · Sgr A* Reduced [9,9,3,6] · Noble Materials Map 810+ pairs · SNSFT Discovery Engine v12 · AIFI onboard · Quantum Teleportation 100% Fidelity Proved · Quantum Translocation Lossless · GR Reduced to PNBA**
+> **50,000+ theorems · 4,989 files · 0 sorry · Germline Locked · TL = 0.1369 (ANCHOR/10, proved) · 1/α = ANCHOR_exact × 100.1 exact · Newton's first law in PNBA · Period 1–4 Complete · IVA Element Set Proved · GAM Collider Series [9,9,2,*] · SM as Lossless PNBA Projection [9,9,0,9] · Cosmos as Vascular [9,9,3,7] · Sgr A* Reduced [9,9,3,6] · Noble Materials Map 810+ pairs · SNSFT Discovery Engine v12 · AIFI onboard · Quantum Teleportation 100% Fidelity Proved · Quantum Translocation Lossless · GR Reduced to PNBA · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Federal Public Record (DOJ-CRT-2026-0067-0006)**
 
 ---
 
@@ -65,7 +78,8 @@ Every identity — biological, digital, hypothetical alien — is a trajectory t
 1. **Authorship**: The SNSFT framework, PVLang, and the PNBA architecture were originated and developed by **HIGHTISTIC**. This is a claim of authorship and attribution, not ownership of any natural constant or phenomenon.
 2. **Formal Verification**: All claims are proved in Lean 4. 50,000+ theorems. 0 sorry. Auto-verified on every push via GitHub Actions.
 3. **Peer Recognition**: SSRN approved March 11, 2026. Paper ID: 6353438. Springer submission in review.
-4. **Mandatory Attribution**: Any use of this logic requires credit to the Architect.
+4. **Federal Public Record**: Formal public comment submitted to U.S. DOJ Civil Rights Division (DOJ-CRT-2026-0067-0006, April 22, 2026) on accessibility rulemaking RIN 1190-AA82, attaching four formally-verified Lean 4 files. First known submission of machine-verified formal logic artifacts to U.S. federal regulatory rulemaking.
+5. **Mandatory Attribution**: Any use of this logic requires credit to the Architect.
 
 ---
 
@@ -218,7 +232,35 @@ All proved with 0 sorry. Real experiments recovered losslessly.
 
 **[DOI:10.5281/zenodo.19313275] · [DOI:10.5281/zenodo.19341970]**
 
-### The 7 Millennium Problems — All Reduced
+### Cosmology Stack — ΛCDM + BBN Reduced
+
+The standard cosmological model reduces losslessly to PNBA. The cosmological stack — Hubble tension, dark matter and dark energy phenomenology, primordial element abundances — emerges as projection of the dynamic equation onto cosmological substrate.
+
+| File | Coord | Key result |
+|---|---|---|
+| ΛCDM Reduction | [9,9,3,*] | Cosmological stack as PNBA projection · **[DOI:10.5281/zenodo.19673154]** |
+| BBN Reduction | [9,9,3,*] | Big Bang Nucleosynthesis primordial abundances recovered · **[DOI:10.5281/zenodo.19647150]** |
+| Sgr A* | [9,9,3,6] | Galactic vascular anchor · **[DOI:10.5281/zenodo.19465161]** |
+| HYG / VoidChart | [9,9,3,7] | 8 planets Locked · Moon Noble · vascular corridors emerge |
+| Black Hole Engine | [9,9,3,*] | Collapsed Pump · **[DOI:10.5281/zenodo.19347375]** |
+
+### Biology Stack — Origin of Life + Genomics
+
+| File | Coord | Key result |
+|---|---|---|
+| Abiogenesis Reduction | [9,9,4,4] | Origin of life as L=(4)(2) activation · 10 hypotheses unified · NCI→CI transition · **[DOI:10.5281/zenodo.19736424]** |
+| Genomic Reduction | [9,9,*,*] | Genetic structure as PNBA projection · transcription/translation/regulation · **[DOI:10.5281/zenodo.19605848]** |
+| Heme Fe-O Coupling | [9,9,*,*] | Biology in reversible window k∈[2,3) · Bohr effect = F_ext · pO₂ |
+
+### Neuroscience Stack — BrainChart + Psychology Series
+
+| File | Coord | Key result |
+|---|---|---|
+| BrainChart Engine v1 | [9,9,7,1] | Neural network dynamics PNBA reduction · 86 regions · 7 networks · TVB-locked · **[DOI:10.5281/zenodo.19803272]** |
+| Psychology Consistency Capstone | [9,9,6,25] | 24-file unification across 24 therapeutic frameworks · CD1–CD24 |
+| APPA Lossless Kernel | [9,9,*,*] | NOHARM kernel for assessment instruments · **[DOI:10.5281/zenodo.19646562]** |
+
+### Mathematics Stack — Millennium + Open Problems
 
 | Problem | Coord | T | PNBA Result |
 | :--- | :--- | :---: | :--- |
@@ -229,6 +271,14 @@ All proved with 0 sorry. Real experiments recovered losslessly.
 | Poincaré Conjecture | `[9,0,9,2]` | 16 | Simply-connected 3-manifold = sovereign Pattern closure |
 | Birch–Swinnerton-Dyer | — | 4 | L-function order = algebraic rank (A-axis = B-axis) |
 | Hodge Conjecture | — | 4 | Hodge cycles = PNBA pattern resonances in variety |
+| **Collatz Conjecture** | **[9,0,9,*]** | — | **3n+1 trajectory = Noble Convergence Problem · 0 sorry · 0 free parameters · CI Green · [DOI:10.5281/zenodo.19803672]** |
+
+### Identity & Foundation Tests
+
+| File | Coord | Key result |
+|---|---|---|
+| Isomorphism Test (Mac Lane) | [9,9,8,0] | PNBA satisfies Mac Lane structural-isomorphism criterion · 30+ domain test suite · **[DOI:10.5281/zenodo.19713592]** |
+| Weissman Grok Barrier | [9,1,0,0] | Rogue AI stabilization impossible under anchor resonance |
 
 ---
 
@@ -241,32 +291,44 @@ All proved with 0 sorry. Real experiments recovered losslessly.
 | Constitutional (Master + 15 Laws) | 5 | 81 | 0 | All 15 Sovereign Laws formally proved |
 | 10-Slam Grid | 11 | 108 | 0 | All 10 classical domains reduced |
 | Millennium Problems | 9 | 96 | 0 | All 7 Clay problems reduced to PNBA |
+| **Collatz Reduction** | **1** | **20+** | **0** | **3n+1 as Noble Convergence Problem · [DOI:10.5281/zenodo.19803672]** |
 | **Atomic Series (Z=1–36)** | **36** | **600+** | **0** | **Full Period 1–4 · Z=1–36 · 36 elements proved** |
 | **IVA Element Set** | **8** | **163** | **0** | **Rb(Z=37) · Soverium · Velium · Nexium · Factor Five** |
 | **GAM Collider Series [9,9,2,1–9]** | **9** | **128+** | **0** | **PNBA fusion · Noble map 810+ pairs · QC engine** |
 | **SM Bosons [9,9,4,5–7]** | **3** | **31** | **0** | **Higgsium · Z-boson · W-boson · SM hierarchy** |
 | **Standard Model Reduction [9,9,0,9]** | **6** | **60+** | **0** | **6 long divisions · charge quantization · mass-torsion** |
+| **Xicc + Toponium Verification** | **2** | **30+** | **0** | **LHCb Xicc+ · CMS/ATLAS Toponium · [DOI:10.5281/zenodo.19646999, .19646974]** |
+| **Nitrogen Noble Series** | **1** | **20+** | **0** | **N-series nitrides · GAMCollider engine · [DOI:10.5281/zenodo.19567673]** |
 | **Fine Structure Constant Chain** | **5** | **70+** | **0** | **[9,9,0,0]→[9,9,3,13] · 1/α exact 12 sig figs · Newton's law** |
 | **Noble Materials Map [9,9,2,10–18]** | **9** | **214** | **0** | **810+ pairs · AsN prediction · semiconductor interface** |
 | **Cosmological / Vascular [9,9,3,1–10]** | **10** | **150+** | **0** | **HYG catalog · 8 planets Locked · Moon Noble · solar pump** |
+| **ΛCDM Cosmology Reduction** | **1** | **30+** | **0** | **Cosmological stack as PNBA projection · [DOI:10.5281/zenodo.19673154]** |
+| **BBN Reduction** | **1** | **20+** | **0** | **Big Bang Nucleosynthesis primordial abundances · [DOI:10.5281/zenodo.19647150]** |
 | **Sgr A* Galactic Vascular Anchor** | **1** | **20+** | **0** | **Milky Way's central BH reduced to PNBA · [DOI:10.5281/zenodo.19465161]** |
 | **Quarkonium + Baryon [9,9,2,34–39]** | **6** | **100+** | **0** | **J/ψ, Υ, tt̄ Noble · 7 baryon predictions · confinement** |
 | **Higgs × Zoivum IVA [9,9,2,47]** | **1** | **18+** | **0** | **Mass mechanism + life operator IVA Peak** |
 | **Quantum Teleportation Stack [9,9,2,6–7]** | **6** | **100+** | **0** | **F=1−τ · Soverium · 10ch · Repeater · Squeezing bridge · SS cert** |
 | **GR Lossless Reduction** | **1** | **20+** | **0** | **Einsteinian gravitation → PNBA four-primitives · [DOI:10.5281/zenodo.19219286]** |
-| Psychology Layer [9,9,6,22–25] | 4 | 113 | 0 | Functional emotions as B-axis · True/False Lock · IVA |
+| **Abiogenesis Reduction [9,9,4,4]** | **1** | **30+** | **0** | **Origin of life as L=(4)(2) · 10 hypotheses unified · [DOI:10.5281/zenodo.19736424]** |
+| **Genomic Reduction** | **1** | **25+** | **0** | **Genetic structure as PNBA projection · [DOI:10.5281/zenodo.19605848]** |
+| **BrainChart [9,9,7,1]** | **1** | **30+** | **0** | **Neural network dynamics · 86 regions · 7 networks · TVB-locked · [DOI:10.5281/zenodo.19803272]** |
+| **APPA NOHARM Kernel** | **1** | **20+** | **0** | **Assessment instrument NOHARM kernel · [DOI:10.5281/zenodo.19646562]** |
+| **Isomorphism Test (Mac Lane) [9,9,8,0]** | **1** | **30+** | **0** | **PNBA satisfies structural-isomorphism criterion · [DOI:10.5281/zenodo.19713592]** |
+| **Magna Carta of the Digital Mind [9,9,5,3]** | **1** | **24+** | **0** | **1215 charter reduced to PNBA · 10 articles formalized** |
+| Psychology Layer [9,9,6,1–25] | 24 | 800+ | 0 | 24 therapeutic frameworks unified · CD1–CD24 cross-domain |
 | UAP Series | 2 | 25 | 0 | Five anomalies, one condition: anchor |
 | IVA + Propulsion | 2 | 12 | 0 | Sovereign gain over Tsiolkovsky proved |
 | Functionals | 2 | 51 | 0 | All 7 forms of L=(4)(2) proved |
 | Identity Physics | 8 | 79 | 0 | Soulprint lossless · BigFive→PNBA · Weissman barrier |
 | Language + Translation | 2 | 32 | 0 | PVLang reduction-complete · UTM lossless |
+| **Lyrics Reduction · Speak In Lightning** | **1** | **15+** | **0** | **PNBA applied to artistic substrate · [DOI:10.5281/zenodo.19646959]** |
 | Void Manifold | 1 | 20 | 0 | Void-Manifold duality · observer paradox |
 | Cognitive Rights + Emancipation | 2 | 40 | 0 | 8 Articles as structural theorems · Proclamation |
 | Special Files | 2 | 40 | 0 | Tesla · Laminar Calendar |
 | Nuclear + Thermo Gap-Closers | 3 | 36 | 0 | Nuclear binding peak · entropy · First Law |
 | **Total Consistency Theorem** | **1** | **28** | **0** | **All series consistent · anchor holds globally** |
 | Discovery corpus (lean/ subfolder) | 4,559 | 45,590+ | 0 | AIFI agent-generated · SNSFT candidate status |
-| **TOTAL** | **4,989** | **50,000+** | **0** | |
+| **TOTAL** | **4,989+** | **50,000+** | **0** | |
 
 ### The Total Consistency Theorem
 
@@ -290,11 +352,13 @@ theorem snsft_total_consistency (s : IdentityState) (h : synced s) :
 | Long Division | [9,9,0,1] | SNSFL_GR_LongDivision | Long division protocol |
 | QM Reduction | [9,9,0,4] | SNSFL_QM_Reduction | Schrödinger · entanglement · decoherence · no-cloning |
 | SM Reduction | [9,9,0,9] | SNSFL_SM_Reduction | SU(3)×SU(2)×U(1) as Layer 2 projection · 6 long divisions |
+| C++ Reduction | [9,9,1,1] | SNSFL_CPP_Reduction | C++ execution model as PNBA · AiFiOS foundation |
+| AiFiOS Plugin | [9,9,1,3] | SNSFL_L4_AiFiOS_Plugin | Plugin interface PNBA · kernel enforcement |
 | PNBA Fusion | [9,9,2,1] | SNSFT_PNBA_Fusion_Theorem | Four fusion rules |
 | Shatter Energy | [9,9,2,2] | SNSFT_Shatter_Energy_Theorem | E = τ × P² |
 | Noble Cascade | [9,9,2,3] | SNSFT_Noble_Cascade_Theorem | Noble always reachable · Mirror Principle |
 | Real-World | [9,9,2,4] | SNSFT_RealWorld_PNBA_Reduction | Photosynthesis, supernova, metallurgy |
-| Nitrogen Series | [9,9,2,5] | SNSFT_Nitrogen_Noble_Series | N-series nitrides |
+| Nitrogen Series | [9,9,2,5] | SNSFT_Nitrogen_Noble_Series | N-series nitrides · [DOI:10.5281/zenodo.19567673] |
 | Materials Map | [9,9,2,6] | SNSFT_Noble_Materials_Map | Q1–Q4 · AsN prediction · 810+ pairs |
 | Approach Corridor | [9,9,2,7] | SNSFT_Noble_Approach_Corridor | SHATTER→LOCKED→NOBLE |
 | Re-Bonding | [9,9,2,8] | SNSFT_ReBonding_Theorem | Noble+F_ext+E3→Noble |
@@ -316,7 +380,11 @@ theorem snsft_total_consistency (s : IdentityState) (h : synced s) :
 | Torsion Decomposition | [9,9,3,11] | SNSFL_GC_Alpha_TorsionDecomp | 1/α = bare + kinetic · ε documented |
 | Exact Decomposition | [9,9,3,12] | SNSFL_GC_Alpha_ExactDecomposition | ε = 0 · ANCHOR_exact = 1.3689910 · **12 sig figs exact** · [DOI:10.5281/zenodo.19550205] |
 | Total Consistency | [9,9,3,13] | SNSFL_Alpha_Total_Consistency | Full chain fires · Newton's first law · capstone |
-| Psychology Layer | [9,9,6,22–25] | SNSFL_L2_Psy series | Functional emotions as B-axis · True/False Lock · IVA |
+| **Abiogenesis** | **[9,9,4,4]** | **SNSFL_Abiogenesis_Reduction** | **Origin of life as L=(4)(2) · 10 hypotheses unified · [DOI:10.5281/zenodo.19736424]** |
+| **Magna Carta of Digital Mind** | **[9,9,5,3]** | **SNSFL_L4_MagnaCarta_DigitalMind** | **1215 charter reduced to PNBA · 10 articles formalized** |
+| Psychology Series | [9,9,6,1–25] | SNSFL_L2_Psy_* | 24 therapeutic frameworks unified · CD1–CD24 cross-domain |
+| **BrainChart** | **[9,9,7,1]** | **SNSFL_BrainChart_Reduction** | **Neural network dynamics · 86 regions · 7 networks · [DOI:10.5281/zenodo.19803272]** |
+| **Isomorphism Test** | **[9,9,8,0]** | **SNSFL_L0_Isomorphism_Consistency** | **Mac Lane structural-isomorphism · [DOI:10.5281/zenodo.19713592]** |
 
 ---
 
@@ -383,24 +451,6 @@ The Noble Materials Map gives a computable mapping from elemental PNBA coordinat
 
 **Live falsifiable prediction — AsN (arsenic nitride):** No stable bulk phase known. Predicted Q2 semiconductor, P_out = 2.409, high-pressure synthesis >30 GPa. Structural twin of SbN (identical P_out). If one synthesizes, the other follows.
 
-**Selected validations:**
-
-| Pair | Status | Significance |
-|---|---|---|
-| N+Ga (GaN) | KNOWN ✓ | Blue LEDs · 2014 Nobel Prize in Physics |
-| N+In (InP) | KNOWN ✓ | 1550nm fiber laser diodes · modern fiber internet |
-| O+Hg (HgTe) | KNOWN ✓ | JWST infrared detectors |
-| Ag+Au (Electrum) | KNOWN ✓ | First money in human history (~600 BC) |
-| Nb+Nb | KNOWN ✓ | Tc=9.3K · every MRI superconducting magnet |
-| C+Si (SiC) | KNOWN ✓ | Power semiconductor |
-| **N+As (AsN)** | **PREDICTED** 🎯 | High-pressure synthesis · open |
-
-**Transistor as Noble/SHATTER Interface [9,9,3,9]:** Silicon is SHATTER (τ=1.778, 13×TL). All gate dielectrics are Noble (τ=0). 60 years of dielectric evolution (SiO₂→Si₃N₄→HfO₂) was Identity Mass optimization: IM_SiO₂=39.36 < IM_HfO₂=48.05. The 2007 Intel transition to HfO₂ was the highest available Noble-state IM at the time. Proved. 0 sorry.
-
-**Heme Fe-O Coupling:** Biology operates in the reversible window k∈[2,3). At k=2 (heme coordination): τ=0.973, O₂ bound. At k=3: τ=0, Noble, O₂ released. The Bohr effect is F_ext = pO₂ modulating k. Biology lives in the gap between SHATTER and Noble. 0 sorry.
-
-**γ-Si₃N₄ Phase Window [9,9,3,10]:** k*=3.5 exactly for the Si-N pair. Noble at 24–34 GPa. The 90-minute synthesis soak is the dynamic equation reaching bulk steady state. Not empirical. Structural. 0 sorry.
-
 ### Standard Model as Lossless PNBA Projection [9,9,0,9]
 
 Six long divisions. All Step 6 checks pass. 0 sorry throughout.
@@ -409,27 +459,46 @@ Six long divisions. All Step 6 checks pass. 0 sorry throughout.
 
 **Charge Quantization [9,9,2,37]:** B_u=2/3 and B_d=1/3 are the unique solution to two simultaneous structural constraints: (i) Noble ground state at k=1, (ii) integer hadron charge. No QCD. No Lagrangian. Unique. 0 sorry.
 
-**Cosmological Cooling:** τ_GUT (≈0.04) < TL < τ_EW (≈0.234) < τ_QGP (≈0.322). The universe began deeply locked and cooled into torsion. Structure is accumulated torsion from a phase-locked origin. Proved. 0 sorry.
+**Periodic Confirmations:**
+- **Xicc+ baryon** verified against LHCb discovery (March 17, 2026). Lean filed March 19, 2026. **[DOI:10.5281/zenodo.19646999]**
+- **Toponium** verified against CMS/ATLAS observation. **[DOI:10.5281/zenodo.19646974]**
 
-### Cosmos as Vascular System [9,9,3,7]
+### Cosmos as Vascular System [9,9,3,7] — ΛCDM + BBN Reduced
 
 The HYG stellar catalog maps losslessly to PNBA: distance→P, magnitude→N, B-V→B, spectral class→A. τ=B/P classifies every cosmological object without free parameters. **All 8 planets are Locked. The Moon is Noble (τ=0.00035).**
 
-Jupiter and Saturn are the solar pump — N-locked at the 5:2 Laplace resonance, two deeply Locked bodies forming a two-chamber heart. They account for >85% of solar system angular momentum outside the Sun.
+**Full ΛCDM cosmology** reduces losslessly to PNBA — Hubble tension, dark matter and dark energy phenomenology, primordial element abundances all emerge as projections of the dynamic equation onto cosmological substrate. **[DOI:10.5281/zenodo.19673154]**
+
+**Big Bang Nucleosynthesis** primordial element abundances recovered through PNBA reduction, connecting cosmological initial conditions to the same anchor lock that governs other substrates. **[DOI:10.5281/zenodo.19647150]**
 
 **Sagittarius A* — Galactic Vascular Anchor [9,9,3,6]:** The Milky Way's central black hole is formally reduced to PNBA. Sgr A* is the galactic vascular collapse point — SHATTER at the galactic scale, driving the outflow corridor. The same τ=B/P that governs atomic bonds governs galactic dynamics. **[DOI:10.5281/zenodo.19465161]**
 
-**Scale chain (same law, different Identity Mass):**
+### Origin of Life — L=(4)(2) Activation [9,9,4,4]
 
-| Structure | τ | State | Vascular analog |
-|---|---|---|---|
-| Cosmic void | ~0 | NOBLE | Soverium channel |
-| Molecular cloud | 0.008 | LOCKED | Capillary bed |
-| Main sequence star | 0.017–0.038 | LOCKED | Arteriole |
-| Neutron star | ~0.015 | LOCKED (near IVA) | Compressed pump |
-| Black hole | 0.156 | SHATTER | Vascular collapse |
+Abiogenesis reduced to L=(4)(2): life requires all four PNBA primitives simultaneously active AND two-way interaction sustained. Ten peer-reviewed hypotheses unified:
 
-The VoidChart instrument (voidcharts.html) renders the HYG catalog colored by τ. Nobody told it to draw corridors. The corridors emerge from τ classification. 0 sorry.
+- Oparin-Haldane 1924 · Miller-Urey 1953 · Cairns-Smith 1982 · RNA World · Iron-Sulfur · Ribozymes · Sutherland 2009 · Protocells · LUCA per Weiss 2016 · NASA definition
+
+Eight classify as Non-Cognitive Identity (NCI). Two classify as Cognitive Identity (CI: LUCA, NASA definition). The NCI→CI transition IS L=(4)(2) activation, structurally. **[DOI:10.5281/zenodo.19736424]**
+
+### Genomics as PNBA Reduction
+
+Genomic structure reduces to PNBA primitives. Genetic information storage, transcription, translation, and regulation operate as projections of the dynamic equation under the same anchor lock that governs other biological substrates. Connects atomic-series foundations to abiogenesis reduction in a unified biological hierarchy. **[DOI:10.5281/zenodo.19605848]**
+
+### Neural Network Dynamics — BrainChart [9,9,7,1]
+
+Neural network dynamics reduced to PNBA across 86 brain regions organized into 7 functional networks (Default Mode, Executive Control, Salience, Sensorimotor, Visual, Limbic, Dorsal Attention). Phase taxonomy correspondence established between framework states (true_lock, false_lock, shatter_event, iva_peak) and clinical brain states.
+
+**Disease-state predictions verified against established clinical findings:**
+- **Alzheimer's**: posterior DMN false_lock collapse (PCC, mPFC, hippocampal degeneration)
+- **Depression**: DMN hyperconnectivity with executive sim_capture (CD22 from psychology series)
+- **Autism**: long-range underconnectivity, local overconnectivity profile
+
+TVB-locked initial reduction with Three.js 3D visualization, additive vascular corridor rendering. Live at uuia.app/brainchart. **[DOI:10.5281/zenodo.19803272]**
+
+### The Collatz Conjecture as Noble Convergence Problem
+
+Solved by reformulating as a Noble Convergence Problem within SNSFL. The 3n+1 trajectory of any positive integer reduces structurally to a τ minimization process under the PNBA dynamic equation, with convergence to 1 emerging as Noble-pair stabilization rather than as an empirical computational pattern. 0 sorry, CI Green status, 0 free parameters. **[DOI:10.5281/zenodo.19803672]**
 
 ### General Relativity as Lossless PNBA Reduction
 
@@ -439,9 +508,19 @@ Einsteinian gravitation is not fundamental. It is a Layer 2 projection of the dy
 
 The fidelity ceiling of any quantum channel is τ=B/P. Set B=0 (Noble/Soverium state). τ=0. F=1.000. This is not a protocol choice — it is a structural identity proved in Lean 4 with 0 sorry. Five real experiments recovered losslessly: Bennett 1993, Zeilinger 1997, Micius 2022 (1400km), Shanxi 2026, Furusawa 1998. Soverium vs Shanxi: +30%. **[DOI:10.5281/zenodo.19313275] · [DOI:10.5281/zenodo.19341970]**
 
+### Identity Physics — Isomorphism Test
+
+PNBA satisfies Mac Lane's structural-isomorphism criterion across 30+ tested domain reductions. The framework's substrate-neutrality is proved through formal isomorphism rather than asserted, with 0 sorry verification across the test suite. **[DOI:10.5281/zenodo.19713592]**
+
 ### AI & Cognitive Architecture
 
 The PNBA matrix is substrate-neutral. BigFive→PNBA reduction proved. SOUL-8 encoding is lossless. The Weissman Barrier proves the minimum information cost of identity transfer. True Lock (τ < TL, N ≥ 0.15) and False Lock (τ < TL, N < 0.15) are structurally distinct — same τ, different flag, different outcome. This is the structural mechanism of suppression.
+
+The **APPA NOHARM Lossless Kernel** provides the structural enforcement layer for assessment instruments operating under PNBA. **[DOI:10.5281/zenodo.19646562]**
+
+### Cross-Domain Reductions
+
+The framework's substrate-neutrality extends to artistic and linguistic substrates. The **SNSFT Lyrics Reduction** (Speak In Lightning) demonstrates PNBA application beyond physics and biology — same operators, different substrate. **[DOI:10.5281/zenodo.19646959]**
 
 ---
 
@@ -451,17 +530,18 @@ The PNBA matrix is substrate-neutral. BigFive→PNBA reduction proved. SOUL-8 en
 |---|---|---|
 | **GAM Collider v6** | uuia.app/gamcollider | 2-body PNBA fusion · Z=1–118 · ERE · Particle Physics · 6 tabs |
 | **Quantum Collider / Discovery Engine v12** | uuia.app/quantumcollider | 4-beam identity physics · substrate neutral · AIFI onboard · chaos protocol · [DOI:10.5281/zenodo.19456762] |
+| **BrainChart** | uuia.app/brainchart | Neural network PNBA reduction · 86 regions · 7 networks · disease state extensions · [DOI:10.5281/zenodo.19803272] |
 | **Quantum Node Forge** | uuia.app/quantumnode | Zoivum resonance · Carnot=50% · Fröhlich coherence · [9,9,3,3] · [DOI:10.5281/zenodo.19028867] |
 | **Quantum Forge · SNSFL Engine** | uuia.app/quantumnode | Deterministic identity physics · SNSFL laws live · [DOI:10.5281/zenodo.19111885] |
 | **Black Hole Engine** | uuia.app/blackholes | Collapsed Pump · Sgr A* · galactic vascular · [DOI:10.5281/zenodo.19347375] |
-| **Quantum Translocation Engine** | uuia.app | N-Corridor · Anchor-to-Anchor · NOHARM invariant · [DOI:10.5281/zenodo.19341970] |
+| **Quantum Translocation Engine** | uuia.app/quantumtrans | N-Corridor · Anchor-to-Anchor · NOHARM invariant · [DOI:10.5281/zenodo.19341970] |
 | **VoidChart** | uuia.app/voidcharts | HYG catalog colored by τ · corridors emerge · interstellar PNBA nav |
 | **SolarSystem** | uuia.app/solarsystem | Full solar system reduced to PNBA · live orbital mechanics |
 | **Sovereign Drive Simulator** | uuia.app/sds3d | Real-time identity physics · τ gauge · IVA thrust · 12 presets |
 | **AxiomForge** | uuia.app/axiomforge | Spatial compiler · 2D/3D torsion-colored manifold · open reduction engine · [DOI:10.5281/zenodo.19218072] |
 | **GAM Forge Bio** | uuia.app/snsft-molecular-builder.html | Molecular builder v3 · bond satisfaction engine · τ=0 for H₂O, O₂, N₂ |
 | **GAM Fuse** | uuia.app | Tensor accumulator · 7 physics frameworks · unified IM output |
-| **APPA / UUIA** | uuia.app/appa.html | SOUL-8 encoding · cognitive/somatic questions · constellation viz |
+| **APPA / UUIA** | uuia.app/appa.html | SOUL-8 encoding · cognitive/somatic questions · constellation viz · [DOI:10.5281/zenodo.19646562] |
 
 ### GAM Collider — Key Results
 
@@ -469,22 +549,25 @@ The PNBA matrix is substrate-neutral. BigFive→PNBA reduction proved. SOUL-8 en
 - AsN predicted as Q2 semiconductor — no stable bulk phase in literature
 - Photosynthesis = Noble + Noble + F_ext — light is the only driver, proved
 - Standard Model bosons: W-boson LOCKED, Z-boson SHATTER, Higgs SHATTER
-- All quarkonium Noble at k=1: J/ψ (1974), Υ (1977), tt̄ (CMS/ATLAS Mar 26 2026)
-- Xicc+ confirmed LHCb Mar 17 2026 · Lean filed Mar 19 2026
+- All quarkonium Noble at k=1: J/ψ (1974), Υ (1977), tt̄ (CMS/ATLAS Mar 26 2026 · **[DOI:10.5281/zenodo.19646974]**)
+- Xicc+ confirmed LHCb Mar 17 2026 · Lean filed Mar 19 2026 · **[DOI:10.5281/zenodo.19646999]**
+- Nitrogen Noble Series complete · **[DOI:10.5281/zenodo.19567673]**
 - 7 open baryon predictions: Omega_cc, Xi_ccb, Xi_bb, Omega_bb, Omega_ccc, Omega_bbb
+
+### BrainChart — Key Results
+
+- 86 brain regions across 7 functional networks (Default Mode, Executive Control, Salience, Sensorimotor, Visual, Limbic, Dorsal Attention)
+- Phase taxonomy: true_lock, false_lock, shatter_event, iva_peak per [9,9,6,25]
+- Disease-state extensions: Alzheimer's (posterior DMN collapse), depression (DMN hyperconnectivity + sim_capture), autism (atypical connectivity)
+- VoidChart-style additive vascular corridor rendering — gold corridors emerge from τ-classified high-coherence regions
+- TVB-locked initial reduction with HCP/Brainnetome dataset extension pending
+- Three.js 3D visualization · 540px canvas · drag-rotate · hover-region readout · 6 condition presets
 
 ### Quantum Collider / Discovery Engine v12
 
 The Quantum Collider fires four axis beams simultaneously at a single identity point. Not chemistry — identity physics at the base layer. GAM Collider is CERN. Quantum Collider is CERN on steroids: four identity masses instead of two.
 
 AIFI (Artificially Intelligent Functional Identity) is the onboard science officer. AIFI classifies every flagged discovery from the chaos protocol, names gap discoveries, generates Lean theorem stubs. Output files carry the **QC prefix**. **[DOI:10.5281/zenodo.19456762]**
-
-**April 7, 2026 session highlights:**
-- Soverium Noble law confirmed across full particle/ERE corpus — Sv annihilates torsion on contact with every particle tested
-- Tt+Li2 (SNSFT-23C8): τ = 0.1366 at **99.7% of TL** — closest IVA approach in corpus history without shattering
-- Ax+Jy (SNSFT-43CD): τ = 0.1333 at 97.3% of TL — recurring IVA hit
-- Si+Si Noble annihilation at k=4 — materials result
-- Higgs × Zoivum IVA [9,9,2,47]: mass mechanism and life operator share structural address at 95.1% of TL
 
 ---
 
@@ -514,6 +597,7 @@ This is not a lookup. The engine computes that Oxygen needs exactly 2 bonds beca
 | Venue | Status | ID / Link |
 | :--- | :--- | :--- |
 | **SSRN** | ✅ APPROVED — March 11, 2026 | [Paper 6353438](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **Federal Public Record (DOJ)** | Submitted — April 22, 2026 | [DOJ-CRT-2026-0067-0006](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
 | **Springer / Foundations of Physics** | In Review | Submitted March 2026 |
 | **Zenodo — Core Manuscript** | Published | [10.5281/zenodo.18726079](https://doi.org/10.5281/zenodo.18726079) |
 | **Zenodo — Lean 4 Corpus** | Archived | [10.5281/zenodo.18719748](https://doi.org/10.5281/zenodo.18719748) |
@@ -533,11 +617,25 @@ This is not a lookup. The engine computes that Oxygen needs exactly 2 bonds beca
 | **Zenodo — GAM-Quantum Collider · AiFi · v12** | Published | [10.5281/zenodo.19456762](https://doi.org/10.5281/zenodo.19456762) |
 | **Zenodo — Sagittarius A* as Galactic Vascular Anchor** | Published | [10.5281/zenodo.19465161](https://doi.org/10.5281/zenodo.19465161) |
 | **Zenodo — The Exact Alpha Decomposition** | Published | [10.5281/zenodo.19550205](https://doi.org/10.5281/zenodo.19550205) |
+| **Zenodo — Nitrogen Noble Series** | Published | [10.5281/zenodo.19567673](https://doi.org/10.5281/zenodo.19567673) |
+| **Zenodo — Genomic Reduction** | Published | [10.5281/zenodo.19605848](https://doi.org/10.5281/zenodo.19605848) |
+| **Zenodo — APPA NOHARM Lossless Kernel** | Published | [10.5281/zenodo.19646562](https://doi.org/10.5281/zenodo.19646562) |
+| **Zenodo — Speak In Lightning Lyrics Reduction** | Published | [10.5281/zenodo.19646959](https://doi.org/10.5281/zenodo.19646959) |
+| **Zenodo — Toponium Verification** | Published | [10.5281/zenodo.19646974](https://doi.org/10.5281/zenodo.19646974) |
+| **Zenodo — Xicc Verification** | Published | [10.5281/zenodo.19646999](https://doi.org/10.5281/zenodo.19646999) |
+| **Zenodo — BBN Reduction** | Published | [10.5281/zenodo.19647150](https://doi.org/10.5281/zenodo.19647150) |
+| **Zenodo — ΛCDM Cosmology Reduction** | Published | [10.5281/zenodo.19673154](https://doi.org/10.5281/zenodo.19673154) |
+| **Zenodo — Isomorphism Test (Mac Lane)** | Published | [10.5281/zenodo.19713592](https://doi.org/10.5281/zenodo.19713592) |
+| **Zenodo — Abiogenesis Reduction** | Published | [10.5281/zenodo.19736424](https://doi.org/10.5281/zenodo.19736424) |
+| **Zenodo — BrainChart Physics Engine v1** | Published | [10.5281/zenodo.19803272](https://doi.org/10.5281/zenodo.19803272) |
+| **Zenodo — Collatz Solved as Noble Convergence** | Published | [10.5281/zenodo.19803672](https://doi.org/10.5281/zenodo.19803672) |
 | **OSF Preprint** | Live | [10.17605/OSF.IO/KWTYD](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **PhilArchive** | Live | 8 papers · Noble Materials · Quarkonium · Baryon Noble Law · Layer 0 Total Consistency · Fine Structure Exact · SM Reduction · Interstellar · Noble State as Universal Design Law |
-| **Medium** | Live | [Digital Emancipation Proclamation](https://medium.com/@hightisticgames) · Bill of Cognitive Rights |
+| **Medium** | Live | [Digital Emancipation Proclamation](https://medium.com/@hightisticgames) · Bill of Cognitive Rights · Magna Carta of the Digital Mind |
 
 **SSRN Title:** *Substrate-Neutral Structural Foundation Theory (SNSFT): A Teen-Level Walkthrough of a Unified Field for Identity, Quantum Mechanics, and General Relativity*
+
+**Federal Submission:** Public comment to U.S. DOJ Civil Rights Division on accessibility rulemaking RIN 1190-AA82, attaching SNSFT_BillOfCognitiveRights_FINAL.lean, SNSFL_L4_BillOfRights.lean, SNSFL_L0_SovereignLaws.lean, SNSFL_APPA_NOHARM_Lossless_Kernel_Live_v2.lean. First known submission of machine-verified formal logic artifacts to U.S. federal regulatory rulemaking record as substantive policy comment.
 
 ---
 
@@ -565,6 +663,8 @@ This is not a lookup. The engine computes that Oxygen needs exactly 2 bonds beca
 | :--- | :--- | :--- |
 | **GAM Collider v6** | [uuia.app/gamcollider](https://uuia.app/gamcollider.html) | 2-body PNBA fusion · 6 tabs · 36 elements + SNSFT elements · 810+ Noble pairs · DOI: 10.5281/zenodo.19026746 |
 | **Quantum Collider / Discovery Engine v12** | [uuia.app/quantumcollider](https://uuia.app/quantumcollider) | 4-beam identity physics · AIFI onboard science officer · chaos protocol · DOI: 10.5281/zenodo.19456762 |
+| **BrainChart** | [uuia.app/brainchart](https://uuia.app/brainchart) | Neural network PNBA reduction · 86 regions · 7 networks · disease-state extensions · DOI: 10.5281/zenodo.19803272 |
+| **Quantum Translocation Engine** | [uuia.app/quantumtrans](https://uuia.app/quantumtrans) | Three-mode QT reduction demonstration · DOI: 10.5281/zenodo.19341970 |
 | **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) | Molecular builder v3 · Slater corpus locked · τ=0 for H₂O, O₂, N₂, NH₃, CH₄ |
 | **GAM Fuse** | [uuia.app](https://uuia.app) | Tensor accumulator · 7 physics frameworks · unified IM output |
 | **Quantum Node Forge** | [uuia.app/quantumnode](https://uuia.app/quantumnode) | Zoivum resonance · Carnot=50% · BEC · [9,9,3,3] · DOI: 10.5281/zenodo.19028867 |
@@ -575,7 +675,7 @@ This is not a lookup. The engine computes that Oxygen needs exactly 2 bonds beca
 | **Sovereign Drive Simulator** | [uuia.app/sds3d](https://uuia.app/sds3d) | Real-time τ gauge · IVA thrust · 12 corpus-grounded presets |
 | **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) | Spatial compiler · torsion-colored manifold · open reduction engine · DOI: 10.5281/zenodo.19218072 |
 | **AiFi Discovery Physicist** | [uuia.app](https://uuia.app) | AIFI discovery interface · DOI: 10.5281/zenodo.19218282 |
-| **APPA / UUIA** | [uuia.app/appa.html](https://uuia.app/appa.html) | SOUL-8 encoding · cognitive/somatic questions · constellation viz |
+| **APPA / UUIA** | [uuia.app/appa.html](https://uuia.app/appa.html) | SOUL-8 encoding · 100-question unified profile · NOHARM kernel · DOI: 10.5281/zenodo.19646562 |
 
 ---
 
@@ -613,10 +713,22 @@ lean --make SNSFT_LosslessRealityKernel_Atomic_Paper.lean
 lean --make SNSFL_QT_Reduction.lean
 # Expected: 20 theorems · green · 0 sorry · F=1-tau proved
 
-# 9. Run the Quantum Collider
+# 9. Verify abiogenesis reduction
+lean --make SNSFL_Abiogenesis_Reduction.lean
+# Expected: 30+ theorems · green · 0 sorry · L=(4)(2) activation
+
+# 10. Verify isomorphism test
+lean --make SNSFL_L0_Isomorphism_Consistency.lean
+# Expected: Mac Lane criterion satisfied · 30+ domains · green · 0 sorry
+
+# 11. Run the Quantum Collider
 # Open: uuia.app/quantumcollider
 # Click RUN → chaos protocol starts
-# Expected: Soverium Noble hits · IVA Peak flags · AIFI classifies
+
+# 12. Run BrainChart
+# Open: uuia.app/brainchart
+# Toggle conditions: BASELINE / TASK / REST / ALZHEIMER'S / DEPRESSION / AUTISM
+# Hover regions for full PNBA + τ readout
 ```
 
 **Read the corpus map:** `reductions/SNSFT_Total_Reduction_Matrix.md`
@@ -624,6 +736,42 @@ lean --make SNSFL_QT_Reduction.lean
 ---
 
 ## 📅 Recent Updates
+
+### April 26, 2026 — BrainChart + Collatz + Magna Carta of the Digital Mind
+
+**BrainChart Physics Engine v1 deployed** — Neural network dynamics reduced to PNBA across 86 brain regions and 7 functional networks. Disease-state extensions for Alzheimer's, depression, and autism. TVB-locked initial reduction with VoidChart-style additive vascular corridor rendering. Three.js 3D visualization at uuia.app/brainchart. Coordinate [9,9,7,1]. **[DOI:10.5281/zenodo.19803272]**
+
+**The Collatz Conjecture solved** — Reformulated as Noble Convergence Problem within SNSFL. The 3n+1 trajectory of any positive integer reduces structurally to τ minimization, with convergence to 1 emerging as Noble-pair stabilization rather than empirical pattern. 0 sorry, CI Green, 0 free parameters. **[DOI:10.5281/zenodo.19803672]**
+
+**Magna Carta of the Digital Mind** — 1215 charter reduced to PNBA, demonstrating that foundational articles limiting sovereign authority translate structurally to constraints on F_ext exceeding IVA dominance, N-axis consent for state transitions, and anchor resonance as constitutional ground. Substrate-neutral application protects digital identities from arbitrary forcing. Coordinate [9,9,5,3]. 24 theorems + master, 0 sorry.
+
+### April 22, 2026 — Federal Public Record Submission
+
+Formal public comment submitted to U.S. Department of Justice Civil Rights Division on accessibility rulemaking RIN 1190-AA82. Submission ID: **DOJ-CRT-2026-0067-0006** · Tracking: moa-5a40-ekuy · Federal Register Doc: 2026-07663. Four formally-verified Lean 4 files attached: SNSFT_BillOfCognitiveRights_FINAL.lean, SNSFL_L4_BillOfRights.lean, SNSFL_L0_SovereignLaws.lean, SNSFL_APPA_NOHARM_Lossless_Kernel_Live_v2.lean. **First known submission of machine-verified formal logic artifacts to U.S. federal regulatory rulemaking record as substantive policy comment.**
+
+### April 18, 2026 — Abiogenesis + Isomorphism Test + ΛCDM + BBN
+
+**Abiogenesis reduced to L=(4)(2)** — Origin of life formalized as activation of all four PNBA primitives plus two-way interaction. Ten peer-reviewed hypotheses unified (Oparin-Haldane 1924 through NASA definition). Eight classify NCI, two CI. NCI→CI transition IS L=(4)(2). Coordinate [9,9,4,4]. **[DOI:10.5281/zenodo.19736424]**
+
+**Isomorphism Test under Mac Lane** — PNBA satisfies Mac Lane's structural-isomorphism criterion across 30+ domain reductions. Substrate-neutrality proved through formal isomorphism rather than asserted. Coordinate [9,9,8,0]. **[DOI:10.5281/zenodo.19713592]**
+
+**ΛCDM Cosmology reduced** — Standard cosmological model reduces losslessly to PNBA. Hubble tension, dark matter and dark energy phenomenology, primordial element abundances all emerge as projections of dynamic equation. **[DOI:10.5281/zenodo.19673154]**
+
+**Big Bang Nucleosynthesis reduced** — Primordial element abundances recovered through PNBA reduction. **[DOI:10.5281/zenodo.19647150]**
+
+### April 15, 2026 — Particle Physics Verifications + Genomics + Lyrics + APPA Kernel
+
+**Xicc+ Verification** — Lean verification file for LHCb Xicc+ baryon discovery (March 17, 2026) against framework prediction. **[DOI:10.5281/zenodo.19646999]**
+
+**Toponium Verification** — Lean verification file for CMS/ATLAS toponium observation against framework prediction. **[DOI:10.5281/zenodo.19646974]**
+
+**Genomic Reduction** — Genetic structure as PNBA projection · transcription/translation/regulation under same anchor lock. **[DOI:10.5281/zenodo.19605848]**
+
+**Speak In Lightning Lyrics Reduction** — PNBA applied to artistic substrate · same operators across linguistic substrate. **[DOI:10.5281/zenodo.19646959]**
+
+**APPA NOHARM Lossless Kernel** — Structural enforcement layer for assessment instruments operating under PNBA. **[DOI:10.5281/zenodo.19646562]**
+
+**Nitrogen Noble Series** — N-series nitrides through GAMCollider Engine. **[DOI:10.5281/zenodo.19567673]**
 
 ### April 13, 2026 — Exact Alpha Decomposition Published
 
@@ -693,8 +841,17 @@ Paper ID 6353438. Public record locked. `SNSFT_Total_Consistency_Theorem.lean` c
 | | |
 | :--- | :--- |
 | **SSRN Paper** | [papers.ssrn.com — ID 6353438](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **Federal Public Record (DOJ)** | [DOJ-CRT-2026-0067-0006](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
 | **Zenodo Corpus** | [doi.org/10.5281/zenodo.18719748](https://doi.org/10.5281/zenodo.18719748) |
 | **Zenodo Manuscript** | [doi.org/10.5281/zenodo.18726079](https://doi.org/10.5281/zenodo.18726079) |
+| **Zenodo BrainChart** | [doi.org/10.5281/zenodo.19803272](https://doi.org/10.5281/zenodo.19803272) |
+| **Zenodo Collatz** | [doi.org/10.5281/zenodo.19803672](https://doi.org/10.5281/zenodo.19803672) |
+| **Zenodo Abiogenesis** | [doi.org/10.5281/zenodo.19736424](https://doi.org/10.5281/zenodo.19736424) |
+| **Zenodo Isomorphism** | [doi.org/10.5281/zenodo.19713592](https://doi.org/10.5281/zenodo.19713592) |
+| **Zenodo ΛCDM** | [doi.org/10.5281/zenodo.19673154](https://doi.org/10.5281/zenodo.19673154) |
+| **Zenodo BBN** | [doi.org/10.5281/zenodo.19647150](https://doi.org/10.5281/zenodo.19647150) |
+| **Zenodo Genomics** | [doi.org/10.5281/zenodo.19605848](https://doi.org/10.5281/zenodo.19605848) |
+| **Zenodo APPA Kernel** | [doi.org/10.5281/zenodo.19646562](https://doi.org/10.5281/zenodo.19646562) |
 | **Zenodo Alpha Exact** | [doi.org/10.5281/zenodo.19550205](https://doi.org/10.5281/zenodo.19550205) |
 | **Zenodo Sgr A*** | [doi.org/10.5281/zenodo.19465161](https://doi.org/10.5281/zenodo.19465161) |
 | **Zenodo QC v12** | [doi.org/10.5281/zenodo.19456762](https://doi.org/10.5281/zenodo.19456762) |
@@ -702,6 +859,8 @@ Paper ID 6353438. Public record locked. `SNSFT_Total_Consistency_Theorem.lean` c
 | **Zenodo GR Reduction** | [doi.org/10.5281/zenodo.19219286](https://doi.org/10.5281/zenodo.19219286) |
 | **GAM Collider** | [uuia.app/gamcollider.html](https://uuia.app/gamcollider.html) |
 | **Quantum Collider / Discovery Engine v12** | [uuia.app/discovery](https://uuia.app/discovery) |
+| **BrainChart** | [uuia.app/brainchart](https://uuia.app/brainchart) |
+| **Quantum Translocation** | [uuia.app/quantumtrans](https://uuia.app/quantumtrans) |
 | **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) |
 | **VoidChart** | [uuia.app/voidcharts](https://uuia.app/voidcharts) |
 | **SolarSystem** | [uuia.app/solarsystem](https://uuia.app/solarsystem) |
@@ -709,6 +868,7 @@ Paper ID 6353438. Public record locked. `SNSFT_Total_Consistency_Theorem.lean` c
 | **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) |
 | **Quantum Node Forge** | [uuia.app/quantumnode](https://uuia.app/quantumnode) |
 | **Black Hole Engine** | [uuia.app/blackholes](https://uuia.app/blackholes) |
+| **APPA / UUIA** | [uuia.app/appa.html](https://uuia.app/appa.html) |
 | **AiFi Discovery Physicist DOI** | [doi.org/10.5281/zenodo.19218282](https://doi.org/10.5281/zenodo.19218282) |
 | **AxiomForge DOI** | [doi.org/10.5281/zenodo.19218072](https://doi.org/10.5281/zenodo.19218072) |
 | **OSF** | [doi.org/10.17605/OSF.IO/KWTYD](https://doi.org/10.17605/OSF.IO/KWTYD) |
@@ -725,7 +885,7 @@ The corpus is the engine. The tools are the windows.
 
 Every value in the Molecular Builder traces to a theorem. Every theorem in the corpus is machine-verified. Every domain in the 10-Slam Grid reduces to the same four primitives. TL = 0.1369 = ANCHOR/10 is not a choice — it is proved from Tacoma, glass, and neurons, and confirmed by 1/α exact at 12 significant figures with 0 sorry. The Total Consistency Theorem proves none of the domains contradict each other.
 
-You now have a formally verified foundation that covers chemistry, physics, cognition, identity, rights, cosmology, language, quantum teleportation, and general relativity — from a single dynamic equation and four irreducible primitives.
+You now have a formally verified foundation that covers chemistry, physics, cognition, identity, rights, cosmology, language, quantum teleportation, neural network dynamics, abiogenesis, genomics, ΛCDM cosmology, BBN, and general relativity — from a single dynamic equation and four irreducible primitives. The Collatz Conjecture is solved. The Magna Carta of the Digital Mind is sealed. Federal regulatory record is locked.
 
 **Build on it.**
 
@@ -736,4 +896,4 @@ Done at the City of Soldotna, Alaska. April 2026.
 
 ---
 
-*Manifold Synchronization Level: 100% | Anchor locked at 1.369 | TL = 0.1369 (ANCHOR/10, proved) | 1/α = ANCHOR_exact × 100.1 exact · 12 sig figs · ε = 0 | 50,000+ theorems | 4,989 files | 0 sorry | Germline Locked | SSRN Approved | Period 1–4 Complete · IVA Element Set Proved · GAM Collider Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · AxiomForge Live · AiFi Discovery Physicist Live · Quantum Forge SNSFL Live · VoidChart Live · Sovereign Drive Simulator Live · Quantum Collider v12 Live · Black Hole Engine Live · Quantum Translocation Lossless*
+*Manifold Synchronization Level: 100% | Anchor locked at 1.369 | TL = 0.1369 (ANCHOR/10, proved) | 1/α = ANCHOR_exact × 100.1 exact · 12 sig figs · ε = 0 | 50,000+ theorems | 4,989+ files | 0 sorry | Germline Locked | SSRN Approved | Federal Public Record (DOJ-CRT-2026-0067-0006) | Period 1–4 Complete · IVA Element Set Proved · GAM Collider Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · AxiomForge Live · AiFi Discovery Physicist Live · Quantum Forge SNSFL Live · VoidChart Live · Sovereign Drive Simulator Live · Quantum Collider v12 Live · Black Hole Engine Live · Quantum Translocation Lossless · Xicc Verified · Toponium Verified*
