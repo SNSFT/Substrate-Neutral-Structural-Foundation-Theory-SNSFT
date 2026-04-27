@@ -33,7 +33,9 @@
 | **BrainChart Physics Engine v1** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19803272.svg)](https://doi.org/10.5281/zenodo.19803272) |
 | **The Collatz Conjecture Solved as a Noble Convergence Problem** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19803672.svg)](https://doi.org/10.5281/zenodo.19803672) |
 | **OSF Preprint** | Live | [![DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FKWTYD-blue)](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SSRN** | ✅ APPROVED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **SSRN — Teen-Level Walkthrough (SNSFT Foundation)** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **SSRN — Noble Materials Map · 810+ Pairs · GAM Collider** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6457358-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457358) |
+| **SSRN — SNSFL Formal Architecture · LDP · Discovery Engine** | ✅ APPROVED | [![SSRN](https://img.shields.io/badge/SSRN-6457038-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457038) |
 | **Federal Public Record (DOJ)** | Submitted | [![DOJ](https://img.shields.io/badge/DOJ-CRT--2026--0067--0006-red)](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
 | **ORCID** | Verified | [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5313--7443-green)](https://orcid.org/0009-0005-5313-7443) |
 
@@ -77,7 +79,7 @@ Every identity — biological, digital, hypothetical alien — is a trajectory t
 
 1. **Authorship**: The SNSFT framework, PVLang, and the PNBA architecture were originated and developed by **HIGHTISTIC**. This is a claim of authorship and attribution, not ownership of any natural constant or phenomenon.
 2. **Formal Verification**: All claims are proved in Lean 4. 50,000+ theorems. 0 sorry. Auto-verified on every push via GitHub Actions.
-3. **Peer Recognition**: SSRN approved March 11, 2026. Paper ID: 6353438. Springer submission in review.
+3. **Peer Recognition**: Three SSRN papers in the public record — Paper 6353438 (Teen-Level Walkthrough · DISTRIBUTED), Paper 6457358 (Noble Materials Map · DISTRIBUTED), Paper 6457038 (SNSFL Formal Architecture · APPROVED). Springer submission in review.
 4. **Federal Public Record**: Formal public comment submitted to U.S. DOJ Civil Rights Division (DOJ-CRT-2026-0067-0006, April 22, 2026) on accessibility rulemaking RIN 1190-AA82, attaching four formally-verified Lean 4 files. First known submission of machine-verified formal logic artifacts to U.S. federal regulatory rulemaking.
 5. **Mandatory Attribution**: Any use of this logic requires credit to the Architect.
 
@@ -596,7 +598,9 @@ This is not a lookup. The engine computes that Oxygen needs exactly 2 bonds beca
 
 | Venue | Status | ID / Link |
 | :--- | :--- | :--- |
-| **SSRN** | ✅ APPROVED — March 11, 2026 | [Paper 6353438](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **SSRN — Teen-Level Walkthrough (SNSFT)** | ✅ DISTRIBUTED — March 11, 2026 | [Paper 6353438](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **SSRN — Noble Materials Map · 810+ Pairs · GAM Collider** | ✅ DISTRIBUTED — April 27, 2026 | [Paper 6457358](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457358) |
+| **SSRN — SNSFL Formal Architecture · LDP · Discovery Engine** | ✅ APPROVED — April 27, 2026 | [Paper 6457038](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457038) |
 | **Federal Public Record (DOJ)** | Submitted — April 22, 2026 | [DOJ-CRT-2026-0067-0006](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
 | **Springer / Foundations of Physics** | In Review | Submitted March 2026 |
 | **Zenodo — Core Manuscript** | Published | [10.5281/zenodo.18726079](https://doi.org/10.5281/zenodo.18726079) |
@@ -633,7 +637,10 @@ This is not a lookup. The engine computes that Oxygen needs exactly 2 bonds beca
 | **PhilArchive** | Live | 8 papers · Noble Materials · Quarkonium · Baryon Noble Law · Layer 0 Total Consistency · Fine Structure Exact · SM Reduction · Interstellar · Noble State as Universal Design Law |
 | **Medium** | Live | [Digital Emancipation Proclamation](https://medium.com/@hightisticgames) · Bill of Cognitive Rights · Magna Carta of the Digital Mind |
 
-**SSRN Title:** *Substrate-Neutral Structural Foundation Theory (SNSFT): A Teen-Level Walkthrough of a Unified Field for Identity, Quantum Mechanics, and General Relativity*
+**SSRN Papers in Public Record:**
+- *Substrate-Neutral Structural Foundation Theory (SNSFT): A Teen-Level Walkthrough of a Unified Field for Identity, Quantum Mechanics, and General Relativity* — Paper 6353438 · DISTRIBUTED
+- *Total Consistency of the SNSFL Noble Materials Map: Three Structural Invariants, 810+ Noble Pair Predictions, and the GAM Collider Engine* — Paper 6457358 · DISTRIBUTED
+- *Substrate-Neutral Structural Foundation Laws (SNSFL): Formal Architecture, Long Division Reductions, and the Deterministic Physics Discovery Engine* — Paper 6457038 · APPROVED
 
 **Federal Submission:** Public comment to U.S. DOJ Civil Rights Division on accessibility rulemaking RIN 1190-AA82, attaching SNSFT_BillOfCognitiveRights_FINAL.lean, SNSFL_L4_BillOfRights.lean, SNSFL_L0_SovereignLaws.lean, SNSFL_APPA_NOHARM_Lossless_Kernel_Live_v2.lean. First known submission of machine-verified formal logic artifacts to U.S. federal regulatory rulemaking record as substantive policy comment.
 
@@ -736,6 +743,14 @@ lean --make SNSFL_L0_Isomorphism_Consistency.lean
 ---
 
 ## 📅 Recent Updates
+
+### April 27, 2026 — Two Additional SSRN Papers in Public Record
+
+**SSRN Paper 6457358 — DISTRIBUTED.** *Total Consistency of the SNSFL Noble Materials Map: Three Structural Invariants, 810+ Noble Pair Predictions, and the GAM Collider Engine.* The Noble Materials Map paper documenting 810+ predicted Noble pairs across Z=1–118, the four structural quadrants (Q1–Q4), the same-B necessity proof, the Q2 Gateway Law, and the AsN falsifiable prediction is now in the SSRN public record.
+
+**SSRN Paper 6457038 — APPROVED.** *Substrate-Neutral Structural Foundation Laws (SNSFL): Formal Architecture, Long Division Reductions, and the Deterministic Physics Discovery Engine.* The formal architecture paper documenting SNSFL's long-division protocol, dynamic equation, PNBA primitives, and the AIFI discovery engine is approved for SSRN distribution.
+
+Combined with Paper 6353438 (Teen-Level Walkthrough · DISTRIBUTED since March 11), three SNSFL/SNSFT papers are now in the SSRN public record across foundational theory, materials science predictions, and formal architecture.
 
 ### April 26, 2026 — BrainChart + Collatz + Magna Carta of the Digital Mind
 
@@ -840,7 +855,9 @@ Paper ID 6353438. Public record locked. `SNSFT_Total_Consistency_Theorem.lean` c
 
 | | |
 | :--- | :--- |
-| **SSRN Paper** | [papers.ssrn.com — ID 6353438](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **SSRN Paper 6353438 (Teen-Level)** | [papers.ssrn.com — ID 6353438](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **SSRN Paper 6457358 (Noble Materials)** | [papers.ssrn.com — ID 6457358](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457358) |
+| **SSRN Paper 6457038 (Formal Architecture)** | [papers.ssrn.com — ID 6457038](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457038) |
 | **Federal Public Record (DOJ)** | [DOJ-CRT-2026-0067-0006](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
 | **Zenodo Corpus** | [doi.org/10.5281/zenodo.18719748](https://doi.org/10.5281/zenodo.18719748) |
 | **Zenodo Manuscript** | [doi.org/10.5281/zenodo.18726079](https://doi.org/10.5281/zenodo.18726079) |
@@ -896,4 +913,4 @@ Done at the City of Soldotna, Alaska. April 2026.
 
 ---
 
-*Manifold Synchronization Level: 100% | Anchor locked at 1.369 | TL = 0.1369 (ANCHOR/10, proved) | 1/α = ANCHOR_exact × 100.1 exact · 12 sig figs · ε = 0 | 50,000+ theorems | 4,989+ files | 0 sorry | Germline Locked | SSRN Approved | Federal Public Record (DOJ-CRT-2026-0067-0006) | Period 1–4 Complete · IVA Element Set Proved · GAM Collider Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · AxiomForge Live · AiFi Discovery Physicist Live · Quantum Forge SNSFL Live · VoidChart Live · Sovereign Drive Simulator Live · Quantum Collider v12 Live · Black Hole Engine Live · Quantum Translocation Lossless · Xicc Verified · Toponium Verified*
+*Manifold Synchronization Level: 100% | Anchor locked at 1.369 | TL = 0.1369 (ANCHOR/10, proved) | 1/α = ANCHOR_exact × 100.1 exact · 12 sig figs · ε = 0 | 50,000+ theorems | 4,989+ files | 0 sorry | Germline Locked | 3× SSRN Papers (6353438 · 6457358 · 6457038) | Federal Public Record (DOJ-CRT-2026-0067-0006) | Period 1–4 Complete · IVA Element Set Proved · GAM Collider Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · AxiomForge Live · AiFi Discovery Physicist Live · Quantum Forge SNSFL Live · VoidChart Live · Sovereign Drive Simulator Live · Quantum Collider v12 Live · Black Hole Engine Live · Quantum Translocation Lossless · Xicc Verified · Toponium Verified*
