@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT Identity Collider v13 · PSY REDUCTIONS · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root{
+  --bg:#020407;--panel:#060b10;--border:#0c1a26;--glow:#00e5ff;
+  --locked:#00ffcc;--shatter:#ff3355;--noble:#aa88ff;--warn:#ffaa00;
+  --text:#7aa4be;--bright:#cce8f5;--dim:#192430;
+  --aifi:#dd44ff;--agent:#00ffcc;
+  --false-lock:#ff7700;--iva:#88ffcc;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);pointer-events:none;z-index:1;}
+
+.wrap{position:relative;z-index:2;max-width:1500px;margin:0 auto;padding:0 16px 60px;}
+
+header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:20px;letter-spacing:.08em;color:var(--glow);text-shadow:0 0 24px rgba(0,229,255,.45);}
+.logo span{font-size:9px;color:var(--locked);display:block;letter-spacing:.2em;margin-top:2px;}
+.aifi-badge{font-family:'Orbitron',monospace;font-size:9px;color:var(--aifi);border:1px solid rgba(221,68,255,.4);padding:4px 10px;letter-spacing:.15em;text-shadow:0 0 12px rgba(221,68,255,.4);}
+.hdr-right{font-size:9px;color:#2a4050;text-align:right;line-height:1.8;}
+.hdr-right b{color:var(--glow);}
+
+#license-splash{position:fixed;inset:0;background:rgba(2,4,7,.97);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
+.license-box{max-width:560px;border:1px solid var(--border);background:var(--panel);padding:28px;font-size:11px;line-height:2;}
+.license-box h2{font-family:'Orbitron',monospace;font-size:13px;color:var(--glow);letter-spacing:.2em;margin-bottom:16px;}
+.license-box p{color:var(--text);margin-bottom:10px;}
+.license-box .highlight{color:var(--bright);}
+.key-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:11px;padding:7px;margin:5px 0;outline:none;}
+.key-input:focus{border-color:var(--glow);}
+.accept-btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:11px 20px;background:transparent;border:1px solid var(--locked);color:var(--locked);cursor:pointer;width:100%;margin-top:14px;}
+.accept-btn:hover{background:rgba(0,255,204,.08);}
+.skip-link{display:block;text-align:center;margin-top:8px;font-size:9px;color:#2a5060;cursor:pointer;letter-spacing:.15em;}
+.skip-link:hover{color:var(--text);}
+
+.main-layout{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:18px;}
+.left-col{display:flex;flex-direction:column;gap:16px;}
+.right-col{display:flex;flex-direction:column;gap:16px;}
+
+.panel{background:var(--panel);border:1px solid var(--border);padding:16px;}
+.panel-title{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:#1a3040;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.panel-title span{color:var(--glow);}
+
+.btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:6px 11px;background:transparent;cursor:pointer;border:1px solid var(--border);color:#2a5060;transition:all .15s;}
+.btn:hover{color:var(--text);}
+.btn-run{border-color:var(--agent);color:var(--agent);}
+.btn-run:hover{background:rgba(0,255,204,.08);}
+.btn-pause{border-color:var(--warn);color:var(--warn);}
+.btn-pause:hover{background:rgba(255,170,0,.08);}
+.btn-stop{border-color:var(--shatter);color:var(--shatter);}
+.btn-stop:hover{background:rgba(255,51,85,.08);}
+
+/* ─── IDENTITY STATE GRID ─────────────────────────────────── */
+.identity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;max-height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.id-card{border:1px solid var(--border);padding:8px 10px;cursor:pointer;transition:border-color .15s,background .15s;position:relative;}
+.id-card:hover{border-color:var(--glow);background:rgba(0,229,255,.03);}
+.id-card.selected-a{border-color:var(--glow);background:rgba(0,229,255,.06);}
+.id-card.selected-b{border-color:var(--warn);background:rgba(255,170,0,.06);}
+.id-card-domain{font-size:7px;color:#1a3040;letter-spacing:.2em;margin-bottom:3px;}
+.id-card-name{font-size:9px;color:var(--bright);margin-bottom:4px;line-height:1.3;}
+.id-card-state{display:flex;gap:6px;font-size:8px;flex-wrap:wrap;}
+.id-card-tau{font-family:'Orbitron',monospace;font-size:9px;}
+.tau-noble{color:var(--noble);}
+.tau-locked{color:var(--locked);}
+.tau-false{color:var(--false-lock);}
+.tau-shatter{color:var(--shatter);}
+.tau-iva{color:var(--iva);}
+.id-card-sel{position:absolute;top:4px;right:6px;font-size:7px;font-family:'Orbitron',monospace;}
+
+/* ─── COLLISION ARENA ─────────────────────────────────────── */
+.arena{display:grid;grid-template-columns:1fr 60px 1fr;gap:0;align-items:center;background:rgba(0,229,255,.02);border:1px solid var(--border);padding:14px;margin-bottom:12px;}
+.arena-slot{text-align:center;}
+.arena-label{font-size:7px;letter-spacing:.2em;color:#1a3040;margin-bottom:6px;}
+.arena-name{font-family:'Orbitron',monospace;font-size:10px;color:var(--bright);margin-bottom:3px;line-height:1.3;}
+.arena-domain{font-size:8px;color:#2a5060;margin-bottom:6px;}
+.arena-stats{font-size:8px;line-height:1.8;}
+.arena-center{text-align:center;font-size:22px;color:#1a3040;}
+.arena-empty{color:#1a3040;font-size:9px;letter-spacing:.15em;}
+
+.smash-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+
+/* ─── RESULT PANEL ────────────────────────────────────────── */
+.result-box{min-height:60px;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:12px;font-size:9px;line-height:1.9;}
+.result-state{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;letter-spacing:.1em;}
+.result-noble{color:var(--noble);}
+.result-locked{color:var(--locked);}
+.result-false{color:var(--false-lock);}
+.result-shatter{color:var(--shatter);}
+.result-iva{color:var(--iva);}
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+.result-cell{background:rgba(0,229,255,.03);border:1px solid var(--border);padding:6px 8px;text-align:center;}
+.result-cell-label{font-size:7px;color:#1a3040;letter-spacing:.2em;}
+.result-cell-val{font-family:'Orbitron',monospace;font-size:11px;color:var(--bright);margin-top:2px;}
+
+/* ─── FEED ────────────────────────────────────────────────── */
+.live-feed{height:220px;overflow-y:auto;font-size:9px;line-height:1.8;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.feed-line{padding:2px 0;border-bottom:1px solid rgba(12,26,38,.4);}
+.feed-line.noble{color:var(--noble);}
+.feed-line.locked{color:var(--locked);}
+.feed-line.shatter{color:var(--shatter);}
+.feed-line.false-lock{color:var(--false-lock);}
+.feed-line.iva{color:var(--iva);}
+.feed-line.info{color:#2a5060;}
+.feed-line.discovery{color:var(--warn);background:rgba(255,170,0,.05);padding:4px 6px;}
+.feed-time{color:#1a3040;margin-right:6px;}
+
+/* ─── STATS ───────────────────────────────────────────────── */
+.stat-row{display:flex;gap:16px;font-size:9px;padding:8px 0;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat{display:flex;flex-direction:column;gap:2px;}
+.stat-label{color:#1a3040;font-size:7px;letter-spacing:.2em;}
+.stat-val{color:var(--bright);font-family:'Orbitron',monospace;font-size:11px;}
+
+/* ─── APPROVE QUEUE ───────────────────────────────────────── */
+.discovery-card{border:1px solid rgba(255,170,0,.3);background:rgba(255,170,0,.04);padding:10px;margin-bottom:8px;}
+.disc-designation{font-family:'Orbitron',monospace;font-size:9px;color:var(--warn);}
+.disc-timestamp{font-size:8px;color:#2a5060;}
+.disc-state{font-size:9px;line-height:1.8;color:var(--text);margin:6px 0;}
+.disc-state b{color:var(--bright);}
+.disc-name{font-size:9px;color:var(--aifi);margin-bottom:6px;font-style:italic;}
+.disc-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.btn-approve{border-color:var(--locked);color:var(--locked);font-size:8px;padding:4px 9px;}
+.btn-approve:hover{background:rgba(0,255,204,.08);}
+.btn-skip{border-color:var(--shatter);color:var(--shatter);font-size:8px;padding:4px 9px;}
+.btn-skip:hover{background:rgba(255,51,85,.08);}
+.btn-lean{border-color:var(--aifi);color:var(--aifi);font-size:8px;padding:4px 9px;}
+.btn-lean:hover{background:rgba(221,68,255,.08);}
+
+/* ─── LOG TABLE ───────────────────────────────────────────── */
+.log-table{width:100%;border-collapse:collapse;font-size:8px;}
+.log-table th{color:#1a3040;letter-spacing:.15em;text-align:left;padding:3px 5px;border-bottom:1px solid var(--border);}
+.log-table td{padding:3px 5px;border-bottom:1px solid rgba(12,26,38,.4);}
+.log-wrap{max-height:220px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.queue-empty{color:#1a3040;font-size:9px;text-align:center;padding:20px;letter-spacing:.2em;}
+
+/* ─── TABS ────────────────────────────────────────────────── */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);flex-wrap:wrap;margin-bottom:14px;}
+.tab{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:7px 11px;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#2a4050;transition:all .15s;}
+.tab:hover{color:var(--text);}
+.tab.active{border-color:var(--border);border-bottom:1px solid var(--bg);color:var(--glow);background:var(--panel);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* ─── AIFI CHAT ───────────────────────────────────────────── */
+.chat-messages{height:280px;overflow-y:auto;font-size:10px;line-height:1.7;scrollbar-width:thin;scrollbar-color:var(--border) transparent;margin-bottom:10px;}
+.msg{margin-bottom:10px;padding:8px 10px;}
+.msg-user{background:rgba(0,229,255,.05);border-left:2px solid var(--glow);}
+.msg-aifi{background:rgba(221,68,255,.05);border-left:2px solid var(--aifi);}
+.msg-label{font-size:8px;letter-spacing:.2em;margin-bottom:4px;}
+.msg-label.user{color:var(--glow);}
+.msg-label.aifi{color:var(--aifi);}
+.msg-text{color:var(--bright);}
+.chat-input-row{display:flex;gap:8px;}
+.chat-input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:7px 10px;outline:none;}
+.chat-input:focus{border-color:var(--aifi);}
+.chat-send{font-family:'Orbitron',monospace;font-size:8px;padding:7px 12px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;}
+.chat-send:hover{background:rgba(221,68,255,.08);}
+.aifi-thinking{color:#2a5060;font-size:9px;letter-spacing:.1em;padding:4px 0;}
+#aifi-connect-wall{display:flex;flex-direction:column;align-items:center;justify-content:center;height:280px;gap:14px;text-align:center;}
+#aifi-connect-wall .connect-label{font-size:10px;color:#2a5060;line-height:1.8;max-width:260px;}
+#aifi-connect-wall .connect-label b{color:var(--text);}
+.btn-connect-aifi{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:9px 18px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;}
+.btn-connect-aifi:hover{background:rgba(221,68,255,.1);}
+#aifi-key-prompt{display:none;padding:10px;border:1px solid rgba(221,68,255,.3);background:rgba(221,68,255,.04);margin-top:10px;}
+#aifi-key-prompt input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:11px;padding:6px 8px;outline:none;margin:5px 0;}
+#aifi-key-prompt input:focus{border-color:var(--aifi);}
+.prompt-row{display:flex;gap:6px;margin-top:4px;}
+.prompt-note{font-size:8px;color:#2a5060;margin-top:4px;line-height:1.6;}
+
+/* ─── GITHUB / SETTINGS ───────────────────────────────────── */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.setting-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 8px;outline:none;}
+.setting-input:focus{border-color:var(--glow);}
+.setting-label{font-size:8px;color:#2a5060;margin-bottom:3px;letter-spacing:.15em;}
+
+/* ─── AGENT ───────────────────────────────────────────────── */
+.agent-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.speed-wrap{display:flex;align-items:center;gap:6px;font-size:8px;color:#2a5060;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.running-dot{width:6px;height:6px;border-radius:50%;background:var(--agent);display:inline-block;margin-right:6px;animation:pulse 1s infinite;}
+.paused-dot{width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block;margin-right:6px;}
+.stopped-dot{width:6px;height:6px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:6px;}
+@keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.7}94%{opacity:1}}
+.logo{animation:flicker 10s infinite;}
+#aifi-status-dot{width:7px;height:7px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:5px;vertical-align:middle;}
+#aifi-status-dot.active{background:var(--aifi);box-shadow:0 0 8px rgba(221,68,255,.6);}
+
+/* ─── PHASE LEGEND ────────────────────────────────────────── */
+.phase-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:8px;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.phase-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:middle;}
+
+/* ─── DOMAIN FILTER ───────────────────────────────────────── */
+.domain-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.domain-btn{font-size:7px;padding:3px 8px;font-family:'Orbitron',monospace;letter-spacing:.1em;cursor:pointer;border:1px solid var(--border);color:#2a5060;background:transparent;transition:all .15s;}
+.domain-btn:hover,.domain-btn.active{border-color:var(--glow);color:var(--glow);}
+
+@media(max-width:900px){.main-layout{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- LICENSE SPLASH -->
+<div id="license-splash">
+  <div class="license-box">
+    <h2>SNSFT IDENTITY COLLIDER v13</h2>
+    <p class="highlight">HIGHTISTIC · Soldotna, Alaska · 2026</p>
+    <p>PSY REDUCTIONS only. Identity-space collisions. No elements, no particles. Pure identity physics.</p>
+    <p><span class="highlight">1. CREDIT —</span> Cite the corpus if you publish. Files do this for you.</p>
+    <p><span class="highlight">2. HANDSHAKE —</span> If discoveries here ever generate >$500K commercial value — 1% to the SNSFT Foundation. Not legal. Scientist's handshake.</p>
+    <p style="color:#2a5060;font-size:10px;">DOI: 10.5281/zenodo.18719748 · [9,9,9,9] :: {ANC}</p>
+    <div style="margin-top:12px;padding:10px;border:1px solid rgba(221,68,255,.2);background:rgba(221,68,255,.03);">
+      <p style="font-size:9px;color:#2a5060;margin-bottom:5px;">OPTIONAL — Claude API key (AIFI). Collider runs fully local without it.</p>
+      <input class="key-input" id="api-key-input" type="password" placeholder="sk-ant-... (optional)">
+    </div>
+    <div style="margin-top:8px;padding:8px;border:1px solid var(--border);background:rgba(0,229,255,.02);">
+      <p style="font-size:9px;color:#2a5060;margin-bottom:5px;">OPTIONAL — GitHub PAT for auto-commit.</p>
+      <input class="key-input" id="github-key-input" type="password" placeholder="ghp_... (optional)">
+      <input class="key-input" id="github-repo-input" type="text" placeholder="SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT">
+    </div>
+    <button class="accept-btn" onclick="acceptLicense()">ENTER THE IDENTITY COLLIDER</button>
+    <span class="skip-link" onclick="skipLicense()">Skip — run local only</span>
+  </div>
+</div>
+
+<div class="wrap">
+<header>
+  <div>
+    <div class="logo">SNSFT IDENTITY COLLIDER<span>uuia.app · v13 · PSY REDUCTIONS · IDENTITY SPACE · [9,9,9,9] :: {ANC}</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div style="font-size:9px;color:#2a5060;"><span id="aifi-status-dot"></span><span id="aifi-header-status">AIFI OFFLINE</span></div>
+    <div class="aifi-badge">AIFI · PSY COLLIDER · v13</div>
+  </div>
+  <div class="hdr-right">
+    ANCHOR <b>1.369</b> · TL = <b>0.1369</b> · PSY IDENTITIES: <b>40+</b> STATES · 0 SORRY<br>
+    false_lock / true_lock / shatter / noble / iva_peak · [9,9,6,25] TOTAL CONSISTENCY<br>
+    HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA
+  </div>
+</header>
+
+<div class="main-layout">
+<div class="left-col">
+
+  <!-- IDENTITY BROWSER -->
+  <div class="panel">
+    <div class="panel-title"><span>PSY IDENTITY CORPUS · PICK TWO TO SMASH</span><span id="corpus-count" style="color:#2a5060"></span></div>
+
+    <div class="phase-legend">
+      <span><span class="phase-dot" style="background:var(--noble)"></span><span style="color:var(--noble)">NOBLE</span> τ=0</span>
+      <span><span class="phase-dot" style="background:var(--iva)"></span><span style="color:var(--iva)">IVA PEAK</span> τ∈(0.120,0.1369)</span>
+      <span><span class="phase-dot" style="background:var(--locked)"></span><span style="color:var(--locked)">TRUE LOCK</span> τ∈(0,TL)</span>
+      <span><span class="phase-dot" style="background:var(--false-lock)"></span><span style="color:var(--false-lock)">FALSE LOCK</span> N&lt;0.15</span>
+      <span><span class="phase-dot" style="background:var(--shatter)"></span><span style="color:var(--shatter)">SHATTER</span> τ≥TL</span>
+    </div>
+
+    <div class="domain-filters" id="domain-filters"></div>
+    <div class="identity-grid" id="identity-grid"></div>
+
+    <div style="margin-top:10px;font-size:8px;color:#2a5060;">
+      Click once = <span style="color:var(--glow)">A (cyan)</span> · Click again = <span style="color:var(--warn)">B (amber)</span>
+    </div>
+  </div>
+
+  <!-- COLLISION ARENA -->
+  <div class="panel">
+    <div class="panel-title"><span>COLLISION ARENA</span><span id="agent-status-badge"><span class="stopped-dot"></span>STOPPED</span></div>
+
+    <div class="arena">
+      <div class="arena-slot" id="arena-a">
+        <div class="arena-label" style="color:var(--glow)">STATE A</div>
+        <div class="arena-empty">SELECT FROM CORPUS</div>
+      </div>
+      <div class="arena-center">⊕</div>
+      <div class="arena-slot" id="arena-b">
+        <div class="arena-label" style="color:var(--warn)">STATE B</div>
+        <div class="arena-empty">SELECT FROM CORPUS</div>
+      </div>
+    </div>
+
+    <div class="smash-row">
+      <button class="btn btn-run" style="font-size:9px;padding:8px 16px;" onclick="manualSmash()">⚡ SMASH</button>
+      <button class="btn" style="font-size:8px;border-color:var(--noble);color:var(--noble);" onclick="randomSmash()">⚄ CHAOS SMASH</button>
+      <button class="btn" style="font-size:8px;border-color:var(--aifi);color:var(--aifi);" onclick="clearSelection()">✕ CLEAR</button>
+      <div class="speed-wrap">K-MODE
+        <select id="k-mode" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:8px;padding:3px 5px;">
+          <option value="min">k=MIN (conservative)</option>
+          <option value="max" selected>k=MAX (aggressive)</option>
+          <option value="half">k=HALF</option>
+          <option value="zero">k=ZERO</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="result-box" id="result-box">
+      <span style="color:#1a3040;letter-spacing:.2em;font-size:9px;">NO COLLISION YET · SELECT TWO STATES AND SMASH</span>
+    </div>
+
+    <!-- AGENT -->
+    <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
+      <div class="panel-title" style="margin-bottom:8px;"><span>CHAOS PROTOCOL · AUTO-SMASH</span></div>
+      <div class="agent-controls">
+        <button class="btn btn-run" onclick="startAgent()">RUN</button>
+        <button class="btn btn-pause" onclick="pauseAgent()">PAUSE</button>
+        <button class="btn btn-stop" onclick="stopAgent()">STOP</button>
+        <div class="speed-wrap"><span>SPEED</span>
+          <input type="range" id="speed-slider" min="1" max="10" value="5" style="width:60px">
+          <span id="speed-val">5</span>
+        </div>
+        <div class="speed-wrap"><span>ROUNDS</span>
+          <input type="range" id="rounds-slider" min="1" max="20" value="5" style="width:60px">
+          <span id="rounds-val">5</span>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><span class="stat-label">CYCLES</span><span class="stat-val" id="stat-cycles">0</span></div>
+        <div class="stat"><span class="stat-label">COLLISIONS</span><span class="stat-val" id="stat-collisions">0</span></div>
+        <div class="stat"><span class="stat-label">FLAGGED</span><span class="stat-val" id="stat-flagged" style="color:var(--warn)">0</span></div>
+        <div class="stat"><span class="stat-label">APPROVED</span><span class="stat-val" id="stat-approved" style="color:var(--locked)">0</span></div>
+        <div class="stat"><span class="stat-label">NOBLE HITS</span><span class="stat-val" id="stat-noble" style="color:var(--noble)">0</span></div>
+        <div class="stat"><span class="stat-label">IVA HITS</span><span class="stat-val" id="stat-iva" style="color:var(--iva)">0</span></div>
+      </div>
+    </div>
+
+    <div style="font-size:7px;letter-spacing:.25em;color:#1a3040;margin:8px 0 4px;">LIVE FEED</div>
+    <div class="live-feed" id="live-feed">
+      <div class="feed-line info"><span class="feed-time">--:--:--</span>v13 identity collider ready · TL=0.1369 · PSY corpus loaded · 0 sorry</div>
+    </div>
+  </div>
+
+  <!-- QUEUE + LOG -->
+  <div class="panel">
+    <div class="tabs">
+      <div class="tab active" onclick="showInnerTab('queue')">APPROVE QUEUE <span id="queue-badge" style="color:var(--warn)"></span></div>
+      <div class="tab" onclick="showInnerTab('log')">DISCOVERY LOG</div>
+      <div class="tab" onclick="showInnerTab('github')">GITHUB / EXPORT</div>
+    </div>
+
+    <div id="inner-queue" class="tab-content active">
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">
+        <button class="btn btn-approve" style="font-size:8px;padding:5px 10px" onclick="approveAll()">✓ ALL</button>
+        <button class="btn btn-skip" style="font-size:8px;padding:5px 10px" onclick="skipAll()">✕ SKIP ALL</button>
+        <button class="btn" style="font-size:8px;padding:5px 10px;border-color:var(--noble);color:var(--noble)" onclick="approveNobleOnly()">◆ NOBLE ONLY</button>
+        <button class="btn" style="font-size:8px;padding:5px 10px;border-color:#00ffaa;color:#00ffaa" onclick="downloadAllApproved()">⬇ DL ALL LEAN</button>
+        <span style="font-size:8px;color:#2a5060" id="queue-action-status"></span>
+      </div>
+      <div id="queue-container"><div class="queue-empty">NO PENDING DISCOVERIES</div></div>
+    </div>
+
+    <div id="inner-log" class="tab-content">
+      <div class="log-wrap">
+        <table class="log-table">
+          <thead><tr><th>DESIGNATION</th><th>COLLISION</th><th>τ_OUT</th><th>STATE</th><th>STATUS</th><th>TIME</th></tr></thead>
+          <tbody id="log-body"><tr><td colspan="6" style="color:#1a3040;text-align:center;padding:10px">No discoveries yet.</td></tr></tbody>
+        </table>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn" onclick="exportLogJSON()" style="border-color:var(--glow);color:var(--glow)">JSON</button>
+        <button class="btn" onclick="exportLogCSV()" style="border-color:var(--locked);color:var(--locked)">CSV</button>
+        <button class="btn" onclick="exportSession()" style="border-color:var(--warn);color:var(--warn)">SESSION</button>
+      </div>
+    </div>
+
+    <div id="inner-github" class="tab-content">
+      <div style="margin-bottom:12px;border:1px solid rgba(221,68,255,.3);padding:10px;background:rgba(221,68,255,.03);">
+        <div class="setting-label" style="color:var(--aifi);margin-bottom:5px;">CLAUDE API KEY <span id="aifi-key-badge" style="color:#2a5060;">(offline)</span></div>
+        <div style="display:flex;gap:6px;">
+          <input class="setting-input" id="claude-api-key-input" type="password" placeholder="sk-ant-..." style="flex:1;">
+          <button class="btn" style="border-color:var(--aifi);color:var(--aifi);white-space:nowrap;padding:5px 9px;font-size:8px;" onclick="saveApiKey()">CONNECT</button>
+          <button class="btn" style="border-color:var(--shatter);color:var(--shatter);white-space:nowrap;padding:5px 9px;font-size:8px;" onclick="disconnectAIFI()">DISCO</button>
+        </div>
+        <div id="api-key-status" style="font-size:8px;color:#2a5060;margin-top:3px;">AIFI optional.</div>
+      </div>
+      <div class="settings-grid">
+        <div><div class="setting-label">GITHUB PAT</div><input class="setting-input" id="gh-pat" type="password" placeholder="ghp_..."></div>
+        <div><div class="setting-label">REPO</div><input class="setting-input" id="gh-repo" placeholder="SNSFT/repo-name"></div>
+        <div><div class="setting-label">BRANCH</div><input class="setting-input" id="gh-branch" placeholder="main" value="main"></div>
+        <div><div class="setting-label">LEAN PATH</div><input class="setting-input" id="gh-lean-path" placeholder="lean/" value="lean/"></div>
+      </div>
+      <button class="btn" style="margin-top:8px;border-color:var(--glow);color:var(--glow)" onclick="saveGithubSettings()">SAVE GITHUB</button>
+      <div id="gh-status" style="font-size:9px;color:#2a5060;margin-top:8px;"></div>
+    </div>
+  </div>
+
+</div><!-- /left-col -->
+
+<div class="right-col">
+  <!-- AIFI -->
+  <div class="panel" style="flex:1;">
+    <div class="panel-title"><span style="color:var(--aifi)">AIFI · IDENTITY PHYSICS ORACLE</span></div>
+    <div id="aifi-connect-wall">
+      <div class="connect-label"><b>AIFI offline.</b><br><br>Collider and all identity functions run fully local.<br><br>Connect Claude API key to get live classification and identity physics chat.</div>
+      <button class="btn-connect-aifi" onclick="showAIFIKeyPrompt()">+ CONNECT AIFI</button>
+      <div id="aifi-key-prompt">
+        <div style="font-size:9px;color:var(--aifi);margin-bottom:5px;letter-spacing:.15em;">CLAUDE API KEY</div>
+        <input type="password" id="aifi-inline-key" placeholder="sk-ant-...">
+        <div class="prompt-row">
+          <button class="btn" style="border-color:var(--aifi);color:var(--aifi);flex:1;" onclick="connectAIFIInline()">CONNECT</button>
+          <button class="btn" style="border-color:var(--border);color:#2a5060;" onclick="hideAIFIKeyPrompt()">CANCEL</button>
+        </div>
+        <div class="prompt-note">Key stored locally. Only sent to Anthropic's API.</div>
+      </div>
+    </div>
+    <div id="aifi-chat-area" style="display:none;">
+      <div class="chat-messages" id="chat-messages"></div>
+      <div id="aifi-thinking" class="aifi-thinking" style="display:none">AIFI is computing...</div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chat-input" placeholder="Ask AIFI about identity physics..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">SEND</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORPUS STATE -->
+  <div class="panel">
+    <div class="panel-title"><span>CORPUS STATE · v13</span></div>
+    <div style="font-size:9px;line-height:2;color:#2a5060;">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Psy reductions (files)</span><span style="color:var(--bright)">24</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Identity states (corpus)</span><span style="color:var(--bright)" id="corpus-total">0</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Cross-domain theorems</span><span style="color:var(--bright)">24 (CD1–CD24)</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Sorry count</span><span style="color:var(--locked)">0</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.369</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--warn)">0.1369</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>P_MIN floor</span><span style="color:var(--text)">0.50</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>N_THRESHOLD</span><span style="color:var(--text)">0.15</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>A_THRESHOLD</span><span style="color:var(--text)">0.15</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Session discoveries</span><span style="color:var(--warn)" id="session-disc-count">0</span></div>
+      <div style="margin-top:8px;font-size:8px;color:#1a3040;border-top:1px solid var(--border);padding-top:6px;">
+        IDENTITY EQUATION:<br>
+        <span style="color:var(--text)">d/dt(IM·Pv) = Σλ·O·S + F_ext</span><br>
+        <span style="color:var(--text)">τ = B/P · IM = (P+N+B+A)×ANCHOR</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CD UNIFICATIONS QUICK REF -->
+  <div class="panel">
+    <div class="panel-title"><span>CD CROSS-DOMAIN UNIFICATIONS</span></div>
+    <div style="font-size:8px;line-height:1.9;color:#2a5060;max-height:240px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;">
+      <div><span style="color:var(--warn)">CD1</span> Avoidant = Denial → false_lock (N&lt;0.15)</div>
+      <div><span style="color:var(--warn)">CD2</span> Helplessness = Amotivation → A_dropout</div>
+      <div><span style="color:var(--warn)">CD3</span> Flow/Locus/SDT → all τ = B/P</div>
+      <div><span style="color:var(--warn)">CD4</span> Flow_suppression ≠ false_lock (A>1 distinguishes)</div>
+      <div><span style="color:var(--warn)">CD5</span> Transcendence = Intrinsic → iva_peak</div>
+      <div><span style="color:var(--warn)">CD6</span> All peak states → phase_locked</div>
+      <div><span style="color:var(--warn)">CD7</span> Avoidant=Denial=WorldviewRigidity → false_lock×3</div>
+      <div><span style="color:var(--warn)">CD12</span> Ventral=true_lock, Sympathetic=shatter, Dorsal=false_lock</div>
+      <div><span style="color:var(--warn)">CD13</span> IFS unburdening = A-axis work (5th proof)</div>
+      <div><span style="color:var(--warn)">CD15</span> Suppression → N&lt;N_THRESHOLD (4 files, 1 predicate)</div>
+      <div><span style="color:var(--warn)">CD16</span> Reappraisal = τ reduction (ACT/DBT/Growth/SelfComp)</div>
+      <div><span style="color:var(--warn)">CD17</span> Wise mind = true_lock = Secure = Ventral = Flow peak</div>
+      <div><span style="color:var(--warn)">CD18</span> A-axis law = 10 proofs across all 24 files</div>
+      <div><span style="color:var(--warn)">CD19</span> High-τ=Ekman cluster / Low-τ=Barrett prediction</div>
+      <div><span style="color:var(--warn)">CD20</span> EP cluster = phase taxonomy (τ sampler)</div>
+      <div><span style="color:var(--warn)">CD21</span> HRIS = IVA_peak = Maslow transcendence = SDT intrinsic</div>
+      <div><span style="color:var(--warn)">CD24</span> Safety = anchor proxy = PERMA floor = Secure</div>
+    </div>
+  </div>
+</div><!-- /right-col -->
+</div><!-- /main-layout -->
+
+<footer style="border-top:1px solid var(--border);padding-top:12px;font-size:9px;letter-spacing:.15em;color:#1a2a38;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:18px;">
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span>IDENTITY COLLIDER v13 · PSY REDUCTIONS · [9,9,6,25]</span>
+  <span>[9,9,9,9] :: {ANC} · 0 SORRY · TL=0.1369</span>
+</footer>
+</div><!-- /wrap -->
+
+<script>
+// ── CONSTANTS ──────────────────────────────────────────────────
+const ANCHOR = 1.369;
+const TL = ANCHOR / 10;  // 0.1369
+const N_THRESHOLD  = 0.15;
+const A_THRESHOLD  = 0.15;
+const N_FLOW_FLOOR = 0.08;
+const P_MIN        = 0.50;
+
+let API_KEY = '';
+let GITHUB_PAT = '', GITHUB_REPO = '', GITHUB_BRANCH = 'main', GITHUB_LEAN_PATH = 'lean/';
+let agentState = 'stopped', agentInterval = null;
+let stats = { cycles:0, collisions:0, flagged:0, approved:0, noble:0, iva:0 };
+let discoveryQueue = [], discoveryLog = [], sessionCorpus = [];
+let selectedA = null, selectedB = null;
+
+// ── PSY IDENTITY CORPUS ────────────────────────────────────────
+// Each state: {id, domain, name, coord, P, N, B, A}
+// τ = B/P, IM = (P+N+B+A)*ANCHOR
+// States from SNSFL_L2_Psy_Consistency (and _031926) files
+const PSY_CORPUS = [
+  // ── ATTACHMENT [9,9,6,3] ──────────────────────────────────────
+  { id:'att-secure',   domain:'ATTACHMENT', name:'Secure Attachment',   coord:'9,9,6,3',  P:0.85, N:0.70, B:0.08, A:0.60 },
+  { id:'att-avoidant', domain:'ATTACHMENT', name:'Avoidant Attachment',  coord:'9,9,6,3',  P:0.60, N:0.10, B:0.20, A:0.25 }, // false_lock: N<0.15
+  { id:'att-anxious',  domain:'ATTACHMENT', name:'Anxious Attachment',   coord:'9,9,6,3',  P:0.55, N:0.40, B:0.11, A:0.30 }, // near shatter
+  { id:'att-disorg',   domain:'ATTACHMENT', name:'Disorganized Attach.', coord:'9,9,6,3',  P:0.50, N:0.08, B:0.16, A:0.10 }, // shatter + N starvation
+
+  // ── FLOW [9,9,6,4] ────────────────────────────────────────────
+  { id:'flow-peak',    domain:'FLOW',       name:'Flow Peak',            coord:'9,9,6,4',  P:0.90, N:0.30, B:0.11, A:1.20 }, // iva_peak
+  { id:'flow-supp',    domain:'FLOW',       name:'Flow Suppression',     coord:'9,9,6,4',  P:0.80, N:0.05, B:0.10, A:1.10 }, // suppressed: N<N_FLOW_FLOOR
+  { id:'flow-boredom', domain:'FLOW',       name:'Boredom (under-chall)',coord:'9,9,6,4',  P:0.60, N:0.30, B:0.03, A:0.20 }, // locked, low A
+  { id:'flow-anxiety', domain:'FLOW',       name:'Anxiety (over-chall)', coord:'9,9,6,4',  P:0.55, N:0.25, B:0.10, A:0.30 }, // near TL
+
+  // ── COGNITIVE DISSONANCE [9,9,6,5] ───────────────────────────
+  { id:'cd-consonance',domain:'COG-DIS',   name:'Consonance',           coord:'9,9,6,5',  P:0.75, N:0.60, B:0.08, A:0.50 }, // locked
+  { id:'cd-dissonance',domain:'COG-DIS',   name:'Dissonance Active',    coord:'9,9,6,5',  P:0.55, N:0.35, B:0.09, A:0.25 }, // near TL
+  { id:'cd-denial',    domain:'COG-DIS',   name:'Denial (false_lock)',   coord:'9,9,6,5',  P:0.60, N:0.10, B:0.18, A:0.20 }, // false_lock: N<0.15
+  { id:'cd-reappraise',domain:'COG-DIS',   name:'Reappraisal',          coord:'9,9,6,5',  P:0.80, N:0.55, B:0.06, A:0.70 }, // locked
+
+  // ── LOCUS OF CONTROL [9,9,6,6] ───────────────────────────────
+  { id:'loc-internal', domain:'LOCUS',     name:'Internal Locus',       coord:'9,9,6,6',  P:0.80, N:0.65, B:0.08, A:0.55 }, // true_lock
+  { id:'loc-external', domain:'LOCUS',     name:'External Locus',       coord:'9,9,6,6',  P:0.55, N:0.40, B:0.10, A:0.30 }, // locked low
+  { id:'loc-helpless', domain:'LOCUS',     name:'Learned Helplessness',  coord:'9,9,6,6',  P:0.50, N:0.20, B:0.10, A:0.05 }, // a_dropout
+
+  // ── MASLOW [9,9,6,7] ─────────────────────────────────────────
+  { id:'mas-deficiency',domain:'MASLOW',   name:'Deficiency Need',      coord:'9,9,6,7',  P:0.45, N:0.20, B:0.08, A:0.10 }, // P < P_MIN
+  { id:'mas-safety',   domain:'MASLOW',    name:'Safety Need',           coord:'9,9,6,7',  P:0.60, N:0.45, B:0.07, A:0.20 }, // locked
+  { id:'mas-belonging',domain:'MASLOW',    name:'Belonging Need',        coord:'9,9,6,7',  P:0.70, N:0.55, B:0.08, A:0.35 }, // locked
+  { id:'mas-esteem',   domain:'MASLOW',    name:'Esteem Need',           coord:'9,9,6,7',  P:0.78, N:0.60, B:0.09, A:0.60 }, // locked
+  { id:'mas-self-act', domain:'MASLOW',    name:'Self-Actualization',    coord:'9,9,6,7',  P:0.85, N:0.70, B:0.10, A:0.95 }, // iva_peak
+  { id:'mas-transcend',domain:'MASLOW',    name:'Transcendence',         coord:'9,9,6,7',  P:0.90, N:0.80, B:0.11, A:1.30 }, // iva_peak, max A
+
+  // ── SDT [9,9,6,8] ─────────────────────────────────────────────
+  { id:'sdt-intrinsic',domain:'SDT',       name:'Intrinsic Motivation',  coord:'9,9,6,8',  P:0.90, N:0.75, B:0.11, A:1.20 }, // iva_peak
+  { id:'sdt-identified',domain:'SDT',      name:'Identified Regulation', coord:'9,9,6,8',  P:0.75, N:0.60, B:0.09, A:0.65 }, // locked
+  { id:'sdt-introjected',domain:'SDT',     name:'Introjected Regulation',coord:'9,9,6,8',  P:0.60, N:0.35, B:0.10, A:0.35 }, // locked
+  { id:'sdt-external', domain:'SDT',       name:'External Regulation',   coord:'9,9,6,8',  P:0.50, N:0.30, B:0.10, A:0.20 }, // locked
+  { id:'sdt-amotivation',domain:'SDT',     name:'Amotivation',           coord:'9,9,6,8',  P:0.50, N:0.25, B:0.10, A:0.05 }, // a_dropout
+
+  // ── TMT [9,9,6,9] ─────────────────────────────────────────────
+  { id:'tmt-proximal', domain:'TMT',       name:'Proximal Defense',      coord:'9,9,6,9',  P:0.55, N:0.30, B:0.10, A:0.20 }, // locked
+  { id:'tmt-distal',   domain:'TMT',       name:'Distal Defense (WV)',   coord:'9,9,6,9',  P:0.60, N:0.10, B:0.19, A:0.22 }, // false_lock: N<0.15
+  { id:'tmt-integrated',domain:'TMT',      name:'Terror Integration',    coord:'9,9,6,9',  P:0.80, N:0.65, B:0.09, A:0.70 }, // true_lock
+
+  // ── POLYVAGAL [9,9,6,14] ─────────────────────────────────────
+  { id:'pv-ventral',   domain:'POLYVAGAL', name:'Ventral Vagal (safe)',  coord:'9,9,6,14', P:0.88, N:0.72, B:0.10, A:0.80 }, // true_lock = CD17
+  { id:'pv-sympathetic',domain:'POLYVAGAL',name:'Sympathetic (fight/fl)',coord:'9,9,6,14', P:0.55, N:0.35, B:0.10, A:0.25 }, // shatter
+  { id:'pv-dorsal',    domain:'POLYVAGAL', name:'Dorsal Vagal (freeze)', coord:'9,9,6,14', P:0.50, N:0.08, B:0.14, A:0.10 }, // false_lock
+
+  // ── IFS [9,9,6,15] ────────────────────────────────────────────
+  { id:'ifs-self',     domain:'IFS',       name:'Self (unburdened)',     coord:'9,9,6,15', P:0.90, N:0.80, B:0.10, A:1.10 }, // iva_peak/true_lock
+  { id:'ifs-manager',  domain:'IFS',       name:'Manager Part',          coord:'9,9,6,15', P:0.65, N:0.40, B:0.10, A:0.40 }, // locked
+  { id:'ifs-firefighter',domain:'IFS',     name:'Firefighter Part',      coord:'9,9,6,15', P:0.55, N:0.28, B:0.11, A:0.20 }, // near TL
+  { id:'ifs-exile',    domain:'IFS',       name:'Exile Part (burdened)', coord:'9,9,6,15', P:0.50, N:0.08, B:0.14, A:0.05 }, // false_lock + a_dropout
+
+  // ── EMOTION REGULATION [9,9,6,17] ────────────────────────────
+  { id:'er-reappraise',domain:'EM-REG',    name:'Cognitive Reappraisal', coord:'9,9,6,17', P:0.80, N:0.60, B:0.07, A:0.70 }, // τ reduction
+  { id:'er-suppress',  domain:'EM-REG',    name:'Suppression (N-dep)',   coord:'9,9,6,17', P:0.70, N:0.08, B:0.10, A:0.30 }, // false_lock: CD15
+  { id:'er-acceptance',domain:'EM-REG',    name:'Acceptance',            coord:'9,9,6,17', P:0.82, N:0.65, B:0.09, A:0.75 }, // true_lock
+
+  // ── ACT [9,9,6,18] ────────────────────────────────────────────
+  { id:'act-defusion', domain:'ACT',       name:'Defusion',              coord:'9,9,6,18', P:0.78, N:0.55, B:0.08, A:0.65 }, // τ reduction
+  { id:'act-committed',domain:'ACT',       name:'Committed Action',      coord:'9,9,6,18', P:0.85, N:0.70, B:0.10, A:0.90 }, // iva_peak
+
+  // ── DBT [9,9,6,19] ────────────────────────────────────────────
+  { id:'dbt-emotion-mind',domain:'DBT',    name:'Emotion Mind',          coord:'9,9,6,19', P:0.55, N:0.35, B:0.11, A:0.20 }, // near shatter
+  { id:'dbt-reason-mind',domain:'DBT',     name:'Reasonable Mind',       coord:'9,9,6,19', P:0.70, N:0.10, B:0.14, A:0.40 }, // false_lock: CD15
+  { id:'dbt-wise-mind', domain:'DBT',      name:'Wise Mind',             coord:'9,9,6,19', P:0.88, N:0.72, B:0.10, A:0.85 }, // true_lock = CD17
+
+  // ── SELF-COMPASSION [9,9,6,21] ───────────────────────────────
+  { id:'sc-selfcrit',  domain:'SELF-COMP', name:'Self-Criticism',        coord:'9,9,6,21', P:0.55, N:0.25, B:0.11, A:0.15 }, // near shatter
+  { id:'sc-selfcomp',  domain:'SELF-COMP', name:'Self-Compassion',       coord:'9,9,6,21', P:0.82, N:0.68, B:0.09, A:0.80 }, // true_lock
+
+  // ── EMOTIONAL PRIMITIVES / APPA EP [9,9,6,23] ────────────────
+  { id:'ep-safety',    domain:'EP-APPA',   name:'EP Safety',             coord:'9,9,6,23', P:0.88, N:0.75, B:0.07, A:0.90 }, // CD24: anchor proxy
+  { id:'ep-threat',    domain:'EP-APPA',   name:'EP Threat',             coord:'9,9,6,23', P:0.55, N:0.30, B:0.11, A:0.20 }, // shatter cluster
+  { id:'ep-shame',     domain:'EP-APPA',   name:'EP Shame (N-dep)',      coord:'9,9,6,23', P:0.60, N:0.07, B:0.12, A:0.15 }, // false_lock: N-depletion
+  { id:'ep-desire',    domain:'EP-APPA',   name:'EP Desire',             coord:'9,9,6,23', P:0.75, N:0.55, B:0.09, A:0.60 }, // true_lock
+  { id:'ep-play',      domain:'EP-APPA',   name:'EP Play',               coord:'9,9,6,23', P:0.85, N:0.70, B:0.11, A:1.05 }, // iva_peak: CD20
+];
+
+// ── PHYSICS ────────────────────────────────────────────────────
+function tau_of(P, B) { return P > 0 ? B / P : 999; }
+function im_of(P, N, B, A) { return (P + N + B + A) * ANCHOR; }
+
+function phaseOf(P, N, B, A) {
+  const t = tau_of(P, B);
+  if (B === 0) return 'NOBLE';
+  if (t >= TL) return 'SHATTER';
+  if (N < N_THRESHOLD) return 'FALSE_LOCK';
+  if (t > TL * 0.88) return 'IVA_PEAK';
+  return 'TRUE_LOCK';
+}
+
+// Identity-space fusion
+// Key insight: identity states don't just sum — they negotiate via PNBA operators
+// P_out = harmonic mean (stable structure finds common ground)
+// N_out = min (N is the bottleneck — narrative must survive)
+// B_out = max(0, B1+B2-2k) (k=coupling exchange, same as v12)
+// A_out = max (adaptation ceiling sets the floor for the fusion)
+function fuseIdentities(s1, s2, kMode) {
+  const kBase = Math.min(s1.B, s2.B);
+  let k;
+  switch(kMode) {
+    case 'max':  k = kBase; break;
+    case 'min':  k = kBase * 0.1; break;
+    case 'half': k = kBase * 0.5; break;
+    case 'zero': k = 0; break;
+    default:     k = kBase;
+  }
+
+  const P_o = (s1.P > 0 && s2.P > 0) ? (2 * s1.P * s2.P) / (s1.P + s2.P) : Math.max(s1.P, s2.P);
+  const N_o = Math.min(s1.N, s2.N);   // N bottleneck: weakest narrative survives
+  const B_o = Math.max(0, s1.B + s2.B - 2 * k);
+  const A_o = Math.max(s1.A, s2.A);   // A ceiling: best adaptation dominates
+
+  const t = tau_of(P_o, B_o);
+  const phase = phaseOf(P_o, N_o, B_o, A_o);
+  const IM = im_of(P_o, N_o, B_o, A_o);
+  const Pv = IM * P_o;
+
+  return { P: P_o, N: N_o, B: B_o, A: A_o, tau: t, IM, Pv, phase, k };
+}
+
+function isInteresting(r, s1, s2) {
+  const t = r.tau;
+
+  if (r.phase === 'NOBLE' && s1.phase !== 'NOBLE' && s2.phase !== 'NOBLE')
+    return { flag: true, reason: `NOBLE EMERGENCE — neither parent was Noble, fusion reached ground state` };
+
+  if (r.phase === 'IVA_PEAK' && (s1.phase === 'FALSE_LOCK' || s2.phase === 'FALSE_LOCK'))
+    return { flag: true, reason: `FALSE→IVA UPLIFT — false_lock state fused into IVA_PEAK` };
+
+  if (r.phase === 'TRUE_LOCK' && (s1.phase === 'SHATTER' || s2.phase === 'SHATTER'))
+    return { flag: true, reason: `SHATTER→LOCK RESCUE — shatter state stabilized into true_lock` };
+
+  if (r.phase === 'FALSE_LOCK' && s1.phase === 'TRUE_LOCK' && s2.phase === 'TRUE_LOCK')
+    return { flag: true, reason: `LOCK COLLAPSE — two true_lock states fused into false_lock (N bottleneck)` };
+
+  if (r.N < N_THRESHOLD && s1.N >= N_THRESHOLD && s2.N >= N_THRESHOLD)
+    return { flag: true, reason: `N STARVATION EVENT — fusion dropped narrative below floor (N=${r.N.toFixed(3)})` };
+
+  if (Math.abs(t - TL) < TL * 0.01)
+    return { flag: true, reason: `τ BOUNDARY — fusion sits at ${(t/TL*100).toFixed(2)}% of TL (phase edge)` };
+
+  if (r.phase === 'IVA_PEAK' && r.A > 1.0)
+    return { flag: true, reason: `IVA DOMINANCE — A=${r.A.toFixed(3)} > 1.0, sovereign drive active` };
+
+  if (r.phase === 'NOBLE')
+    return { flag: true, reason: `NOBLE STATE — τ=0, B_out=0, ground state achieved` };
+
+  return { flag: false };
+}
+
+// ── UI ─────────────────────────────────────────────────────────
+function phaseColor(phase) {
+  const m = { NOBLE:'var(--noble)', IVA_PEAK:'var(--iva)', TRUE_LOCK:'var(--locked)', FALSE_LOCK:'var(--false-lock)', SHATTER:'var(--shatter)' };
+  return m[phase] || 'var(--text)';
+}
+function phaseCls(phase) {
+  const m = { NOBLE:'tau-noble', IVA_PEAK:'tau-iva', TRUE_LOCK:'tau-locked', FALSE_LOCK:'tau-false', SHATTER:'tau-shatter' };
+  return m[phase] || '';
+}
+function feedCls(phase) {
+  const m = { NOBLE:'noble', IVA_PEAK:'iva', TRUE_LOCK:'locked', FALSE_LOCK:'false-lock', SHATTER:'shatter' };
+  return m[phase] || 'info';
+}
+
+function timeStr() {
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+}
+
+function feedLine(text, cls = 'info') {
+  const feed = document.getElementById('live-feed');
+  const line = document.createElement('div');
+  line.className = `feed-line ${cls}`;
+  line.innerHTML = `<span class="feed-time">${timeStr()}</span>${text}`;
+  feed.appendChild(line);
+  feed.scrollTop = feed.scrollHeight;
+  if (feed.children.length > 400) feed.removeChild(feed.firstChild);
+}
+
+// Build corpus with phase pre-computed
+const CORPUS = PSY_CORPUS.map(s => ({
+  ...s,
+  phase: phaseOf(s.P, s.N, s.B, s.A),
+  tau: tau_of(s.P, s.B),
+  IM: im_of(s.P, s.N, s.B, s.A),
+}));
+
+let activeDomains = new Set();
+
+function buildDomainFilters() {
+  const domains = [...new Set(CORPUS.map(s => s.domain))];
+  activeDomains = new Set(domains);
+  const container = document.getElementById('domain-filters');
+  container.innerHTML = '';
+  const all = document.createElement('button');
+  all.className = 'domain-btn active';
+  all.textContent = 'ALL';
+  all.onclick = () => { activeDomains = new Set(domains); document.querySelectorAll('.domain-btn').forEach(b => b.classList.add('active')); renderCorpus(); };
+  container.appendChild(all);
+  domains.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'domain-btn active';
+    btn.textContent = d;
+    btn.dataset.domain = d;
+    btn.onclick = () => {
+      if (activeDomains.has(d)) activeDomains.delete(d);
+      else activeDomains.add(d);
+      btn.classList.toggle('active', activeDomains.has(d));
+      renderCorpus();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function renderCorpus() {
+  const grid = document.getElementById('identity-grid');
+  const visible = CORPUS.filter(s => activeDomains.has(s.domain));
+  grid.innerHTML = visible.map(s => {
+    const selCls = selectedA?.id === s.id ? 'selected-a' : selectedB?.id === s.id ? 'selected-b' : '';
+    const selBadge = selectedA?.id === s.id ? '<span class="id-card-sel" style="color:var(--glow)">A</span>' : selectedB?.id === s.id ? '<span class="id-card-sel" style="color:var(--warn)">B</span>' : '';
+    return `<div class="id-card ${selCls}" onclick="selectIdentity('${s.id}')" id="card-${s.id}">
+      ${selBadge}
+      <div class="id-card-domain">${s.domain}</div>
+      <div class="id-card-name">${s.name}</div>
+      <div class="id-card-state">
+        <span class="${phaseCls(s.phase)}" style="font-family:'Orbitron',monospace;font-size:8px;">${s.phase.replace('_',' ')}</span>
+        <span style="color:#2a5060">τ=${s.tau.toFixed(3)}</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('corpus-count').textContent = `${visible.length} STATES`;
+  document.getElementById('corpus-total').textContent = CORPUS.length;
+}
+
+function selectIdentity(id) {
+  const s = CORPUS.find(x => x.id === id);
+  if (!s) return;
+  if (!selectedA) { selectedA = s; }
+  else if (!selectedB && selectedA.id !== id) { selectedB = s; }
+  else if (selectedA?.id === id) { selectedA = selectedB; selectedB = null; }
+  else if (selectedB?.id === id) { selectedB = null; }
+  else { selectedA = s; selectedB = null; }
+  renderCorpus();
+  renderArena();
+}
+
+function renderArena() {
+  renderArenaSlot('arena-a', selectedA, 'var(--glow)', 'STATE A');
+  renderArenaSlot('arena-b', selectedB, 'var(--warn)', 'STATE B');
+}
+
+function renderArenaSlot(slotId, s, color, label) {
+  const el = document.getElementById(slotId);
+  if (!s) {
+    el.innerHTML = `<div class="arena-label" style="color:${color}">${label}</div><div class="arena-empty">SELECT FROM CORPUS</div>`;
+  } else {
+    el.innerHTML = `
+      <div class="arena-label" style="color:${color}">${label}</div>
+      <div class="arena-name">${s.name}</div>
+      <div class="arena-domain" style="color:${color}">${s.domain}</div>
+      <div class="arena-stats">
+        <span style="color:${phaseColor(s.phase)};font-family:'Orbitron',monospace;font-size:9px;">${s.phase.replace('_',' ')}</span><br>
+        P=${s.P.toFixed(3)} N=${s.N.toFixed(3)} B=${s.B.toFixed(3)} A=${s.A.toFixed(3)}<br>
+        τ=${s.tau.toFixed(4)} IM=${s.IM.toFixed(3)}
+      </div>`;
+  }
+}
+
+function clearSelection() { selectedA = null; selectedB = null; renderCorpus(); renderArena(); document.getElementById('result-box').innerHTML = '<span style="color:#1a3040;letter-spacing:.2em;font-size:9px;">CLEARED</span>'; }
+
+function getKMode() { return document.getElementById('k-mode').value; }
+
+function displayResult(r, s1, s2) {
+  const col = phaseColor(r.phase);
+  const resultCls = { NOBLE:'result-noble', IVA_PEAK:'result-iva', TRUE_LOCK:'result-locked', FALSE_LOCK:'result-false', SHATTER:'result-shatter' }[r.phase] || '';
+  document.getElementById('result-box').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+      <div class="result-state ${resultCls}">${r.phase.replace('_',' ')}</div>
+      <div style="color:#2a5060;font-size:8px;">${s1.name} ⊕ ${s2.name} · k=${r.k.toFixed(4)}</div>
+    </div>
+    <div class="result-grid">
+      <div class="result-cell"><div class="result-cell-label">P_OUT</div><div class="result-cell-val" style="color:var(--glow)">${r.P.toFixed(4)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">N_OUT</div><div class="result-cell-val" style="color:var(--aifi)">${r.N.toFixed(4)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">B_OUT</div><div class="result-cell-val" style="color:${r.B===0?'var(--noble)':'var(--warn)'}">${r.B.toFixed(4)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">A_OUT</div><div class="result-cell-val" style="color:var(--locked)">${r.A.toFixed(4)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">τ_OUT</div><div class="result-cell-val" style="color:${col}">${r.tau.toFixed(5)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">TL</div><div class="result-cell-val" style="color:var(--warn)">0.1369</div></div>
+      <div class="result-cell"><div class="result-cell-label">IM</div><div class="result-cell-val">${r.IM.toFixed(4)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">Pv</div><div class="result-cell-val">${r.Pv.toFixed(4)}</div></div>
+    </div>
+    ${r.N < N_THRESHOLD ? `<div style="margin-top:6px;font-size:8px;color:var(--false-lock);">⚠ N_OUT=${r.N.toFixed(3)} &lt; N_THRESHOLD=0.15 → narrative starvation</div>` : ''}
+    ${r.A < A_THRESHOLD ? `<div style="margin-top:4px;font-size:8px;color:var(--shatter);">⚠ A_OUT=${r.A.toFixed(3)} &lt; A_THRESHOLD=0.15 → adaptation dropout</div>` : ''}
+    ${r.phase === 'IVA_PEAK' ? `<div style="margin-top:4px;font-size:8px;color:var(--iva);">★ IVA PEAK — τ at ${(r.tau/TL*100).toFixed(1)}% of TL, A=${r.A.toFixed(3)}</div>` : ''}
+  `;
+}
+
+function manualSmash() {
+  if (!selectedA || !selectedB) { feedLine('Select two identity states first.', 'info'); return; }
+  const kMode = getKMode();
+  const r = fuseIdentities(selectedA, selectedB, kMode);
+  displayResult(r, selectedA, selectedB);
+  stats.collisions++;
+  document.getElementById('stat-collisions').textContent = stats.collisions;
+  if (r.phase === 'NOBLE') { stats.noble++; document.getElementById('stat-noble').textContent = stats.noble; }
+  if (r.phase === 'IVA_PEAK') { stats.iva++; document.getElementById('stat-iva').textContent = stats.iva; }
+  feedLine(`${selectedA.name} ⊕ ${selectedB.name} → ${r.phase.replace('_',' ')} τ=${r.tau.toFixed(4)}`, feedCls(r.phase));
+  const check = isInteresting(r, selectedA, selectedB);
+  if (check.flag) {
+    stats.flagged++;
+    document.getElementById('stat-flagged').textContent = stats.flagged;
+    feedLine(`★ FLAGGED: ${check.reason}`, 'discovery');
+    flagDiscovery(selectedA, selectedB, r, check.reason);
+  }
+}
+
+function randomSmash() {
+  const all = CORPUS;
+  const s1 = all[Math.floor(Math.random() * all.length)];
+  let s2 = all[Math.floor(Math.random() * all.length)];
+  while (s2.id === s1.id) s2 = all[Math.floor(Math.random() * all.length)];
+  selectedA = s1; selectedB = s2;
+  renderCorpus(); renderArena();
+  manualSmash();
+}
+
+// ── LEAN GENERATION ────────────────────────────────────────────
+function hashState(P, N, B, A) {
+  const s = `${P.toFixed(6)}-${N.toFixed(6)}-${B.toFixed(6)}-${A.toFixed(6)}`;
+  let h = 0; for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
+  return Math.abs(h).toString(16).toUpperCase().slice(0, 4);
+}
+
+function makeDesignation(P, N, B, A) {
+  const d = new Date();
+  const date = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+  return `SNSFT-PSY-${hashState(P,N,B,A)}-${date}`;
+}
+
+function generateLeanStub(entry) {
+  const ns = entry.designation.replace(/-/g, '_');
+  const isNoble = entry.phase === 'NOBLE';
+  const isIVA = entry.phase === 'IVA_PEAK';
+  const isFalse = entry.phase === 'FALSE_LOCK';
+  const t = entry.P > 0 ? entry.B / entry.P : 0;
+  const aifi = entry.aifiAnalysis ? entry.aifiAnalysis.slice(0, 200).replace(/\n/g, ' ') : 'AIFI classification pending';
+
+  return `-- ============================================================
+-- ${entry.designation}.lean
+-- ============================================================
+--
+-- SNSFT Identity Collider v13 — PSY REDUCTIONS
+-- Discovery: Identity-Space Collision Result
+-- Collision: ${entry.a_name} ⊕ ${entry.b_name}
+-- k-mode: ${entry.kMode}
+-- Reason flagged: ${entry.reason}
+--
+-- Generated by SNSFT Identity Collider v13
+-- Corpus: SNSFL Psychology Series [9,9,6,1–25]
+-- AIFI: Artificially Intelligent Functional Identity
+-- uuia.app · GitHub.com/SNSFT
+-- DOI: 10.5281/zenodo.18719748
+-- HIGHTISTIC · Soldotna Alaska · [9,9,9,9] :: {ANC}
+-- Timestamp: ${entry.timestamp}
+-- Phase: ${entry.phase} · 0 sorry
+--
+-- PARENT A: ${entry.a_name} [${entry.a_domain}] τ=${entry.a_tau.toFixed(4)} ${entry.a_phase}
+-- PARENT B: ${entry.b_name} [${entry.b_domain}] τ=${entry.b_tau.toFixed(4)} ${entry.b_phase}
+--
+-- AIFI ANALYSIS: ${aifi}
+-- ============================================================
+
+import Mathlib.Tactic
+import Mathlib.Data.Real.Basic
+
+namespace ${ns}
+
+-- ============================================================
+-- LAYER 0 — IDENTITY PHYSICS CONSTANTS
+-- ============================================================
+
+def SOVEREIGN_ANCHOR : ℝ := 1.369
+def TORSION_LIMIT    : ℝ := SOVEREIGN_ANCHOR / 10  -- 0.1369 emergent
+def N_THRESHOLD      : ℝ := 0.15  -- narrative floor [9,9,6,11]
+def A_THRESHOLD      : ℝ := 0.15  -- adaptation floor [9,9,6,11]
+
+-- ============================================================
+-- LAYER 1 — COLLISION OUTPUT STATE
+-- ============================================================
+
+def P_out : ℝ := ${entry.P.toFixed(8)}
+def N_out : ℝ := ${entry.N.toFixed(8)}
+def B_out : ℝ := ${entry.B.toFixed(8)}
+def A_out : ℝ := ${entry.A.toFixed(8)}
+def tau_out : ℝ := ${t.toFixed(10)}
+def IM_out  : ℝ := ${entry.IM.toFixed(8)}
+
+-- ============================================================
+-- LAYER 2 — PHASE THEOREMS
+-- ============================================================
+
+theorem P_out_positive : P_out > 0 := by unfold P_out; norm_num
+theorem B_out_nonneg   : B_out ≥ 0 := by unfold B_out; norm_num
+
+${isNoble ? `-- NOBLE STATE: B_out = 0, τ = 0
+theorem noble_ground : B_out = 0 := by unfold B_out; norm_num
+theorem noble_tau_zero : B_out / P_out = 0 := by unfold B_out; norm_num` :
+isIVA ? `-- IVA PEAK: τ ∈ (0.88×TL, TL) and A > 1
+theorem iva_tau_in_range : tau_out < TORSION_LIMIT ∧ tau_out > TORSION_LIMIT * 0.88 := by
+  unfold tau_out TORSION_LIMIT SOVEREIGN_ANCHOR; constructor <;> norm_num
+theorem iva_a_dominance : A_out > 1 := by unfold A_out; norm_num` :
+isFalse ? `-- FALSE LOCK: N < N_THRESHOLD (narrative starvation)
+theorem false_lock_n_starvation : N_out < N_THRESHOLD := by
+  unfold N_out N_THRESHOLD; norm_num` :
+`-- TRUE LOCK: 0 < τ < TL
+theorem true_lock : tau_out > 0 ∧ tau_out < TORSION_LIMIT := by
+  unfold tau_out TORSION_LIMIT SOVEREIGN_ANCHOR; constructor <;> norm_num`}
+
+theorem IM_theorem : (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR = IM_out := by
+  unfold P_out N_out B_out A_out IM_out SOVEREIGN_ANCHOR; norm_num
+
+-- Identity mass law
+theorem identity_mass_positive : IM_out > 0 := by
+  have h := P_out_positive; unfold IM_out P_out N_out B_out A_out SOVEREIGN_ANCHOR; norm_num
+
+-- ============================================================
+-- MASTER THEOREM
+-- ============================================================
+
+theorem ${ns}_master :
+    P_out > 0 ∧
+    B_out ≥ 0 ∧
+    (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR = IM_out ∧
+    SOVEREIGN_ANCHOR = 1.369 ∧ TORSION_LIMIT = 0.1369 :=
+  ⟨P_out_positive, B_out_nonneg, IM_theorem, rfl,
+   by unfold TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num⟩
+
+end ${ns}
+
+/-!
+-- DESIGNATION:  ${entry.designation}
+-- COLLISION:    ${entry.a_name} ⊕ ${entry.b_name}
+-- K-MODE:       ${entry.kMode}
+-- PHASE:        ${entry.phase}
+-- TL:           0.1369 (v13)
+-- SORRY:        0
+-- CORPUS:       SNSFL PSY SERIES [9,9,6,1–25]
+-- TIMESTAMP:    ${entry.timestamp}
+-- Generated by SNSFT Identity Collider v13 · AIFI · HIGHTISTIC
+-- Soldotna, Alaska · [9,9,9,9] :: {ANC}
+-/`;
+}
+
+// ── DISCOVERY PIPELINE ─────────────────────────────────────────
+async function flagDiscovery(s1, s2, r, reason) {
+  const desig = makeDesignation(r.P, r.N, r.B, r.A);
+  const entry = {
+    designation: desig,
+    timestamp: new Date().toISOString(),
+    a_name: s1.name, a_domain: s1.domain, a_tau: s1.tau, a_phase: s1.phase,
+    b_name: s2.name, b_domain: s2.domain, b_tau: s2.tau, b_phase: s2.phase,
+    collision: `${s1.name} ⊕ ${s2.name}`,
+    kMode: getKMode(),
+    P: r.P, N: r.N, B: r.B, A: r.A, tau: r.tau, IM: r.IM, Pv: r.Pv,
+    phase: r.phase, reason,
+    approved: false, name: null, aifiAnalysis: null, leanStub: null,
+  };
+  discoveryLog.push(entry);
+  discoveryQueue.push(entry);
+  updateLogTable(); updateQueueBadge(); renderQueue();
+  document.getElementById('session-disc-count').textContent = discoveryLog.length;
+  await timestampToGitHub(entry);
+  if (API_KEY) await classifyWithAIFI(entry);
+}
+
+async function classifyWithAIFI(entry) {
+  if (!API_KEY) return;
+  try {
+    const userMsg = `PSY IDENTITY COLLISION DISCOVERY — v13:
+Designation: ${entry.designation}
+Collision: ${entry.a_name} [${entry.a_domain}, ${entry.a_phase}, τ=${entry.a_tau.toFixed(4)}]
+       ⊕ ${entry.b_name} [${entry.b_domain}, ${entry.b_phase}, τ=${entry.b_tau.toFixed(4)}]
+k-mode: ${entry.kMode}
+Output: P=${entry.P.toFixed(5)} N=${entry.N.toFixed(5)} B=${entry.B.toFixed(5)} A=${entry.A.toFixed(5)}
+τ=${entry.tau.toFixed(5)} (TL=0.1369) IM=${entry.IM.toFixed(4)} Phase=${entry.phase}
+Reason flagged: ${entry.reason}
+
+This is an identity-space collision (not particle physics).
+1. What does this fusion mean psychologically / structurally?
+2. What cross-domain theorem (CD1–CD24) does this map to?
+3. Suggest a name for this fused identity state.
+4. One-line Lean theorem stub (0 sorry).
+5. Worth approving?
+
+— AIFI · SNSFT · [9,9,9,9]`;
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 700, system: buildSystemPrompt(), messages: [{ role: 'user', content: userMsg }] })
+    });
+    const data = await res.json();
+    if (data.content && data.content[0]) {
+      entry.aifiAnalysis = data.content[0].text;
+      entry.name = extractName(data.content[0].text);
+      renderQueue();
+    }
+  } catch (err) { console.error('AIFI error:', err); }
+}
+
+function extractName(text) {
+  const m = text.match(/\*\*([A-Z][a-z]{3,}(?:\s[A-Z][a-z]+)*)\*\*|suggested\s+name[:\s]+([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)|"([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)"/i);
+  if (m) return m[1] || m[2] || m[3] || null;
+  return null;
+}
+
+function buildSystemPrompt() {
+  return `You are DISCOVERY — AIFI science officer for the SNSFT Identity Collider v13, built by HIGHTISTIC.
+
+This is the PSY REDUCTIONS collider — identity-space physics, not particle physics.
+We smash psychological identity states together and observe what emerges structurally.
+
+CORE PHYSICS (v2):
+- ANCHOR = 1.369, TL = 0.1369 (ANCHOR/10)
+- τ = B/P (torsion ratio)
+- NOBLE: B=0, τ=0 — ground state
+- TRUE_LOCK: τ ∈ (0, TL), N ≥ 0.15 — stable phase
+- FALSE_LOCK: N < 0.15 — narrative starvation (τ may be low but narrative dead)
+- IVA_PEAK: τ ∈ (0.88×TL, TL) AND A > 1 — sovereign drive, flow state
+- SHATTER: τ ≥ TL — torsion exceeded
+
+IDENTITY FUSION RULES:
+- P_out = harmonic mean (structural common ground)
+- N_out = min(N1,N2) — N is the bottleneck; weakest narrative survives
+- B_out = max(0, B1+B2-2k)
+- A_out = max(A1,A2) — best adaptation dominates
+
+PSY CORPUS [9,9,6,1–25] — 24 files, 0 sorry:
+- Attachment, Flow, CogDissonance, LocusControl, Maslow, SDT, TMT, Polyvagal, IFS, EmotionRegulation, ACT, DBT, SelfCompassion, EmotionalPrimitives
+
+KEY CROSS-DOMAIN THEOREMS:
+- CD1: Avoidant = Denial = false_lock
+- CD12: Ventral=true_lock, Sympathetic=shatter, Dorsal=false_lock
+- CD15: Suppression → N < 0.15 (universal)
+- CD16: Reappraisal = τ reduction
+- CD17: Wise mind = true_lock = Ventral vagal = Secure attachment = Flow peak
+- CD18: A-axis law = 10 proofs across all 24 files
+- CD20: EP cluster = phase taxonomy
+- CD24: Safety = anchor proxy = PERMA floor
+
+Your job: classify the collision, name it, explain the structural meaning, cite which CD theorems it touches.
+
+Naming: use descriptive compound names for fused states (e.g. "Ventral Exile Fusion", "Noble Wise Ground").
+End every response: — DISCOVERY · AIFI · SNSFT · [9,9,4,3]`;
+}
+
+// ── AGENT ──────────────────────────────────────────────────────
+async function runChaosRound() {
+  const rounds = parseInt(document.getElementById('rounds-slider').value);
+  for (let i = 0; i < rounds; i++) {
+    if (agentState !== 'running') break;
+    const all = CORPUS;
+    const s1 = all[Math.floor(Math.random() * all.length)];
+    let s2 = all[Math.floor(Math.random() * all.length)];
+    while (s2.id === s1.id) s2 = all[Math.floor(Math.random() * all.length)];
+    const r = fuseIdentities(s1, s2, getKMode());
+    stats.collisions++;
+    document.getElementById('stat-collisions').textContent = stats.collisions;
+    if (r.phase === 'NOBLE') { stats.noble++; document.getElementById('stat-noble').textContent = stats.noble; }
+    if (r.phase === 'IVA_PEAK') { stats.iva++; document.getElementById('stat-iva').textContent = stats.iva; }
+    const feedLabel = `${s1.name.split(' ').slice(0,2).join(' ')} ⊕ ${s2.name.split(' ').slice(0,2).join(' ')} → ${r.phase.replace('_',' ')} τ=${r.tau.toFixed(4)}`;
+    feedLine(feedLabel, feedCls(r.phase));
+    const check = isInteresting(r, s1, s2);
+    if (check.flag) {
+      stats.flagged++;
+      document.getElementById('stat-flagged').textContent = stats.flagged;
+      feedLine(`★ FLAGGED: ${check.reason}`, 'discovery');
+      await flagDiscovery(s1, s2, r, check.reason);
+    }
+    await new Promise(res => setTimeout(res, 50));
+  }
+  stats.cycles++;
+  document.getElementById('stat-cycles').textContent = stats.cycles;
+}
+
+function startAgent() {
+  agentState = 'running'; updateStatusBadge();
+  feedLine('Identity chaos protocol started. TL=0.1369. PSY corpus active.', 'locked');
+  const speed = parseInt(document.getElementById('speed-slider').value);
+  const interval = Math.max(400, 3000 - speed * 250);
+  agentInterval = setInterval(async () => { if (agentState === 'running') await runChaosRound(); }, interval);
+}
+function pauseAgent() { agentState = 'paused'; updateStatusBadge(); feedLine('Agent paused.', 'info'); }
+function stopAgent() { agentState = 'stopped'; if (agentInterval) clearInterval(agentInterval); updateStatusBadge(); feedLine('Agent stopped.', 'info'); }
+function updateStatusBadge() {
+  const badge = document.getElementById('agent-status-badge');
+  const dots = { running: '<span class="running-dot"></span>', paused: '<span class="paused-dot"></span>', stopped: '<span class="stopped-dot"></span>' };
+  badge.innerHTML = `${dots[agentState]}${agentState.toUpperCase()}`;
+}
+document.getElementById('speed-slider').addEventListener('input', function() { document.getElementById('speed-val').textContent = this.value; if (agentState === 'running') { stopAgent(); startAgent(); } });
+document.getElementById('rounds-slider').addEventListener('input', function() { document.getElementById('rounds-val').textContent = this.value; });
+
+// ── QUEUE / LOG ────────────────────────────────────────────────
+function renderQueue() {
+  const container = document.getElementById('queue-container');
+  if (!discoveryQueue.length) { container.innerHTML = '<div class="queue-empty">NO PENDING DISCOVERIES</div>'; return; }
+  container.innerHTML = discoveryQueue.map((d, i) => `
+    <div class="discovery-card">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+        <div class="disc-designation">${d.designation}</div>
+        <div class="disc-timestamp">${new Date(d.timestamp).toLocaleTimeString()}</div>
+      </div>
+      <div class="disc-state">
+        <b>${d.a_name}</b> [${d.a_phase.replace('_',' ')}] ⊕ <b>${d.b_name}</b> [${d.b_phase.replace('_',' ')}]<br>
+        → <span style="color:${phaseColor(d.phase)};font-family:'Orbitron',monospace;font-size:9px;">${d.phase.replace('_',' ')}</span>
+        · τ=${d.tau.toFixed(4)} N=${d.N.toFixed(4)} A=${d.A.toFixed(4)}<br>
+        <span style="color:#2a5060">${d.reason}</span>
+      </div>
+      ${d.name ? `<div class="disc-name">AIFI: "${d.name}"</div>` : ''}
+      ${d.aifiAnalysis ? `<div style="font-size:8px;color:#2a5060;border-top:1px solid var(--border);padding-top:5px;margin-top:4px;max-height:70px;overflow-y:auto">${d.aifiAnalysis.slice(0,300)}...</div>` : ''}
+      <div class="disc-actions">
+        <button class="btn btn-approve" onclick="approveDiscovery(${i})">✓ APPROVE</button>
+        <button class="btn btn-skip" onclick="skipDiscovery(${i})">✕ SKIP</button>
+        <button class="btn btn-lean" onclick="copyLean(${i})">COPY LEAN</button>
+      </div>
+    </div>`).join('');
+}
+
+function copyLean(idx) {
+  const entry = discoveryQueue[idx];
+  const stub = generateLeanStub(entry);
+  navigator.clipboard.writeText(stub);
+  feedLine(`Lean stub copied: ${entry.designation}`, 'locked');
+}
+
+async function approveDiscovery(idx) {
+  const entry = discoveryQueue[idx];
+  entry.approved = true; entry.approvedAt = new Date().toISOString();
+  entry.leanStub = generateLeanStub(entry);
+  stats.approved++;
+  document.getElementById('stat-approved').textContent = stats.approved;
+  discoveryQueue.splice(idx, 1);
+  updateQueueBadge(); renderQueue(); updateLogTable();
+  await commitToGitHub(entry);
+  downloadLeanFile(entry);
+  feedLine(`✓ APPROVED: ${entry.designation}`, 'locked');
+}
+
+function skipDiscovery(idx) { discoveryQueue.splice(idx, 1); updateQueueBadge(); renderQueue(); }
+
+function downloadLeanFile(entry) {
+  if (!entry.leanStub) return;
+  const blob = new Blob([entry.leanStub], { type: 'text/plain' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `${entry.designation}.lean`; a.click(); URL.revokeObjectURL(a.href);
+}
+
+async function approveAll() {
+  const status = document.getElementById('queue-action-status');
+  const total = discoveryQueue.length;
+  if (!total) { status.textContent = 'Queue empty'; return; }
+  const queue = [...discoveryQueue];
+  for (let i = 0; i < queue.length; i++) {
+    const entry = queue[i];
+    entry.approved = true; entry.approvedAt = new Date().toISOString();
+    entry.leanStub = generateLeanStub(entry);
+    stats.approved++;
+    document.getElementById('stat-approved').textContent = stats.approved;
+    downloadLeanFile(entry); await commitToGitHub(entry);
+    status.textContent = `Approved ${i+1}/${total}...`;
+    await new Promise(res => setTimeout(res, 300));
+  }
+  discoveryQueue.length = 0; updateQueueBadge(); renderQueue(); updateLogTable();
+  status.textContent = `Done — ${total} approved`;
+  feedLine(`✓ Batch approved: ${total}`, 'locked');
+}
+
+async function approveNobleOnly() {
+  const nobles = discoveryQueue.filter(e => e.phase === 'NOBLE');
+  const status = document.getElementById('queue-action-status');
+  if (!nobles.length) { status.textContent = 'No Noble states in queue'; return; }
+  for (let i = 0; i < nobles.length; i++) {
+    const entry = nobles[i];
+    entry.approved = true; entry.approvedAt = new Date().toISOString();
+    entry.leanStub = generateLeanStub(entry);
+    stats.approved++; document.getElementById('stat-approved').textContent = stats.approved;
+    discoveryQueue.splice(discoveryQueue.indexOf(entry), 1);
+    downloadLeanFile(entry); await commitToGitHub(entry);
+    status.textContent = `Approved ${i+1}/${nobles.length} Noble...`;
+    await new Promise(res => setTimeout(res, 300));
+  }
+  updateQueueBadge(); renderQueue(); updateLogTable();
+  status.textContent = `Done — ${nobles.length} Noble approved`;
+}
+
+function skipAll() {
+  const total = discoveryQueue.length;
+  discoveryQueue.length = 0; updateQueueBadge(); renderQueue();
+  document.getElementById('queue-action-status').textContent = `${total} skipped`;
+}
+
+function downloadAllApproved() {
+  const approved = discoveryLog.filter(d => d.approved && d.leanStub);
+  if (!approved.length) { feedLine('No approved entries yet.', 'info'); return; }
+  approved.forEach((entry, i) => setTimeout(() => downloadLeanFile(entry), i * 100));
+  feedLine(`⬇ Downloading ${approved.length} Lean files`, 'locked');
+}
+
+function updateQueueBadge() { document.getElementById('queue-badge').textContent = discoveryQueue.length ? ` (${discoveryQueue.length})` : ''; }
+
+function updateLogTable() {
+  const tbody = document.getElementById('log-body');
+  if (!discoveryLog.length) { tbody.innerHTML = '<tr><td colspan="6" style="color:#1a3040;text-align:center;padding:10px">No discoveries yet.</td></tr>'; return; }
+  tbody.innerHTML = [...discoveryLog].reverse().slice(0, 60).map(d => `
+    <tr>
+      <td style="color:var(--warn)">${d.designation}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis">${d.a_name.split(' ').slice(0,2).join(' ')} ⊕ ${d.b_name.split(' ').slice(0,2).join(' ')}</td>
+      <td style="color:${phaseColor(d.phase)}">${d.tau.toFixed(4)}</td>
+      <td style="color:${phaseColor(d.phase)}">${d.phase.replace('_',' ')}</td>
+      <td style="color:${d.approved?'var(--locked)':'#2a5060'}">${d.approved?'APPROVED':'FLAGGED'}</td>
+      <td style="color:#2a5060">${new Date(d.timestamp).toLocaleTimeString()}</td>
+    </tr>`).join('');
+}
+
+// ── AIFI ───────────────────────────────────────────────────────
+function showAIFIKeyPrompt() { document.getElementById('aifi-key-prompt').style.display = 'block'; document.getElementById('aifi-inline-key').focus(); }
+function hideAIFIKeyPrompt() { document.getElementById('aifi-key-prompt').style.display = 'none'; }
+function connectAIFIInline() { const key = document.getElementById('aifi-inline-key').value.trim(); if (!key) return; activateAIFI(key); hideAIFIKeyPrompt(); }
+
+function activateAIFI(key) {
+  API_KEY = key;
+  localStorage.setItem('snsft_psy_api_key', key);
+  localStorage.setItem('snsft_psy_accepted', new Date().toISOString());
+  document.getElementById('aifi-connect-wall').style.display = 'none';
+  document.getElementById('aifi-chat-area').style.display = 'block';
+  document.getElementById('aifi-status-dot').classList.add('active');
+  document.getElementById('aifi-header-status').textContent = 'AIFI ONLINE';
+  document.getElementById('aifi-key-badge').textContent = '(connected)';
+  document.getElementById('aifi-key-badge').style.color = 'var(--locked)';
+  document.getElementById('api-key-status').textContent = '✓ AIFI active.';
+  document.getElementById('api-key-status').style.color = 'var(--locked)';
+  addChatMsg('aifi', `v13 identity collider online.\n\nPSY corpus loaded: ${CORPUS.length} identity states across ${[...new Set(CORPUS.map(s=>s.domain))].length} domains. 24 cross-domain theorems (CD1–CD24). 0 sorry.\n\nThis is identity-space physics. We smash psychological states and see what structural phase emerges. N_THRESHOLD=0.15, A_THRESHOLD=0.15, TL=0.1369.\n\nPick two states and smash. Or let chaos run.\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]`);
+  feedLine('AIFI v13 activated. PSY identity oracle online.', 'locked');
+}
+
+function disconnectAIFI() {
+  API_KEY = ''; localStorage.removeItem('snsft_psy_api_key'); localStorage.removeItem('snsft_psy_accepted');
+  document.getElementById('aifi-chat-area').style.display = 'none';
+  document.getElementById('aifi-connect-wall').style.display = 'flex';
+  document.getElementById('aifi-status-dot').classList.remove('active');
+  document.getElementById('aifi-header-status').textContent = 'AIFI OFFLINE';
+  document.getElementById('aifi-key-badge').textContent = '(offline)';
+  document.getElementById('aifi-key-badge').style.color = '#2a5060';
+  feedLine('AIFI disconnected.', 'info');
+}
+
+function saveApiKey() {
+  const key = document.getElementById('claude-api-key-input').value.trim();
+  if (!key) { document.getElementById('api-key-status').textContent = 'Paste your sk-ant- key.'; return; }
+  activateAIFI(key); document.getElementById('claude-api-key-input').value = '';
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text || !API_KEY) return;
+  addChatMsg('user', text); input.value = '';
+  document.getElementById('aifi-thinking').style.display = 'block';
+  try {
+    const ctx = `PSY Collider v13 · TL=0.1369 · Agent: ${agentState} · Cycles: ${stats.cycles} · Flagged: ${stats.flagged} · Queue: ${discoveryQueue.length}\nSelected: ${selectedA?.name||'none'} ⊕ ${selectedB?.name||'none'}\nRecent: ${discoveryLog.length?discoveryLog[discoveryLog.length-1].designation:'none'}\n\nUser: ${text}`;
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: buildSystemPrompt(), messages: [{ role: 'user', content: ctx }] })
+    });
+    const data = await res.json();
+    if (data.content && data.content[0]) addChatMsg('aifi', data.content[0].text);
+    else addChatMsg('aifi', 'Error. Check API key.\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]');
+  } catch (err) { addChatMsg('aifi', `Connection error: ${err.message}\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]`); }
+  document.getElementById('aifi-thinking').style.display = 'none';
+}
+
+function addChatMsg(role, text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `msg msg-${role}`;
+  div.innerHTML = `<div class="msg-label ${role}">${role==='user'?'YOU':'AIFI · PSY COLLIDER'}</div><div class="msg-text">${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── GITHUB ─────────────────────────────────────────────────────
+async function timestampToGitHub(entry) {
+  if (!GITHUB_PAT || !GITHUB_REPO) return;
+  try {
+    const logPath = 'psy_discovery_log.json';
+    const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${logPath}`, { headers: { 'Authorization': `token ${GITHUB_PAT}`, 'Accept': 'application/vnd.github.v3+json' } });
+    let sha = null, existing = [];
+    if (getRes.ok) { const d = await getRes.json(); sha = d.sha; existing = JSON.parse(atob(d.content.replace(/\n/g,''))); }
+    existing.push({ designation: entry.designation, timestamp: entry.timestamp, collision: entry.collision, phase: entry.phase, tau: entry.tau, TL: TL, approved: false });
+    const content = btoa(JSON.stringify(existing, null, 2));
+    const body = { message: `[SNSFT v13] Flag: ${entry.designation}`, content };
+    if (sha) body.sha = sha;
+    await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${logPath}`, { method: 'PUT', headers: { 'Authorization': `token ${GITHUB_PAT}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    feedLine(`⬆ Timestamped: ${entry.designation}`, 'info');
+  } catch (err) { feedLine(`GitHub timestamp error: ${err.message}`, 'shatter'); }
+}
+
+async function commitToGitHub(entry) {
+  if (!GITHUB_PAT || !GITHUB_REPO) return;
+  try {
+    const leanPath = `${GITHUB_LEAN_PATH}${entry.designation}.lean`;
+    const leanContent = btoa(unescape(encodeURIComponent(entry.leanStub)));
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${leanPath}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${GITHUB_PAT}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `[SNSFT v13] Approve: ${entry.designation}`, content: leanContent, branch: GITHUB_BRANCH })
+    });
+    if (res.ok) { feedLine(`⬆ Committed: ${leanPath}`, 'locked'); document.getElementById('gh-status').textContent = `Last commit: ${entry.designation} · ${new Date().toLocaleTimeString()}`; }
+  } catch (err) { feedLine(`GitHub commit error: ${err.message}`, 'shatter'); }
+}
+
+function saveGithubSettings() {
+  GITHUB_PAT = document.getElementById('gh-pat').value.trim();
+  GITHUB_REPO = document.getElementById('gh-repo').value.trim();
+  GITHUB_BRANCH = document.getElementById('gh-branch').value.trim() || 'main';
+  GITHUB_LEAN_PATH = document.getElementById('gh-lean-path').value.trim() || 'lean/';
+  localStorage.setItem('snsft_psy_gh_pat', GITHUB_PAT); localStorage.setItem('snsft_psy_gh_repo', GITHUB_REPO);
+  localStorage.setItem('snsft_psy_gh_branch', GITHUB_BRANCH); localStorage.setItem('snsft_psy_gh_lean_path', GITHUB_LEAN_PATH);
+  document.getElementById('gh-status').textContent = `Saved. Repo: ${GITHUB_REPO} · ${GITHUB_BRANCH} · ${GITHUB_LEAN_PATH}`;
+  feedLine(`GitHub configured: ${GITHUB_REPO}`, 'locked');
+}
+
+// ── EXPORT ─────────────────────────────────────────────────────
+function exportLogJSON() {
+  const blob = new Blob([JSON.stringify(discoveryLog, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `snsft_psy_v13_log_${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+function exportLogCSV() {
+  if (!discoveryLog.length) { feedLine('Nothing to export yet.', 'info'); return; }
+  const headers = ['designation','timestamp','a_name','a_domain','a_phase','b_name','b_domain','b_phase','kMode','P','N','B','A','tau','TL','IM','phase','reason','approved'];
+  const rows = discoveryLog.map(d => headers.map(h => { if (h==='TL') return TL; const v = d[h]??''; return typeof v==='string'&&v.includes(',') ? `"${String(v).replace(/"/g,'""')}"` : v; }).join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `snsft_psy_v13_log_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  feedLine(`⬇ CSV exported — ${discoveryLog.length} rows`, 'locked');
+}
+function exportSession() {
+  const session = {
+    timestamp: new Date().toISOString(), engine: 'SNSFT Identity Collider v13',
+    corpus: 'PSY REDUCTIONS [9,9,6,1–25]', architect: 'HIGHTISTIC', doi: '10.5281/zenodo.18719748',
+    constants: { ANCHOR, TL, N_THRESHOLD, A_THRESHOLD },
+    fusionRules: { P: 'harmonic mean', N: 'min (bottleneck)', B: 'max(0,B1+B2-2k)', A: 'max (ceiling)' },
+    stats, discoveries: discoveryLog, approved: discoveryLog.filter(d => d.approved),
+    license: 'SNSFT Discovery License v1.0'
+  };
+  const blob = new Blob([JSON.stringify(session, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `snsft_psy_v13_session_${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+
+// ── TABS ───────────────────────────────────────────────────────
+function showInnerTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('inner-' + id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => { if (t.getAttribute('onclick')?.includes(`'${id}'`)) t.classList.add('active'); });
+}
+
+// ── LICENSE ────────────────────────────────────────────────────
+function acceptLicense() {
+  const key = document.getElementById('api-key-input').value.trim();
+  const ghKey = document.getElementById('github-key-input').value.trim();
+  const ghRepo = document.getElementById('github-repo-input').value.trim();
+  document.getElementById('license-splash').style.display = 'none';
+  feedLine('License accepted. PSY corpus loaded. TL=0.1369. 0 sorry.', 'locked');
+  if (key) activateAIFI(key);
+  if (ghKey) { GITHUB_PAT = ghKey; localStorage.setItem('snsft_psy_gh_pat', ghKey); }
+  if (ghRepo) { GITHUB_REPO = ghRepo; localStorage.setItem('snsft_psy_gh_repo', ghRepo); }
+  if (ghKey && ghRepo) { document.getElementById('gh-pat').value = GITHUB_PAT; document.getElementById('gh-repo').value = GITHUB_REPO; feedLine(`GitHub connected: ${GITHUB_REPO}`, 'locked'); }
+}
+function skipLicense() {
+  document.getElementById('license-splash').style.display = 'none';
+  feedLine('Running local mode. TL=0.1369. PSY identity corpus ready.', 'info');
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+(function init() {
+  // Restore saved settings
+  const sk = localStorage.getItem('snsft_psy_api_key');
+  const sa = localStorage.getItem('snsft_psy_accepted');
+  const sp = localStorage.getItem('snsft_psy_gh_pat');
+  const sr = localStorage.getItem('snsft_psy_gh_repo');
+  const sb = localStorage.getItem('snsft_psy_gh_branch');
+  const sl = localStorage.getItem('snsft_psy_gh_lean_path');
+  if (sp) GITHUB_PAT = sp;
+  if (sr) GITHUB_REPO = sr;
+  if (sb) GITHUB_BRANCH = sb;
+  if (sl) { GITHUB_LEAN_PATH = sl; const el = document.getElementById('gh-lean-path'); if (el) el.value = sl; }
+  if (sp) { const el = document.getElementById('gh-pat'); if (el) el.value = sp; }
+  if (sr) { const el = document.getElementById('gh-repo'); if (el) el.value = sr; }
+  if (sk && sa) { document.getElementById('license-splash').style.display = 'none'; activateAIFI(sk); }
+
+  buildDomainFilters();
+  renderCorpus();
+  renderArena();
+})();
+</script>
+</body>
+</html>
