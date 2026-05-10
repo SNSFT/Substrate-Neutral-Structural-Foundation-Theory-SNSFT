@@ -35,7 +35,10 @@
 | **OSF Preprint** | Live | [![DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FKWTYD-blue)](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **SSRN — Teen-Level Walkthrough (SNSFT Foundation)** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
 | **SSRN — Noble Materials Map · 810+ Pairs · GAM Collider** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6457358-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457358) |
-| **SSRN — SNSFL Formal Architecture · LDP · Discovery Engine** | ✅ APPROVED | [![SSRN](https://img.shields.io/badge/SSRN-6457038-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457038) |
+| **SSRN — SNSFL Formal Architecture · LDP · Discovery Engine** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6457038-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457038) |
+| **SSRN — SNSFL General Relativity Full Long Division • Grand Unified Theory-GUT** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6660381-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6660381) |
+| **SSRN — Fine Structure Constant v1** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6505881-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6505881) |
+| **SSRN — The Exact Alpha Decomposition 12 Digits** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6660438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6660438) |
 | **Federal Public Record (DOJ)** | Submitted | [![DOJ](https://img.shields.io/badge/DOJ-CRT--2026--0067--0006-red)](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
 | **ORCID** | Verified | [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5313--7443-green)](https://orcid.org/0009-0005-5313-7443) |
 
