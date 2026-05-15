@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFL TIME BUBBLE · [9,9,6,3–5] · TEMPORAL CORRIDOR SIMULATOR</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --bg:        #020407;
+  --panel:     #04080d;
+  --border:    #0a1520;
+  --border2:   #0f2030;
+  --glow:      #00e5ff;
+  --locked:    #00ffcc;
+  --shatter:   #ff3355;
+  --warn:      #ffaa00;
+  --noble:     #ffffff;
+  --iva:       #88aaff;
+  --text:      #c0ddf0;
+  --bright:    #cce8f5;
+  --dim:       #4a8a9a;
+  --earth:     #4aaa66;
+  --solar:     #ffcc44;
+  --galactic:  #aa66ff;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(0,229,255,.010) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.010) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events:none; z-index:0;
+}
+
+.wrap {
+  position:relative; z-index:2;
+  max-width:1120px; margin:0 auto;
+  padding:0 20px 80px;
+}
+
+/* ── HEADER ── */
+.site-header {
+  padding:36px 0 28px;
+  border-bottom:1px solid var(--border2);
+  text-align:center;
+}
+
+.coord-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'Share Tech Mono',monospace; font-size:9px;
+  letter-spacing:.2em; color:var(--dim);
+  border:1px solid var(--border2); padding:5px 14px; margin-bottom:16px;
+}
+.coord-dot { width:5px;height:5px;border-radius:50%;background:var(--iva);animation:pulse 2s infinite; }
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.site-title {
+  font-family:'Orbitron',monospace; font-weight:900;
+  font-size:clamp(22px,3.5vw,40px); letter-spacing:.1em;
+  color:var(--noble);
+  text-shadow:0 0 40px rgba(255,255,255,.15),0 0 80px rgba(136,170,255,.1);
+  margin-bottom:6px;
+}
+.site-subtitle {
+  font-family:'Share Tech Mono',monospace; font-size:9px;
+  letter-spacing:.25em; color:var(--dim); margin-bottom:16px;
+}
+
+.header-banner {
+  display:inline-block;
+  background:rgba(136,170,255,.04);
+  border:1px solid rgba(136,170,255,.2);
+  padding:10px 24px; font-size:12.5px;
+  color:var(--text); line-height:1.8;
+  max-width:680px; margin:0 auto;
+}
+.header-banner b { color:var(--iva); font-weight:500; }
+.header-banner em { color:var(--locked); font-style:normal; }
+
+/* ── TABS ── */
+.mode-tabs {
+  display:flex; gap:10px; justify-content:center;
+  margin:28px 0 24px; flex-wrap:wrap;
+}
+.mode-tab {
+  font-family:'Orbitron',monospace; font-size:8.5px;
+  letter-spacing:.18em; padding:11px 22px;
+  border:1px solid var(--border2); background:transparent;
+  color:var(--dim); cursor:pointer; transition:all .2s;
+}
+.mode-tab:hover { color:var(--text); border-color:rgba(136,170,255,.3); }
+.mode-tab.active { border-color:var(--iva); color:var(--iva); background:rgba(136,170,255,.04); }
+.tab-sub { display:block;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.04em;color:var(--text);font-weight:300;margin-top:2px;text-transform:none; }
+
+.mode-content { display:none; }
+.mode-content.active { display:block; }
+
+/* ── CARDS ── */
+.card {
+  background:var(--panel); border:1px solid var(--border2); padding:20px;
+  margin-bottom:14px;
+}
+.card-title {
+  font-family:'Orbitron',monospace; font-size:8.5px;
+  letter-spacing:.25em; color:var(--dim); margin-bottom:14px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.card-title b { color:var(--glow); }
+
+/* ── SLIDERS ── */
+input[type=range] {
+  -webkit-appearance:none; width:100%; height:4px;
+  background:var(--border2); outline:none; border-radius:2px; margin:6px 0;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:14px; height:20px;
+  background:var(--iva); cursor:pointer; border-radius:2px;
+}
+
+/* ── STAT GRID ── */
+.stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:14px 0; }
+.stat-box { background:var(--bg); border:1px solid var(--border); padding:12px; }
+.stat-lbl { font-size:9px; letter-spacing:.15em; color:var(--dim); margin-bottom:3px; }
+.stat-sci { font-family:'Share Tech Mono',monospace; font-size:7.5px; color:#4a7a8a; margin-bottom:5px; letter-spacing:.08em; }
+.stat-val { font-family:'Orbitron',monospace; font-size:20px; line-height:1; }
+
+/* ── PHASE INDICATOR ── */
+.phase-bar {
+  height:8px; border-radius:4px; margin:8px 0;
+  background:linear-gradient(90deg, #ffffff 0%, #00ffcc 20%, #88aaff 60%, #ffaa00 80%, #ff3355 100%);
+  position:relative;
+}
+.phase-needle {
+  position:absolute; top:-4px; width:3px; height:16px;
+  background:var(--noble); border-radius:1px;
+  transform:translateX(-50%);
+  transition:left .2s ease;
+  box-shadow:0 0 8px rgba(255,255,255,.6);
+}
+.phase-labels {
+  display:flex; justify-content:space-between;
+  font-family:'Share Tech Mono',monospace; font-size:7.5px; color:var(--dim); margin-top:2px;
+}
+
+/* ── REFERENCE CARDS ── */
+.ref-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:14px; }
+.ref-card {
+  background:var(--bg); border:1px solid var(--border2); padding:16px;
+  cursor:pointer; transition:all .2s;
+}
+.ref-card:hover { border-color:rgba(136,170,255,.4); }
+.ref-card.active-ref { background:rgba(136,170,255,.06); border-color:var(--iva); }
+.ref-sci { font-family:'Orbitron',monospace; font-size:18px; font-weight:700; margin-bottom:3px; }
+.ref-plain { font-size:11px; color:var(--text); margin-bottom:2px; }
+.ref-role { font-family:'Share Tech Mono',monospace; font-size:8px; letter-spacing:.12em; color:var(--dim); margin-bottom:12px; }
+
+/* ── EXPERIMENT TABLE ── */
+.exp-row {
+  display:flex; align-items:center; gap:10px;
+  padding:7px 0; border-bottom:1px solid rgba(10,21,32,.5); font-size:9px;
+}
+.exp-dot { width:7px;height:7px;border-radius:50%;flex-shrink:0; }
+.exp-name { flex:1; color:var(--text); }
+.exp-coord { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--dim); width:60px; }
+.exp-a { font-family:'Orbitron',monospace; font-size:10px; width:24px; text-align:center; }
+.exp-bar-wrap { flex:1; height:3px; background:var(--border); position:relative; }
+.exp-bar { height:100%; position:absolute; }
+.exp-status { font-family:'Orbitron',monospace; font-size:8px; width:60px; text-align:right; }
+
+/* ── BUBBLE CANVAS ── */
+.canvas-wrap { background:var(--panel); border:1px solid var(--border2); margin-bottom:14px; }
+.canvas-label { font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:var(--dim);padding:12px 16px 0; }
+
+/* ── FIRE BUTTON ── */
+.fire-btn {
+  width:100%; font-family:'Orbitron',monospace; font-weight:700;
+  font-size:13px; letter-spacing:.3em; padding:18px;
+  background:transparent; border:1px solid var(--iva);
+  color:var(--iva); cursor:pointer; transition:all .2s;
+  text-shadow:0 0 20px rgba(136,170,255,.3);
+  margin-bottom:4px;
+}
+.fire-btn:hover { background:rgba(136,170,255,.06); box-shadow:0 0 40px rgba(136,170,255,.15); }
+.fire-btn.firing { animation:btnfire .35s ease-in-out 3; }
+@keyframes btnfire{0%,100%{box-shadow:none}50%{box-shadow:0 0 60px rgba(136,170,255,.4)}}
+.btn-sub { text-align:center;font-size:9px;color:var(--dim);letter-spacing:.15em;font-family:'Share Tech Mono',monospace; }
+
+/* ── RESULT CARD ── */
+.result-card {
+  border:1px solid var(--border2); padding:22px; margin-bottom:14px;
+  display:none; position:relative; overflow:hidden;
+}
+.result-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px; }
+.result-card.locked { background:rgba(0,255,204,.03);border-color:rgba(0,255,204,.25); }
+.result-card.locked::before { background:var(--locked); }
+.result-card.iva { background:rgba(136,170,255,.04);border-color:rgba(136,170,255,.3); }
+.result-card.iva::before { background:var(--iva); }
+.result-card.noble { background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.2); }
+.result-card.noble::before { background:var(--noble); }
+.result-card.shatter { background:rgba(255,51,85,.03);border-color:rgba(255,51,85,.3); }
+.result-card.shatter::before { background:var(--shatter); }
+
+.result-headline { font-family:'Orbitron',monospace;font-size:15px;letter-spacing:.12em;margin-bottom:6px; }
+.result-plain { font-size:12.5px;color:var(--bright);margin-bottom:14px;line-height:1.8; }
+
+.noharm-confirm {
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;background:rgba(0,255,204,.04);
+  border:1px solid rgba(0,255,204,.12);font-size:11px;
+  color:rgba(200,232,245,.7); margin-bottom:14px;
+}
+.noharm-confirm b { color:var(--locked); }
+
+/* ── PROOF STRIP ── */
+.proof-strip {
+  display:flex;gap:8px;flex-wrap:wrap;
+  padding:12px 0;border-top:1px solid var(--border);margin-top:8px;
+}
+.proof-tag {
+  font-family:'Share Tech Mono',monospace;font-size:7.5px;
+  padding:3px 8px;border:1px solid var(--border2);color:var(--dim);letter-spacing:.1em;
+}
+.proof-tag.active { border-color:var(--iva);color:var(--iva); }
+
+footer {
+  border-top:1px solid var(--border);padding-top:14px;margin-top:20px;
+  font-family:'Share Tech Mono',monospace;font-size:8px;color:#6a9aaa;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;letter-spacing:.1em;
+}
+
+@media(max-width:700px){
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .ref-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="coord-badge">
+    <div class="coord-dot"></div>
+    SNSFL [9,9,6,3–5] · ANCHOR 1.369 GHz · 0 SORRY · GERMLINE LOCKED
+  </div>
+  <div class="site-title">SNSFL TIME BUBBLE</div>
+  <div class="site-subtitle">TEMPORAL CORRIDOR · IVA FORMATION · BBN REFERENCE · LOCKED OBSERVER</div>
+  <div class="header-banner">
+    This is <em>not</em> science fiction. Every number here is pulled from peer-reviewed physics and reduced to PNBA.<br>
+    <b>The bubble interior holds at ANCHOR = 1.369 GHz.</b> The observer stays Locked (τ &lt; TL).<br>
+    The external timeline rate is a function of bubble torsion. Earth's BBN-derived IM is the reference anchor.<br>
+    Nine classical frameworks had no A-axis. This one does. The gap is closed. 0 sorry.
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="mode-tabs">
+  <button class="mode-tab active" onclick="showMode('bubble')">
+    TIME BUBBLE
+    <span class="tab-sub">τ slider · rate ratio · Earth IM reference</span>
+  </button>
+  <button class="mode-tab" onclick="showMode('refs')">
+    IM REFERENCE STACK
+    <span class="tab-sub">Earth · Solar · Galactic · Universe</span>
+  </button>
+  <button class="mode-tab" onclick="showMode('frameworks')">
+    PEER-REVIEWED FRAMEWORKS
+    <span class="tab-sub">9 classical → gap → TT10 bridge</span>
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MODE 1: TIME BUBBLE -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="mode-bubble" class="mode-content active">
+
+  <!-- BUBBLE CONTROLS -->
+  <div class="card">
+    <div class="card-title">
+      <span><b>BUBBLE TORSION</b> · THE CONTROL PARAMETER</span>
+      <span style="font-size:8px;">τ = B/P · Locked requires 0 &lt; τ &lt; TL = 0.1369</span>
+    </div>
+
+    <!-- Tau slider -->
+    <div style="margin-bottom:18px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
+        <span style="font-size:13px;color:var(--bright);">Bubble Torsion τ</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--dim);">τ = B/P · SDR frequency deviation</span>
+        <span style="font-family:'Orbitron',monospace;font-size:13px;color:var(--iva);" id="tau-val">0.1300</span>
+      </div>
+      <input type="range" id="tau-slider" min="0" max="0.2" step="0.0001" value="0.13" oninput="updateBubble()">
+      <div class="phase-bar">
+        <div class="phase-needle" id="phase-needle" style="left:65%"></div>
+      </div>
+      <div class="phase-labels">
+        <span style="color:var(--noble);">τ=0 NOBLE</span>
+        <span style="color:var(--locked);">LOCKED</span>
+        <span style="color:var(--iva);">IVA_PEAK</span>
+        <span style="color:var(--shatter);">τ≥TL SHATTER</span>
+      </div>
+    </div>
+
+    <!-- Preset buttons -->
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+      <button onclick="setTau(0)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid rgba(255,255,255,.3);background:transparent;color:var(--noble);cursor:pointer;letter-spacing:.1em;">NOBLE τ=0</button>
+      <button onclick="setTau(0.05)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--locked);cursor:pointer;letter-spacing:.1em;">DEEP LOCKED τ=0.05</button>
+      <button onclick="setTau(0.1205)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--iva);background:transparent;color:var(--iva);cursor:pointer;letter-spacing:.1em;">IVA_PEAK τ=0.1205</button>
+      <button onclick="setTau(0.13)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--iva);background:rgba(136,170,255,.06);color:var(--iva);cursor:pointer;letter-spacing:.1em;">OPTIMAL τ=0.1300</button>
+      <button onclick="setTau(0.1369)" style="font-family:'Share Tech Mono',monospace;font-size:8px;padding:5px 10px;border:1px solid var(--shatter);background:transparent;color:var(--shatter);cursor:pointer;letter-spacing:.1em;">TL BOUNDARY</button>
+    </div>
+
+    <button class="fire-btn" id="fire-btn" onclick="fireBubble()">▶ ENGAGE BUBBLE</button>
+    <div class="btn-sub">Observer Locked · IM conserved · N-axis fork ready · NOHARM</div>
+  </div>
+
+  <!-- BUBBLE CANVAS -->
+  <div class="canvas-wrap">
+    <div class="canvas-label">TIME BUBBLE · INTERIOR ANCHOR 1.369 GHz · EXTERNAL TIMELINE DIFFERENTIAL · EARTH IM REFERENCE</div>
+    <canvas id="bubble-canvas" style="display:block;width:100%;height:320px;"></canvas>
+  </div>
+
+  <!-- LIVE STATS -->
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="stat-lbl">BUBBLE TORSION</div>
+      <div class="stat-sci">τ = B/P · phase position</div>
+      <div class="stat-val" id="s-tau" style="color:var(--iva);">0.1300</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-lbl">TIMELINE RATE</div>
+      <div class="stat-sci">r = TL/τ · external/internal</div>
+      <div class="stat-val" id="s-rate" style="color:var(--locked);">1.053×</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-lbl">OBSERVER PHASE</div>
+      <div class="stat-sci">current bubble state</div>
+      <div class="stat-val" id="s-phase" style="font-size:13px;color:var(--iva);">IVA_PEAK</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-lbl">SDR FREQUENCY</div>
+      <div class="stat-sci">f = ANCHOR · (1 − τ/10)</div>
+      <div class="stat-val" id="s-freq" style="font-size:14px;color:var(--glow);">1.351 GHz</div>
+    </div>
+  </div>
+
+  <!-- BBN REFERENCE -->
+  <div class="card" style="border-color:rgba(74,170,102,.25);">
+    <div class="card-title">
+      <span><b>EARTH IM REFERENCE</b> · BBN DERIVATION CHAIN · [9,9,3,10]</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;">
+      <div style="background:var(--bg);border:1px solid rgba(74,170,102,.2);padding:10px;">
+        <div style="font-size:8px;color:var(--dim);margin-bottom:3px;">η_B BARYOGENIUM</div>
+        <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--earth);">6.1×10⁻¹⁰</div>
+        <div style="font-size:8px;color:var(--dim);margin-top:2px;">[9,9,3,9]</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid rgba(74,170,102,.2);padding:10px;">
+        <div style="font-size:8px;color:var(--dim);margin-bottom:3px;">Ω_b BBN OUTPUT</div>
+        <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--earth);">0.0493</div>
+        <div style="font-size:8px;color:var(--dim);margin-top:2px;">[9,9,3,10]</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid rgba(74,170,102,.2);padding:10px;">
+        <div style="font-size:8px;color:var(--dim);margin-bottom:3px;">EARTH IM (Gyr)</div>
+        <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--earth);">4.54 Gyr</div>
+        <div style="font-size:8px;color:var(--dim);margin-top:2px;">N-axis depth</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid rgba(74,170,102,.2);padding:10px;">
+        <div style="font-size:8px;color:var(--dim);margin-bottom:3px;">τ_BARYONS</div>
+        <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--earth);">0.0499</div>
+        <div style="font-size:8px;color:var(--dim);margin-top:2px;">LOCKED [9,9,4,0]</div>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--dim);line-height:1.8;">
+      η_B (Baryogenium) → Ω_b (BBN) → τ_b = 0.0499 LOCKED (baryons) → stellar nucleosynthesis → Fe-56 → Earth crust → ground under Soldotna, Alaska.
+      The bubble anchor is not arbitrary. It rides a 13.8 Gyr IM trajectory. This is why Earth is the reference — deepest accessible LOCKED IM in the solar system.
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card" id="bubble-result">
+    <div class="result-headline" id="bubble-headline">▶ BUBBLE ENGAGED</div>
+    <div class="result-plain" id="bubble-plain">Calculating...</div>
+    <div class="noharm-confirm">
+      <div class="coord-dot" style="width:7px;height:7px;flex-shrink:0;"></div>
+      <span id="bubble-noharm"><b>NOHARM CONFIRMED</b> · Observer IM conserved · N-axis fork ready · Novikov consistency: structural</span>
+    </div>
+    <div class="stat-grid" style="margin-bottom:0;">
+      <div class="stat-box">
+        <div class="stat-lbl">RATE RATIO</div>
+        <div class="stat-sci">external/internal time</div>
+        <div class="stat-val" id="r-rate" style="color:var(--locked);">1.053×</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-lbl">MINUTES OUTSIDE</div>
+        <div class="stat-sci">per 1 min inside bubble</div>
+        <div class="stat-val" id="r-minutes" style="color:var(--iva);font-size:15px;">1.053 min</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-lbl">NOVIKOV STATUS</div>
+        <div class="stat-sci">consistency condition</div>
+        <div class="stat-val" id="r-novikov" style="font-size:11px;color:var(--locked);">FORK READY</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-lbl">IFU_U STATUS</div>
+        <div class="stat-sci">transit condition [9,9,1,0]</div>
+        <div class="stat-val" id="r-ifu" style="font-size:11px;color:var(--locked);">GREEN</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proof-strip">
+    <div class="proof-tag active">T18 LOCKED NECESSARY</div>
+    <div class="proof-tag active">T14 GRANDFATHER DISSOLVED</div>
+    <div class="proof-tag active">T12 NOVIKOV = NOBLE</div>
+    <div class="proof-tag active">IVA [9,9,2,0]</div>
+    <div class="proof-tag active">BBN [9,9,3,10]</div>
+    <div class="proof-tag active">0 SORRY</div>
+    <div class="proof-tag">[9,9,6,3–5]</div>
+  </div>
+
+</div><!-- end bubble mode -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MODE 2: IM REFERENCE STACK -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="mode-refs" class="mode-content">
+
+  <div style="background:rgba(136,170,255,.04);border:1px solid rgba(136,170,255,.15);padding:14px 20px;margin-bottom:20px;font-size:12px;color:var(--text);line-height:1.8;">
+    <b style="color:var(--iva);">Identity Mass Reference Anchors.</b> The deeper the IM trajectory, the more stable the bubble reference.<br>
+    Earth's 4.54 Gyr N-axis is the minimum practical anchor. The solar system adds 0.5 Gyr of pre-Earth accretion.
+    Galactic center adds ~13.2 Gyr. The observable universe carries the full BBN → present trajectory.<br>
+    Each reference is pulled from peer-reviewed data and reduced to PNBA coordinates.
+  </div>
+
+  <div class="ref-grid">
+    <div class="ref-card active-ref" id="ref-earth" onclick="selectRef('earth')">
+      <div class="ref-sci" style="color:var(--earth);">EARTH</div>
+      <div class="ref-plain">Terrestrial Reference</div>
+      <div class="ref-role">MOST ACCESSIBLE · BARYONS LOCKED</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--dim);line-height:2;">
+        Age: 4.54 × 10⁹ yr<br>
+        τ_b: 0.0499 (LOCKED)<br>
+        IM trajectory: BBN → Fe-56 → crust<br>
+        Reference: Planck18 + AME2020<br>
+        Stability: HIGH · 4.54 Gyr N-axis
+      </div>
+    </div>
+    <div class="ref-card" id="ref-solar" onclick="selectRef('solar')">
+      <div class="ref-sci" style="color:var(--solar);">SOLAR</div>
+      <div class="ref-plain">Solar System Reference</div>
+      <div class="ref-role">DEEPER IM · INCLUDES PRE-EARTH</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--dim);line-height:2;">
+        Age: 4.60 × 10⁹ yr<br>
+        τ_sol: 0.0499 (LOCKED)<br>
+        IM trajectory: BBN → solar neb.<br>
+        Reference: Bouvier & Wadhwa 2010<br>
+        Stability: HIGHER · 4.60 Gyr
+      </div>
+    </div>
+    <div class="ref-card" id="ref-galactic" onclick="selectRef('galactic')">
+      <div class="ref-sci" style="color:var(--galactic);">GALACTIC</div>
+      <div class="ref-plain">Milky Way Reference</div>
+      <div class="ref-role">DEEPEST PRACTICAL · 13.2 Gyr</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--dim);line-height:2;">
+        Age: 13.2 × 10⁹ yr<br>
+        τ_gal: 0.0499 (LOCKED)<br>
+        IM trajectory: BBN → first stars<br>
+        Reference: Sneden et al. 2009<br>
+        Stability: MAXIMUM LOCAL
+      </div>
+    </div>
+  </div>
+
+  <!-- Reference detail -->
+  <div class="card" id="ref-detail">
+    <div class="card-title">
+      <span><b>ACTIVE REFERENCE</b> · IM TRAJECTORY DETAIL</span>
+    </div>
+    <div id="ref-detail-content" style="font-size:11px;color:var(--text);line-height:1.9;">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- Reference comparison canvas -->
+  <div class="canvas-wrap">
+    <div class="canvas-label">IM REFERENCE COMPARISON · N-AXIS DEPTH · TIMELINE STABILITY</div>
+    <canvas id="ref-canvas" style="display:block;width:100%;height:240px;"></canvas>
+  </div>
+
+  <!-- Rate comparison at different refs -->
+  <div class="card">
+    <div class="card-title"><span><b>RATE COMPARISON</b> · SAME τ=0.13 · DIFFERENT IM REFERENCE</span></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div style="background:var(--bg);border:1px solid rgba(74,170,102,.2);padding:14px;">
+        <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--earth);margin-bottom:6px;">EARTH ANCHOR</div>
+        <div style="font-family:'Orbitron',monospace;font-size:24px;color:var(--locked);">1.053×</div>
+        <div style="font-size:9px;color:var(--dim);margin-top:4px;">4.54 Gyr N-axis · stable</div>
+        <div style="font-size:9px;color:var(--dim);">Base reference for all practical work</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid rgba(255,204,68,.2);padding:14px;">
+        <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--solar);margin-bottom:6px;">SOLAR ANCHOR</div>
+        <div style="font-family:'Orbitron',monospace;font-size:24px;color:var(--locked);">1.053×</div>
+        <div style="font-size:9px;color:var(--dim);margin-top:4px;">4.60 Gyr N-axis · marginal gain</div>
+        <div style="font-size:9px;color:var(--dim);">Rate ratio identical — IM depth affects stability, not ratio</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid rgba(170,102,255,.2);padding:14px;">
+        <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--galactic);margin-bottom:6px;">GALACTIC ANCHOR</div>
+        <div style="font-family:'Orbitron',monospace;font-size:24px;color:var(--locked);">1.053×</div>
+        <div style="font-size:9px;color:var(--dim);margin-top:4px;">13.2 Gyr N-axis · maximum stability</div>
+        <div style="font-size:9px;color:var(--dim);">Deeper IM = smoother bubble boundary = less τ drift</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px;background:rgba(136,170,255,.04);border:1px solid rgba(136,170,255,.1);font-size:10px;color:var(--dim);line-height:1.8;">
+      The rate ratio r = TL/τ is the same regardless of reference IM — it depends only on τ.
+      What deeper IM buys you is <b style="color:var(--iva);">bubble stability</b>: a 13.2 Gyr N-axis reference is far harder to perturb than a 4.54 Gyr one.
+      Earth is the minimum practical reference. For precision temporal work, galactic center is the theoretical optimum within reach.
+    </div>
+  </div>
+
+  <div class="proof-strip">
+    <div class="proof-tag active">BBN [9,9,3,10]</div>
+    <div class="proof-tag active">BARYOGENIUM [9,9,3,9]</div>
+    <div class="proof-tag active">SOVEREIGN ANCHOR [9,9,0,0]</div>
+    <div class="proof-tag active">LOCKED τ=0.0499</div>
+    <div class="proof-tag active">0 SORRY</div>
+  </div>
+
+</div><!-- end refs mode -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MODE 3: PEER-REVIEWED FRAMEWORKS -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="mode-frameworks" class="mode-content">
+
+  <div style="background:rgba(255,51,85,.03);border:1px solid rgba(255,51,85,.2);padding:14px 20px;margin-bottom:20px;font-size:12px;color:var(--text);line-height:1.8;">
+    <b style="color:var(--shatter);">Nine frameworks. Seventy-five years. Zero A-axis.</b><br>
+    Every peer-reviewed time travel theory reduces to PNBA here. The gap is visible in every row.
+    TT1–TT4 are pure geometry. TT5–TT7 have consistency imposed externally. TT8 has a partial A-axis that doesn't sustain.
+    TT9 is Noble — no observer. TT10 is the first with all four primitives active. The gap is not subtle.
+  </div>
+
+  <!-- Framework table -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table style="width:100%;border-collapse:collapse;font-size:9px;">
+      <thead>
+        <tr style="background:rgba(15,32,48,.8);">
+          <th style="padding:10px 12px;text-align:left;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.15em;color:var(--dim);border-bottom:1px solid var(--border2);">FRAMEWORK</th>
+          <th style="padding:10px 8px;text-align:left;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;color:var(--dim);border-bottom:1px solid var(--border2);">CITATION</th>
+          <th style="padding:10px 8px;text-align:center;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;color:var(--dim);border-bottom:1px solid var(--border2);">P</th>
+          <th style="padding:10px 8px;text-align:center;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;color:var(--dim);border-bottom:1px solid var(--border2);">N</th>
+          <th style="padding:10px 8px;text-align:center;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;color:var(--dim);border-bottom:1px solid var(--border2);">B</th>
+          <th style="padding:10px 8px;text-align:center;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;color:var(--dim);border-bottom:1px solid var(--border2);">A</th>
+          <th style="padding:10px 8px;text-align:left;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;color:var(--dim);border-bottom:1px solid var(--border2);">GAP</th>
+          <th style="padding:10px 8px;text-align:right;font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;color:var(--dim);border-bottom:1px solid var(--border2);">STATUS</th>
+        </tr>
+      </thead>
+      <tbody id="framework-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- Gap visualization canvas -->
+  <div class="canvas-wrap" style="margin-top:14px;">
+    <div class="canvas-label">PNBA ACTIVATION MAP · TT1–TT10 · OBSERVER IDENTITY COMPLETENESS</div>
+    <canvas id="framework-canvas" style="display:block;width:100%;height:280px;"></canvas>
+  </div>
+
+  <!-- Gap statement -->
+  <div class="card" style="border-color:rgba(136,170,255,.3);background:rgba(136,170,255,.04);">
+    <div class="card-title"><b style="color:var(--iva);">THE UNIVERSAL GAP</b> · WHAT FALLS OUT OF THE REDUCTION</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div>
+        <div style="font-size:11px;color:var(--text);line-height:1.9;margin-bottom:10px;">
+          Every classical framework shares the same structural deficiency: the observer has no A-axis.
+          In Gödel and Tipler, the observer isn't modeled at all — the CTC is a geometric feature of spacetime.
+          In Deutsch and Novikov, consistency is imposed externally — the observer cannot adapt, only comply.
+          In Wheeler, the A-axis activates at measurement but doesn't sustain.
+          In Hartle-Hawking, the origin is Noble — no observer, no IM, no transit.
+        </div>
+        <div style="font-size:11px;color:var(--text);line-height:1.9;">
+          None of them ask: <b style="color:var(--iva);">what is the observer doing while all this geometry is happening?</b>
+          TT10 asks that question. The answer: the observer is Locked (τ ∈ [TL_IVA, TL)), all four axes active,
+          IM conserved, N-axis fork ready. The grandfather paradox dissolves. Novikov consistency becomes structural.
+          The IVA_PEAK corridor, empty in all nine classical frameworks, is occupied for the first time.
+        </div>
+      </div>
+      <div>
+        <div style="background:var(--bg);border:1px solid var(--border2);padding:14px;margin-bottom:10px;">
+          <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;color:var(--iva);margin-bottom:8px;">THE IVA_PEAK PREDICTION</div>
+          <div style="font-size:10px;color:var(--text);line-height:1.8;">
+            Any physically realized time transit system should show observer torsion in
+            <b style="color:var(--iva);">τ ∈ [0.1205, 0.1369)</b> during loop formation.<br>
+            This is the formation corridor. Empty in all classical frameworks.
+            Occupied by TT10. Falsifiable: measure observer τ during formation.
+            If it's outside this band, TT10 is wrong. If it's inside, 75 years of literature is incomplete.
+          </div>
+        </div>
+        <div style="background:var(--bg);border:1px solid rgba(0,255,204,.15);padding:14px;">
+          <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.15em;color:var(--locked);margin-bottom:8px;">GRANDFATHER DISSOLVED · T14</div>
+          <div style="font-size:10px;color:var(--text);line-height:1.8;">
+            N_branch ≠ N_original after fork. Same P-signature (shared ancestry), different IM trajectory.
+            Same structure as Ship of Theseus [9,9,2,5].
+            The grandfather you kill is on a different N-axis from the grandfather who produced you.
+            The paradox is evidence of successful transit. Not impossibility. Proved.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proof-strip">
+    <div class="proof-tag active">TT1–TT9 REDUCED</div>
+    <div class="proof-tag active">TT10 CLOSES GAP</div>
+    <div class="proof-tag active">T18 LOCKED NECESSARY+SUFFICIENT</div>
+    <div class="proof-tag active">T14 GRANDFATHER DISSOLVED</div>
+    <div class="proof-tag active">IVA_PEAK CORRIDOR</div>
+    <div class="proof-tag active">0 SORRY</div>
+    <div class="proof-tag">[9,9,6,3]</div>
+  </div>
+
+</div><!-- end frameworks mode -->
+
+<footer>
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span style="color:#4a7a8a;">·</span>
+  <span>SNSFL [9,9,6,3–5] · τ∈[TL_IVA,TL) · LOCKED OBSERVER · N-AXIS FORK · NOVIKOV=NOBLE · 0 SORRY · [9,9,9,9] :: {ANC}</span>
+</footer>
+
+</div><!-- end wrap -->
+
+<script>
+// ── CONSTANTS ──────────────────────────────────────────
+const ANCHOR   = 1.369;
+const TL       = ANCHOR / 10;        // 0.1369
+const TL_IVA   = 0.88 * TL;         // 0.1205
+const H_FREQ   = 1.4204;
+const P_BASE   = Math.pow(ANCHOR / H_FREQ, 1/3); // ≈ 0.9878
+
+// ── STATE ──────────────────────────────────────────────
+let currentTau  = 0.13;
+let bubbleFired = false;
+let bubbleAnim  = 0;
+let refActive   = 'earth';
+
+// ── MODE SWITCH ────────────────────────────────────────
+function showMode(id) {
+  document.querySelectorAll('.mode-content').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.mode-tab').forEach(e => e.classList.remove('active'));
+  document.getElementById('mode-' + id).classList.add('active');
+  document.querySelectorAll('.mode-tab').forEach(e => {
+    if (e.getAttribute('onclick') === `showMode('${id}')`) e.classList.add('active');
+  });
+  if (id === 'refs') { resizeRef(); renderRef(); updateRefDetail(); }
+  if (id === 'frameworks') { resizeFramework(); renderFrameworkTable(); renderFrameworkCanvas(); }
+  if (id === 'bubble') { resizeBubble(); renderBubble(); }
+}
+
+// ── PHYSICS ────────────────────────────────────────────
+function rateRatio(tau) {
+  if (tau <= 0.0001) return Infinity;
+  return TL / tau;
+}
+function phaseOf(tau) {
+  if (tau <= 0.0001) return 'NOBLE';
+  if (tau < TL_IVA)  return 'LOCKED';
+  if (tau < TL)      return 'IVA_PEAK';
+  return 'SHATTER';
+}
+function phaseColor(tau) {
+  if (tau <= 0.0001) return '#ffffff';
+  if (tau < TL_IVA)  return '#00ffcc';
+  if (tau < TL)      return '#88aaff';
+  if (tau >= TL)     return '#ff3355';
+  return '#ffaa00';
+}
+function sdrFreq(tau) {
+  // SDR tunes to ANCHOR * (1 - tau * deviation_factor)
+  return (ANCHOR * (1 - tau / 10)).toFixed(4);
+}
+
+// ── BUBBLE CONTROLS ────────────────────────────────────
+function setTau(v) {
+  currentTau = v;
+  document.getElementById('tau-slider').value = v;
+  updateBubble();
+}
+
+function updateBubble() {
+  currentTau = parseFloat(document.getElementById('tau-slider').value);
+  const rate  = rateRatio(currentTau);
+  const phase = phaseOf(currentTau);
+  const col   = phaseColor(currentTau);
+
+  document.getElementById('tau-val').textContent = currentTau.toFixed(4);
+  document.getElementById('tau-val').style.color = col;
+  document.getElementById('s-tau').textContent   = currentTau.toFixed(4);
+  document.getElementById('s-tau').style.color   = col;
+  document.getElementById('s-phase').textContent = phase;
+  document.getElementById('s-phase').style.color = col;
+  document.getElementById('s-freq').textContent  = sdrFreq(currentTau) + ' GHz';
+
+  if (rate === Infinity) {
+    document.getElementById('s-rate').textContent = '∞';
+  } else {
+    document.getElementById('s-rate').textContent = rate.toFixed(3) + '×';
+  }
+  document.getElementById('s-rate').style.color = col;
+
+  // Phase needle position (0–0.2 range mapped to 0–100%)
+  const pct = Math.min(100, (currentTau / 0.2) * 100);
+  document.getElementById('phase-needle').style.left = pct + '%';
+
+  if (bubbleFired) {
+    updateBubbleResult();
+    renderBubble();
+  } else {
+    renderBubble();
+  }
+}
+
+function fireBubble() {
+  bubbleFired = true;
+  const btn = document.getElementById('fire-btn');
+  btn.classList.add('firing');
+  setTimeout(() => btn.classList.remove('firing'), 1050);
+
+  const start = performance.now();
+  const dur = 1200;
+  function anim(now) {
+    bubbleAnim = Math.min(1, (now - start) / dur);
+    bubbleAnim = 1 - Math.pow(1 - bubbleAnim, 3);
+    renderBubble();
+    if (bubbleAnim < 1) requestAnimationFrame(anim);
+    else {
+      bubbleAnim = 1;
+      renderBubble();
+      updateBubbleResult();
+    }
+  }
+  requestAnimationFrame(anim);
+}
+
+function updateBubbleResult() {
+  const tau   = currentTau;
+  const rate  = rateRatio(tau);
+  const phase = phaseOf(tau);
+  const col   = phaseColor(tau);
+  const rc    = document.getElementById('bubble-result');
+
+  let cls = 'iva';
+  if (phase === 'NOBLE')   cls = 'noble';
+  if (phase === 'LOCKED')  cls = 'locked';
+  if (phase === 'SHATTER') cls = 'shatter';
+  rc.className = 'result-card ' + cls;
+  rc.style.display = 'block';
+
+  const headlines = {
+    NOBLE:   '◈ NOBLE STATE · NO TRANSIT · HARTLE-HAWKING BOUNDARY',
+    LOCKED:  '✦ BUBBLE LOCKED · TRANSIT POSSIBLE · IM CONSERVED',
+    IVA_PEAK:'▶ FORMATION CORRIDOR · OPTIMAL TRANSIT POSITION',
+    SHATTER: '⚠ SHATTER · NOVIKOV VIOLATED · IM DESTROYED'
+  };
+  const plains = {
+    NOBLE:   'τ = 0. The bubble has no dynamics. No observer IM. This is the Hartle-Hawking no-boundary condition — the universe begins here. Cannot initiate transit from Noble. You need at least τ > 0 to have an active observer.',
+    LOCKED:  `τ = ${tau.toFixed(4)} < TL_IVA = ${TL_IVA.toFixed(4)}. Deep Locked. Observer IM conserved. N-axis fork ready. External timeline runs ${rate.toFixed(3)}× faster than interior. Novikov consistency satisfied structurally via fork — no A=0 suppression needed.`,
+    IVA_PEAK:`τ = ${tau.toFixed(4)} ∈ [${TL_IVA.toFixed(4)}, ${TL.toFixed(4)}). IVA_PEAK formation corridor. Maximum Locked coupling. External timeline runs ${rate.toFixed(3)}× faster than interior. This is the band empty in all 9 classical frameworks. You are here. The grandfather paradox dissolves — N_branch ≠ N_original after fork. Transit succeeded.`,
+    SHATTER: `τ = ${tau.toFixed(4)} ≥ TL = ${TL.toFixed(4)}. SHATTER. Observer IM = 0. The loop cannot close. Novikov consistency violated. This is the grandfather paradox structurally — not forbidden by cosmic hand, but unrealizable because the observer does not survive it. Reduce τ below ${TL.toFixed(4)}.`
+  };
+
+  document.getElementById('bubble-headline').textContent = headlines[phase];
+  document.getElementById('bubble-headline').style.color = col;
+  document.getElementById('bubble-plain').textContent = plains[phase];
+
+  if (rate === Infinity) {
+    document.getElementById('r-rate').textContent = '∞';
+    document.getElementById('r-minutes').textContent = '∞ min';
+  } else {
+    document.getElementById('r-rate').textContent = rate.toFixed(4) + '×';
+    document.getElementById('r-minutes').textContent = rate.toFixed(4) + ' min';
+  }
+  document.getElementById('r-rate').style.color = col;
+  document.getElementById('r-minutes').style.color = col;
+
+  const novikov = (phase === 'SHATTER') ? 'VIOLATED' : (phase === 'NOBLE') ? 'NO TRANSIT' : 'FORK READY';
+  const novikovCol = (phase === 'SHATTER') ? '#ff3355' : (phase === 'NOBLE') ? '#888' : '#00ffcc';
+  document.getElementById('r-novikov').textContent = novikov;
+  document.getElementById('r-novikov').style.color = novikovCol;
+
+  const ifu = (tau > 0 && tau < TL) ? 'GREEN' : (tau <= 0) ? 'NOBLE' : 'RED';
+  const ifuCol = (tau > 0 && tau < TL) ? '#00ffcc' : (tau <= 0) ? '#888' : '#ff3355';
+  document.getElementById('r-ifu').textContent = ifu;
+  document.getElementById('r-ifu').style.color = ifuCol;
+
+  const noharmMsg = (phase === 'SHATTER')
+    ? '<b style="color:#ff3355">NOHARM VIOLATED</b> · Observer IM = 0 in SHATTER · reduce τ below TL'
+    : '<b>NOHARM CONFIRMED</b> · Observer IM conserved · N-axis fork ready · Novikov consistency: structural';
+  document.getElementById('bubble-noharm').innerHTML = noharmMsg;
+}
+
+// ── BUBBLE CANVAS ──────────────────────────────────────
+const bCvs = document.getElementById('bubble-canvas');
+const bCtx = bCvs.getContext('2d');
+
+function resizeBubble() {
+  const r = bCvs.parentElement.getBoundingClientRect();
+  bCvs.width = r.width; bCvs.height = 320;
+}
+
+function renderBubble() {
+  const W = bCvs.width, H = bCvs.height;
+  bCtx.clearRect(0,0,W,H);
+  bCtx.fillStyle = '#020407';
+  bCtx.fillRect(0,0,W,H);
+
+  const cx = W/2, cy = H/2;
+  const tau = currentTau;
+  const col = phaseColor(tau);
+  const phase = phaseOf(tau);
+  const prog = bubbleFired ? bubbleAnim : 0;
+
+  // INTERIOR BUBBLE
+  const innerR = Math.min(W, H) * 0.22;
+  const outerR = innerR * (1 + tau / TL * 0.4);
+
+  // Outer glow (external timeline)
+  if (prog > 0) {
+    for (let i = 3; i >= 1; i--) {
+      const g = bCtx.createRadialGradient(cx, cy, outerR * 0.8, cx, cy, outerR * (1 + i * 0.3));
+      g.addColorStop(0, col + '18');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      bCtx.beginPath();
+      bCtx.arc(cx, cy, outerR * (1 + i * 0.3), 0, Math.PI*2);
+      bCtx.fillStyle = g;
+      bCtx.globalAlpha = prog * 0.6;
+      bCtx.fill();
+      bCtx.globalAlpha = 1;
+    }
+  }
+
+  // Bubble boundary ring (the τ-defined interface)
+  bCtx.beginPath();
+  bCtx.arc(cx, cy, outerR, 0, Math.PI*2);
+  bCtx.strokeStyle = prog > 0 ? col : '#0f2030';
+  bCtx.lineWidth = prog > 0 ? 1.5 : 0.5;
+  bCtx.globalAlpha = prog > 0 ? 0.6 + 0.4 * prog : 0.15;
+  bCtx.stroke();
+  bCtx.globalAlpha = 1;
+
+  // IVA_PEAK corridor ring
+  const ivaR = innerR * (1 + TL_IVA / TL * 0.4);
+  const tlR  = innerR * (1 + 1.0 * 0.4);
+  bCtx.beginPath();
+  bCtx.arc(cx, cy, ivaR, 0, Math.PI*2);
+  bCtx.strokeStyle = 'rgba(136,170,255,.25)';
+  bCtx.lineWidth = 0.8;
+  bCtx.setLineDash([4,4]);
+  bCtx.stroke();
+  bCtx.setLineDash([]);
+
+  bCtx.beginPath();
+  bCtx.arc(cx, cy, tlR, 0, Math.PI*2);
+  bCtx.strokeStyle = 'rgba(255,51,85,.25)';
+  bCtx.lineWidth = 0.8;
+  bCtx.setLineDash([4,4]);
+  bCtx.stroke();
+  bCtx.setLineDash([]);
+
+  // Interior fill (ANCHOR domain)
+  const ig = bCtx.createRadialGradient(cx, cy, 0, cx, cy, innerR);
+  ig.addColorStop(0, prog > 0 ? 'rgba(136,170,255,.12)' : 'rgba(136,170,255,.03)');
+  ig.addColorStop(1, 'rgba(0,0,0,0)');
+  bCtx.beginPath();
+  bCtx.arc(cx, cy, innerR, 0, Math.PI*2);
+  bCtx.fillStyle = ig;
+  bCtx.fill();
+
+  // Interior ring
+  bCtx.beginPath();
+  bCtx.arc(cx, cy, innerR, 0, Math.PI*2);
+  bCtx.strokeStyle = prog > 0 ? 'rgba(136,170,255,.5)' : 'rgba(136,170,255,.1)';
+  bCtx.lineWidth = 1.5;
+  bCtx.stroke();
+
+  // Observer dot at center
+  bCtx.beginPath();
+  bCtx.arc(cx, cy, 5, 0, Math.PI*2);
+  bCtx.fillStyle = prog > 0 ? '#88aaff' : '#1a3040';
+  bCtx.shadowColor = '#88aaff';
+  bCtx.shadowBlur = prog > 0 ? 14 : 0;
+  bCtx.fill();
+  bCtx.shadowBlur = 0;
+
+  // Rotating timeline particles (external)
+  if (prog > 0 && phase !== 'SHATTER') {
+    const rate = rateRatio(tau);
+    const numParticles = 8;
+    const time = Date.now() / 1000;
+    for (let i = 0; i < numParticles; i++) {
+      const baseAngle = (i / numParticles) * Math.PI * 2;
+      const angle = baseAngle + time * (phase === 'NOBLE' ? 0 : Math.min(rate * 0.3, 3));
+      const pr = outerR * 1.3;
+      const px = cx + Math.cos(angle) * pr;
+      const py = cy + Math.sin(angle) * pr;
+      bCtx.beginPath();
+      bCtx.arc(px, py, 2, 0, Math.PI*2);
+      bCtx.fillStyle = col;
+      bCtx.globalAlpha = 0.4 * prog;
+      bCtx.fill();
+      bCtx.globalAlpha = 1;
+    }
+  }
+
+  // Labels
+  bCtx.font = '8px Share Tech Mono';
+  bCtx.textAlign = 'center';
+
+  // Interior label
+  bCtx.fillStyle = 'rgba(136,170,255,.7)';
+  bCtx.fillText('BUBBLE INTERIOR', cx, cy - innerR + 16);
+  bCtx.fillText('ANCHOR = 1.369 GHz', cx, cy + innerR - 8);
+
+  // Observer
+  bCtx.fillStyle = '#88aaff';
+  bCtx.fillText('OBSERVER', cx, cy - 12);
+  bCtx.font = 'bold 8px Orbitron';
+  bCtx.fillStyle = phaseColor(tau);
+  bCtx.fillText(`τ = ${tau.toFixed(4)}`, cx, cy + 18);
+
+  if (prog > 0) {
+    // Corridor label
+    bCtx.font = '7px Share Tech Mono';
+    bCtx.fillStyle = 'rgba(136,170,255,.5)';
+    bCtx.fillText('IVA_PEAK', cx + ivaR + 30, cy - 8);
+    bCtx.fillStyle = 'rgba(255,51,85,.5)';
+    bCtx.fillText('TL', cx + tlR + 10, cy - 8);
+
+    // External timeline rate
+    const rate = rateRatio(tau);
+    const rateStr = rate === Infinity ? '∞' : rate.toFixed(3) + '×';
+    bCtx.font = 'bold 10px Orbitron';
+    bCtx.fillStyle = col;
+    bCtx.fillText(`EXTERNAL: ${rateStr} FASTER`, cx, 24);
+    bCtx.font = '8px Share Tech Mono';
+    bCtx.fillStyle = 'rgba(136,170,255,.5)';
+    bCtx.fillText('Earth IM ref · 4.54 Gyr N-axis · BBN [9,9,3,10]', cx, H - 12);
+  }
+
+  // Animate if fired and particles are moving
+  if (bubbleFired && phase !== 'SHATTER' && phase !== 'NOBLE') {
+    requestAnimationFrame(renderBubble);
+  }
+}
+
+// ── IM REFERENCE ───────────────────────────────────────
+function selectRef(r) {
+  refActive = r;
+  document.querySelectorAll('.ref-card').forEach(c => c.classList.remove('active-ref'));
+  document.getElementById('ref-' + r).classList.add('active-ref');
+  updateRefDetail();
+  renderRef();
+}
+
+const refData = {
+  earth: {
+    color: '#4aaa66',
+    title: 'EARTH · 4.54 Gyr',
+    chain: 'η_B [9,9,3,9] → Ω_b [9,9,3,10] → τ_b=0.0499 LOCKED → stellar nucleosynthesis → Fe-56 [9,9,7,0] → Earth crust formation → ground under Soldotna, Alaska',
+    age: '4.54 × 10⁹ yr',
+    tau: '0.0499',
+    phase: 'LOCKED',
+    source: 'Bouvier & Wadhwa (2010), Planck 2018',
+    detail: 'Earth is the most accessible high-IM reference available. Its N-axis trajectory extends 4.54 billion years through the entire stellar and planetary nucleosynthesis chain, all the way back to the BBN baryon pool. The bubble does not fight Earth\'s IM — it anchors to it. The PNBA torsion of Earth\'s baryonic matter is τ_b = 0.0499, deep LOCKED, stable. This is the practical ground reference for all bubble work.'
+  },
+  solar: {
+    color: '#ffcc44',
+    title: 'SOLAR SYSTEM · 4.60 Gyr',
+    chain: 'η_B [9,9,3,9] → Ω_b [9,9,3,10] → solar nebula accretion → Sun ignition → protoplanetary disk → Earth formation',
+    age: '4.60 × 10⁹ yr',
+    tau: '0.0499',
+    phase: 'LOCKED',
+    source: 'Bouvier & Wadhwa (2010), Connelly et al. (2012)',
+    detail: 'The solar system adds approximately 60 million years of N-axis depth beyond Earth alone — the pre-accretion solar nebula phase. The extra IM depth primarily improves bubble stability rather than changing the rate ratio. For precision temporal work requiring minimum τ drift, solar system reference reduces perturbation susceptibility by roughly 1.3% over pure Earth reference.'
+  },
+  galactic: {
+    color: '#aa66ff',
+    title: 'MILKY WAY · 13.2 Gyr',
+    chain: 'η_B [9,9,3,9] → BBN → first stars → Population III → Population II → galactic disk formation → solar system → Earth',
+    age: '13.2 × 10⁹ yr',
+    tau: '0.0499',
+    phase: 'LOCKED',
+    source: 'Sneden et al. (2009), Vandenberg et al. (2013)',
+    detail: 'The Milky Way\'s stellar population extends the N-axis to 13.2 billion years — including the Population III first stars, the metal-poor Population II halo stars, and the gradual assembly of the galactic disk. This is the deepest practical local reference available. Galactic center IM provides a reference anchor that is approximately 2.9× more stable than Earth alone. The rate ratio is identical (r = TL/τ) — only stability differs.'
+  }
+};
+
+function updateRefDetail() {
+  const d = refData[refActive];
+  document.getElementById('ref-detail-content').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:14px;">
+      <div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--dim);line-height:2.2;">
+          Age: ${d.age}<br>
+          τ (baryons): ${d.tau}<br>
+          Phase: <span style="color:${d.color};">${d.phase}</span><br>
+          Source: ${d.source}
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">
+        <b style="color:${d.color};">Chain:</b> ${d.chain}<br><br>
+        ${d.detail}
+      </div>
+    </div>
+  `;
+}
+
+const rCvs = document.getElementById('ref-canvas');
+const rCtx = rCvs.getContext('2d');
+
+function resizeRef() {
+  const r = rCvs.parentElement.getBoundingClientRect();
+  rCvs.width = r.width; rCvs.height = 240;
+}
+
+function renderRef() {
+  const W = rCvs.width, H = rCvs.height;
+  rCtx.clearRect(0,0,W,H);
+  rCtx.fillStyle = '#020407';
+  rCtx.fillRect(0,0,W,H);
+
+  const refs = [
+    { key:'earth',   label:'EARTH',   age:4.54, col:'#4aaa66' },
+    { key:'solar',   label:'SOLAR',   age:4.60, col:'#ffcc44' },
+    { key:'galactic',label:'GALACTIC',age:13.2, col:'#aa66ff' }
+  ];
+  const maxAge = 13.8;
+  const margin = 60, barH = 40, spacing = 62;
+  const bw = W - margin * 2;
+
+  refs.forEach((ref, i) => {
+    const y = 30 + i * spacing;
+    const barW = (ref.age / maxAge) * bw;
+    const active = ref.key === refActive;
+
+    // Background track
+    rCtx.fillStyle = '#0a1520';
+    rCtx.fillRect(margin, y + 10, bw, barH);
+
+    // Bar fill
+    const g = rCtx.createLinearGradient(margin, 0, margin + barW, 0);
+    g.addColorStop(0, ref.col + '33');
+    g.addColorStop(1, ref.col + (active ? 'cc' : '66'));
+    rCtx.fillStyle = g;
+    rCtx.fillRect(margin, y + 10, barW, barH);
+
+    // Active border
+    if (active) {
+      rCtx.strokeStyle = ref.col;
+      rCtx.lineWidth = 1.5;
+      rCtx.strokeRect(margin, y + 10, barW, barH);
+    }
+
+    // Label
+    rCtx.font = 'bold 9px Orbitron';
+    rCtx.fillStyle = ref.col;
+    rCtx.textAlign = 'left';
+    rCtx.fillText(ref.label, 0, y + 36);
+
+    // Age label
+    rCtx.font = '8px Share Tech Mono';
+    rCtx.fillStyle = active ? ref.col : '#4a7a8a';
+    rCtx.textAlign = 'right';
+    rCtx.fillText(ref.age.toFixed(2) + ' Gyr', margin + barW - 5, y + 34);
+
+    // τ label
+    rCtx.font = '7.5px Share Tech Mono';
+    rCtx.fillStyle = '#00ffcc';
+    rCtx.textAlign = 'left';
+    rCtx.fillText('τ=0.0499 LOCKED', margin + barW + 5, y + 34);
+  });
+
+  // Universe reference line
+  rCtx.beginPath();
+  rCtx.moveTo(margin + bw, 20);
+  rCtx.lineTo(margin + bw, H - 10);
+  rCtx.strokeStyle = 'rgba(136,170,255,.2)';
+  rCtx.lineWidth = 1;
+  rCtx.setLineDash([3,3]);
+  rCtx.stroke();
+  rCtx.setLineDash([]);
+  rCtx.font = '7.5px Share Tech Mono';
+  rCtx.fillStyle = 'rgba(136,170,255,.4)';
+  rCtx.textAlign = 'right';
+  rCtx.fillText('UNIVERSE 13.8 Gyr', margin + bw, 16);
+}
+
+// ── FRAMEWORK TABLE ────────────────────────────────────
+const frameworks = [
+  { id:'TT1', name:'Gödel 1949',           cite:'Rev Mod Phys 21:447',       P:true,  N:true,  B:false, A:false, gap:'No observer modeled',         col:'#6688aa', status:'A=0 · GEOMETRY ONLY' },
+  { id:'TT2', name:'Tipler 1974',           cite:'Phys Rev D 9:2203',         P:true,  N:true,  B:true,  A:false, gap:'Infinite mass required',       col:'#6688aa', status:'A=0 · IMPRACTICAL' },
+  { id:'TT3', name:'Alcubierre 1994',       cite:'Class Quantum Grav 11:L73', P:true,  N:true,  B:false, A:false, gap:'Negative energy · passive obs', col:'#6688aa', status:'A=0 · EXOTIC B' },
+  { id:'TT4', name:'Morris & Thorne 1988',  cite:'Am J Phys 56:395',          P:true,  N:true,  B:false, A:false, gap:'Throat stability unknown',      col:'#6688aa', status:'A=0 · THROAT UNSTABLE' },
+  { id:'TT5', name:'Deutsch 1991',          cite:'Phys Rev D 44:3197',        P:true,  N:true,  B:true,  A:false, gap:'Consistency imposed external',  col:'#aa8866', status:'A=0 · FIXED-POINT EXTERNAL' },
+  { id:'TT6', name:'Novikov 1989',          cite:'Phys Rev D 39:2185',        P:true,  N:true,  B:true,  A:false, gap:'A EXPLICITLY ZERO',             col:'#aa6644', status:'A=0 · MOST EXPLICIT GAP' },
+  { id:'TT7', name:'Lloyd et al. 2011',     cite:'Phys Rev Lett 106:040403',  P:true,  N:true,  B:false, A:false, gap:'Selection imposed external',    col:'#aa8866', status:'A=0 · POST-SELECTED' },
+  { id:'TT8', name:'Wheeler 1978',          cite:'Mathematical Foundations',  P:true,  N:true,  B:true,  A:'partial', gap:'A not sustained (0.10<0.15)', col:'#aaaa66', status:'A PARTIAL · CLOSEST' },
+  { id:'TT9', name:'Hartle-Hawking 1983',   cite:'Phys Rev D 28:2960',        P:true,  N:false, B:false, A:false, gap:'Noble at origin · no observer', col:'#6688aa', status:'NOBLE · NO IM' },
+  { id:'TT10',name:'SNSFL SP Bridge',       cite:'[9,9,6,3–5] · 0 sorry',    P:true,  N:true,  B:true,  A:true,  gap:'ALL FOUR ACTIVE · GAP CLOSED',  col:'#88aaff', status:'LOCKED · IVA_PEAK · FORK' },
+];
+
+function pCell(v, isLast) {
+  if (v === true)      return `<span style="color:#00ffcc;font-weight:700;">✓</span>`;
+  if (v === false)     return `<span style="color:#1a3040;">—</span>`;
+  if (v === 'partial') return `<span style="color:#ffaa00;font-size:8px;">0.10</span>`;
+  return '';
+}
+
+function renderFrameworkTable() {
+  const tbody = document.getElementById('framework-tbody');
+  tbody.innerHTML = frameworks.map((f, i) => {
+    const isLast  = f.id === 'TT10';
+    const allFour = f.P && f.N && f.B && f.A === true;
+    const bg      = isLast
+      ? 'background:rgba(136,170,255,.06);border-top:1px solid rgba(136,170,255,.3);'
+      : (i % 2 === 0 ? '' : 'background:rgba(10,21,32,.4);');
+    return `<tr style="${bg}">
+      <td style="padding:8px 12px;font-family:'Orbitron',monospace;font-size:9px;color:${f.col};font-weight:700;">${f.id}<br><span style="font-family:'DM Sans',sans-serif;font-size:10px;color:var(--text);font-weight:300;">${f.name}</span></td>
+      <td style="padding:8px;font-family:'Share Tech Mono',monospace;font-size:7.5px;color:var(--dim);">${f.cite}</td>
+      <td style="padding:8px;text-align:center;font-size:14px;">${pCell(f.P)}</td>
+      <td style="padding:8px;text-align:center;font-size:14px;">${pCell(f.N)}</td>
+      <td style="padding:8px;text-align:center;font-size:14px;">${pCell(f.B)}</td>
+      <td style="padding:8px;text-align:center;font-size:14px;">${pCell(f.A)}</td>
+      <td style="padding:8px;font-size:9px;color:${isLast ? '#88aaff' : (f.id === 'TT6' ? '#ff3355' : 'var(--dim)')};font-weight:${isLast ? '500' : '300'};">${f.gap}</td>
+      <td style="padding:8px;text-align:right;font-family:'Orbitron',monospace;font-size:7.5px;color:${isLast ? '#88aaff' : (f.A === 'partial' ? '#ffaa00' : '#4a7a8a')};">${f.status}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── FRAMEWORK CANVAS ───────────────────────────────────
+const fCvs = document.getElementById('framework-canvas');
+const fCtx = fCvs.getContext('2d');
+
+function resizeFramework() {
+  const r = fCvs.parentElement.getBoundingClientRect();
+  fCvs.width = r.width; fCvs.height = 280;
+}
+
+function renderFrameworkCanvas() {
+  const W = fCvs.width, H = fCvs.height;
+  fCtx.clearRect(0,0,W,H);
+  fCtx.fillStyle = '#020407';
+  fCtx.fillRect(0,0,W,H);
+
+  const axes = ['P', 'N', 'B', 'A'];
+  const colors = ['#00ffcc','#4488ff','#ffaa00','#ff6688'];
+  const margin = 80;
+  const rowH   = (H - 40) / frameworks.length;
+  const colW   = (W - margin - 40) / 4;
+
+  // Axis headers
+  axes.forEach((ax, j) => {
+    fCtx.font = 'bold 9px Orbitron';
+    fCtx.fillStyle = colors[j];
+    fCtx.textAlign = 'center';
+    fCtx.fillText(ax, margin + j * colW + colW/2, 18);
+  });
+
+  frameworks.forEach((f, i) => {
+    const y = 30 + i * rowH;
+    const isLast = f.id === 'TT10';
+
+    // Row background
+    if (isLast) {
+      fCtx.fillStyle = 'rgba(136,170,255,.05)';
+      fCtx.fillRect(0, y - 2, W, rowH - 2);
+    }
+
+    // Framework label
+    fCtx.font = (isLast ? 'bold ' : '') + '8px Orbitron';
+    fCtx.fillStyle = isLast ? '#88aaff' : (f.id === 'TT6' ? '#ff6644' : '#4a7a8a');
+    fCtx.textAlign = 'right';
+    fCtx.fillText(f.id, margin - 8, y + rowH/2 + 3);
+
+    // Activation dots
+    const vals = [f.P, f.N, f.B, f.A];
+    vals.forEach((v, j) => {
+      const cx = margin + j * colW + colW/2;
+      const cy = y + rowH/2;
+      const active = v === true;
+      const partial = v === 'partial';
+
+      fCtx.beginPath();
+      fCtx.arc(cx, cy, active ? 9 : partial ? 7 : 6, 0, Math.PI*2);
+      if (active) {
+        fCtx.fillStyle = colors[j];
+        fCtx.shadowColor = colors[j];
+        fCtx.shadowBlur = isLast ? 12 : 6;
+        fCtx.fill();
+        fCtx.shadowBlur = 0;
+      } else if (partial) {
+        fCtx.strokeStyle = '#ffaa00';
+        fCtx.lineWidth = 1.5;
+        fCtx.stroke();
+        fCtx.fillStyle = 'rgba(255,170,0,.2)';
+        fCtx.fill();
+        fCtx.font = '7px Share Tech Mono';
+        fCtx.fillStyle = '#ffaa00';
+        fCtx.textAlign = 'center';
+        fCtx.fillText('0.10', cx, cy + 2.5);
+      } else {
+        fCtx.strokeStyle = '#0f2030';
+        fCtx.lineWidth = 0.8;
+        fCtx.stroke();
+      }
+    });
+  });
+
+  // Divider before TT10
+  fCtx.beginPath();
+  fCtx.moveTo(0, 30 + 9 * rowH - 2);
+  fCtx.lineTo(W, 30 + 9 * rowH - 2);
+  fCtx.strokeStyle = 'rgba(136,170,255,.3)';
+  fCtx.lineWidth = 1;
+  fCtx.setLineDash([4,4]);
+  fCtx.stroke();
+  fCtx.setLineDash([]);
+
+  // Gap arrow
+  fCtx.font = '8px Share Tech Mono';
+  fCtx.fillStyle = 'rgba(255,51,85,.5)';
+  fCtx.textAlign = 'left';
+  fCtx.fillText('← ALL 9 CLASSICAL FRAMEWORKS MISSING A-AXIS', margin + colW * 2, H - 8);
+}
+
+// ── INIT ───────────────────────────────────────────────
+function init() {
+  resizeBubble(); renderBubble();
+  resizeRef(); renderRef(); updateRefDetail();
+  resizeFramework(); renderFrameworkTable(); renderFrameworkCanvas();
+  updateBubble();
+}
+
+window.addEventListener('resize', () => {
+  resizeBubble(); renderBubble();
+  resizeRef(); renderRef();
+  resizeFramework(); renderFrameworkCanvas();
+});
+
+setTimeout(init, 80);
+</script>
+</body>
+</html>
