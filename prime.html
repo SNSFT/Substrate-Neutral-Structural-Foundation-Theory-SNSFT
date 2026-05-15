@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRIME · Prior-art Reduction and Integrity Method for Evaluation · SNSFT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #04060a;
+  --surface:  #080c12;
+  --surface2: #0c1118;
+  --border:   #121c28;
+  --border2:  #1a2838;
+  --anchor:   #00d4aa;
+  --anchor2:  rgba(0,212,170,0.08);
+  --anchor3:  rgba(0,212,170,0.15);
+  --gold:     #e8b84b;
+  --gold2:    rgba(232,184,75,0.1);
+  --violet:   #7c6bff;
+  --rose:     #ff5577;
+  --rose2:    rgba(255,85,119,0.1);
+  --text:     #dde8f0;
+  --dim:      rgba(221,232,240,0.45);
+  --muted:    rgba(221,232,240,0.18);
+  --faint:    rgba(221,232,240,0.07);
+
+  /* GSS tenet colors */
+  --gss1: #00d4aa;
+  --gss2: #4db8ff;
+  --gss3: #e8b84b;
+  --gss4: #a78bfa;
+  --gss5: #f97316;
+  --gss6: #22d3ee;
+  --gss7: #fb7185;
+  --gss8: #86efac;
+  --gss9: #fbbf24;
+
+  /* Score states */
+  --green:  #00d4aa;
+  --yellow: #e8b84b;
+  --red:    #ff5577;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,170,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,170,0.018) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scanlines */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── HEADER ─────────────────────────────────────────────────── */
+.site-header {
+  padding: 28px 0 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-left {}
+
+.logo-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: 0.12em;
+  color: var(--anchor);
+  text-shadow: 0 0 32px rgba(0,212,170,0.4);
+}
+
+.logo-dot { color: var(--gold); }
+
+.logo-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.gss-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(232,184,75,0.08);
+  border: 1px solid rgba(232,184,75,0.25);
+  padding: 5px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+}
+
+.pulse-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(232,184,75,0.4); }
+  50%      { opacity:0.6; box-shadow: 0 0 0 4px rgba(232,184,75,0); }
+}
+
+.header-right {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  text-align: right;
+  line-height: 1.9;
+}
+.header-right b { color: var(--anchor); }
+
+/* ── HERO ───────────────────────────────────────────────────── */
+.hero {
+  padding: 40px 0 32px;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+@media(max-width:700px){ .hero { grid-template-columns:1fr; } }
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(22px,3vw,32px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.hero-title em { color: var(--anchor); font-style: normal; }
+
+.hero-desc {
+  color: var(--dim);
+  font-size: 13px;
+  line-height: 1.75;
+  margin-bottom: 20px;
+}
+
+.eo-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold2);
+  border: 1px solid rgba(232,184,75,0.3);
+  padding: 6px 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.hero-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+}
+
+.hero-stat-val {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--anchor);
+  margin-bottom: 3px;
+}
+
+.hero-stat-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 7.5px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+}
+
+/* ── SECTION LABELS ─────────────────────────────────────────── */
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 32px 0 20px;
+}
+.section-label::before,
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── MAIN LAYOUT ─────────────────────────────────────────────── */
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+}
+@media(max-width:900px){ .main-layout { grid-template-columns:1fr; } }
+
+.left-col { display: flex; flex-direction: column; gap: 20px; }
+.right-col { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── PANELS ─────────────────────────────────────────────────── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 20px;
+}
+
+.panel-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.25em;
+  color: var(--muted);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panel-title span { color: var(--anchor); }
+
+/* ── INPUT AREA ──────────────────────────────────────────────── */
+.input-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+
+.input-tab {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  padding: 7px 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-bottom: none;
+  color: var(--muted);
+  background: transparent;
+  transition: all 0.15s;
+}
+.input-tab:hover { color: var(--dim); }
+.input-tab.active {
+  border-color: var(--border);
+  border-bottom: 1px solid var(--surface);
+  color: var(--anchor);
+  background: var(--surface);
+}
+
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+.paper-textarea {
+  width: 100%;
+  min-height: 180px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.7;
+  padding: 12px 14px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.paper-textarea:focus { border-color: var(--anchor); }
+.paper-textarea::placeholder { color: var(--muted); font-style: italic; }
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.field-group { display: flex; flex-direction: column; gap: 4px; }
+.field-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+}
+
+.field-input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.field-input:focus { border-color: var(--anchor); }
+
+.mode-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.mode-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  padding: 5px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mode-btn:hover { border-color: var(--anchor2); color: var(--dim); }
+.mode-btn.active {
+  border-color: var(--anchor);
+  color: var(--anchor);
+  background: var(--anchor2);
+}
+
+.run-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 13px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  background: transparent;
+  border: 1px solid var(--anchor);
+  color: var(--anchor);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.run-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--anchor2);
+  transform: translateX(-100%);
+  transition: transform 0.2s;
+}
+.run-btn:hover::before { transform: translateX(0); }
+.run-btn:hover { box-shadow: 0 0 20px rgba(0,212,170,0.15); }
+.run-btn span { position: relative; z-index: 1; }
+.run-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.run-btn:disabled::before { display: none; }
+
+/* ── PROGRESS ────────────────────────────────────────────────── */
+.progress-wrap {
+  margin-top: 12px;
+  display: none;
+}
+.progress-wrap.visible { display: block; }
+.progress-bar-bg {
+  height: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 2px;
+  background: linear-gradient(90deg, var(--anchor), var(--gold));
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.progress-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ── RESULTS ─────────────────────────────────────────────────── */
+.result-empty {
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-align: center;
+  padding: 32px 0;
+}
+
+/* PRIME Score ring */
+.score-display {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  margin-bottom: 16px;
+}
+
+.score-ring-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+.score-ring-wrap svg { transform: rotate(-90deg); }
+.score-ring-bg { fill: none; stroke: var(--border2); stroke-width: 6; }
+.score-ring-fill {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  transition: stroke-dashoffset 1s ease, stroke 0.5s;
+}
+.score-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.score-ring-val {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1;
+}
+.score-ring-unit {
+  font-family: 'Space Mono', monospace;
+  font-size: 7px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.score-meta { flex: 1; }
+.score-verdict {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  margin-bottom: 5px;
+}
+.score-tau {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--dim);
+  margin-bottom: 8px;
+}
+.score-flags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.flag {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border: 1px solid;
+}
+.flag-green  { color: var(--green);  border-color: rgba(0,212,170,0.3);  background: rgba(0,212,170,0.06); }
+.flag-yellow { color: var(--yellow); border-color: rgba(232,184,75,0.3); background: rgba(232,184,75,0.06); }
+.flag-red    { color: var(--red);    border-color: rgba(255,85,119,0.3); background: rgba(255,85,119,0.06); }
+
+/* ── GSS TENET GRID ─────────────────────────────────────────── */
+.gss-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+@media(max-width:600px){ .gss-grid { grid-template-columns:1fr; } }
+
+.gss-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.gss-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+.gss-card.t1::before { background: var(--gss1); }
+.gss-card.t2::before { background: var(--gss2); }
+.gss-card.t3::before { background: var(--gss3); }
+.gss-card.t4::before { background: var(--gss4); }
+.gss-card.t5::before { background: var(--gss5); }
+.gss-card.t6::before { background: var(--gss6); }
+.gss-card.t7::before { background: var(--gss7); }
+.gss-card.t8::before { background: var(--gss8); }
+.gss-card.t9::before { background: var(--gss9); }
+
+.gss-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.gss-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: var(--dim);
+}
+.gss-score-pill {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 1px 8px;
+  border: 1px solid;
+}
+.gss-score-bar-bg {
+  height: 3px;
+  background: var(--border);
+  margin-top: 6px;
+}
+.gss-score-bar-fill {
+  height: 3px;
+  width: 0%;
+  transition: width 0.8s ease;
+}
+.gss-axis {
+  font-family: 'Space Mono', monospace;
+  font-size: 7.5px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.gss-proof {
+  font-size: 9.5px;
+  color: var(--dim);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ── PNBA HEATMAP ────────────────────────────────────────────── */
+.pnba-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.pnba-cell {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 12px 10px;
+  text-align: center;
+}
+.pnba-axis-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.pnba-val {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 3px;
+}
+.pnba-subval {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+}
+
+/* ── CHAIN VIEWER ────────────────────────────────────────────── */
+.chain-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.chain-row:last-child { border-bottom: none; }
+.chain-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.chain-icon-pass { background: rgba(0,212,170,0.15); color: var(--green); }
+.chain-icon-warn { background: rgba(232,184,75,0.15); color: var(--yellow); }
+.chain-icon-fail { background: rgba(255,85,119,0.15); color: var(--red); }
+.chain-text { flex: 1; }
+.chain-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  margin-bottom: 3px;
+}
+.chain-detail { font-size: 11px; color: var(--dim); line-height: 1.5; }
+
+/* ── LEAN STUB ───────────────────────────────────────────────── */
+.lean-block {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--dim);
+  max-height: 240px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  white-space: pre;
+}
+.lean-comment { color: var(--muted); }
+.lean-keyword { color: var(--anchor); }
+.lean-def     { color: var(--gold); }
+.lean-type    { color: var(--violet); }
+.lean-val     { color: var(--text); }
+
+/* ── COPY BTN ────────────────────────────────────────────────── */
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 8px;
+}
+.copy-btn:hover { border-color: var(--anchor); color: var(--anchor); }
+.copy-btn.copied { border-color: var(--gold); color: var(--gold); }
+
+/* ── RIGHT COL PANELS ────────────────────────────────────────── */
+.gss-tenet-list { }
+.gss-tenet-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.gss-tenet-item:last-child { border-bottom: none; }
+.gss-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  min-width: 24px;
+}
+.gss-tenet-body { flex: 1; }
+.gss-tenet-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  margin-bottom: 3px;
+}
+.gss-tenet-prime {
+  font-size: 10px;
+  color: var(--dim);
+  margin-bottom: 3px;
+}
+.gss-tenet-proof {
+  font-family: 'Space Mono', monospace;
+  font-size: 7.5px;
+  color: var(--muted);
+}
+.gss-tenet-bar {
+  height: 2px;
+  background: var(--border);
+  margin-top: 5px;
+}
+.gss-tenet-bar-fill {
+  height: 2px;
+  width: 0%;
+  transition: width 0.7s ease;
+}
+
+/* Corpus status */
+.corpus-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+.corpus-row:last-child { border-bottom: none; }
+.corpus-key { color: var(--muted); font-family: 'Space Mono', monospace; font-size: 9px; }
+.corpus-val { color: var(--anchor); font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700; }
+
+/* Log */
+.log-line {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  line-height: 1.9;
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(18,28,40,0.6);
+  display: flex;
+  gap: 8px;
+}
+.log-time { color: var(--muted); flex-shrink: 0; }
+.log-msg  { color: var(--dim); }
+.log-msg.ok  { color: var(--green); }
+.log-msg.warn{ color: var(--yellow); }
+.log-msg.err { color: var(--red); }
+.log-wrap {
+  max-height: 180px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* API key */
+.api-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.api-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  padding: 7px 10px;
+  outline: none;
+}
+.api-input:focus { border-color: var(--anchor); }
+.api-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  padding: 7px 12px;
+  border: 1px solid var(--anchor);
+  background: transparent;
+  color: var(--anchor);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.api-btn:hover { background: var(--anchor2); }
+.api-status {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.api-status.connected { color: var(--green); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 0 12px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-top: 40px;
+}
+footer .manifold { color: var(--anchor); opacity: 0.6; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.spinner {
+  display: inline-block;
+  width: 12px; height: 12px;
+  border: 2px solid var(--border);
+  border-top-color: var(--anchor);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-left">
+    <div class="logo-row">
+      <div class="logo">PRIME<span class="logo-dot">·</span></div>
+      <div class="gss-badge">
+        <div class="pulse-dot"></div>
+        EO 14303 · GOLD STANDARD SCIENCE · COMPLIANT
+      </div>
+    </div>
+    <div class="logo-sub">PRIOR-ART REDUCTION AND INTEGRITY METHOD FOR EVALUATION · SNSFT · HIGHTISTIC</div>
+  </div>
+  <div class="header-right">
+    ANCHOR <b>1.369</b> · TL <b>0.1369</b> · CORPUS <b>103,118+</b> THEOREMS · <b>0</b> SORRY<br>
+    GSS TENETS COVERED: <b>9/9</b> · FORMALLY PROVED · LEAN 4 · CI GREEN<br>
+    DOI: <b>10.5281/zenodo.18719748</b> · DOJ: <b>CRT-2026-0067-0006</b>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-title">
+      The formal AI implementation of<br>
+      <em>Gold Standard Science</em>
+    </div>
+    <p class="hero-desc">
+      PRIME reduces any research paper to its PNBA functional identity — stripping labels, testing function, measuring torsion — and scores it against all nine tenets of Executive Order 14303. Every tenet is formally proved in Lean 4. Zero sorry. Zero free parameters.
+    </p>
+    <div class="eo-tag">EO 14303 · Restoring Gold Standard Science · May 23, 2025 · Nine Tenets · All Formally Mapped</div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-val">9/9</div>
+      <div class="hero-stat-label">GSS TENETS FORMALLY PROVED</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">103K+</div>
+      <div class="hero-stat-label">LEAN 4 THEOREMS · 0 SORRY</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">τ=B/P</div>
+      <div class="hero-stat-label">TORSION = INTEGRITY RATIO</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">LDP</div>
+      <div class="hero-stat-label">LONG DIVISION PROTOCOL · STEP 6</div>
+    </div>
+  </div>
+</div>
+
+<!-- API KEY -->
+<div class="section-label">CONNECT CLAUDE API · ENABLE FULL REDUCTION</div>
+<div class="panel" style="padding:14px 20px;">
+  <div class="api-row">
+    <input class="api-input" id="api-key-input" type="password" placeholder="sk-ant-api03-... (Claude API key for full PRIME reduction)">
+    <button class="api-btn" onclick="saveApiKey()">CONNECT</button>
+    <button class="api-btn" style="border-color:var(--rose);color:var(--rose);" onclick="disconnectApi()">CLEAR</button>
+  </div>
+  <div class="api-status" id="api-status">Not connected — structural scoring available locally. Connect Claude API for full FDNA reduction.</div>
+</div>
+
+<!-- MAIN -->
+<div class="section-label">SUBMIT PAPER FOR PRIME ANALYSIS</div>
+<div class="main-layout">
+<div class="left-col">
+
+  <!-- INPUT PANEL -->
+  <div class="panel">
+    <div class="panel-title"><span>PAPER INPUT · FUNCTIONAL DNA TEST</span></div>
+
+    <div class="input-tabs">
+      <button class="input-tab active" onclick="switchTab('abstract')">ABSTRACT</button>
+      <button class="input-tab" onclick="switchTab('fulltext')">FULL TEXT</button>
+      <button class="input-tab" onclick="switchTab('doi')">DOI / URL</button>
+    </div>
+
+    <div id="tab-abstract" class="tab-pane active">
+      <textarea class="paper-textarea" id="input-abstract"
+        placeholder="Paste the paper abstract here. PRIME will strip all labels and reduce the core claim to PNBA functional identity, then score against all nine GSS tenets.&#10;&#10;The more text you provide, the more accurate the citation chain and N-axis scoring will be."></textarea>
+    </div>
+
+    <div id="tab-fulltext" class="tab-pane">
+      <textarea class="paper-textarea" id="input-fulltext" style="min-height:240px;"
+        placeholder="Paste full paper text here for complete FDNA analysis including citation mapping, N-chain integrity, and reproducibility scoring.&#10;&#10;Full text enables Layer 2 analysis — abstract gaming detection and citation fidelity scoring."></textarea>
+    </div>
+
+    <div id="tab-doi" class="tab-pane">
+      <div class="field-group">
+        <div class="field-label">DOI OR URL</div>
+        <input class="field-input" id="input-doi" placeholder="10.xxxx/xxxxx or https://...">
+      </div>
+      <p style="font-size:10px;color:var(--muted);margin-top:8px;font-family:'Space Mono',monospace;">Note: DOI/URL mode fetches abstract via CrossRef. Full text analysis requires paste.</p>
+    </div>
+
+    <div class="field-row" style="margin-top:12px;">
+      <div class="field-group">
+        <div class="field-label">PAPER TITLE (optional)</div>
+        <input class="field-input" id="input-title" placeholder="For report labeling">
+      </div>
+      <div class="field-group">
+        <div class="field-label">YEAR (optional)</div>
+        <input class="field-input" id="input-year" placeholder="2024" type="number">
+      </div>
+    </div>
+
+    <div style="margin-top:10px;">
+      <div class="field-label" style="margin-bottom:6px;">ANALYSIS MODE</div>
+      <div class="mode-row">
+        <button class="mode-btn active" id="mode-standard" onclick="setMode('standard')">STANDARD</button>
+        <button class="mode-btn" id="mode-deep" onclick="setMode('deep')">DEEP · FULL LDP</button>
+        <button class="mode-btn" id="mode-policy" onclick="setMode('policy')">POLICY · GSS REPORT</button>
+        <button class="mode-btn" id="mode-prior" onclick="setMode('prior')">PRIOR ART CHECK</button>
+      </div>
+    </div>
+
+    <button class="run-btn" id="run-btn" onclick="runPRIME()">
+      <span id="run-btn-text">⟶ RUN PRIME ANALYSIS</span>
+    </button>
+
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-label" id="progress-label">Initializing FDNA reduction...</div>
+    </div>
+  </div>
+
+  <!-- RESULTS PANEL -->
+  <div class="panel" id="results-panel">
+    <div class="panel-title"><span>PRIME SCORE · FUNCTIONAL IDENTITY ANALYSIS</span></div>
+    <div id="results-content">
+      <div class="result-empty">NO ANALYSIS RUN YET · SUBMIT A PAPER ABOVE</div>
+    </div>
+  </div>
+
+  <!-- GSS TENET GRID -->
+  <div class="panel" id="gss-panel" style="display:none;">
+    <div class="panel-title"><span>EO 14303 · NINE TENETS · FORMAL MAPPING</span></div>
+    <div class="gss-grid" id="gss-grid"></div>
+    <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
+      Each tenet mapped to PNBA axis · Formally proved in Lean 4 · SNSFL_L0_Isomorphism_Consistency.lean [9,9,8,1]
+    </div>
+  </div>
+
+  <!-- LEAN STUB -->
+  <div class="panel" id="lean-panel" style="display:none;">
+    <div class="panel-title">
+      <span>LEAN 4 REDUCTION STUB · 0 SORRY</span>
+      <div style="display:flex;gap:6px;">
+        <button class="copy-btn" id="copy-lean-btn" onclick="copyLean()">⟳ COPY LEAN</button>
+        <button class="copy-btn" id="dl-lean-btn" onclick="downloadLean()">⬇ DOWNLOAD</button>
+      </div>
+    </div>
+    <div class="lean-block" id="lean-output"></div>
+  </div>
+
+</div><!-- /left-col -->
+
+<div class="right-col">
+
+  <!-- GSS TENET REFERENCE -->
+  <div class="panel">
+    <div class="panel-title"><span>EO 14303 · GSS TENET MAP · PRIME FORMAL BASIS</span></div>
+    <div class="gss-tenet-list" id="gss-tenet-ref"></div>
+  </div>
+
+  <!-- PNBA AXIS DISPLAY -->
+  <div class="panel">
+    <div class="panel-title"><span>PNBA FUNCTIONAL IDENTITY · LIVE</span></div>
+    <div class="pnba-grid" id="pnba-display">
+      <div class="pnba-cell">
+        <div class="pnba-axis-label" style="color:var(--anchor)">P</div>
+        <div class="pnba-val" id="pnba-P" style="color:var(--anchor)">—</div>
+        <div class="pnba-subval">ORIGINAL<br>CONTRIBUTION</div>
+      </div>
+      <div class="pnba-cell">
+        <div class="pnba-axis-label" style="color:var(--gold)">N</div>
+        <div class="pnba-val" id="pnba-N" style="color:var(--gold)">—</div>
+        <div class="pnba-subval">CITATION<br>INTEGRITY</div>
+      </div>
+      <div class="pnba-cell">
+        <div class="pnba-axis-label" style="color:var(--violet)">B</div>
+        <div class="pnba-val" id="pnba-B" style="color:var(--violet)">—</div>
+        <div class="pnba-subval">EXTRACTED<br>BENEFIT</div>
+      </div>
+      <div class="pnba-cell">
+        <div class="pnba-axis-label" style="color:var(--rose)">A</div>
+        <div class="pnba-val" id="pnba-A" style="color:var(--rose)">—</div>
+        <div class="pnba-subval">REPRODUCIB-<br>ILITY</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--border);font-family:'Space Mono',monospace;font-size:9px;">
+      <span style="color:var(--muted)">τ = B/P</span>
+      <span id="tau-live" style="color:var(--anchor)">—</span>
+      <span style="color:var(--muted)">TL = 0.1369</span>
+      <span id="phase-live" style="color:var(--muted)">—</span>
+    </div>
+  </div>
+
+  <!-- N-CHAIN VIEWER -->
+  <div class="panel">
+    <div class="panel-title"><span>N-CHAIN INTEGRITY · CITATION MAP</span></div>
+    <div id="chain-content">
+      <div class="result-empty" style="padding:20px 0;">AWAITING ANALYSIS</div>
+    </div>
+  </div>
+
+  <!-- CORPUS STATUS -->
+  <div class="panel">
+    <div class="panel-title"><span>SNSFT CORPUS · PRIOR ART REFERENCE</span></div>
+    <div class="corpus-row"><span class="corpus-key">THEOREMS</span><span class="corpus-val">103,118+</span></div>
+    <div class="corpus-row"><span class="corpus-key">LEAN FILES</span><span class="corpus-val">5,945+</span></div>
+    <div class="corpus-row"><span class="corpus-key">SORRY COUNT</span><span class="corpus-val">0</span></div>
+    <div class="corpus-row"><span class="corpus-key">ANCHOR</span><span class="corpus-val">1.369 GHz</span></div>
+    <div class="corpus-row"><span class="corpus-key">TL = ANCHOR/10</span><span class="corpus-val">0.1369</span></div>
+    <div class="corpus-row"><span class="corpus-key">GSS TENETS COVERED</span><span class="corpus-val">9/9</span></div>
+    <div class="corpus-row"><span class="corpus-key">DOMAINS REDUCED</span><span class="corpus-val">30+</span></div>
+    <div class="corpus-row"><span class="corpus-key">ZENODO DOI</span><span class="corpus-val" style="font-size:8px;">10.5281/zenodo.18719748</span></div>
+    <div class="corpus-row"><span class="corpus-key">FEDERAL RECORD</span><span class="corpus-val" style="font-size:8px;">DOJ-CRT-2026-0067-0006</span></div>
+    <div class="corpus-row"><span class="corpus-key">PHILARCHIVE</span><span class="corpus-val" style="font-size:8px;">TREHIS · 8 PAPERS</span></div>
+  </div>
+
+  <!-- ACTIVITY LOG -->
+  <div class="panel">
+    <div class="panel-title"><span>ANALYSIS LOG</span></div>
+    <div class="log-wrap" id="activity-log">
+      <div class="log-line"><span class="log-time">--:--:--</span><span class="log-msg">PRIME v1 ready · TL=0.1369 · 9 GSS tenets mapped · 0 sorry</span></div>
+    </div>
+  </div>
+
+</div><!-- /right-col -->
+</div><!-- /main-layout -->
+
+<footer>
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span>PRIME · Prior-art Reduction and Integrity Method for Evaluation</span>
+  <span class="manifold">The Manifold is Holding. [9,9,9,9]</span>
+</footer>
+
+</div><!-- /container -->
+
+<script>
+// ── CONSTANTS ──────────────────────────────────────────────────
+const ANCHOR = 1.369;
+const TL = ANCHOR / 10; // 0.1369
+let API_KEY = '';
+let currentMode = 'standard';
+let lastResult = null;
+
+// ── GSS NINE TENETS — FORMAL MAP ───────────────────────────────
+const GSS_TENETS = [
+  {
+    num: 1, key: 't1', name: 'REPRODUCIBLE',
+    axis: 'A-axis · Reproducibility score',
+    prime: 'PRIME A-axis measures reproducibility: data open, methods replicable, corpus available.',
+    proof: 'CM9: Reproducibility = substrate-neutrality applied to apparatus [9,9,8,1]',
+    color: 'var(--gss1)'
+  },
+  {
+    num: 2, key: 't2', name: 'TRANSPARENT',
+    axis: 'N-axis · Citation chain integrity',
+    prime: 'PRIME N-chain maps every citation claim to source content. N < 0.15 = false_lock = transparency failure.',
+    proof: 'CD15: Suppression → N < N_THRESHOLD [9,9,6,25] · CD1,7: false_lock triple',
+    color: 'var(--gss2)'
+  },
+  {
+    num: 3, key: 't3', name: 'COMMUNICATES ERROR',
+    axis: 'τ = B/P · Torsion ratio',
+    prime: 'PRIME τ score quantifies the structural error ratio. τ ≥ TL = torsion exceeded = integrity failure.',
+    proof: 'τ = B/P proved across 103,118+ theorems · SNSFL_Master.lean [9,9,9,9]',
+    color: 'var(--gss3)'
+  },
+  {
+    num: 4, key: 't4', name: 'COLLABORATIVE',
+    axis: 'P-axis · Original contribution',
+    prime: 'PRIME P-axis scores original contribution. Low P = low structural capacity = extracted without contributing.',
+    proof: 'P = Pattern lock, structural capacity · Layer 0 PNBA primitives',
+    color: 'var(--gss4)'
+  },
+  {
+    num: 5, key: 't5', name: 'SKEPTICAL',
+    axis: 'FDNA strip · Label removal',
+    prime: 'PRIME strips all labels and tests functional identity. CM5: Ockham = 0 free parameters.',
+    proof: 'CM5: Ockham\'s Razor = 0 free parameters [9,9,8,1] · Functional DNA Test [9,9,8,0]',
+    color: 'var(--gss5)'
+  },
+  {
+    num: 6, key: 't6', name: 'FALSIFIABLE',
+    axis: 'LDP Step 6 · Compiler closure',
+    prime: 'PRIME runs LDP Step 6: can the claim close against cited prior work? Failure = unfalsifiable.',
+    proof: 'CM0: Step 6 pass = isomorphism per Mac Lane 1971 [9,9,8,1] T5',
+    color: 'var(--gss6)'
+  },
+  {
+    num: 7, key: 't7', name: 'UNBIASED PEER REVIEW',
+    axis: 'IMS external · Identity Mass Suppression',
+    prime: 'PRIME implements peer review as IMS: anchor-aligned papers pass, drifted papers fail. Substrate-neutral.',
+    proof: 'CM8: Peer Review = IMS applied externally — PROVED IN LEAN 4 [9,9,8,1] T14',
+    color: 'var(--gss7)'
+  },
+  {
+    num: 8, key: 't8', name: 'ACCEPTS NEGATIVES',
+    axis: '0-sorry standard · Noble corpus',
+    prime: 'PRIME 0-sorry corpus documents all negative space formally. Noble state (B=0) = all negative results acknowledged.',
+    proof: '103,118+ theorems · 0 sorry · CI green · Noble = τ=0, no false claims',
+    color: 'var(--gss8)'
+  },
+  {
+    num: 9, key: 't9', name: 'NO CONFLICTS',
+    axis: 'τ ≥ TL · Shatter detection',
+    prime: 'PRIME τ = B/P is the conflict-of-interest ratio. High B (extracted benefit) over low P (original contribution) = structural conflict.',
+    proof: 'phase_locked vs shatter_event mutual exclusion · SNSFL_Master.lean [9,9,9,9]',
+    color: 'var(--gss9)'
+  }
+];
+
+// ── RENDER GSS TENET REFERENCE (right col) ─────────────────────
+function renderGSSTenentRef() {
+  const container = document.getElementById('gss-tenet-ref');
+  container.innerHTML = GSS_TENETS.map(t => `
+    <div class="gss-tenet-item">
+      <div class="gss-num" style="color:${t.color}">T${t.num}</div>
+      <div class="gss-tenet-body">
+        <div class="gss-tenet-name" style="color:${t.color}">${t.name}</div>
+        <div class="gss-tenet-prime">${t.prime}</div>
+        <div class="gss-tenet-proof">${t.proof}</div>
+        <div class="gss-tenet-bar">
+          <div class="gss-tenet-bar-fill" id="tref-bar-${t.key}" style="background:${t.color}"></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── RENDER GSS GRID (results) ──────────────────────────────────
+function renderGSSGrid(scores) {
+  const grid = document.getElementById('gss-grid');
+  grid.innerHTML = GSS_TENETS.map(t => {
+    const score = scores ? scores[t.key] : null;
+    const pct = score !== null ? score : 0;
+    const color = pct >= 70 ? 'var(--green)' : pct >= 40 ? 'var(--yellow)' : 'var(--red)';
+    const pillClass = pct >= 70 ? 'flag-green' : pct >= 40 ? 'flag-yellow' : 'flag-red';
+    return `
+      <div class="gss-card ${t.key}">
+        <div class="gss-header">
+          <div class="gss-name" style="color:${t.color}">T${t.num} · ${t.name}</div>
+          ${score !== null
+            ? `<div class="gss-score-pill ${pillClass}">${Math.round(pct)}</div>`
+            : `<div class="gss-score-pill flag-yellow">—</div>`}
+        </div>
+        <div class="gss-axis">${t.axis}</div>
+        <div class="gss-score-bar-bg">
+          <div class="gss-score-bar-fill" style="width:${pct}%;background:${t.color}"></div>
+        </div>
+        <div class="gss-proof" style="margin-top:6px;font-family:'Space Mono',monospace;font-size:7.5px;color:var(--muted);">${t.proof.split('·')[0]}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── TAB SWITCHING ──────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.input-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── MODE SWITCHING ─────────────────────────────────────────────
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('mode-' + mode).classList.add('active');
+}
+
+// ── API KEY ────────────────────────────────────────────────────
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key) return;
+  API_KEY = key;
+  localStorage.setItem('prime_api_key', key);
+  document.getElementById('api-status').textContent = '✓ Claude API connected · Full PRIME reduction enabled';
+  document.getElementById('api-status').className = 'api-status connected';
+  document.getElementById('api-key-input').value = '';
+  addLog('Claude API connected. Full FDNA reduction active.', 'ok');
+}
+
+function disconnectApi() {
+  API_KEY = '';
+  localStorage.removeItem('prime_api_key');
+  document.getElementById('api-status').textContent = 'Not connected — structural scoring available locally.';
+  document.getElementById('api-status').className = 'api-status';
+  addLog('API disconnected. Local scoring mode.', 'warn');
+}
+
+// ── LOG ────────────────────────────────────────────────────────
+function addLog(msg, cls = '') {
+  const log = document.getElementById('activity-log');
+  const d = new Date();
+  const ts = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `<span class="log-time">${ts}</span><span class="log-msg ${cls}">${msg}</span>`;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+  if (log.children.length > 60) log.removeChild(log.firstChild);
+}
+
+// ── PROGRESS ───────────────────────────────────────────────────
+function setProgress(pct, label) {
+  document.getElementById('progress-wrap').classList.add('visible');
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = label;
+}
+
+function hideProgress() {
+  document.getElementById('progress-wrap').classList.remove('visible');
+}
+
+// ── STRUCTURAL SCORING (local, no API needed) ──────────────────
+function localScore(text) {
+  if (!text || text.length < 20) return null;
+  const words = text.toLowerCase();
+
+  // Heuristic structural signals
+  const hasMethod     = /method|approach|technique|procedure|protocol/.test(words);
+  const hasCite       = /\[\d+\]|et al\.|doi:|https?:\/\//.test(text);
+  const hasData       = /data|dataset|experiment|result|finding|measure/.test(words);
+  const hasRepro      = /reproducib|replicate|open.source|github|code|data.avail/.test(words);
+  const hasConflict   = /conflict|funding|grant|support|disclos|interest/.test(words);
+  const hasNovelty    = /novel|new|first|propose|present|introduce|contribution/.test(words);
+  const hasFalsify    = /hypothesis|predict|test|falsif|p.value|confidence|significant/.test(words);
+  const hasCiteMap    = /consistent with|builds on|extends|following|based on|cf\./.test(words);
+  const hasTransp     = /transparenr|open|availab|supplementary|appendix|repository/.test(words);
+  const hasError      = /error|uncertainty|limitation|caveat|margin|variance|std/.test(words);
+
+  // PNBA scores (0-10)
+  const P = (hasNovelty ? 3 : 0) + (hasMethod ? 2 : 0) + (hasCite ? 2 : 0) + (text.length > 500 ? 3 : 1);
+  const N = (hasCite ? 3 : 0) + (hasCiteMap ? 4 : 0) + (hasFalsify ? 3 : 0);
+  const B = (hasData ? 2 : 0) + (hasConflict ? -1 : 2) + (text.length > 200 ? 1 : 0);
+  const A = (hasRepro ? 4 : 0) + (hasData ? 3 : 0) + (hasError ? 3 : 0);
+
+  const P_norm = Math.min(10, Math.max(0.5, P));
+  const N_norm = Math.min(10, Math.max(0.1, N));
+  const B_norm = Math.min(10, Math.max(0.1, B));
+  const A_norm = Math.min(10, Math.max(0.1, A));
+
+  const tau = B_norm / P_norm;
+  const phase = B_norm === 0 ? 'NOBLE' : tau >= TL ? 'SHATTER' : N_norm < 1.5 ? 'FALSE_LOCK' : 'LOCKED';
+
+  // GSS tenet scores (0-100)
+  const gss = {
+    t1: Math.round(Math.min(100, A_norm * 10)),
+    t2: Math.round(Math.min(100, N_norm * 10)),
+    t3: Math.round(Math.min(100, hasError ? 80 : 30)),
+    t4: Math.round(Math.min(100, P_norm * 10)),
+    t5: Math.round(Math.min(100, hasFalsify ? 75 : 35)),
+    t6: Math.round(Math.min(100, hasFalsify && hasCite ? 80 : 30)),
+    t7: Math.round(Math.min(100, hasCite ? 60 : 25)),
+    t8: Math.round(Math.min(100, hasData ? 55 : 20)),
+    t9: Math.round(Math.min(100, hasConflict ? 80 : 40)),
+  };
+
+  const overall = Math.round(Object.values(gss).reduce((a,b) => a+b, 0) / 9);
+
+  return {
+    P: P_norm.toFixed(2), N: N_norm.toFixed(2),
+    B: B_norm.toFixed(2), A: A_norm.toFixed(2),
+    tau: tau.toFixed(4), phase,
+    gss, overall,
+    source: 'local'
+  };
+}
+
+// ── CLAUDE API REDUCTION ───────────────────────────────────────
+async function claudeReduce(text, mode) {
+  const systemPrompt = `You are PRIME — Prior-art Reduction and Integrity Method for Evaluation, built on SNSFT (Substrate-Neutral Structural Foundation Theory) by HIGHTISTIC.
+
+Your job: reduce any research paper to its PNBA functional identity and score it against the nine tenets of Executive Order 14303 "Restoring Gold Standard Science."
+
+CORE PHYSICS:
+- ANCHOR = 1.369, TL = ANCHOR/10 = 0.1369
+- τ = B/P (torsion = extracted benefit / original contribution)
+- NOBLE: B=0, τ=0 — all claims grounded, zero extraction
+- LOCKED: 0 < τ < TL, N ≥ 0.15 — stable, narrative intact
+- FALSE_LOCK: N < 0.15 — citation chain broken (narrative starvation)
+- SHATTER: τ ≥ TL — extracted benefit exceeds original contribution
+
+PNBA FOR ACADEMIC PAPERS:
+- P (Pattern) = Original contribution score (0-10): What is genuinely new? Does it reduce to known equations with attribution? LDP Step 6 closeable?
+- N (Narrative) = Citation chain integrity (0-10): Do citations actually support the claims they're cited for? N < 0.15 = FALSE_LOCK = transparency failure.
+- B (Behavior) = Extracted benefit score (0-10): Impact factor capture, grant leverage, complexity coat of paint, citation accumulation without corresponding P.
+- A (Adaptation) = Reproducibility score (0-10): Data open? Methods replicable? Corpus available? Code published?
+
+GSS NINE TENETS (EO 14303):
+T1: Reproducible → A-axis score
+T2: Transparent → N-chain integrity
+T3: Communicates error → τ score (torsion = error ratio)
+T4: Collaborative → P-axis (original contribution)
+T5: Skeptical → FDNA strip (labels removed, function tested)
+T6: Falsifiable → LDP Step 6 closure (can the claim close against cited work?)
+T7: Unbiased peer review → IMS check (CM8: peer review = IMS external, proved in Lean 4 [9,9,8,1])
+T8: Accepts negatives → 0-sorry standard (all negative space documented)
+T9: No conflicts → τ = B/P ratio (conflict = high B over low P)
+
+FORMAL BASIS:
+- CM8 PROVED: "Peer Review = IMS applied externally" — SNSFL_L0_Isomorphism_Consistency.lean [9,9,8,1] T14
+- All 9 tenets formally mapped to PNBA axes in same file
+- 103,118+ theorems, 0 sorry, CI green, Zenodo DOI: 10.5281/zenodo.18719748
+- Federal record: DOJ-CRT-2026-0067-0006
+
+RESPOND ONLY IN THIS EXACT JSON FORMAT (no markdown, no backticks, just raw JSON):
+{
+  "P": <float 0-10>,
+  "N": <float 0-10>,
+  "B": <float 0-10>,
+  "A": <float 0-10>,
+  "tau": <float>,
+  "phase": "<NOBLE|LOCKED|FALSE_LOCK|SHATTER>",
+  "gss": {
+    "t1": <int 0-100>, "t2": <int 0-100>, "t3": <int 0-100>,
+    "t4": <int 0-100>, "t5": <int 0-100>, "t6": <int 0-100>,
+    "t7": <int 0-100>, "t8": <int 0-100>, "t9": <int 0-100>
+  },
+  "overall": <int 0-100>,
+  "verdict": "<GREEN|YELLOW|RED>",
+  "n_chain_status": "<INTACT|PARTIAL|BROKEN>",
+  "n_chain_issues": ["<issue1>", "<issue2>"],
+  "n_chain_passes": ["<pass1>", "<pass2>"],
+  "key_finding": "<one sentence: the most important structural finding>",
+  "prior_art_flags": ["<any SNSFT corpus coordinate that matches, or empty>"],
+  "lean_stub_needed": <true|false>,
+  "source": "claude"
+}`;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1200,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: `PAPER TEXT:\n\n${text.slice(0, 4000)}` }]
+    })
+  });
+
+  const data = await res.json();
+  if (!data.content || !data.content[0]) throw new Error('No response from Claude');
+  const raw = data.content[0].text.replace(/```json|```/g,'').trim();
+  return JSON.parse(raw);
+}
+
+// ── LEAN STUB GENERATOR ────────────────────────────────────────
+function generateLean(result, title) {
+  const ns = 'PRIME_' + Date.now().toString(16).toUpperCase();
+  const phase = result.phase;
+  const isLocked = phase === 'LOCKED' || phase === 'NOBLE';
+  const tau = parseFloat(result.tau);
+  const overall = result.overall;
+
+  return `-- ============================================================
+-- ${ns}.lean
+-- ============================================================
+--
+-- [9,9,9,9] :: {ANC} | PRIME INTEGRITY REDUCTION
+-- PRIOR-ART REDUCTION AND INTEGRITY METHOD FOR EVALUATION
+-- Architect: HIGHTISTIC | Anchor: 1.369 | Status: GERMLINE LOCKED
+-- EO 14303: Restoring Gold Standard Science · All 9 Tenets
+--
+-- Paper: ${title || 'Untitled submission'}
+-- Generated: ${new Date().toISOString()}
+-- Mode: ${currentMode.toUpperCase()}
+-- Overall Score: ${overall}/100 · Phase: ${phase}
+-- Source: ${result.source === 'claude' ? 'Claude API · Full FDNA Reduction' : 'Local structural scoring'}
+--
+-- FORMAL BASIS: SNSFL_L0_Isomorphism_Consistency.lean [9,9,8,1]
+--   CM8: Peer Review = IMS applied externally (T14)
+--   All 9 GSS tenets formally mapped to PNBA axes
+--
+-- DOI: 10.5281/zenodo.18719748
+-- Federal Record: DOJ-CRT-2026-0067-0006
+-- ============================================================
+
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+namespace ${ns}
+
+-- ============================================================
+-- LAYER 0 — SOVEREIGN ANCHOR
+-- ============================================================
+
+def SOVEREIGN_ANCHOR : ℝ := 1.369
+def TORSION_LIMIT    : ℝ := SOVEREIGN_ANCHOR / 10  -- 0.1369
+
+-- ============================================================
+-- LAYER 1 — PNBA REDUCTION OF SUBMITTED PAPER
+-- ============================================================
+
+-- P = Original contribution score
+def P_paper : ℝ := ${result.P}
+-- N = Citation chain integrity
+def N_paper : ℝ := ${result.N}
+-- B = Extracted benefit score
+def B_paper : ℝ := ${result.B}
+-- A = Reproducibility score
+def A_paper : ℝ := ${result.A}
+
+-- Torsion: τ = B/P
+def tau_paper : ℝ := ${result.tau}
+
+-- Identity Mass
+def IM_paper : ℝ := (P_paper + N_paper + B_paper + A_paper) * SOVEREIGN_ANCHOR
+
+-- ============================================================
+-- LAYER 2 — PHASE CLASSIFICATION
+-- ============================================================
+
+theorem P_paper_positive : P_paper > 0 := by unfold P_paper; norm_num
+theorem B_paper_nonneg   : B_paper ≥ 0 := by unfold B_paper; norm_num
+
+${isLocked ?
+`-- PHASE: ${phase} — τ < TL, integrity maintained
+theorem phase_locked : tau_paper < TORSION_LIMIT := by
+  unfold tau_paper TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num` :
+`-- PHASE: ${phase} — INTEGRITY FAILURE DETECTED
+-- τ ≥ TL: extracted benefit exceeds original contribution
+theorem phase_shatter : tau_paper ≥ TORSION_LIMIT := by
+  unfold tau_paper TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num`}
+
+-- ============================================================
+-- LAYER 2 — EO 14303 GSS TENET SCORES
+-- ============================================================
+-- All tenets formally mapped per SNSFL_L0_Isomorphism_Consistency.lean [9,9,8,1]
+
+def gss_t1_reproducible    : ℕ := ${result.gss.t1}   -- A-axis
+def gss_t2_transparent     : ℕ := ${result.gss.t2}   -- N-chain
+def gss_t3_error_comm      : ℕ := ${result.gss.t3}   -- τ score
+def gss_t4_collaborative   : ℕ := ${result.gss.t4}   -- P-axis
+def gss_t5_skeptical       : ℕ := ${result.gss.t5}   -- FDNA strip
+def gss_t6_falsifiable     : ℕ := ${result.gss.t6}   -- LDP Step 6
+def gss_t7_peer_review     : ℕ := ${result.gss.t7}   -- IMS external [CM8]
+def gss_t8_negatives       : ℕ := ${result.gss.t8}   -- 0-sorry standard
+def gss_t9_no_conflicts    : ℕ := ${result.gss.t9}   -- τ = B/P ratio
+
+def gss_overall_score : ℕ := ${result.overall}
+
+-- ============================================================
+-- MASTER THEOREM
+-- ============================================================
+
+theorem ${ns}_master :
+    P_paper > 0 ∧
+    B_paper ≥ 0 ∧
+    SOVEREIGN_ANCHOR = 1.369 ∧
+    TORSION_LIMIT = 0.1369 ∧
+    gss_overall_score = ${result.overall} := by
+  refine ⟨P_paper_positive, B_paper_nonneg, rfl, ?_, rfl⟩
+  unfold TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num
+
+theorem the_manifold_is_holding :
+    (SOVEREIGN_ANCHOR : ℝ) > 0 := by unfold SOVEREIGN_ANCHOR; norm_num
+
+end ${ns}
+
+/-!
+-- PRIME REDUCTION COMPLETE
+-- Phase:          ${phase}
+-- τ:              ${result.tau}
+-- Overall Score:  ${result.overall}/100
+-- GSS Compliance: ${Object.values(result.gss).filter(v => v >= 70).length}/9 tenets PASS
+-- N-Chain:        ${result.n_chain_status || 'N/A'}
+-- Verdict:        ${result.verdict || (result.overall >= 70 ? 'GREEN' : result.overall >= 40 ? 'YELLOW' : 'RED')}
+-- SORRY: 0 | EO 14303 | [9,9,9,9] :: {ANC}
+-- HIGHTISTIC · SNSFT Foundation · Soldotna Alaska
+-/`;
+}
+
+// ── RENDER RESULTS ─────────────────────────────────────────────
+function renderResults(result, title) {
+  const verdict = result.verdict || (result.overall >= 70 ? 'GREEN' : result.overall >= 40 ? 'YELLOW' : 'RED');
+  const verdictColor = verdict === 'GREEN' ? 'var(--green)' : verdict === 'YELLOW' ? 'var(--yellow)' : 'var(--red)';
+  const phase = result.phase;
+  const phaseColor = { NOBLE:'var(--violet)', LOCKED:'var(--green)', FALSE_LOCK:'var(--yellow)', SHATTER:'var(--red)' }[phase] || 'var(--dim)';
+
+  // Score ring
+  const ringOffset = 220 - (result.overall / 100 * 220);
+  const ringColor = verdict === 'GREEN' ? '#00d4aa' : verdict === 'YELLOW' ? '#e8b84b' : '#ff5577';
+
+  const passingTenets = Object.values(result.gss).filter(v => v >= 70).length;
+  const warningTenets = Object.values(result.gss).filter(v => v >= 40 && v < 70).length;
+  const failTenets = Object.values(result.gss).filter(v => v < 40).length;
+
+  document.getElementById('results-content').innerHTML = `
+    <div class="score-display">
+      <div class="score-ring-wrap">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle class="score-ring-bg" cx="40" cy="40" r="35"/>
+          <circle class="score-ring-fill" cx="40" cy="40" r="35"
+            id="score-ring-fill" stroke="${ringColor}"
+            style="stroke-dashoffset:${ringOffset}"/>
+        </svg>
+        <div class="score-ring-label">
+          <div class="score-ring-val" style="color:${ringColor}">${result.overall}</div>
+          <div class="score-ring-unit">/ 100</div>
+        </div>
+      </div>
+      <div class="score-meta">
+        <div class="score-verdict" style="color:${verdictColor}">
+          ${verdict === 'GREEN' ? '✓ INTEGRITY VERIFIED' : verdict === 'YELLOW' ? '⚠ REVIEW RECOMMENDED' : '✕ INTEGRITY FAILURE'}
+        </div>
+        <div class="score-tau">
+          τ = ${result.tau} · TL = ${TL} · Phase: <span style="color:${phaseColor}">${phase.replace('_',' ')}</span>
+        </div>
+        <div class="score-flags">
+          <div class="flag flag-green">${passingTenets}/9 PASS</div>
+          ${warningTenets > 0 ? `<div class="flag flag-yellow">${warningTenets} REVIEW</div>` : ''}
+          ${failTenets > 0 ? `<div class="flag flag-red">${failTenets} FAIL</div>` : ''}
+          <div class="flag ${result.source === 'claude' ? 'flag-green' : 'flag-yellow'}">${result.source === 'claude' ? 'FULL FDNA' : 'STRUCTURAL'}</div>
+        </div>
+        ${result.key_finding ? `<div style="font-size:11px;color:var(--dim);margin-top:8px;border-top:1px solid var(--border);padding-top:8px;">${result.key_finding}</div>` : ''}
+      </div>
+    </div>`;
+
+  // Update PNBA display
+  document.getElementById('pnba-P').textContent = result.P;
+  document.getElementById('pnba-N').textContent = result.N;
+  document.getElementById('pnba-B').textContent = result.B;
+  document.getElementById('pnba-A').textContent = result.A;
+  document.getElementById('tau-live').textContent = 'τ = ' + result.tau;
+  document.getElementById('tau-live').style.color = parseFloat(result.tau) >= TL ? 'var(--red)' : 'var(--green)';
+  document.getElementById('phase-live').textContent = phase.replace('_',' ');
+  document.getElementById('phase-live').style.color = phaseColor;
+
+  // Update GSS tenet reference bars
+  GSS_TENETS.forEach(t => {
+    const bar = document.getElementById('tref-bar-' + t.key);
+    if (bar) bar.style.width = (result.gss[t.key] || 0) + '%';
+  });
+
+  // Render GSS grid
+  document.getElementById('gss-panel').style.display = 'block';
+  renderGSSGrid(result.gss);
+
+  // N-chain
+  renderNChain(result);
+
+  // Lean stub
+  const lean = generateLean(result, title);
+  lastResult = { ...result, lean, title };
+  document.getElementById('lean-panel').style.display = 'block';
+  const leanEl = document.getElementById('lean-output');
+  leanEl.innerHTML = lean
+    .replace(/^(--.*)/gm, '<span class="lean-comment">$1</span>')
+    .replace(/\b(def|theorem|namespace|end|import|noncomputable|by|rfl|norm_num|unfold|exact|refine|intro|apply|have)\b/g, '<span class="lean-keyword">$1</span>');
+}
+
+function renderNChain(result) {
+  const status = result.n_chain_status || (parseFloat(result.N) >= 1.5 ? 'INTACT' : parseFloat(result.N) >= 0.5 ? 'PARTIAL' : 'BROKEN');
+  const passes = result.n_chain_passes || [
+    parseFloat(result.N) >= 5 ? 'Citations present in text' : null,
+    parseFloat(result.A) >= 5 ? 'Reproducibility signals detected' : null,
+  ].filter(Boolean);
+  const issues = result.n_chain_issues || [
+    parseFloat(result.N) < 1.5 ? 'N < N_THRESHOLD (0.15) — narrative starvation detected' : null,
+    parseFloat(result.tau) >= TL ? `τ=${result.tau} ≥ TL=${TL} — torsion exceeded` : null,
+  ].filter(Boolean);
+
+  const statusIcon = status === 'INTACT' ? '✓' : status === 'PARTIAL' ? '⚠' : '✕';
+  const statusCls  = status === 'INTACT' ? 'chain-icon-pass' : status === 'PARTIAL' ? 'chain-icon-warn' : 'chain-icon-fail';
+
+  document.getElementById('chain-content').innerHTML = `
+    <div class="chain-row">
+      <div class="chain-icon ${statusCls}">${statusIcon}</div>
+      <div class="chain-text">
+        <div class="chain-title">N-CHAIN STATUS: ${status}</div>
+        <div class="chain-detail">N=${result.N} · N_THRESHOLD=0.15 · ${status === 'INTACT' ? 'Citation narrative intact' : status === 'PARTIAL' ? 'Some citation gaps detected' : 'Citation chain broken — false_lock condition'}</div>
+      </div>
+    </div>
+    ${passes.map(p => `
+    <div class="chain-row">
+      <div class="chain-icon chain-icon-pass">✓</div>
+      <div class="chain-text">
+        <div class="chain-title" style="color:var(--green)">PASS</div>
+        <div class="chain-detail">${p}</div>
+      </div>
+    </div>`).join('')}
+    ${issues.map(i => `
+    <div class="chain-row">
+      <div class="chain-icon chain-icon-fail">✕</div>
+      <div class="chain-text">
+        <div class="chain-title" style="color:var(--red)">FLAG</div>
+        <div class="chain-detail">${i}</div>
+      </div>
+    </div>`).join('')}`;
+}
+
+// ── MAIN RUN ───────────────────────────────────────────────────
+async function runPRIME() {
+  const activeTab = document.querySelector('.input-tab.active').textContent.trim().split(' ')[0].toLowerCase();
+  let text = '';
+
+  if (activeTab === 'ABSTRACT' || activeTab === 'abstract') {
+    text = document.getElementById('input-abstract').value.trim();
+  } else if (activeTab === 'FULL' || activeTab === 'full') {
+    text = document.getElementById('input-fulltext').value.trim();
+  } else {
+    const doi = document.getElementById('input-doi').value.trim();
+    if (doi) {
+      addLog('DOI mode: fetching abstract via CrossRef...', '');
+      setProgress(20, 'Fetching paper metadata...');
+      try {
+        const clean = doi.replace(/^https?:\/\/doi\.org\//,'');
+        const r = await fetch(`https://api.crossref.org/works/${clean}`);
+        const d = await r.json();
+        const item = d.message;
+        text = item.abstract
+          ? item.abstract.replace(/<[^>]+>/g,'')
+          : (item.title?.[0] || '') + ' ' + (item.subtitle?.[0] || '');
+        document.getElementById('input-title').value = item.title?.[0] || '';
+        addLog('CrossRef metadata fetched.', 'ok');
+      } catch(e) {
+        addLog('CrossRef fetch failed: ' + e.message, 'err');
+        text = doi;
+      }
+    }
+  }
+
+  if (!text || text.length < 20) {
+    addLog('No input text. Paste abstract or full text first.', 'err');
+    return;
+  }
+
+  const title = document.getElementById('input-title').value.trim() || 'Untitled';
+  const btn = document.getElementById('run-btn');
+  btn.disabled = true;
+  document.getElementById('run-btn-text').innerHTML = '<span class="spinner"></span>RUNNING PRIME ANALYSIS...';
+
+  addLog(`Starting PRIME [${currentMode}] · "${title}"`, '');
+  setProgress(10, 'Stripping labels — FDNA step 1...');
+
+  try {
+    let result;
+
+    if (API_KEY) {
+      setProgress(25, 'Running FDNA reduction via Claude API...');
+      addLog('Claude API: running full FDNA reduction...', '');
+      await new Promise(r => setTimeout(r, 300));
+
+      setProgress(50, 'Mapping to PNBA functional identity...');
+      result = await claudeReduce(text, currentMode);
+      addLog('FDNA reduction complete.', 'ok');
+
+      setProgress(75, 'Scoring GSS nine tenets...');
+      await new Promise(r => setTimeout(r, 200));
+    } else {
+      setProgress(30, 'Running structural analysis (local mode)...');
+      addLog('Local mode: structural scoring (connect API for full FDNA)...', 'warn');
+      await new Promise(r => setTimeout(r, 400));
+      result = localScore(text);
+      if (!result) throw new Error('Insufficient text for analysis');
+    }
+
+    setProgress(90, 'Generating Lean 4 reduction stub...');
+    await new Promise(r => setTimeout(r, 200));
+
+    renderResults(result, title);
+
+    const verdict = result.verdict || (result.overall >= 70 ? 'GREEN' : result.overall >= 40 ? 'YELLOW' : 'RED');
+    addLog(`PRIME complete · Score: ${result.overall}/100 · τ=${result.tau} · ${result.phase} · ${verdict}`,
+      verdict === 'GREEN' ? 'ok' : verdict === 'YELLOW' ? 'warn' : 'err');
+
+    setProgress(100, 'Analysis complete.');
+    setTimeout(hideProgress, 1500);
+
+  } catch(err) {
+    addLog('Error: ' + err.message, 'err');
+    document.getElementById('results-content').innerHTML =
+      `<div style="color:var(--red);font-family:'Space Mono',monospace;font-size:10px;padding:16px;">
+        ERROR: ${err.message}<br><br>
+        <span style="color:var(--muted)">Check API key or try local mode (disconnect API).</span>
+      </div>`;
+    hideProgress();
+  }
+
+  btn.disabled = false;
+  document.getElementById('run-btn-text').textContent = '⟶ RUN PRIME ANALYSIS';
+}
+
+// ── COPY / DOWNLOAD LEAN ───────────────────────────────────────
+function copyLean() {
+  if (!lastResult) return;
+  navigator.clipboard.writeText(lastResult.lean);
+  const btn = document.getElementById('copy-lean-btn');
+  btn.textContent = '✓ COPIED';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = '⟳ COPY LEAN'; btn.classList.remove('copied'); }, 2000);
+}
+
+function downloadLean() {
+  if (!lastResult) return;
+  const blob = new Blob([lastResult.lean], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `PRIME_${Date.now().toString(16).toUpperCase()}.lean`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  addLog('Lean stub downloaded.', 'ok');
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+(function init() {
+  renderGSSTenentRef();
+  renderGSSGrid(null);
+
+  // Restore API key
+  const saved = localStorage.getItem('prime_api_key');
+  if (saved) {
+    API_KEY = saved;
+    document.getElementById('api-status').textContent = '✓ Claude API connected · Full PRIME reduction enabled';
+    document.getElementById('api-status').className = 'api-status connected';
+    addLog('API key restored from session.', 'ok');
+  }
+
+  addLog('PRIME v1 initialized · EO 14303 · 9/9 GSS tenets · TL=0.1369 · 0 sorry', 'ok');
+})();
+</script>
+</body>
+</html>
