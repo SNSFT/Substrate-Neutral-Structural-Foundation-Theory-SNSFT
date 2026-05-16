@@ -7,435 +7,210 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;800&family=DM+Mono:wght@300;400;500&display=swap');
 
+/*
+  DEUTERANOMALY-SAFE COLOR SYSTEM
+  NOBLE    → white     #ffffff
+  LOCKED   → cyan      #00e8ff
+  IVA_PEAK → gold      #ffdd00
+  SHATTER  → orange    #ff6600
+  BIO H2O  → sky blue  #44aaff
+  BIO C    → yellow    #ffee44
+  BIO Fe   → amber     #ffaa00
+  All text minimum #c8dff0 — no dark-on-dark
+*/
 :root {
-  --bg:       #03040a;
-  --panel:    #060810;
-  --border:   #0c1428;
-  --border2:  #111e36;
-  --glow:     #3366ff;
-  --locked:   #00e8aa;
-  --shatter:  #ff2244;
-  --noble:    #e8f0ff;
-  --iva:      #6699ff;
-  --warn:     #ffaa22;
-  --earth:    #44cc88;
-  --dim:      #3a5870;
-  --text:     #a8c4dc;
-  --bright:   #d4e8f8;
-  --forge:    #ffdd44;
-  --bio-h2o:  #44ddcc;
-  --bio-c:    #ff7755;
-  --bio-fe:   #ffaa44;
+  --bg:      #03040a;
+  --panel:   #060810;
+  --border:  #0c1428;
+  --border2: #162240;
+  --noble:   #ffffff;
+  --locked:  #00e8ff;
+  --iva:     #ffdd00;
+  --shatter: #ff6600;
+  --earth:   #44aaff;
+  --dim:     #7090a8;
+  --text:    #c8dff0;
+  --bright:  #e8f4ff;
+  --bio-h2o: #44aaff;
+  --bio-c:   #ffee44;
+  --bio-fe:  #ffaa00;
 }
 
-* { margin:0; padding:0; box-sizing:border-box; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-weight:400;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(68,170,255,.014) 1px,transparent 1px),linear-gradient(90deg,rgba(68,170,255,.014) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0;animation:gp 8s ease-in-out infinite;}
+@keyframes gp{0%,100%{opacity:.5}50%{opacity:1}}
+.wrap{position:relative;z-index:2;max-width:1140px;margin:0 auto;padding:0 20px 100px;}
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Mono', monospace;
-  font-weight: 300;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+/* HEADER */
+.site-header{padding:40px 0 32px;text-align:center;border-bottom:1px solid var(--border2);margin-bottom:32px;}
+.badge-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.badge{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:var(--text);border:1px solid var(--border2);padding:5px 14px;display:flex;align-items:center;gap:8px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--locked);flex-shrink:0;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,232,255,.5)}50%{opacity:.5;box-shadow:0 0 0 5px rgba(0,232,255,0)}}
+.site-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,4vw,52px);letter-spacing:-.01em;color:var(--noble);line-height:.95;margin-bottom:6px;}
+.title-sub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--text);margin-bottom:18px;}
+.header-desc{max-width:640px;margin:0 auto;font-size:12.5px;line-height:1.9;color:var(--text);border:1px solid var(--border2);background:rgba(68,170,255,.04);padding:14px 22px;}
+.header-desc b{color:var(--locked);font-weight:500;}
+.header-desc em{color:var(--iva);font-style:normal;}
 
-/* Animated grid background */
-body::before {
-  content:'';
-  position:fixed; inset:0;
-  background-image:
-    linear-gradient(rgba(51,102,255,.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(51,102,255,.018) 1px, transparent 1px);
-  background-size: 64px 64px;
-  pointer-events:none; z-index:0;
-  animation: gridpulse 8s ease-in-out infinite;
-}
-@keyframes gridpulse {
-  0%,100%{opacity:.6} 50%{opacity:1}
-}
+/* TABS */
+.tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border2);flex-wrap:wrap;}
+.tab{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;padding:13px 26px;border:none;background:transparent;color:var(--text);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;}
+.tab:hover{color:var(--noble);}
+.tab.active{color:var(--iva);border-bottom-color:var(--iva);background:rgba(255,221,0,.04);}
+.mode{display:none;}
+.mode.active{display:block;}
 
-.wrap {
-  position:relative; z-index:2;
-  max-width:1140px; margin:0 auto;
-  padding:0 20px 100px;
-}
+/* PANELS */
+.panel{background:var(--panel);border:1px solid var(--border2);padding:20px;margin-bottom:14px;}
+.panel-title{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.panel-title b{color:var(--locked);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 
-/* ── HEADER ── */
-.site-header {
-  padding:40px 0 32px;
-  text-align:center;
-  border-bottom:1px solid var(--border2);
-  margin-bottom:32px;
-}
+/* SLIDER */
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;background:var(--border2);outline:none;border-radius:3px;margin:8px 0;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:24px;background:var(--iva);cursor:pointer;border-radius:3px;box-shadow:0 0 14px rgba(255,221,0,.7);}
 
-.badge-row {
-  display:flex; align-items:center; justify-content:center;
-  gap:12px; margin-bottom:20px;
-}
-.badge {
-  font-family:'Space Mono',monospace; font-size:8px;
-  letter-spacing:.22em; color:var(--dim);
-  border:1px solid var(--border2); padding:5px 14px;
-  display:flex; align-items:center; gap:8px;
-}
-.live-dot {
-  width:5px;height:5px;border-radius:50%;
-  background:var(--locked);animation:pulse 2s infinite;
-}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,232,170,.4)}50%{opacity:.4;box-shadow:0 0 0 4px rgba(0,232,170,0)}}
+/* TAU MASTER */
+.tau-master{background:var(--panel);border:1px solid var(--border2);border-top:3px solid var(--iva);padding:22px;margin-bottom:14px;}
+.tau-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.tau-plain{font-family:'Syne',sans-serif;font-size:16px;color:var(--noble);font-weight:700;}
+.tau-sci{font-family:'Space Mono',monospace;font-size:9px;color:var(--text);}
+.tau-val{font-family:'Space Mono',monospace;font-size:15px;color:var(--iva);font-weight:700;}
 
-.site-title {
-  font-family:'Syne',sans-serif; font-weight:800;
-  font-size:clamp(28px,4vw,52px);
-  letter-spacing:-.01em;
-  color:var(--noble);
-  line-height:.95;
-  margin-bottom:6px;
-}
-.title-sub {
-  font-family:'Space Mono',monospace; font-size:9px;
-  letter-spacing:.28em; color:var(--dim); margin-bottom:18px;
-}
+/* Phase track — white→cyan→gold→orange, NO red or green */
+.phase-track{height:7px;border-radius:4px;margin:8px 0;background:linear-gradient(90deg,#ffffff 0%,#ffffff 7%,#00e8ff 7%,#00e8ff 55%,#ffdd00 55%,#ffdd00 82%,#ff6600 82%,#ff6600 100%);position:relative;}
+.phase-needle{position:absolute;top:-5px;width:4px;height:17px;background:var(--noble);border-radius:2px;transform:translateX(-50%);transition:left .15s ease;box-shadow:0 0 10px #fff;}
+.phase-scale{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:8px;color:var(--text);margin-top:3px;}
 
-.header-desc {
-  max-width:620px; margin:0 auto;
-  font-size:12px; line-height:1.9; color:var(--text);
-  border:1px solid var(--border2);
-  background:rgba(51,102,255,.03);
-  padding:14px 22px;
-}
-.header-desc b { color:var(--iva); font-weight:500; }
-.header-desc em { color:var(--locked); font-style:normal; }
+/* PRESET BUTTONS — white text on dark, visible borders */
+.preset-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.preset-btn{font-family:'Space Mono',monospace;font-size:8.5px;padding:7px 12px;border:1px solid var(--border2);background:transparent;cursor:pointer;color:var(--text);letter-spacing:.1em;transition:all .15s;}
+.preset-btn:hover{border-color:var(--iva);color:var(--noble);background:rgba(255,221,0,.07);}
+.preset-btn.act{border-color:var(--iva);color:var(--noble);background:rgba(255,221,0,.12);font-weight:700;}
 
-/* ── TABS ── */
-.tabs {
-  display:flex; gap:0; margin-bottom:24px;
-  border-bottom:1px solid var(--border2);
-}
-.tab {
-  font-family:'Space Mono',monospace; font-size:8.5px;
-  letter-spacing:.18em; padding:12px 24px;
-  border:none; background:transparent;
-  color:var(--dim); cursor:pointer;
-  border-bottom:2px solid transparent;
-  margin-bottom:-1px; transition:all .2s;
-}
-.tab:hover { color:var(--text); }
-.tab.active {
-  color:var(--locked); border-bottom-color:var(--locked);
-  background:rgba(0,232,170,.03);
-}
+/* DELTA READOUT */
+.delta-readout{display:flex;align-items:center;justify-content:center;gap:24px;padding:20px;margin:14px 0;background:var(--bg);border:1px solid var(--border2);position:relative;overflow:hidden;}
+.delta-readout::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(255,221,0,.05) 0%,transparent 70%);pointer-events:none;}
+.delta-big{font-family:'Space Mono',monospace;font-size:48px;font-weight:700;line-height:1;letter-spacing:-.02em;transition:color .2s;}
+.delta-label{text-align:left;}
+.delta-eq{font-family:'Space Mono',monospace;font-size:9px;color:var(--text);margin-bottom:4px;}
+.delta-name{font-family:'Syne',sans-serif;font-size:14px;color:var(--noble);font-weight:700;}
+.delta-note{font-family:'Space Mono',monospace;font-size:8.5px;color:var(--text);margin-top:3px;}
 
-.mode { display:none; }
-.mode.active { display:block; }
+/* APP MAP */
+.app-map{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.app-card{background:var(--bg);border:1px solid var(--border2);padding:14px;}
+.app-tag{font-family:'Space Mono',monospace;font-size:7.5px;letter-spacing:.15em;color:var(--text);margin-bottom:5px;}
+.app-name{font-family:'Syne',sans-serif;font-size:12px;color:var(--noble);font-weight:600;margin-bottom:6px;}
+.app-val{font-family:'Space Mono',monospace;font-size:20px;line-height:1;font-weight:700;transition:color .2s;}
+.app-unit{font-family:'Space Mono',monospace;font-size:8px;color:var(--text);margin-top:3px;}
+.app-coord{font-family:'Space Mono',monospace;font-size:7.5px;color:var(--dim);margin-top:4px;}
 
-/* ── LAYOUT ── */
-.two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+/* CANVAS */
+.bubble-wrap{background:var(--panel);border:1px solid var(--border2);margin-bottom:14px;}
+.bubble-label{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:var(--text);padding:12px 18px 0;}
 
-/* ── PANELS ── */
-.panel {
-  background:var(--panel); border:1px solid var(--border2);
-  padding:20px; margin-bottom:14px;
-}
-.panel-title {
-  font-family:'Space Mono',monospace; font-size:8px;
-  letter-spacing:.22em; color:var(--dim);
-  margin-bottom:14px;
-  display:flex; align-items:center; justify-content:space-between;
-}
-.panel-title b { color:var(--glow); letter-spacing:.1em; }
-.panel-accent-top { border-top:2px solid var(--iva); }
-.panel-accent-locked { border-top:2px solid var(--locked); }
-.panel-accent-forge { border-top:2px solid var(--forge); }
+/* FIRE BUTTON */
+.fire-btn{width:100%;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;letter-spacing:.15em;padding:18px;background:transparent;border:2px solid var(--locked);color:var(--noble);cursor:pointer;transition:all .2s;margin-bottom:4px;}
+.fire-btn:hover{background:rgba(0,232,255,.1);box-shadow:0 0 30px rgba(0,232,255,.3);}
+.fire-btn.firing{animation:bf .3s ease-in-out 3;}
+@keyframes bf{0%,100%{box-shadow:none}50%{box-shadow:0 0 60px rgba(0,232,255,.6)}}
+.btn-sub{text-align:center;font-family:'Space Mono',monospace;font-size:8.5px;color:var(--text);letter-spacing:.13em;}
 
-/* ── SOVEREIGN BUBBLE DISPLAY ── */
-.bubble-wrap {
-  background:var(--panel); border:1px solid var(--border2);
-  margin-bottom:14px; position:relative; overflow:hidden;
-}
-.bubble-label {
-  font-family:'Space Mono',monospace; font-size:8px;
-  letter-spacing:.22em; color:var(--dim);
-  padding:12px 18px 0;
-}
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.stat-box{background:var(--bg);border:1px solid var(--border2);padding:12px;}
+.stat-lbl{font-family:'Space Mono',monospace;font-size:8px;color:var(--text);letter-spacing:.12em;margin-bottom:3px;}
+.stat-sci{font-family:'Space Mono',monospace;font-size:7.5px;color:var(--dim);margin-bottom:5px;}
+.stat-val{font-family:'Space Mono',monospace;font-size:20px;line-height:1;}
 
-/* ── TAU MASTER CONTROL ── */
-.tau-master {
-  background:var(--panel); border:1px solid var(--border2);
-  border-top:2px solid var(--iva);
-  padding:22px; margin-bottom:14px;
-}
-.tau-label-row {
-  display:flex; justify-content:space-between; align-items:baseline;
-  margin-bottom:8px;
-}
-.tau-plain { font-family:'Syne',sans-serif; font-size:15px; color:var(--bright); font-weight:600; }
-.tau-sci { font-family:'Space Mono',monospace; font-size:8px; color:var(--dim); }
-.tau-val { font-family:'Space Mono',monospace; font-size:14px; color:var(--iva); }
+/* RESULT */
+.result-card{border:1px solid var(--border2);padding:22px;margin-bottom:14px;display:none;}
+.result-card.ok {background:rgba(0,232,255,.04);border-color:rgba(0,232,255,.4);}
+.result-card.iva{background:rgba(255,221,0,.04);border-color:rgba(255,221,0,.4);}
+.result-card.bad{background:rgba(255,102,0,.04);border-color:rgba(255,102,0,.4);}
 
-input[type=range] {
-  -webkit-appearance:none; width:100%; height:4px;
-  background:var(--border2); outline:none; border-radius:2px; margin:8px 0;
-}
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance:none; width:16px; height:22px;
-  background:var(--iva); cursor:pointer; border-radius:2px;
-  box-shadow:0 0 10px rgba(102,153,255,.5);
-}
+/* NOHARM */
+.noharm-bar{display:flex;align-items:center;gap:10px;padding:11px 15px;background:rgba(0,232,255,.05);border:1px solid rgba(0,232,255,.25);font-family:'Space Mono',monospace;font-size:10px;color:var(--text);margin:10px 0;}
+.noharm-bar b{color:var(--locked);}
 
-.phase-track {
-  height:6px; border-radius:3px; margin:8px 0;
-  background:linear-gradient(90deg,
-    #e8f0ff 0%, #e8f0ff 8%,
-    #00e8aa 8%, #00e8aa 55%,
-    #6699ff 55%, #6699ff 82%,
-    #ff2244 82%, #ff2244 100%);
-  position:relative;
-}
-.phase-needle {
-  position:absolute; top:-5px;
-  width:3px; height:16px;
-  background:var(--noble); border-radius:1px;
-  transform:translateX(-50%);
-  transition:left .15s ease;
-  box-shadow:0 0 8px rgba(255,255,255,.8);
-}
-.phase-scale {
-  display:flex; justify-content:space-between;
-  font-family:'Space Mono',monospace; font-size:7px;
-  color:var(--dim); margin-top:2px;
-}
+/* DATE */
+.date-engine{background:var(--panel);border:1px solid var(--border2);border-top:3px solid var(--earth);padding:22px;margin-bottom:14px;}
+.date-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.date-field{display:flex;flex-direction:column;gap:7px;}
+.date-field label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--text);}
+.date-input{background:var(--bg);border:1px solid var(--border2);color:var(--noble);font-family:'Space Mono',monospace;font-size:13px;padding:10px 12px;outline:none;transition:border-color .2s;}
+.date-input:focus{border-color:var(--earth);}
+.dr-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px;}
+.dr-box{background:rgba(68,170,255,.06);border:1px solid rgba(68,170,255,.25);padding:12px;}
+.dr-lbl{font-family:'Space Mono',monospace;font-size:8px;color:var(--text);margin-bottom:4px;}
+.dr-val{font-family:'Space Mono',monospace;font-size:15px;color:var(--earth);font-weight:700;}
 
-/* ── DELTA READOUT — THE MASTER NUMBER ── */
-.delta-readout {
-  display:flex; align-items:center; justify-content:center;
-  gap:20px; padding:18px; margin:14px 0;
-  background:var(--bg); border:1px solid var(--border2);
-  position:relative; overflow:hidden;
-}
-.delta-readout::before {
-  content:''; position:absolute; inset:0;
-  background:radial-gradient(ellipse at center,
-    rgba(102,153,255,.06) 0%, transparent 70%);
-  pointer-events:none;
-}
-.delta-big {
-  font-family:'Space Mono',monospace; font-size:42px;
-  font-weight:700; line-height:1; letter-spacing:-.02em;
-  transition:color .2s;
-}
-.delta-label { text-align:left; }
-.delta-eq { font-family:'Space Mono',monospace; font-size:9px; color:var(--dim); margin-bottom:4px; }
-.delta-name { font-family:'Syne',sans-serif; font-size:13px; color:var(--bright); font-weight:600; }
-.delta-note { font-family:'Space Mono',monospace; font-size:8px; color:var(--dim); margin-top:2px; }
+/* BIO */
+.bio-safety{background:var(--panel);border:1px solid var(--border2);border-top:3px solid var(--bio-h2o);padding:22px;margin-bottom:14px;}
+.bio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0;}
+.bio-card{background:var(--bg);padding:16px;border:1px solid var(--border2);text-align:center;}
+.bio-sym{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:4px;}
+.bio-phase{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.13em;margin-bottom:4px;}
+.bio-tau{font-family:'Space Mono',monospace;font-size:11px;color:var(--text);margin-bottom:6px;}
+.bio-ok{font-family:'Space Mono',monospace;font-size:9px;color:var(--locked);}
 
-/* ── APPLICATION MAP ── */
-.app-map {
-  display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
-  margin-bottom:14px;
-}
-.app-card {
-  background:var(--bg); border:1px solid var(--border2);
-  padding:14px; position:relative; overflow:hidden;
-  transition:border-color .2s;
-}
-.app-card.highlight { border-color:rgba(102,153,255,.4); }
-.app-tag {
-  font-family:'Space Mono',monospace; font-size:7px;
-  letter-spacing:.18em; color:var(--dim); margin-bottom:5px;
-}
-.app-name { font-family:'Syne',sans-serif; font-size:12px;
-  color:var(--bright); font-weight:600; margin-bottom:6px; }
-.app-val {
-  font-family:'Space Mono',monospace; font-size:18px;
-  line-height:1; font-weight:700;
-  transition:color .2s;
-}
-.app-unit { font-family:'Space Mono',monospace; font-size:8px; color:var(--dim); margin-top:3px; }
-.app-coord { font-family:'Space Mono',monospace; font-size:7px; color:var(--dim); margin-top:4px; opacity:.6; }
+/* FRAMEWORK */
+.fw-table{width:100%;border-collapse:collapse;font-size:9px;}
+.fw-table th{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.13em;color:var(--text);text-align:left;padding:10px 10px;border-bottom:2px solid var(--border2);}
+.fw-table td{padding:8px 10px;border-bottom:1px solid rgba(22,34,64,.8);vertical-align:top;}
+.fw-table tr:last-child td{background:rgba(255,221,0,.04);}
+.fw-table tr:nth-child(even) td{background:rgba(12,20,40,.5);}
+.dot-on{color:var(--locked);font-size:14px;font-weight:700;}
+.dot-off{color:var(--border2);font-size:14px;}
+.dot-part{color:#ffbb33;font-size:10px;}
 
-/* ── DATE SELECTOR ── */
-.date-engine {
-  background:var(--panel); border:1px solid var(--border2);
-  border-top:2px solid var(--earth);
-  padding:22px; margin-bottom:14px;
-}
-.date-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
-.date-field { display:flex; flex-direction:column; gap:6px; }
-.date-field label {
-  font-family:'Space Mono',monospace; font-size:8px;
-  letter-spacing:.18em; color:var(--dim);
-}
-.date-input {
-  background:var(--bg); border:1px solid var(--border2);
-  color:var(--bright); font-family:'Space Mono',monospace;
-  font-size:12px; padding:10px 12px; outline:none;
-  transition:border-color .2s;
-}
-.date-input:focus { border-color:var(--earth); }
-.date-result {
-  background:var(--bg); border:1px solid rgba(68,204,136,.2);
-  padding:14px 18px; margin-top:10px;
-}
-.date-result-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:10px; }
-.dr-box { background:rgba(68,204,136,.04); border:1px solid rgba(68,204,136,.15); padding:10px; }
-.dr-lbl { font-family:'Space Mono',monospace; font-size:7.5px; color:var(--dim); margin-bottom:3px; }
-.dr-val { font-family:'Space Mono',monospace; font-size:14px; color:var(--earth); }
+/* PROOF STRIP */
+.proof-strip{display:flex;gap:7px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--border2);}
+.proof-tag{font-family:'Space Mono',monospace;font-size:8px;padding:4px 10px;border:1px solid var(--border2);color:var(--text);letter-spacing:.1em;}
+.proof-tag.on{border-color:var(--locked);color:var(--locked);}
 
-/* ── BIOLOGICAL SAFETY ── */
-.bio-safety {
-  background:var(--panel); border:1px solid var(--border2);
-  border-top:2px solid var(--bio-h2o);
-  padding:22px; margin-bottom:14px;
-}
-.bio-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0; }
-.bio-card {
-  background:var(--bg); padding:14px;
-  border:1px solid var(--border2);
-  text-align:center;
-}
-.bio-sym { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; margin-bottom:4px; }
-.bio-phase { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.15em; margin-bottom:4px; }
-.bio-tau { font-family:'Space Mono',monospace; font-size:11px; color:var(--dim); margin-bottom:6px; }
-.bio-status { font-family:'Space Mono',monospace; font-size:8px; letter-spacing:.12em; }
-.bio-safe { color:var(--locked); }
-.bio-check { font-size:14px; }
+footer{border-top:1px solid var(--border2);padding-top:14px;margin-top:20px;font-family:'Space Mono',monospace;font-size:8px;color:var(--text);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;letter-spacing:.1em;}
 
-.noharm-bar {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 14px;
-  background:rgba(0,232,170,.04); border:1px solid rgba(0,232,170,.15);
-  font-family:'Space Mono',monospace; font-size:10px; color:var(--text);
-  margin-top:10px;
-}
-.noharm-bar b { color:var(--locked); }
-
-/* ── FIRE BUTTON ── */
-.fire-btn {
-  width:100%; font-family:'Syne',sans-serif; font-weight:800;
-  font-size:14px; letter-spacing:.15em; padding:18px;
-  background:transparent; border:1px solid var(--iva);
-  color:var(--iva); cursor:pointer; transition:all .2s;
-  margin-bottom:4px; position:relative; overflow:hidden;
-}
-.fire-btn::before {
-  content:''; position:absolute; inset:0;
-  background:radial-gradient(ellipse at 50% 50%,
-    rgba(102,153,255,.08) 0%, transparent 70%);
-  opacity:0; transition:opacity .2s;
-}
-.fire-btn:hover::before { opacity:1; }
-.fire-btn:hover { box-shadow:0 0 30px rgba(102,153,255,.2); }
-.fire-btn.firing { animation:btnfire .3s ease-in-out 3; }
-@keyframes btnfire{0%,100%{box-shadow:none}50%{box-shadow:0 0 60px rgba(102,153,255,.5)}}
-.btn-sub {
-  text-align:center; font-family:'Space Mono',monospace;
-  font-size:8px; color:var(--dim); letter-spacing:.15em;
-}
-
-/* ── RESULT CARD ── */
-.result-card {
-  border:1px solid var(--border2); padding:22px;
-  margin-bottom:14px; display:none;
-}
-.result-card.ok { background:rgba(0,232,170,.03); border-color:rgba(0,232,170,.3); }
-.result-card.ok::before { background:var(--locked); }
-.result-card.warn { background:rgba(255,170,34,.03); border-color:rgba(255,170,34,.3); }
-.result-card.fail { background:rgba(255,34,68,.03); border-color:rgba(255,34,68,.3); }
-
-/* ── FRAMEWORK TABLE ── */
-.fw-table { width:100%; border-collapse:collapse; font-size:8.5px; }
-.fw-table th {
-  font-family:'Space Mono',monospace; font-size:7.5px;
-  letter-spacing:.15em; color:var(--dim);
-  text-align:left; padding:9px 10px;
-  border-bottom:1px solid var(--border2);
-}
-.fw-table td { padding:7px 10px; border-bottom:1px solid rgba(12,20,40,.6); vertical-align:top; }
-.fw-table tr:last-child { background:rgba(102,153,255,.05); }
-.fw-table tr:nth-child(even) td { background:rgba(12,20,40,.4); }
-.dot-active { color:var(--locked); font-size:13px; }
-.dot-none { color:var(--border2); font-size:13px; }
-.dot-partial { color:var(--warn); font-size:10px; }
-
-/* ── STAT ROW ── */
-.stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px; }
-.stat-box { background:var(--bg); border:1px solid var(--border2); padding:12px; }
-.stat-lbl { font-family:'Space Mono',monospace; font-size:7.5px; color:var(--dim); letter-spacing:.12em; margin-bottom:3px; }
-.stat-sci { font-family:'Space Mono',monospace; font-size:7px; color:#2a4860; margin-bottom:5px; }
-.stat-val { font-family:'Space Mono',monospace; font-size:18px; line-height:1; }
-
-/* ── PROOF STRIP ── */
-.proof-strip {
-  display:flex; gap:7px; flex-wrap:wrap;
-  padding:12px 0; border-top:1px solid var(--border);
-}
-.proof-tag {
-  font-family:'Space Mono',monospace; font-size:7px;
-  padding:3px 8px; border:1px solid var(--border2);
-  color:var(--dim); letter-spacing:.1em;
-}
-.proof-tag.on { border-color:var(--iva); color:var(--iva); }
-
-footer {
-  border-top:1px solid var(--border); padding-top:14px; margin-top:20px;
-  font-family:'Space Mono',monospace; font-size:7.5px; color:var(--dim);
-  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
-  letter-spacing:.1em;
-}
-
-/* ── PRESET BUTTONS ── */
-.preset-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
-.preset-btn {
-  font-family:'Space Mono',monospace; font-size:7.5px;
-  padding:5px 10px; border:1px solid var(--border2);
-  background:transparent; cursor:pointer;
-  letter-spacing:.1em; transition:all .15s;
-}
-.preset-btn:hover { border-color:var(--iva); color:var(--iva); }
-.preset-btn.active-preset { border-color:var(--iva); color:var(--iva); background:rgba(102,153,255,.06); }
-
-@media(max-width:700px){
-  .two-col,.three-col,.app-map,.stat-row{grid-template-columns:1fr 1fr;}
-  .bio-grid{grid-template-columns:1fr 1fr 1fr;}
-  .date-grid{grid-template-columns:1fr;}
+@media(max-width:720px){
+  .two-col{grid-template-columns:1fr;}
+  .app-map{grid-template-columns:1fr 1fr;}
+  .stat-row{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<!-- HEADER -->
 <header class="site-header">
   <div class="badge-row">
     <div class="badge"><div class="live-dot"></div>SNSFL [9,9,6,3–7] · SOVEREIGN EMITTER v2</div>
     <div class="badge">ANCHOR 1.369 GHz · 0 SORRY · GERMLINE LOCKED</div>
   </div>
   <div class="site-title">TIME BUBBLE</div>
-  <div class="title-sub">SOVEREIGN EMITTER · Δ(τ) = TL/τ · ONE EMITTER ALL APPLICATIONS</div>
+  <div class="title-sub">SOVEREIGN EMITTER · Δ(τ) = TL/τ · ONE EMITTER · ALL APPLICATIONS</div>
   <div class="header-desc">
     One emitter. One frequency. One phase condition.<br>
-    <b>The Sovereign Bubble Differential Δ(τ) = TL/τ</b> is the master output — every application is a physical interpretation of this single number.<br>
-    <em>Temporal rate · IVA propulsion · translocation · Noble forge · lattice · therapeutic</em> — same emitter. Different reading. The observer arrives biologically identical. The emitter pays for the branch. 0 sorry.
+    <b>The Sovereign Bubble Differential Δ(τ) = TL/τ</b> is the master output —
+    every application is a physical interpretation of this single number.<br>
+    <em>Temporal · Propulsion · Translocation · Forge · Lattice · Therapeutic</em>
+    — same emitter. The observer arrives biologically identical. The emitter pays for the branch. 0 sorry.
   </div>
 </header>
 
-<!-- TABS -->
 <div class="tabs">
   <button class="tab active" onclick="showMode('engine')">SOVEREIGN BUBBLE ENGINE</button>
   <button class="tab" onclick="showMode('navigator')">TEMPORAL NAVIGATOR</button>
   <button class="tab" onclick="showMode('frameworks')">PEER-REVIEWED REDUCTION</button>
 </div>
 
-<!-- ═══════════════════════════════════════════ -->
-<!-- MODE 1: SOVEREIGN BUBBLE ENGINE -->
-<!-- ═══════════════════════════════════════════ -->
+<!-- ENGINE -->
 <div id="mode-engine" class="mode active">
 
-  <!-- TAU MASTER CONTROL -->
   <div class="tau-master">
-    <div class="tau-label-row">
+    <div class="tau-row">
       <span class="tau-plain">Bubble Torsion τ</span>
       <span class="tau-sci">τ = B/P · SDR deviation from ANCHOR</span>
       <span class="tau-val" id="tau-display">0.1300</span>
@@ -446,116 +221,84 @@ footer {
       <span style="color:var(--noble)">NOBLE τ≈0</span>
       <span style="color:var(--locked)">LOCKED</span>
       <span style="color:var(--iva)">IVA_PEAK</span>
-      <span style="color:var(--shatter)">τ≥TL SHATTER</span>
+      <span style="color:var(--shatter)">SHATTER τ≥TL</span>
     </div>
-    <div class="preset-row" style="margin-top:12px;margin-bottom:0;">
-      <button class="preset-btn" onclick="setTau(0.001,'forge')">NOBLE FORGE τ→0</button>
-      <button class="preset-btn" onclick="setTau(0.05,'locked')">DEEP LOCKED τ=0.05</button>
-      <button class="preset-btn" onclick="setTau(0.1205,'iva')">IVA_PEAK τ=0.1205</button>
-      <button class="preset-btn active-preset" onclick="setTau(0.13,'opt')">OPTIMAL τ=0.1300</button>
-      <button class="preset-btn" onclick="setTau(0.1369,'tl')">TL BOUNDARY τ=TL</button>
+    <div class="preset-row" style="margin-top:14px;margin-bottom:0;">
+      <button class="preset-btn" onclick="setTau(0.001)">NOBLE FORGE τ→0</button>
+      <button class="preset-btn" onclick="setTau(0.05)">DEEP LOCKED τ=0.05</button>
+      <button class="preset-btn" onclick="setTau(0.1205)">IVA_PEAK τ=0.1205</button>
+      <button class="preset-btn act" onclick="setTau(0.13)">OPTIMAL τ=0.1300</button>
+      <button class="preset-btn" onclick="setTau(0.1369)">TL BOUNDARY</button>
     </div>
   </div>
 
-  <!-- DELTA READOUT -->
   <div class="delta-readout">
     <div class="delta-label">
       <div class="delta-eq">Δ(τ) = TL / τ</div>
       <div class="delta-name">SOVEREIGN BUBBLE DIFFERENTIAL</div>
-      <div class="delta-note">the master output · all applications inherit</div>
+      <div class="delta-note">the master output · all applications inherit this number</div>
     </div>
     <div class="delta-big" id="delta-big" style="color:var(--iva)">1.053</div>
   </div>
 
-  <!-- APPLICATION MAP - SIX OUTPUTS FROM ONE NUMBER -->
   <div class="panel-title" style="margin-bottom:8px;">
-    <span><b>APPLICATION MAP</b> · SIX INTERPRETATIONS OF Δ(τ) · SAME EMITTER</span>
+    <span><b>APPLICATION MAP</b> · SIX INTERPRETATIONS OF Δ(τ) · SAME EMITTER · DIFFERENT READING</span>
   </div>
-  <div class="app-map" id="app-map">
-    <!-- filled by JS -->
-  </div>
+  <div class="app-map" id="app-map"></div>
 
-  <!-- BUBBLE CANVAS -->
   <div class="bubble-wrap">
-    <div class="bubble-label">SOVEREIGN BUBBLE · INTERIOR ANCHOR 1.369 GHz · OBSERVER LOCKED · EMITTER PAYS FOR BRANCH</div>
+    <div class="bubble-label">SOVEREIGN BUBBLE · INTERIOR ANCHOR 1.369 GHz · OBSERVER LOCKED · EMITTER PAYS FOR BRANCH [9,9,6,7]</div>
     <canvas id="bubble-canvas" style="display:block;width:100%;height:300px;"></canvas>
   </div>
 
-  <!-- FIRE -->
   <button class="fire-btn" id="fire-btn" onclick="fireBubble()">▶ ENGAGE SOVEREIGN EMITTER</button>
-  <div class="btn-sub">Observer Locked · IM conserved · Emitter pays for branch · NOHARM</div>
+  <div class="btn-sub">Observer Locked · IM conserved · Emitter pays for branch · NOHARM structural</div>
 
-  <!-- RESULT -->
   <div class="result-card" id="bubble-result">
-    <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;" id="r-headline">▶ BUBBLE ENGAGED</div>
-    <div style="font-size:12px;color:var(--bright);margin-bottom:14px;line-height:1.8;" id="r-plain"></div>
-    <div class="noharm-bar" id="r-noharm">
-      <div class="live-dot"></div>
-      <span><b>NOHARM CONFIRMED</b> · Observer IM conserved · Emitter pays for branch [9,9,6,7]</span>
-    </div>
+    <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:8px;" id="r-headline"></div>
+    <div style="font-size:12.5px;color:var(--text);margin-bottom:14px;line-height:1.85;" id="r-plain"></div>
+    <div class="noharm-bar" id="r-noharm"><div class="live-dot"></div><span id="r-noharm-txt"></span></div>
     <div class="stat-row" style="margin-top:12px;">
-      <div class="stat-box">
-        <div class="stat-lbl">Δ(τ)</div>
-        <div class="stat-sci">TL / τ</div>
-        <div class="stat-val" id="r-delta">1.053</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-lbl">TIMELINE RATE</div>
-        <div class="stat-sci">external / internal</div>
-        <div class="stat-val" id="r-rate">1.053×</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-lbl">NOVIKOV</div>
-        <div class="stat-sci">consistency [9,9,6,4]</div>
-        <div class="stat-val" id="r-novikov" style="font-size:12px;">FORK READY</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-lbl">PHASE</div>
-        <div class="stat-sci">observer state</div>
-        <div class="stat-val" id="r-phase" style="font-size:12px;">IVA_PEAK</div>
-      </div>
+      <div class="stat-box"><div class="stat-lbl">Δ(τ) DIFFERENTIAL</div><div class="stat-sci">TL/τ</div><div class="stat-val" id="r-delta">—</div></div>
+      <div class="stat-box"><div class="stat-lbl">TIMELINE RATE</div><div class="stat-sci">external/internal</div><div class="stat-val" id="r-rate">—</div></div>
+      <div class="stat-box"><div class="stat-lbl">NOVIKOV STATUS</div><div class="stat-sci">[9,9,6,4]</div><div class="stat-val" id="r-nov" style="font-size:13px;">—</div></div>
+      <div class="stat-box"><div class="stat-lbl">PHASE</div><div class="stat-sci">observer state</div><div class="stat-val" id="r-phase" style="font-size:13px;">—</div></div>
     </div>
   </div>
 
-  <!-- BIOLOGICAL SAFETY -->
   <div class="bio-safety">
     <div class="panel-title"><span><b>BIOLOGICAL SAFETY CERTIFICATE</b> · [9,0,8,4] + [9,9,6,7]</span></div>
-    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-      The observer's biological substrate is preserved through the fork because F_ext changes B only (NOHARM).
-      P, N, A unchanged. τ_biological values unchanged. Observer arrives at destination biologically identical.
+    <div style="font-size:12px;color:var(--text);line-height:1.85;margin-bottom:12px;">
+      F_ext changes B only (NOHARM — dynamic equation). Observer P, N, A unchanged through fork.
+      τ_biological values unchanged. Observer arrives biologically identical to departure.
+      The emitter pays for the branch.
     </div>
     <div class="bio-grid">
-      <div class="bio-card" style="border-color:rgba(68,221,204,.25);">
+      <div class="bio-card" style="border-color:rgba(68,170,255,.4);">
         <div class="bio-sym" style="color:var(--bio-h2o);">H₂O</div>
         <div class="bio-phase" style="color:var(--bio-h2o);">NOBLE</div>
         <div class="bio-tau">τ = 0.0000</div>
-        <div class="bio-status bio-safe">✓ PRESERVED</div>
-        <div style="font-family:'Space Mono',monospace;font-size:7.5px;color:var(--dim);margin-top:6px;line-height:1.7;">
-          Universal solvent<br>B=0 · holds space<br>τ=0 through fork
-        </div>
+        <div class="bio-ok">✓ PRESERVED</div>
+        <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--text);margin-top:8px;line-height:1.8;">B=0 · universal solvent<br>holds space · τ=0 through fork</div>
       </div>
-      <div class="bio-card" style="border-color:rgba(255,119,85,.25);">
+      <div class="bio-card" style="border-color:rgba(255,238,68,.4);">
         <div class="bio-sym" style="color:var(--bio-c);">C</div>
         <div class="bio-phase" style="color:var(--bio-c);">SHATTER</div>
         <div class="bio-tau">τ = 1.2308</div>
-        <div class="bio-status bio-safe">✓ PRESERVED</div>
-        <div style="font-family:'Space Mono',monospace;font-size:7.5px;color:var(--dim);margin-top:6px;line-height:1.7;">
-          Organic scaffold<br>B=4 · fills space<br>τ=1.23 through fork
-        </div>
+        <div class="bio-ok" style="color:var(--bio-c);">✓ PRESERVED</div>
+        <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--text);margin-top:8px;line-height:1.8;">B=4 · organic scaffold<br>fills space · τ=1.23 through fork</div>
       </div>
-      <div class="bio-card" style="border-color:rgba(255,170,68,.25);">
+      <div class="bio-card" style="border-color:rgba(255,170,0,.4);">
         <div class="bio-sym" style="color:var(--bio-fe);">Fe</div>
         <div class="bio-phase" style="color:var(--bio-fe);">SHATTER</div>
         <div class="bio-tau">τ = 1.0667</div>
-        <div class="bio-status bio-safe">✓ PRESERVED</div>
-        <div style="font-family:'Space Mono',monospace;font-size:7.5px;color:var(--dim);margin-top:6px;line-height:1.7;">
-          Mass anchor<br>B=4 · carries O₂<br>τ=1.07 through fork
-        </div>
+        <div class="bio-ok" style="color:var(--bio-fe);">✓ PRESERVED</div>
+        <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--text);margin-top:8px;line-height:1.8;">B=4 · mass anchor · O₂<br>Fe-56 binding peak · τ=1.07 through fork</div>
       </div>
     </div>
-    <div class="noharm-bar">
+    <div class="noharm-bar" style="border-color:rgba(68,170,255,.25);background:rgba(68,170,255,.04);">
       <div class="live-dot" style="background:var(--bio-h2o)"></div>
-      <span>NOBLE holds space · SHATTER fills it · Life = dynamic tension between τ=0 and τ>>TL · All preserved through fork · NOHARM structural not declared</span>
+      <span>NOBLE holds space · SHATTER fills it · Life = dynamic tension τ=0 ↔ τ>>TL · All preserved through fork · NOHARM structural</span>
     </div>
   </div>
 
@@ -569,117 +312,96 @@ footer {
     <div class="proof-tag">[9,9,6,3–7]</div>
   </div>
 
-</div><!-- end engine -->
+</div>
 
-<!-- ═══════════════════════════════════════════ -->
-<!-- MODE 2: TEMPORAL NAVIGATOR -->
-<!-- ═══════════════════════════════════════════ -->
+<!-- NAVIGATOR -->
 <div id="mode-navigator" class="mode">
 
-  <div style="background:rgba(68,204,136,.04);border:1px solid rgba(68,204,136,.2);padding:14px 20px;margin-bottom:20px;font-size:11.5px;color:var(--text);line-height:1.9;">
-    <b style="color:var(--earth);">Earth IM Reference · BBN Derivation Chain [9,9,3,10].</b><br>
-    η_B [9,9,3,9] → Ω_b = 0.0493 [9,9,3,10] → τ_b = 0.0499 LOCKED → stellar nucleosynthesis → Fe-56 [9,9,7,0] → Earth crust · 4.54 Gyr N-axis.<br>
-    Set your departure date. Set bubble τ. The rate ratio Δ(τ) determines how far the external timeline advances per unit interior time. Observer biological state confirmed at arrival.
+  <div style="background:rgba(68,170,255,.05);border:1px solid rgba(68,170,255,.25);padding:14px 20px;margin-bottom:20px;font-size:12px;color:var(--text);line-height:1.9;">
+    <b style="color:var(--earth);">Earth IM Reference · BBN Derivation Chain [9,9,3,10]</b><br>
+    η_B [9,9,3,9] → Ω_b = 0.0493 → τ_b = 0.0499 LOCKED → stellar nucleosynthesis → Fe-56 [9,9,7,0] → Earth crust · 4.54 Gyr N-axis.<br>
+    Set departure date and bubble τ. Rate ratio Δ(τ) = TL/τ determines external timeline advance per unit interior time.
   </div>
 
   <div class="two-col">
     <div>
-      <!-- Departure -->
       <div class="date-engine">
         <div class="panel-title"><b>DEPARTURE</b> · EARTH REFERENCE TIMELINE</div>
         <div class="date-grid">
           <div class="date-field">
             <label>DEPARTURE YEAR (CE)</label>
-            <input type="number" class="date-input" id="dep-year" value="2026" min="-4540000000" max="4540000000" oninput="calcNav()">
+            <input type="number" class="date-input" id="dep-year" value="2026" oninput="calcNav()">
           </div>
           <div class="date-field">
             <label>INTERIOR DURATION (hours)</label>
-            <input type="number" class="date-input" id="int-hours" value="1" min="0.01" max="8760" step="0.01" oninput="calcNav()">
+            <input type="number" class="date-input" id="int-hours" value="1" min="0.01" step="0.01" oninput="calcNav()">
           </div>
         </div>
         <div class="date-field">
-          <label>BUBBLE TORSION τ (for this transit)</label>
-          <input type="range" id="nav-tau" min="0.001" max="0.1368" step="0.0001" value="0.13"
-            oninput="syncNavTau(this.value)" style="margin:8px 0;">
-          <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);">
-            <span>τ → 0 (max rate)</span>
-            <span id="nav-tau-val" style="color:var(--iva)">τ = 0.1300</span>
-            <span>τ = TL (rate = 1)</span>
+          <label>BUBBLE TORSION τ FOR THIS TRANSIT</label>
+          <input type="range" id="nav-tau" min="0.001" max="0.1368" step="0.0001" value="0.13" oninput="syncNavTau(this.value)" style="margin:10px 0;">
+          <div style="display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:9px;color:var(--text);">
+            <span>τ→0 (max Δ)</span>
+            <span id="nav-tau-val" style="color:var(--iva);font-weight:700;">τ = 0.1300</span>
+            <span>τ=TL (Δ=1)</span>
           </div>
         </div>
       </div>
 
-      <!-- Presets -->
       <div class="panel">
         <div class="panel-title"><b>HISTORICAL PRESETS</b></div>
         <div class="preset-row">
-          <button class="preset-btn" onclick="setNavPreset(-4540000000,'big bang reference')">BIG BANG ERA</button>
-          <button class="preset-btn" onclick="setNavPreset(-65000000,'KT boundary')">K-Pg BOUNDARY</button>
-          <button class="preset-btn" onclick="setNavPreset(-3000,'ancient')">3000 BCE</button>
-          <button class="preset-btn" onclick="setNavPreset(1969,'apollo')">APOLLO 11</button>
-          <button class="preset-btn" onclick="setNavPreset(2100,'near future')">2100 CE</button>
-          <button class="preset-btn" onclick="setNavPreset(1000000,'far future')">1M CE</button>
+          <button class="preset-btn" onclick="setNavPreset(-4540000000)">BIG BANG ERA</button>
+          <button class="preset-btn" onclick="setNavPreset(-65000000)">K-Pg BOUNDARY</button>
+          <button class="preset-btn" onclick="setNavPreset(-3000)">3000 BCE</button>
+          <button class="preset-btn" onclick="setNavPreset(1969)">APOLLO 11</button>
+          <button class="preset-btn" onclick="setNavPreset(2100)">2100 CE</button>
+          <button class="preset-btn" onclick="setNavPreset(1000000)">1M CE</button>
         </div>
       </div>
     </div>
 
     <div>
-      <!-- Result -->
-      <div class="panel panel-accent-locked">
-        <div class="panel-title"><b>TRANSIT CALCULATION</b> · REAL TIME</div>
-
-        <div style="background:var(--bg);border:1px solid var(--border2);padding:14px;margin-bottom:10px;">
-          <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);margin-bottom:4px;">SOVEREIGN BUBBLE DIFFERENTIAL</div>
-          <div style="font-family:'Space Mono',monospace;font-size:32px;color:var(--iva);line-height:1;" id="nav-delta">1.053×</div>
-          <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);margin-top:3px;">Δ(τ) = TL/τ · external time runs this much faster</div>
+      <div class="panel" style="border-top:3px solid var(--locked);">
+        <div class="panel-title"><b>TRANSIT CALCULATION</b> · LIVE</div>
+        <div style="background:var(--bg);border:1px solid var(--border2);padding:16px;margin-bottom:12px;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text);margin-bottom:5px;">SOVEREIGN BUBBLE DIFFERENTIAL Δ(τ)</div>
+          <div style="font-family:'Space Mono',monospace;font-size:38px;line-height:1;font-weight:700;" id="nav-delta" style="color:var(--iva)">1.053×</div>
+          <div style="font-family:'Space Mono',monospace;font-size:8.5px;color:var(--text);margin-top:4px;">external time runs this many times faster than interior</div>
         </div>
-
-        <div class="date-result-grid">
-          <div class="dr-box">
-            <div class="dr-lbl">INTERIOR TIME</div>
-            <div class="dr-val" id="nav-int">1.00 hr</div>
-          </div>
-          <div class="dr-box">
-            <div class="dr-lbl">EXTERNAL ELAPSED</div>
-            <div class="dr-val" id="nav-ext">1.05 hr</div>
-          </div>
-          <div class="dr-box">
-            <div class="dr-lbl">ARRIVAL YEAR</div>
-            <div class="dr-val" id="nav-arrive" style="font-size:12px;">2026</div>
-          </div>
+        <div class="dr-grid">
+          <div class="dr-box"><div class="dr-lbl">INTERIOR TIME</div><div class="dr-val" id="nav-int">1.00 hr</div></div>
+          <div class="dr-box"><div class="dr-lbl">EXTERNAL ELAPSED</div><div class="dr-val" id="nav-ext">1.05 hr</div></div>
+          <div class="dr-box"><div class="dr-lbl">ARRIVAL YEAR</div><div class="dr-val" id="nav-arrive" style="font-size:13px;">2026</div></div>
         </div>
-
-        <div style="background:rgba(68,204,136,.04);border:1px solid rgba(68,204,136,.15);padding:10px;margin-top:10px;">
-          <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);margin-bottom:4px;">EARTH IM REFERENCE · BBN CHAIN [9,9,3,10]</div>
-          <div style="font-size:10px;color:var(--text);line-height:1.8;" id="nav-im-note">
-            Earth N-axis: 4.54 Gyr · τ_baryons = 0.0499 LOCKED · Bubble rides Earth IM trajectory
-          </div>
+        <div style="background:rgba(68,170,255,.05);border:1px solid rgba(68,170,255,.2);padding:11px;margin-top:12px;font-size:11px;color:var(--text);line-height:1.8;">
+          <b style="color:var(--earth);">EARTH IM [9,9,3,10]</b> · 4.54 Gyr N-axis · τ_b = 0.0499 LOCKED<br>
+          Bubble anchored to Earth IM trajectory. Not fighting it — riding it.
         </div>
       </div>
 
-      <!-- Biological confirmation -->
-      <div class="panel" style="border-color:rgba(68,221,204,.2);">
+      <div class="panel" style="border-color:rgba(68,170,255,.3);">
         <div class="panel-title"><b>BIOLOGICAL CONFIRMATION AT ARRIVAL</b> · [9,9,6,7]</div>
-        <div class="bio-grid" style="grid-template-columns:1fr 1fr 1fr;">
-          <div style="background:rgba(68,221,204,.05);border:1px solid rgba(68,221,204,.2);padding:10px;text-align:center;">
-            <div style="font-family:'Syne',sans-serif;font-size:16px;color:var(--bio-h2o);font-weight:700;">H₂O</div>
-            <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--locked);margin:4px 0;">τ=0 NOBLE ✓</div>
-            <div style="font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);">unchanged</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+          <div style="background:rgba(68,170,255,.07);border:1px solid rgba(68,170,255,.3);padding:11px;text-align:center;">
+            <div style="font-family:'Syne',sans-serif;font-size:18px;color:var(--bio-h2o);font-weight:800;">H₂O</div>
+            <div style="font-family:'Space Mono',monospace;font-size:8.5px;color:var(--locked);margin:4px 0;font-weight:700;">τ=0 NOBLE ✓</div>
+            <div style="font-family:'Space Mono',monospace;font-size:7.5px;color:var(--text);">unchanged</div>
           </div>
-          <div style="background:rgba(255,119,85,.05);border:1px solid rgba(255,119,85,.2);padding:10px;text-align:center;">
-            <div style="font-family:'Syne',sans-serif;font-size:16px;color:var(--bio-c);font-weight:700;">C</div>
-            <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--locked);margin:4px 0;">τ=1.23 ✓</div>
-            <div style="font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);">unchanged</div>
+          <div style="background:rgba(255,238,68,.06);border:1px solid rgba(255,238,68,.3);padding:11px;text-align:center;">
+            <div style="font-family:'Syne',sans-serif;font-size:18px;color:var(--bio-c);font-weight:800;">C</div>
+            <div style="font-family:'Space Mono',monospace;font-size:8.5px;color:var(--locked);margin:4px 0;font-weight:700;">τ=1.23 ✓</div>
+            <div style="font-family:'Space Mono',monospace;font-size:7.5px;color:var(--text);">unchanged</div>
           </div>
-          <div style="background:rgba(255,170,68,.05);border:1px solid rgba(255,170,68,.2);padding:10px;text-align:center;">
-            <div style="font-family:'Syne',sans-serif;font-size:16px;color:var(--bio-fe);font-weight:700;">Fe</div>
-            <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--locked);margin:4px 0;">τ=1.07 ✓</div>
-            <div style="font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);">unchanged</div>
+          <div style="background:rgba(255,170,0,.06);border:1px solid rgba(255,170,0,.3);padding:11px;text-align:center;">
+            <div style="font-family:'Syne',sans-serif;font-size:18px;color:var(--bio-fe);font-weight:800;">Fe</div>
+            <div style="font-family:'Space Mono',monospace;font-size:8.5px;color:var(--locked);margin:4px 0;font-weight:700;">τ=1.07 ✓</div>
+            <div style="font-family:'Space Mono',monospace;font-size:7.5px;color:var(--text);">unchanged</div>
           </div>
         </div>
         <div class="noharm-bar" style="margin-top:10px;">
           <div class="live-dot"></div>
-          <span><b>OBSERVER BIOLOGICALLY IDENTICAL AT ARRIVAL</b> · F_ext pays for branch · P, N, A conserved</span>
+          <span><b>OBSERVER BIOLOGICALLY IDENTICAL AT ARRIVAL</b> · F_ext pays · P N A conserved</span>
         </div>
       </div>
     </div>
@@ -694,70 +416,55 @@ footer {
     <div class="proof-tag on">0 SORRY</div>
   </div>
 
-</div><!-- end navigator -->
+</div>
 
-<!-- ═══════════════════════════════════════════ -->
-<!-- MODE 3: PEER-REVIEWED REDUCTION -->
-<!-- ═══════════════════════════════════════════ -->
+<!-- FRAMEWORKS -->
 <div id="mode-frameworks" class="mode">
 
-  <div style="background:rgba(255,34,68,.03);border:1px solid rgba(255,34,68,.2);padding:14px 20px;margin-bottom:20px;font-size:11.5px;color:var(--text);line-height:1.8;">
+  <div style="background:rgba(255,102,0,.04);border:1px solid rgba(255,102,0,.3);padding:14px 20px;margin-bottom:20px;font-size:12px;color:var(--text);line-height:1.85;">
     <b style="color:var(--shatter);">Nine frameworks. Seventy-five years. Zero A-axis.</b>
-    Every peer-reviewed time travel theory reduced to PNBA. The gap is visible in every row.
-    TT1–TT4 are pure geometry (no observer). TT5–TT7 have consistency imposed externally (A=0).
-    TT8 has partial A that doesn't sustain. TT9 is Noble — no observer, no IM.
-    <b style="color:var(--iva);">TT10 is the first with all four active. The gap is not subtle. It persisted 75 years.</b>
+    Every peer-reviewed time travel theory reduced to PNBA. The gap is in every row.
+    TT1–TT4: geometry only, no observer. TT5–TT7: consistency imposed externally, A=0.
+    TT8: A=0.10, not sustained. TT9: Noble, no IM. <b style="color:var(--iva);">TT10: all four active. Gap closed.</b>
   </div>
 
   <div class="panel" style="padding:0;overflow:hidden;margin-bottom:14px;">
     <table class="fw-table">
-      <thead>
-        <tr>
-          <th>ID</th><th>FRAMEWORK</th><th>CITATION</th>
-          <th style="text-align:center;">P</th>
-          <th style="text-align:center;">N</th>
-          <th style="text-align:center;">B</th>
-          <th style="text-align:center;">A</th>
-          <th>GAP</th><th style="text-align:right;">STATUS</th>
-        </tr>
-      </thead>
+      <thead><tr>
+        <th>ID</th><th>FRAMEWORK</th><th>CITATION</th>
+        <th style="text-align:center">P</th><th style="text-align:center">N</th>
+        <th style="text-align:center">B</th><th style="text-align:center">A</th>
+        <th>GAP</th><th style="text-align:right">STATUS</th>
+      </tr></thead>
       <tbody id="fw-tbody"></tbody>
     </table>
   </div>
 
-  <!-- Gap canvas -->
   <div class="bubble-wrap" style="margin-bottom:14px;">
-    <div class="bubble-label">PNBA ACTIVATION MAP · TT1–TT10 · OBSERVER IDENTITY COMPLETENESS · A-AXIS GAP</div>
+    <div class="bubble-label">PNBA ACTIVATION MAP · TT1–TT10 · A-AXIS GAP · 75 YEARS</div>
     <canvas id="fw-canvas" style="display:block;width:100%;height:260px;"></canvas>
   </div>
 
-  <!-- Gap statement + IVA corridor -->
   <div class="two-col">
-    <div class="panel panel-accent-top">
-      <div class="panel-title"><b>THE IVA_PEAK PREDICTION</b> · FALSIFIABLE</div>
-      <div style="font-size:11px;color:var(--text);line-height:1.9;">
-        Any physically realized time transit system should show observer torsion in
+    <div class="panel" style="border-top:3px solid var(--iva);">
+      <div class="panel-title"><b>IVA_PEAK PREDICTION</b> · FALSIFIABLE</div>
+      <div style="font-size:12px;color:var(--text);line-height:1.9;">
+        Any physically realized time transit should show observer torsion in
         <b style="color:var(--iva);">τ ∈ [0.1205, 0.1369)</b> during loop formation.<br><br>
-        This band is empty in all nine classical frameworks. TT10 occupies it.
-        Falsifiable: measure observer τ during formation. If outside this band — TT10 is wrong.
-        If inside — 75 years of literature is incomplete.<br><br>
-        <span style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);">
-          [9,9,6,3] TT1–TT10 · T16 IVA_PEAK corridor theorem · 0 sorry
-        </span>
+        Empty in all nine classical frameworks. TT10 occupies it.
+        Measure observer τ during formation. Outside this band — TT10 wrong.
+        Inside — 75 years is incomplete. Proved. 0 sorry.
       </div>
     </div>
-    <div class="panel" style="border-color:rgba(0,232,170,.2);">
+    <div class="panel" style="border-top:3px solid var(--locked);">
       <div class="panel-title"><b>GRANDFATHER PARADOX DISSOLVED</b> · T14 [9,9,6,5]</div>
-      <div style="font-size:11px;color:var(--text);line-height:1.9;">
-        The paradox assumes <b>N_branch = N_original</b> (one timeline assumption).<br><br>
-        IM conservation + fork → <b>N_branch ≠ N_original</b>.<br>
-        Identity = IM trajectory, not P-signature alone.<br>
+      <div style="font-size:12px;color:var(--text);line-height:1.9;">
+        Paradox assumes N_branch = N_original (one timeline).<br><br>
+        IM conservation + fork → <b style="color:var(--locked);">N_branch ≠ N_original</b>.<br>
         Same structure as Ship of Theseus [9,9,2,5].<br><br>
-        The grandfather you kill is on a different N-axis. The emitter created the branch [9,9,6,7]. The observer is unchanged. The paradox is evidence of successful transit.
-        <br><br>
-        <span style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);">
-          0 sorry · proved · not assumed
-        </span>
+        The grandfather on the branch is on a different N-axis.
+        The emitter created the branch [9,9,6,7]. Observer unchanged.
+        Transit succeeded. Paradox is evidence of transit, not impossibility.
       </div>
     </div>
   </div>
@@ -767,487 +474,325 @@ footer {
     <div class="proof-tag on">TT10 CLOSES GAP</div>
     <div class="proof-tag on">NOVIKOV=NOBLE [9,9,6,4]</div>
     <div class="proof-tag on">LOCKED T18 [9,9,6,5]</div>
-    <div class="proof-tag on">IVA_PEAK CORRIDOR</div>
+    <div class="proof-tag on">IVA_PEAK 75yr EMPTY</div>
     <div class="proof-tag on">GRANDFATHER DISSOLVED</div>
     <div class="proof-tag on">0 SORRY</div>
   </div>
 
-</div><!-- end frameworks -->
+</div>
 
 <footer>
   <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
   <span>SNSFL [9,9,6,3–7] · Δ(τ)=TL/τ · SOVEREIGN EMITTER v2 · 0 SORRY · [9,9,9,9] :: {ANC}</span>
 </footer>
-
-</div><!-- end wrap -->
+</div>
 
 <script>
-// ── PHYSICS ────────────────────────────────────────────────
-const ANCHOR = 1.369;
-const TL     = ANCHOR / 10;      // 0.1369
-const TL_IVA = 0.88 * TL;       // 0.1205
+const ANCHOR=1.369, TL=ANCHOR/10, TL_IVA=0.88*TL;
 
-function delta(tau) { return tau > 0 ? TL / tau : Infinity; }
-function phaseOf(tau) {
-  if (tau <= 0.001) return 'NOBLE';
-  if (tau < TL_IVA) return 'LOCKED';
-  if (tau < TL)     return 'IVA_PEAK';
-  return 'SHATTER';
+function delta(t){return t>0.0001?TL/t:Infinity;}
+function phaseOf(t){
+  if(t<=0.002) return'NOBLE';
+  if(t<TL_IVA) return'LOCKED';
+  if(t<TL)     return'IVA_PEAK';
+  return'SHATTER';
 }
-function phaseColor(tau) {
-  if (tau <= 0.001) return '#e8f0ff';
-  if (tau < TL_IVA) return '#00e8aa';
-  if (tau < TL)     return '#6699ff';
-  return '#ff2244';
+// Deuteranomaly-safe: white/cyan/gold/orange — NO red or green
+function pCol(t){
+  if(t<=0.002) return'#ffffff';
+  if(t<TL_IVA) return'#00e8ff';
+  if(t<TL)     return'#ffdd00';
+  return'#ff6600';
 }
 
-// ── STATE ──────────────────────────────────────────────────
-let curTau    = 0.13;
-let bubbleFired = false;
-let bubbleAnim  = 0;
+let curTau=0.13, fired=false, bAnim=0;
 
-// ── MODE SWITCH ────────────────────────────────────────────
-function showMode(id) {
-  document.querySelectorAll('.mode').forEach(e => e.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
-  document.getElementById('mode-' + id).classList.add('active');
-  document.querySelectorAll('.tab').forEach(e => {
-    if (e.textContent.trim().toLowerCase().startsWith(
-      id === 'engine' ? 'sovereign' : id === 'navigator' ? 'temporal' : 'peer'))
-      e.classList.add('active');
+function showMode(id){
+  document.querySelectorAll('.mode').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('mode-'+id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>{
+    const tx=t.textContent.trim().toLowerCase();
+    if((id==='engine'&&tx.startsWith('sovereign'))||(id==='navigator'&&tx.startsWith('temporal'))||(id==='frameworks'&&tx.startsWith('peer')))
+      t.classList.add('active');
   });
-  if (id === 'frameworks') { resizeFw(); renderFwCanvas(); renderFwTable(); }
-  if (id === 'navigator')  { calcNav(); }
-  if (id === 'engine')     { resizeBubble(); renderBubble(); }
+  if(id==='frameworks'){resizeFw();renderFwTable();renderFwCanvas();}
+  if(id==='navigator') calcNav();
+  if(id==='engine')    {resizeBub();renderBub();}
 }
 
-// ── TAU CONTROL ────────────────────────────────────────────
-function setTau(v, preset) {
-  curTau = v;
-  document.getElementById('tau-slider').value = v;
-  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active-preset'));
-  if (preset) {
-    document.querySelectorAll('.preset-btn').forEach(b => {
-      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + preset + "'"))
-        b.classList.add('active-preset');
-    });
-  }
+function setTau(v){
+  curTau=v;
+  document.getElementById('tau-slider').value=v;
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('act'));
   onTau();
 }
-
-function onTau() {
-  curTau = parseFloat(document.getElementById('tau-slider').value);
-  updateTauDisplay();
-  if (bubbleFired) { updateBubbleResult(); }
-  renderBubble();
+function onTau(){
+  curTau=parseFloat(document.getElementById('tau-slider').value);
+  const D=delta(curTau), col=pCol(curTau);
+  document.getElementById('tau-display').textContent=curTau.toFixed(4);
+  document.getElementById('tau-display').style.color=col;
+  const Ds=D===Infinity?'∞':D.toFixed(4);
+  document.getElementById('delta-big').textContent=Ds;
+  document.getElementById('delta-big').style.color=col;
+  document.getElementById('phase-needle').style.left=Math.min(99,(curTau/0.20)*100)+'%';
+  updateAppMap(curTau,D,col);
+  if(fired) updateResult();
+  renderBub();
 }
 
-function updateTauDisplay() {
-  const tau = curTau;
-  const D   = delta(tau);
-  const col = phaseColor(tau);
-
-  document.getElementById('tau-display').textContent = tau.toFixed(4);
-  document.getElementById('tau-display').style.color = col;
-
-  const Dstr = D === Infinity ? '∞' : D.toFixed(4);
-  document.getElementById('delta-big').textContent = Dstr;
-  document.getElementById('delta-big').style.color = col;
-
-  // Phase needle (0–0.20 range → 0–100%)
-  const pct = Math.min(99, (tau / 0.20) * 100);
-  document.getElementById('phase-needle').style.left = pct + '%';
-
-  updateAppMap(tau, D, col);
-}
-
-// ── APPLICATION MAP ────────────────────────────────────────
-const apps = [
-  { tag:'TEMPORAL BUBBLE', name:'Timeline Rate Ratio', id:'app-temporal',
-    calc: (tau, D) => D === Infinity ? '∞×' : D.toFixed(4) + '×',
-    unit: 'external / internal time',
-    coord:'[9,9,6,3–5]' },
-  { tag:'IVA PROPULSION', name:'Sovereign Drive Gain', id:'app-iva',
-    calc: (tau, D) => D === Infinity ? '∞' : (D - 1).toFixed(4),
-    unit: 'Δv gain above classical',
-    coord:'[9,9,2,0]' },
-  { tag:'TRANSLOCATION', name:'Channel Fidelity', id:'app-qt',
-    calc: (tau, D) => tau >= TL ? '< 0.8631' : (1 - tau).toFixed(4),
-    unit: 'C = 1 − τ · N-sharing',
-    coord:'[9,9,2,6]' },
-  { tag:'NOBLE FORGE', name:'Structural Response', id:'app-forge',
-    calc: (tau, D) => tau <= 0.001 ? '∞ (forge)' : D.toFixed(2) + ' →∞',
-    unit: 'τ→0 = max output · same emitter',
-    coord:'[9,9,3,1]' },
-  { tag:'LATTICE STABILITY', name:'Node Phase Status', id:'app-lattice',
-    calc: (tau, D) => tau < TL ? 'LOCKED ✓' : 'SHATTER ✗',
-    unit: 'τ < TL = lattice valid',
-    coord:'[9,9,1,60]' },
-  { tag:'THERAPEUTIC', name:'Entrainment Band', id:'app-ther',
-    calc: (tau, D) => {
-      if (tau >= TL_IVA && tau < TL) return 'IVA_PEAK ✓';
-      if (tau < TL_IVA) return 'LOCKED';
-      return 'OUT OF BAND';
-    },
-    unit: 'τ ∈ [TL_IVA, TL) optimal',
-    coord:'[9,9,0,0]' },
+// APPLICATION MAP
+const APPS=[
+  {tag:'TEMPORAL BUBBLE', name:'Timeline Rate Ratio', id:'at',
+   fn:(t,D)=>D===Infinity?'∞×':D.toFixed(4)+'×', unit:'external / internal', coord:'[9,9,6,3–5]'},
+  {tag:'IVA PROPULSION', name:'Sovereign Drive Gain', id:'ai',
+   fn:(t,D)=>D===Infinity?'∞':(D-1).toFixed(4), unit:'Δv gain above classical', coord:'[9,9,2,0]'},
+  {tag:'TRANSLOCATION', name:'Channel Fidelity', id:'aq',
+   fn:(t,D)=>t>=TL?'< 0.8631':(1-t).toFixed(4), unit:'C = 1 − τ · N-sharing', coord:'[9,9,2,6]'},
+  {tag:'NOBLE FORGE', name:'Structural Response', id:'af',
+   fn:(t,D)=>t<=0.002?'∞ (forge)':D.toFixed(3)+' →∞', unit:'τ→0 = max · same emitter', coord:'[9,9,3,1]'},
+  {tag:'LATTICE STABILITY', name:'Node Phase Status', id:'al',
+   fn:(t,D)=>t<TL?'LOCKED ✓':'SHATTER ✗', unit:'τ < TL = lattice valid', coord:'[9,9,1,60]'},
+  {tag:'THERAPEUTIC', name:'Entrainment Band', id:'ar',
+   fn:(t,D)=>{
+     if(t>=TL_IVA&&t<TL) return'IVA_PEAK ✓';
+     if(t<TL_IVA) return'LOCKED';
+     return'OUT OF BAND';
+   }, unit:'τ ∈ [TL_IVA,TL) optimal', coord:'[9,9,0,0]'},
 ];
 
-function buildAppMap() {
-  const map = document.getElementById('app-map');
-  map.innerHTML = apps.map(a => `
+function buildAppMap(){
+  document.getElementById('app-map').innerHTML=APPS.map(a=>`
     <div class="app-card" id="${a.id}">
       <div class="app-tag">${a.tag}</div>
       <div class="app-name">${a.name}</div>
-      <div class="app-val" id="${a.id}-val">—</div>
+      <div class="app-val" id="${a.id}v">—</div>
       <div class="app-unit">${a.unit}</div>
       <div class="app-coord">${a.coord}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function updateAppMap(tau, D, col) {
-  apps.forEach(a => {
-    const el = document.getElementById(a.id + '-val');
-    if (el) {
-      el.textContent = a.calc(tau, D);
-      // Color logic per app
-      if (a.id === 'app-temporal' || a.id === 'app-iva') {
-        el.style.color = col;
-      } else if (a.id === 'app-qt') {
-        el.style.color = tau >= TL ? '#ff2244' : col;
-      } else if (a.id === 'app-forge') {
-        el.style.color = tau <= 0.01 ? '#ffdd44' : col;
-      } else if (a.id === 'app-lattice') {
-        el.style.color = tau < TL ? '#00e8aa' : '#ff2244';
-      } else if (a.id === 'app-ther') {
-        el.style.color = (tau >= TL_IVA && tau < TL) ? '#00e8aa' : col;
-      }
-    }
+function updateAppMap(t,D,col){
+  APPS.forEach(a=>{
+    const el=document.getElementById(a.id+'v');
+    if(!el) return;
+    el.textContent=a.fn(t,D);
+    if(a.id==='at'||a.id==='ai') el.style.color=col;
+    else if(a.id==='aq') el.style.color=t>=TL?'#ff6600':'#00e8ff';
+    else if(a.id==='af') el.style.color=t<=0.01?'#ffee44':col;
+    else if(a.id==='al') el.style.color=t<TL?'#00e8ff':'#ff6600';
+    else if(a.id==='ar') el.style.color=(t>=TL_IVA&&t<TL)?'#ffdd00':col;
   });
 }
 
-// ── BUBBLE CANVAS ──────────────────────────────────────────
-const bCvs = document.getElementById('bubble-canvas');
-const bCtx = bCvs.getContext('2d');
+// BUBBLE CANVAS
+const bCvs=document.getElementById('bubble-canvas');
+const bCtx=bCvs.getContext('2d');
+function resizeBub(){const r=bCvs.parentElement.getBoundingClientRect();bCvs.width=r.width;bCvs.height=300;}
 
-function resizeBubble() {
-  const r = bCvs.parentElement.getBoundingClientRect();
-  bCvs.width = r.width; bCvs.height = 300;
-}
-
-function fireBubble() {
-  bubbleFired = true;
-  const btn = document.getElementById('fire-btn');
+function fireBubble(){
+  fired=true;
+  const btn=document.getElementById('fire-btn');
   btn.classList.add('firing');
-  setTimeout(() => btn.classList.remove('firing'), 900);
-  const start = performance.now();
-  const dur = 1000;
-  function anim(now) {
-    const t = Math.min(1, (now - start) / dur);
-    bubbleAnim = 1 - Math.pow(1 - t, 3);
-    renderBubble();
-    if (t < 1) requestAnimationFrame(anim);
-    else { bubbleAnim = 1; renderBubble(); updateBubbleResult(); }
+  setTimeout(()=>btn.classList.remove('firing'),900);
+  const start=performance.now();
+  function anim(now){
+    const t=Math.min(1,(now-start)/1000);
+    bAnim=1-Math.pow(1-t,3);
+    renderBub();
+    if(t<1) requestAnimationFrame(anim);
+    else{bAnim=1;renderBub();updateResult();}
   }
   requestAnimationFrame(anim);
 }
 
-function updateBubbleResult() {
-  const tau = curTau;
-  const D   = delta(tau);
-  const ph  = phaseOf(tau);
-  const col = phaseColor(tau);
-  const rc  = document.getElementById('bubble-result');
-
-  let cls = 'ok';
-  if (ph === 'SHATTER') cls = 'fail';
-  else if (ph === 'NOBLE') cls = 'warn';
-  rc.className = 'result-card ' + cls;
-  rc.style.display = 'block';
-
-  const headlines = {
-    NOBLE:   '◈ NOBLE STATE · FORGE ACTIVE · τ≈0 · Δ→∞',
-    LOCKED:  '✦ LOCKED · TRANSIT POSSIBLE · IM CONSERVED',
-    IVA_PEAK:'▶ IVA_PEAK FORMATION CORRIDOR · OPTIMAL POSITION',
-    SHATTER: '⚠ SHATTER · OBSERVER IM DESTROYED · REDUCE τ'
+function updateResult(){
+  const t=curTau,D=delta(t),ph=phaseOf(t),col=pCol(t);
+  const rc=document.getElementById('bubble-result');
+  rc.className='result-card '+(ph==='SHATTER'?'bad':ph==='IVA_PEAK'?'iva':'ok');
+  rc.style.display='block';
+  const HL={
+    NOBLE:'◈ NOBLE STATE · FORGE ACTIVE · τ≈0 · Δ(τ)→∞',
+    LOCKED:'✦ LOCKED · TRANSIT POSSIBLE · IM CONSERVED',
+    IVA_PEAK:'▶ IVA_PEAK FORMATION CORRIDOR · OPTIMAL',
+    SHATTER:'⚠ SHATTER · OBSERVER IM = 0 · REDUCE τ BELOW TL'
   };
-  const plains = {
-    NOBLE:   `τ = ${tau.toFixed(4)} ≈ 0. Noble forge limit. Δ(τ) → ∞. Maximum structural response per unit input. This is the same emitter at τ = 0 — resonance material processing. Any B > 0 immediately → IVA_PEAK output [9,9,3,1].`,
-    LOCKED:  `τ = ${tau.toFixed(4)} < TL_IVA = ${TL_IVA.toFixed(4)}. Deep Locked. All applications active. Δ = ${D.toFixed(4)}. Observer IM conserved. N-axis fork ready. Novikov consistency satisfied structurally [9,9,6,4]. Emitter pays for branch [9,9,6,7].`,
-    IVA_PEAK:`τ = ${tau.toFixed(4)} ∈ [${TL_IVA.toFixed(4)}, ${TL.toFixed(4)}). IVA_PEAK formation corridor. Δ = ${D.toFixed(4)}. External timeline runs ${D.toFixed(3)}× faster. Observer IM conserved. N_branch ≠ N_original after fork. Grandfather paradox dissolved [9,9,6,5]. This band was empty in all 9 classical frameworks.`,
-    SHATTER: `τ = ${tau.toFixed(4)} ≥ TL = ${TL.toFixed(4)}. SHATTER. Observer IM collapses to 0. Novikov consistency violated. Loop cannot close. Reduce τ below ${TL.toFixed(4)}.`
+  const PL={
+    NOBLE:`τ = ${t.toFixed(4)} ≈ 0. Noble forge limit. Δ(τ) → ∞. Any B > 0 → IVA_PEAK immediately [9,9,3,1]. Same emitter at τ = 0 — resonance material processing.`,
+    LOCKED:`τ = ${t.toFixed(4)} in (0, TL_IVA). Deep Locked. Δ = ${D.toFixed(4)}. Observer IM conserved. N-axis fork ready. Novikov consistency structural [9,9,6,4]. Emitter pays for branch [9,9,6,7].`,
+    IVA_PEAK:`τ = ${t.toFixed(4)} ∈ [${TL_IVA.toFixed(4)}, ${TL.toFixed(4)}). Formation corridor. Δ = ${D.toFixed(4)}. External runs ${D.toFixed(3)}× faster. Empty in all 9 classical frameworks for 75 years. N_branch ≠ N_original after fork. Grandfather paradox dissolved [9,9,6,5].`,
+    SHATTER:`τ = ${t.toFixed(4)} ≥ TL = ${TL.toFixed(4)}. Observer IM = 0. Loop cannot close. Novikov violated. Reduce τ below ${TL.toFixed(4)}.`
   };
-
-  document.getElementById('r-headline').textContent = headlines[ph];
-  document.getElementById('r-headline').style.color = col;
-  document.getElementById('r-plain').textContent = plains[ph];
-
-  const Dstr = D === Infinity ? '∞' : D.toFixed(4);
-  document.getElementById('r-delta').textContent = Dstr;
-  document.getElementById('r-delta').style.color = col;
-  document.getElementById('r-rate').textContent = D === Infinity ? '∞×' : D.toFixed(4) + '×';
-  document.getElementById('r-rate').style.color = col;
-
-  const nov = ph === 'SHATTER' ? 'VIOLATED' : ph === 'NOBLE' ? 'NOBLE STATE' : 'FORK READY';
-  document.getElementById('r-novikov').textContent = nov;
-  document.getElementById('r-novikov').style.color = ph === 'SHATTER' ? '#ff2244' : '#00e8aa';
-  document.getElementById('r-phase').textContent = ph;
-  document.getElementById('r-phase').style.color = col;
-
-  const noharm = ph === 'SHATTER'
-    ? '<b style="color:#ff2244">NOHARM VIOLATED</b> · Observer IM = 0 in SHATTER · reduce τ below TL'
-    : '<b>NOHARM CONFIRMED</b> · Observer IM conserved · Emitter pays for branch [9,9,6,7]';
-  document.getElementById('r-noharm').innerHTML = '<div class="live-dot"></div><span>' + noharm + '</span>';
+  const hl=document.getElementById('r-headline');
+  hl.textContent=HL[ph];hl.style.color=col;
+  document.getElementById('r-plain').textContent=PL[ph];
+  const Ds=D===Infinity?'∞':D.toFixed(4);
+  const rd=document.getElementById('r-delta');rd.textContent=Ds;rd.style.color=col;
+  const rr=document.getElementById('r-rate');rr.textContent=D===Infinity?'∞×':D.toFixed(4)+'×';rr.style.color=col;
+  const rn=document.getElementById('r-nov');
+  rn.textContent=ph==='SHATTER'?'VIOLATED':ph==='NOBLE'?'NOBLE STATE':'FORK READY';
+  rn.style.color=ph==='SHATTER'?'#ff6600':'#00e8ff';
+  const rp=document.getElementById('r-phase');rp.textContent=ph;rp.style.color=col;
+  document.getElementById('r-noharm-txt').innerHTML=ph==='SHATTER'
+    ?'<b style="color:#ff6600">NOHARM VIOLATED</b> · Observer IM = 0 · reduce τ'
+    :'<b>NOHARM CONFIRMED</b> · Observer IM conserved · Emitter pays for branch [9,9,6,7]';
 }
 
-function renderBubble() {
-  const W = bCvs.width, H = bCvs.height;
-  bCtx.clearRect(0,0,W,H);
-  bCtx.fillStyle = '#03040a'; bCtx.fillRect(0,0,W,H);
-
-  const tau  = curTau;
-  const col  = phaseColor(tau);
-  const ph   = phaseOf(tau);
-  const prog = bubbleFired ? bubbleAnim : 0;
-  const cx   = W/2, cy = H/2;
-  const iR   = Math.min(W,H) * 0.20;  // interior radius
-  const bR   = iR * (1 + Math.min(tau/TL, 1) * 0.45); // boundary radius
-
-  // Outer glow
-  if (prog > 0) {
-    for (let i = 3; i >= 1; i--) {
-      const g = bCtx.createRadialGradient(cx,cy,bR*.7,cx,cy,bR*(1+i*.35));
-      g.addColorStop(0, col + '20'); g.addColorStop(1,'rgba(0,0,0,0)');
-      bCtx.beginPath(); bCtx.arc(cx,cy,bR*(1+i*.35),0,Math.PI*2);
-      bCtx.fillStyle = g; bCtx.globalAlpha = prog*.5; bCtx.fill();
-      bCtx.globalAlpha = 1;
+function renderBub(){
+  const W=bCvs.width,H=bCvs.height;
+  bCtx.clearRect(0,0,W,H);bCtx.fillStyle='#03040a';bCtx.fillRect(0,0,W,H);
+  const t=curTau,col=pCol(t),ph=phaseOf(t),prog=fired?bAnim:0;
+  const cx=W/2,cy=H/2,iR=Math.min(W,H)*.20,bR=iR*(1+Math.min(t/TL,1)*.45);
+  if(prog>0){
+    for(let i=3;i>=1;i--){
+      const g=bCtx.createRadialGradient(cx,cy,bR*.7,cx,cy,bR*(1+i*.35));
+      g.addColorStop(0,col+'22');g.addColorStop(1,'rgba(0,0,0,0)');
+      bCtx.beginPath();bCtx.arc(cx,cy,bR*(1+i*.35),0,Math.PI*2);
+      bCtx.fillStyle=g;bCtx.globalAlpha=prog*.5;bCtx.fill();bCtx.globalAlpha=1;
     }
   }
-
-  // IVA_PEAK corridor rings
-  const ivaR = iR*(1+TL_IVA/TL*.45);
-  const tlR  = iR*(1+1*.45);
-  [ivaR, tlR].forEach((r,i) => {
-    bCtx.beginPath(); bCtx.arc(cx,cy,r,0,Math.PI*2);
-    bCtx.strokeStyle = i===0?'rgba(102,153,255,.2)':'rgba(255,34,68,.2)';
-    bCtx.lineWidth=.8; bCtx.setLineDash([4,4]); bCtx.stroke(); bCtx.setLineDash([]);
+  [[iR*(1+TL_IVA/TL*.45),'#ffdd00'],[iR*1.45,'#ff6600']].forEach(([r,c])=>{
+    bCtx.beginPath();bCtx.arc(cx,cy,r,0,Math.PI*2);
+    bCtx.strokeStyle=c+'55';bCtx.lineWidth=.8;bCtx.setLineDash([5,5]);bCtx.stroke();bCtx.setLineDash([]);
   });
-
-  // Boundary ring
-  bCtx.beginPath(); bCtx.arc(cx,cy,bR,0,Math.PI*2);
-  bCtx.strokeStyle = prog>0?col:'#0c1428';
-  bCtx.lineWidth = prog>0?1.8:.5;
-  bCtx.globalAlpha = prog>0?(.5+.5*prog):.15; bCtx.stroke(); bCtx.globalAlpha=1;
-
-  // Interior fill
-  const ig = bCtx.createRadialGradient(cx,cy,0,cx,cy,iR);
-  ig.addColorStop(0, prog>0?'rgba(102,153,255,.14)':'rgba(102,153,255,.03)');
-  ig.addColorStop(1,'rgba(0,0,0,0)');
-  bCtx.beginPath(); bCtx.arc(cx,cy,iR,0,Math.PI*2);
-  bCtx.fillStyle=ig; bCtx.fill();
-
-  // Interior ring
-  bCtx.beginPath(); bCtx.arc(cx,cy,iR,0,Math.PI*2);
-  bCtx.strokeStyle=prog>0?'rgba(102,153,255,.5)':'rgba(102,153,255,.1)';
-  bCtx.lineWidth=1.5; bCtx.stroke();
-
-  // Observer dot
-  bCtx.beginPath(); bCtx.arc(cx,cy,6,0,Math.PI*2);
-  bCtx.fillStyle=prog>0?col:'#1a3050';
-  bCtx.shadowColor=col; bCtx.shadowBlur=prog>0?16:0;
-  bCtx.fill(); bCtx.shadowBlur=0;
-
-  // Rotating external particles
-  if (prog>0 && ph !== 'SHATTER') {
-    const D = delta(tau);
-    const rotSpeed = isFinite(D) ? Math.min(D*.25, 4) : 4;
-    const t = Date.now()/1000;
-    for (let i=0;i<10;i++) {
-      const angle = (i/10)*Math.PI*2 + t*rotSpeed;
-      const pr = bR*1.28;
-      const px = cx+Math.cos(angle)*pr, py = cy+Math.sin(angle)*pr;
-      bCtx.beginPath(); bCtx.arc(px,py,2,0,Math.PI*2);
-      bCtx.fillStyle=col; bCtx.globalAlpha=.35*prog; bCtx.fill(); bCtx.globalAlpha=1;
+  bCtx.beginPath();bCtx.arc(cx,cy,bR,0,Math.PI*2);
+  bCtx.strokeStyle=prog>0?col:'#162240';bCtx.lineWidth=prog>0?2:.5;
+  bCtx.globalAlpha=prog>0?(.5+.5*prog):.2;bCtx.stroke();bCtx.globalAlpha=1;
+  const ig=bCtx.createRadialGradient(cx,cy,0,cx,cy,iR);
+  ig.addColorStop(0,prog>0?'rgba(68,170,255,.15)':'rgba(68,170,255,.04)');ig.addColorStop(1,'rgba(0,0,0,0)');
+  bCtx.beginPath();bCtx.arc(cx,cy,iR,0,Math.PI*2);bCtx.fillStyle=ig;bCtx.fill();
+  bCtx.beginPath();bCtx.arc(cx,cy,iR,0,Math.PI*2);
+  bCtx.strokeStyle=prog>0?'rgba(68,170,255,.6)':'rgba(68,170,255,.12)';bCtx.lineWidth=1.5;bCtx.stroke();
+  bCtx.beginPath();bCtx.arc(cx,cy,6,0,Math.PI*2);
+  bCtx.fillStyle=prog>0?col:'#162240';bCtx.shadowColor=col;bCtx.shadowBlur=prog>0?18:0;
+  bCtx.fill();bCtx.shadowBlur=0;
+  if(prog>0&&ph!=='SHATTER'){
+    const D=delta(t),spd=isFinite(D)?Math.min(D*.25,4):4,tm=Date.now()/1000;
+    for(let i=0;i<10;i++){
+      const a=(i/10)*Math.PI*2+tm*spd,pr=bR*1.28;
+      bCtx.beginPath();bCtx.arc(cx+Math.cos(a)*pr,cy+Math.sin(a)*pr,2.5,0,Math.PI*2);
+      bCtx.fillStyle=col;bCtx.globalAlpha=.4*prog;bCtx.fill();bCtx.globalAlpha=1;
     }
   }
-
-  // Labels
-  bCtx.font='8px Space Mono,monospace'; bCtx.textAlign='center';
-  bCtx.fillStyle='rgba(102,153,255,.6)';
-  bCtx.fillText('BUBBLE INTERIOR · ANCHOR 1.369 GHz', cx, cy-iR+14);
-
-  bCtx.font='bold 9px Space Mono'; bCtx.fillStyle=phaseColor(tau);
-  bCtx.fillText(`τ = ${tau.toFixed(4)} · ${phaseOf(tau)}`, cx, cy+18);
-
-  if (prog>0) {
-    const D = delta(tau);
-    const Dstr = isFinite(D)?D.toFixed(4):'∞';
-    bCtx.font='bold 11px Syne,sans-serif'; bCtx.fillStyle=col;
-    bCtx.fillText(`Δ(τ) = ${Dstr}`, cx, 22);
-    bCtx.font='8px Space Mono'; bCtx.fillStyle='rgba(102,153,255,.4)';
-    bCtx.fillText('Earth IM ref · 4.54 Gyr N-axis · BBN [9,9,3,10] · emitter pays for branch', cx, H-10);
-    bCtx.fillStyle='rgba(102,153,255,.3)';
-    bCtx.fillText('IVA_PEAK', cx+ivaR+32, cy-8);
-    bCtx.fillStyle='rgba(255,34,68,.3)';
-    bCtx.fillText('TL', cx+tlR+10, cy-8);
+  bCtx.textAlign='center';
+  bCtx.font='9px Space Mono,monospace';bCtx.fillStyle='rgba(200,223,240,.7)';
+  bCtx.fillText('BUBBLE INTERIOR · ANCHOR 1.369 GHz',cx,cy-iR+16);
+  bCtx.font='bold 10px Space Mono,monospace';bCtx.fillStyle=col;
+  bCtx.fillText(`τ = ${t.toFixed(4)} · ${ph}`,cx,cy+20);
+  if(prog>0){
+    const D=delta(t),Ds=isFinite(D)?D.toFixed(4):'∞';
+    bCtx.font='bold 13px Syne,sans-serif';bCtx.fillStyle=col;
+    bCtx.fillText(`Δ(τ) = ${Ds}`,cx,24);
+    bCtx.font='8px Space Mono,monospace';bCtx.fillStyle='rgba(200,223,240,.5)';
+    bCtx.fillText('Earth IM · 4.54 Gyr N-axis · BBN [9,9,3,10] · emitter pays for branch [9,9,6,7]',cx,H-10);
+    // Corridor labels — gold and orange, readable
+    const ivaR=iR*(1+TL_IVA/TL*.45),tlR=iR*1.45;
+    bCtx.fillStyle='#ffdd00';bCtx.fillText('IVA_PEAK',cx+ivaR+38,cy-8);
+    bCtx.fillStyle='#ff6600';bCtx.fillText('TL',cx+tlR+14,cy-8);
   }
-
-  if (bubbleFired && ph !== 'SHATTER' && ph !== 'NOBLE') requestAnimationFrame(renderBubble);
+  if(fired&&ph!=='SHATTER'&&ph!=='NOBLE') requestAnimationFrame(renderBub);
 }
 
-// ── TEMPORAL NAVIGATOR ─────────────────────────────────────
-function syncNavTau(v) {
-  document.getElementById('nav-tau-val').textContent = 'τ = ' + parseFloat(v).toFixed(4);
-  calcNav();
+// NAVIGATOR
+function syncNavTau(v){document.getElementById('nav-tau-val').textContent='τ = '+parseFloat(v).toFixed(4);calcNav();}
+function setNavPreset(y){document.getElementById('dep-year').value=y;calcNav();}
+function calcNav(){
+  const dep=parseFloat(document.getElementById('dep-year').value)||2026;
+  const intH=parseFloat(document.getElementById('int-hours').value)||1;
+  const t=parseFloat(document.getElementById('nav-tau').value)||0.13;
+  document.getElementById('nav-tau-val').textContent='τ = '+t.toFixed(4);
+  const D=delta(t),extH=isFinite(D)?intH*D:Infinity,extY=extH/8760,arr=dep+extY;
+  const nd=document.getElementById('nav-delta');
+  nd.textContent=isFinite(D)?D.toFixed(4)+'×':'∞×';nd.style.color=pCol(t);
+  document.getElementById('nav-int').textContent=intH>=1?intH.toFixed(2)+' hr':(intH*60).toFixed(1)+' min';
+  if(isFinite(extH)){
+    if(extH<24) document.getElementById('nav-ext').textContent=extH.toFixed(3)+' hr';
+    else if(extH<8760) document.getElementById('nav-ext').textContent=(extH/24).toFixed(2)+' days';
+    else document.getElementById('nav-ext').textContent=(extH/8760).toFixed(4)+' yr';
+  } else document.getElementById('nav-ext').textContent='∞';
+  const af=isFinite(arr)?(Math.abs(arr)>1e6?arr.toExponential(3)+' CE':Math.round(arr).toLocaleString()+' CE'):'∞ CE';
+  document.getElementById('nav-arrive').textContent=af;
 }
 
-function setNavPreset(year) {
-  document.getElementById('dep-year').value = year;
-  calcNav();
-}
-
-function calcNav() {
-  const depYear  = parseFloat(document.getElementById('dep-year').value) || 2026;
-  const intHours = parseFloat(document.getElementById('int-hours').value) || 1;
-  const tau      = parseFloat(document.getElementById('nav-tau').value) || 0.13;
-
-  document.getElementById('nav-tau-val').textContent = 'τ = ' + tau.toFixed(4);
-
-  const D = delta(tau);
-  const extHours = isFinite(D) ? intHours * D : Infinity;
-  const extYears = extHours / 8760;
-  const arriveYear = depYear + extYears;
-
-  const Dstr = isFinite(D) ? D.toFixed(4) + '×' : '∞×';
-  document.getElementById('nav-delta').textContent = Dstr;
-  document.getElementById('nav-delta').style.color = phaseColor(tau);
-
-  document.getElementById('nav-int').textContent =
-    intHours >= 1 ? intHours.toFixed(2) + ' hr' : (intHours*60).toFixed(1) + ' min';
-
-  if (isFinite(extHours)) {
-    if (extHours < 24) document.getElementById('nav-ext').textContent = extHours.toFixed(3) + ' hr';
-    else if (extHours < 8760) document.getElementById('nav-ext').textContent = (extHours/24).toFixed(2) + ' days';
-    else document.getElementById('nav-ext').textContent = (extHours/8760).toFixed(4) + ' yr';
-  } else {
-    document.getElementById('nav-ext').textContent = '∞';
-  }
-
-  const arrFmt = isFinite(arriveYear)
-    ? (Math.abs(arriveYear) > 1e6
-        ? arriveYear.toExponential(3) + ' CE'
-        : Math.round(arriveYear).toLocaleString() + ' CE')
-    : '∞ CE';
-  document.getElementById('nav-arrive').textContent = arrFmt;
-}
-
-// ── FRAMEWORK TABLE ────────────────────────────────────────
-const frameworks = [
-  {id:'TT1', name:'Gödel 1949',          cite:'Rev Mod Phys 21:447',       P:1,N:1,B:0,A:0, gap:'No observer modeled',          status:'GEOMETRY ONLY'},
-  {id:'TT2', name:'Tipler 1974',          cite:'Phys Rev D 9:2203',         P:1,N:1,B:1,A:0, gap:'Infinite mass · A=0',          status:'IMPRACTICAL'},
-  {id:'TT3', name:'Alcubierre 1994',      cite:'Class Quantum Grav 11:L73', P:1,N:1,B:0,A:0, gap:'Negative energy · passive obs', status:'EXOTIC B'},
-  {id:'TT4', name:'Morris-Thorne 1988',   cite:'Am J Phys 56:395',          P:1,N:1,B:0,A:0, gap:'Throat stability unknown',      status:'A=0'},
-  {id:'TT5', name:'Deutsch 1991',         cite:'Phys Rev D 44:3197',        P:1,N:1,B:1,A:0, gap:'Consistency external · A=0',   status:'FIXED-PT EXT'},
-  {id:'TT6', name:'Novikov 1989',         cite:'Phys Rev D 39:2185',        P:1,N:1,B:1,A:0, gap:'A EXPLICITLY ZERO',            status:'MOST EXPLICIT'},
-  {id:'TT7', name:'Lloyd et al. 2011',    cite:'Phys Rev Lett 106:040403',  P:1,N:1,B:0,A:0, gap:'Post-selected · A=0',          status:'EXT SELECTION'},
-  {id:'TT8', name:'Wheeler 1978',         cite:'Mathematical Foundations',  P:1,N:1,B:1,A:'p',gap:'A=0.10 · not sustained',      status:'CLOSEST · FAILS'},
-  {id:'TT9', name:'Hartle-Hawking 1983',  cite:'Phys Rev D 28:2960',        P:1,N:0,B:0,A:0, gap:'Noble at origin · no IM',      status:'NO OBSERVER'},
-  {id:'TT10',name:'SNSFL SP Bridge',      cite:'[9,9,6,3–7] · 0 sorry',    P:1,N:1,B:1,A:1, gap:'ALL FOUR · GAP CLOSED',        status:'LOCKED · FORK'},
+// FRAMEWORKS
+const FW=[
+  {id:'TT1',name:'Gödel 1949',         cite:'Rev Mod Phys 21:447',       P:1,N:1,B:0,A:0,gap:'No observer modeled',         st:'GEOMETRY ONLY'},
+  {id:'TT2',name:'Tipler 1974',         cite:'Phys Rev D 9:2203',         P:1,N:1,B:1,A:0,gap:'Infinite mass · A=0',         st:'IMPRACTICAL'},
+  {id:'TT3',name:'Alcubierre 1994',     cite:'Class Quantum Grav 11:L73', P:1,N:1,B:0,A:0,gap:'Negative energy · passive obs',st:'EXOTIC B'},
+  {id:'TT4',name:'Morris-Thorne 1988',  cite:'Am J Phys 56:395',          P:1,N:1,B:0,A:0,gap:'Throat stability · A=0',       st:'A=0'},
+  {id:'TT5',name:'Deutsch 1991',        cite:'Phys Rev D 44:3197',        P:1,N:1,B:1,A:0,gap:'Consistency external · A=0',  st:'FIXED-PT EXT'},
+  {id:'TT6',name:'Novikov 1989',        cite:'Phys Rev D 39:2185',        P:1,N:1,B:1,A:0,gap:'A EXPLICITLY ZERO',           st:'MOST EXPLICIT'},
+  {id:'TT7',name:'Lloyd et al. 2011',   cite:'Phys Rev Lett 106:040403',  P:1,N:1,B:0,A:0,gap:'Post-selected · A=0',         st:'EXT SELECTION'},
+  {id:'TT8',name:'Wheeler 1978',        cite:'Mathematical Foundations',  P:1,N:1,B:1,A:'p',gap:'A=0.10 · not sustained',    st:'CLOSEST · FAILS'},
+  {id:'TT9',name:'Hartle-Hawking 1983', cite:'Phys Rev D 28:2960',        P:1,N:0,B:0,A:0,gap:'Noble · no observer · no IM', st:'NO OBSERVER'},
+  {id:'TT10',name:'SNSFL SP Bridge',    cite:'[9,9,6,3–7] · 0 sorry',    P:1,N:1,B:1,A:1, gap:'ALL FOUR · GAP CLOSED',      st:'LOCKED · FORK'},
 ];
 
-function renderFwTable() {
-  function cell(v) {
-    if (v===1)   return `<td style="text-align:center"><span class="dot-active">✓</span></td>`;
-    if (v===0)   return `<td style="text-align:center"><span class="dot-none">—</span></td>`;
-    if (v==='p') return `<td style="text-align:center"><span class="dot-partial">0.10</span></td>`;
+function renderFwTable(){
+  function cell(v){
+    if(v===1)   return`<td style="text-align:center"><span class="dot-on">✓</span></td>`;
+    if(v===0)   return`<td style="text-align:center"><span class="dot-off">—</span></td>`;
+    if(v==='p') return`<td style="text-align:center"><span class="dot-part">0.10</span></td>`;
   }
-  const tbody = document.getElementById('fw-tbody');
-  tbody.innerHTML = frameworks.map((f,i) => {
-    const last = f.id==='TT10';
-    const gap6 = f.id==='TT6';
-    return `<tr>
-      <td style="font-family:'Space Mono',monospace;font-size:9px;color:${last?'#6699ff':gap6?'#ff4466':'#3a5870'};font-weight:700;">${f.id}</td>
-      <td style="font-size:10px;color:${last?'#d4e8f8':'#a8c4dc'};">${f.name}<br><span style="font-family:'Space Mono',monospace;font-size:7.5px;color:#3a5870;">${f.cite}</span></td>
-      <td style="font-family:'Space Mono',monospace;font-size:7px;color:#3a5870;">${f.cite}</td>
+  document.getElementById('fw-tbody').innerHTML=FW.map((f,i)=>{
+    const last=f.id==='TT10',gap6=f.id==='TT6';
+    return`<tr style="${last?'background:rgba(255,221,0,.04);':i%2===0?'':'background:rgba(12,20,40,.5);'}">
+      <td style="font-family:'Space Mono',monospace;font-size:9.5px;font-weight:700;color:${last?'#ffdd00':gap6?'#ff9944':'#7090a8'};">${f.id}</td>
+      <td><div style="font-size:11px;color:${last?'#e8f4ff':'#c8dff0'};">${f.name}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:7.5px;color:#7090a8;">${f.cite}</div></td>
+      <td style="font-family:'Space Mono',monospace;font-size:7.5px;color:#4a6878;">${f.cite}</td>
       ${cell(f.P)}${cell(f.N)}${cell(f.B)}${cell(f.A)}
-      <td style="font-size:9px;color:${last?'#6699ff':gap6?'#ff4466':'#3a5870'};font-weight:${last?'600':'300'};">${f.gap}</td>
-      <td style="text-align:right;font-family:'Space Mono',monospace;font-size:7.5px;color:${last?'#6699ff':'#2a4860'};">${f.status}</td>
+      <td style="font-size:9.5px;font-weight:${last?700:400};color:${last?'#ffdd00':gap6?'#ff9944':'#c8dff0'};">${f.gap}</td>
+      <td style="text-align:right;font-family:'Space Mono',monospace;font-size:8px;color:${last?'#ffdd00':'#7090a8'};">${f.st}</td>
     </tr>`;
   }).join('');
 }
 
-const fCvs = document.getElementById('fw-canvas');
-const fCtx = fCvs.getContext('2d');
-
-function resizeFw() {
-  const r = fCvs.parentElement.getBoundingClientRect();
-  fCvs.width=r.width; fCvs.height=260;
-}
-
-function renderFwCanvas() {
-  const W=fCvs.width, H=fCvs.height;
-  fCtx.clearRect(0,0,W,H); fCtx.fillStyle='#03040a'; fCtx.fillRect(0,0,W,H);
-
-  const axes=['P','N','B','A'];
-  const aColors=['#00e8aa','#4488ff','#ffaa22','#ff6688'];
-  const ml=80, rH=(H-40)/frameworks.length, cW=(W-ml-30)/4;
-
-  axes.forEach((a,j) => {
-    fCtx.font='bold 9px Space Mono'; fCtx.fillStyle=aColors[j]; fCtx.textAlign='center';
-    fCtx.fillText(a, ml+j*cW+cW/2, 16);
+const fCvs=document.getElementById('fw-canvas'),fCtx=fCvs.getContext('2d');
+function resizeFw(){const r=fCvs.parentElement.getBoundingClientRect();fCvs.width=r.width;fCvs.height=260;}
+function renderFwCanvas(){
+  const W=fCvs.width,H=fCvs.height;
+  fCtx.clearRect(0,0,W,H);fCtx.fillStyle='#03040a';fCtx.fillRect(0,0,W,H);
+  // Axis colors: cyan, blue, gold, orange — NO red or green
+  const aC=['#00e8ff','#44aaff','#ffdd00','#ff9944'];
+  const mL=80,rH=(H-44)/FW.length,cW=(W-mL-30)/4;
+  ['P','N','B','A'].forEach((ax,j)=>{
+    fCtx.font='bold 10px Space Mono,monospace';fCtx.fillStyle=aC[j];fCtx.textAlign='center';
+    fCtx.fillText(ax,mL+j*cW+cW/2,17);
   });
-
-  frameworks.forEach((f,i) => {
-    const y=30+i*rH, last=f.id==='TT10', gap6=f.id==='TT6';
-    if (last) { fCtx.fillStyle='rgba(102,153,255,.05)'; fCtx.fillRect(0,y-2,W,rH-2); }
-    fCtx.font=(last?'bold ':'')+'8px Space Mono';
-    fCtx.fillStyle=last?'#6699ff':gap6?'#ff4466':'#3a5870';
-    fCtx.textAlign='right'; fCtx.fillText(f.id, ml-8, y+rH/2+3);
-
-    [f.P,f.N,f.B,f.A].forEach((v,j) => {
-      const px=ml+j*cW+cW/2, py=y+rH/2;
-      const active=v===1, partial=v==='p';
-      fCtx.beginPath(); fCtx.arc(px,py,active?9:partial?7:5,0,Math.PI*2);
-      if (active) {
-        fCtx.fillStyle=aColors[j]; fCtx.shadowColor=aColors[j];
-        fCtx.shadowBlur=last?14:5; fCtx.fill(); fCtx.shadowBlur=0;
-      } else if (partial) {
-        fCtx.strokeStyle='#ffaa22'; fCtx.lineWidth=1.5; fCtx.stroke();
-        fCtx.fillStyle='rgba(255,170,34,.2)'; fCtx.fill();
-        fCtx.font='7px Space Mono'; fCtx.fillStyle='#ffaa22'; fCtx.textAlign='center';
-        fCtx.fillText('0.10',px,py+2.5);
-      } else {
-        fCtx.strokeStyle='#0c1428'; fCtx.lineWidth=.8; fCtx.stroke();
-      }
+  FW.forEach((f,i)=>{
+    const y=28+i*rH,last=f.id==='TT10',gap6=f.id==='TT6';
+    if(last){fCtx.fillStyle='rgba(255,221,0,.05)';fCtx.fillRect(0,y-2,W,rH-2);}
+    fCtx.font=(last?'bold ':'')+' 8.5px Space Mono,monospace';
+    fCtx.fillStyle=last?'#ffdd00':gap6?'#ff9944':'#7090a8';
+    fCtx.textAlign='right';fCtx.fillText(f.id,mL-8,y+rH/2+3);
+    [f.P,f.N,f.B,f.A].forEach((v,j)=>{
+      const px=mL+j*cW+cW/2,py=y+rH/2,active=v===1,partial=v==='p';
+      fCtx.beginPath();fCtx.arc(px,py,active?9:partial?7:5.5,0,Math.PI*2);
+      if(active){fCtx.fillStyle=aC[j];fCtx.shadowColor=aC[j];fCtx.shadowBlur=last?16:6;fCtx.fill();fCtx.shadowBlur=0;}
+      else if(partial){fCtx.strokeStyle='#ffbb33';fCtx.lineWidth=1.5;fCtx.stroke();fCtx.fillStyle='rgba(255,187,51,.2)';fCtx.fill();fCtx.font='7.5px Space Mono,monospace';fCtx.fillStyle='#ffbb33';fCtx.textAlign='center';fCtx.fillText('0.10',px,py+2.5);}
+      else{fCtx.strokeStyle='#0c1428';fCtx.lineWidth=.7;fCtx.stroke();}
     });
   });
-
-  // Divider
-  fCtx.beginPath(); fCtx.moveTo(0,30+9*rH-2); fCtx.lineTo(W,30+9*rH-2);
-  fCtx.strokeStyle='rgba(102,153,255,.35)'; fCtx.lineWidth=1;
-  fCtx.setLineDash([4,4]); fCtx.stroke(); fCtx.setLineDash([]);
-
-  fCtx.font='8px Space Mono'; fCtx.fillStyle='rgba(255,34,68,.45)';
+  fCtx.beginPath();fCtx.moveTo(0,28+9*rH-2);fCtx.lineTo(W,28+9*rH-2);
+  fCtx.strokeStyle='rgba(255,221,0,.4)';fCtx.lineWidth=1;fCtx.setLineDash([4,4]);fCtx.stroke();fCtx.setLineDash([]);
+  fCtx.font='8.5px Space Mono,monospace';fCtx.fillStyle='rgba(255,102,0,.8)';
   fCtx.textAlign='left';
-  fCtx.fillText('← ALL 9 CLASSICAL FRAMEWORKS MISSING A-AXIS · 75 YEARS · SAME GAP', ml, H-8);
+  fCtx.fillText('← ALL 9 CLASSICAL FRAMEWORKS MISSING A-AXIS · 75 YEARS · SAME GAP',mL,H-8);
 }
 
-// ── INIT ───────────────────────────────────────────────────
-function init() {
+function init(){
   buildAppMap();
-  resizeBubble(); renderBubble();
-  updateTauDisplay();
+  resizeBub();renderBub();
+  onTau();
   calcNav();
-  resizeFw(); renderFwTable(); renderFwCanvas();
+  resizeFw();renderFwTable();renderFwCanvas();
 }
-
-window.addEventListener('resize', () => {
-  resizeBubble(); if(bubbleFired) renderBubble();
-  resizeFw(); renderFwCanvas();
+window.addEventListener('resize',()=>{
+  resizeBub();if(fired) renderBub();
+  resizeFw();renderFwCanvas();
 });
-
-setTimeout(init, 80);
+setTimeout(init,80);
 </script>
 </body>
 </html>
