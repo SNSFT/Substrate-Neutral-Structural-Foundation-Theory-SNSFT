@@ -289,7 +289,7 @@ The standard cosmological model reduces losslessly to PNBA. The cosmological sta
 
 ## VI. The Corpus
 
-**103,118+ theorems · 5,945 files · 2,245,402 Total Lines of Code 0 sorry · April 2026**
+**200,000+ theorems · 21,045+ files · 3,000,000+ Total Lines of Code 0 sorry · May 2026**
 
 | Series | Files | Theorems | Sorry | Key Result |
 | :--- | :---: | :---: | :---: | :--- |
