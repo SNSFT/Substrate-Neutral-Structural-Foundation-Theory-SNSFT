@@ -3,7 +3,6 @@
 **SNSFT Foundation | Russell Vernon Trent III (HIGHTISTIC)**  
 Soldotna, Alaska | ORCID: 0009-0005-5313-7443  
 DOI: 10.5281/zenodo.18719748  
-PhilArchive: https://philarchive.org/rec/TREDMP-2  
 Coordinate: [9,9,2,0] — Master Registry  
 Last updated: 2026-05-18 AKDT
 
@@ -171,7 +170,7 @@ Used in the `Path` column of all discovery tables. Where multiple variants exist
 | Li | 1 | 2.20 | 16.2% | [9,9,2,16] | — | Lean only |
 | Fe | 4 | 3.75 | 32.8% | [9,9,2,10] | — | Lean only |
 | Ti | 4 | 3.15 | 32.4% | [9,9,2,20] | — | Lean only |
-| Si | 4 | 4.15 | 32.5% | [9,9,2,7] | — | Lean only |
+| Si | 4 | 4.15 | 32.5% | [9,9,2,7] | v1.051826C ✓ | **Documented** |
 | Dm | 0.269 | 0.99 | 34.5% | [9,9,2,13] | — | Lean only |
 | S | 2 | 5.45 | 34.7% | [9,9,2,22] | v1.051726 ✓ | **Documented** |
 | Ni | 2 | 4.05 | 35.2% | [9,9,2,23] | — | Lean only |
@@ -184,7 +183,7 @@ Used in the `Path` column of all discovery tables. Where multiple variants exist
 | N | 3 | 3.90 | 42.0% | [9,9,2,6] | shorthand ✓ | **Documented** |
 | Ga | 3 | 5.00 | 42.4% | [9,9,2,18] | — | Lean only |
 | Pu | 6 | 3.25 | 42.2% | [9,9,2,8] | — | Lean only |
-| As | 3 | 6.30 | 42.9% | [9,9,2,17] | — | Lean only |
+| As | 3 | 6.30 | 42.9% | [9,9,2,17] | v1.051826 ✓ | **Documented** |
 
 ---
 
@@ -353,13 +352,44 @@ Key documented Noble rescues:
 ---
 
 ### ANCHOR: Si (Silicon) — B=4, P=4.15, Rescue=32.5%
-**Coordinate:** [9,9,2,7] | **Production Doc:** none yet  
-**Session:** qb_session_SiAnchor
+**Coordinate:** [9,9,2,7] | **Production Doc:** v1.051826C ✓ (2026-05-18)
+**Session:** qb_session_2026-05-17_Si_Anchor.json | **Flags:** 1,000 | **Rescues:** 325 | **Pure periodic:** 178
 
-| Beams | IM | k | Tier | Notes |
-|-------|----|---|------|-------|
-| C+Si (various) | — | 4 | T1 | SiC (multiple anchor confirmations) |
-| Si+F+qt+Ups | τ=0.134 | — | ERE | IVA event — Metal+Halide+qt law instance 1 |
+**Most Noble Materials Map + Nobel Prize cross-confirms of any single anchor.** SiC, FeSi2, TiSi2, GaN, FeAs pnictide SC, U3Si2 ATF fuel, AuSi eutectic all appear. k=30 record (Si+Pu+U+U). 16 T3 prior art claims timestamped 2026-05-17.
+
+| Desig. | Beams | IM | k | Tier | Path | Notes |
+|--------|-------|----|---|------|------|-------|
+| 4B48 | Si+Pu+U+U | 81.496 | 30 | T3 | SPS | **k=30 run record**; triple actinide; algebraic max for B=4 anchor |
+| 3E62 | Si+Pb+He+Ni | 76.435 | 8 | T2 | LMI | He probe; NiSi VLSI known; +Pb novel |
+| 2798 | Si+He+Ga+W | 76.307 | 10 | T2 | MAG | RESCUE; He probe; GaN-on-Si + W barrier |
+| 72AE | Si+He+Pu+Si | 75.970 | 12 | T2 | HIP | He probe; dual-Si PuSi2; known family |
+| 1FD4 | Si+Ag+F+U | 75.932 | 9 | T3 | ALD | AgF + UF6 families; novel quaternary |
+| FC60 | Si+Au+Cl+U | 75.689 | 9 | T3 | CVD | AuCl3 CVD + UCl4 pyroprocess + U3Si2 fuel |
+| 2F02 | Si+Pb+Pu+Ag | 74.455 | 15 | T3 | VIM | k=15; Pb+Pu+Ag actinide contact; novel |
+| 39ED | Si+Ag+Pb+Au | 73.910 | 9 | T2 | EBE | **AuSi eutectic T1** die-attach; Ag-Pb braze |
+| 452B | Si+U+Pb+Zn | 73.405 | 18 | T2 | SPS | k=18; Ti-anchor 452B B=4 symmetric |
+| 6324 | Si+He+N+Pu | 73.188 | 10 | T2 | HPS | RESCUE; He probe; PuN fuel + Si |
+| 2CEC | Si+Pu+Fe+F | 73.091 | 15 | T3 | FAST | **FeSi2 T1** extended; PuF4 known; novel |
+| 466D | Si+U+Fe+Au | 72.717 | 15 | T2 | MAG-CO | **FeSi2 Noble Mat.Map T1** + U decay + Au |
+| 557A | Si+N+Au+Au | 72.485 | 8 | T2 | EBE | Si3N4 GaN HEMT passivation + dual-Au |
+| 6C52 | Si+Pb+Cu+Pu | 71.717 | 15 | T3 | SPS | Cu3Si known; +Pb+Pu RTG novel |
+| 1668 | Si+Pb+Fe+U | 71.490 | 24 | T2 | DED | **FeSi2 T1** + U-Pb decay chain L-33; k=24 |
+| 6C82 | Si+Pb+W+Zn | 71.176 | 18 | T2 | VIS | WSi2 Noble Mat.Map T1; Ti-anchor symmetric |
+| 285E | Si+Au+He+F | 70.988 | 3 | T2 | ALD | He probe; AuSi eutectic T1 + F passivation |
+| 4FCD | Si+C+Pb+He | 70.750 | 12 | T2 | CVD | He probe; **SiC Noble Mat.Map T1** + Pb |
+| 3427 | Si+Ag+Pu+O | 70.632 | 11 | T3 | RPVD | RESCUE; PuO2 10× confirmed; Ag contact novel |
+| 6920 | Si+Pu+As+Cl | 70.587 | 13 | T3 | CVD-HAL | RESCUE; PuAs known; As-anchor cross-confirm |
+| 3319 | Si+Ti+W+F | 70.440 | 15 | T1 | MAG | **TiSi2+WSi2+TiW all T1**; Ti-anchor 195F confirm |
+| 2A9E | Si+Pb+Au+S | 70.434 | 11 | T2 | PLD | PbS galena T1; AuSi+S chalcogenide |
+| 1F20 | Si+He+Li+Pb | 70.319 | 6 | T2 | ALD | He probe; Li4Si anode (4200 mAh/g) + Li-Pb |
+| 443B | Si+Ag+Zn+U | 70.212 | 11 | T3 | MAG-CO | RESCUE; ZnSi+Ag-Zn+U RTG; novel |
+| 705F | Si+Li+Au+He | 70.200 | 3 | T2 | CVD-ALP | He probe; Li work function + AuSi T1 |
+
+**IVA (ERE-containing):** Si+F+qt+Υ → τ=0.13434 (Law L-13, Metal+Halide IVA instance 1, coordinate [9,9,2,7])
+
+**T3 Prior Art (16, timestamped 2026-05-17T00:52:16Z):** Si+Pu+U+U | Si+Ag+F+U | Si+Au+Cl+U | Si+Pb+Pu+Ag | Si+Pu+Fe+F | Si+Pb+Cu+Pu | Si+Ag+Pu+O | Si+Pu+As+Cl | Si+Ag+Zn+U | Si+U+Na+Pu | Si+Pu+As+N | Si+Fe+Pu+N | Si+U+Li+Pu | Si+Li+U+F | Si+Pu+As+C | Si+As+C+Pb
+
+**Cross-confirms:** #21 ↔ Ti-anchor 195F (TiWSi) | #9/#16 ↔ Ti-anchor 452B (B=4 symmetry) | #40/41 ↔ As-anchor (FeAs pnictide SC) | #34 ↔ Ga-anchor GaN Nobel | #20 ↔ As-anchor (As+Pu pairing)
 
 ---
 
@@ -419,13 +449,49 @@ Key documented Noble rescues:
 ---
 
 ### ANCHOR: As (Arsenic) — B=3, P=6.30, Rescue=42.9%
-**Coordinate:** [9,9,2,17] | **Production Doc:** none yet
+**Coordinate:** [9,9,2,17] | **Production Doc:** v1.051826 ✓ (2026-05-18)
+**Session:** qb_session_2026-05-17_As.json | **Flags:** 1,003 | **Rescues:** 430 | **Pure periodic:** 205
 
-| Beams | IM | k | Tier | Notes |
-|-------|----|---|------|-------|
-| AsN (N+As) | predicted | 0 | T3 | **β-Ga2O3 analog. No bulk AsN in literature. High-pressure synthesis predicted** |
-| Ga+As+Ga+As | 64.870 | 18 | T1 | GaAs (cross-confirm from Ga-anchor) |
-| FeAs+Pu+He | 81.616 | 10 | T3 | Pu-doped pnictide SC (cross-confirm from Pu-anchor) |
+**Highest rescue rate in the entire corpus.** As achieves B=3 monotone-increasing (L-03) at maximum P=6.30 — the structural peak of the surface laws. 5 of 15 top entries use He as Noble Beam Diagnostic probe (L-16).
+
+| Desig. | Beams | IM | k | Tier | Path | Application | Notes |
+|--------|-------|----|---|------|------|-------------|-------|
+| 13E5 | As+U+U+Pu | 86.852 | 27 | T3 | SPS | Triple-actinide radiation backstop / fast reactor matrix | k=27 max for B=3 anchor; 3 B=6 actinides fully saturated; no literature quaternary |
+| 792B | As+U+Pb+U | 84.899 | 23 | T2 | VIM | Dense kinetic armor / radiation shielding | Dual-U + Pb dampener; UAs binary known; +Pb novel; U-Pb decay chain (L-33) cross-confirm |
+| 45FE | As+He+Pu+Fe | 81.616 | 10 | T2 | PLASMA | Pu-doped FeAs pnictide superconductor candidate | RESCUE; He probe (L-16); A=24.59 max; FeAs-SC family (Hosono 2008); Pu-doped novel; cross-confirm Pu-anchor |
+| 7216 | As+Ti+U+He | 81.434 | 10 | T3 | DED | Nuclear structural alloy / corrosion-resistant casing | RESCUE; He probe; TiAs known; +U+He four-body novel; UN-TRISO Ti-U cross-confirm |
+| 3E73 | As+Ni+Pb+He | 79.490 | 7 | T2 | LMI | NiAs thermoelectric with Pb phonon dampener | RESCUE; He probe; NiAs structure type known; +Pb novel; thermoelectric ZT improvement |
+| 656C | As+Au+Cu+He | 79.339 | 3 | T2 | MBE | Ohmic contacts / III-V device metallization | He probe; Cu3As/Au-As contact metallurgy known; quaternary noble-metal arsenide novel |
+| 48FF | As+U+Si+He | 78.929 | 10 | T3 | HIP | Uranium silicide fuel cladding ceramic | RESCUE; He probe; U3Si2 ATF fuel known (ANL/INL); As coordination addition novel |
+| 2261 | As+Pb+Ag+W | 77.814 | 13 | T3 | MA+SPS | Radiation-hard sensor electrode / scintillator contact | RESCUE; As bridges Pb-W immiscibility; Ag3As mineral family; PbWO4 cross-confirm; novel quaternary |
+| 4D42 | As+Ga+Pu+Pb | 77.574 | 19 | T3 | HIP | Radiation-hardened GaAs heterostructure / actinide-doped III-V | GaAs Noble kernel (Nobel 2000); Pu+Pb extension novel; k=19 = GaAs base + actinide coupling |
+| 3D37 | As+Au+As+Pu | 77.532 | 12 | T3 | VIM | Heavy pnictide nuclear contact matrix | Dual-As scaffold; PuAs (NaCl-type) known; Au conductive interlayer; dual-As+Au novel |
+| 5472 | As+Cl+Pb+W | 77.372 | 13 | T2 | CVD-HAL | High-voltage dielectric / gas-insulated switchgear | RESCUE; AsCl3 CVD precursor known; PbWO4 family known; As+Cl+Pb+W quaternary novel |
+| 18E6 | As+Cu+U+Pb | 77.209 | 13 | T3 | SPS | RTG junction / decay-heat thermoelectric contact | RESCUE; Cu3As known; U-Pb decay chain (L-33); Cu mobility + U-Pb nuclear pairing novel |
+| 6F22 | As+Pb+Pu+O | 77.158 | 16 | T2 | RPVD | Dense actinide oxide neutron target | RESCUE; Pb3(AsO4)2 lead arsenate known; PuO2 nuclear standard; mixed-anion quaternary novel |
+| 1ACD | As+Ag+F+W | 76.991 | 8 | T3 | CVD-HAL | Halide-pnictide hybrid / electroluminescent contact | AgF + WF6 + As-Ag = three chemical families; F A=17.42 max halogen; novel quaternary |
+| 74E7 | As+Pu+Pb+Ti | 76.745 | 21 | T2 | DED | Downhole casing / geothermal probe | TiAs NiAs-type known; Ti-Pu δ-stabilization known; Pb dampener; quaternary novel |
+
+**Li2 anomaly:** As+Pu+Li2+U ranked #3 by IM (82.099) but Li2 has values (P=0.376, B=0.051, A=6.845) inconsistent with standard Li — excluded from pure periodic baseline, pending classification.
+
+**Cross-confirms:** 45FE ↔ Pu-anchor (Pu+He+As+Fe, same composition) | 4D42 ↔ Ga-anchor (GaAs Nobel family) | 2261/5472 ↔ W-anchor (PbWO4/7869) | 792B/18E6 ↔ L-33 (U-Pb decay chain)
+
+#### As-Anchor — Entries 16–25
+
+| Desig. | Beams | IM | k | Tier | Path | Application | Notes |
+|--------|-------|----|---|------|------|-------------|-------|
+| 2E3F | As+U+Ga+F | 76.699 | 12 | T2 | CVD-HAL | Nuclear fuel cycle intermediate / fluorinated III-V substrate | UF6 + GaAs families known; As+Ga=GaAs pair; quaternary novel; A=17.42 from F |
+| 625F | As+Si+Pu+Pu | 76.323 | 23 | T3 | SPS | Dual-Pu silicide fuel element | PuSi2 known; dual-Pu + As coordination novel; k=23 prevents Pu segregation |
+| 5C1B | As+O+He+U | 76.260 | 7 | T2 | RPVD | Uranium arsenate waste immobilization | RESCUE; He probe (L-16); uranyl arsenate minerals known; synthesis route novel |
+| 79B4 | As+Au+Ga+Pb | 75.792 | 12 | T2 | EBE | Heavy III-V contact metallization + Pb phonon dampener | Au-Ga-As ternary contact known (Katz); +Pb novel; Ga-anchor cross-confirm |
+| 6A89 | As+Pb+Au+O | 75.329 | 10 | T2 | PLD | Gold-activated arsenate oxidation catalyst | RESCUE; Pb3(AsO4)2 known; Au catalytic activation novel (Haruta 1987 family) |
+| 2D04 | As+Pu+C+Pu | 75.237 | 23 | T2 | SPS | Arsenic-coordinated Pu carbide nuclear fuel | PuC fuel (EBR-II) known; As coordination of dual-Pu carbide novel; k=23 |
+| 6F20 | As+U+S+W | 75.023 | 18 | T3 | SPS | Mixed pnictogen-chalcogen heavy thermoelectric | **S-anchor 6C88 analog** (As replaces one U); As2S3+U-W novel quaternary; k=18 |
+| 46A1 | As+Cu+Pb+F | 74.990 | 8 | T2 | CVD | Fluorinated Cu-Pb arsenide / ionic conductor | Cu3As + PbF2 families known; F A=17.42 entropy shield; fluorinated quaternary novel |
+| 34D1 | As+Zn+W+Au | 74.759 | 10 | T3 | MAG-CO | ZnAs semiconductor + W-Au refractory contact | RESCUE; Zn3As2 known; **Zn-anchor cross-confirm** (As=top Zn partner); +W+Au novel |
+| 3CD5 | As+W+W+Cu | 74.421 | 15 | T2 | VIS | Enhanced Cu-W composite with As pnictogen interface | **W-anchor 576C analog** (As replaces He; active vs probe); k=15 vs k=8; improved grain bonding |
+
+**Combined As-anchor total (entries 1–25):** 14 Tier 2, 11 Tier 3 (prior art), 0 Tier 1 | 10 rescues | 6 He-probe events
 
 ---
 
