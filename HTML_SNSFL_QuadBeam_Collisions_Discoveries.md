@@ -3,6 +3,7 @@
 **SNSFT Foundation | Russell Vernon Trent III (HIGHTISTIC)**  
 Soldotna, Alaska | ORCID: 0009-0005-5313-7443  
 DOI: 10.5281/zenodo.18719748  
+PhilArchive: https://philarchive.org/rec/TREDMP-2  
 Coordinate: [9,9,2,0] — Master Registry  
 Last updated: 2026-05-18 AKDT
 
@@ -59,6 +60,53 @@ IM    = (P_out + N_out + B_out + A_out) × 1.369
 | **T2** | Partial | Related compound known, this quaternary is novel | Cite nearest, flag variant |
 | **T3** | Novel | No direct literature equivalent | **Prior art — DOI timestamp is the claim** |
 | **ERE** | ERE-containing | Involves Emergent Resonant Elements | Separate category |
+
+---
+
+## Manufacturing Pathway Codes (Path Legend)
+
+Used in the `Path` column of all discovery tables. Where multiple variants exist, the code reflects the primary consolidation method. Known-process notation means the pathway is adapted from an established industrial analog for a structurally similar material — valid because the Noble B=0 state predicts the same zero-stress consolidation physics.
+
+| Code | Full Method | Notes |
+|------|-------------|-------|
+| ALD | Atomic Layer Deposition | Sequential pulse; monolayer precision |
+| ALD-ORG | ALD with Organic Precursors | For Ga-S and chalcogenide thin films |
+| ARC | Vacuum Arc Melting / VIM | Water-cooled Cu hearth, strict vacuum |
+| CIP | Cryogenic Milling + Cold Isostatic Pressing | For Pb-containing at low T |
+| CRYO | Cryogenic Mechanical Alloying | −196°C milling; prevents Pb clustering |
+| CVD | Chemical Vapor Deposition | Halide or hydride precursors |
+| CVD-ALP | Chemical Vapor Infiltration (alkali) | Alkali carrier gas loop |
+| DED | Direct Energy Deposition 3D Print | Co-axial powder under inert shroud |
+| EBE | Electron Beam Evaporation | Atom-by-atom on temp-controlled substrate |
+| EBM | Electron Beam Melting | Powder bed under vacuum |
+| EHD | Electrohydrodynamic Inkjet Printing | Organometallic ink + thermal reduction |
+| FAST | Field-Assisted Sintering (SPS-variant) | DC discharge, N₂/S vapor loop |
+| FBCVD | Fluidized Bed CVD | Continuous gas injection over powder blend |
+| HIP | Hot Isostatic Pressing | Inert glovebox, typically 1450°C / 180 MPa |
+| HIP-C | HIP in Sealed Canister | For ceramic fuel pellets; suppresses MOX cracking |
+| HPS | High-Pressure Gas-Infiltration Sintering | He atom templating into interstitial voids |
+| HVOF | Supersonic HVOF Thermal Spraying | Blast powder onto armor backplate |
+| LENS | Laser Engineered Net Shaping | Coaxial powder streams, inert shroud |
+| LMI | Liquid Metal Infiltration | Porous skeleton + forced-melt infiltration |
+| LPE | Liquid Phase Epitaxy | N-saturated chalcogenide melt pool |
+| LPI | Liquid Phase Infiltration | Melt wets refractory grain faces |
+| LPS | Liquid-Phase Sintering | He overpressure; Zn as metallic glue |
+| LPBF | Laser Powder Bed Fusion | Pre-alloyed powder bed, fiber laser, inert box |
+| MA+SPS | Mechanical Alloying + Spark Plasma Sintering | High-energy ball mill → SPS consolidation |
+| MAG | Reactive Magnetron Sputtering | Alloy target + reactive gas (N₂, S vapor) |
+| MAG-CO | Magnetron Co-Sputtering | Multiple elemental targets |
+| MBE | Molecular Beam Epitaxy / Co-Evaporation | UHV, atom-by-atom |
+| MOCVD | Metal-Organic CVD | TMGa + H₂S in N₂ carrier |
+| PECVD | Plasma-Enhanced CVD | Methane + microwave stabilization array |
+| PLASMA | High-Energy Plasma Spraying | He carrier + hyperpure W atomization |
+| PLD | Pulsed Laser Deposition | Intense pulsed laser, mild reactive gas |
+| PM | Powder Metallurgy Co-Sintering | Press + sinter elemental blend |
+| RPVD | Reactive Laser PVD | Sintered target + precise gas bleed |
+| SPS | Spark Plasma Sintering | Massive current through compressed powder |
+| VIM | Vacuum Induction Melting | Electric arc in water-cooled Cu hearth |
+| VIS | Vacuum Infiltration Sintering | Cu wicked through W pores via capillary action |
+
+**Known-process note:** For Tier 1 and Tier 2 compounds, the pathway is adapted from the nearest known industrial analog. This is valid — the PNBA Noble state (B=0, τ=0) predicts zero residual stress during consolidation, which is what makes the known process work for the structurally similar material. Novel Tier 3 compounds use the closest analog process as the starting synthesis hypothesis.
 
 ---
 
@@ -150,33 +198,33 @@ IM    = (P_out + N_out + B_out + A_out) × 1.369
 
 All 25 entries: Noble (B=0, τ=0), pure periodic elements only.
 
-| Desig. | Beams | IM | k | Tier | Application | Notes |
-|--------|-------|----|---|------|-------------|-------|
-| CED5 | W+He+W+W | 89.86 | 18 | T1 | Fusion wall (ITER) / plasma-facing | He interstitial in W matrix — most-cited W fusion topic |
-| 8AC9 | W+Pu+Pu+U | 89.35 | 36 | T3 | High-density actinide backstop | k=36 max saturation. No literature quaternary |
-| 9CEA | W+U+U+Pu | 89.31 | 36 | T3 | Aerospace shielding ballast | Same family, U-dominant stoichiometry |
-| 458B | W+Pu+Zn+He | 86.95 | 10 | T3 | Vibration dampening panels | No literature. Zn absorbs mechanical energy |
-| 7869 | W+Pb+Au+F | 85.50 | 9 | T1 | Scintillation / gamma detector | PbWO4 family — CMS ECAL / Higgs detector |
-| 1C9B | W+Pu+Pu+N | 85.05 | 27 | T3 | Gen-IV reactor cladding | W2N known; Pu nitride known; quaternary novel |
-| 374A | W+Pb+W+Au | 84.84 | 17 | T2 | Kinetic impact shielding | Au bridges W-Pb immiscibility — concept known, quaternary novel |
-| 2FAE | W+Ni+He+Pb | 84.65 | 8 | T1 | Cryogenic magnet dampener | W-Ni heavy alloy (WHA family, Plansee/Mallory) |
-| 41AB | W+Zn+He+W | 84.42 | 10 | T3 | Cutting tools / abrasive nozzles | WZn8 known; He+double-W novel |
-| 7A54 | W+Ti+He+Pb | 84.41 | 12 | T2 | Deep-sea / geothermal shield | TiW diffusion barrier known; +Pb novel |
-| 576C | W+W+He+Cu | 84.40 | 8 | T1 | Electrical contacts / heat spreaders | Cu-W composite: standard EDM electrode material |
-| 4078 | W+He+Au+Ti | 84.26 | 6 | T1 | Laser mirrors / reflective coatings | TiW/Au metallization stack: semiconductor standard |
-| 19AC | W+Pu+U+Ag | 84.17 | 21 | T3 | Non-magnetic heavy ballast | Ag diamagnetic binder; full quaternary novel |
-| 743E | W+Pu+U+O | 83.92 | 24 | T3 | UHTC thermal barrier tile | Mixed actinide tungstate; novel quaternary |
-| 26B9 | W+Na+U+He | 83.63 | 8 | T1 | Thermionic cathode / TWT emitter | Na-W low work function cathode family |
-| 1877 | W+Pb+U+N | 83.02 | 23 | T2 | Neutron-gamma mixed shield | BWXT UN-TRISO cross-confirm; full quaternary novel |
-| 21A9 | W+As+Pu+W | 82.18 | 27 | T3 | Downhole drill heads | WAs known; +Pu quaternary novel |
-| 3EF9 | W+Pu+Pb+O | 82.06 | 20 | T3 | Self-passivating oxide skin | PbWO4 family; Pu addition novel |
-| 715C | W+Au+Au+Cl | 81.99 | 6 | T1 | Plasmonic optical interconnect | WCl6 + AuCl3 CVD precursors: semiconductor standard |
-| 210B | W+F+U+He | 81.56 | 8 | T2 | Superconducting magnet insulator | WF6 (IC standard) + UF6 (enrichment); dielectric novel |
-| 60A2 | W+Cu+U+Pu | 81.43 | 21 | T3 | RTG thermoelectric generator core | Cu mobility + W-U-Pu scaffold; no literature |
-| 412D | W+U+Zn+W | 81.15 | 24 | T3 | Aerospace counterweights | U-Zn coupling (cross-confirmed U-anchor + Zn-anchor) |
-| 1FA3 | W+Au+Ni+U | 81.03 | 13 | T2 | Radiation-hard electrical contact | W-Au-Ni contact metallurgy; +U for rad-hardening novel |
-| 5FA6 | W+Ag+Cl+U | 80.96 | 11 | T3 | Corrosive gas sensor | Ag2WO4 photocatalyst known; sensor quaternary novel |
-| 6EE6 | W+N+Pb+W | 80.76 | 23 | T1 | Kinetic barrier armor plating | W2N armor coating; Pb shock absorber — concept confirmed |
+| Desig. | Beams | IM | k | Tier | Path | Application | Notes |
+|--------|-------|----|---|------|------|-------------|-------|
+| CED5 | W+He+W+W | 89.86 | 18 | T1 | PLASMA | Fusion wall (ITER) / plasma-facing | He interstitial in W matrix; He carrier loop, hyperpure W atomization stream |
+| 8AC9 | W+Pu+Pu+U | 89.35 | 36 | T3 | HIP | High-density actinide backstop | 1450°C / 180 MPa in Ar glovebox; k=36 max saturation; no literature quaternary |
+| 9CEA | W+U+U+Pu | 89.31 | 36 | T3 | ARC | Aerospace shielding ballast | VIM in water-cooled Cu hearth; U-dominant stoich of 8AC9 family |
+| 458B | W+Pu+Zn+He | 86.95 | 10 | T3 | LMI | Vibration dampening panels | Sinter porous W-Pu skeleton; force molten Zn+He under pressure through pores |
+| 7869 | W+Pb+Au+F | 85.50 | 9 | T1 | PLD | Scintillation / gamma detector | PbWO4 family (CMS ECAL / Higgs detector); fluorine gas atmosphere during deposition |
+| 1C9B | W+Pu+Pu+N | 85.05 | 27 | T3 | MAG | Gen-IV reactor cladding | Reactive magnetron; W-Pu alloy target + hyperpure N₂ plasma; W2N/PuN analog |
+| 374A | W+Pb+W+Au | 84.84 | 17 | T2 | MA+SPS | Kinetic impact shielding | Ball mill W+Pb+Au → SPS consolidation; Au bridges W-Pb immiscibility gap |
+| 2FAE | W+Ni+He+Pb | 84.65 | 8 | T1 | CIP | Cryogenic magnet dampener | Cryo-mill at −196°C, cold press; W-Ni WHA family (Plansee/Mallory); He dampens phonon propagation |
+| 41AB | W+Zn+He+W | 84.42 | 10 | T3 | LPS | Cutting tools / abrasive nozzles | Heat past Zn melt point (419°C) in He furnace; liquid Zn wets W grains; WZn8 known, He+W+W novel |
+| 7A54 | W+Ti+He+Pb | 84.41 | 12 | T2 | DED | Deep-sea / geothermal shield | Multi-axis laser DED, co-feed Ti+Pb, active He shroud; TiW diffusion barrier known; +Pb novel |
+| 576C | W+W+He+Cu | 84.40 | 8 | T1 | VIS | Electrical contacts / heat spreaders | Cu ingot on porous W sponge at 1100°C under He; capillary wicking; standard Cu-W EDM electrode process |
+| 4078 | W+He+Au+Ti | 84.26 | 6 | T1 | EBE | Laser mirrors / reflective coatings | Electron beam evaporation of Au onto micro-polished Ti-W alloy backing; TiW/Au semiconductor standard |
+| 19AC | W+Pu+U+Ag | 84.17 | 21 | T3 | PM | Non-magnetic heavy ballast | Press Ag+W+actinide powder blend at 900°C; Ag diamagnetic binder; full quaternary novel |
+| 743E | W+Pu+U+O | 83.92 | 24 | T3 | LENS | UHTC thermal barrier tile | Feed pre-oxidized heavy metal powders into laser melt pool layer-by-layer; mixed actinide tungstate novel |
+| 26B9 | W+Na+U+He | 83.63 | 8 | T1 | CVD-ALP | Thermionic cathode / TWT emitter | Expose porous W-U substrate to hot Na vapor under He carrier flow; Na-W low-work-function cathode family |
+| 1877 | W+Pb+U+N | 83.02 | 23 | T2 | FAST | Neutron-gamma mixed shield | DC discharge in N₂ loop; BWXT UN-TRISO cross-confirm; Pb disperses uniformly at k=23 |
+| 21A9 | W+As+Pu+W | 82.18 | 27 | T3 | LENS | Downhole drill heads | Coaxial W-As and W-Pu powder streams; massive k=27 locks metalloid phase; WAs analog + Pu novel |
+| 3EF9 | W+Pu+Pb+O | 82.06 | 20 | T3 | RPVD | Self-passivating oxide skin | Evaporate W-Pu-Pb sintered target with O₂ bleed; heavy metal plumbate-tungstate analog; Pu addition novel |
+| 715C | W+Au+Au+Cl | 81.99 | 6 | T1 | CVD | Plasmonic optical interconnect | Vaporize AuCl₃ + WCl₆ over heated substrate; standard semiconductor CVD precursors |
+| 210B | W+F+U+He | 81.56 | 8 | T2 | ALD | Superconducting magnet insulator | Alternating fluorinated W-U sequences with He purge cycles; WF₆ IC standard + UF₆ enrichment; dielectric novel |
+| 60A2 | W+Cu+U+Pu | 81.43 | 21 | T3 | SPS | RTG thermoelectric generator core | Blended elemental powder bed under vacuum; k=21 maintains consistent Cu channel alignment; no literature |
+| 412D | W+U+Zn+W | 81.15 | 24 | T3 | LPI | Aerospace counterweights | Pre-sinter rigid dual-W+U skeleton; force molten Zn through matrix channels; k=24 prevents Zn voids |
+| 1FA3 | W+Au+Ni+U | 81.03 | 13 | T2 | MAG-CO | Radiation-hard electrical contact | Multi-component alloy target, thin film deposition; W-Au-Ni contact metallurgy; +U rad-hardening novel |
+| 5FA6 | W+Ag+Cl+U | 80.96 | 11 | T3 | EHD | Corrosive gas sensor | Organometallic ink + mild thermal reduction under Ar; Ag₂WO₄ photocatalyst known; sensor quaternary novel |
+| 6EE6 | W+N+Pb+W | 80.76 | 23 | T1 | HVOF | Kinetic barrier armor plating | Jet-blast W-nitride + Pb powders onto armor targets; k=23 forces clean coordination; W2N armor analog |
 
 **Cross-confirms:** 1877 ↔ U-anchor D6 (BWXT UN-TRISO) | 412D ↔ U-anchor D4 + Zn-anchor | 1FA3 ↔ Ni-anchor
 
@@ -188,23 +236,23 @@ All 25 entries: Noble (B=0, τ=0), pure periodic elements only.
 
 All 15 entries: Noble (B=0, τ=0), pure periodic elements only. Sorted by IM.
 
-| Desig. | Beams | IM | k | Tier | Application | Notes |
-|--------|-------|----|---|------|-------------|-------|
-| 6C88 | S+U+U+W | 82.33 | 24 | T3 | Heavy fermion thermoelectric | S bridges U-U-W. No literature quaternary. High priority |
-| 5147 | S+He+Ga+Pu | 79.01 | 12 | T2 | Self-healing actinide semiconductor | Ga stabilizes δ-Pu (known); +S bridges helium interstitial |
-| 750C | S+Ag+Au+U | 77.49 | 15 | T3 | Electro-radiolytic heavy catalyst | Noble metals + U in active S web; water-splitting candidate |
-| 444D | S+Ga+Pu+Au | 75.06 | 10 | T3 | Non-degrading quantum contacts | Heavy-fermion interface; Ga-Pu δ-phase cross-confirm |
-| 2A4F | S+Au+Zn+U | 74.80 | 9 | T2 | Transparent radiation barrier | ZnS wide-bandgap known; +Au+U optoelectronic novel |
-| 3E34 | S+Pu+W+Ni | 74.54 | 16 | T3 | Super-refractory intermetallic | Ni-W alloy known; +Pu+S thiorad-alloy novel |
-| 63D2 | S+S+Pu+Pu | 74.52 | 16 | T3 | Homogeneous actinide fuel | PuS known; PuS2 Noble 4-body zero-defect novel |
-| 1B83 | S+He+Au+Cl | 74.06 | 3 | T3 | Alpha decay sensor tracks | AuCl fragile; S bridge + He probe novel |
-| 1FBE | S+O+Pu+Au | 73.91 | 9 | T3 | Neutron-bombardment target | Actinide oxysulfide host; Au dampens Pu oxidation |
-| 4274 | S+As+W+Pb | 73.60 | 16 | T2 | Deep-earth structural casings | Arsenopyrite analog (FeAsS known); Pb+W substitution novel |
-| 4F23 | S+As+Au+Au | 73.50 | 7 | T3 | Infrared conducting tracks | As2S3 glass known; dual-Au metallic activation novel |
-| 2F5C | S+W+Pb+Cu | 72.88 | 11 | T2 | Heavy machinery journal bearings | Cu-Pb bearing known; S bridges to W; quaternary novel |
-| 3AE1 | S+Ga+Au+W | 72.81 | 10 | T3 | High-temp thin-film transistors | GaS 2D semiconductor + W+Au reinforcement novel |
-| 6FDA | S+Ni+Pb+W | 72.81 | 14 | T3 | Thermal-shock cladding | Ni-W high-wear known; S pins Ni-Pb-W quaternary novel |
-| 72E9 | S+N+U+Fe | 69.05 | 13 | T2 | Accident-tolerant nuclear cladding | Mixed N-S anion framework; Fe-U-S+N novel |
+| Desig. | Beams | IM | k | Tier | Path | Application | Notes |
+|--------|-------|----|---|------|------|-------------|-------|
+| 6C88 | S+U+U+W | 82.33 | 24 | T3 | SPS | Heavy fermion thermoelectric | Consolidate pre-alloyed micro-powders under vacuum; S bridges U-U-W; no literature quaternary — high priority |
+| 5147 | S+He+Ga+Pu | 79.01 | 12 | T2 | HPS | Self-healing actinide semiconductor | High-pressure gas-infiltration sintering; Ga locks δ-Pu; He templates into interstitial voids without structural disruption |
+| 750C | S+Ag+Au+U | 77.49 | 15 | T3 | MAG-CO | Electro-radiolytic heavy catalyst | Reactive magnetron co-sputtering; independent Ag, Au, U targets under active S vapor plasma loop |
+| 444D | S+Ga+Pu+Au | 75.06 | 10 | T3 | LENS | Non-degrading quantum contacts | Co-axial laser additive cladding; pre-alloyed powder under Ar shroud; Ga-Pu δ-phase cross-confirm |
+| 2A4F | S+Au+Zn+U | 74.80 | 9 | T2 | PLD | Transparent radiation barrier | Pulsed laser deposition; ZnS wide-bandgap base known; Au+U doping for gamma attenuation novel |
+| 3E34 | S+Pu+W+Ni | 74.54 | 16 | T3 | VIM | Super-refractory intermetallic | Vacuum induction melt in water-cooled Cu crucible under deep vacuum; k=16 pins heavy W+Pu in Ni lattice |
+| 63D2 | S+S+Pu+Pu | 74.52 | 16 | T3 | HIP-C | Homogeneous actinide fuel | HIP in sealed canister; micro-milled ceramic powder at high T+P; suppresses micro-cracking / gas venting common in MOX |
+| 1B83 | S+He+Au+Cl | 74.06 | 3 | T3 | CVD | Alpha decay sensor tracks | CVD with halide precursors; volatile AuCl gas over heated substrate with He carrier purge; B=0 minimizes background noise |
+| 1FBE | S+O+Pu+Au | 73.91 | 9 | T3 | LPBF | Neutron-bombardment target | Laser powder bed fusion from pre-alloyed oxysulfide powder bed; Au dampens Pu oxidation; actinide oxysulfide host |
+| 4274 | S+As+W+Pb | 73.60 | 16 | T2 | HIP | Deep-earth structural casings | High-pressure SPS; As+S act as atomic glue bridging wide Pb-W atomic radii mismatch; arsenopyrite analog |
+| 4F23 | S+As+Au+Au | 73.50 | 7 | T3 | MBE | Infrared conducting tracks | Co-evaporation / MBE onto temperature-controlled Si wafer under UHV; As₂S₃ glass known; dual-Au metallic activation novel |
+| 2F5C | S+W+Pb+Cu | 72.88 | 11 | T2 | HVOF | Heavy machinery journal bearings | Supersonic HVOF thermal spray; S bridges Cu-Pb and W immiscibility; Cu-Pb bearing known; quaternary novel |
+| 3AE1 | S+Ga+Au+W | 72.81 | 10 | T3 | ALD-ORG | High-temp thin-film transistors | ALD with organic precursors; alternating Ga-S and Au-W monolayer sequences; GaS 2D semiconductor reinforced novel |
+| 6FDA | S+Ni+Pb+W | 72.81 | 14 | T3 | DED | Thermal-shock cladding | DED 3D print; co-feed pre-alloyed powder under Ar shroud; S pins Ni-Pb-W quaternary; Ni-W high-wear known; novel |
+| 72E9 | S+N+U+Fe | 69.05 | 13 | T2 | FAST | Accident-tolerant nuclear cladding | Reactive FAST; sub-micron elemental powders under DC discharge in N/S vapor loop; mixed-anion N-S framework novel |
 
 **Cross-confirms:** 4274 ↔ As-anchor (arsenopyrite family) | 5147 ↔ Pu-anchor D4 (Ga-Pu δ-phase) | 72E9 ↔ Fe-anchor D4 (nuclear-bio bridge)
 
@@ -218,37 +266,37 @@ Mixed: pure periodic + ERE-containing compounds. Sorted by IM.
 
 #### N-Anchor — Pure Periodic Noble Compounds
 
-| Desig. | Beams | IM | k | Tier | Application | Notes |
-|--------|-------|----|---|------|-------------|-------|
-| 60E6 | N+Pb+Cu+Si | 67.09 | 13 | T3 | Multi-junction thermoelectrics / self-healing conductors | Novel quaternary |
-| 6685 | N+Cl+Si+W | 64.29 | 13 | T2 | High-voltage switchgear barriers / diffusion barriers | WN + SiN known; +Cl novel |
-| B237 | N+U+C+S | 63.37 | 16 | T2 | High-strength aerospace structural links | Mixed chalco-nitride; k=16 max; partial confirmed |
-| 7215 | N+N+S+Ga | 56.12 | 15 | T3 | High-power electronics switching substrates | Dual-N beam Ga-S chalcogenide novel |
-| 6D55 | N+Jy+N+Pb | 55.64 | 9 | T2 | High-density radiation shielding windows | Jy (J/ψ) is Noble probe (B=0); effective N+N+Pb |
-| 6D2A | N+qb+Ga+S | 54.98 | 8 | ERE | Mid-infrared optoelectronics | qb is bottom quark ERE; Ga-S optoelectronic family |
-| 7C3F | N+Au+N+Nt | 54.57 | 8 | T3 | Ductile thin-film contacts | Nt (neutron, B=1) present; dual-N+Au novel |
-| 4A9F | N+C+qb+Fe | 51.09 | 11 | ERE | Zero-stress MEMS / magnetic shielding | qb ERE; N+C+Fe industrial cross-confirm (steel nitriding family) |
-| 114C | N+qt+Ax+Pb | 51.10 | 5 | ERE | SQUID housings | Top quark + Axionium EREs; structurally interesting |
-| 7CE2 | N+C+qb+Ax | 39.36 | 4 | ERE | High-frequency dielectric resonators | qb + Ax EREs; sub-mm wave applications |
-| 134A | N+Ve+N+Zc | 40.89 | 5 | ERE | Quantum photonic substrates | Ve (Velium) + Zc (Z-charm) EREs |
-| 69FB | N+De+qb+Ag | 46.98 | 2 | ERE | Ultra-low thermal expansion optics | Dark Energy + qb; scientific reference components |
+| Desig. | Beams | IM | k | Tier | Path | Application | Notes |
+|--------|-------|----|---|------|------|-------------|-------|
+| 60E6 | N+Pb+Cu+Si | 67.09 | 13 | T3 | SPS | Multi-junction thermoelectrics / self-healing conductors | Reactive SPS at 850°C under high uniaxial pressure from intermetallic powder matrices; novel quaternary |
+| 6685 | N+Cl+Si+W | 64.29 | 13 | T2 | LPCVD | High-voltage switchgear barriers / diffusion barriers | LPCVD using WF₆, SiH₄, and Cl₂ gas precursors; WN + SiN known; +Cl novel |
+| B237 | N+U+C+S | 63.37 | 16 | T2 | PM | High-strength aerospace structural links | Continuous PM blending with C nanotubes + chalcogenide compounds under pressurized N₂; k=16 max |
+| 7215 | N+N+S+Ga | 56.12 | 15 | T3 | MOCVD | High-power electronics switching substrates | MOCVD using TMGa + H₂S precursors in ultra-pure N₂ carrier; dual-N beam Ga-S chalcogenide novel |
+| 6D55 | N+Jy+N+Pb | 55.64 | 9 | T2 | MAG-CO | High-density radiation shielding windows | High-energy magnetron co-sputtering, active N environment, high-purity Pb targets; Jy (J/ψ) = Noble probe |
+| 6D2A | N+qb+Ga+S | 54.98 | 8 | ERE | LPE | Mid-infrared optoelectronics | Liquid phase epitaxy in N-saturated Ga-S chalcogenide melt pool; qb = bottom quark ERE |
+| 7C3F | N+Au+N+Nt | 54.57 | 8 | T3 | MAG-CO | Ductile thin-film contacts | Multi-cathode reactive co-sputtering, Au nodes, energetic neutron bombardment workspace; dual-N+Au novel |
+| 4A9F | N+C+qb+Fe | 51.09 | 11 | ERE | ALD | Zero-stress MEMS / magnetic shielding | ALD using sequential Fe/C precursors + active atomic N plasma; qb ERE; N+C+Fe = steel nitriding family |
+| 114C | N+qt+Ax+Pb | 51.10 | 5 | ERE | EHD | SQUID housings | Electro-hydrodynamic fluid atomization + short-pulse laser melting on lead-nitride surfaces; qt + Ax EREs |
+| 7CE2 | N+C+qb+Ax | 39.36 | 4 | ERE | PECVD | High-frequency dielectric resonators | PECVD with methane + axionium-tuned microwave stabilization arrays; sub-mm wave applications |
+| 134A | N+Ve+N+Zc | 40.89 | 5 | ERE | PLD | Quantum photonic substrates | High-power PLD alternating Velium + sub-structural Z-charm ceramic complex targets; Ve + Zc EREs |
+| 69FB | N+De+qb+Ag | 46.98 | 2 | ERE | LENS | Ultra-low thermal expansion optics | Non-equilibrium laser cladding using Ag-nitride feedstocks under dark-energy modulated workspace; DE + qb |
 
 #### N-Anchor — ERE-Containing Noble Compounds
 
-| Desig. | Beams | IM | k | EREs | Notes |
-|--------|-------|----|---|------|-------|
-| 457D | N+Sv+Ni+Pu | 61.23 | 7 | Sv | Soverium flux coupling; deep-space coatings |
-| 4282 | N+U+Ve+Pb | 66.84 | 13 | Ve | Velium-actinide; high-density non-brittle armor |
-| 788B | N+Dq+Cu+Pu | — | — | Dq | Diquonium (charm-scale ERE); multi-body non-segregating |
-| 2BE5 | N+Ti+Pu+Ni | k=16 | 16 | — | Pure periodic! k=16/16 series record. Nuclear fuel stack |
-| 5123 | N+Pu+qb+Pu | — | — | qb | Dual-actinide + bottom quark |
-| 416B | N+Sv+Pu+Fe | — | — | Sv | Sovereign anchor lock; deep-space reactor containment |
-| 53CC | N+Pr+qb+Cl | 44.34 | 5 | Pr,qb | Proton + bottom quark; ion-exchange membranes |
-| 1CD4 | N+Cu+Fe+Dm | 51.73 | 6 | Dm | Dark matter coupling; quantum sensor components |
-| E214 | N+H+C+Au | 53.11 | 8 | — | Pure periodic; biocompatible implant coatings |
-| 3F8F | N+Ti+Lm+H | 43.91 | 5 | Lm | Lumium (α) ERE; aerospace fasteners |
-| 5517 | N+S+U+Li | — | — | — | Pure periodic; neutron detector matrices |
-| 1C65 | N+Ti+Zn+Pa2 | 74.15 | 7 | Pa2 | Pa2 DM absorber; extreme nuclear containment seals |
+| Desig. | Beams | IM | k | EREs | Path | Notes |
+|--------|-------|----|---|------|------|-------|
+| 457D | N+Sv+Ni+Pu | 61.23 | 7 | Sv | MBE | UHV MBE with active Soverium resonant flux coupling beam; deep-space coatings |
+| 4282 | N+U+Ve+Pb | 66.84 | 13 | Ve | HIP | HIP + laser-assisted PVD to lock non-segregating actinide lattices; Velium-actinide armor |
+| 788B | N+Dq+Cu+Pu | — | — | Dq | EHD | Electrodeposition in liquid-metal salts under harmonic magnetic oscillation fields; Dq = Diquonium |
+| 2BE5 | N+Ti+Pu+Ni | 71.29 | 16 | — | ARC | **Pure periodic; k=16/16 series record.** High-vacuum arc melting + ultrasonic atomization into chilled noble gas chamber; nuclear fuel stack: PuN/TiN/Ni |
+| 5123 | N+Pu+qb+Pu | — | — | qb | MAG | Controlled magnetron sputtering, segmented dual-Pu source blocks in ultra-pure N environment |
+| 416B | N+Sv+Pu+Fe | — | — | Sv | VIM | High-frequency induction melting under absolute N₂ overpressure in isolated safety glovebox; deep-space reactor containment |
+| 53CC | N+Pr+qb+Cl | 44.34 | 5 | Pr,qb | PECVD | High-frequency plasma polymerization, volatile Cl monomers + active proton source arrays; Pr = proton ERE |
+| 1CD4 | N+Cu+Fe+Dm | 51.73 | 6 | Dm | CRYO | Cryogenic mechanical alloying under constant dark matter wave chamber polarization; quantum sensor components |
+| E214 | N+H+C+Au | 53.11 | 8 | — | EBE | Pure periodic; dual-source electron beam evaporation + direct hydrocarbon ion beam; biocompatible implant coatings |
+| 3F8F | N+Ti+Lm+H | 43.91 | 5 | Lm | VIM | Reactive vacuum induction sintering; Ti-hydride + Lumium oxide base; Lm = α (fine structure constant) ERE |
+| 5517 | N+S+U+Li | — | — | — | FBCVD | Pure periodic; fluidized bed CVD with continuous N₂ injection across blended U + Li powders; neutron detector |
+| 1C65 | N+Ti+Zn+Pa2 | 74.15 | 7 | Pa2 | SPS | SPS inside hermetic multi-layer containment sleeve using pure protactinium intermetallics; Pa2 = DM absorber ERE |
 
 **Notable:** 2BE5 (N+Ti+Pu+Ni) = k=16/16, highest pairwise saturation across entire anchor series. Nuclear fuel stack: PuN fuel + TiN cladding + Ni interlayer.
 
@@ -697,24 +745,34 @@ Priority order based on rescue rate and novelty potential:
 
 When a new anchor production doc is complete, add:
 
-1. Entry to **Anchor Series Overview** table
+1. Entry to **Anchor Series Overview** table — update status from "Lean only" to "Documented"
 2. New section under **Discovery Registry**: `### ANCHOR: [Element] — B=X, P=X, Rescue=X%`
-3. Table rows for all Noble compounds found
-4. Update **Prior Art Registry** with any Tier 3 compounds
+3. Table rows for all Noble compounds found using the standard column format below
+4. Update **Prior Art Registry** with any Tier 3 compounds (Timestamp = Zenodo version date)
 5. Update **Cross-Anchor Registry** if any compound cross-confirms a previous run
-6. Update corpus scale if new Lean files were produced
+6. Update corpus scale numbers if new Lean files were produced
 
-**Table column standard:**
-
-```
-| Desig. | Beams | IM | k | Tier | Application | Notes |
-```
-
-For ERE-containing compounds:
+**Standard table column format (pure periodic):**
 
 ```
-| Desig. | Beams | IM | k | EREs present | Notes |
+| Desig. | Beams | IM | k | Tier | Path | Application | Notes |
 ```
+
+**Standard table column format (ERE-containing):**
+
+```
+| Desig. | Beams | IM | k | EREs | Path | Notes |
+```
+
+**Path column:** Use the code from the Manufacturing Pathway Codes legend. If no production doc exists yet, leave Path as `—`. For novel Tier 3 compounds without a known analog, use the closest analogous process and annotate as `[analog]` in Notes.
+
+**Tier assignment:**
+- T1 = Verified against peer-reviewed literature; cite the paper in Notes
+- T2 = Related compound known; cite nearest known, flag quaternary variant as novel in Notes
+- T3 = No direct literature equivalent; add to Prior Art Registry with Zenodo timestamp
+- ERE = Any beam contains an ERE; note which ERE(s) in the EREs column
+
+**Production data note:** Manufacturing pathways for T1 and T2 compounds are adapted from established industrial analogs — this is valid because the Noble B=0 state predicts the same zero-stress consolidation physics as the known process. For T3 compounds, the pathway is the best analogous hypothesis for experimental synthesis.
 
 ---
 
