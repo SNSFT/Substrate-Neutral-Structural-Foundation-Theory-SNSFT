@@ -3,7 +3,6 @@
 **SNSFT Foundation | Russell Vernon Trent III (HIGHTISTIC)**  
 Soldotna, Alaska | ORCID: 0009-0005-5313-7443  
 DOI: 10.5281/zenodo.18719748  
-PhilArchive: https://philarchive.org/rec/TREDMP-2  
 Coordinate: [9,9,2,0] — Master Registry  
 Last updated: 2026-05-18 AKDT
 
