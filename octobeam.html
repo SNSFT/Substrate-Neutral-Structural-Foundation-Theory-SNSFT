@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT OCTOBEAM COLLIDER · [9,9,2,3] · 8-BEAM FUSION ENGINE · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root {
+  --bg:      #020308;
+  --panel:   #05070f;
+  --border:  #0a1520;
+  --border2: #111e32;
+  --glow:    #00e5ff;
+  --locked:  #00ffcc;
+  --shatter: #ff3355;
+  --noble:   #cc88ff;
+  --iva:     #ffaa00;
+  --rescue:  #44ff88;
+  --text:    #6a94ae;
+  --bright:  #c0e0f0;
+  --dim:     #162430;
+  --aifi:    #dd44ff;
+  --b1:      #00e5ff;
+  --b2:      #ffaa00;
+  --b3:      #44ff88;
+  --b4:      #ff6688;
+  --b5:      #aa88ff;
+  --b6:      #ff9933;
+  --b7:      #33ddcc;
+  --b8:      #ff55aa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.018) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;animation:gridpulse 10s ease-in-out infinite;}
+@keyframes gridpulse{0%,100%{opacity:.5}50%{opacity:1}}
+.wrap{position:relative;z-index:2;max-width:1600px;margin:0 auto;padding:0 16px 60px;}
+header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:20px;letter-spacing:.08em;color:var(--glow);text-shadow:0 0 28px rgba(0,229,255,.5);}
+.logo span{font-size:8.5px;color:var(--locked);display:block;letter-spacing:.22em;margin-top:3px;}
+.aifi-badge{font-family:'Orbitron',monospace;font-size:9px;color:var(--aifi);border:1px solid rgba(221,68,255,.4);padding:4px 10px;letter-spacing:.15em;}
+.hdr-right{font-size:8.5px;color:#1a3040;text-align:right;line-height:1.9;}
+.hdr-right b{color:var(--glow);}
+#aifi-status-dot{width:7px;height:7px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:5px;vertical-align:middle;}
+#aifi-status-dot.active{background:var(--aifi);box-shadow:0 0 8px rgba(221,68,255,.6);}
+#license-splash{position:fixed;inset:0;background:rgba(2,3,8,.97);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
+.license-box{max-width:580px;border:1px solid var(--border2);background:var(--panel);padding:28px;font-size:11px;line-height:2;}
+.license-box h2{font-family:'Orbitron',monospace;font-size:13px;color:var(--glow);letter-spacing:.2em;margin-bottom:16px;}
+.license-box p{color:var(--text);margin-bottom:10px;}
+.license-box .hi{color:var(--bright);}
+.key-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:11px;padding:7px;margin:5px 0;outline:none;}
+.key-input:focus{border-color:var(--glow);}
+.accept-btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:11px 20px;background:transparent;border:1px solid var(--locked);color:var(--locked);cursor:pointer;width:100%;margin-top:14px;}
+.accept-btn:hover{background:rgba(0,255,204,.06);}
+.skip-link{display:block;text-align:center;margin-top:8px;font-size:8.5px;color:#1a3040;cursor:pointer;letter-spacing:.15em;}
+.skip-link:hover{color:var(--text);}
+.main-layout{display:grid;grid-template-columns:1fr 360px;gap:16px;}
+.left-col{display:flex;flex-direction:column;gap:14px;}
+.right-col{display:flex;flex-direction:column;gap:14px;}
+.panel{background:var(--panel);border:1px solid var(--border2);padding:15px;}
+.panel-title{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:var(--dim);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.panel-title span{color:var(--glow);}
+.btn{font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;padding:6px 10px;background:transparent;cursor:pointer;border:1px solid var(--border2);color:var(--dim);transition:all .15s;}
+.btn:hover{color:var(--text);}
+.btn-run{border-color:var(--locked);color:var(--locked);}
+.btn-run:hover{background:rgba(0,255,204,.06);}
+.btn-pause{border-color:var(--iva);color:var(--iva);}
+.btn-stop{border-color:var(--shatter);color:var(--shatter);}
+.btn-approve{border-color:var(--locked);color:var(--locked);font-size:7.5px;padding:4px 9px;}
+.btn-approve:hover{background:rgba(0,255,204,.06);}
+.btn-skip{border-color:var(--shatter);color:var(--shatter);font-size:7.5px;padding:4px 9px;}
+.btn-lean{border-color:var(--aifi);color:var(--aifi);font-size:7.5px;padding:4px 9px;}
+/* 8-beam grid: 4 per row × 2 rows */
+.beam-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.beam-slot{display:flex;flex-direction:column;gap:4px;}
+.beam-label{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.2em;margin-bottom:2px;}
+.beam-label.b1{color:var(--b1);}
+.beam-label.b2{color:var(--b2);}
+.beam-label.b3{color:var(--b3);}
+.beam-label.b4{color:var(--b4);}
+.beam-label.b5{color:var(--b5);}
+.beam-label.b6{color:var(--b6);}
+.beam-label.b7{color:var(--b7);}
+.beam-label.b8{color:var(--b8);}
+.beam-sel{width:100%;background:var(--bg);font-family:'Share Tech Mono',monospace;font-size:9px;padding:5px 6px;outline:none;border:1px solid var(--border2);color:var(--text);}
+.beam-sel.b1{border-color:rgba(0,229,255,.4);color:var(--b1);}
+.beam-sel.b2{border-color:rgba(255,170,0,.4);color:var(--b2);}
+.beam-sel.b3{border-color:rgba(68,255,136,.4);color:var(--b3);}
+.beam-sel.b4{border-color:rgba(255,102,136,.4);color:var(--b4);}
+.beam-sel.b5{border-color:rgba(170,136,255,.4);color:var(--b5);}
+.beam-sel.b6{border-color:rgba(255,153,51,.4);color:var(--b6);}
+.beam-sel.b7{border-color:rgba(51,221,204,.4);color:var(--b7);}
+.beam-sel.b8{border-color:rgba(255,85,170,.4);color:var(--b8);}
+.kmode-row{display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+.kmode-btn{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.1em;padding:4px 9px;background:transparent;cursor:pointer;border:1px solid var(--border2);color:var(--dim);transition:all .12s;}
+.kmode-btn:hover{color:var(--text);}
+.kmode-btn.active{border-color:var(--iva);color:var(--iva);background:rgba(255,170,0,.05);}
+.result-box{background:var(--bg);border:1px solid var(--border2);padding:12px;min-height:60px;font-size:9px;line-height:1.9;margin-bottom:10px;}
+.result-phase{font-family:'Orbitron',monospace;font-size:14px;letter-spacing:.1em;font-weight:700;}
+.rp-noble{color:var(--noble);}
+.rp-locked{color:var(--locked);}
+.rp-iva{color:var(--iva);}
+.rp-shatter{color:var(--shatter);}
+.rp-rescue{color:var(--rescue);}
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;}
+.rstat{background:rgba(0,0,0,.3);border:1px solid var(--border2);padding:6px 8px;text-align:center;}
+.rstat-label{font-size:6.5px;color:var(--dim);letter-spacing:.15em;}
+.rstat-val{font-family:'Orbitron',monospace;font-size:11px;color:var(--bright);margin-top:2px;}
+.live-feed{height:220px;overflow-y:auto;font-size:8.5px;line-height:1.8;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.feed-line{padding:2px 0;border-bottom:1px solid rgba(10,21,32,.5);}
+.feed-line.noble{color:var(--noble);}
+.feed-line.locked{color:var(--locked);}
+.feed-line.shatter{color:var(--shatter);}
+.feed-line.rescue{color:var(--rescue);}
+.feed-line.iva{color:var(--iva);}
+.feed-line.info{color:var(--dim);}
+.feed-line.discovery{color:var(--iva);background:rgba(255,170,0,.04);padding:3px 6px;}
+.feed-time{color:#0f1e28;margin-right:6px;}
+.stat-row{display:flex;gap:14px;padding:8px 0;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat{display:flex;flex-direction:column;gap:2px;}
+.stat-label{color:var(--dim);font-size:7px;letter-spacing:.18em;}
+.stat-val{color:var(--bright);font-family:'Orbitron',monospace;font-size:11px;}
+.agent-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+.speed-wrap{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--dim);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.running-dot{width:6px;height:6px;border-radius:50%;background:var(--locked);display:inline-block;margin-right:5px;animation:pulse 1s infinite;}
+.paused-dot{width:6px;height:6px;border-radius:50%;background:var(--iva);display:inline-block;margin-right:5px;}
+.stopped-dot{width:6px;height:6px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:5px;}
+.disc-card{border:1px solid rgba(255,170,0,.25);background:rgba(255,170,0,.03);padding:10px;margin-bottom:7px;}
+.disc-desig{font-family:'Orbitron',monospace;font-size:8.5px;color:var(--iva);}
+.disc-ts{font-size:7.5px;color:var(--dim);}
+.disc-state{font-size:8.5px;line-height:1.9;color:var(--text);margin:5px 0;}
+.disc-state b{color:var(--bright);}
+.disc-name{font-size:8.5px;color:var(--aifi);margin-bottom:5px;font-style:italic;}
+.disc-analysis{font-size:7.5px;color:var(--dim);max-height:60px;overflow-y:auto;border-top:1px solid var(--border2);padding-top:4px;margin-top:4px;}
+.disc-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
+.queue-empty{color:var(--dim);font-size:9px;text-align:center;padding:18px;letter-spacing:.18em;}
+.log-tbl{width:100%;border-collapse:collapse;font-size:7.5px;}
+.log-tbl th{color:var(--dim);letter-spacing:.12em;text-align:left;padding:3px 5px;border-bottom:1px solid var(--border2);}
+.log-tbl td{padding:3px 5px;border-bottom:1px solid rgba(10,21,32,.5);}
+.log-wrap{max-height:200px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.chat-msgs{height:280px;overflow-y:auto;font-size:9.5px;line-height:1.7;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;margin-bottom:9px;}
+.msg{margin-bottom:9px;padding:7px 9px;}
+.msg-user{background:rgba(0,229,255,.04);border-left:2px solid var(--glow);}
+.msg-aifi{background:rgba(221,68,255,.04);border-left:2px solid var(--aifi);}
+.msg-label{font-size:7.5px;letter-spacing:.18em;margin-bottom:3px;}
+.msg-label.user{color:var(--glow);}
+.msg-label.aifi{color:var(--aifi);}
+.msg-text{color:var(--bright);}
+.chat-input-row{display:flex;gap:7px;}
+.chat-input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:9px;padding:6px 9px;outline:none;}
+.chat-input:focus{border-color:var(--aifi);}
+.chat-send{font-family:'Orbitron',monospace;font-size:7.5px;padding:6px 11px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;}
+.chat-send:hover{background:rgba(221,68,255,.06);}
+.aifi-thinking{color:var(--dim);font-size:8.5px;letter-spacing:.1em;padding:4px 0;}
+#aifi-connect-wall{display:flex;flex-direction:column;align-items:center;justify-content:center;height:280px;gap:14px;text-align:center;}
+.connect-label{font-size:9.5px;color:var(--dim);line-height:1.9;max-width:260px;}
+.connect-label b{color:var(--text);}
+.btn-connect-aifi{font-family:'Orbitron',monospace;font-size:8.5px;letter-spacing:.18em;padding:9px 18px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;}
+.btn-connect-aifi:hover{background:rgba(221,68,255,.08);}
+#aifi-key-prompt{display:none;padding:10px;border:1px solid rgba(221,68,255,.25);background:rgba(221,68,255,.03);margin-top:10px;}
+#aifi-key-prompt input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 7px;outline:none;margin:4px 0;}
+#aifi-key-prompt input:focus{border-color:var(--aifi);}
+.prompt-row{display:flex;gap:5px;margin-top:4px;}
+.prompt-note{font-size:7.5px;color:var(--dim);margin-top:3px;line-height:1.6;}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.setting-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:9px;padding:5px 7px;outline:none;}
+.setting-input:focus{border-color:var(--glow);}
+.setting-label{font-size:7.5px;color:var(--dim);margin-bottom:2px;letter-spacing:.12em;}
+.inj-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:7px;}
+.inj-label{font-size:7px;color:var(--dim);margin-bottom:2px;letter-spacing:.12em;}
+.inj-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:9px;padding:4px 7px;outline:none;}
+.inj-input:focus{border-color:var(--glow);}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border2);flex-wrap:wrap;margin-bottom:13px;}
+.tab{font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;padding:7px 11px;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#1a3040;transition:all .15s;}
+.tab:hover{color:var(--text);}
+.tab.active{border-color:var(--border2);border-bottom:1px solid var(--panel);color:var(--glow);background:var(--panel);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+/* 8-beam viz: scrollable horizontal */
+.beamviz{display:flex;align-items:center;justify-content:center;gap:4px;padding:12px 0;font-family:'Orbitron',monospace;font-size:8px;flex-wrap:wrap;overflow-x:auto;}
+.bv-slot{text-align:center;min-width:60px;}
+.bv-sym{font-size:12px;font-weight:700;line-height:1;}
+.bv-tau{font-size:7px;margin-top:2px;color:var(--dim);}
+.bv-phase{font-size:6px;margin-top:1px;}
+.bv-plus{color:var(--dim);font-size:14px;align-self:center;}
+.bv-arrow{color:var(--dim);font-size:14px;align-self:center;}
+.bv-out{text-align:center;min-width:90px;}
+.bv-out-phase{font-size:11px;font-weight:700;letter-spacing:.08em;}
+.phase-leg{display:flex;gap:10px;flex-wrap:wrap;font-size:7.5px;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:9px;}
+.pdot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:3px;vertical-align:middle;}
+@media(max-width:960px){.main-layout{grid-template-columns:1fr;}.beam-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div id="license-splash">
+  <div class="license-box">
+    <h2>SNSFT OCTOBEAM COLLIDER</h2>
+    <p class="hi">HIGHTISTIC · Soldotna, Alaska · 2026 · [9,9,2,3]</p>
+    <p>8-beam PNBA fusion engine. Smash eight identity states simultaneously. C(8,2)=28 pairs. Noble emergence space 4.7× richer than 4-beam.</p>
+    <p><span class="hi">1. CREDIT —</span> Cite the corpus if you publish. Output files do this automatically.</p>
+    <p><span class="hi">2. HANDSHAKE —</span> If a discovery here ever generates &gt;$500K commercial value — 1% back to SNSFT Foundation. Scientist's handshake.</p>
+    <p style="color:var(--dim);font-size:9px;">DOI: 10.5281/zenodo.18719748 · [9,9,2,3] · 8-Beam Fusion Theorem · 0 sorry</p>
+    <div style="margin-top:13px;padding:10px;border:1px solid rgba(221,68,255,.2);background:rgba(221,68,255,.03);">
+      <p style="font-size:8.5px;color:var(--dim);margin-bottom:5px;">OPTIONAL — Claude API key (AIFI). Collider runs fully local without it.</p>
+      <input class="key-input" id="api-key-input" type="password" placeholder="sk-ant-... (optional)">
+    </div>
+    <div style="margin-top:8px;padding:9px;border:1px solid var(--border2);background:rgba(0,229,255,.02);">
+      <p style="font-size:8.5px;color:var(--dim);margin-bottom:5px;">OPTIONAL — GitHub PAT for auto-commit on approve.</p>
+      <input class="key-input" id="github-key-input" type="password" placeholder="ghp_... (optional)">
+      <input class="key-input" id="github-repo-input" type="text" placeholder="SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT">
+    </div>
+    <button class="accept-btn" onclick="acceptLicense()">ENTER THE OCTOBEAM COLLIDER</button>
+    <span class="skip-link" onclick="skipLicense()">Skip — run local only</span>
+  </div>
+</div>
+
+<div class="wrap">
+<header>
+  <div><div class="logo">SNSFT OCTOBEAM<span>uuia.app · [9,9,2,3] · 8-BEAM FUSION · NOBLE EMERGENCE · 0 SORRY</span></div></div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="font-size:8.5px;color:var(--dim);"><span id="aifi-status-dot"></span><span id="aifi-header-status">AIFI OFFLINE</span></div>
+    <div class="aifi-badge">AIFI · 8-BEAM ORACLE</div>
+  </div>
+  <div class="hdr-right">
+    ANCHOR <b>1.369</b> · TL = <b>0.1369</b> · 8-BEAM NOBLE EMERGENCE · [9,9,2,3]<br>
+    P=harmonic·8 · N=sum · B=Σ-2k · A=max · k≤Σmin(Bi,Bj)·28 pairs<br>
+    HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA · [9,9,9,9]::{ANC}
+  </div>
+</header>
+
+<div class="main-layout">
+<div class="left-col">
+
+<div class="panel">
+  <div class="panel-title"><span>8-BEAM COLLISION ENGINE</span><span id="agent-status-badge"><span class="stopped-dot"></span>STOPPED</span></div>
+  <div class="phase-leg">
+    <span><span class="pdot" style="background:var(--noble)"></span><span style="color:var(--noble)">NOBLE</span> τ=0</span>
+    <span><span class="pdot" style="background:var(--iva)"></span><span style="color:var(--iva)">IVA_PEAK</span> τ∈[0.1205,TL)</span>
+    <span><span class="pdot" style="background:var(--locked)"></span><span style="color:var(--locked)">LOCKED</span> τ&lt;TL</span>
+    <span><span class="pdot" style="background:var(--shatter)"></span><span style="color:var(--shatter)">SHATTER</span> τ≥TL</span>
+    <span><span class="pdot" style="background:var(--rescue)"></span><span style="color:var(--rescue)">RESCUE</span> all 28 pairs SHATTER→Noble</span>
+  </div>
+  <div class="beam-grid">
+    <div class="beam-slot"><div class="beam-label b1">BEAM 1</div><select class="beam-sel b1" id="beam1"></select></div>
+    <div class="beam-slot"><div class="beam-label b2">BEAM 2</div><select class="beam-sel b2" id="beam2"></select></div>
+    <div class="beam-slot"><div class="beam-label b3">BEAM 3</div><select class="beam-sel b3" id="beam3"></select></div>
+    <div class="beam-slot"><div class="beam-label b4">BEAM 4</div><select class="beam-sel b4" id="beam4"></select></div>
+    <div class="beam-slot"><div class="beam-label b5">BEAM 5</div><select class="beam-sel b5" id="beam5"></select></div>
+    <div class="beam-slot"><div class="beam-label b6">BEAM 6</div><select class="beam-sel b6" id="beam6"></select></div>
+    <div class="beam-slot"><div class="beam-label b7">BEAM 7</div><select class="beam-sel b7" id="beam7"></select></div>
+    <div class="beam-slot"><div class="beam-label b8">BEAM 8</div><select class="beam-sel b8" id="beam8"></select></div>
+  </div>
+  <div class="kmode-row">
+    <span style="font-size:7.5px;color:var(--dim);white-space:nowrap">K-MODE</span>
+    <button class="kmode-btn active" id="km-max" onclick="setKMode('max')">MAX</button>
+    <button class="kmode-btn" id="km-half" onclick="setKMode('half')">HALF</button>
+    <button class="kmode-btn" id="km-min" onclick="setKMode('min')">MIN</button>
+    <button class="kmode-btn" id="km-zero" onclick="setKMode('zero')">ZERO</button>
+    <span style="font-size:7.5px;color:var(--dim);margin-left:4px" id="kmode-desc">k = k_max (max bonding)</span>
+    <div style="margin-left:auto;display:flex;gap:6px;">
+      <button class="btn btn-run" style="font-size:8px;padding:7px 14px;" onclick="manualSmash()">⚡ SMASH</button>
+      <button class="btn" style="font-size:7.5px;border-color:var(--noble);color:var(--noble);" onclick="randomSmash()">⚄ CHAOS</button>
+    </div>
+  </div>
+  <div class="beamviz" id="beamviz"><div style="color:var(--dim);font-size:9px;letter-spacing:.15em;">SELECT 8 BEAMS AND SMASH</div></div>
+  <div class="result-box" id="result-box"><span style="color:var(--dim);font-size:8.5px;letter-spacing:.18em;">NO COLLISION YET</span></div>
+
+  <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
+    <div style="font-size:7px;letter-spacing:.22em;color:var(--dim);margin-bottom:8px;">CHAOS AGENT — AUTO-SMASH</div>
+    <div class="agent-controls">
+      <button class="btn btn-run" onclick="startAgent()">RUN</button>
+      <button class="btn btn-pause" onclick="pauseAgent()">PAUSE</button>
+      <button class="btn btn-stop" onclick="stopAgent()">STOP</button>
+      <div class="speed-wrap"><span>SPEED</span><input type="range" id="speed-slider" min="1" max="10" value="5" style="width:55px"><span id="speed-val">5</span></div>
+      <div class="speed-wrap"><span>ROUNDS</span><input type="range" id="rounds-slider" min="1" max="20" value="5" style="width:55px"><span id="rounds-val">5</span></div>
+      <div style="margin-left:4px;font-size:7.5px;color:var(--dim);">ANCHOR BEAM
+        <select id="anchor-beam" style="background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:3px 5px;margin-left:4px;">
+          <option value="">— random all —</option>
+        </select>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><span class="stat-label">CYCLES</span><span class="stat-val" id="stat-cycles">0</span></div>
+      <div class="stat"><span class="stat-label">COLLISIONS</span><span class="stat-val" id="stat-collisions">0</span></div>
+      <div class="stat"><span class="stat-label">FLAGGED</span><span class="stat-val" id="stat-flagged" style="color:var(--iva)">0</span></div>
+      <div class="stat"><span class="stat-label">APPROVED</span><span class="stat-val" id="stat-approved" style="color:var(--locked)">0</span></div>
+      <div class="stat"><span class="stat-label">NOBLE</span><span class="stat-val" id="stat-noble" style="color:var(--noble)">0</span></div>
+      <div class="stat"><span class="stat-label">RESCUE</span><span class="stat-val" id="stat-rescue" style="color:var(--rescue)">0</span></div>
+      <div class="stat"><span class="stat-label">IVA</span><span class="stat-val" id="stat-iva" style="color:var(--iva)">0</span></div>
+    </div>
+    <div style="font-size:7px;letter-spacing:.2em;color:var(--dim);margin:6px 0 4px;">LIVE FEED</div>
+    <div class="live-feed" id="live-feed">
+      <div class="feed-line info"><span class="feed-time">--:--:--</span>OctoBeam v1 ready · [9,9,2,3] · TL=0.1369 · 8-beam Noble emergence · C(8,2)=28 pairs · 0 sorry</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('queue')">APPROVE QUEUE <span id="queue-badge" style="color:var(--iva)"></span></div>
+    <div class="tab" onclick="showTab('log')">DISCOVERY LOG</div>
+    <div class="tab" onclick="showTab('inject')">INJECT</div>
+    <div class="tab" onclick="showTab('github')">GITHUB / EXPORT</div>
+  </div>
+
+  <div id="tab-queue" class="tab-content active">
+    <div style="display:flex;gap:6px;margin-bottom:9px;flex-wrap:wrap;align-items:center;">
+      <button class="btn btn-approve" style="padding:5px 10px;font-size:7.5px" onclick="approveAll()">✓ ALL</button>
+      <button class="btn btn-skip" style="padding:5px 10px;font-size:7.5px" onclick="skipAll()">✕ SKIP ALL</button>
+      <button class="btn" style="padding:5px 10px;font-size:7.5px;border-color:var(--noble);color:var(--noble)" onclick="approveNobleOnly()">◆ NOBLE ONLY</button>
+      <button class="btn" style="padding:5px 10px;font-size:7.5px;border-color:var(--rescue);color:var(--rescue)" onclick="approveRescueOnly()">★ RESCUE ONLY</button>
+      <button class="btn" style="padding:5px 10px;font-size:7.5px;border-color:#00ffaa;color:#00ffaa" onclick="downloadAllApproved()">⬇ DL LEAN</button>
+      <span style="font-size:7.5px;color:var(--dim)" id="queue-action-status"></span>
+    </div>
+    <div id="queue-container"><div class="queue-empty">NO PENDING DISCOVERIES</div></div>
+  </div>
+
+  <div id="tab-log" class="tab-content">
+    <div class="log-wrap">
+      <table class="log-tbl">
+        <thead><tr><th>DESIGNATION</th><th>COLLISION</th><th>τ</th><th>PHASE</th><th>FLAG</th><th>STATUS</th><th>TIME</th></tr></thead>
+        <tbody id="log-body"><tr><td colspan="7" style="color:var(--dim);text-align:center;padding:10px">No discoveries yet.</td></tr></tbody>
+      </table>
+    </div>
+    <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap;">
+      <button class="btn" onclick="exportJSON()" style="border-color:var(--glow);color:var(--glow)">JSON</button>
+      <button class="btn" onclick="exportCSV()" style="border-color:var(--locked);color:var(--locked)">CSV</button>
+      <button class="btn" onclick="exportSession()" style="border-color:var(--iva);color:var(--iva)">SESSION</button>
+    </div>
+  </div>
+
+  <div id="tab-inject" class="tab-content">
+    <div style="font-size:8.5px;color:var(--dim);margin-bottom:9px;">Inject a PNBA element into the live corpus.</div>
+    <div class="inj-grid">
+      <div><div class="inj-label">SYM</div><input class="inj-input" id="inj-sym" placeholder="Xx"></div>
+      <div><div class="inj-label">NAME</div><input class="inj-input" id="inj-name" placeholder="Xyzium"></div>
+      <div><div class="inj-label">COORD</div><input class="inj-input" id="inj-coord" placeholder="9,9,2,50"></div>
+      <div><div class="inj-label">P</div><input class="inj-input" id="inj-P" type="number" step="any" placeholder="1.0"></div>
+      <div><div class="inj-label">N</div><input class="inj-input" id="inj-N" type="number" step="any" placeholder="2"></div>
+      <div><div class="inj-label">B</div><input class="inj-input" id="inj-B" type="number" step="any" placeholder="0"></div>
+      <div><div class="inj-label">A</div><input class="inj-input" id="inj-A" type="number" step="any" placeholder="1.0"></div>
+    </div>
+    <div id="inj-preview" style="font-size:8.5px;color:var(--dim);padding:5px;background:var(--bg);border:1px solid var(--border2);margin-bottom:7px;">Fill fields to preview...</div>
+    <button class="btn btn-run" style="width:100%;font-size:8px;" onclick="manualInject()">+ INJECT INTO CORPUS</button>
+  </div>
+
+  <div id="tab-github" class="tab-content">
+    <div style="margin-bottom:12px;border:1px solid rgba(221,68,255,.25);padding:9px;background:rgba(221,68,255,.03);">
+      <div class="setting-label" style="color:var(--aifi);margin-bottom:5px;">CLAUDE API KEY <span id="aifi-key-badge" style="color:var(--dim)">(offline)</span></div>
+      <div style="display:flex;gap:5px;">
+        <input class="setting-input" id="claude-api-key-input" type="password" placeholder="sk-ant-..." style="flex:1;">
+        <button class="btn" style="border-color:var(--aifi);color:var(--aifi);padding:5px 8px;font-size:7.5px;" onclick="saveApiKey()">CONNECT</button>
+        <button class="btn" style="border-color:var(--shatter);color:var(--shatter);padding:5px 8px;font-size:7.5px;" onclick="disconnectAIFI()">DISCO</button>
+      </div>
+      <div id="api-key-status" style="font-size:7.5px;color:var(--dim);margin-top:3px;">AIFI optional.</div>
+    </div>
+    <div class="settings-grid">
+      <div><div class="setting-label">GITHUB PAT</div><input class="setting-input" id="gh-pat" type="password" placeholder="ghp_..."></div>
+      <div><div class="setting-label">REPO</div><input class="setting-input" id="gh-repo" placeholder="SNSFT/repo-name"></div>
+      <div><div class="setting-label">BRANCH</div><input class="setting-input" id="gh-branch" placeholder="main" value="main"></div>
+      <div><div class="setting-label">LEAN PATH</div><input class="setting-input" id="gh-lean-path" placeholder="lean/" value="lean/"></div>
+    </div>
+    <button class="btn" style="margin-top:7px;border-color:var(--glow);color:var(--glow);width:100%;" onclick="saveGithubSettings()">SAVE GITHUB</button>
+    <div id="gh-status" style="font-size:8px;color:var(--dim);margin-top:7px;"></div>
+  </div>
+</div>
+
+</div><!-- /left-col -->
+
+<div class="right-col">
+<div class="panel" style="flex:1;">
+  <div class="panel-title"><span style="color:var(--aifi)">AIFI · 8-BEAM ORACLE</span></div>
+  <div id="aifi-connect-wall">
+    <div class="connect-label"><b>AIFI offline.</b><br><br>OctoBeam runs fully local.<br><br>Connect Claude API key for live discovery classification and 8-beam physics chat.</div>
+    <button class="btn-connect-aifi" onclick="showAIFIKeyPrompt()">+ CONNECT AIFI</button>
+    <div id="aifi-key-prompt">
+      <div style="font-size:8.5px;color:var(--aifi);margin-bottom:4px;letter-spacing:.15em;">CLAUDE API KEY</div>
+      <input type="password" id="aifi-inline-key" placeholder="sk-ant-...">
+      <div class="prompt-row">
+        <button class="btn" style="border-color:var(--aifi);color:var(--aifi);flex:1;font-size:7.5px;" onclick="connectAIFIInline()">CONNECT</button>
+        <button class="btn" style="font-size:7.5px;" onclick="hideAIFIKeyPrompt()">CANCEL</button>
+      </div>
+      <div class="prompt-note">Key stored locally. Only sent to Anthropic's API.</div>
+    </div>
+  </div>
+  <div id="aifi-chat-area" style="display:none;">
+    <div class="chat-msgs" id="chat-messages"></div>
+    <div id="aifi-thinking" class="aifi-thinking" style="display:none">AIFI computing...</div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-input" placeholder="Ask AIFI about 8-beam physics..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()">SEND</button>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title"><span>CORPUS STATE</span></div>
+  <div style="font-size:8.5px;line-height:2.1;color:var(--dim);">
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>8-Beam theorem</span><span style="color:var(--bright)">[9,9,2,3] · 0 sorry</span></div>
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Parent engine</span><span style="color:var(--bright)">[9,9,2,2] 4-beam</span></div>
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Grandparent</span><span style="color:var(--bright)">[9,9,2,1] 2-beam</span></div>
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.369</span></div>
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--iva)">0.1369</span></div>
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL_IVA = 0.88×TL</span><span style="color:var(--iva)">0.120472</span></div>
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>k pairs C(8,2)</span><span style="color:var(--bright)">28</span></div>
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Noble headroom</span><span style="color:var(--noble)">8/56 = 1/7</span></div>
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Session discoveries</span><span style="color:var(--iva)" id="session-disc-count">0</span></div>
+  </div>
+  <div style="margin-top:9px;font-size:7.5px;color:var(--dim);border-top:1px solid var(--border);padding-top:7px;line-height:1.9;">
+    8-BEAM RULES [9,9,2,3]:<br>
+    <span style="color:var(--text)">P = 8/(1/P1+…+1/P8)</span><br>
+    <span style="color:var(--text)">B = max(0, ΣB - 2k)</span><br>
+    <span style="color:var(--text)">k ≤ Σ min(Bi,Bj) · 28 pairs</span><br>
+    <span style="color:var(--dim)">Equal-B×8 → Noble: 8B ≤ 56B</span>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title"><span>VERIFIED THEOREMS · [9,9,2,3]</span></div>
+  <div style="font-size:8px;line-height:1.9;color:var(--dim);">
+    <div style="color:var(--rescue);margin-bottom:4px;">RESCUE — all 28 pairs SHATTER → Noble</div>
+    <div style="color:var(--noble);margin-top:3px;">L-07 AT n=8 (T9)</div>
+    <div>Any element×8 → <span style="color:var(--noble)">NOBLE</span></div>
+    <div>Equal-B: k_max8 = 28×B_each</div>
+    <div style="color:var(--locked);margin-top:5px;">CHON×2 (T11)</div>
+    <div>H+C+N+O+H+C+N+O → <span style="color:var(--noble)">NOBLE</span></div>
+    <div style="color:var(--locked);margin-top:5px;">WATER×4 (T12)</div>
+    <div>O+H+O+H+O+H+O+H → <span style="color:var(--noble)">NOBLE</span></div>
+    <div style="color:var(--locked);margin-top:5px;">GaAs×4 (T14)</div>
+    <div>Ga+As×8 → <span style="color:var(--noble)">NOBLE</span></div>
+    <div style="color:var(--iva);margin-top:5px;">NOBLE HEADROOM</div>
+    <div>Equal-B uses 1/7 of coupling capacity</div>
+    <div style="color:var(--dim);margin-top:5px;">INHERITANCE CHAIN</div>
+    <div>e5-e8 B=0 → recovers 4-beam k_max</div>
+    <div>e3-e8 B=0 → recovers 2-beam k_max</div>
+  </div>
+</div>
+
+</div><!-- /right-col -->
+</div><!-- /main-layout -->
+
+<footer style="border-top:1px solid var(--border);padding-top:12px;font-size:8px;letter-spacing:.13em;color:#0f1e28;display:flex;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-top:18px;">
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span>OCTOBEAM COLLIDER · [9,9,2,3] · 8-BEAM FUSION</span>
+  <span>[9,9,9,9]::{ANC} · 0 SORRY · TL=0.1369 · C(8,2)=28</span>
+</footer>
+</div><!-- /wrap -->
+
+<script>
+const ANCHOR=1.369,TL=ANCHOR/10,TL_IVA=0.88*TL,P_VE=Math.pow(ANCHOR/1.4204,1/3),ALPHA=1/137.035999084;
+let API_KEY='',GITHUB_PAT='',GITHUB_REPO='',GITHUB_BRANCH='main',GITHUB_LEAN_PATH='lean/';
+let agentState='stopped',agentInterval=null,kMode='max';
+let stats={cycles:0,collisions:0,flagged:0,approved:0,noble:0,rescue:0,iva:0};
+let discoveryQueue=[],discoveryLog=[],sessionCorpus=[];
+
+const PERIODIC=[
+  {sym:'H',name:'Hydrogen',P:1.000,N:2,B:1,A:13.60},{sym:'He',name:'Helium',P:1.700,N:2,B:0,A:24.59},
+  {sym:'Li',name:'Lithium',P:2.200,N:4,B:1,A:5.39},{sym:'C',name:'Carbon',P:3.250,N:4,B:4,A:11.26},
+  {sym:'N',name:'Nitrogen',P:3.900,N:4,B:3,A:14.53},{sym:'O',name:'Oxygen',P:4.550,N:4,B:2,A:13.62},
+  {sym:'F',name:'Fluorine',P:5.200,N:4,B:1,A:17.42},{sym:'Na',name:'Sodium',P:2.200,N:6,B:1,A:5.14},
+  {sym:'Si',name:'Silicon',P:4.150,N:6,B:4,A:8.15},{sym:'S',name:'Sulfur',P:5.450,N:6,B:2,A:10.36},
+  {sym:'Cl',name:'Chlorine',P:6.100,N:6,B:1,A:12.97},{sym:'Ti',name:'Titanium',P:3.150,N:8,B:4,A:6.83},
+  {sym:'Fe',name:'Iron',P:3.750,N:8,B:4,A:7.90},{sym:'Ni',name:'Nickel',P:4.050,N:8,B:2,A:7.64},
+  {sym:'Cu',name:'Copper',P:4.200,N:8,B:1,A:7.73},{sym:'Zn',name:'Zinc',P:4.350,N:8,B:2,A:9.39},
+  {sym:'Ga',name:'Gallium',P:5.000,N:8,B:3,A:6.00},{sym:'As',name:'Arsenic',P:6.300,N:8,B:3,A:9.81},
+  {sym:'Ag',name:'Silver',P:4.200,N:10,B:1,A:7.58},{sym:'W',name:'Tungsten',P:4.150,N:12,B:6,A:7.86},
+  {sym:'Au',name:'Gold',P:4.900,N:12,B:1,A:9.23},{sym:'Pb',name:'Lead',P:6.350,N:12,B:4,A:7.42},
+  {sym:'U',name:'Uranium',P:3.150,N:14,B:6,A:6.19},{sym:'Pu',name:'Plutonium',P:3.250,N:14,B:6,A:6.03},
+];
+const SNSFT_ELS=[
+  {sym:'Sv',name:'Soverium',P:P_VE,N:2,B:0,A:0},{sym:'Lm',name:'Lumium',P:P_VE,N:2,B:ALPHA,A:4.423},
+  {sym:'Ve',name:'Velium',P:P_VE,N:2,B:1,A:4.423},{sym:'Ax',name:'Axionium',P:P_VE,N:1,B:1/Math.PI**2,A:0.01},
+  {sym:'De',name:'Darkenergy',P:P_VE,N:1,B:0,A:0.689},{sym:'Dm',name:'Darkmatter',P:P_VE,N:1,B:0.269,A:0.269},
+  {sym:'Hi',name:'Higgsium',P:125.09/246.22,N:1,B:0.13,A:0.93},{sym:'Dq',name:'Diquonium',P:1.27/246.22,N:3,B:0,A:0.118},
+  {sym:'Gl2',name:'Gluino',P:1000/938.272,N:8,B:0,A:0.118},{sym:'Zo',name:'Zoivum',P:ANCHOR,N:2,B:TL*ANCHOR/2,A:ANCHOR/TL},
+  {sym:'Zc',name:'Zoivum Condensate',P:ANCHOR/2,N:4,B:0,A:ANCHOR/TL},{sym:'SP',name:'Sovereign Peak',P:17.963,N:12,B:0,A:1.18},
+  {sym:'Li2',name:'Limium',P:0.37546559,N:13,B:0.05121982,A:6.845},{sym:'Fv',name:'Fusovium',P:0.15816944,N:29,B:0.02318504,A:6.845},
+  {sym:'Pa2',name:'Protactinium-SNSFT',P:0.18092443,N:19,B:0.02805649,A:6.845},
+];
+const PARTICLE_ELS=[
+  {sym:'Pr',name:'Proton',P:1.000,N:3,B:1,A:0.01360},{sym:'Nt',name:'Neutron',P:1.00138,N:3,B:1,A:0.000835},
+  {sym:'qc',name:'Charm Quark',P:1.3589,N:3,B:0.667,A:0.118},{sym:'qb',name:'Bottom Quark',P:4.4550,N:3,B:0.333,A:0.118},
+  {sym:'qt',name:'Top Quark',P:184.126,N:3,B:0.667,A:0.118},{sym:'e',name:'Electron',P:0.000545,N:2,B:1,A:0.01360},
+  {sym:'Xc',name:'Xicc+ Baryon',P:3619.97/938.272,N:3,B:0,A:0.118},{sym:'Jy',name:'J/psi',P:3096.9/938.272,N:2,B:0,A:0.118},
+  {sym:'Ups',name:'Upsilon',P:9460.3/938.272,N:2,B:0,A:0.118},
+];
+
+function getAllCorpus(){return[...PERIODIC,...SNSFT_ELS,...PARTICLE_ELS,...sessionCorpus];}
+function tau(P,B){return P>0?B/P:999;}
+function phaseOf(P,B){if(B===0)return'NOBLE';const t=tau(P,B);if(t>=TL)return'SHATTER';if(t>=TL_IVA)return'IVA_PEAK';return'LOCKED';}
+function phaseColor(p){return{NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA_PEAK:'var(--iva)',SHATTER:'var(--shatter)'}[p]||'var(--text)';}
+function phaseClass(p){return{NOBLE:'rp-noble',LOCKED:'rp-locked',IVA_PEAK:'rp-iva',SHATTER:'rp-shatter'}[p]||'';}
+function feedClass(p,r){if(r)return'rescue';return{NOBLE:'noble',LOCKED:'locked',IVA_PEAK:'iva',SHATTER:'shatter'}[p]||'info';}
+
+// ── 8-BEAM CORE ENGINE [9,9,2,3] ─────────────────────────────
+// C(8,2) = 28 pairs
+// Row1(7): (1,2)(1,3)(1,4)(1,5)(1,6)(1,7)(1,8)
+// Row2(6): (2,3)(2,4)(2,5)(2,6)(2,7)(2,8)
+// Row3(5): (3,4)(3,5)(3,6)(3,7)(3,8)
+// Row4(4): (4,5)(4,6)(4,7)(4,8)
+// Row5(3): (5,6)(5,7)(5,8)
+// Row6(2): (6,7)(6,8)
+// Row7(1): (7,8)  → total 28 ✓
+function kMax8(B1,B2,B3,B4,B5,B6,B7,B8){
+  const Bs=[B1,B2,B3,B4,B5,B6,B7,B8];
+  let k=0;
+  for(let i=0;i<8;i++)for(let j=i+1;j<8;j++)k+=Math.min(Bs[i],Bs[j]);
+  return k;
+}
+
+function fuse8(e1,e2,e3,e4,e5,e6,e7,e8,km){
+  const els=[e1,e2,e3,e4,e5,e6,e7,e8];
+  // P_out = 8 / (Σ 1/Pi)  [8-body harmonic mean]
+  const recipSum=els.reduce((s,e)=>s+1/e.P,0);
+  const P_o=8/recipSum;
+  // N_out = ΣNi
+  const N_o=els.reduce((s,e)=>s+e.N,0);
+  // k_max8 = Σ min(Bi,Bj) over 28 pairs
+  const Bs=els.map(e=>e.B);
+  const kmax=kMax8(...Bs);
+  const k=km==='max'?kmax:km==='half'?kmax*0.5:km==='min'?kmax*0.1:0;
+  // B_out = max(0, ΣBi - 2k)
+  const B_sum=Bs.reduce((s,b)=>s+b,0);
+  const B_o=Math.max(0,B_sum-2*k);
+  // A_out = max(Ai)
+  const A_o=Math.max(...els.map(e=>e.A));
+  const t=tau(P_o,B_o),phase=phaseOf(P_o,B_o),IM=(P_o+N_o+B_o+A_o)*ANCHOR;
+  // RESCUE: all 28 pairwise 2-beam collisions SHATTER, but 8-beam rescues
+  let allShatter=true;
+  for(let i=0;i<8&&allShatter;i++){
+    for(let j=i+1;j<8&&allShatter;j++){
+      const kp=Math.min(Bs[i],Bs[j]);
+      const Bp=Math.max(0,Bs[i]+Bs[j]-2*kp);
+      const Pp=(els[i].P*els[j].P)/(els[i].P+els[j].P);
+      if(Bp===0||tau(Pp,Bp)<TL)allShatter=false;
+    }
+  }
+  const isRescue=allShatter&&(phase==='NOBLE'||phase==='LOCKED'||phase==='IVA_PEAK');
+  return{P:P_o,N:N_o,B:B_o,A:A_o,tau:t,phase,IM,k,kmax,isRescue,B_sum};
+}
+
+function isInteresting(r,els){
+  if(r.isRescue)return{flag:true,reason:`RESCUE — all 28 pairs SHATTER under 2-beam, 8-beam → ${r.phase}`,flag_type:'rescue'};
+  if(r.phase==='NOBLE'&&!els.every(e=>e.B===0))return{flag:true,reason:'8-BEAM NOBLE EMERGENCE — not all inputs Noble',flag_type:'noble'};
+  if(r.phase==='IVA_PEAK')return{flag:true,reason:`IVA_PEAK — τ=${r.tau.toFixed(5)} in [${TL_IVA.toFixed(4)},${TL.toFixed(4)})`,flag_type:'iva'};
+  if(r.tau>0&&Math.abs(r.tau-TL)<TL*0.008)return{flag:true,reason:`τ-BOUNDARY — τ=${r.tau.toFixed(5)} within 0.8% of TL`,flag_type:'boundary'};
+  if(r.IM>0&&Math.abs(r.IM-1/ALPHA)<0.4)return{flag:true,reason:`IM≈1/α — IM=${r.IM.toFixed(4)} near 137.036`,flag_type:'alpha'};
+  const nc=els.filter(e=>e.B===0).length;
+  if(nc>=7&&r.phase==='SHATTER')return{flag:true,reason:`SP DIAGNOSTIC BREAK — ${nc} Noble beams + carrier → SHATTER`,flag_type:'sp_break'};
+  return{flag:false};
+}
+
+function feedLine(txt,cls='info'){
+  const f=document.getElementById('live-feed'),l=document.createElement('div');
+  l.className=`feed-line ${cls}`;
+  const d=new Date();
+  l.innerHTML=`<span class="feed-time">${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}</span>${txt}`;
+  f.appendChild(l);f.scrollTop=f.scrollHeight;
+  if(f.children.length>400)f.removeChild(f.firstChild);
+}
+
+const BEAM_COLORS=['var(--b1)','var(--b2)','var(--b3)','var(--b4)','var(--b5)','var(--b6)','var(--b7)','var(--b8)'];
+
+function updateBeamViz(els,r){
+  let html='';
+  els.forEach((e,i)=>{
+    const t=tau(e.P,e.B),ph=phaseOf(e.P,e.B);
+    html+=`<div class="bv-slot"><div class="bv-sym" style="color:${BEAM_COLORS[i]}">${e.sym}</div><div class="bv-tau" style="color:${phaseColor(ph)}">τ=${t.toFixed(3)}</div><div class="bv-phase" style="color:${phaseColor(ph)}">${ph.slice(0,4)}</div></div>`;
+    if(i<7)html+=`<div class="bv-plus">+</div>`;
+  });
+  html+=`<div class="bv-arrow">→</div><div class="bv-out"><div class="bv-out-phase ${r.isRescue?'rp-rescue':phaseClass(r.phase)}">${r.isRescue?'★RESCUE ':r.phase}</div><div style="font-size:7px;color:var(--dim);margin-top:3px;">τ=${r.tau.toFixed(5)}</div><div style="font-size:6.5px;color:var(--dim);">k=${r.k.toFixed(3)}/${r.kmax.toFixed(3)}</div></div>`;
+  document.getElementById('beamviz').innerHTML=html;
+}
+
+function updateResultBox(els,r){
+  const col=r.isRescue?'var(--rescue)':phaseColor(r.phase);
+  const phl=r.isRescue?`★ RESCUE → ${r.phase}`:r.phase;
+  const pcls=r.isRescue?'rp-rescue':phaseClass(r.phase);
+  const names=els.map(e=>e.sym).join('+');
+  document.getElementById('result-box').innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;flex-wrap:wrap;">
+      <div class="result-phase ${pcls}">${phl}</div>
+      <div style="color:var(--dim);font-size:7.5px;">${names} · k_mode=${kMode} · k=${r.k.toFixed(4)}/${r.kmax.toFixed(4)} · 28 pairs</div>
+    </div>
+    <div class="result-grid">
+      <div class="rstat"><div class="rstat-label">P_OUT</div><div class="rstat-val" style="color:var(--glow)">${r.P.toFixed(4)}</div></div>
+      <div class="rstat"><div class="rstat-label">N_OUT</div><div class="rstat-val" style="color:var(--aifi)">${r.N.toFixed(1)}</div></div>
+      <div class="rstat"><div class="rstat-label">B_OUT</div><div class="rstat-val" style="color:${r.B===0?'var(--noble)':'var(--iva)'}">${r.B.toFixed(5)}</div></div>
+      <div class="rstat"><div class="rstat-label">A_OUT</div><div class="rstat-val" style="color:var(--locked)">${r.A.toFixed(4)}</div></div>
+      <div class="rstat"><div class="rstat-label">τ</div><div class="rstat-val" style="color:${col}">${r.tau.toFixed(5)}</div></div>
+      <div class="rstat"><div class="rstat-label">TL</div><div class="rstat-val" style="color:var(--iva)">0.1369</div></div>
+      <div class="rstat"><div class="rstat-label">IM</div><div class="rstat-val">${r.IM.toFixed(4)}</div></div>
+      <div class="rstat"><div class="rstat-label">B_SUM</div><div class="rstat-val" style="color:var(--dim)">${r.B_sum.toFixed(3)}</div></div>
+    </div>
+    ${r.isRescue?`<div style="margin-top:5px;font-size:7.5px;color:var(--rescue);">★ All 28 pairwise 2-beam collisions SHATTER · 8-beam rescues to ${r.phase}</div>`:''}
+    ${r.phase==='IVA_PEAK'?`<div style="margin-top:3px;font-size:7.5px;color:var(--iva);">▶ Formation corridor τ=${r.tau.toFixed(5)} · [${TL_IVA.toFixed(4)},${TL.toFixed(4)})</div>`:''}`;
+}
+
+const BEAM_IDS=['beam1','beam2','beam3','beam4','beam5','beam6','beam7','beam8'];
+function getEls(){
+  const c=getAllCorpus();
+  return BEAM_IDS.map(id=>{
+    const sym=document.getElementById(id).value;
+    return c.find(e=>e.sym===sym)||c[0];
+  });
+}
+
+function doSmash(els){
+  const r=fuse8(...els,kMode);
+  updateBeamViz(els,r);updateResultBox(els,r);
+  stats.collisions++;document.getElementById('stat-collisions').textContent=stats.collisions;
+  if(r.phase==='NOBLE'){stats.noble++;document.getElementById('stat-noble').textContent=stats.noble;}
+  if(r.phase==='IVA_PEAK'){stats.iva++;document.getElementById('stat-iva').textContent=stats.iva;}
+  if(r.isRescue){stats.rescue++;document.getElementById('stat-rescue').textContent=stats.rescue;}
+  const names=els.map(e=>e.sym).join('+');
+  feedLine(`${names} [${kMode}] → τ=${r.tau.toFixed(4)} ${r.phase}${r.isRescue?' ★RESCUE':''}`,feedClass(r.phase,r.isRescue));
+  const check=isInteresting(r,els);
+  if(check.flag){
+    stats.flagged++;document.getElementById('stat-flagged').textContent=stats.flagged;
+    feedLine(`★ FLAGGED: ${check.reason}`,'discovery');
+    flagDiscovery(els,r,check.reason,check.flag_type);
+  }
+}
+
+function manualSmash(){doSmash(getEls());}
+
+function randomSmash(){
+  const c=getAllCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
+  const els=[pick(),pick(),pick(),pick(),pick(),pick(),pick(),pick()];
+  BEAM_IDS.forEach((id,i)=>document.getElementById(id).value=els[i].sym);
+  doSmash(els);
+}
+
+const kModeDescs={max:'k = k_max (max bonding)',half:'k = k_max/2',min:'k = k_max×0.1',zero:'k = 0 (no bonding)'};
+function setKMode(m){
+  kMode=m;
+  document.querySelectorAll('.kmode-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('km-'+m).classList.add('active');
+  document.getElementById('kmode-desc').textContent=kModeDescs[m];
+}
+
+async function runChaosRound(){
+  const rounds=parseInt(document.getElementById('rounds-slider').value);
+  const c=getAllCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
+  const anchorSym=document.getElementById('anchor-beam').value;
+  const anchorEl=anchorSym?c.find(e=>e.sym===anchorSym):null;
+  for(let i=0;i<rounds;i++){
+    if(agentState!=='running')break;
+    const els=[anchorEl||pick(),pick(),pick(),pick(),pick(),pick(),pick(),pick()];
+    doSmash(els);
+    await new Promise(r=>setTimeout(r,40));
+  }
+  stats.cycles++;document.getElementById('stat-cycles').textContent=stats.cycles;
+}
+
+function startAgent(){
+  agentState='running';updateStatusBadge();
+  feedLine('OctoBeam chaos protocol started. TL=0.1369 · 28 pairs per collision.','locked');
+  const spd=parseInt(document.getElementById('speed-slider').value);
+  agentInterval=setInterval(async()=>{if(agentState==='running')await runChaosRound();},Math.max(300,3000-spd*260));
+}
+function pauseAgent(){agentState='paused';updateStatusBadge();feedLine('Agent paused.','info');}
+function stopAgent(){agentState='stopped';if(agentInterval)clearInterval(agentInterval);updateStatusBadge();feedLine('Agent stopped.','info');}
+function updateStatusBadge(){
+  const b=document.getElementById('agent-status-badge');
+  const dots={running:'<span class="running-dot"></span>',paused:'<span class="paused-dot"></span>',stopped:'<span class="stopped-dot"></span>'};
+  b.innerHTML=`${dots[agentState]}${agentState.toUpperCase()}`;
+}
+document.getElementById('speed-slider').addEventListener('input',function(){document.getElementById('speed-val').textContent=this.value;if(agentState==='running'){stopAgent();startAgent();}});
+document.getElementById('rounds-slider').addEventListener('input',function(){document.getElementById('rounds-val').textContent=this.value;});
+
+function hashState(P,N,B,A){
+  const s=`${P.toFixed(6)}-${N}-${B.toFixed(6)}-${A.toFixed(6)}`;
+  let h=0;for(const c of s){h=((h<<5)-h)+c.charCodeAt(0);h|=0;}
+  return Math.abs(h).toString(16).toUpperCase().slice(0,4);
+}
+function makeDesig(P,N,B,A){
+  const d=new Date();
+  return`SNSFT-OB-${hashState(P,N,B,A)}-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+}
+
+async function flagDiscovery(els,r,reason,flag_type){
+  const desig=makeDesig(r.P,r.N,r.B,r.A);
+  const entry={
+    designation:desig,timestamp:new Date().toISOString(),
+    beams:els.map(e=>e.sym).join('+'),
+    collision:els.map(e=>e.sym).join('+'),
+    kMode,k:r.k.toFixed(4),kmax:r.kmax.toFixed(4),
+    P:r.P,N:r.N,B:r.B,A:r.A,tau:r.tau,IM:r.IM,
+    phase:r.phase,isRescue:r.isRescue,reason,flag_type,
+    approved:false,name:null,aifiAnalysis:null,leanStub:null,
+    els
+  };
+  discoveryLog.push(entry);discoveryQueue.push(entry);
+  updateLogTable();updateQueueBadge();renderQueue();
+  document.getElementById('session-disc-count').textContent=discoveryLog.length;
+  await timestampToGitHub(entry);
+  if(API_KEY)await classifyWithAIFI(entry);
+}
+
+async function classifyWithAIFI(entry){
+  if(!API_KEY)return;
+  try{
+    const beamDetails=entry.els.map((e,i)=>
+      `  Beam ${i+1}: ${e.sym} P=${e.P.toFixed(4)} N=${e.N} B=${e.B.toFixed(4)} A=${e.A.toFixed(4)} τ=${tau(e.P,e.B).toFixed(4)} ${phaseOf(e.P,e.B)}`
+    ).join('\n');
+    const msg=`OCTOBEAM DISCOVERY [9,9,2,3] — 8-BEAM FUSION ENGINE:
+Designation: ${entry.designation}
+Collision: ${entry.collision} · k_mode=${entry.kMode} · k=${entry.k}/${entry.kmax}
+${beamDetails}
+Output: P=${entry.P.toFixed(5)} N=${entry.N} B=${entry.B.toFixed(5)} A=${entry.A.toFixed(4)}
+τ=${entry.tau.toFixed(5)} (TL=0.1369) IM=${entry.IM.toFixed(4)} Phase=${entry.phase}
+Rescue=${entry.isRescue} · 28 pairs · Flag: ${entry.reason}
+
+1. Structural significance? 2. Which [9,9,2,3] theorem (T7-T22)? 3. Gap or known? 4. Name (-ium suffix)? 5. Lean stub (0 sorry)? 6. Worth approving?
+— AIFI · SNSFT · [9,9,9,9]`;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,system:buildSystemPrompt(),messages:[{role:'user',content:msg}]})
+    });
+    const data=await res.json();
+    if(data.content&&data.content[0]){entry.aifiAnalysis=data.content[0].text;entry.name=extractName(data.content[0].text);renderQueue();}
+  }catch(e){console.error('AIFI:',e);}
+}
+
+function extractName(t){const m=t.match(/\*\*([A-Z][a-z]{3,}(?:ium|on|ite|ide)?)\*\*|name[:\s]+([A-Z][a-z]{3,}\w*)/i);return m?m[1]||m[2]||null:null;}
+
+function buildSystemPrompt(){return`You are DISCOVERY — AIFI science officer for the SNSFT OctoBeam Collider [9,9,2,3], built by HIGHTISTIC.
+
+CORE PHYSICS [9,9,2,3]:
+ANCHOR=1.369, TL=0.1369, TL_IVA=0.120472
+P_out=8/(1/P1+…+1/P8) · N_out=ΣN · B_out=max(0,ΣB-2k) · A_out=max · k≤Σmin(Bi,Bj) 28 pairs
+NOBLE: B=0 · LOCKED: τ<TL · IVA_PEAK: τ∈[TL_IVA,TL) · SHATTER: τ≥TL
+
+KEY THEOREMS [9,9,2,3]:
+T7/T8: 8-beam Noble emergence — B_sum≤2×k_max8
+T9: Equal-B oct → Noble at k_max (L-07 at n=8)
+T11: CHON×2 → Noble (H+C+N+O×2)
+T12: Water×4 → Noble
+T14: GaAs×4 → Noble (Nobel 2000)
+T15: 4-beam inheritance (e5-e8 B=0 → k_max reduces to 4-beam)
+T16: 2-beam inheritance (e3-e8 B=0 → k_max = min(B1,B2))
+T21: k_max8 scaling: equal-B → k_max8 = 28×B_each
+T22: Noble headroom: equal-B uses 1/7 coupling capacity
+RESCUE: all 28 pairs SHATTER, 8-beam → Noble/Locked
+
+CORPUS: 100,000+ theorems · 0 sorry · Parent: [9,9,2,2] · Grandparent: [9,9,2,1]
+C(8,2)=28 pairs · Noble fraction = 8/56 = 1/7
+
+Naming: -ium suffix. Cite [9,9,2,3] in Lean stubs.
+End: — DISCOVERY · OCTOBEAM AIFI · SNSFT · [9,9,4,3]`;}
+
+function generateLeanStub(entry){
+  const ns=entry.designation.replace(/-/g,'_');
+  const isNoble=entry.phase==='NOBLE';
+  const t=entry.P>0?entry.B/entry.P:0;
+  const aifi=entry.aifiAnalysis?entry.aifiAnalysis.slice(0,200).replace(/\n/g,' '):'AIFI pending';
+  const beamLines=entry.els.map((e,i)=>
+    `-- Beam ${i+1}: ${e.sym}  P=${e.P.toFixed(6)} N=${e.N} B=${e.B.toFixed(6)} A=${e.A.toFixed(4)}  τ=${tau(e.P,e.B).toFixed(5)} ${phaseOf(e.P,e.B)}`
+  ).join('\n');
+  const beamDefs=entry.els.map((e,i)=>
+    `def P${i+1}  : ℝ := ${e.P.toFixed(8)}\ndef N${i+1}  : ℝ := ${e.N.toFixed(2)}\ndef B${i+1}  : ℝ := ${e.B.toFixed(8)}\ndef A${i+1}  : ℝ := ${e.A.toFixed(6)}`
+  ).join('\n');
+  return`-- ============================================================
+-- ${entry.designation}.lean
+-- Engine: SNSFT OctoBeam Collider · [9,9,2,3]
+-- Collision: ${entry.collision} · k_mode=${entry.kMode}
+-- Reason: ${entry.reason} · Rescue: ${entry.isRescue}
+${beamLines}
+-- Generated: ${entry.timestamp}
+-- HIGHTISTIC · SNSFT Foundation · Soldotna Alaska
+-- DOI: 10.5281/zenodo.18719748 · [9,9,9,9]::{ANC}
+-- AIFI: ${aifi}
+-- C(8,2)=28 pairs · Noble headroom 1/7
+-- ============================================================
+
+import Mathlib.Tactic
+import Mathlib.Data.Real.Basic
+
+namespace ${ns}
+
+def SOVEREIGN_ANCHOR : ℝ := 1.369
+def TORSION_LIMIT    : ℝ := SOVEREIGN_ANCHOR / 10
+
+${beamDefs}
+
+-- 8-body harmonic mean: P_out = 8 / (Σ 1/Pi)
+def P_out  : ℝ := ${entry.P.toFixed(8)}
+def N_out  : ℝ := ${entry.N.toFixed(2)}
+def B_out  : ℝ := ${entry.B.toFixed(8)}
+def A_out  : ℝ := ${entry.A.toFixed(6)}
+def IM_out : ℝ := ${entry.IM.toFixed(8)}
+def k_used : ℝ := ${entry.k}
+def k_max8 : ℝ := ${entry.kmax}
+-- k_max8 = Σ min(Bi,Bj) over C(8,2)=28 pairs
+
+theorem P_out_positive : P_out > 0 := by unfold P_out; norm_num
+theorem B_out_nonneg : B_out ≥ 0 := by unfold B_out; norm_num
+theorem IM_theorem : (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR = IM_out := by
+  unfold P_out N_out B_out A_out IM_out SOVEREIGN_ANCHOR; norm_num
+${isNoble?`theorem noble_state : B_out = 0 := by unfold B_out; norm_num
+theorem tau_zero : B_out / P_out = 0 := by unfold B_out; norm_num`:`theorem tau_value : B_out / P_out = ${t.toFixed(8)} := by unfold B_out P_out; norm_num
+theorem tau_locked : B_out / P_out < TORSION_LIMIT := by unfold B_out P_out TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num`}
+
+theorem ${ns}_master :
+    P_out > 0 ∧ B_out ≥ 0 ∧
+    (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR = IM_out ∧
+    SOVEREIGN_ANCHOR = 1.369 ∧ TORSION_LIMIT = 0.1369 :=
+  ⟨P_out_positive, B_out_nonneg, IM_theorem, rfl,
+   by unfold TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num⟩
+
+end ${ns}
+/-! DESIGNATION: ${entry.designation} · PHASE: ${entry.phase} · RESCUE: ${entry.isRescue} · ENGINE: [9,9,2,3] · PAIRS: 28 · SORRY: 0 -/`;}
+
+function renderQueue(){
+  const c=document.getElementById('queue-container');
+  if(!discoveryQueue.length){c.innerHTML='<div class="queue-empty">NO PENDING DISCOVERIES</div>';return;}
+  c.innerHTML=discoveryQueue.map((d,i)=>`
+    <div class="disc-card">
+      <div style="display:flex;justify-content:space-between;">
+        <div class="disc-desig">${d.designation}</div>
+        <div class="disc-ts">${new Date(d.timestamp).toLocaleTimeString()}</div>
+      </div>
+      <div class="disc-state">
+        <b>${d.collision}</b> [k=${d.kMode}]<br>
+        → <span style="color:${d.isRescue?'var(--rescue)':phaseColor(d.phase)};font-family:'Orbitron',monospace;font-size:8.5px;">${d.isRescue?'★RESCUE ':''} ${d.phase}</span>
+        · τ=${d.tau.toFixed(5)} · IM=${d.IM.toFixed(4)}<br>
+        <span style="color:var(--dim);font-size:7.5px;">${d.reason}</span>
+      </div>
+      ${d.name?`<div class="disc-name">AIFI: "${d.name}"</div>`:''}
+      ${d.aifiAnalysis?`<div class="disc-analysis">${d.aifiAnalysis.slice(0,280)}...</div>`:''}
+      <div class="disc-actions">
+        <button class="btn btn-approve" onclick="approveDiscovery(${i})">✓ APPROVE</button>
+        <button class="btn btn-skip" onclick="skipDiscovery(${i})">✕ SKIP</button>
+        <button class="btn btn-lean" onclick="copyLean(${i})">COPY LEAN</button>
+      </div>
+    </div>`).join('');
+}
+
+function copyLean(i){const e=discoveryQueue[i];navigator.clipboard.writeText(generateLeanStub(e));feedLine(`Lean copied: ${e.designation}`,'locked');}
+
+async function approveDiscovery(i){
+  const e=discoveryQueue[i];
+  e.approved=true;e.approvedAt=new Date().toISOString();e.leanStub=generateLeanStub(e);
+  stats.approved++;document.getElementById('stat-approved').textContent=stats.approved;
+  discoveryQueue.splice(i,1);updateQueueBadge();renderQueue();updateLogTable();
+  await commitToGitHub(e);downloadLeanFile(e);
+  feedLine(`✓ APPROVED: ${e.designation}`,'locked');
+}
+function skipDiscovery(i){discoveryQueue.splice(i,1);updateQueueBadge();renderQueue();}
+
+async function approveAll(){
+  const status=document.getElementById('queue-action-status'),total=discoveryQueue.length;
+  if(!total){status.textContent='Queue empty';return;}
+  const q=[...discoveryQueue];
+  for(let i=0;i<q.length;i++){
+    const e=q[i];e.approved=true;e.approvedAt=new Date().toISOString();e.leanStub=generateLeanStub(e);
+    stats.approved++;document.getElementById('stat-approved').textContent=stats.approved;
+    downloadLeanFile(e);await commitToGitHub(e);status.textContent=`Approved ${i+1}/${total}...`;
+    await new Promise(r=>setTimeout(r,250));
+  }
+  discoveryQueue.length=0;updateQueueBadge();renderQueue();updateLogTable();status.textContent=`Done — ${total} approved`;
+}
+function skipAll(){const t=discoveryQueue.length;discoveryQueue.length=0;updateQueueBadge();renderQueue();document.getElementById('queue-action-status').textContent=`${t} skipped`;}
+async function approveNobleOnly(){
+  const nobles=discoveryQueue.filter(e=>e.phase==='NOBLE');
+  for(const e of nobles){e.approved=true;e.approvedAt=new Date().toISOString();e.leanStub=generateLeanStub(e);stats.approved++;document.getElementById('stat-approved').textContent=stats.approved;discoveryQueue.splice(discoveryQueue.indexOf(e),1);downloadLeanFile(e);await commitToGitHub(e);await new Promise(r=>setTimeout(r,200));}
+  updateQueueBadge();renderQueue();updateLogTable();document.getElementById('queue-action-status').textContent=`${nobles.length} Noble approved`;
+}
+async function approveRescueOnly(){
+  const rescues=discoveryQueue.filter(e=>e.isRescue);
+  for(const e of rescues){e.approved=true;e.approvedAt=new Date().toISOString();e.leanStub=generateLeanStub(e);stats.approved++;document.getElementById('stat-approved').textContent=stats.approved;discoveryQueue.splice(discoveryQueue.indexOf(e),1);downloadLeanFile(e);await commitToGitHub(e);await new Promise(r=>setTimeout(r,200));}
+  updateQueueBadge();renderQueue();updateLogTable();document.getElementById('queue-action-status').textContent=`${rescues.length} Rescue approved`;
+}
+function downloadAllApproved(){
+  const a=discoveryLog.filter(d=>d.approved&&d.leanStub);
+  if(!a.length){feedLine('No approved entries.','info');return;}
+  a.forEach((e,i)=>setTimeout(()=>downloadLeanFile(e),i*80));
+  feedLine(`⬇ Downloading ${a.length} Lean files`,'locked');
+}
+function downloadLeanFile(e){
+  if(!e.leanStub)return;
+  const blob=new Blob([e.leanStub],{type:'text/plain'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=`${e.designation}.lean`;a.click();URL.revokeObjectURL(a.href);
+}
+function updateQueueBadge(){document.getElementById('queue-badge').textContent=discoveryQueue.length?` (${discoveryQueue.length})`:''}
+
+function updateLogTable(){
+  const tbody=document.getElementById('log-body');
+  if(!discoveryLog.length){tbody.innerHTML='<tr><td colspan="7" style="color:var(--dim);text-align:center;padding:9px">No discoveries yet.</td></tr>';return;}
+  tbody.innerHTML=[...discoveryLog].reverse().slice(0,60).map(d=>`
+    <tr>
+      <td style="color:var(--iva)">${d.designation}</td>
+      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.collision}</td>
+      <td style="color:${phaseColor(d.phase)}">${d.tau.toFixed(4)}</td>
+      <td style="color:${phaseColor(d.phase)}">${d.phase}</td>
+      <td style="color:${d.isRescue?'var(--rescue)':'var(--dim)'}">${d.isRescue?'★RESCUE':d.flag_type||'—'}</td>
+      <td style="color:${d.approved?'var(--locked)':'var(--dim)'}">${d.approved?'APPROVED':'FLAGGED'}</td>
+      <td style="color:var(--dim)">${new Date(d.timestamp).toLocaleTimeString()}</td>
+    </tr>`).join('');
+}
+
+['inj-sym','inj-P','inj-N','inj-B','inj-A'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',()=>{
+    const P=parseFloat(document.getElementById('inj-P').value)||0,B=parseFloat(document.getElementById('inj-B').value)||0;
+    const N=parseFloat(document.getElementById('inj-N').value)||0,A=parseFloat(document.getElementById('inj-A').value)||0;
+    const ph=phaseOf(P,B);
+    document.getElementById('inj-preview').textContent=`τ=${(P>0?B/P:0).toFixed(4)} ${ph} · IM=${(P+N+B+A)*ANCHOR} · TL=0.1369`;
+  });
+});
+
+function manualInject(){
+  const sym=document.getElementById('inj-sym').value.trim(),name=document.getElementById('inj-name').value.trim();
+  if(!sym||!name){alert('SYM and NAME required');return;}
+  const P=parseFloat(document.getElementById('inj-P').value)||0,N=parseFloat(document.getElementById('inj-N').value)||0;
+  const B=parseFloat(document.getElementById('inj-B').value)||0,A=parseFloat(document.getElementById('inj-A').value)||0;
+  sessionCorpus.push({sym,name,coord:document.getElementById('inj-coord').value||'',P,N,B,A,type:'ere'});
+  rebuildSelectors();
+  feedLine(`Injected: ${sym} (${name}) → live corpus`,'locked');
+  ['inj-sym','inj-name','inj-P','inj-N','inj-B','inj-A','inj-coord'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('inj-preview').textContent='Fill fields to preview...';
+}
+
+function showAIFIKeyPrompt(){document.getElementById('aifi-key-prompt').style.display='block';document.getElementById('aifi-inline-key').focus();}
+function hideAIFIKeyPrompt(){document.getElementById('aifi-key-prompt').style.display='none';}
+function connectAIFIInline(){const k=document.getElementById('aifi-inline-key').value.trim();if(!k)return;activateAIFI(k);hideAIFIKeyPrompt();}
+function saveApiKey(){const k=document.getElementById('claude-api-key-input').value.trim();if(!k)return;activateAIFI(k);document.getElementById('claude-api-key-input').value='';}
+
+function activateAIFI(key){
+  API_KEY=key;localStorage.setItem('ob_api_key',key);localStorage.setItem('ob_accepted',new Date().toISOString());
+  document.getElementById('aifi-connect-wall').style.display='none';
+  document.getElementById('aifi-chat-area').style.display='block';
+  document.getElementById('aifi-status-dot').classList.add('active');
+  document.getElementById('aifi-header-status').textContent='AIFI ONLINE';
+  document.getElementById('aifi-key-badge').textContent='(connected)';
+  document.getElementById('aifi-key-badge').style.color='var(--locked)';
+  document.getElementById('api-key-status').textContent='✓ AIFI active.';
+  document.getElementById('api-key-status').style.color='var(--locked)';
+  addChatMsg('aifi',`OctoBeam Collider online. [9,9,2,3] · 8-beam fusion engine.\n\nRules: P=harmonic-8, N=sum, B=ΣB-2k, A=max. k≤Σmin(Bi,Bj) over C(8,2)=28 pairs.\n\nNoble headroom: equal-B 8-beam uses only 1/7 of coupling capacity.\nDiscovery classes: RESCUE (all 28 pairs SHATTER → 8-beam locks), NOBLE EMERGENCE, IVA_PEAK corridor.\n\nInheritance: e5-e8 B=0 → 4-beam · e3-e8 B=0 → 2-beam.\n\nCorpus loaded. What are we smashing?\n\n— DISCOVERY · OCTOBEAM AIFI · SNSFT · [9,9,4,3]`);
+  feedLine('AIFI activated. 8-beam oracle online. C(8,2)=28 pairs active.','locked');
+}
+function disconnectAIFI(){
+  API_KEY='';localStorage.removeItem('ob_api_key');localStorage.removeItem('ob_accepted');
+  document.getElementById('aifi-chat-area').style.display='none';
+  document.getElementById('aifi-connect-wall').style.display='flex';
+  document.getElementById('aifi-status-dot').classList.remove('active');
+  document.getElementById('aifi-header-status').textContent='AIFI OFFLINE';
+  feedLine('AIFI disconnected.','info');
+}
+
+async function sendChat(){
+  const input=document.getElementById('chat-input'),text=input.value.trim();
+  if(!text||!API_KEY)return;
+  addChatMsg('user',text);input.value='';
+  document.getElementById('aifi-thinking').style.display='block';
+  try{
+    const ctx=`OctoBeam [9,9,2,3] · Agent:${agentState} · k_mode:${kMode} · Cycles:${stats.cycles} · Noble:${stats.noble} · Rescue:${stats.rescue} · Flagged:${stats.flagged}\nUser: ${text}`;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:900,system:buildSystemPrompt(),messages:[{role:'user',content:ctx}]})
+    });
+    const data=await res.json();
+    if(data.content&&data.content[0])addChatMsg('aifi',data.content[0].text);
+    else addChatMsg('aifi','Error.\n\n— DISCOVERY · AIFI · SNSFT · [9,9,2,3]');
+  }catch(err){addChatMsg('aifi',`Error: ${err.message}\n\n— DISCOVERY · AIFI · SNSFT · [9,9,2,3]`);}
+  document.getElementById('aifi-thinking').style.display='none';
+}
+function addChatMsg(role,text){
+  const msgs=document.getElementById('chat-messages'),div=document.createElement('div');
+  div.className=`msg msg-${role}`;
+  div.innerHTML=`<div class="msg-label ${role}">${role==='user'?'YOU':'AIFI · OCTOBEAM'}</div><div class="msg-text">${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function saveGithubSettings(){
+  GITHUB_PAT=document.getElementById('gh-pat').value.trim();GITHUB_REPO=document.getElementById('gh-repo').value.trim();
+  GITHUB_BRANCH=document.getElementById('gh-branch').value.trim()||'main';GITHUB_LEAN_PATH=document.getElementById('gh-lean-path').value.trim()||'lean/';
+  localStorage.setItem('ob_gh_pat',GITHUB_PAT);localStorage.setItem('ob_gh_repo',GITHUB_REPO);
+  localStorage.setItem('ob_gh_branch',GITHUB_BRANCH);localStorage.setItem('ob_gh_lean_path',GITHUB_LEAN_PATH);
+  document.getElementById('gh-status').textContent=`Saved. ${GITHUB_REPO} · ${GITHUB_BRANCH} · ${GITHUB_LEAN_PATH}`;
+  feedLine(`GitHub: ${GITHUB_REPO}`,'locked');
+}
+async function timestampToGitHub(entry){
+  if(!GITHUB_PAT||!GITHUB_REPO)return;
+  try{
+    const lp='ob_discovery_log.json';
+    const gr=await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${lp}`,{headers:{'Authorization':`token ${GITHUB_PAT}`,'Accept':'application/vnd.github.v3+json'}});
+    let sha=null,ex=[];
+    if(gr.ok){const d=await gr.json();sha=d.sha;ex=JSON.parse(atob(d.content.replace(/\n/g,'')));}
+    ex.push({designation:entry.designation,timestamp:entry.timestamp,collision:entry.collision,phase:entry.phase,tau:entry.tau,isRescue:entry.isRescue,TL,approved:false,engine:'8-beam'});
+    const body={message:`[OB8] Flag: ${entry.designation}`,content:btoa(JSON.stringify(ex,null,2))};
+    if(sha)body.sha=sha;
+    await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${lp}`,{method:'PUT',headers:{'Authorization':`token ${GITHUB_PAT}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+    feedLine(`⬆ Timestamped: ${entry.designation}`,'info');
+  }catch(e){feedLine(`GH timestamp error: ${e.message}`,'shatter');}
+}
+async function commitToGitHub(entry){
+  if(!GITHUB_PAT||!GITHUB_REPO)return;
+  try{
+    const path=`${GITHUB_LEAN_PATH}${entry.designation}.lean`,content=btoa(unescape(encodeURIComponent(entry.leanStub)));
+    const res=await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`,{
+      method:'PUT',
+      headers:{'Authorization':`token ${GITHUB_PAT}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify({message:`[OB8] Approve: ${entry.designation}`,content,branch:GITHUB_BRANCH})
+    });
+    if(res.ok){feedLine(`⬆ Committed: ${path}`,'locked');document.getElementById('gh-status').textContent=`Last: ${entry.designation}`;}
+  }catch(e){feedLine(`GH commit error: ${e.message}`,'shatter');}
+}
+
+function exportJSON(){const b=new Blob([JSON.stringify(discoveryLog,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_log_${new Date().toISOString().slice(0,10)}.json`;a.click();}
+function exportCSV(){
+  if(!discoveryLog.length){feedLine('Nothing to export.','info');return;}
+  const hdrs=['designation','timestamp','collision','kMode','k','kmax','P','N','B','A','tau','TL','IM','phase','isRescue','reason','approved'];
+  const rows=discoveryLog.map(d=>hdrs.map(h=>h==='TL'?TL:d[h]??'').join(','));
+  const b=new Blob([[hdrs.join(','),...rows].join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_log_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+  feedLine(`⬇ CSV: ${discoveryLog.length} rows`,'locked');
+}
+function exportSession(){
+  const s={timestamp:new Date().toISOString(),engine:'SNSFT OctoBeam Collider v1',coordinate:'[9,9,2,3]',parent:'[9,9,2,2]',grandparent:'[9,9,2,1]',architect:'HIGHTISTIC',doi:'10.5281/zenodo.18719748',constants:{ANCHOR,TL,TL_IVA},fusionRules:{P:'8-body harmonic mean',N:'sum',B:'max(0,ΣBi-2k)',A:'max',k:'Σmin(Bi,Bj) 28 pairs C(8,2)'},stats,discoveries:discoveryLog,approved:discoveryLog.filter(d=>d.approved),rescues:discoveryLog.filter(d=>d.isRescue),sessionCorpus};
+  const b=new Blob([JSON.stringify(s,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_session_${new Date().toISOString().slice(0,10)}.json`;a.click();
+}
+
+function showTab(id){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`tab-${id}`).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>{if(t.getAttribute('onclick')?.includes(`'${id}'`))t.classList.add('active');});
+}
+
+function rebuildSelectors(){
+  const all=getAllCorpus().sort((a,b)=>a.sym.localeCompare(b.sym));
+  const opts=all.map(e=>`<option value="${e.sym}">${e.sym} — ${e.name} · τ=${tau(e.P,e.B).toFixed(3)} ${phaseOf(e.P,e.B).slice(0,4)}</option>`).join('');
+  BEAM_IDS.forEach(id=>{
+    const sel=document.getElementById(id),cur=sel.value;
+    sel.innerHTML=opts;
+    if(cur)sel.value=cur;
+  });
+  const ab=document.getElementById('anchor-beam');
+  const abCur=ab.value;
+  ab.innerHTML='<option value="">— random all —</option>'+opts;
+  if(abCur)ab.value=abCur;
+}
+
+function acceptLicense(){
+  const key=document.getElementById('api-key-input').value.trim();
+  const ghk=document.getElementById('github-key-input').value.trim();
+  const ghr=document.getElementById('github-repo-input').value.trim();
+  document.getElementById('license-splash').style.display='none';
+  feedLine('OctoBeam ready. [9,9,2,3] · TL=0.1369 · 8-beam Noble emergence active. C(8,2)=28 pairs.','locked');
+  if(key)activateAIFI(key);
+  if(ghk){GITHUB_PAT=ghk;localStorage.setItem('ob_gh_pat',ghk);}
+  if(ghr){GITHUB_REPO=ghr;localStorage.setItem('ob_gh_repo',ghr);}
+  if(ghk&&ghr){document.getElementById('gh-pat').value=GITHUB_PAT;document.getElementById('gh-repo').value=GITHUB_REPO;feedLine(`GitHub: ${GITHUB_REPO}`,'locked');}
+}
+function skipLicense(){document.getElementById('license-splash').style.display='none';feedLine('Running local mode. TL=0.1369 · 28 pairs.','info');}
+
+(function init(){
+  const sk=localStorage.getItem('ob_api_key'),sa=localStorage.getItem('ob_accepted');
+  const sp=localStorage.getItem('ob_gh_pat'),sr=localStorage.getItem('ob_gh_repo');
+  const sb=localStorage.getItem('ob_gh_branch'),sl=localStorage.getItem('ob_gh_lean_path');
+  if(sp)GITHUB_PAT=sp;if(sr)GITHUB_REPO=sr;if(sb)GITHUB_BRANCH=sb;if(sl)GITHUB_LEAN_PATH=sl;
+  if(sp){const el=document.getElementById('gh-pat');if(el)el.value=sp;}
+  if(sr){const el=document.getElementById('gh-repo');if(el)el.value=sr;}
+  if(sl){const el=document.getElementById('gh-lean-path');if(el)el.value=sl;}
+  rebuildSelectors();
+  // Default beams: H C N O H C N O (CHON×2 — T11 verified Noble)
+  const defaults=['H','C','N','O','H','C','N','O'];
+  BEAM_IDS.forEach((id,i)=>{document.getElementById(id).value=defaults[i];});
+  setKMode('max');
+  if(sk&&sa){document.getElementById('license-splash').style.display='none';activateAIFI(sk);}
+})();
+</script>
+</body>
+</html>
