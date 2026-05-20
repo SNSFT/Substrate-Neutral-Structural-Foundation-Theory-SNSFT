@@ -1153,10 +1153,15 @@ function showMatMapInline(els,r){
   const matchRef=mm.bestMatch?mm.bestMatch.ref.slice(0,160):'No direct corpus match. DOI timestamp establishes prior art.';
   const matchApp=mm.bestMatch?mm.bestMatch.app:'Structural prediction — experimental validation pending';
   const top3=mm.scored.slice(0,3).map(m=>`<span style="color:var(--dim);font-size:7px;">[${m.tier}] ${m.name} (${m.hits}/${m.syms.length})</span>`).join(' · ');
+  const recipe=computeRecipe(els);
+  const recipeLine=recipe
+    ?`<br><span style="color:var(--dim);font-size:7.5px;">⚗ </span><span style="color:var(--locked);font-size:7.5px;">${recipeToString(recipe)}</span> <span style="color:var(--dim);font-size:7px;">${recipe.stoich} · ${recipe.law}</span>`
+    :'';
   el.innerHTML=`<span style="color:${tc};font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;">${tierLabel}</span> <span style="color:var(--bright);margin-left:4px;">${matchName}</span><br>`+
     `<span style="color:var(--dim);">core: </span><span style="color:var(--glow);">${mm.coreStr}</span> <span style="color:var(--dim);margin-left:6px;">path: </span><span style="color:var(--text);">${mm.path.split(/[\s\/]/)[0]}</span><br>`+
     `<span style="color:var(--dim);font-size:7.5px;">${matchRef}</span><br>`+
     `<span style="color:var(--iva);font-size:7.5px;">▶ ${matchApp}</span>`+
+    recipeLine+
     (top3?`<br><span style="color:var(--dim);font-size:7px;">also: ${top3}</span>`:'');
 }
 
@@ -1240,6 +1245,92 @@ function updateStatusBadge(){
 document.getElementById('speed-slider').addEventListener('input',function(){document.getElementById('speed-val').textContent=this.value;if(agentState==='running'){stopAgent();startAgent();}});
 document.getElementById('rounds-slider').addEventListener('input',function(){document.getElementById('rounds-val').textContent=this.value;});
 
+// ── RECIPE ENGINE · [9,9,2,45] B-BALANCE STOICHIOMETRY LAW ──
+// Atomic weights IUPAC 2021 · Pure Appl. Chem. 93(5), 573-600
+const ATOMIC_MW={
+  H:1.008,He:4.003,Li:6.941,Be:9.012,B:10.81,C:12.011,N:14.007,O:15.999,
+  F:18.998,Ne:20.180,Na:22.990,Mg:24.305,Al:26.982,Si:28.086,P:30.974,
+  S:32.065,Cl:35.453,Ar:39.948,K:39.098,Ca:40.078,Sc:44.956,Ti:47.867,
+  V:50.942,Cr:51.996,Mn:54.938,Fe:55.845,Co:58.933,Ni:58.693,Cu:63.546,
+  Zn:65.38,Ga:69.723,Ge:72.630,As:74.922,Se:78.971,Br:79.904,Kr:83.798,
+  Rb:85.468,Sr:87.62,Y:88.906,Zr:91.224,Nb:92.906,Mo:95.950,Tc:97,
+  Ru:101.07,Rh:102.906,Pd:106.42,Ag:107.868,Cd:112.414,In:114.818,
+  Sn:118.710,Sb:121.760,Te:127.60,I:126.904,Xe:131.293,Cs:132.905,
+  Ba:137.327,La:138.905,Ce:140.116,Pr:140.908,Nd:144.242,Pm:145,
+  Sm:150.36,Eu:151.964,Gd:157.25,Tb:158.925,Dy:162.500,Ho:164.930,
+  Er:167.259,Tm:168.934,Yb:173.045,Lu:174.967,Hf:178.49,Ta:180.948,
+  W:183.84,Re:186.207,Os:190.23,Ir:192.217,Pt:195.084,Au:196.967,
+  Hg:200.592,Tl:204.38,Pb:207.2,Bi:208.980,Po:209,At:210,Rn:222,
+  Fr:223,Ra:226,Ac:227,Th:232.038,Pa:231.036,U:238.029,Np:237,
+  Pu:244,Am:243,Cm:247,Bk:247,Cf:251,Es:252,Fm:257,Md:258,No:259,
+  Lr:262,Rf:267,Db:270,Sg:271,Bh:270,Hs:277,Mt:276,Ds:281,Rg:282,
+  Cn:285,Nh:286,Fl:289,Mc:290,Lv:293,Ts:294,Og:294
+};
+
+function gcd(a,b){a=Math.round(a);b=Math.round(b);while(b){const t=b;b=a%b;a=t;}return a;}
+
+function computeRecipe(els){
+  // Only periodic elements with integer B and known MW get recipe lines
+  const periodic=els.filter(e=>ATOMIC_MW[e.sym]&&Number.isInteger(e.B)&&e.B>0);
+  if(periodic.length<2)return null;
+
+  // For 2-element case: direct B-balance n1×B1=n2×B2
+  if(periodic.length===2){
+    const [e1,e2]=periodic;
+    const B1=e1.B,B2=e2.B;
+    const g=gcd(B1,B2);
+    const n1=B2/g,n2=B1/g;
+    const mw1=ATOMIC_MW[e1.sym],mw2=ATOMIC_MW[e2.sym];
+    const mass1=n1*mw1,mass2=n2*mw2,massFU=mass1+mass2;
+    return{
+      type:'binary',
+      items:[
+        {sym:e1.sym,n:n1,B:B1,mw:mw1,mass:mass1},
+        {sym:e2.sym,n:n2,B:B2,mw:mw2,mass:mass2}
+      ],
+      massFU,
+      stoich:`${n1}${e1.sym}:${n2}${e2.sym}`,
+      formula:`${e1.sym}${n1>1?n1:''}${e2.sym}${n2>1?n2:''}`,
+      law:'[9,9,2,45]'
+    };
+  }
+
+  // For n>2: report each element's n_i proportional to total-B / B_i
+  // Use LCM approach: each n_i = (product of all other B_j) / gcd
+  // Simplified: use 1-atom per beam, report g/beam contribution
+  const items=periodic.map(e=>{
+    const mw=ATOMIC_MW[e.sym];
+    return{sym:e.sym,n:1,B:e.B,mw,mass:mw};
+  });
+  const massFU=items.reduce((s,i)=>s+i.mass,0);
+  return{
+    type:'multi',
+    items,
+    massFU,
+    stoich:items.map(i=>`1${i.sym}`).join(':'),
+    formula:items.map(i=>i.sym).join(''),
+    law:'[9,9,2,45] · 1 atom per beam'
+  };
+}
+
+function recipeToLeanComment(recipe){
+  if(!recipe)return'-- RECIPE: insufficient periodic elements for B-balance calculation';
+  const lines=recipe.items.map(i=>
+    `--   ${i.n}× ${i.sym.padEnd(3)} B=${i.B}  MW=${i.mw.toFixed(3).padStart(8)} g/mol  → ${(i.n*i.mw).toFixed(4).padStart(10)} g/FU`
+  ).join('\n');
+  return`-- ── PRODUCTION RECIPE · ${recipe.law} ─────────────────────────────
+-- B-BALANCE STOICHIOMETRY LAW: n_i × B_i = n_j × B_j (GCD-reduced)
+-- Stoichiometry: ${recipe.stoich}  →  Formula unit: ${recipe.formula}
+${lines}
+-- Total formula unit mass: ${recipe.massFU.toFixed(4)} g/FU
+-- Reference: IUPAC 2021 Pure Appl. Chem. 93(5), 573-600`;
+}
+
+function recipeToString(recipe){
+  if(!recipe)return'';
+  return recipe.items.map(i=>`${(i.n*i.mw).toFixed(4)}g ${i.sym}`).join(' + ')+` = ${recipe.massFU.toFixed(4)}g/FU`;
+}
+
 function hashState(P,N,B,A){
   const s=`${P.toFixed(6)}-${N}-${B.toFixed(6)}-${A.toFixed(6)}`;
   let h=0;for(const c of s){h=((h<<5)-h)+c.charCodeAt(0);h|=0;}
@@ -1260,7 +1351,8 @@ async function flagDiscovery(els,r,reason,flag_type){
     P:r.P,N:r.N,B:r.B,A:r.A,tau:r.tau,IM:r.IM,
     phase:r.phase,isRescue:r.isRescue,reason,flag_type,
     approved:false,name:null,aifiAnalysis:null,leanStub:null,
-    els
+    els,
+    recipe:computeRecipe(els)
   };
   discoveryLog.push(entry);discoveryQueue.push(entry);
   updateLogTable();updateQueueBadge();renderQueue();
@@ -1868,6 +1960,8 @@ function generateLeanStub(entry){
   const engineCoord=n===8?'[9,9,2,3]':n===4?'[9,9,2,2]':'[9,9,2,1]';
   const mm=getMaterialMap(entry.els,{phase:entry.phase,isRescue:entry.isRescue,IM:entry.IM});
   const matMapBlock=formatMaterialMapComment(entry,mm);
+  const recipe=entry.recipe||computeRecipe(entry.els);
+  const recipeBlock=recipeToLeanComment(recipe);
 
   return`-- ============================================================
 -- ${entry.designation}.lean
@@ -1881,6 +1975,7 @@ ${beamLines}
 -- AIFI: ${aifi}
 -- C(${n},2)=${pairCount} pairs · Noble headroom ${n===8?'1/7':n===4?'1/3':'1/1'}
 ${matMapBlock}
+${recipeBlock}
 
 import Mathlib.Tactic
 import Mathlib.Data.Real.Basic
@@ -2135,8 +2230,18 @@ async function commitToGitHub(entry){
 function exportJSON(){const b=new Blob([JSON.stringify(discoveryLog,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_log_${new Date().toISOString().slice(0,10)}.json`;a.click();}
 function exportCSV(){
   if(!discoveryLog.length){feedLine('Nothing to export.','info');return;}
-  const hdrs=['designation','timestamp','collision','kMode','k','kmax','P','N','B','A','tau','TL','IM','phase','isRescue','reason','approved'];
-  const rows=discoveryLog.map(d=>hdrs.map(h=>h==='TL'?TL:d[h]??'').join(','));
+  const hdrs=['designation','timestamp','collision','kMode','k','kmax','P','N','B','A','tau','TL','IM','phase','isRescue','reason','approved','recipe_stoich','recipe_formula','recipe_grams_per_FU','recipe_law'];
+  const rows=discoveryLog.map(d=>{
+    const r=d.recipe||null;
+    return hdrs.map(h=>{
+      if(h==='TL')return TL;
+      if(h==='recipe_stoich')return r?r.stoich:'';
+      if(h==='recipe_formula')return r?r.formula:'';
+      if(h==='recipe_grams_per_FU')return r?recipeToString(r):'';
+      if(h==='recipe_law')return r?r.law:'';
+      return d[h]??'';
+    }).join(',');
+  });
   const b=new Blob([[hdrs.join(','),...rows].join('\n')],{type:'text/csv'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_log_${new Date().toISOString().slice(0,10)}.csv`;a.click();
   feedLine(`⬇ CSV: ${discoveryLog.length} rows`,'locked');
