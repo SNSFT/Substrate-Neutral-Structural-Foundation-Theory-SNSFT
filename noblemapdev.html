@@ -189,6 +189,22 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
 .bv-out-phase{font-size:11px;font-weight:700;letter-spacing:.08em;}
 .phase-leg{display:flex;gap:10px;flex-wrap:wrap;font-size:7.5px;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:9px;}
 .pdot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:3px;vertical-align:middle;}
+/* beam count + corpus filter row */
+.mode-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0 10px;border-bottom:1px solid var(--border2);margin-bottom:10px;}
+.mode-section{display:flex;align-items:center;gap:5px;}
+.mode-sep{width:1px;height:18px;background:var(--border2);margin:0 4px;}
+.mode-label{font-size:7px;letter-spacing:.2em;color:var(--dim);white-space:nowrap;}
+.beam-count-btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:5px 12px;background:transparent;cursor:pointer;border:1px solid var(--border2);color:var(--dim);transition:all .12s;min-width:42px;text-align:center;}
+.beam-count-btn:hover{color:var(--text);}
+.beam-count-btn.active{border-color:var(--glow);color:var(--glow);background:rgba(0,229,255,.06);}
+.filter-btn{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.12em;padding:4px 9px;background:transparent;cursor:pointer;border:1px solid;transition:all .12s;}
+.filter-btn.on-elements{border-color:rgba(0,229,255,.5);color:var(--glow);}
+.filter-btn.on-eres{border-color:rgba(221,68,255,.5);color:var(--aifi);}
+.filter-btn.on-particles{border-color:rgba(255,170,0,.5);color:var(--iva);}
+.filter-btn.off{border-color:var(--border2)!important;color:var(--dim)!important;opacity:.5;}
+/* dim/disable inactive beam slots */
+.beam-slot.inactive{opacity:.28;pointer-events:none;}
+.beam-slot.inactive .beam-sel{background:rgba(0,0,0,.4);}
 @media(max-width:960px){.main-layout{grid-template-columns:1fr;}.beam-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
@@ -240,17 +256,33 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
     <span><span class="pdot" style="background:var(--iva)"></span><span style="color:var(--iva)">IVA_PEAK</span> τ∈[0.1205,TL)</span>
     <span><span class="pdot" style="background:var(--locked)"></span><span style="color:var(--locked)">LOCKED</span> τ&lt;TL</span>
     <span><span class="pdot" style="background:var(--shatter)"></span><span style="color:var(--shatter)">SHATTER</span> τ≥TL</span>
-    <span><span class="pdot" style="background:var(--rescue)"></span><span style="color:var(--rescue)">RESCUE</span> all 28 pairs SHATTER→Noble</span>
+    <span><span class="pdot" style="background:var(--rescue)"></span><span style="color:var(--rescue)">RESCUE</span> all <span id="pairs-label">28</span> pairs SHATTER→Noble</span>
+  </div>
+  <div class="mode-bar">
+    <span class="mode-label">BEAMS</span>
+    <div class="mode-section">
+      <button class="beam-count-btn" id="bcb-2" onclick="setBeamCount(2)" title="2-beam: single pair collision">2</button>
+      <button class="beam-count-btn" id="bcb-4" onclick="setBeamCount(4)" title="4-beam: QuadBeam engine [9,9,2,2]">4</button>
+      <button class="beam-count-btn active" id="bcb-8" onclick="setBeamCount(8)" title="8-beam: OctoBeam engine [9,9,2,3]">8</button>
+    </div>
+    <div class="mode-sep"></div>
+    <span class="mode-label">CORPUS</span>
+    <div class="mode-section" style="gap:4px;">
+      <button class="filter-btn on-elements" id="f-elements" onclick="toggleFilter('elements')" title="Periodic table elements (H, C, N, Fe…)">ELEMENTS</button>
+      <button class="filter-btn on-eres" id="f-eres" onclick="toggleFilter('eres')" title="Emergent Resonant Elements — dark matter, Higgs, EREs">EREs</button>
+      <button class="filter-btn on-particles" id="f-particles" onclick="toggleFilter('particles')" title="Particle physics — quarks, mesons, baryons">PARTICLES</button>
+    </div>
+    <div style="margin-left:auto;font-size:7.5px;color:var(--dim);" id="mode-summary">8-BEAM · C(8,2)=28 pairs</div>
   </div>
   <div class="beam-grid">
-    <div class="beam-slot"><div class="beam-label b1">BEAM 1</div><select class="beam-sel b1" id="beam1"></select></div>
-    <div class="beam-slot"><div class="beam-label b2">BEAM 2</div><select class="beam-sel b2" id="beam2"></select></div>
-    <div class="beam-slot"><div class="beam-label b3">BEAM 3</div><select class="beam-sel b3" id="beam3"></select></div>
-    <div class="beam-slot"><div class="beam-label b4">BEAM 4</div><select class="beam-sel b4" id="beam4"></select></div>
-    <div class="beam-slot"><div class="beam-label b5">BEAM 5</div><select class="beam-sel b5" id="beam5"></select></div>
-    <div class="beam-slot"><div class="beam-label b6">BEAM 6</div><select class="beam-sel b6" id="beam6"></select></div>
-    <div class="beam-slot"><div class="beam-label b7">BEAM 7</div><select class="beam-sel b7" id="beam7"></select></div>
-    <div class="beam-slot"><div class="beam-label b8">BEAM 8</div><select class="beam-sel b8" id="beam8"></select></div>
+    <div class="beam-slot" id="slot1"><div class="beam-label b1">BEAM 1</div><select class="beam-sel b1" id="beam1"></select></div>
+    <div class="beam-slot" id="slot2"><div class="beam-label b2">BEAM 2</div><select class="beam-sel b2" id="beam2"></select></div>
+    <div class="beam-slot" id="slot3"><div class="beam-label b3">BEAM 3</div><select class="beam-sel b3" id="beam3"></select></div>
+    <div class="beam-slot" id="slot4"><div class="beam-label b4">BEAM 4</div><select class="beam-sel b4" id="beam4"></select></div>
+    <div class="beam-slot" id="slot5"><div class="beam-label b5">BEAM 5</div><select class="beam-sel b5" id="beam5"></select></div>
+    <div class="beam-slot" id="slot6"><div class="beam-label b6">BEAM 6</div><select class="beam-sel b6" id="beam6"></select></div>
+    <div class="beam-slot" id="slot7"><div class="beam-label b7">BEAM 7</div><select class="beam-sel b7" id="beam7"></select></div>
+    <div class="beam-slot" id="slot8"><div class="beam-label b8">BEAM 8</div><select class="beam-sel b8" id="beam8"></select></div>
   </div>
   <div class="kmode-row">
     <span style="font-size:7.5px;color:var(--dim);white-space:nowrap">K-MODE</span>
@@ -510,27 +542,81 @@ function kMax8(B1,B2,B3,B4,B5,B6,B7,B8){
   return k;
 }
 
-function fuse8(e1,e2,e3,e4,e5,e6,e7,e8,km){
-  const els=[e1,e2,e3,e4,e5,e6,e7,e8];
-  // P_out = 8 / (Σ 1/Pi)  [8-body harmonic mean]
+// ── BEAM COUNT + CORPUS FILTER STATE ──────────────────────────
+let beamCount=8;
+const corpusFilters={elements:true,eres:true,particles:true};
+
+const PAIRS_FOR={2:1,4:6,8:28};
+const ERE_SYMS_SET=new Set(['Sv','Lm','Ve','Ax','De','Dm','Hi','Dq','Gl2','Zo','Zc','SP','Li2','Fv','Pa2']);
+const PARTICLE_SYMS_SET=new Set(['Pr','Nt','qc','qb','qt','e','Xc','Jy','Ups']);
+
+function setBeamCount(n){
+  beamCount=n;
+  // update button states
+  [2,4,8].forEach(x=>{
+    document.getElementById('bcb-'+x).classList.toggle('active',x===n);
+  });
+  // dim/enable slots
+  for(let i=1;i<=8;i++){
+    const slot=document.getElementById('slot'+i);
+    if(slot)slot.classList.toggle('inactive',i>n);
+  }
+  // update labels
+  const pairCount=PAIRS_FOR[n]||1;
+  document.getElementById('pairs-label').textContent=pairCount;
+  document.getElementById('mode-summary').textContent=`${n}-BEAM · C(${n},2)=${pairCount} pair${pairCount===1?'':'s'}`;
+  // update collision engine panel title
+  const pt=document.querySelector('.panel-title span:first-child');
+  if(pt)pt.textContent=`${n}-BEAM COLLISION ENGINE`;
+  // update rescue description in result box if visible
+  feedLine(`Mode: ${n}-beam · C(${n},2)=${pairCount} pairs active`,'info');
+}
+
+function toggleFilter(type){
+  corpusFilters[type]=!corpusFilters[type];
+  const btn=document.getElementById('f-'+type);
+  if(corpusFilters[type]){
+    btn.classList.remove('off');
+    btn.classList.add('on-'+type);
+  } else {
+    btn.classList.remove('on-'+type);
+    btn.classList.add('off');
+  }
+  rebuildSelectors();
+  feedLine(`Corpus filter: ${type.toUpperCase()} ${corpusFilters[type]?'ON':'OFF'}`,'info');
+}
+
+function getFilteredCorpus(){
+  return getAllCorpus().filter(e=>{
+    if(ERE_SYMS_SET.has(e.sym))return corpusFilters.eres;
+    if(PARTICLE_SYMS_SET.has(e.sym))return corpusFilters.particles;
+    return corpusFilters.elements;
+  });
+}
+
+// ── N-BEAM FUSION ENGINE (works for 2, 4, or 8 beams) ─────────
+function kMaxN(Bs){
+  let k=0;
+  for(let i=0;i<Bs.length;i++)for(let j=i+1;j<Bs.length;j++)k+=Math.min(Bs[i],Bs[j]);
+  return k;
+}
+
+function fuseN(els,km){
+  const n=els.length;
   const recipSum=els.reduce((s,e)=>s+1/e.P,0);
-  const P_o=8/recipSum;
-  // N_out = ΣNi
+  const P_o=n/recipSum;
   const N_o=els.reduce((s,e)=>s+e.N,0);
-  // k_max8 = Σ min(Bi,Bj) over 28 pairs
   const Bs=els.map(e=>e.B);
-  const kmax=kMax8(...Bs);
+  const kmax=kMaxN(Bs);
   const k=km==='max'?kmax:km==='half'?kmax*0.5:km==='min'?kmax*0.1:0;
-  // B_out = max(0, ΣBi - 2k)
   const B_sum=Bs.reduce((s,b)=>s+b,0);
   const B_o=Math.max(0,B_sum-2*k);
-  // A_out = max(Ai)
   const A_o=Math.max(...els.map(e=>e.A));
   const t=tau(P_o,B_o),phase=phaseOf(P_o,B_o),IM=(P_o+N_o+B_o+A_o)*ANCHOR;
-  // RESCUE: all 28 pairwise 2-beam collisions SHATTER, but 8-beam rescues
+  // RESCUE: all pairwise 2-beam collisions SHATTER, n-beam rescues
   let allShatter=true;
-  for(let i=0;i<8&&allShatter;i++){
-    for(let j=i+1;j<8&&allShatter;j++){
+  for(let i=0;i<n&&allShatter;i++){
+    for(let j=i+1;j<n&&allShatter;j++){
       const kp=Math.min(Bs[i],Bs[j]);
       const Bp=Math.max(0,Bs[i]+Bs[j]-2*kp);
       const Pp=(els[i].P*els[j].P)/(els[i].P+els[j].P);
@@ -538,17 +624,22 @@ function fuse8(e1,e2,e3,e4,e5,e6,e7,e8,km){
     }
   }
   const isRescue=allShatter&&(phase==='NOBLE'||phase==='LOCKED'||phase==='IVA_PEAK');
-  return{P:P_o,N:N_o,B:B_o,A:A_o,tau:t,phase,IM,k,kmax,isRescue,B_sum};
+  const pairCount=PAIRS_FOR[n]||(n*(n-1)/2);
+  return{P:P_o,N:N_o,B:B_o,A:A_o,tau:t,phase,IM,k,kmax,isRescue,B_sum,n,pairCount};
 }
 
+// Keep fuse8 alias for any legacy calls
+function fuse8(e1,e2,e3,e4,e5,e6,e7,e8,km){return fuseN([e1,e2,e3,e4,e5,e6,e7,e8],km);}
+
 function isInteresting(r,els){
-  if(r.isRescue)return{flag:true,reason:`RESCUE — all 28 pairs SHATTER under 2-beam, 8-beam → ${r.phase}`,flag_type:'rescue'};
-  if(r.phase==='NOBLE'&&!els.every(e=>e.B===0))return{flag:true,reason:'8-BEAM NOBLE EMERGENCE — not all inputs Noble',flag_type:'noble'};
+  const n=els.length,pc=r.pairCount;
+  if(r.isRescue)return{flag:true,reason:`RESCUE — all ${pc} pairs SHATTER under 2-beam, ${n}-beam → ${r.phase}`,flag_type:'rescue'};
+  if(r.phase==='NOBLE'&&!els.every(e=>e.B===0))return{flag:true,reason:`${n}-BEAM NOBLE EMERGENCE — not all inputs Noble`,flag_type:'noble'};
   if(r.phase==='IVA_PEAK')return{flag:true,reason:`IVA_PEAK — τ=${r.tau.toFixed(5)} in [${TL_IVA.toFixed(4)},${TL.toFixed(4)})`,flag_type:'iva'};
   if(r.tau>0&&Math.abs(r.tau-TL)<TL*0.008)return{flag:true,reason:`τ-BOUNDARY — τ=${r.tau.toFixed(5)} within 0.8% of TL`,flag_type:'boundary'};
   if(r.IM>0&&Math.abs(r.IM-1/ALPHA)<0.4)return{flag:true,reason:`IM≈1/α — IM=${r.IM.toFixed(4)} near 137.036`,flag_type:'alpha'};
   const nc=els.filter(e=>e.B===0).length;
-  if(nc>=7&&r.phase==='SHATTER')return{flag:true,reason:`SP DIAGNOSTIC BREAK — ${nc} Noble beams + carrier → SHATTER`,flag_type:'sp_break'};
+  if(nc>=n-1&&r.phase==='SHATTER')return{flag:true,reason:`SP DIAGNOSTIC BREAK — ${nc} Noble beams + carrier → SHATTER`,flag_type:'sp_break'};
   return{flag:false};
 }
 
@@ -568,7 +659,7 @@ function updateBeamViz(els,r){
   els.forEach((e,i)=>{
     const t=tau(e.P,e.B),ph=phaseOf(e.P,e.B);
     html+=`<div class="bv-slot"><div class="bv-sym" style="color:${BEAM_COLORS[i]}">${e.sym}</div><div class="bv-tau" style="color:${phaseColor(ph)}">τ=${t.toFixed(3)}</div><div class="bv-phase" style="color:${phaseColor(ph)}">${ph.slice(0,4)}</div></div>`;
-    if(i<7)html+=`<div class="bv-plus">+</div>`;
+    if(i<els.length-1)html+=`<div class="bv-plus">+</div>`;
   });
   html+=`<div class="bv-arrow">→</div><div class="bv-out"><div class="bv-out-phase ${r.isRescue?'rp-rescue':phaseClass(r.phase)}">${r.isRescue?'★RESCUE ':r.phase}</div><div style="font-size:7px;color:var(--dim);margin-top:3px;">τ=${r.tau.toFixed(5)}</div><div style="font-size:6.5px;color:var(--dim);">k=${r.k.toFixed(3)}/${r.kmax.toFixed(3)}</div></div>`;
   document.getElementById('beamviz').innerHTML=html;
@@ -582,7 +673,7 @@ function updateResultBox(els,r){
   document.getElementById('result-box').innerHTML=`
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;flex-wrap:wrap;">
       <div class="result-phase ${pcls}">${phl}</div>
-      <div style="color:var(--dim);font-size:7.5px;">${names} · k_mode=${kMode} · k=${r.k.toFixed(4)}/${r.kmax.toFixed(4)} · 28 pairs</div>
+      <div style="color:var(--dim);font-size:7.5px;">${names} · k_mode=${kMode} · k=${r.k.toFixed(4)}/${r.kmax.toFixed(4)} · ${r.pairCount} pair${r.pairCount===1?'':'s'}</div>
     </div>
     <div class="result-grid">
       <div class="rstat"><div class="rstat-label">P_OUT</div><div class="rstat-val" style="color:var(--glow)">${r.P.toFixed(4)}</div></div>
@@ -594,7 +685,7 @@ function updateResultBox(els,r){
       <div class="rstat"><div class="rstat-label">IM</div><div class="rstat-val">${r.IM.toFixed(4)}</div></div>
       <div class="rstat"><div class="rstat-label">B_SUM</div><div class="rstat-val" style="color:var(--dim)">${r.B_sum.toFixed(3)}</div></div>
     </div>
-    ${r.isRescue?`<div style="margin-top:5px;font-size:7.5px;color:var(--rescue);">★ All 28 pairwise 2-beam collisions SHATTER · 8-beam rescues to ${r.phase}</div>`:''}
+    ${r.isRescue?`<div style="margin-top:5px;font-size:7.5px;color:var(--rescue);">★ All ${r.pairCount} pairwise 2-beam collisions SHATTER · ${r.n}-beam rescues to ${r.phase}</div>`:''}
     ${r.phase==='IVA_PEAK'?`<div style="margin-top:3px;font-size:7.5px;color:var(--iva);">▶ Formation corridor τ=${r.tau.toFixed(5)} · [${TL_IVA.toFixed(4)},${TL.toFixed(4)})</div>`:''}
     <div id="matmap-inline" style="margin-top:8px;padding:7px 9px;background:rgba(0,0,0,.25);border:1px solid var(--border2);font-size:8px;line-height:1.85;"></div>`;
 }
@@ -621,14 +712,14 @@ function showMatMapInline(els,r){
 const BEAM_IDS=['beam1','beam2','beam3','beam4','beam5','beam6','beam7','beam8'];
 function getEls(){
   const c=getAllCorpus();
-  return BEAM_IDS.map(id=>{
+  return BEAM_IDS.slice(0,beamCount).map(id=>{
     const sym=document.getElementById(id).value;
     return c.find(e=>e.sym===sym)||c[0];
   });
 }
 
 function doSmash(els){
-  const r=fuse8(...els,kMode);
+  const r=fuseN(els,kMode);
   updateBeamViz(els,r);updateResultBox(els,r);showMatMapInline(els,r);
   stats.collisions++;document.getElementById('stat-collisions').textContent=stats.collisions;
   if(r.phase==='NOBLE'){stats.noble++;document.getElementById('stat-noble').textContent=stats.noble;}
@@ -647,9 +738,9 @@ function doSmash(els){
 function manualSmash(){doSmash(getEls());}
 
 function randomSmash(){
-  const c=getAllCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
-  const els=[pick(),pick(),pick(),pick(),pick(),pick(),pick(),pick()];
-  BEAM_IDS.forEach((id,i)=>document.getElementById(id).value=els[i].sym);
+  const c=getFilteredCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
+  const els=Array.from({length:beamCount},()=>pick());
+  BEAM_IDS.slice(0,beamCount).forEach((id,i)=>document.getElementById(id).value=els[i].sym);
   doSmash(els);
 }
 
@@ -663,12 +754,12 @@ function setKMode(m){
 
 async function runChaosRound(){
   const rounds=parseInt(document.getElementById('rounds-slider').value);
-  const c=getAllCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
+  const c=getFilteredCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
   const anchorSym=document.getElementById('anchor-beam').value;
-  const anchorEl=anchorSym?c.find(e=>e.sym===anchorSym):null;
+  const anchorEl=anchorSym?getAllCorpus().find(e=>e.sym===anchorSym):null;
   for(let i=0;i<rounds;i++){
     if(agentState!=='running')break;
-    const els=[anchorEl||pick(),pick(),pick(),pick(),pick(),pick(),pick(),pick()];
+    const els=[anchorEl||pick(),...Array.from({length:beamCount-1},()=>pick())];
     doSmash(els);
     await new Promise(r=>setTimeout(r,40));
   }
@@ -677,7 +768,7 @@ async function runChaosRound(){
 
 function startAgent(){
   agentState='running';updateStatusBadge();
-  feedLine('OctoBeam chaos protocol started. TL=0.1369 · 28 pairs per collision.','locked');
+  feedLine(`OctoBeam chaos protocol started. TL=0.1369 · ${beamCount}-beam · ${PAIRS_FOR[beamCount]||(beamCount*(beamCount-1)/2)} pairs per collision.`,'locked');
   const spd=parseInt(document.getElementById('speed-slider').value);
   agentInterval=setInterval(async()=>{if(agentState==='running')await runChaosRound();},Math.max(300,3000-spd*260));
 }
@@ -1288,7 +1379,9 @@ function generateLeanStub(entry){
     `def P${i+1}  : ℝ := ${e.P.toFixed(8)}\ndef N${i+1}  : ℝ := ${e.N.toFixed(2)}\ndef B${i+1}  : ℝ := ${e.B.toFixed(8)}\ndef A${i+1}  : ℝ := ${e.A.toFixed(6)}`
   ).join('\n');
 
-  // Material map enrichment
+  const n=entry.els.length;
+  const pairCount=n*(n-1)/2;
+  const engineCoord=n===8?'[9,9,2,3]':n===4?'[9,9,2,2]':'[9,9,2,1]';
   const mm=getMaterialMap(entry.els,{phase:entry.phase,isRescue:entry.isRescue,IM:entry.IM});
   const matMapBlock=formatMaterialMapComment(entry,mm);
 
@@ -1302,7 +1395,7 @@ ${beamLines}
 -- HIGHTISTIC · SNSFT Foundation · Soldotna Alaska
 -- DOI: 10.5281/zenodo.18719748 · [9,9,9,9]::{ANC}
 -- AIFI: ${aifi}
--- C(8,2)=28 pairs · Noble headroom 1/7
+-- C(${n},2)=${pairCount} pairs · Noble headroom ${n===8?'1/7':n===4?'1/3':'1/1'}
 ${matMapBlock}
 
 import Mathlib.Tactic
@@ -1315,15 +1408,15 @@ def TORSION_LIMIT    : ℝ := SOVEREIGN_ANCHOR / 10
 
 ${beamDefs}
 
--- 8-body harmonic mean: P_out = 8 / (Σ 1/Pi)
+-- ${n}-body harmonic mean: P_out = ${n} / (Σ 1/Pi)
 def P_out  : ℝ := ${entry.P.toFixed(8)}
 def N_out  : ℝ := ${entry.N.toFixed(2)}
 def B_out  : ℝ := ${entry.B.toFixed(8)}
 def A_out  : ℝ := ${entry.A.toFixed(6)}
 def IM_out : ℝ := ${entry.IM.toFixed(8)}
 def k_used : ℝ := ${entry.k}
-def k_max8 : ℝ := ${entry.kmax}
--- k_max8 = Σ min(Bi,Bj) over C(8,2)=28 pairs
+def k_max  : ℝ := ${entry.kmax}
+-- k_max = Σ min(Bi,Bj) over C(${n},2)=${pairCount} pairs
 
 theorem P_out_positive : P_out > 0 := by unfold P_out; norm_num
 theorem B_out_nonneg : B_out ≥ 0 := by unfold B_out; norm_num
@@ -1342,7 +1435,7 @@ theorem ${ns}_master :
 
 end ${ns}
 /-! DESIGNATION: ${entry.designation} · PHASE: ${entry.phase} · RESCUE: ${entry.isRescue}
-    ENGINE: [9,9,2,3] · PAIRS: 28 · SORRY: 0
+    ENGINE: ${engineCoord} · BEAMS: ${n} · PAIRS: ${pairCount} · SORRY: 0
     TIER: ${mm.tier} · CORE: ${mm.coreStr}
     PATH: ${mm.path}
     DOI: 10.5281/zenodo.18719748 · ${entry.timestamp} -/`;}
@@ -1581,7 +1674,7 @@ function showTab(id){
 }
 
 function rebuildSelectors(){
-  const all=getAllCorpus().sort((a,b)=>a.sym.localeCompare(b.sym));
+  const all=getFilteredCorpus().sort((a,b)=>a.sym.localeCompare(b.sym));
   const opts=all.map(e=>`<option value="${e.sym}">${e.sym} — ${e.name} · τ=${tau(e.P,e.B).toFixed(3)} ${phaseOf(e.P,e.B).slice(0,4)}</option>`).join('');
   BEAM_IDS.forEach(id=>{
     const sel=document.getElementById(id),cur=sel.value;
