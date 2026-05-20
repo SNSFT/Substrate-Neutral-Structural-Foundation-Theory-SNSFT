@@ -29,6 +29,7 @@
   --b6:      #ff9933;
   --b7:      #33ddcc;
   --b8:      #ff55aa;
+  --snsft:   #ffcc00;  /* SNSFT gold — same family as ERE for consistency */
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
@@ -126,14 +127,22 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
 .running-dot{width:6px;height:6px;border-radius:50%;background:var(--locked);display:inline-block;margin-right:5px;animation:pulse 1s infinite;}
 .paused-dot{width:6px;height:6px;border-radius:50%;background:var(--iva);display:inline-block;margin-right:5px;}
 .stopped-dot{width:6px;height:6px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:5px;}
-.disc-card{border:1px solid rgba(255,170,0,.25);background:rgba(255,170,0,.03);padding:10px;margin-bottom:7px;}
-.disc-desig{font-family:'Orbitron',monospace;font-size:8.5px;color:var(--iva);}
-.disc-ts{font-size:7.5px;color:var(--dim);}
-.disc-state{font-size:8.5px;line-height:1.9;color:var(--text);margin:5px 0;}
+.disc-card{border:1px solid rgba(255,170,0,.25);background:rgba(255,170,0,.03);padding:12px 14px;margin-bottom:9px;}
+.disc-desig{font-family:'Orbitron',monospace;font-size:11px;color:var(--iva);}
+.disc-ts{font-size:9px;color:var(--dim);}
+.disc-state{font-size:11px;line-height:2.0;color:var(--text);margin:6px 0;}
 .disc-state b{color:var(--bright);}
-.disc-name{font-size:8.5px;color:var(--aifi);margin-bottom:5px;font-style:italic;}
-.disc-analysis{font-size:7.5px;color:var(--dim);max-height:60px;overflow-y:auto;border-top:1px solid var(--border2);padding-top:4px;margin-top:4px;}
-.disc-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
+.disc-name{font-size:11px;color:var(--aifi);margin-bottom:5px;font-style:italic;}
+.disc-analysis{font-size:9px;color:var(--dim);max-height:70px;overflow-y:auto;border-top:1px solid var(--border2);padding-top:5px;margin-top:5px;}
+.disc-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.filter-btn.on-sparticles{border-color:rgba(255,204,0,.6);color:var(--snsft);}
+.filter-btn.on-p12{border-color:rgba(0,229,255,.4);color:var(--glow);}
+.filter-btn.on-p34{border-color:rgba(0,255,204,.4);color:var(--locked);}
+.filter-btn.on-p56{border-color:rgba(204,136,255,.4);color:var(--noble);}
+.filter-btn.on-p7{border-color:rgba(255,102,136,.4);color:var(--b4);}
+.anchor-lock-slot{display:flex;align-items:center;gap:4px;}
+.anchor-lock-slot select{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 4px;}
+.anchor-lock-slot .al-label{font-size:7px;color:var(--dim);letter-spacing:.12em;white-space:nowrap;}
 .queue-empty{color:var(--dim);font-size:9px;text-align:center;padding:18px;letter-spacing:.18em;}
 .log-tbl{width:100%;border-collapse:collapse;font-size:7.5px;}
 .log-tbl th{color:var(--dim);letter-spacing:.12em;text-align:left;padding:3px 5px;border-bottom:1px solid var(--border2);}
@@ -261,16 +270,45 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
   <div class="mode-bar">
     <span class="mode-label">BEAMS</span>
     <div class="mode-section">
-      <button class="beam-count-btn" id="bcb-2" onclick="setBeamCount(2)" title="2-beam: single pair collision">2</button>
-      <button class="beam-count-btn" id="bcb-4" onclick="setBeamCount(4)" title="4-beam: QuadBeam engine [9,9,2,2]">4</button>
-      <button class="beam-count-btn active" id="bcb-8" onclick="setBeamCount(8)" title="8-beam: OctoBeam engine [9,9,2,3]">8</button>
+      <button class="beam-count-btn" id="bcb-2" onclick="setBeamCount(2)" title="2-beam: single pair [9,9,2,1]">2</button>
+      <button class="beam-count-btn" id="bcb-4" onclick="setBeamCount(4)" title="4-beam: QuadBeam [9,9,2,2]">4</button>
+      <button class="beam-count-btn active" id="bcb-8" onclick="setBeamCount(8)" title="8-beam: OctoBeam [9,9,2,3]">8</button>
     </div>
     <div class="mode-sep"></div>
-    <span class="mode-label">CORPUS</span>
-    <div class="mode-section" style="gap:4px;">
-      <button class="filter-btn on-elements" id="f-elements" onclick="toggleFilter('elements')" title="Periodic table elements (H, C, N, Fe…)">ELEMENTS</button>
-      <button class="filter-btn on-eres" id="f-eres" onclick="toggleFilter('eres')" title="Emergent Resonant Elements — dark matter, Higgs, EREs">EREs</button>
-      <button class="filter-btn on-particles" id="f-particles" onclick="toggleFilter('particles')" title="Particle physics — quarks, mesons, baryons">PARTICLES</button>
+    <span class="mode-label">ELEMENTS</span>
+    <div class="mode-section" style="gap:3px;">
+      <button class="filter-btn on-p12" id="f-p12" onclick="toggleFilter('p12')" title="Period 1-2: H He Li Be B C N O F Ne">P1-2</button>
+      <button class="filter-btn on-p34" id="f-p34" onclick="toggleFilter('p34')" title="Period 3-4: Na→Kr (transition metals)">P3-4</button>
+      <button class="filter-btn on-p56" id="f-p56" onclick="toggleFilter('p56')" title="Period 5-6: Rb→Rn (lanthanides)">P5-6</button>
+      <button class="filter-btn on-p7" id="f-p7" onclick="toggleFilter('p7')" title="Period 7: Fr→Og (actinides, superheavy)">P7</button>
+    </div>
+    <div class="mode-sep"></div>
+    <div class="mode-section" style="gap:3px;">
+      <button class="filter-btn on-eres" id="f-eres" onclick="toggleFilter('eres')" title="Emergent Resonant Elements — EREs [9,9,2,44]">EREs</button>
+      <button class="filter-btn on-particles" id="f-particles" onclick="toggleFilter('particles')" title="Standard Model particles — quarks, leptons, hadrons">SM</button>
+      <button class="filter-btn on-sparticles" id="f-sparticles" onclick="toggleFilter('sparticles')" title="S-Particles — SNSFT predictions [9,9,2,34]" style="letter-spacing:.08em;">S-PART</button>
+    </div>
+    <div class="mode-sep"></div>
+    <span class="mode-label" style="white-space:nowrap;">LOCK</span>
+    <div class="mode-section" style="gap:4px;flex-wrap:wrap;">
+      <div class="anchor-lock-slot">
+        <span class="al-label">A1</span>
+        <select id="anchor1-sel" style="background:var(--bg);border:1px solid var(--border2);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 4px;">
+          <option value="">—</option>
+        </select>
+      </div>
+      <div class="anchor-lock-slot">
+        <span class="al-label">A2</span>
+        <select id="anchor2-sel" style="background:var(--bg);border:1px solid var(--border2);color:var(--b2);font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 4px;">
+          <option value="">—</option>
+        </select>
+      </div>
+      <div class="anchor-lock-slot">
+        <span class="al-label">A3</span>
+        <select id="anchor3-sel" style="background:var(--bg);border:1px solid var(--border2);color:var(--b3);font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 4px;">
+          <option value="">—</option>
+        </select>
+      </div>
     </div>
     <div style="margin-left:auto;font-size:7.5px;color:var(--dim);" id="mode-summary">8-BEAM · C(8,2)=28 pairs</div>
   </div>
@@ -429,17 +467,21 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
 
 <div class="panel">
   <div class="panel-title"><span>CORPUS STATE</span></div>
-  <div style="font-size:8.5px;line-height:2.1;color:var(--dim);">
-    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>8-Beam theorem</span><span style="color:var(--bright)">[9,9,2,3] · 0 sorry</span></div>
-    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Parent engine</span><span style="color:var(--bright)">[9,9,2,2] 4-beam</span></div>
-    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Grandparent</span><span style="color:var(--bright)">[9,9,2,1] 2-beam</span></div>
-    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.369</span></div>
-    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--iva)">0.1369</span></div>
-    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL_IVA = 0.88×TL</span><span style="color:var(--iva)">0.120472</span></div>
-    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>k pairs C(8,2)</span><span style="color:var(--bright)">28</span></div>
-    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Noble headroom</span><span style="color:var(--noble)">8/56 = 1/7</span></div>
-    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Session discoveries</span><span style="color:var(--iva)" id="session-disc-count">0</span></div>
-  </div>
+    <div style="font-size:8.5px;line-height:2.1;color:var(--dim);">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>8-Beam theorem</span><span style="color:var(--bright)">[9,9,2,3] · 0 sorry</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Parent engine</span><span style="color:var(--bright)">[9,9,2,2] 4-beam</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Grandparent</span><span style="color:var(--bright)">[9,9,2,1] 2-beam</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.369</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--iva)">0.1369</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL_IVA = 0.88×TL</span><span style="color:var(--iva)">0.120472</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>k pairs C(8,2)</span><span style="color:var(--bright)">28</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Noble headroom</span><span style="color:var(--noble)">8/56 = 1/7</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span style="color:var(--glow)">Periodic (all 118)</span><span style="color:var(--glow)">118</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span style="color:var(--aifi)">EREs [9,9,2,44]</span><span style="color:var(--aifi)">21</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span style="color:var(--iva)">SM Particles</span><span style="color:var(--iva)">15</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span style="color:var(--snsft)">S-Particles [9,9,2,34]</span><span style="color:var(--snsft)">10</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Session discoveries</span><span style="color:var(--iva)" id="session-disc-count">0</span></div>
+    </div>
   <div style="margin-top:9px;font-size:7.5px;color:var(--dim);border-top:1px solid var(--border);padding-top:7px;line-height:1.9;">
     8-BEAM RULES [9,9,2,3]:<br>
     <span style="color:var(--text)">P = 8/(1/P1+…+1/P8)</span><br>
@@ -487,39 +529,234 @@ let agentState='stopped',agentInterval=null,kMode='max';
 let stats={cycles:0,collisions:0,flagged:0,approved:0,noble:0,rescue:0,iva:0};
 let discoveryQueue=[],discoveryLog=[],sessionCorpus=[];
 
+// ── PERIODIC TABLE — FULL 118 ELEMENTS (Slater PNBA values from GAM Collider) ──
 const PERIODIC=[
-  {sym:'H',name:'Hydrogen',P:1.000,N:2,B:1,A:13.60},{sym:'He',name:'Helium',P:1.700,N:2,B:0,A:24.59},
-  {sym:'Li',name:'Lithium',P:2.200,N:4,B:1,A:5.39},{sym:'C',name:'Carbon',P:3.250,N:4,B:4,A:11.26},
-  {sym:'N',name:'Nitrogen',P:3.900,N:4,B:3,A:14.53},{sym:'O',name:'Oxygen',P:4.550,N:4,B:2,A:13.62},
-  {sym:'F',name:'Fluorine',P:5.200,N:4,B:1,A:17.42},{sym:'Na',name:'Sodium',P:2.200,N:6,B:1,A:5.14},
-  {sym:'Si',name:'Silicon',P:4.150,N:6,B:4,A:8.15},{sym:'S',name:'Sulfur',P:5.450,N:6,B:2,A:10.36},
-  {sym:'Cl',name:'Chlorine',P:6.100,N:6,B:1,A:12.97},{sym:'Ti',name:'Titanium',P:3.150,N:8,B:4,A:6.83},
-  {sym:'Fe',name:'Iron',P:3.750,N:8,B:4,A:7.90},{sym:'Ni',name:'Nickel',P:4.050,N:8,B:2,A:7.64},
-  {sym:'Cu',name:'Copper',P:4.200,N:8,B:1,A:7.73},{sym:'Zn',name:'Zinc',P:4.350,N:8,B:2,A:9.39},
-  {sym:'Ga',name:'Gallium',P:5.000,N:8,B:3,A:6.00},{sym:'As',name:'Arsenic',P:6.300,N:8,B:3,A:9.81},
-  {sym:'Ag',name:'Silver',P:4.200,N:10,B:1,A:7.58},{sym:'W',name:'Tungsten',P:4.150,N:12,B:6,A:7.86},
-  {sym:'Au',name:'Gold',P:4.900,N:12,B:1,A:9.23},{sym:'Pb',name:'Lead',P:6.350,N:12,B:4,A:7.42},
-  {sym:'U',name:'Uranium',P:3.150,N:14,B:6,A:6.19},{sym:'Pu',name:'Plutonium',P:3.250,N:14,B:6,A:6.03},
-];
-const SNSFT_ELS=[
-  {sym:'Sv',name:'Soverium',P:P_VE,N:2,B:0,A:0},{sym:'Lm',name:'Lumium',P:P_VE,N:2,B:ALPHA,A:4.423},
-  {sym:'Ve',name:'Velium',P:P_VE,N:2,B:1,A:4.423},{sym:'Ax',name:'Axionium',P:P_VE,N:1,B:1/Math.PI**2,A:0.01},
-  {sym:'De',name:'Darkenergy',P:P_VE,N:1,B:0,A:0.689},{sym:'Dm',name:'Darkmatter',P:P_VE,N:1,B:0.269,A:0.269},
-  {sym:'Hi',name:'Higgsium',P:125.09/246.22,N:1,B:0.13,A:0.93},{sym:'Dq',name:'Diquonium',P:1.27/246.22,N:3,B:0,A:0.118},
-  {sym:'Gl2',name:'Gluino',P:1000/938.272,N:8,B:0,A:0.118},{sym:'Zo',name:'Zoivum',P:ANCHOR,N:2,B:TL*ANCHOR/2,A:ANCHOR/TL},
-  {sym:'Zc',name:'Zoivum Condensate',P:ANCHOR/2,N:4,B:0,A:ANCHOR/TL},{sym:'SP',name:'Sovereign Peak',P:17.963,N:12,B:0,A:1.18},
-  {sym:'Li2',name:'Limium',P:0.37546559,N:13,B:0.05121982,A:6.845},{sym:'Fv',name:'Fusovium',P:0.15816944,N:29,B:0.02318504,A:6.845},
-  {sym:'Pa2',name:'Protactinium-SNSFT',P:0.18092443,N:19,B:0.02805649,A:6.845},
-];
-const PARTICLE_ELS=[
-  {sym:'Pr',name:'Proton',P:1.000,N:3,B:1,A:0.01360},{sym:'Nt',name:'Neutron',P:1.00138,N:3,B:1,A:0.000835},
-  {sym:'qc',name:'Charm Quark',P:1.3589,N:3,B:0.667,A:0.118},{sym:'qb',name:'Bottom Quark',P:4.4550,N:3,B:0.333,A:0.118},
-  {sym:'qt',name:'Top Quark',P:184.126,N:3,B:0.667,A:0.118},{sym:'e',name:'Electron',P:0.000545,N:2,B:1,A:0.01360},
-  {sym:'Xc',name:'Xicc+ Baryon',P:3619.97/938.272,N:3,B:0,A:0.118},{sym:'Jy',name:'J/psi',P:3096.9/938.272,N:2,B:0,A:0.118},
-  {sym:'Ups',name:'Upsilon',P:9460.3/938.272,N:2,B:0,A:0.118},
+  // Period 1
+  {sym:'H', name:'Hydrogen',     P:1.000,N:2, B:1,  A:13.60,per:1,grp:1},
+  {sym:'He',name:'Helium',       P:1.700,N:2, B:0,  A:24.59,per:1,grp:18},
+  // Period 2
+  {sym:'Li',name:'Lithium',      P:1.300,N:2, B:1,  A:5.39, per:2,grp:1},
+  {sym:'Be',name:'Beryllium',    P:1.950,N:4, B:2,  A:9.32, per:2,grp:2},
+  {sym:'B', name:'Boron',        P:2.600,N:4, B:3,  A:8.30, per:2,grp:13},
+  {sym:'C', name:'Carbon',       P:3.250,N:4, B:4,  A:11.26,per:2,grp:14},
+  {sym:'N', name:'Nitrogen',     P:3.900,N:4, B:3,  A:14.53,per:2,grp:15},
+  {sym:'O', name:'Oxygen',       P:4.550,N:4, B:2,  A:13.62,per:2,grp:16},
+  {sym:'F', name:'Fluorine',     P:5.200,N:4, B:1,  A:17.42,per:2,grp:17},
+  {sym:'Ne',name:'Neon',         P:5.850,N:4, B:0,  A:21.56,per:2,grp:18},
+  // Period 3
+  {sym:'Na',name:'Sodium',       P:2.200,N:6, B:1,  A:5.14, per:3,grp:1},
+  {sym:'Mg',name:'Magnesium',    P:2.850,N:6, B:2,  A:7.65, per:3,grp:2},
+  {sym:'Al',name:'Aluminum',     P:3.500,N:6, B:3,  A:5.99, per:3,grp:13},
+  {sym:'Si',name:'Silicon',      P:4.150,N:6, B:4,  A:8.15, per:3,grp:14},
+  {sym:'P', name:'Phosphorus',   P:4.800,N:6, B:3,  A:10.49,per:3,grp:15},
+  {sym:'S', name:'Sulfur',       P:5.450,N:6, B:2,  A:10.36,per:3,grp:16},
+  {sym:'Cl',name:'Chlorine',     P:6.100,N:6, B:1,  A:12.97,per:3,grp:17},
+  {sym:'Ar',name:'Argon',        P:6.750,N:6, B:0,  A:15.76,per:3,grp:18},
+  // Period 4
+  {sym:'K', name:'Potassium',    P:2.200,N:8, B:1,  A:4.34, per:4,grp:1},
+  {sym:'Ca',name:'Calcium',      P:2.850,N:8, B:2,  A:6.11, per:4,grp:2},
+  {sym:'Sc',name:'Scandium',     P:3.000,N:8, B:3,  A:6.56, per:4,grp:3},
+  {sym:'Ti',name:'Titanium',     P:3.150,N:8, B:4,  A:6.83, per:4,grp:4},
+  {sym:'V', name:'Vanadium',     P:3.300,N:8, B:5,  A:6.75, per:4,grp:5},
+  {sym:'Cr',name:'Chromium',     P:3.450,N:8, B:6,  A:6.77, per:4,grp:6},
+  {sym:'Mn',name:'Manganese',    P:3.600,N:8, B:5,  A:7.43, per:4,grp:7},
+  {sym:'Fe',name:'Iron',         P:3.750,N:8, B:4,  A:7.90, per:4,grp:8},
+  {sym:'Co',name:'Cobalt',       P:3.900,N:8, B:3,  A:7.88, per:4,grp:9},
+  {sym:'Ni',name:'Nickel',       P:4.050,N:8, B:2,  A:7.64, per:4,grp:10},
+  {sym:'Cu',name:'Copper',       P:4.200,N:8, B:1,  A:7.73, per:4,grp:11},
+  {sym:'Zn',name:'Zinc',         P:4.350,N:8, B:2,  A:9.39, per:4,grp:12},
+  {sym:'Ga',name:'Gallium',      P:5.000,N:8, B:3,  A:6.00, per:4,grp:13},
+  {sym:'Ge',name:'Germanium',    P:5.650,N:8, B:4,  A:7.90, per:4,grp:14},
+  {sym:'As',name:'Arsenic',      P:6.300,N:8, B:3,  A:9.81, per:4,grp:15},
+  {sym:'Se',name:'Selenium',     P:6.950,N:8, B:2,  A:9.75, per:4,grp:16},
+  {sym:'Br',name:'Bromine',      P:7.600,N:8, B:1,  A:11.81,per:4,grp:17},
+  {sym:'Kr',name:'Krypton',      P:8.250,N:8, B:0,  A:14.00,per:4,grp:18},
+  // Period 5
+  {sym:'Rb',name:'Rubidium',     P:2.200,N:10,B:1,  A:4.18, per:5,grp:1},
+  {sym:'Sr',name:'Strontium',    P:2.850,N:10,B:2,  A:5.69, per:5,grp:2},
+  {sym:'Y', name:'Yttrium',      P:3.000,N:10,B:3,  A:6.22, per:5,grp:3},
+  {sym:'Zr',name:'Zirconium',    P:3.150,N:10,B:4,  A:6.63, per:5,grp:4},
+  {sym:'Nb',name:'Niobium',      P:3.300,N:10,B:5,  A:6.76, per:5,grp:5},
+  {sym:'Mo',name:'Molybdenum',   P:3.450,N:10,B:6,  A:7.09, per:5,grp:6},
+  {sym:'Tc',name:'Technetium',   P:3.600,N:10,B:5,  A:7.28, per:5,grp:7},
+  {sym:'Ru',name:'Ruthenium',    P:3.750,N:10,B:4,  A:7.36, per:5,grp:8},
+  {sym:'Rh',name:'Rhodium',      P:3.900,N:10,B:3,  A:7.46, per:5,grp:9},
+  {sym:'Pd',name:'Palladium',    P:4.050,N:10,B:0,  A:8.34, per:5,grp:10},
+  {sym:'Ag',name:'Silver',       P:4.200,N:10,B:1,  A:7.58, per:5,grp:11},
+  {sym:'Cd',name:'Cadmium',      P:4.350,N:10,B:2,  A:8.99, per:5,grp:12},
+  {sym:'In',name:'Indium',       P:5.000,N:10,B:3,  A:5.79, per:5,grp:13},
+  {sym:'Sn',name:'Tin',          P:5.650,N:10,B:4,  A:7.34, per:5,grp:14},
+  {sym:'Sb',name:'Antimony',     P:6.300,N:10,B:3,  A:8.61, per:5,grp:15},
+  {sym:'Te',name:'Tellurium',    P:6.950,N:10,B:2,  A:9.01, per:5,grp:16},
+  {sym:'I', name:'Iodine',       P:7.600,N:10,B:1,  A:10.45,per:5,grp:17},
+  {sym:'Xe',name:'Xenon',        P:8.250,N:10,B:0,  A:12.13,per:5,grp:18},
+  // Period 6
+  {sym:'Cs',name:'Cesium',       P:2.200,N:12,B:1,  A:3.89, per:6,grp:1},
+  {sym:'Ba',name:'Barium',       P:2.850,N:12,B:2,  A:5.21, per:6,grp:2},
+  {sym:'La',name:'Lanthanum',    P:3.000,N:12,B:3,  A:5.58, per:6,grp:3},
+  {sym:'Ce',name:'Cerium',       P:3.050,N:12,B:4,  A:5.54, per:6,grp:4},
+  {sym:'Pr',name:'Praseodymium', P:3.100,N:12,B:5,  A:5.47, per:6,grp:4},
+  {sym:'Nd',name:'Neodymium',    P:3.150,N:12,B:6,  A:5.53, per:6,grp:4},
+  {sym:'Pm',name:'Promethium',   P:3.200,N:12,B:5,  A:5.58, per:6,grp:4},
+  {sym:'Sm',name:'Samarium',     P:3.250,N:12,B:6,  A:5.64, per:6,grp:4},
+  {sym:'Eu',name:'Europium',     P:3.300,N:12,B:7,  A:5.67, per:6,grp:4},
+  {sym:'Gd',name:'Gadolinium',   P:3.350,N:12,B:8,  A:6.15, per:6,grp:4},
+  {sym:'Tb',name:'Terbium',      P:3.400,N:12,B:9,  A:5.86, per:6,grp:4},
+  {sym:'Dy',name:'Dysprosium',   P:3.450,N:12,B:10, A:5.94, per:6,grp:4},
+  {sym:'Ho',name:'Holmium',      P:3.500,N:12,B:11, A:6.02, per:6,grp:4},
+  {sym:'Er',name:'Erbium',       P:3.550,N:12,B:12, A:6.11, per:6,grp:4},
+  {sym:'Tm',name:'Thulium',      P:3.600,N:12,B:13, A:6.18, per:6,grp:4},
+  {sym:'Yb',name:'Ytterbium',    P:3.650,N:12,B:14, A:6.25, per:6,grp:4},
+  {sym:'Lu',name:'Lutetium',     P:3.700,N:12,B:3,  A:5.43, per:6,grp:3},
+  {sym:'Hf',name:'Hafnium',      P:3.850,N:12,B:4,  A:6.83, per:6,grp:4},
+  {sym:'Ta',name:'Tantalum',     P:4.000,N:12,B:5,  A:7.55, per:6,grp:5},
+  {sym:'W', name:'Tungsten',     P:4.150,N:12,B:6,  A:7.86, per:6,grp:6},
+  {sym:'Re',name:'Rhenium',      P:4.300,N:12,B:5,  A:7.83, per:6,grp:7},
+  {sym:'Os',name:'Osmium',       P:4.450,N:12,B:4,  A:8.44, per:6,grp:8},
+  {sym:'Ir',name:'Iridium',      P:4.600,N:12,B:3,  A:8.97, per:6,grp:9},
+  {sym:'Pt',name:'Platinum',     P:4.750,N:12,B:2,  A:8.96, per:6,grp:10},
+  {sym:'Au',name:'Gold',         P:4.900,N:12,B:1,  A:9.23, per:6,grp:11},
+  {sym:'Hg',name:'Mercury',      P:5.050,N:12,B:2,  A:10.44,per:6,grp:12},
+  {sym:'Tl',name:'Thallium',     P:5.700,N:12,B:3,  A:6.11, per:6,grp:13},
+  {sym:'Pb',name:'Lead',         P:6.350,N:12,B:4,  A:7.42, per:6,grp:14},
+  {sym:'Bi',name:'Bismuth',      P:7.000,N:12,B:3,  A:7.29, per:6,grp:15},
+  {sym:'Po',name:'Polonium',     P:7.650,N:12,B:2,  A:8.42, per:6,grp:16},
+  {sym:'At',name:'Astatine',     P:8.300,N:12,B:1,  A:9.50, per:6,grp:17},
+  {sym:'Rn',name:'Radon',        P:8.950,N:12,B:0,  A:10.75,per:6,grp:18},
+  // Period 7
+  {sym:'Fr',name:'Francium',     P:2.200,N:14,B:1,  A:4.07, per:7,grp:1},
+  {sym:'Ra',name:'Radium',       P:2.850,N:14,B:2,  A:5.28, per:7,grp:2},
+  {sym:'Ac',name:'Actinium',     P:3.000,N:14,B:3,  A:5.17, per:7,grp:3},
+  {sym:'Th',name:'Thorium',      P:3.050,N:14,B:4,  A:6.31, per:7,grp:4},
+  {sym:'Pa',name:'Protactinium', P:3.100,N:14,B:5,  A:5.89, per:7,grp:4},
+  {sym:'U', name:'Uranium',      P:3.150,N:14,B:6,  A:6.19, per:7,grp:4},
+  {sym:'Np',name:'Neptunium',    P:3.200,N:14,B:5,  A:6.27, per:7,grp:4},
+  {sym:'Pu',name:'Plutonium',    P:3.250,N:14,B:6,  A:6.03, per:7,grp:4},
+  {sym:'Am',name:'Americium',    P:3.300,N:14,B:7,  A:5.97, per:7,grp:4},
+  {sym:'Cm',name:'Curium',       P:3.350,N:14,B:8,  A:5.99, per:7,grp:4},
+  {sym:'Bk',name:'Berkelium',    P:3.400,N:14,B:9,  A:6.20, per:7,grp:4},
+  {sym:'Cf',name:'Californium',  P:3.450,N:14,B:10, A:6.28, per:7,grp:4},
+  {sym:'Es',name:'Einsteinium',  P:3.500,N:14,B:11, A:6.37, per:7,grp:4},
+  {sym:'Fm',name:'Fermium',      P:3.550,N:14,B:12, A:6.50, per:7,grp:4},
+  {sym:'Md',name:'Mendelevium',  P:3.600,N:14,B:13, A:6.58, per:7,grp:4},
+  {sym:'No',name:'Nobelium',     P:3.650,N:14,B:14, A:6.65, per:7,grp:4},
+  {sym:'Lr',name:'Lawrencium',   P:3.700,N:14,B:3,  A:4.87, per:7,grp:3},
+  {sym:'Rf',name:'Rutherfordium',P:3.850,N:14,B:4,  A:6.01, per:7,grp:4},
+  {sym:'Db',name:'Dubnium',      P:4.000,N:14,B:5,  A:6.80, per:7,grp:5},
+  {sym:'Sg',name:'Seaborgium',   P:4.150,N:14,B:6,  A:7.80, per:7,grp:6},
+  {sym:'Bh',name:'Bohrium',      P:4.300,N:14,B:5,  A:7.70, per:7,grp:7},
+  {sym:'Hs',name:'Hassium',      P:4.450,N:14,B:4,  A:7.60, per:7,grp:8},
+  {sym:'Mt',name:'Meitnerium',   P:4.600,N:14,B:3,  A:7.70, per:7,grp:9},
+  {sym:'Ds',name:'Darmstadtium', P:4.750,N:14,B:2,  A:9.60, per:7,grp:10},
+  {sym:'Rg',name:'Roentgenium',  P:4.900,N:14,B:1,  A:10.60,per:7,grp:11},
+  {sym:'Cn',name:'Copernicium',  P:5.050,N:14,B:2,  A:11.97,per:7,grp:12},
+  {sym:'Nh',name:'Nihonium',     P:5.700,N:14,B:3,  A:7.31, per:7,grp:13},
+  {sym:'Fl',name:'Flerovium',    P:6.350,N:14,B:4,  A:8.00, per:7,grp:14},
+  {sym:'Mc',name:'Moscovium',    P:7.000,N:14,B:3,  A:7.50, per:7,grp:15},
+  {sym:'Lv',name:'Livermorium',  P:7.650,N:14,B:2,  A:8.00, per:7,grp:16},
+  {sym:'Ts',name:'Tennessine',   P:8.300,N:14,B:1,  A:7.70, per:7,grp:17},
+  {sym:'Og',name:'Oganesson',    P:8.950,N:14,B:0,  A:8.80, per:7,grp:18},
 ];
 
-function getAllCorpus(){return[...PERIODIC,...SNSFT_ELS,...PARTICLE_ELS,...sessionCorpus];}
+// ── EMERGENT RESONANT ELEMENTS (ERE) — Full registry [9,9,2,44] ──
+// [ERE-SNSFT] = HIGHTISTIC original · [ERE-PRIOR] = their name, SNSFT proves PNBA
+const SNSFT_ELS=[
+  // [ERE-SNSFT] Soverium — manifold resting state, B=0 Noble void carrier [9,9,1,46]
+  {sym:'Sv', name:'Soverium',         P:P_VE,           N:2,      B:0,              A:0,          ere:'SNSFT'},
+  // [ERE-SNSFT] Lumium — fine structure coupling [9,9,1,53]
+  {sym:'Lm', name:'Lumium',           P:P_VE,           N:2,      B:ALPHA,          A:4.423,      ere:'SNSFT'},
+  // [ERE-SNSFT] Velium — IVA propellant element, B=1 [9,9,1,47]
+  {sym:'Ve', name:'Velium',           P:P_VE,           N:2,      B:1,              A:4.423,      ere:'SNSFT'},
+  // [ERE-SNSFT] Nexium — phase coupling element, τ=1.0 SHATTER [9,9,1,50v2]
+  {sym:'Nx', name:'Nexium',           P:ANCHOR,         N:ANCHOR, B:ANCHOR,         A:ANCHOR,     ere:'SNSFT'},
+  // [ERE-SNSFT] Axionium — axion-photon coupling, B=1/π², τ=0.1026 LOCKED [9,9,4,4v2]
+  {sym:'Ax', name:'Axionium',         P:P_VE,           N:1,      B:1/Math.PI**2,   A:0.01,       ere:'SNSFT'},
+  // [ERE-PRIOR:name/ERE-SNSFT:PNBA] Dark Energy — B=0 Noble, A=Ω_Λ=0.689 [9,9,4,0]
+  {sym:'De', name:'Dark Energy',      P:P_VE,           N:1,      B:0,              A:0.689,      ere:'PRIOR'},
+  // [ERE-PRIOR:name/ERE-SNSFT:PNBA] Dark Matter — B=0.269=Ω_cdm, fingerprint B_out=0.193 [9,9,2,13]
+  {sym:'Dm', name:'Dark Matter',      P:P_VE,           N:1,      B:0.269,          A:0.269,      ere:'PRIOR'},
+  // [ERE-PRIOR] Higgs boson — B=λ_SM=0.130, τ=0.132 THE IVA particle [9,9,4,5]
+  {sym:'Hi', name:'Higgs',            P:125.09/246.22,  N:1,      B:0.13,           A:0.93,       ere:'PRIOR'},
+  // [ERE-PRIOR] Gluino — B=0 Noble SUSY candidate [9,9,2,40]
+  {sym:'Gl2',name:'Gluino',           P:1000/938.272,   N:8,      B:0,              A:0.118,      ere:'PRIOR'},
+  // [ERE-SNSFT] Zoivum — life operator τ=0.1, 73% TL LOCKED [9,9,1,55v2]
+  {sym:'Zo', name:'Zoivum',           P:ANCHOR,         N:2,      B:TL,             A:ANCHOR/TL,  ere:'SNSFT'},
+  // [ERE-SNSFT] Zoivum Condensate — Zo+Zo harmonic, B=0 Noble [9,9,1,57]
+  {sym:'Zc', name:'Zoivum Condensate',P:ANCHOR/2,       N:4,      B:0,              A:ANCHOR/TL,  ere:'SNSFT'},
+  // [ERE-SNSFT] Sovereign Peak — asymptotic coupling limit
+  {sym:'SP', name:'Sovereign Peak',   P:17.963,         N:12,     B:0,              A:1.18,       ere:'SNSFT'},
+  // [ERE-SNSFT] Li2 / Limium — dilithium resonance ERE [corpus]
+  {sym:'Li2',name:'Limium',           P:0.37546559,     N:13,     B:0.05121982,     A:6.845,      ere:'SNSFT'},
+  // [ERE-SNSFT] Fusovium — proton-scale catalyst, τ≈0.147 softest SHATTER [9,9,2,45]
+  {sym:'Fv', name:'Fusovium',         P:0.15816944,     N:29,     B:0.02318504,     A:6.845,      ere:'SNSFT'},
+  // [ERE-SNSFT] Pa2 — dark matter partial absorber, B≈0.028 closest to Noble [9,9,2,13]
+  {sym:'Pa2',name:'Pa2',              P:0.18092443,     N:19,     B:0.02805649,     A:6.845,      ere:'SNSFT'},
+  // [ERE-PRIOR] Diquonium — Noble cc diquark seed, B=0 [9,9,2,33]
+  {sym:'Dq', name:'Diquonium',        P:1.27/246.22,    N:3,      B:0,              A:0.118,      ere:'PRIOR'},
+  // [ERE-SNSFT] Wimpium — WIMP dark matter candidate, B=0.034 LOCKED
+  {sym:'Wm', name:'Wimpium',          P:P_VE,           N:3,      B:0.034,          A:0.01,       ere:'SNSFT'},
+  // [ERE-PRIOR] GUT State — Grand Unified Theory phase, B=1/25
+  {sym:'GU', name:'GUT State',        P:P_VE,           N:1,      B:1/25,           A:1/25,       ere:'PRIOR'},
+  // [ERE-PRIOR] EW Plasma — electroweak plasma, B=sin²θ_W=0.231
+  {sym:'EW', name:'EW Plasma',        P:P_VE,           N:2,      B:0.231,          A:0.231,      ere:'PRIOR'},
+  // [ERE-PRIOR] Z-boson — neutral weak carrier, B=sin²θ_W [9,9,4,6]
+  {sym:'Zb', name:'Z-boson',          P:91.1876/246.22, N:2,      B:0.2312,         A:0.2312,     ere:'PRIOR'},
+  // [ERE-PRIOR] W-boson — charged weak carrier, LOCKED [9,9,4,7]
+  {sym:'Wb', name:'W-boson',          P:80.377/246.22,  N:2,      B:1/29.8,         A:80.377/91.1876, ere:'PRIOR'},
+];
+
+// ── STANDARD MODEL PARTICLES [ERE-PRIOR] ────────────────────────
+const PARTICLE_ELS=[
+  // Quarks (B = |charge|, A = α_s)
+  {sym:'qu',name:'Up Quark',       P:0.00234,    N:3, B:0.667,A:0.118,  ptype:'quark'},
+  {sym:'qd',name:'Down Quark',     P:0.00501,    N:3, B:0.333,A:0.118,  ptype:'quark'},
+  {sym:'qs',name:'Strange Quark',  P:0.09912,    N:3, B:0.333,A:0.118,  ptype:'quark'},
+  {sym:'qc',name:'Charm Quark',    P:1.3589,     N:3, B:0.667,A:0.118,  ptype:'quark'},
+  {sym:'qb',name:'Bottom Quark',   P:4.4550,     N:3, B:0.333,A:0.118,  ptype:'quark'},
+  {sym:'qt',name:'Top Quark',      P:184.126,    N:3, B:0.667,A:0.118,  ptype:'quark'},
+  // Leptons
+  {sym:'e', name:'Electron',       P:0.000545,   N:2, B:1,    A:0.01360,ptype:'lepton'},
+  {sym:'mu',name:'Muon',           P:0.11261,    N:2, B:1,    A:0.11261,ptype:'lepton'},
+  {sym:'ta',name:'Tau',            P:1.89376,    N:2, B:1,    A:1.89376,ptype:'lepton'},
+  // Hadrons / mesons
+  {sym:'Pr',name:'Proton',         P:1.000,      N:3, B:1,    A:0.01360,ptype:'hadron'},
+  {sym:'Nt',name:'Neutron',        P:1.00138,    N:3, B:1,    A:0.000835,ptype:'hadron'},
+  {sym:'pi',name:'Pion+',          P:0.14875,    N:2, B:1,    A:0.118,  ptype:'meson'},
+  {sym:'p0',name:'Pion0',          P:0.14386,    N:2, B:0,    A:0.118,  ptype:'meson'},
+  {sym:'K+',name:'Kaon+',          P:0.52616,    N:2, B:1,    A:0.118,  ptype:'meson'},
+  {sym:'Jy',name:'J/psi',          P:3096.9/938.272, N:2, B:0, A:0.118,ptype:'meson'},
+  {sym:'Ups',name:'Upsilon',       P:9460.3/938.272, N:2, B:0, A:0.118,ptype:'meson'},
+];
+
+// ── S-PARTICLES — SNSFT [9,9,2,34] Universal Baryon Noble Law ──
+// P = mass_MeV / 938.272 (proton mass ratio, matching corpus convention)
+// All B=0 → Noble by Universal Baryon Noble Law (B_quark ≤ 2/3, k=1)
+// N=3 (3-quark baryon quantum states)
+// A=0.118 (α_s strong coupling)
+const SPARTICLE_ELS=[
+  // ✓ CONFIRMED — LHCb 2017 (Ξcc⁺⁺, ccu, 3621.24 MeV)
+  {sym:'Xcc2',name:'Ξcc++ Baryon',    P:3621.24/938.272, N:3, B:0, A:0.118, stype:'confirmed', ref:'LHCb 2017 · [9,9,2,34] T7'},
+  // ✓ CONFIRMED — LHCb March 17 2026 (Ξcc⁺, ccd, 3619.97 MeV) — anchor for [9,9,2,34]
+  {sym:'Xcc1',name:'Ξcc+ Baryon',     P:3619.97/938.272, N:3, B:0, A:0.118, stype:'confirmed', ref:'LHCb 2026 · [9,9,2,34] T8'},
+  // 🎯 PREDICTED — Ωcc⁺ (ccs) ~3510 MeV estimate — Noble [9,9,2,34] T9
+  {sym:'Occ', name:'Ωcc+ Baryon',     P:3510/938.272,    N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T9 · ccs baryon'},
+  // 🎯 PREDICTED — Ξbb⁰ (bbu) ~10441 MeV — Noble [9,9,2,34] T15
+  {sym:'Xbb0',name:'Ξbb0 Baryon',     P:10441/938.272,   N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T15 · bbu baryon'},
+  // 🎯 PREDICTED — Ξbb⁻ (bbd) ~10441 MeV — Noble [9,9,2,34] T10
+  {sym:'Xbb1',name:'Ξbb- Baryon',     P:10441/938.272,   N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T10 · bbd baryon'},
+  // 🎯 PREDICTED — Ωbb⁻ (bbs) ~10500 MeV — Noble [9,9,2,34]
+  {sym:'Obb', name:'Ωbb- Baryon',     P:10500/938.272,   N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T15 · bbs baryon'},
+  // 🎯 PREDICTED — Ωccc (ccc) ~4795 MeV — Noble [9,9,2,34] T11
+  {sym:'Occc',name:'Ωccc Baryon',     P:4795/938.272,    N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T11 · ccc triply-charmed'},
+  // 🎯 PREDICTED — Ωbbb (bbb) ~14371 MeV — Noble [9,9,2,34] T12
+  {sym:'Obbb',name:'Ωbbb Baryon',     P:14371/938.272,   N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T12 · bbb triply-bottom'},
+  // 🎯 PREDICTED — AsN semiconductor — Q2 quadrant, GaN family [9,9,2,6] T7
+  {sym:'AsN', name:'AsN Semiconductor',P:2.409,           N:12,B:0, A:14.53,  stype:'predicted', ref:'[9,9,2,6] Noble Materials Map T7 · GaN Q2 family'},
+  // 🎯 PREDICTED — CoN rare-earth-free magnet — high pressure Noble [9,9,2,6]
+  {sym:'CoN', name:'CoN Magnet Phase', P:1.872,           N:11,B:0, A:14.53,  stype:'predicted', ref:'[9,9,2,6] Refined CoN prediction · rare-earth-free magnet'},
+];
+
+function getAllCorpus(){return[...PERIODIC,...SNSFT_ELS,...PARTICLE_ELS,...SPARTICLE_ELS,...sessionCorpus];}
 function tau(P,B){return P>0?B/P:999;}
 function phaseOf(P,B){if(B===0)return'NOBLE';const t=tau(P,B);if(t>=TL)return'SHATTER';if(t>=TL_IVA)return'IVA_PEAK';return'LOCKED';}
 function phaseColor(p){return{NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA_PEAK:'var(--iva)',SHATTER:'var(--shatter)'}[p]||'var(--text)';}
@@ -544,54 +781,59 @@ function kMax8(B1,B2,B3,B4,B5,B6,B7,B8){
 
 // ── BEAM COUNT + CORPUS FILTER STATE ──────────────────────────
 let beamCount=8;
-const corpusFilters={elements:true,eres:true,particles:true};
+const corpusFilters={p12:true,p34:true,p56:true,p7:true,eres:true,particles:true,sparticles:true};
 
 const PAIRS_FOR={2:1,4:6,8:28};
-const ERE_SYMS_SET=new Set(['Sv','Lm','Ve','Ax','De','Dm','Hi','Dq','Gl2','Zo','Zc','SP','Li2','Fv','Pa2']);
-const PARTICLE_SYMS_SET=new Set(['Pr','Nt','qc','qb','qt','e','Xc','Jy','Ups']);
+const ERE_SYMS_SET=new Set(['Sv','Lm','Ve','Nx','Ax','De','Dm','Hi','Gl2','Zo','Zc','SP','Li2','Fv','Pa2','Dq','Wm','GU','EW','Zb','Wb']);
+const PARTICLE_SYMS_SET=new Set(['qu','qd','qs','qc','qb','qt','e','mu','ta','Pr','Nt','pi','p0','K+','Jy','Ups']);
+const SPARTICLE_SYMS_SET=new Set(['Xcc2','Xcc1','Occ','Xbb0','Xbb1','Obb','Occc','Obbb','AsN','CoN']);
+const FILTER_ON_CLASS={p12:'on-p12',p34:'on-p34',p56:'on-p56',p7:'on-p7',eres:'on-eres',particles:'on-particles',sparticles:'on-sparticles'};
 
 function setBeamCount(n){
   beamCount=n;
-  // update button states
-  [2,4,8].forEach(x=>{
-    document.getElementById('bcb-'+x).classList.toggle('active',x===n);
-  });
-  // dim/enable slots
-  for(let i=1;i<=8;i++){
-    const slot=document.getElementById('slot'+i);
-    if(slot)slot.classList.toggle('inactive',i>n);
-  }
-  // update labels
-  const pairCount=PAIRS_FOR[n]||1;
-  document.getElementById('pairs-label').textContent=pairCount;
-  document.getElementById('mode-summary').textContent=`${n}-BEAM · C(${n},2)=${pairCount} pair${pairCount===1?'':'s'}`;
-  // update collision engine panel title
+  [2,4,8].forEach(x=>document.getElementById('bcb-'+x).classList.toggle('active',x===n));
+  for(let i=1;i<=8;i++){const s=document.getElementById('slot'+i);if(s)s.classList.toggle('inactive',i>n);}
+  const pc=PAIRS_FOR[n]||1;
+  document.getElementById('pairs-label').textContent=pc;
+  document.getElementById('mode-summary').textContent=`${n}-BEAM · C(${n},2)=${pc} pair${pc===1?'':'s'}`;
   const pt=document.querySelector('.panel-title span:first-child');
   if(pt)pt.textContent=`${n}-BEAM COLLISION ENGINE`;
-  // update rescue description in result box if visible
-  feedLine(`Mode: ${n}-beam · C(${n},2)=${pairCount} pairs active`,'info');
+  feedLine(`Mode: ${n}-beam · ${pc} pairs active`,'info');
 }
 
 function toggleFilter(type){
   corpusFilters[type]=!corpusFilters[type];
   const btn=document.getElementById('f-'+type);
-  if(corpusFilters[type]){
-    btn.classList.remove('off');
-    btn.classList.add('on-'+type);
-  } else {
-    btn.classList.remove('on-'+type);
-    btn.classList.add('off');
-  }
+  const onCls=FILTER_ON_CLASS[type]||'on-'+type;
+  if(corpusFilters[type]){btn.classList.remove('off');btn.classList.add(onCls);}
+  else{btn.classList.remove(onCls);btn.classList.add('off');}
   rebuildSelectors();
-  feedLine(`Corpus filter: ${type.toUpperCase()} ${corpusFilters[type]?'ON':'OFF'}`,'info');
+  feedLine(`${type.toUpperCase()} ${corpusFilters[type]?'ON':'OFF'}`,'info');
 }
 
 function getFilteredCorpus(){
   return getAllCorpus().filter(e=>{
-    if(ERE_SYMS_SET.has(e.sym))return corpusFilters.eres;
-    if(PARTICLE_SYMS_SET.has(e.sym))return corpusFilters.particles;
-    return corpusFilters.elements;
+    if(SPARTICLE_SYMS_SET.has(e.sym)) return corpusFilters.sparticles;
+    if(ERE_SYMS_SET.has(e.sym))       return corpusFilters.eres;
+    if(PARTICLE_SYMS_SET.has(e.sym))  return corpusFilters.particles;
+    const per=e.per||0;
+    if(per<=2)  return corpusFilters.p12;
+    if(per<=4)  return corpusFilters.p34;
+    if(per<=6)  return corpusFilters.p56;
+    if(per===7) return corpusFilters.p7;
+    return true; // session-injected
   });
+}
+
+// ── MULTI-ANCHOR: up to 3 locked beams ────────────────────────
+function getAnchorEls(){
+  const c=getAllCorpus();
+  const anchors=[];
+  ['anchor1-sel','anchor2-sel','anchor3-sel'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.value){const found=c.find(e=>e.sym===el.value);if(found)anchors.push(found);}
+  });
+  return anchors;
 }
 
 // ── N-BEAM FUSION ENGINE (works for 2, 4, or 8 beams) ─────────
@@ -690,18 +932,29 @@ function updateResultBox(els,r){
     <div id="matmap-inline" style="margin-top:8px;padding:7px 9px;background:rgba(0,0,0,.25);border:1px solid var(--border2);font-size:8px;line-height:1.85;"></div>`;
 }
 
-function tierColor(t){return{'T1':'var(--rescue)','T1-RESCUE':'var(--rescue)','T2':'var(--iva)','T3':'var(--noble)'}[t]||'var(--dim)';}
+function tierColor(t){return{
+  'T1':'var(--rescue)','T1-RESCUE':'var(--rescue)','T1-SNSFT':'var(--snsft)',
+  'T2':'var(--iva)','T3':'var(--noble)'
+}[t]||'var(--dim)';}
 
 function showMatMapInline(els,r){
   const mm=getMaterialMap(els,r);
   const tc=tierColor(mm.tier);
-  const tierLabel=mm.tier.replace('T1-RESCUE','T1★');
+  const tierLabel=mm.tier.replace('T1-RESCUE','T1★').replace('T1-SNSFT','S-PART★');
+  const el=document.getElementById('matmap-inline');
+  if(!el)return;
+  // S-particle special display
+  if(mm.sParticleNote){
+    el.innerHTML=
+      `<span style="color:var(--snsft);font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;">⬡ ${tierLabel}</span><br>`+
+      `<span style="color:var(--text);font-size:8.5px;line-height:1.8;">${mm.sParticleNote}</span><br>`+
+      `<span style="color:var(--dim);font-size:7.5px;">path: </span><span style="color:var(--locked);font-size:7.5px;">${mm.path}</span>`;
+    return;
+  }
   const matchName=mm.bestMatch?mm.bestMatch.name:'T3 NOVEL — no direct literature';
   const matchRef=mm.bestMatch?mm.bestMatch.ref.slice(0,160):'No direct corpus match. DOI timestamp establishes prior art.';
   const matchApp=mm.bestMatch?mm.bestMatch.app:'Structural prediction — experimental validation pending';
   const top3=mm.scored.slice(0,3).map(m=>`<span style="color:var(--dim);font-size:7px;">[${m.tier}] ${m.name} (${m.hits}/${m.syms.length})</span>`).join(' · ');
-  const el=document.getElementById('matmap-inline');
-  if(!el)return;
   el.innerHTML=`<span style="color:${tc};font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;">${tierLabel}</span> <span style="color:var(--bright);margin-left:4px;">${matchName}</span><br>`+
     `<span style="color:var(--dim);">core: </span><span style="color:var(--glow);">${mm.coreStr}</span> <span style="color:var(--dim);margin-left:6px;">path: </span><span style="color:var(--text);">${mm.path.split(/[\s\/]/)[0]}</span><br>`+
     `<span style="color:var(--dim);font-size:7.5px;">${matchRef}</span><br>`+
@@ -739,7 +992,8 @@ function manualSmash(){doSmash(getEls());}
 
 function randomSmash(){
   const c=getFilteredCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
-  const els=Array.from({length:beamCount},()=>pick());
+  const anchors=getAnchorEls();
+  const els=Array.from({length:beamCount},(_, i)=>anchors[i]||pick());
   BEAM_IDS.slice(0,beamCount).forEach((id,i)=>document.getElementById(id).value=els[i].sym);
   doSmash(els);
 }
@@ -755,11 +1009,17 @@ function setKMode(m){
 async function runChaosRound(){
   const rounds=parseInt(document.getElementById('rounds-slider').value);
   const c=getFilteredCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
-  const anchorSym=document.getElementById('anchor-beam').value;
-  const anchorEl=anchorSym?getAllCorpus().find(e=>e.sym===anchorSym):null;
+  const anchors=getAnchorEls();
+  // Legacy single anchor-beam select (still supported)
+  const legacySym=document.getElementById('anchor-beam').value;
+  const legacyEl=legacySym?getAllCorpus().find(e=>e.sym===legacySym):null;
   for(let i=0;i<rounds;i++){
     if(agentState!=='running')break;
-    const els=[anchorEl||pick(),...Array.from({length:beamCount-1},()=>pick())];
+    const els=Array.from({length:beamCount},(_,idx)=>{
+      if(anchors[idx])return anchors[idx];
+      if(idx===0&&legacyEl)return legacyEl;
+      return pick();
+    });
     doSmash(els);
     await new Promise(r=>setTimeout(r,40));
   }
@@ -1269,13 +1529,42 @@ const PATH_CODES={
 };
 
 function getMaterialMap(els,r){
-  // Identify which elements are periodic (non-ERE) — core material carriers
-  const ERE_SYMS=new Set(['Sv','Lm','Ve','Ax','De','Dm','Hi','Dq','Gl2','Zo','Zc','SP','Li2','Fv','Pa2','Pr','Nt','qc','qb','qt','e','Xc','Jy','Ups']);
-  const periodic=els.filter(e=>!ERE_SYMS.has(e.sym));
-  const allSyms=new Set(els.map(e=>e.sym));
-  const periodicSyms=new Set(periodic.map(e=>e.sym));
+  // All non-periodic classes (ERE + particles + S-particles)
+  const NON_PERIODIC=new Set([
+    'Sv','Lm','Ve','Nx','Ax','De','Dm','Hi','Gl2','Zo','Zc','SP','Li2','Fv','Pa2','Dq','Wm','GU','EW','Zb','Wb',
+    'qu','qd','qs','qc','qb','qt','e','mu','ta','Pr','Nt','pi','p0','K+','Jy','Ups',
+    'Xcc2','Xcc1','Occ','Xbb0','Xbb1','Obb','Occc','Obbb','AsN','CoN'
+  ]);
 
-  // Score each noble map entry — how many of its key syms appear in our beams
+  // Handle S-particle only collisions — they have their own registry
+  const sparts=els.filter(e=>SPARTICLE_SYMS_SET.has(e.sym));
+  if(sparts.length===els.length||sparts.length>=2){
+    const ref0=sparts[0];
+    const isBaryon=['Xcc2','Xcc1','Occ','Xbb0','Xbb1','Obb','Occc','Obbb'].includes(ref0.sym);
+    const isMaterial=['AsN','CoN'].includes(ref0.sym);
+    if(isBaryon){
+      const confirmed=sparts.some(e=>e.stype==='confirmed');
+      const t=confirmed?'T1':'T1-SNSFT';
+      // Unique names and refs only
+      const uniqueNames=[...new Set(sparts.map(e=>e.name))].join(' · ');
+      const uniqueRefs=[...new Set(sparts.map(e=>e.ref))].join(' · ');
+      return{tier:t,bestMatch:null,scored:[],periodic:[],
+        coreStr:sparts.map(e=>e.sym).join('+'),spectators:[],
+        path:'Theoretical — hadron collider (LHCb, ATLAS, CMS)',
+        sParticleNote:`Universal Baryon Noble Law [9,9,2,34] — B_quark≤2/3 → Noble at k=1 · ${uniqueNames} · ${uniqueRefs}`};
+    }
+    if(isMaterial){
+      return{tier:'T1-SNSFT',bestMatch:null,scored:[],periodic:sparts,
+        coreStr:sparts.map(e=>e.sym).join('+'),spectators:[],
+        path:ref0.sym==='AsN'?'High-pressure synthesis >30 GPa (GaN-family analog)':'High-pressure synthesis >50 GPa (magnetic phase)',
+        sParticleNote:`${[...new Set(sparts.map(e=>e.ref))].join(' · ')}`};
+    }
+  }
+
+  const periodic=els.filter(e=>!NON_PERIODIC.has(e.sym));
+  const allSyms=new Set(els.map(e=>e.sym));
+
+  // Score each noble map entry
   const scored=NOBLE_MAP.map(nm=>{
     const hits=nm.syms.filter(s=>allSyms.has(s)).length;
     const coverage=hits/nm.syms.length;
@@ -1283,7 +1572,6 @@ function getMaterialMap(els,r){
   }).filter(nm=>nm.hits>=Math.min(2,nm.syms.length))
     .sort((a,b)=>b.coverage-a.coverage||b.hits-a.hits);
 
-  // Classify tier: best match wins; if rescue → upgrade to T1 if T2
   let tier='T3';
   let bestMatch=null;
   if(scored.length>0){
@@ -1292,22 +1580,20 @@ function getMaterialMap(els,r){
     if(r.isRescue&&tier==='T2')tier='T1-RESCUE';
   }
 
-  // Identify spectators (EREs that are near-Noble probes)
-  const spectators=els.filter(e=>ERE_SYMS.has(e.sym)&&e.B<0.3);
-  const coreEls=els.filter(e=>!ERE_SYMS.has(e.sym)||(ERE_SYMS.has(e.sym)&&e.B>=0.3));
+  const spectators=els.filter(e=>NON_PERIODIC.has(e.sym)&&e.B<0.3);
+  const coreEls=els.filter(e=>!NON_PERIODIC.has(e.sym)||(NON_PERIODIC.has(e.sym)&&e.B>=0.3));
+  const coreStr=coreEls.length?coreEls.map(e=>e.sym).join('+'):els.map(e=>e.sym).join('+');
 
-  // Effective core string
-  const coreStr=coreEls.map(e=>e.sym).join('+');
-
-  // Production path logic: use best match path or derive from element classes
   let path=bestMatch?bestMatch.path:'';
   if(!path){
-    const hasActinide=els.some(e=>['U','Pu'].includes(e.sym));
+    const hasActinide=els.some(e=>['U','Pu','Th','Np','Am','Cm'].includes(e.sym));
     const hasPb=els.some(e=>e.sym==='Pb');
     const hasGaN=els.some(e=>['Ga','N'].includes(e.sym));
     const hasSi=els.some(e=>e.sym==='Si');
     const hasW=els.some(e=>e.sym==='W');
-    if(hasActinide)path='HIP-C in radiological glovebox 1400°C/180MPa';
+    const allNoble=els.every(e=>e.B===0);
+    if(allNoble&&els.every(e=>NON_PERIODIC.has(e.sym)))path='Theoretical — particle physics / collider';
+    else if(hasActinide)path='HIP-C in radiological glovebox 1400°C/180MPa';
     else if(hasPb)path='CIP + CRYO milling to prevent Pb clustering';
     else if(hasGaN)path='MOCVD on Si/SiC substrate';
     else if(hasSi)path='CVD / MAG sputtering on Si substrate';
@@ -1315,7 +1601,7 @@ function getMaterialMap(els,r){
     else path='SPS or MA+SPS — standard noble-state consolidation';
   }
 
-  return{tier,bestMatch,scored,periodic,coreStr,spectators,path};
+  return{tier,bestMatch,scored,periodic,coreStr,spectators,path,sParticleNote:null};
 }
 
 function formatMaterialMapComment(entry,mm){
@@ -1445,29 +1731,25 @@ function renderQueue(){
   if(!discoveryQueue.length){c.innerHTML='<div class="queue-empty">NO PENDING DISCOVERIES</div>';return;}
   c.innerHTML=discoveryQueue.map((d,i)=>{
     const mm=getMaterialMap(d.els,{phase:d.phase,isRescue:d.isRescue,IM:d.IM});
-    const tierLabel=mm.tier.replace('T1-RESCUE','T1★');
-    const matchName=mm.bestMatch?mm.bestMatch.name:'NOVEL — T3 prior art';
-    const matchRef=mm.bestMatch?mm.bestMatch.ref.slice(0,140):'No direct literature equivalent. DOI timestamp is the claim.';
-    const matchApp=mm.bestMatch?mm.bestMatch.app:'Structural prediction pending validation';
+    const tierLabel=mm.tier.replace('T1-RESCUE','T1★').replace('T1-SNSFT','S-PART★');
+    const tc=tierColor(mm.tier);
+    const matBlock=mm.sParticleNote
+      ?`<span style="color:var(--snsft);font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;">⬡ ${tierLabel}</span><br><span style="color:var(--text);font-size:9px;line-height:1.8;">${mm.sParticleNote}</span><br><span style="color:var(--dim);font-size:8.5px;">path: </span><span style="color:var(--locked);font-size:8.5px;">${mm.path}</span>`
+      :`<span style="color:${tc};font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;">${tierLabel}</span> <span style="color:var(--bright);margin-left:4px;font-size:10px;">${mm.bestMatch?mm.bestMatch.name:'NOVEL — T3 prior art'}</span><br><span style="color:var(--dim);font-size:9px;">core: </span><span style="color:var(--glow);font-size:9px;">${mm.coreStr}</span> <span style="color:var(--dim);margin-left:6px;font-size:9px;">path: </span><span style="color:var(--text);font-size:9px;">${mm.path.split(' ')[0]}</span><br><span style="color:var(--dim);font-size:8.5px;">${mm.bestMatch?mm.bestMatch.ref.slice(0,140):'No direct literature. DOI timestamp is the claim.'}</span><br><span style="color:var(--iva);font-size:8.5px;">▶ ${mm.bestMatch?mm.bestMatch.app:'Structural prediction pending validation'}</span>`;
     return`
     <div class="disc-card">
-      <div style="display:flex;justify-content:space-between;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
         <div class="disc-desig">${d.designation}</div>
         <div class="disc-ts">${new Date(d.timestamp).toLocaleTimeString()}</div>
       </div>
       <div class="disc-state">
-        <b>${d.collision}</b> [k=${d.kMode}]<br>
-        → <span style="color:${d.isRescue?'var(--rescue)':phaseColor(d.phase)};font-family:'Orbitron',monospace;font-size:8.5px;">${d.isRescue?'★RESCUE ':''} ${d.phase}</span>
-        · τ=${d.tau.toFixed(5)} · IM=${d.IM.toFixed(4)}<br>
-        <span style="color:var(--dim);font-size:7.5px;">${d.reason}</span>
+        <b style="font-size:12px;">${d.collision}</b> <span style="font-size:10px;">[k=${d.kMode}]</span><br>
+        → <span style="color:${d.isRescue?'var(--rescue)':phaseColor(d.phase)};font-family:'Orbitron',monospace;font-size:11px;">${d.isRescue?'★RESCUE ':''} ${d.phase}</span>
+        · <span style="font-size:10px;">τ=${d.tau.toFixed(5)} · IM=${d.IM.toFixed(4)}</span><br>
+        <span style="color:var(--dim);font-size:9px;">${d.reason}</span>
       </div>
-      <div style="margin:5px 0;padding:6px 8px;background:rgba(0,0,0,.25);border:1px solid var(--border2);font-size:8px;line-height:1.8;">
-        <span style="color:${tierColor(mm.tier)};font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.1em;">${tierLabel}</span>
-        <span style="color:var(--bright);margin-left:6px;">${matchName}</span><br>
-        <span style="color:var(--dim);">core: </span><span style="color:var(--glow);">${mm.coreStr}</span>
-        <span style="color:var(--dim);margin-left:8px;">path: </span><span style="color:var(--text);">${mm.path.split(' ')[0]}</span><br>
-        <span style="color:var(--dim);font-size:7.5px;">${matchRef}</span><br>
-        <span style="color:var(--iva);font-size:7.5px;">▶ ${matchApp}</span>
+      <div style="margin:6px 0;padding:8px 10px;background:rgba(0,0,0,.25);border:1px solid var(--border2);line-height:1.85;">
+        ${matBlock}
       </div>
       ${d.name?`<div class="disc-name">AIFI: "${d.name}"</div>`:''}
       ${d.aifiAnalysis?`<div class="disc-analysis">${d.aifiAnalysis.slice(0,280)}...</div>`:''}
@@ -1675,16 +1957,27 @@ function showTab(id){
 
 function rebuildSelectors(){
   const all=getFilteredCorpus().sort((a,b)=>a.sym.localeCompare(b.sym));
-  const opts=all.map(e=>`<option value="${e.sym}">${e.sym} — ${e.name} · τ=${tau(e.P,e.B).toFixed(3)} ${phaseOf(e.P,e.B).slice(0,4)}</option>`).join('');
+  const opts=all.map(e=>{
+    const isSP=SPARTICLE_SYMS_SET.has(e.sym);
+    const isERE=ERE_SYMS_SET.has(e.sym);
+    const prefix=isSP?'⬡ ':isERE?'◆ ':'';
+    return`<option value="${e.sym}">${prefix}${e.sym} — ${e.name} · τ=${tau(e.P,e.B).toFixed(3)} ${phaseOf(e.P,e.B).slice(0,4)}</option>`;
+  }).join('');
   BEAM_IDS.forEach(id=>{
     const sel=document.getElementById(id),cur=sel.value;
     sel.innerHTML=opts;
     if(cur)sel.value=cur;
   });
+  // Anchor lock selects (include all corpus, not just filtered)
+  const allFull=getAllCorpus().sort((a,b)=>a.sym.localeCompare(b.sym));
+  const optsAll='<option value="">— free —</option>'+allFull.map(e=>`<option value="${e.sym}">${e.sym} — ${e.name}</option>`).join('');
+  ['anchor1-sel','anchor2-sel','anchor3-sel'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const cur=el.value;el.innerHTML=optsAll;if(cur)el.value=cur;
+  });
+  // Legacy chaos anchor-beam select
   const ab=document.getElementById('anchor-beam');
-  const abCur=ab.value;
-  ab.innerHTML='<option value="">— random all —</option>'+opts;
-  if(abCur)ab.value=abCur;
+  if(ab){const abCur=ab.value;ab.innerHTML='<option value="">— random all —</option>'+opts;if(abCur)ab.value=abCur;}
 }
 
 function acceptLicense(){
@@ -1709,10 +2002,14 @@ function skipLicense(){document.getElementById('license-splash').style.display='
   if(sr){const el=document.getElementById('gh-repo');if(el)el.value=sr;}
   if(sl){const el=document.getElementById('gh-lean-path');if(el)el.value=sl;}
   rebuildSelectors();
-  // Default beams: H C N O H C N O (CHON×2 — T11 verified Noble)
+  // Default beams: H C N O H C N O (CHON×2 — T11 verified Noble, IM=42.127)
   const defaults=['H','C','N','O','H','C','N','O'];
   BEAM_IDS.forEach((id,i)=>{document.getElementById(id).value=defaults[i];});
   setKMode('max');
+  setBeamCount(8);  // ensure slot visibility and labels match
+  // Log corpus size on init
+  const fc=getFilteredCorpus();
+  feedLine(`NobleMappa ready · ${fc.length} elements · 118 periodic · ${SNSFT_ELS.length} EREs · ${PARTICLE_ELS.length} SM · ${SPARTICLE_ELS.length} S-Particles · 0 sorry`,'locked');
   if(sk&&sa){document.getElementById('license-splash').style.display='none';activateAIFI(sk);}
 })();
 </script>
