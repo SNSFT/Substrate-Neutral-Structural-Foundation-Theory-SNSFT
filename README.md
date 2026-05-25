@@ -768,7 +768,7 @@ Paper ID 6353438. Public record locked. **[9,9,9,9] LOCKED.**
 | **Quantum Translocation** | [uuia.app/quantumtrans](https://uuia.app/quantumtrans) |
 | **VoidChart** | [uuia.app/voidcharts](https://uuia.app/voidcharts) |
 | **SolarSystem** | [uuia.app/solarsystem](https://uuia.app/solarsystem) |
-| **Sovereign Drive Simulator** | [uuia.app/sds3d](https://uuia.app/sds3d) |
+| **Sovereign Drive Simulator** | [uuia.app/sovereigndrive](https://uuia.app/sovereigndrive) |
 | **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) |
 | **Quantum Node Forge** | [uuia.app/quantumnode](https://uuia.app/quantumnode) |
 | **Black Hole Engine** | [uuia.app/blackholes](https://uuia.app/blackholes) |
