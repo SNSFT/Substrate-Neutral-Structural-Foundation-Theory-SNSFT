@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APPA | Unified Identity Profile · SNSFT</title>
+<title>APPA v2 | Unified Identity Profile · SNSFT</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -19,6 +19,10 @@
   --violet-dim: rgba(155,109,255,0.1);
   --rose: #ff6b8a;
   --rose-dim: rgba(255,107,138,0.1);
+  --shatter: #ff4070;
+  --shatter-dim: rgba(255,64,112,0.1);
+  --false-lock: #ff8c00;
+  --false-lock-dim: rgba(255,140,0,0.1);
   --text: #e8e8f0;
   --text-dim: #7777a0;
   --text-muted: #3a3a58;
@@ -275,6 +279,7 @@ canvas#constellation {
 .divider { display: flex; align-items: center; gap: 14px; margin: 36px 0; }
 .div-line { flex: 1; height: 1px; background: var(--border); }
 .div-text { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.15em; white-space: nowrap; }
+/* ── RESULTS PANEL ── */
 .results-panel {
   background: var(--surface);
   border: 1px solid var(--anchor);
@@ -308,17 +313,6 @@ canvas#constellation {
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 14px;
-}
-.score-card-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 6px; }
-.score-card-value { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: var(--anchor); margin-bottom: 4px; }
-.score-card-code {
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: var(--anchor-dim);
-  color: var(--anchor);
-  display: inline-block;
 }
 .soul8-block {
   background: var(--surface2);
@@ -374,6 +368,89 @@ canvas#constellation {
   font-weight: 700;
   color: var(--anchor);
 }
+.tau-display-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.tau-display-left { display: flex; flex-direction: column; gap: 4px; }
+.tau-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.12em; }
+.tau-value { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; }
+.tau-formula { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); }
+.phase-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1px solid;
+}
+.phase-noble { color: #aa88ff; border-color: rgba(170,136,255,0.4); background: rgba(170,136,255,0.1); }
+.phase-true-lock { color: var(--anchor); border-color: rgba(0,212,170,0.4); background: var(--anchor-dim); }
+.phase-iva-peak { color: var(--gold); border-color: rgba(240,192,96,0.4); background: var(--gold-dim); }
+.phase-false-lock { color: var(--false-lock); border-color: rgba(255,140,0,0.4); background: var(--false-lock-dim); }
+.phase-shatter { color: var(--shatter); border-color: rgba(255,64,112,0.4); background: var(--shatter-dim); }
+.tl-bar-wrap { position: relative; margin: 6px 0 4px; }
+.tl-bar-bg {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  overflow: hidden;
+  position: relative;
+}
+.tl-bar-fill {
+  height: 6px;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+.tl-marker {
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: 10px;
+  background: rgba(240,192,96,0.8);
+  border-radius: 1px;
+}
+.tl-marker-label {
+  position: absolute;
+  top: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--gold);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.processing-band-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.band-label-text { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.12em; }
+.band-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  border: 1px solid;
+}
+.band-pf { color: var(--anchor); border-color: rgba(0,212,170,0.4); background: var(--anchor-dim); }
+.band-ps { color: var(--gold); border-color: rgba(240,192,96,0.4); background: var(--gold-dim); }
+.band-pl { color: var(--violet); border-color: rgba(155,109,255,0.4); background: var(--violet-dim); }
 .soul8-noharm {
   display: inline-flex;
   align-items: center;
@@ -469,6 +546,269 @@ canvas#constellation {
   touch-action: manipulation;
 }
 .reset-btn:hover { border-color: var(--rose); color: var(--rose); }
+/* ── DELTA COMPARISON PANEL ── */
+.delta-panel {
+  background: var(--surface);
+  border: 1px solid var(--gold);
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 28px;
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+.delta-panel.visible { display: block; }
+.delta-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--rose), var(--anchor));
+}
+.delta-panel-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.delta-subtitle { font-size: 11px; color: var(--text-muted); font-family: 'Space Mono', monospace; font-weight: 400; }
+.delta-axis-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.delta-axis-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.delta-axis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.delta-axis-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.delta-arrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+}
+.delta-arrow.up { color: var(--rose); }
+.delta-arrow.down { color: var(--anchor); }
+.delta-arrow.neutral { color: var(--text-muted); }
+.delta-values {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.delta-val-baseline { color: var(--anchor); font-weight: 700; }
+.delta-val-activated { color: var(--gold); font-weight: 700; }
+.delta-arrow-small { color: var(--text-muted); }
+.delta-change {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.delta-change.positive { color: var(--rose); background: var(--rose-dim); }
+.delta-change.negative { color: var(--anchor); background: var(--anchor-dim); }
+.delta-change.neutral { color: var(--text-muted); background: var(--surface); }
+/* τ comparison bar */
+.tau-compare-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.tau-compare-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  margin-bottom: 14px;
+}
+.tau-compare-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+}
+.tau-mode-label { min-width: 80px; color: var(--text-muted); }
+.tau-compare-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: visible;
+  position: relative;
+}
+.tau-compare-bar-fill {
+  height: 8px;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+  position: relative;
+}
+.tau-tl-line {
+  position: absolute;
+  top: -3px;
+  height: 14px;
+  width: 2px;
+  background: rgba(240,192,96,0.8);
+  border-radius: 1px;
+}
+.tau-tl-label {
+  position: absolute;
+  top: 14px;
+  font-size: 8px;
+  color: var(--gold);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.tau-val { min-width: 52px; text-align: right; font-weight: 700; }
+/* Phase change display */
+.phase-change-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.phase-change-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+}
+.phase-change-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+.phase-change-arrow { color: var(--text-muted); }
+/* Dynamic flags */
+.flags-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.flags-block-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  margin-bottom: 4px;
+}
+.flag-pill {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid;
+}
+.flag-icon {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.flag-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.flag-n-starvation {
+  border-color: rgba(255,140,0,0.3);
+  background: rgba(255,140,0,0.05);
+}
+.flag-n-starvation .flag-icon { color: var(--false-lock); background: var(--false-lock-dim); }
+.flag-a-dropout {
+  border-color: rgba(255,64,112,0.3);
+  background: rgba(255,64,112,0.05);
+}
+.flag-a-dropout .flag-icon { color: var(--shatter); background: var(--shatter-dim); }
+.flag-hidden-load {
+  border-color: rgba(240,192,96,0.3);
+  background: rgba(240,192,96,0.05);
+}
+.flag-hidden-load .flag-icon { color: var(--gold); background: var(--gold-dim); }
+.flag-im-collapse {
+  border-color: rgba(155,109,255,0.3);
+  background: rgba(155,109,255,0.05);
+}
+.flag-im-collapse .flag-icon { color: var(--violet); background: var(--violet-dim); }
+.flag-b-dominant {
+  border-color: rgba(255,107,138,0.3);
+  background: rgba(255,107,138,0.05);
+}
+.flag-b-dominant .flag-icon { color: var(--rose); background: var(--rose-dim); }
+.flag-n-dominant {
+  border-color: rgba(155,109,255,0.3);
+  background: rgba(155,109,255,0.05);
+}
+.flag-n-dominant .flag-icon { color: var(--violet); background: var(--violet-dim); }
+.flag-phase-change {
+  border-color: rgba(0,212,170,0.3);
+  background: rgba(0,212,170,0.05);
+}
+.flag-phase-change .flag-icon { color: var(--anchor); background: var(--anchor-dim); }
+.no-flags-msg {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+/* IM comparison */
+.im-compare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.im-compare-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.1em; }
+.im-compare-val { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; }
+/* FOOTER */
 .footer {
   text-align: center;
   padding: 32px 0 16px;
@@ -481,6 +821,7 @@ canvas#constellation {
   .ep-grid { grid-template-columns: 1fr; }
   .score-grid { grid-template-columns: 1fr; }
   .soul8-decoded { grid-template-columns: 1fr; }
+  .delta-axis-grid { grid-template-columns: 1fr; }
   .q-scale { gap: 3px; }
   .scale-btn { width: 28px; height: 28px; font-size: 10px; }
 }
@@ -495,8 +836,8 @@ canvas#constellation {
     1.369 GHz · SOVEREIGN ANCHOR · GERMLINE LOCKED
   </div>
   <h1>APPA</h1>
-  <p class="subtitle">Adaptive Predictive Pattern Assistant · Unified Identity Profile<br>
-  <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted)">[P,N,B,A] :: {UUIA} | Architect: HIGHTISTIC</span></p>
+  <p class="subtitle">Adaptive Predictive Pattern Assistant · Unified Identity Profile v2<br>
+  <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted)">[P,N,B,A] :: {UUIA} | τ=B/P · TL=0.1369 | Architect: HIGHTISTIC</span></p>
 </div>
 
 <div class="constellation-wrap">
@@ -607,9 +948,12 @@ canvas#constellation {
   <div class="questions" id="sim-a"></div>
 </div>
 
+<!-- RESULTS PANEL -->
 <div class="results-panel" id="resultsPanel">
   <h2>[P,N,B,A] :: {OUT} | UNIFIED IDENTITY CODE</h2>
   <div class="score-grid" id="scoreGrid"></div>
+  <div id="processingBandRow"></div>
+  <div id="tauDisplayBlock"></div>
   <div class="soul8-block" id="soul8Block">
     <div class="soul8-address" id="soul8Address"></div>
     <div class="soul8-decoded" id="soul8Decoded"></div>
@@ -622,7 +966,7 @@ canvas#constellation {
   <div class="im-block">
     <div>
       <div class="im-label">IDENTITY MASS</div>
-      <div class="im-formula">IM = Σ(mode weights) × 1.369</div>
+      <div class="im-formula">IM = (P+N+B+A) × 1.369</div>
     </div>
     <div class="im-value" id="imValue"></div>
   </div>
@@ -639,49 +983,224 @@ canvas#constellation {
   <button class="reset-btn" id="resetBtn">⟳ RESET ALL SCORES</button>
 </div>
 
+<!-- DELTA COMPARISON PANEL -->
+<div class="delta-panel" id="deltaPanel">
+  <div class="delta-panel-title">
+    BASELINE ↔ ACTIVATED
+    <span class="delta-subtitle">STIMULUS VECTOR ANALYSIS</span>
+  </div>
+  <div class="delta-axis-grid" id="deltaAxisGrid"></div>
+  <div class="tau-compare-block" id="tauCompareBlock"></div>
+  <div id="phaseChangeBlock"></div>
+  <div class="flags-block">
+    <div class="flags-block-title">DYNAMIC FLAGS</div>
+    <div id="flagsContainer"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <div class="im-compare-row">
+      <div><div class="im-compare-label">IM BASELINE</div><div class="im-compare-val" id="imBaseline" style="color:var(--anchor)">—</div></div>
+    </div>
+    <div class="im-compare-row">
+      <div><div class="im-compare-label">IM ACTIVATED</div><div class="im-compare-val" id="imActivated" style="color:var(--gold)">—</div></div>
+    </div>
+  </div>
+</div>
+
 <div class="footer">
-  <p>SNSFT · UUIA · APPA · Identity Physics</p>
-  <p>Architect: HIGHTISTIC · Sovereign Anchor: 1.369 GHz</p>
-  <p>Substrate-neutral · Non-anthropocentric · Scale-invariant</p>
+  <p>SNSFT · UUIA · APPA v2 · Identity Physics</p>
+  <p>Architect: HIGHTISTIC · Sovereign Anchor: 1.369 GHz · τ=B/P · TL=0.1369</p>
+  <p>Substrate-neutral · Non-anthropocentric · Scale-invariant · [9,9,6,11] Total Consistency</p>
   <div class="manifold">The Manifold is Holding. · [9,9,9,9]</div>
 </div>
 
 </div>
 <script>
-// ================================================
-// SOUL-8 CORE
-// ================================================
+// ============================================================
+// APPA v2 — SOUL-8 CORE + PNBA PHYSICS
+// Corpus: SNSFL_L2_Psy_Consistency [9,9,6,11]
+// τ = B/P · TL = ANCHOR/10 = 0.1369
+// ============================================================
 
 const SOVEREIGN_ANCHOR = 1.369
+const TL = SOVEREIGN_ANCHOR / 10       // 0.1369
+const N_THRESHOLD = 0.15               // narrative floor [9,9,6,11]
+const A_THRESHOLD = 0.15               // adaptation floor
+const N_FLOW_FLOOR = 0.08              // flow suppression floor
+const A_IVA = 1.0                      // IVA_PEAK threshold
+const PF_FLOOR = 38                    // Pattern Flexed band floor
+const PS_FLOOR = 24                    // Pattern Sustained band floor
 
-// [FIX] F=Flexed=highest weight (most expressed axis)
-//       L=Locked=lowest weight (least expressed axis)
-const MODE_WEIGHT = { L: 1, S: 2, F: 3 }
-
-function computeIdentityMass(pMode, nMode, bMode, aMode) {
-  var total = MODE_WEIGHT[pMode] + MODE_WEIGHT[nMode] +
-              MODE_WEIGHT[bMode] + MODE_WEIGHT[aMode]
-  return (total * SOVEREIGN_ANCHOR).toFixed(4)
-}
-
-function encodeSoulprint(pMode, nMode, bMode, aMode, axis) {
+// COG score → continuous PNBA coordinate
+// Calibrated to corpus canonical states [9,9,6,11]:
+//   At score 38 (PF_FLOOR): A = 1.0 = A_IVA threshold ✓
+//   At score 14: N = 0.15 = N_THRESHOLD ✓
+//   Max P = 1.30, Max N = 1.50, Max B = 0.45, Max A = 1.43
+function scoreToPNBA(cP, cN, cB, cA) {
   return {
-    axis: axis,
-    w_P: MODE_WEIGHT[pMode], w_N: MODE_WEIGHT[nMode],
-    w_B: MODE_WEIGHT[bMode], w_A: MODE_WEIGHT[aMode],
-    noharm: true,
-    anchor: SOVEREIGN_ANCHOR,
+    P: Math.max(0.001, (cP - 10) / 40 * 1.30),
+    N: Math.max(0,     (cN - 10) / 40 * 1.50),
+    B: Math.max(0,     (cB - 10) / 40 * 0.45),
+    A: Math.max(0,     (cA - 10) / 40 * 1.43)
   }
 }
 
-function buildSoulprintId(profileCode) {
-  return 'UUIA-' + Date.now() + '-' + profileCode.replace(/·/g, '')
+function computeTau(P, B) {
+  if (P <= 0) return 0
+  return B / P
 }
 
-// ================================================
-// QUESTION DATA
-// ================================================
+function computeIM(P, N, B, A) {
+  return (P + N + B + A) * SOVEREIGN_ANCHOR
+}
 
+// Phase classification [9,9,6,11] standardized
+function classifyPhase(P, N, B, A) {
+  if (P <= 0) return { phase: 'UNDEFINED', cls: '', color: '#666' }
+  var tau = B / P
+  if (B <= 0.001) return { phase: 'NOBLE', cls: 'phase-noble', color: '#aa88ff', tau: 0 }
+  if (tau >= TL)  return { phase: 'SHATTER', cls: 'phase-shatter', color: '#ff4070', tau: tau }
+  if (N < N_THRESHOLD) return { phase: 'FALSE LOCK', cls: 'phase-false-lock', color: '#ff8c00', tau: tau }
+  if (tau > TL * 0.88 && A > A_IVA) return { phase: 'IVA PEAK', cls: 'phase-iva-peak', color: '#f0c060', tau: tau }
+  return { phase: 'TRUE LOCK', cls: 'phase-true-lock', color: '#00d4aa', tau: tau }
+}
+
+function getProcessingBand(cogPScore) {
+  if (cogPScore >= PF_FLOOR) return { band: 'PF', label: 'PATTERN FLEXED', cls: 'band-pf' }
+  if (cogPScore >= PS_FLOOR) return { band: 'PS', label: 'PATTERN SUSTAINED', cls: 'band-ps' }
+  return { band: 'PL', label: 'PATTERN LOCKED', cls: 'band-pl' }
+}
+
+// Hidden Load detection rectangle [9,9,2,26]
+function isHiddenLoad(P, N, B, A) {
+  var tau = B / P
+  return tau > TL && tau < 0.43 &&
+         B > TL * P && B < 0.40 * P &&
+         N > N_THRESHOLD && N < 0.60 &&
+         A < 0.60
+}
+
+// Dynamic flags for delta analysis [9,9,2,26,31]
+function getDynamicFlags(base, act) {
+  var flags = []
+  var tau_b = computeTau(base.P, base.B)
+  var tau_a = computeTau(act.P, act.B)
+  var im_b  = computeIM(base.P, base.N, base.B, base.A)
+  var im_a  = computeIM(act.P, act.N, act.B, act.A)
+  var phase_b = classifyPhase(base.P, base.N, base.B, base.A)
+  var phase_a = classifyPhase(act.P, act.N, act.B, act.A)
+
+  // N starvation event — N crosses threshold under activation
+  if (base.N >= N_THRESHOLD && act.N < N_THRESHOLD) {
+    flags.push({
+      id: 'n-starvation',
+      icon: 'N STARVATION',
+      desc: 'Narrative dropped below floor (N<0.15) under activation. τ cover story: phase reads as False Lock. N-axis is the diagnostic.',
+      cls: 'flag-n-starvation'
+    })
+  }
+
+  // A dropout
+  if (act.A < A_THRESHOLD) {
+    flags.push({
+      id: 'a-dropout',
+      icon: 'A DROPOUT',
+      desc: 'Adaptation capacity dropped below threshold under activation. Learned helplessness / amotivation signature [CD2].',
+      cls: 'flag-a-dropout'
+    })
+  }
+
+  // Hidden Load zone [9,9,2,26]
+  if (isHiddenLoad(act.P, act.N, act.B, act.A)) {
+    var hl_tau = computeTau(act.P, act.B)
+    var subtype = hl_tau < 0.22 ? 'Holding (τ≈0.20)' :
+                  hl_tau < 0.25 ? 'Carrying (τ≈0.235)' : 'Hidden Load (τ≈0.270)'
+    flags.push({
+      id: 'hidden-load',
+      icon: 'HIDDEN LOAD',
+      desc: 'τ is in the (TL, 0.43) zone — structurally SHATTER but not acute. Does not announce. Subtype: ' + subtype + '. IM is the real diagnostic, not τ.',
+      cls: 'flag-hidden-load'
+    })
+  }
+
+  // IM collapse — >15% drop despite possibly moderate τ
+  if (im_b > 0) {
+    var im_drop = (im_b - im_a) / im_b
+    if (im_drop > 0.15) {
+      flags.push({
+        id: 'im-collapse',
+        icon: 'IM COLLAPSE',
+        desc: 'Identity Mass dropped ' + Math.round(im_drop * 100) + '% under activation while τ may appear manageable. IM tells the truth when τ misleads [9,9,2,26 T15].',
+        cls: 'flag-im-collapse'
+      })
+    }
+  }
+
+  // B-dominant vs N-dominant activation [9,9,2,31]
+  var delta_tau = tau_a - tau_b
+  var delta_N = act.N - base.N
+  if (delta_tau > 0.03 && delta_tau > Math.abs(delta_N) * 0.8) {
+    flags.push({
+      id: 'b-dominant',
+      icon: 'B-DOMINANT',
+      desc: 'B-axis rising faster than N-axis dropping. Anxiety vector: τ climbs, coupling elevated. Primary target: B reduction (CBT/Somatic).',
+      cls: 'flag-b-dominant'
+    })
+  } else if (delta_N < -0.06 && Math.abs(delta_N) > delta_tau * 0.8) {
+    flags.push({
+      id: 'n-dominant',
+      icon: 'N-DOMINANT',
+      desc: 'N-axis collapsing faster than B rising. Depression vector: IM collapses, narrative depleted. Primary target: N rebuild (DBT/EMDR/IFS).',
+      cls: 'flag-n-dominant'
+    })
+  }
+
+  // Phase change
+  if (phase_b.phase !== phase_a.phase) {
+    flags.push({
+      id: 'phase-change',
+      icon: 'PHASE SHIFT',
+      desc: phase_b.phase + ' → ' + phase_a.phase,
+      cls: 'flag-phase-change'
+    })
+  }
+
+  return flags
+}
+
+// ============================================================
+// MODE WEIGHT (L/S/F for SOUL-8)
+// ============================================================
+const MODE_WEIGHT = { L: 1, S: 2, F: 3 }
+
+function cogLabel(score) {
+  if (score <= 23) return 'L'
+  if (score <= 37) return 'S'
+  return 'F'
+}
+function epLabel(score) {
+  if (score <= 9)  return '↓'
+  if (score <= 14) return '='
+  return '↑'
+}
+function simLabel(score) {
+  if (score <= 12) return 'LRIS'
+  if (score <= 20) return 'SRIS'
+  return 'HRIS'
+}
+function heatColor(pct) {
+  if (pct < 0.3)  return 'linear-gradient(90deg,#6040a0,#4020a0)'
+  if (pct < 0.45) return 'linear-gradient(90deg,#60a0f0,#4080ff)'
+  if (pct < 0.65) return 'linear-gradient(90deg,#00d4aa,#00ff88)'
+  if (pct < 0.8)  return 'linear-gradient(90deg,#f0c060,#ffaa00)'
+  return 'linear-gradient(90deg,#ff6b8a,#ff3366)'
+}
+function buildSoulprintId(profileCode) {
+  return 'UUIA-' + Date.now() + '-' + profileCode.replace(/·/g,'')
+}
+
+// ============================================================
+// QUESTION DATA
+// ============================================================
 var COG_P = [
   "I notice patterns in things without trying.",
   "I connect ideas quickly, even if they seem unrelated.",
@@ -694,7 +1213,6 @@ var COG_P = [
   "I analyze people's behavior automatically.",
   "I look for meaning in things, even small things."
 ]
-
 var COG_N = [
   "I tell myself stories about why things happen.",
   "I try to understand what things mean for me.",
@@ -707,7 +1225,6 @@ var COG_N = [
   "I compare myself to who I used to be.",
   "I think about who I want to become."
 ]
-
 var COG_B = [
   "I act quickly when something needs to be done.",
   "I adjust my behavior depending on the situation.",
@@ -720,7 +1237,6 @@ var COG_B = [
   "I try to avoid making the same mistake twice.",
   "I can shift gears when needed."
 ]
-
 var COG_A = [
   "I adjust quickly when plans change.",
   "I can stay calm when things get chaotic.",
@@ -733,7 +1249,6 @@ var COG_A = [
   "I can keep going even when things feel hard.",
   "I can find a new approach when the old one fails."
 ]
-
 var EP_BLOCKS = [
   { title:"Threat",     key:"threat",     qs:["I feel on edge or alert.","I expect something bad to happen.","I scan for danger or problems.","I feel tense in my body."] },
   { title:"Loss",       key:"loss",       qs:["I feel like something important is missing.","I feel disconnected from things I care about.","I feel a sense of emptiness.","I feel like something slipped away."] },
@@ -746,7 +1261,6 @@ var EP_BLOCKS = [
   { title:"Play",       key:"play",       qs:["I feel curious or playful.","I feel creative or imaginative.","I feel light or spontaneous.","I feel open to trying new things."] },
   { title:"Safety",     key:"safety",     qs:["I feel calm and grounded.","I feel like things are okay.","I feel steady and regulated.","I feel protected or supported."] }
 ]
-
 var SIM_P = [
   "When you imagine a scene, how naturally does it appear fully formed around you without needing to build it piece by piece?",
   "When you move your attention within an imagined space, how automatically does the environment update — like walking through a real location?",
@@ -754,7 +1268,6 @@ var SIM_P = [
   "How easily can you change elements of a scene and see how those changes would realistically look?",
   "When imagining something, how instantly does the scene appear, without delay or effort?"
 ]
-
 var SIM_N = [
   "When imagining a scene or memory, how strongly do emotions or personal meaning appear along with it?",
   "How naturally do imagined scenes connect into stories, sequences, or ongoing internal worlds?",
@@ -762,7 +1275,6 @@ var SIM_N = [
   "When you imagine something emotional, how strongly does your body respond?",
   "How easily can you drop into an imagined moment and feel like you're inside it rather than observing it?"
 ]
-
 var SIM_B = [
   "How often do you mentally rehearse actions in a way that helps you perform them later?",
   "How much does imagining a situation influence your decisions or behavior in real life?",
@@ -770,7 +1282,6 @@ var SIM_B = [
   "When preparing for something important, how often do you run multiple internal scenarios?",
   "How often does your internal simulation feel more informative than verbal thinking?"
 ]
-
 var SIM_A = [
   "How easily can you shift out of an internal simulation when you need to focus on something external?",
   "How easily can you change the direction or content of an internal simulation?",
@@ -779,20 +1290,19 @@ var SIM_A = [
   "How easily can you ground yourself when an internal simulation becomes too intense?"
 ]
 
-// ================================================
+// ============================================================
 // STATE
-// ================================================
-
+// ============================================================
 var currentMode = 'baseline'
 var scores = { baseline: {}, activated: {} }
 var totalQuestions = 0
 var answeredQuestions = 0
 var currentSoul8 = null
+var modeComplete = { baseline: false, activated: false }
 
-// ================================================
+// ============================================================
 // RENDER
-// ================================================
-
+// ============================================================
 function makeQ(text, id, prefix) {
   totalQuestions++
   var scaleHtml = ''
@@ -806,7 +1316,6 @@ function makeQ(text, id, prefix) {
     '<div class="q-scale">' + scaleHtml + '</div>' +
     '</div>'
 }
-
 function renderQuestions(containerId, questions, prefix) {
   var html = ''
   for (var i = 0; i < questions.length; i++) {
@@ -814,7 +1323,6 @@ function renderQuestions(containerId, questions, prefix) {
   }
   document.getElementById(containerId).innerHTML = html
 }
-
 function renderEP() {
   var html = ''
   for (var b = 0; b < EP_BLOCKS.length; b++) {
@@ -829,10 +1337,9 @@ function renderEP() {
   document.getElementById('ep-grid').innerHTML = html
 }
 
-// ================================================
+// ============================================================
 // SCORING
-// ================================================
-
+// ============================================================
 function handleScaleClick(e) {
   var btn = e.target.closest('.scale-btn')
   if (!btn) return
@@ -840,39 +1347,33 @@ function handleScaleClick(e) {
   var val = parseInt(btn.getAttribute('data-val'), 10)
   setScore(id, val)
 }
-
 function setScore(id, val) {
   var modeScores = scores[currentMode]
   var wasAnswered = modeScores[id] !== undefined
   modeScores[id] = val
-
   for (var v = 1; v <= 5; v++) {
     var btn = document.getElementById('btn-' + id + '-' + v)
     if (btn) btn.classList.toggle('selected', v === val)
   }
-
   if (!wasAnswered) answeredQuestions++
   updateProgress()
   updateConstellation()
   checkComplete()
 }
-
 function updateProgress() {
   var pct = Math.min(100, (answeredQuestions / totalQuestions) * 100)
   document.getElementById('progressBar').style.width = pct + '%'
 }
 
-// ================================================
+// ============================================================
 // SCORE CALCULATION
-// ================================================
-
+// ============================================================
 function getSection(ids) {
   var s = scores[currentMode]
   var sum = 0
   for (var i = 0; i < ids.length; i++) sum += (s[ids[i]] || 0)
   return sum
 }
-
 function getCogScores() {
   return ['cog-p','cog-n','cog-b','cog-a'].map(function(d) {
     var ids = []
@@ -880,7 +1381,6 @@ function getCogScores() {
     return getSection(ids)
   })
 }
-
 function getSimScores() {
   return ['sim-p','sim-n','sim-b','sim-a'].map(function(d) {
     var ids = []
@@ -888,7 +1388,6 @@ function getSimScores() {
     return getSection(ids)
   })
 }
-
 function getEPScores() {
   return EP_BLOCKS.map(function(block) {
     var ids = []
@@ -896,57 +1395,26 @@ function getEPScores() {
     return getSection(ids)
   })
 }
-
-// ================================================
-// LABELS
-// [FIX] High score = Flexed, Low score = Locked
-//   10-23 → L (Locked)
-//   24-37 → S (Sustained)
-//   38-50 → F (Flexed)
-//   All 5s = 50 → F ✓
-// ================================================
-
-function cogLabel(score) {
-  if (score <= 23) return 'L'
-  if (score <= 37) return 'S'
-  return 'F'
+function getCogScoresForMode(mode) {
+  var saved = currentMode
+  currentMode = mode
+  var result = getCogScores()
+  currentMode = saved
+  return result
 }
 
-function epLabel(score) {
-  if (score <= 9)  return '↓'
-  if (score <= 14) return '='
-  return '↑'
-}
-
-function simLabel(score) {
-  if (score <= 12) return 'LRIS'
-  if (score <= 20) return 'SRIS'
-  return 'HRIS'
-}
-
-function heatColor(pct) {
-  if (pct < 0.3)  return 'linear-gradient(90deg,#6040a0,#4020a0)'
-  if (pct < 0.45) return 'linear-gradient(90deg,#60a0f0,#4080ff)'
-  if (pct < 0.65) return 'linear-gradient(90deg,#00d4aa,#00ff88)'
-  if (pct < 0.8)  return 'linear-gradient(90deg,#f0c060,#ffaa00)'
-  return 'linear-gradient(90deg,#ff6b8a,#ff3366)'
-}
-
-// ================================================
+// ============================================================
 // CONSTELLATION
-// ================================================
-
+// ============================================================
 function updateConstellation() {
   var canvas = document.getElementById('constellation')
   var ctx = canvas.getContext('2d')
   var W = canvas.width, H = canvas.height
   var cx = W / 2, cy = H / 2
   var R = Math.min(W, H) * 0.35
-
   ctx.clearRect(0, 0, W, H)
   ctx.fillStyle = '#0d0d1a'
   ctx.fillRect(0, 0, W, H)
-
   ;[0.25, 0.5, 0.75, 1].forEach(function(r) {
     ctx.beginPath()
     ctx.arc(cx, cy, R * r, 0, Math.PI * 2)
@@ -954,11 +1422,9 @@ function updateConstellation() {
     ctx.lineWidth = 1
     ctx.stroke()
   })
-
   var labels = ['P','N','B','A']
   var colors = ['#00d4aa','#f0c060','#9b6dff','#ff6b8a']
   var angles = [-Math.PI/2, 0, Math.PI/2, Math.PI]
-
   angles.forEach(function(angle, i) {
     ctx.beginPath()
     ctx.moveTo(cx, cy)
@@ -972,26 +1438,22 @@ function updateConstellation() {
     ctx.textBaseline = 'middle'
     ctx.fillText(labels[i], cx + Math.cos(angle)*(R+22), cy + Math.sin(angle)*(R+22))
   })
-
   var cogScores = getCogScores()
   var norms = cogScores.map(function(s) { return Math.min(1, s/50) })
   var points = angles.map(function(angle, i) {
     return { x: cx + Math.cos(angle)*R*norms[i], y: cy + Math.sin(angle)*R*norms[i] }
   })
-
   ctx.beginPath()
   points.forEach(function(p, i) { i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y) })
   ctx.closePath()
   ctx.fillStyle = 'rgba(0,212,170,0.08)'
   ctx.fill()
-
   ctx.beginPath()
   points.forEach(function(p, i) { i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y) })
   ctx.closePath()
   ctx.strokeStyle = 'rgba(0,212,170,0.6)'
   ctx.lineWidth = 1.5
   ctx.stroke()
-
   points.forEach(function(p, i) {
     ctx.beginPath()
     ctx.arc(p.x, p.y, 5, 0, Math.PI*2)
@@ -1005,7 +1467,6 @@ function updateConstellation() {
       ctx.fillText(cogScores[i], p.x, p.y - 14)
     }
   })
-
   ctx.beginPath()
   ctx.arc(cx, cy, 4, 0, Math.PI*2)
   ctx.fillStyle = 'rgba(0,212,170,0.5)'
@@ -1016,10 +1477,9 @@ function updateConstellation() {
   ctx.fillText('1.369', cx, cy+14)
 }
 
-// ================================================
+// ============================================================
 // RESULTS
-// ================================================
-
+// ============================================================
 function getAllIds() {
   var ids = []
   ;['cog-p','cog-n','cog-b','cog-a'].forEach(function(d) {
@@ -1033,14 +1493,17 @@ function getAllIds() {
   })
   return ids
 }
-
 function checkComplete() {
   var allIds = getAllIds()
   var answered = 0
   for (var i = 0; i < allIds.length; i++) {
     if (scores[currentMode][allIds[i]] !== undefined) answered++
   }
-  if (answered === allIds.length) showResults()
+  if (answered === allIds.length) {
+    showResults()
+    modeComplete[currentMode] = true
+    if (modeComplete.baseline && modeComplete.activated) showDeltaPanel()
+  }
 }
 
 function showResults() {
@@ -1048,20 +1511,24 @@ function showResults() {
   var simScores = getSimScores()
   var epScores  = getEPScores()
 
+  // PNBA continuous coordinates
+  var pnba = scoreToPNBA(cogScores[0], cogScores[1], cogScores[2], cogScores[3])
+  var tau  = computeTau(pnba.P, pnba.B)
+  var im   = computeIM(pnba.P, pnba.N, pnba.B, pnba.A)
+  var phase = classifyPhase(pnba.P, pnba.N, pnba.B, pnba.A)
+  var band  = getProcessingBand(cogScores[0])
+
   var axisData = [
     { key:'P', label:'[P] PATTERN',    color:'var(--anchor)', score:cogScores[0] },
     { key:'N', label:'[N] NARRATIVE',  color:'var(--gold)',   score:cogScores[1] },
     { key:'B', label:'[B] BEHAVIOR',   color:'var(--violet)', score:cogScores[2] },
     { key:'A', label:'[A] ADAPTATION', color:'var(--rose)',   score:cogScores[3] },
   ]
-
   axisData.forEach(function(ax) {
-    ax.mode   = cogLabel(ax.score)    // L / S / F  [FIX applied]
-    ax.weight = MODE_WEIGHT[ax.mode]  // 1 / 2 / 3
+    ax.mode   = cogLabel(ax.score)
+    ax.weight = MODE_WEIGHT[ax.mode]
     ax.pct    = ax.score / 50
   })
-
-  // Sort: Flexed (F=3) first, Locked (L=1) last
   var sorted = axisData.slice().sort(function(a, b) {
     if (b.weight !== a.weight) return b.weight - a.weight
     return b.score - a.score
@@ -1071,20 +1538,49 @@ function showResults() {
   var axis = sorted.map(function(ax) { return ax.key }).join('')
   var addressStr = axis + '·' + sorted.map(function(ax) { return ax.weight }).join('')
   var soulprintId = buildSoulprintId(profileCode)
-
   var pMode = axisData[0].mode
   var nMode = axisData[1].mode
   var bMode = axisData[2].mode
   var aMode = axisData[3].mode
-  var im = computeIdentityMass(pMode, nMode, bMode, aMode)
+  var imLegacy = ((MODE_WEIGHT[pMode]+MODE_WEIGHT[nMode]+MODE_WEIGHT[bMode]+MODE_WEIGHT[aMode]) * SOVEREIGN_ANCHOR).toFixed(4)
 
-  currentSoul8 = { id: soulprintId, address: addressStr, profile: profileCode, im: im }
+  currentSoul8 = { id: soulprintId, address: addressStr, profile: profileCode, im: imLegacy, tau: tau, phase: phase.phase }
 
+  // Processing band
+  document.getElementById('processingBandRow').innerHTML =
+    '<div class="processing-band-row">' +
+    '<div class="band-label-text">PROCESSING BAND</div>' +
+    '<div class="band-badge ' + band.cls + '">' + band.band + ' · ' + band.label + '</div>' +
+    '</div>'
+
+  // τ display block
+  var tauPct = Math.min(100, tau / 0.65 * 100)
+  var tauColor = phase.color
+  var tlPct = (TL / 0.65 * 100).toFixed(1)
+  document.getElementById('tauDisplayBlock').innerHTML =
+    '<div class="tau-display-block">' +
+    '<div class="tau-display-left">' +
+    '<div class="tau-label">TORSION RATIO</div>' +
+    '<div class="tau-value" style="color:' + tauColor + '">' + tau.toFixed(4) + '</div>' +
+    '<div class="tau-formula">τ = B/P = ' + pnba.B.toFixed(3) + '/' + pnba.P.toFixed(3) + ' · TL=0.1369</div>' +
+    '<div class="tl-bar-wrap" style="margin-top:10px;min-width:140px;">' +
+    '<div class="tl-bar-bg">' +
+    '<div class="tl-bar-fill" style="width:' + Math.min(100,tauPct) + '%;background:' + tauColor + '"></div>' +
+    '<div class="tl-marker" style="left:' + tlPct + '%"><div class="tl-marker-label" style="left:' + tlPct + '%">TL</div></div>' +
+    '</div></div>' +
+    '</div>' +
+    '<div class="phase-badge ' + phase.cls + '">' + phase.phase + '</div>' +
+    '</div>'
+
+  // SOUL-8 address
   document.getElementById('soul8Address').textContent = addressStr
 
+  // SOUL-8 decoded fields — now includes τ and phase
   var decodedFields = sorted.map(function(ax) {
     return { label: ax.label, value: 'w=' + ax.weight + ' (' + ax.mode + ') · ' + ax.score + '/50' }
   })
+  decodedFields.push({ label: 'τ = B/P', value: tau.toFixed(5) + (tau < TL ? ' ✓ LOCKED' : ' SHATTER') })
+  decodedFields.push({ label: 'PHASE', value: phase.phase })
   decodedFields.push({ label: 'ANCHOR', value: SOVEREIGN_ANCHOR + ' GHz ≡ SOVEREIGN' })
 
   document.getElementById('soul8Decoded').innerHTML = decodedFields.map(function(f) {
@@ -1092,20 +1588,18 @@ function showResults() {
       '</div><div class="soul8-field-value">' + f.value + '</div></div>'
   }).join('')
 
-  document.getElementById('imValue').textContent = im + ' IM'
+  document.getElementById('imValue').textContent = im.toFixed(4) + ' IM'
 
-  // Score cards — sorted dominant→weakest
-  // Tier bar direction: L·LOCK | S·SUSTAIN | F·FLEX  (left=low, right=high)
+  // Score cards with PF/PS/PL band
   document.getElementById('scoreGrid').innerHTML = sorted.map(function(ax) {
     var tierDesc = ax.mode === 'F' ? 'High axis — dominant trait'
                  : ax.mode === 'S' ? 'Mid axis — active but flexible'
                  : 'Low axis — minimal expression'
-
+    var axBand = ax.key === 'P' ? band.band + ' · ' + band.label : null
     var seg = function(active) {
       return '<div style="flex:1;height:4px;border-radius:2px;background:' +
         (active ? ax.color : 'var(--border)') + ';transition:background 0.3s"></div>'
     }
-
     var tierBar =
       '<div style="display:flex;gap:3px;margin:8px 0 4px">' +
         seg(ax.mode==='L') + seg(ax.mode==='S') + seg(ax.mode==='F') +
@@ -1115,18 +1609,17 @@ function showResults() {
         '<span style="color:' + (ax.mode==='S' ? ax.color : 'inherit') + '">S·SUSTAIN</span>' +
         '<span style="color:' + (ax.mode==='F' ? ax.color : 'inherit') + '">F·FLEX</span>' +
       '</div>'
-
     return '<div class="score-card">' +
-      '<div class="score-card-label">' + ax.label + '</div>' +
+      '<div style="font-family:Space Mono,monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:6px;">' + ax.label + '</div>' +
       '<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">' +
-        '<div class="score-card-value" style="color:' + ax.color + '">' + ax.score +
+        '<div style="font-family:Space Mono,monospace;font-size:20px;font-weight:700;color:' + ax.color + '">' + ax.score +
           '<span style="font-size:12px;color:var(--text-muted)">/50</span></div>' +
-        '<span class="score-card-code" style="background:' + ax.color + '22;color:' + ax.color + '">' +
+        '<span style="font-family:Space Mono,monospace;font-size:11px;padding:2px 8px;border-radius:4px;background:' + ax.color + '22;color:' + ax.color + '">' +
           ax.key + ax.mode + ' · w=' + ax.weight + '</span>' +
       '</div>' +
       tierBar +
-      '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;font-family:DM Sans,sans-serif">' +
-        tierDesc + '</div>' +
+      (axBand ? '<div style="font-family:Space Mono,monospace;font-size:9px;color:var(--anchor);margin-top:6px;letter-spacing:0.08em;">' + axBand + '</div>' : '') +
+      '<div style="font-size:11px;color:var(--text-muted);margin-top:4px;font-family:DM Sans,sans-serif;">' + tierDesc + '</div>' +
       '</div>'
   }).join('')
 
@@ -1140,7 +1633,6 @@ function showResults() {
   epPairs.forEach(function(h){ allHeat.push(h) })
   var simLabels = ['P','N','B','A']
   simScores.forEach(function(s,i){ allHeat.push({ label: simLabels[i]+' Sim · '+simLabel(s), pct: s/25 }) })
-
   document.getElementById('heatRows').innerHTML = allHeat.map(function(h) {
     return '<div class="heat-row">' +
       '<div class="heat-label">' + h.label + '</div>' +
@@ -1152,9 +1644,9 @@ function showResults() {
   var relRows = [
     { s:'CI', op:'∝', o:'Kernel' },
     { s:profileCode, op:'≡', o:addressStr },
-    { s:'IM', op:'∝', o:'1.369 GHz' },
+    { s:'τ=B/P', op:'=', o:tau.toFixed(4) + (tau < TL ? ' (LOCKED)' : ' (SHATTER)') },
+    { s:'IM', op:'=', o:im.toFixed(4) + ' · f:1.369' },
     { s:'NOHARM', op:'⊂', o:'Sovereign Manifold' },
-    { s:'Noise', op:'⊥', o:'Pattern' },
   ]
   document.getElementById('relmap').innerHTML = relRows.map(function(r) {
     return '<span>' + r.s + '</span><span class="relmap-op">' + r.op + '</span><span>' + r.o + '</span><br>'
@@ -1162,10 +1654,10 @@ function showResults() {
 
   var epCodes = EP_BLOCKS.map(function(b,i){ return b.title[0] + epLabel(epScores[i]) })
   var simCodes = simScores.map(function(s,i){ return simLabels[i]+':'+simLabel(s) })
-
   document.getElementById('combinedOutput').innerHTML =
     '<span style="color:var(--anchor)">' + addressStr + '</span><br>' +
-    '<span style="color:var(--text-dim)">' + soulprintId + '</span><br><br>' +
+    '<span style="color:var(--text-dim)">' + soulprintId + '</span><br>' +
+    '<span style="color:var(--rose)">τ=' + tau.toFixed(5) + ' · ' + phase.phase + ' · IM=' + im.toFixed(4) + '</span><br><br>' +
     '<span style="color:var(--anchor)">' + sorted.map(function(ax){return ax.key+ax.mode}).join('·') + '</span> // ' +
     '<span style="color:var(--gold)">' + epCodes.join(' ') + '</span> // ' +
     '<span style="color:var(--violet)">' + simCodes.join(' ') + '</span>'
@@ -1174,15 +1666,128 @@ function showResults() {
   document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-// ================================================
-// MODE SWITCH + RESET
-// ================================================
+// ============================================================
+// DELTA PANEL
+// ============================================================
+function showDeltaPanel() {
+  var baseCog = getCogScoresForMode('baseline')
+  var actCog  = getCogScoresForMode('activated')
+  var base = scoreToPNBA(baseCog[0], baseCog[1], baseCog[2], baseCog[3])
+  var act  = scoreToPNBA(actCog[0], actCog[1], actCog[2], actCog[3])
+  var tau_b = computeTau(base.P, base.B)
+  var tau_a = computeTau(act.P, act.B)
+  var im_b  = computeIM(base.P, base.N, base.B, base.A)
+  var im_a  = computeIM(act.P, act.N, act.B, act.A)
+  var phase_b = classifyPhase(base.P, base.N, base.B, base.A)
+  var phase_a = classifyPhase(act.P, act.N, act.B, act.A)
 
+  // Axis delta cards
+  var axes = [
+    { key:'P', label:'[P] PATTERN', cBase: base.P, cAct: act.P, colorUp:'var(--anchor)', colorDown:'var(--rose)' },
+    { key:'N', label:'[N] NARRATIVE', cBase: base.N, cAct: act.N, colorUp:'var(--gold)', colorDown:'var(--rose)' },
+    { key:'B', label:'[B] BEHAVIOR', cBase: base.B, cAct: act.B, colorUp:'var(--rose)', colorDown:'var(--anchor)' },
+    { key:'A', label:'[A] ADAPTATION', cBase: base.A, cAct: act.A, colorUp:'var(--anchor)', colorDown:'var(--rose)' },
+  ]
+  document.getElementById('deltaAxisGrid').innerHTML = axes.map(function(ax) {
+    var delta = ax.cAct - ax.cBase
+    var arrowCls = delta > 0.02 ? 'up' : delta < -0.02 ? 'down' : 'neutral'
+    var arrowSym = delta > 0.02 ? '↑' : delta < -0.02 ? '↓' : '→'
+    var changeCls = delta > 0.02 ? 'positive' : delta < -0.02 ? 'negative' : 'neutral'
+    return '<div class="delta-axis-card">' +
+      '<div class="delta-axis-header">' +
+        '<div class="delta-axis-name">' + ax.label + '</div>' +
+        '<div class="delta-arrow ' + arrowCls + '">' + arrowSym + '</div>' +
+      '</div>' +
+      '<div class="delta-values">' +
+        '<span class="delta-val-baseline">' + ax.cBase.toFixed(3) + '</span>' +
+        '<span class="delta-arrow-small">→</span>' +
+        '<span class="delta-val-activated">' + ax.cAct.toFixed(3) + '</span>' +
+      '</div>' +
+      '<div class="delta-change ' + changeCls + '">' +
+        (delta >= 0 ? '+' : '') + delta.toFixed(3) +
+      '</div>' +
+      '</div>'
+  }).join('')
+
+  // τ comparison bar
+  var maxTau = Math.max(tau_b, tau_a, TL * 2.5)
+  var tlPct = (TL / maxTau * 100).toFixed(1)
+  var bPct  = Math.min(100, tau_b / maxTau * 100).toFixed(1)
+  var aPct  = Math.min(100, tau_a / maxTau * 100).toFixed(1)
+  var bColor = tau_b >= TL ? '#ff4070' : '#00d4aa'
+  var aColor = tau_a >= TL ? '#ff4070' : '#f0c060'
+  document.getElementById('tauCompareBlock').innerHTML =
+    '<div class="tau-compare-title">τ = B/P COMPARISON · TL = 0.1369</div>' +
+    '<div class="tau-compare-row">' +
+      '<div class="tau-mode-label">BASELINE</div>' +
+      '<div class="tau-compare-bar-bg">' +
+        '<div class="tau-compare-bar-fill" style="width:' + bPct + '%;background:' + bColor + '"></div>' +
+        '<div class="tl-marker" style="left:' + tlPct + '%"><div class="tl-marker-label">TL</div></div>' +
+      '</div>' +
+      '<div class="tau-val" style="color:' + bColor + '">' + tau_b.toFixed(4) + '</div>' +
+    '</div>' +
+    '<div class="tau-compare-row">' +
+      '<div class="tau-mode-label">ACTIVATED</div>' +
+      '<div class="tau-compare-bar-bg">' +
+        '<div class="tau-compare-bar-fill" style="width:' + aPct + '%;background:' + aColor + '"></div>' +
+        '<div class="tl-marker" style="left:' + tlPct + '%"></div>' +
+      '</div>' +
+      '<div class="tau-val" style="color:' + aColor + '">' + tau_a.toFixed(4) + '</div>' +
+    '</div>'
+
+  // Phase change block
+  var phaseChangeHtml = ''
+  if (phase_b.phase !== phase_a.phase) {
+    phaseChangeHtml = '<div class="phase-change-block">' +
+      '<div class="phase-change-label">PHASE TRANSITION</div>' +
+      '<div class="phase-change-value">' +
+        '<span class="phase-badge ' + phase_b.cls + '">' + phase_b.phase + '</span>' +
+        '<span class="phase-change-arrow">→</span>' +
+        '<span class="phase-badge ' + phase_a.cls + '">' + phase_a.phase + '</span>' +
+      '</div>' +
+      '</div>'
+  } else {
+    phaseChangeHtml = '<div class="phase-change-block">' +
+      '<div class="phase-change-label">PHASE STABLE</div>' +
+      '<div class="phase-change-value">' +
+        '<span class="phase-badge ' + phase_b.cls + '">' + phase_b.phase + '</span>' +
+        '<span class="phase-change-arrow">→→</span>' +
+        '<span class="phase-badge ' + phase_a.cls + '">' + phase_a.phase + '</span>' +
+      '</div>' +
+      '</div>'
+  }
+  document.getElementById('phaseChangeBlock').innerHTML = phaseChangeHtml
+
+  // Dynamic flags
+  var flags = getDynamicFlags(base, act)
+  var flagsHtml = ''
+  if (flags.length === 0) {
+    flagsHtml = '<div class="no-flags-msg">NO FLAGS · STABLE ACTIVATION PROFILE</div>'
+  } else {
+    flagsHtml = flags.map(function(f) {
+      return '<div class="flag-pill ' + f.cls + '">' +
+        '<div class="flag-icon">' + f.icon + '</div>' +
+        '<div class="flag-desc">' + f.desc + '</div>' +
+        '</div>'
+    }).join('')
+  }
+  document.getElementById('flagsContainer').innerHTML = flagsHtml
+
+  // IM comparison
+  document.getElementById('imBaseline').textContent = im_b.toFixed(4)
+  document.getElementById('imActivated').textContent = im_a.toFixed(4)
+
+  document.getElementById('deltaPanel').classList.add('visible')
+  document.getElementById('deltaPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+// ============================================================
+// MODE SWITCH + RESET
+// ============================================================
 function setMode(mode) {
   currentMode = mode
   document.getElementById('btn-baseline').classList.toggle('active', mode==='baseline')
   document.getElementById('btn-activated').classList.toggle('active', mode==='activated')
-
   var modeScores = scores[currentMode]
   getAllIds().forEach(function(id) {
     var val = modeScores[id]
@@ -1191,17 +1796,19 @@ function setMode(mode) {
       if (btn) btn.classList.toggle('selected', val===v)
     }
   })
-
   answeredQuestions = Object.keys(modeScores).length
   updateProgress()
   updateConstellation()
   document.getElementById('resultsPanel').classList.remove('visible')
+  if (modeComplete[currentMode]) showResults()
+  if (modeComplete.baseline && modeComplete.activated) showDeltaPanel()
 }
 
 function resetAll() {
   scores[currentMode] = {}
   answeredQuestions = 0
   currentSoul8 = null
+  modeComplete[currentMode] = false
   getAllIds().forEach(function(id) {
     for (var v = 1; v <= 5; v++) {
       var btn = document.getElementById('btn-'+id+'-'+v)
@@ -1211,18 +1818,21 @@ function resetAll() {
   updateProgress()
   updateConstellation()
   document.getElementById('resultsPanel').classList.remove('visible')
+  document.getElementById('deltaPanel').classList.remove('visible')
 }
 
 function copySoul8() {
   if (!currentSoul8) return
-  var text = currentSoul8.address + ' | ' + currentSoul8.id + ' | Pv:NOHARM | f:1.369 | visual:GREEN'
+  var text = currentSoul8.address + ' | ' + currentSoul8.id +
+    ' | τ=' + currentSoul8.tau.toFixed(5) +
+    ' | ' + currentSoul8.phase +
+    ' | Pv:NOHARM | f:1.369 | visual:GREEN'
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(showCopied).catch(function(){ fallbackCopy(text) })
   } else {
     fallbackCopy(text)
   }
 }
-
 function fallbackCopy(text) {
   var ta = document.createElement('textarea')
   ta.value = text
@@ -1234,7 +1844,6 @@ function fallbackCopy(text) {
   document.body.removeChild(ta)
   showCopied()
 }
-
 function showCopied() {
   var btn = document.getElementById('copyBtn')
   btn.textContent = '✓ COPIED'
@@ -1245,10 +1854,9 @@ function showCopied() {
   }, 2000)
 }
 
-// ================================================
+// ============================================================
 // INIT
-// ================================================
-
+// ============================================================
 function init() {
   renderQuestions('cog-p', COG_P, 'P')
   renderQuestions('cog-n', COG_N, 'N')
@@ -1260,7 +1868,6 @@ function init() {
   renderQuestions('sim-b', SIM_B, 'SB')
   renderQuestions('sim-a', SIM_A, 'SA')
   updateConstellation()
-
   document.querySelector('.container').addEventListener('click', handleScaleClick)
   document.getElementById('btn-baseline').addEventListener('click', function(){ setMode('baseline') })
   document.getElementById('btn-activated').addEventListener('click', function(){ setMode('activated') })
