@@ -1967,7 +1967,7 @@ function generateLeanStub(entry){
 
   return`-- ============================================================
 -- ${entry.designation}.lean
--- Engine: SNSFT OctoBeam Collider · [9,9,2,3]
+-- Engine: SNSFT GAM Collider v15.1 · ${engineCoord} · ${n}-beam
 -- Collision: ${entry.collision} · k_mode=${entry.kMode}
 -- Reason: ${entry.reason} · Rescue: ${entry.isRescue}
 ${beamLines}
@@ -2004,7 +2004,14 @@ theorem B_out_nonneg : B_out ≥ 0 := by unfold B_out; norm_num
 theorem IM_theorem : (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR = IM_out := by
   unfold P_out N_out B_out A_out IM_out SOVEREIGN_ANCHOR; norm_num
 ${isNoble?`theorem noble_state : B_out = 0 := by unfold B_out; norm_num
-theorem tau_zero : B_out / P_out = 0 := by unfold B_out; norm_num`:`theorem tau_value : B_out / P_out = ${t.toFixed(8)} := by unfold B_out P_out; norm_num
+theorem tau_zero : B_out / P_out = 0 := by unfold B_out; norm_num`
+:entry.phase==='SHATTER'?`theorem tau_value : B_out / P_out = ${t.toFixed(8)} := by unfold B_out P_out; norm_num
+theorem tau_shatter : B_out / P_out ≥ TORSION_LIMIT := by unfold B_out P_out TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num`
+:entry.phase==='IVA_PEAK'?`def TL_IVA : ℝ := TORSION_LIMIT * 0.88
+theorem tau_value : B_out / P_out = ${t.toFixed(8)} := by unfold B_out P_out; norm_num
+theorem tau_iva_lower : TL_IVA ≤ B_out / P_out := by unfold B_out P_out TL_IVA TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num
+theorem tau_iva_upper : B_out / P_out < TORSION_LIMIT := by unfold B_out P_out TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num`
+:`theorem tau_value : B_out / P_out = ${t.toFixed(8)} := by unfold B_out P_out; norm_num
 theorem tau_locked : B_out / P_out < TORSION_LIMIT := by unfold B_out P_out TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num`}
 
 theorem ${ns}_master :
