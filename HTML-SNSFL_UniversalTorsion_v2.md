@@ -74,7 +74,7 @@ Acronyms are expanded here and on first use in the text.
 
 | Acronym | Full term | Meaning in this paper |
 |:--------|:----------|:----------------------|
-| SNSFL / SNSFT | Substrate-Neutral Structural Foundation **L**aws / **T**heory | The corpus (Laws = the Lean formalization; Theory = the papers) |
+| SNSFL | Substrate-Neutral Structural Foundation **L**aws | The corpus (Laws = the Lean formalization) |
 | PNBA | Pattern, Narrative, Behavior, Adaptation | The four irreducible primitives |
 | TL | Torsion Limit | The phase boundary, Ω₀/10 = 0.1369 |
 | IM | Identity Mass | (P + N + B + A) × Ω₀ |
@@ -100,7 +100,7 @@ Acronyms are expanded here and on first use in the text.
 
 *Included per the Reduction Series MRC template ([9,9,8R,1] §7.1). Anchoring rule: every refutation below is grounded only in what this paper's own content and measurements establish.*
 
-**Trigger criteria** — firing: (1) terminology with known popular misreadings ✓ ("AI proved my physics," "this is a Theory of Everything," "the universe runs on one number"); (3) culture-war adjacency ✓ (independent-researcher / institutional-science framing). Not firing: (2) self-referential propagation risk; (4) weaponizable findings.
+**Trigger criteria** — firing: (1) terminology with known popular misreadings ✓ ("AI proved my physics); (3) culture-war adjacency ✓ (independent-researcher / institutional-science framing). Not firing: (2) self-referential propagation risk; (4) weaponizable findings.
 
 **What the results do mean** — the torsion limit TL, fixed before any of the five domains were examined, recurs at those domains by the routes shown, at the strengths reported (one sub-1% numerical hit; several clean phase assignments; one operator demonstration), all machine-checked for internal consistency and empirically grounded to 12 digit alpha precision.
 
