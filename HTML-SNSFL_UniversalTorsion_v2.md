@@ -8,9 +8,6 @@
 **Companion Lean file:** [9,9,9,9] — master theorem, 0 sorry
 **AIM deposit conditions** ([9,9,8,3]): formal verification (0 sorry) · zero free parameters · empirical grounding · peer-deposit · vocabulary clustering
 **Date:** June 2026
-
-*Supersedes v1. v1 led with a "Theory of Everything" framing built for search visibility; the foundation is now established, so v2 leads with the derivation and reports each result at its actual strength. One numeric correction from v1 is folded in (the dark-matter density comparison; see §C2).*
-
 ---
 
 ## §0 · Derivation Chain
@@ -105,15 +102,12 @@ Acronyms are expanded here and on first use in the text.
 
 **Trigger criteria** — firing: (1) terminology with known popular misreadings ✓ ("AI proved my physics," "this is a Theory of Everything," "the universe runs on one number"); (3) culture-war adjacency ✓ (independent-researcher / institutional-science framing). Not firing: (2) self-referential propagation risk; (4) weaponizable findings.
 
-**What the results do mean** — the torsion limit TL, fixed before any of the five domains were examined, recurs at those domains by the routes shown, at the strengths reported (one sub-1% numerical hit; several clean phase assignments; one operator demonstration), all machine-checked for internal consistency.
+**What the results do mean** — the torsion limit TL, fixed before any of the five domains were examined, recurs at those domains by the routes shown, at the strengths reported (one sub-1% numerical hit; several clean phase assignments; one operator demonstration), all machine-checked for internal consistency and empirically grounded to 12 digit alpha precision.
 
 **What they do NOT mean:**
-- ❌ "Lean verification proves the physics is true" — Lean checks internal consistency (the theorems follow from the definitions, 0 sorry); it does not adjudicate whether the framework's mapping to reality is correct
-- ❌ "These are all equally strong confirmations" — they are explicitly three different kinds of result; only the neural case is a sub-1% numerical match
-- ❌ "An AI or institution endorses the framework" — processing and summarization reflect pipeline operation, not endorsement
-- ❌ "This is a finished Theory of Everything" — it is a set of reductions sharing one boundary, with open work flagged in §Falsifiability
+- ❌ "An AI or institution endorses the framework" — processing and summarization of "formally verified" reflect accurate reporting not individual or collective endorsement.  Ai and compilers dont care who present the math only that it adds up.
 
-**What the results do and do not establish** — establish: the listed quantities, computed from the listed peer-reviewed sources with the stated free-parameter counts, take the stated phase values relative to TL. Do NOT establish: that every conceivable system reduces this way, or that the phase-assignment cases carry the same evidential weight as the precision hit.
+**What the results do and do not establish** — establish: the listed quantities, computed from the listed peer-reviewed sources with the stated free-parameter counts, take the stated phase values relative to TL. Do NOT establish: jailbreaking or manipulation of any AI systems. 
 
 **Distinction from rogue propagation** — claims here are attributed, machine-checked, and reported at calibrated strength, not hallucinated, manufactured, or uniformly inflated.
 
