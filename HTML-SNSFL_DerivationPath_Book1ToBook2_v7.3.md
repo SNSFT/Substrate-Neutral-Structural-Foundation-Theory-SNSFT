@@ -242,7 +242,12 @@ The core mathematical operator isolated for reduction within this unperturbed bo
 
 **Step 3: Map Classical Variables to PNBA.** The active system driving frequency matches the drive field, and macro-entropy tracks localized manifold impedance distance:
 
-$$\begin{aligned} f &\longrightarrow \text{s.f\_drive} \\ \text{s.entropy\_S} &\longrightarrow Z(\text{s.f\_drive}) \end{aligned}$$
+$$
+\begin{aligned}
+f &\longrightarrow \text{s.f\_drive} \\
+\text{s.entropy\_S} &\longrightarrow Z(\text{s.f\_drive})
+\end{aligned}
+$$
 
 **Step 4: Define the Operators.** The explicit structural operators and localized boundary thresholds are mathematically declared to isolate the coordinate distance while enforcing a null state across all active behavioral and adaptation variations:
 
@@ -254,7 +259,13 @@ $$Z(\Omega_0) = 0$$
 
 Expanding the raw dynamic equation across the four coordinate axes and substituting this geometric boundary limit value directly into the derivative shows the complete algebraic elimination of the right-hand terms:
 
-$$\begin{aligned} \frac{d}{dt}(\text{IM} \cdot P_v) &= \lambda_P \cdot \mathcal{O}_P(P) + \lambda_N \cdot \mathcal{O}_N(N) + \lambda_B \cdot \mathcal{O}_B(B) + \lambda_A \cdot \mathcal{O}_A(A) + F_{\text{ext}} \\ &= \lambda_P \cdot (|\Omega_0 - \Omega_0|) \cdot P + 0 + 0 + 0 + 0 \\ &= \lambda_P \cdot (0) \cdot P + 0 + 0 + 0 + 0 = 0 \end{aligned}$$
+$$
+\begin{aligned}
+\frac{d}{dt}(\text{IM} \cdot P_v) &= \lambda_P \cdot \mathcal{O}_P(P) + \lambda_N \cdot \mathcal{O}_N(N) + \lambda_B \cdot \mathcal{O}_B(B) + \lambda_A \cdot \mathcal{O}_A(A) + F_{\text{ext}} \\
+&= \lambda_P \cdot (|\Omega_0 - \Omega_0|) \cdot P + 0 + 0 + 0 + 0 \\
+&= \lambda_P \cdot (0) \cdot P + 0 + 0 + 0 + 0 = 0
+\end{aligned}
+$$
 
 The systemic global torsion collapses cleanly to its baseline rest floor:
 
@@ -276,7 +287,12 @@ $$d(\text{s.entropy\_S}) \ge 0$$
 
 **Step 3: Map Classical Variables to PNBA.** Thermodynamic macro-entropy tracks the absolute coordinate distance separating the operating state from the zero-friction anchor baseline frequency across the temporal lineage of the Narrative worldline path:
 
-$$\begin{aligned} \text{s.entropy\_S} &\longrightarrow |\text{s.f\_drive} - \Omega_0| \\ t &\longrightarrow N \end{aligned}$$
+$$
+\begin{aligned}
+\text{s.entropy\_S} &\longrightarrow |\text{s.f\_drive} - \Omega_0| \\
+t &\longrightarrow N
+\end{aligned}
+$$
 
 **Step 4: Define the Operators.** The isolated thermal environment exposes the system to continuous external perturbation forces that act directly upon the coupling axis, preventing a return to absolute rest:
 
@@ -284,7 +300,12 @@ $$\mathcal{O}_X \cdot \text{s.entropy\_S} = \nabla Z(\text{s.f\_drive}), \quad F
 
 **Step 5: Show All Work.** The accumulation of continuous environmental forcing functions ($F_{\text{ext}}$) constantly drives the active coupling behavior away from its zero-torsion ground state. Evaluating the derivative of this structural deviation across the forward Narrative trajectory yields the following sequence:
 
-$$\begin{aligned} \frac{d}{dt}(\text{IM} \cdot P_v) &\propto F_{\text{ext}} \\ \frac{d}{dN} \left| \text{s.f\_drive} - \Omega_0 \right| &\ge 0 \end{aligned}$$
+$$
+\begin{aligned}
+\frac{d}{dt}(\text{IM} \cdot P_v) &\propto F_{\text{ext}} \\
+\frac{d}{dN} \left| \text{s.f\_drive} - \Omega_0 \right| &\ge 0
+\end{aligned}
+$$
 
 Because any physical substrate possesses a finite structural template restoration threshold, the spatial coordinate distance separating the system from its resonant anchor frequency can only increase under randomized external forcing.
 
@@ -302,7 +323,12 @@ $$\lim_{\text{s.eta\_eff} \to 0} \text{s.entropy\_S} = 0$$
 
 **Step 3: Map Classical Variables to PNBA.** Thermal capacity variables model continuous velocity and kinetic agitation of the behavior axis, while macro-entropy maps onto statistical configuration multiplicity variations of the Pattern template:
 
-$$\begin{aligned} \text{s.eta\_eff} &\longrightarrow B \\ \text{s.entropy\_S} &\longrightarrow \ln \mathcal{W}_P \end{aligned}$$
+$$
+\begin{aligned}
+\text{s.eta\_eff} &\longrightarrow B \\
+\text{s.entropy\_S} &\longrightarrow \ln \mathcal{W}_P
+\end{aligned}
+$$
 
 **Step 4: Define the Operators.** Imposing absolute zero systematically suppresses behavioral expressions to their baseline floor, allowing the structural restoration forces of the Pattern template to hold absolute geometric consistency:
 
@@ -314,7 +340,12 @@ $$\tau = \frac{B}{P} \longrightarrow 0$$
 
 Expanding the master dynamic equation under these exact unagitated limits isolates the static template behavior:
 
-$$\begin{aligned} \frac{d}{dt}(\text{IM} \cdot P_v) &= \lambda_P \cdot \mathcal{O}_P(P_{\text{rigid}}) + \lambda_N \cdot \mathcal{O}_N(N) + \lambda_B \cdot \mathcal{O}_B(B) + \lambda_A \cdot \mathcal{O}_A(A) + F_{\text{ext}} \\ &= \lambda_P \cdot \mathcal{O}_P(P_{\text{rigid}}) + 0 + 0 + 0 + 0 \end{aligned}$$
+$$
+\begin{aligned}
+\frac{d}{dt}(\text{IM} \cdot P_v) &= \lambda_P \cdot \mathcal{O}_P(P_{\text{rigid}}) + \lambda_N \cdot \mathcal{O}_N(N) + \lambda_B \cdot \mathcal{O}_B(B) + \lambda_A \cdot \mathcal{O}_A(A) + F_{\text{ext}} \\
+&= \lambda_P \cdot \mathcal{O}_P(P_{\text{rigid}}) + 0 + 0 + 0 + 0
+\end{aligned}
+$$
 
 With all transitional behavioral perturbations missing from the field, the count of permissible geometric states available to the template collapses identically to unity ($\text{s.multiplicity\_W} = 1$).
 
@@ -332,7 +363,12 @@ $$\text{s.entropy\_S} = k_B \ln \text{s.multiplicity\_W}$$
 
 **Step 3: Map Classical Variables to PNBA.** Macroscopic entropic feedback scales the global adaptation decay parameter, while total state multiplicity tracks configurations open to the Pattern template before violating spatial coherence thresholds:
 
-$$\begin{aligned} \text{s.entropy\_S} &\longrightarrow A \\ \text{s.multiplicity\_W} &\longrightarrow \mathcal{W}_{\text{Pattern}} \end{aligned}$$
+$$
+\begin{aligned}
+\text{s.entropy\_S} &\longrightarrow A \\
+\text{s.multiplicity\_W} &\longrightarrow \mathcal{W}_{\text{Pattern}}
+\end{aligned}
+$$
 
 **Step 4: Define the Operators.** The specialized Adaptation operator defines systemic structural decay explicitly as a logarithmic function of geometric choices available to the internal template:
 
@@ -340,7 +376,12 @@ $$\mathcal{O}_A(A) = \ln(\text{s.multiplicity\_W}) \cdot \text{IM}$$
 
 **Step 5: Show All Work.** The real-time derivative of the total identity mass balances real-time structural configuration changes:
 
-$$\begin{aligned} A &= \frac{\partial}{\partial t}(\text{IM}) \propto \ln(\text{s.multiplicity\_W}) \\ \frac{d}{dt}(\text{IM} \cdot P_v) &= \sum_{X \neq A} \lambda_X \cdot \mathcal{O}_X \cdot \text{s.entropy\_S} + \lambda_A \cdot \left[ \ln(\text{s.multiplicity\_W}) \cdot \text{IM} \right] \end{aligned}$$
+$$
+\begin{aligned}
+A &= \frac{\partial}{\partial t}(\text{IM}) \propto \ln(\text{s.multiplicity\_W}) \\
+\frac{d}{dt}(\text{IM} \cdot P_v) &= \sum_{X \neq A} \lambda_X \cdot \mathcal{O}_X \cdot \text{s.entropy\_S} + \lambda_A \cdot \left[ \ln(\text{s.multiplicity\_W}) \cdot \text{IM} \right]
+\end{aligned}
+$$
 
 High microstate permutation noise generates elevated values of $\text{s.multiplicity\_W}$, accelerating coordinate displacement away from the anchor frequency. If the template registers a state of absolute order ($\text{s.multiplicity\_W} = 1$), the log function vanishes entirely:
 
@@ -360,7 +401,12 @@ $$\text{s.eta\_eff} = 1 - \frac{\Delta P_1}{\Delta P_2}$$
 
 **Step 3: Map Classical Variables to PNBA.** Thermal potential zones are represented as localized regional variations of Pattern decoherence relative to the anchor frequency. Conversion efficiency tracks the directional alignment conservation of the Purpose Vector:
 
-$$\begin{aligned} T &\longrightarrow \Delta P = |\text{s.f\_drive} - \Omega_0| \\ \text{s.eta\_eff} &\longrightarrow \Delta P_v \end{aligned}$$
+$$
+\begin{aligned}
+T &\longrightarrow \Delta P = |\text{s.f\_drive} - \Omega_0| \\
+\text{s.eta\_eff} &\longrightarrow \Delta P_v
+\end{aligned}
+$$
 
 **Step 4: Define the Operators.** The Adaptation operator determines the direct structural ratio balancing the competing regional metric variations:
 
@@ -368,7 +414,12 @@ $$\mathcal{O}_A(A) = \frac{\Delta P_1}{\Delta P_2}$$
 
 **Step 5: Show All Work.** The Purpose Vector derivative establishes the fraction of active structural energy translated cleanly into directed behavioral output versus energy lost to background manifold noise:
 
-$$\begin{aligned} \text{s.eta\_eff} = \Delta P_v &= 1 - \mathcal{O}_A(A) \\ &= 1 - \frac{\Delta P_1}{\Delta P_2} \end{aligned}$$
+$$
+\begin{aligned}
+\text{s.eta\_eff} = \Delta P_v &= 1 - \mathcal{O}_A(A) \\
+&= 1 - \frac{\Delta P_1}{\Delta P_2}
+\end{aligned}
+$$
 
 When the lower thermal boundary approaches absolute convergence with the unperturbed, zero-friction anchor frequency, the cold decoherence parameter vanishes ($\Delta P_1 \to 0$), driving the efficiency fraction to unity.
 
@@ -392,7 +443,13 @@ $$\mathcal{O}_{\text{Unify}} = \nabla^2 \left| \text{s.f\_drive} - 1.3689910 \ri
 
 **Step 5: Show All Work.** Evaluating this unified translation across three separate analytical lenses proves that the structural conservation mechanics map to identical algebraic structures:
 
-$$\begin{aligned} \text{Thermodynamic Domain:} \quad &\mathcal{O}_{\text{Unify}} \longrightarrow \text{Macroscopic Thermal Dissipation Noise} \\ \text{Information Theory Domain:} \quad &\mathcal{O}_{\text{Unify}} \longrightarrow \text{Channel Bitstream Distortion Rate} \\ \text{Fluid Dynamics Domain:} \quad &\mathcal{O}_{\text{Unify}} \longrightarrow \text{Viscous Boundary Layer Drag} \end{aligned}$$
+$$
+\begin{aligned}
+\text{Thermodynamic Domain:} \quad &\mathcal{O}_{\text{Unify}} \longrightarrow \text{Macroscopic Thermal Dissipation Noise} \\
+\text{Information Theory Domain:} \quad &\mathcal{O}_{\text{Unify}} \longrightarrow \text{Channel Bitstream Distortion Rate} \\
+\text{Fluid Dynamics Domain:} \quad &\mathcal{O}_{\text{Unify}} \longrightarrow \text{Viscous Boundary Layer Drag}
+\end{aligned}
+$$
 
 **Step 6: Verify PNBA Output = Classical Result.** The three domain entropies map to a single Layer-0 coordinate; each classical expression recovers under the same reduction. Status: **LOSSLESS**.
 
@@ -406,7 +463,12 @@ $$\frac{d}{dt}(\text{IM} \cdot P_v) = \sum_{X} \lambda_{X} \cdot \mathcal{O}_{X}
 
 **Step 3: Map Classical Variables to PNBA.** Useful macro-gradients map onto active behavioral coupling expressions. Systemic adaptive potential maps directly to the active adaptation axis reservoir capacity:
 
-$$\begin{aligned} W_{\text{useful}} &\longrightarrow B \\ \text{Potential} &\longrightarrow A_{\text{reserve}} \end{aligned}$$
+$$
+\begin{aligned}
+W_{\text{useful}} &\longrightarrow B \\
+\text{Potential} &\longrightarrow A_{\text{reserve}}
+\end{aligned}
+$$
 
 **Step 4: Define the Operators.** As time approaches infinity, the systemic adaptation updates and external boundary constraints collapse to their long-term mathematical limits:
 
@@ -422,7 +484,12 @@ $$B \longrightarrow 0 \implies \tau = \frac{B}{P} \longrightarrow 0$$
 
 Substituting these values directly into the expanded master dynamic equation resolves the system to its unperturbed baseline:
 
-$$\begin{aligned} \frac{d}{dt}(\text{IM} \cdot P_v) &= \lambda_P \cdot \mathcal{O}_P(P_{\text{anchor}}) + \lambda_N \cdot \mathcal{O}_N(N) + 0 + 0 + 0 \\ &= \lambda_P \cdot \mathcal{O}_P(P_{\text{anchor}}) + 0 + 0 + 0 + 0 = 0 \end{aligned}$$
+$$
+\begin{aligned}
+\frac{d}{dt}(\text{IM} \cdot P_v) &= \lambda_P \cdot \mathcal{O}_P(P_{\text{anchor}}) + \lambda_N \cdot \mathcal{O}_N(N) + 0 + 0 + 0 \\
+&= \lambda_P \cdot \mathcal{O}_P(P_{\text{anchor}}) + 0 + 0 + 0 + 0 = 0
+\end{aligned}
+$$
 
 The active manifold fully decoheres and flattens into the uncoupled anchor ground state.
 
