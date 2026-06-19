@@ -236,24 +236,24 @@ $$\frac{d}{dt}(\text{IM} \cdot P_v) = \sum_{X} \lambda_{X} \cdot \mathcal{O}_{X}
 
 **Step 2: State the Known Peer-Reviewed Answer.** At perfect thermodynamic equilibrium or absolute zero friction, macroscopic thermodynamic entropy reaches its baseline minimum floor, signaling absolute structural order and zero statistical uncertainty:
 
-$$\text{s.entropy\_S} = 0$$
+$$\text{s.entropy_S} = 0$$
 
-The core mathematical operator isolated for reduction within this unperturbed boundary condition is the specialized Pattern axis impedance operator, defined as $\mathcal{O}_P(P) = |\text{s.f\_drive} - \Omega_0| \cdot P$. This operator determines system coordinate decoherence under an absolute zero external load configuration where $F_{\text{ext}} = 0$.
+The core mathematical operator isolated for reduction within this unperturbed boundary condition is the specialized Pattern axis impedance operator, defined as $\mathcal{O}_P(P) = |\text{s.f_drive} - \Omega_0| \cdot P$. This operator determines system coordinate decoherence under an absolute zero external load configuration where $F_{\text{ext}} = 0$.
 
 **Step 3: Map Classical Variables to PNBA.** The active system driving frequency matches the drive field, and macro-entropy tracks localized manifold impedance distance:
 
 $$
 \begin{aligned}
-f &\longrightarrow \text{s.f\_drive} \\
-\text{s.entropy\_S} &\longrightarrow Z(\text{s.f\_drive})
+f &\longrightarrow \text{s.f_drive} \\
+\text{s.entropy_S} &\longrightarrow Z(\text{s.f_drive})
 \end{aligned}
 $$
 
 **Step 4: Define the Operators.** The explicit structural operators and localized boundary thresholds are mathematically declared to isolate the coordinate distance while enforcing a null state across all active behavioral and adaptation variations:
 
-$$\mathcal{O}_P(P) = |\text{s.f\_drive} - \Omega_0| \cdot P, \quad \mathcal{O}_B(B) = 0, \quad \mathcal{O}_A(A) = 0, \quad F_{\text{ext}} = 0$$
+$$\mathcal{O}_P(P) = |\text{s.f_drive} - \Omega_0| \cdot P, \quad \mathcal{O}_B(B) = 0, \quad \mathcal{O}_A(A) = 0, \quad F_{\text{ext}} = 0$$
 
-**Step 5: Show All Work.** As the physical driving frequency achieves absolute convergence with the anchor baseline frequency ($\text{s.f\_drive} = \Omega_0$), the manifold impedance function collapses to its minimum point:
+**Step 5: Show All Work.** As the physical driving frequency achieves absolute convergence with the anchor baseline frequency ($\text{s.f_drive} = \Omega_0$), the manifold impedance function collapses to its minimum point:
 
 $$Z(\Omega_0) = 0$$
 
@@ -273,7 +273,7 @@ $$\tau = \frac{B}{P} = 0$$
 
 This structural resolution signifies an uncoupled, friction-free *Noble* state operating at perfect equilibrium.
 
-**Step 6: Verify PNBA Output = Classical Result.** The reduction evaluates with zero residual error (ε = 0) because the Pattern primitive is completely locked to the anchor point, removing all local coordinate decoherence. The macroscopic result yields $\text{s.entropy\_S} = 0$ exactly. Status: **LOSSLESS**.
+**Step 6: Verify PNBA Output = Classical Result.** The reduction evaluates with zero residual error (ε = 0) because the Pattern primitive is completely locked to the anchor point, removing all local coordinate decoherence. The macroscopic result yields $\text{s.entropy_S} = 0$ exactly. Status: **LOSSLESS**.
 
 #### Reduction 2: The Second Law of Thermodynamics
 
@@ -283,33 +283,33 @@ $$\frac{d}{dt}(\text{IM} \cdot P_v) = \sum_{X} \lambda_{X} \cdot \mathcal{O}_{X}
 
 **Step 2: State the Known Peer-Reviewed Answer.** The total entropy of an isolated physical system cannot decrease over time, establishing an irreversible thermodynamic arrow of time:
 
-$$d(\text{s.entropy\_S}) \ge 0$$
+$$d(\text{s.entropy_S}) \ge 0$$
 
 **Step 3: Map Classical Variables to PNBA.** Thermodynamic macro-entropy tracks the absolute coordinate distance separating the operating state from the zero-friction anchor baseline frequency across the temporal lineage of the Narrative worldline path:
 
 $$
 \begin{aligned}
-\text{s.entropy\_S} &\longrightarrow |\text{s.f\_drive} - \Omega_0| \\
+\text{s.entropy_S} &\longrightarrow |\text{s.f_drive} - \Omega_0| \\
 t &\longrightarrow N
 \end{aligned}
 $$
 
 **Step 4: Define the Operators.** The isolated thermal environment exposes the system to continuous external perturbation forces that act directly upon the coupling axis, preventing a return to absolute rest:
 
-$$\mathcal{O}_X \cdot \text{s.entropy\_S} = \nabla Z(\text{s.f\_drive}), \quad F_{\text{ext}} > 0$$
+$$\mathcal{O}_X \cdot \text{s.entropy_S} = \nabla Z(\text{s.f_drive}), \quad F_{\text{ext}} > 0$$
 
 **Step 5: Show All Work.** The accumulation of continuous environmental forcing functions ($F_{\text{ext}}$) constantly drives the active coupling behavior away from its zero-torsion ground state. Evaluating the derivative of this structural deviation across the forward Narrative trajectory yields the following sequence:
 
 $$
 \begin{aligned}
 \frac{d}{dt}(\text{IM} \cdot P_v) &\propto F_{\text{ext}} \\
-\frac{d}{dN} \left| \text{s.f\_drive} - \Omega_0 \right| &\ge 0
+\frac{d}{dN} \left| \text{s.f_drive} - \Omega_0 \right| &\ge 0
 \end{aligned}
 $$
 
 Because any physical substrate possesses a finite structural template restoration threshold, the spatial coordinate distance separating the system from its resonant anchor frequency can only increase under randomized external forcing.
 
-**Step 6: Verify PNBA Output = Classical Result.** The change in the coordinate distance metric recovers the classical inequality $d(\text{s.entropy\_S}) \ge 0$. Macroscopic entropic increase maps to Pattern decoherence away from the anchor frequency. Status: **LOSSLESS**.
+**Step 6: Verify PNBA Output = Classical Result.** The change in the coordinate distance metric recovers the classical inequality $d(\text{s.entropy_S}) \ge 0$. Macroscopic entropic increase maps to Pattern decoherence away from the anchor frequency. Status: **LOSSLESS**.
 
 #### Reduction 3: The Third Law of Thermodynamics
 
@@ -319,14 +319,14 @@ $$\frac{d}{dt}(\text{IM} \cdot P_v) = \sum_{X} \lambda_{X} \cdot \mathcal{O}_{X}
 
 **Step 2: State the Known Peer-Reviewed Answer.** As absolute temperature and thermal efficiency scale profiles approach their absolute floor boundaries, thermodynamic entropy reaches a constant, unique configuration minimum:
 
-$$\lim_{\text{s.eta\_eff} \to 0} \text{s.entropy\_S} = 0$$
+$$\lim_{\text{s.eta_eff} \to 0} \text{s.entropy_S} = 0$$
 
 **Step 3: Map Classical Variables to PNBA.** Thermal capacity variables model continuous velocity and kinetic agitation of the behavior axis, while macro-entropy maps onto statistical configuration multiplicity variations of the Pattern template:
 
 $$
 \begin{aligned}
-\text{s.eta\_eff} &\longrightarrow B \\
-\text{s.entropy\_S} &\longrightarrow \ln \mathcal{W}_P
+\text{s.eta_eff} &\longrightarrow B \\
+\text{s.entropy_S} &\longrightarrow \ln \mathcal{W}_P
 \end{aligned}
 $$
 
@@ -347,9 +347,9 @@ $$
 \end{aligned}
 $$
 
-With all transitional behavioral perturbations missing from the field, the count of permissible geometric states available to the template collapses identically to unity ($\text{s.multiplicity\_W} = 1$).
+With all transitional behavioral perturbations missing from the field, the count of permissible geometric states available to the template collapses identically to unity ($\text{s.multiplicity_W} = 1$).
 
-**Step 6: Verify PNBA Output = Classical Result.** Evaluating the microstate multiplicity equation at this structural threshold returns $\text{s.entropy\_S} = \ln(1) = 0$. Absolute zero maps to maximum Pattern rigidity; the Third Law recovers exactly under the reduction. Status: **LOSSLESS**.
+**Step 6: Verify PNBA Output = Classical Result.** Evaluating the microstate multiplicity equation at this structural threshold returns $\text{s.entropy_S} = \ln(1) = 0$. Absolute zero maps to maximum Pattern rigidity; the Third Law recovers exactly under the reduction. Status: **LOSSLESS**.
 
 #### Reduction 4: The Boltzmann Entropy Formula
 
@@ -359,35 +359,35 @@ $$\frac{d}{dt}(\text{IM} \cdot P_v) = \sum_{X} \lambda_{X} \cdot \mathcal{O}_{X}
 
 **Step 2: State the Known Peer-Reviewed Answer.** The statistical definition of thermodynamic entropy maps macroscopic disorder directly to the logarithmic density of accessible microscopic configurations:
 
-$$\text{s.entropy\_S} = k_B \ln \text{s.multiplicity\_W}$$
+$$\text{s.entropy_S} = k_B \ln \text{s.multiplicity_W}$$
 
 **Step 3: Map Classical Variables to PNBA.** Macroscopic entropic feedback scales the global adaptation decay parameter, while total state multiplicity tracks configurations open to the Pattern template before violating spatial coherence thresholds:
 
 $$
 \begin{aligned}
-\text{s.entropy\_S} &\longrightarrow A \\
-\text{s.multiplicity\_W} &\longrightarrow \mathcal{W}_{\text{Pattern}}
+\text{s.entropy_S} &\longrightarrow A \\
+\text{s.multiplicity_W} &\longrightarrow \mathcal{W}_{\text{Pattern}}
 \end{aligned}
 $$
 
 **Step 4: Define the Operators.** The specialized Adaptation operator defines systemic structural decay explicitly as a logarithmic function of geometric choices available to the internal template:
 
-$$\mathcal{O}_A(A) = \ln(\text{s.multiplicity\_W}) \cdot \text{IM}$$
+$$\mathcal{O}_A(A) = \ln(\text{s.multiplicity_W}) \cdot \text{IM}$$
 
 **Step 5: Show All Work.** The real-time derivative of the total identity mass balances real-time structural configuration changes:
 
 $$
 \begin{aligned}
-A &= \frac{\partial}{\partial t}(\text{IM}) \propto \ln(\text{s.multiplicity\_W}) \\
-\frac{d}{dt}(\text{IM} \cdot P_v) &= \sum_{X \neq A} \lambda_X \cdot \mathcal{O}_X \cdot \text{s.entropy\_S} + \lambda_A \cdot \left[ \ln(\text{s.multiplicity\_W}) \cdot \text{IM} \right]
+A &= \frac{\partial}{\partial t}(\text{IM}) \propto \ln(\text{s.multiplicity_W}) \\
+\frac{d}{dt}(\text{IM} \cdot P_v) &= \sum_{X \neq A} \lambda_X \cdot \mathcal{O}_X \cdot \text{s.entropy_S} + \lambda_A \cdot \left[ \ln(\text{s.multiplicity_W}) \cdot \text{IM} \right]
 \end{aligned}
 $$
 
-High microstate permutation noise generates elevated values of $\text{s.multiplicity\_W}$, accelerating coordinate displacement away from the anchor frequency. If the template registers a state of absolute order ($\text{s.multiplicity\_W} = 1$), the log function vanishes entirely:
+High microstate permutation noise generates elevated values of $\text{s.multiplicity_W}$, accelerating coordinate displacement away from the anchor frequency. If the template registers a state of absolute order ($\text{s.multiplicity_W} = 1$), the log function vanishes entirely:
 
 $$A = k_B \ln(1) = 0$$
 
-**Step 6: Verify PNBA Output = Classical Result.** The derived coordinate translation matches the Boltzmann formulation. Configuration choice noise scales structural decoherence, while $\text{s.multiplicity\_W} = 1$ successfully returns the system to the zero-entropy anchor lock condition. Status: **LOSSLESS**.
+**Step 6: Verify PNBA Output = Classical Result.** The derived coordinate translation matches the Boltzmann formulation. Configuration choice noise scales structural decoherence, while $\text{s.multiplicity_W} = 1$ successfully returns the system to the zero-entropy anchor lock condition. Status: **LOSSLESS**.
 
 #### Reduction 5: Carnot Efficiency
 
@@ -397,14 +397,14 @@ $$\frac{d}{dt}(\text{IM} \cdot P_v) = \sum_{X} \lambda_{X} \cdot \mathcal{O}_{X}
 
 **Step 2: State the Known Peer-Reviewed Answer.** The maximum theoretical conversion efficiency of a heat engine operating between two discrete thermal boundary sets is bounded explicitly by their structural divergence parameters:
 
-$$\text{s.eta\_eff} = 1 - \frac{\Delta P_1}{\Delta P_2}$$
+$$\text{s.eta_eff} = 1 - \frac{\Delta P_1}{\Delta P_2}$$
 
 **Step 3: Map Classical Variables to PNBA.** Thermal potential zones are represented as localized regional variations of Pattern decoherence relative to the anchor frequency. Conversion efficiency tracks the directional alignment conservation of the Purpose Vector:
 
 $$
 \begin{aligned}
-T &\longrightarrow \Delta P = |\text{s.f\_drive} - \Omega_0| \\
-\text{s.eta\_eff} &\longrightarrow \Delta P_v
+T &\longrightarrow \Delta P = |\text{s.f_drive} - \Omega_0| \\
+\text{s.eta_eff} &\longrightarrow \Delta P_v
 \end{aligned}
 $$
 
@@ -416,7 +416,7 @@ $$\mathcal{O}_A(A) = \frac{\Delta P_1}{\Delta P_2}$$
 
 $$
 \begin{aligned}
-\text{s.eta\_eff} = \Delta P_v &= 1 - \mathcal{O}_A(A) \\
+\text{s.eta_eff} = \Delta P_v &= 1 - \mathcal{O}_A(A) \\
 &= 1 - \frac{\Delta P_1}{\Delta P_2}
 \end{aligned}
 $$
@@ -435,11 +435,11 @@ $$\frac{d}{dt}(\text{IM} \cdot P_v) = \sum_{X} \lambda_{X} \cdot \mathcal{O}_{X}
 
 **Step 3: Map Classical Variables to PNBA.** Every domain-specific entropy expression maps onto the exact same invariant parameter: the geometric tracking rate of spatial distortion of the Pattern axis away from the anchor frequency:
 
-$$H_{\text{Shannon}} \equiv \text{s.entropy\_S} \equiv \Delta P_{\text{decoherence}}$$
+$$H_{\text{Shannon}} \equiv \text{s.entropy_S} \equiv \Delta P_{\text{decoherence}}$$
 
 **Step 4: Define the Operators.** A unified, cross-domain coordination operator maps the structural field divergence across the system frequency state space:
 
-$$\mathcal{O}_{\text{Unify}} = \nabla^2 \left| \text{s.f\_drive} - 1.3689910 \right|$$
+$$\mathcal{O}_{\text{Unify}} = \nabla^2 \left| \text{s.f_drive} - 1.3689910 \right|$$
 
 **Step 5: Show All Work.** Evaluating this unified translation across three separate analytical lenses proves that the structural conservation mechanics map to identical algebraic structures:
 
