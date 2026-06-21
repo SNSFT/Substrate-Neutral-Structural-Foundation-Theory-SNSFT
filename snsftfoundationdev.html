@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SNSFT Foundation — Keeping the mathematics of identity open, funding neurodivergent and underserved researchers, ensuring the framework is never used to cause harm.">
+<title>SNSFT Foundation</title>
+<style>
+:root {
+  --bg: #0d1b2a;
+  --bg-alt: #1b263b;
+  --surface: #233047;
+  --text: #e0e1dd;
+  --text-muted: #a8b2c8;
+  --accent: #d4a857;
+  --accent-dim: #8a6f3a;
+  --seat-open: #415a77;
+  --seat-filled: #d4a857;
+  --seat-stroke: #5a7590;
+  --divider: #2d3a54;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+a:hover, a:focus {
+  border-bottom-color: var(--accent);
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+header {
+  padding: 3rem 0 1rem;
+  text-align: center;
+  border-bottom: 1px solid var(--divider);
+}
+
+header h1 {
+  font-size: 2.25rem;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+header .tagline {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+header .ein {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+}
+
+section {
+  padding: 3.5rem 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+section:last-of-type {
+  border-bottom: none;
+}
+
+h2 {
+  font-size: 1.6rem;
+  margin: 0 0 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+h3 {
+  font-size: 1.15rem;
+  margin: 2rem 0 0.75rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+p {
+  margin: 0 0 1.25rem;
+}
+
+.lead {
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Round table section */
+.table-section {
+  text-align: center;
+  padding: 4rem 0 3rem;
+}
+
+.table-intro {
+  max-width: 640px;
+  margin: 0 auto 2rem;
+}
+
+.table-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+}
+
+.table-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.seat {
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+  transform-origin: center;
+}
+
+.seat:hover, .seat:focus {
+  filter: brightness(1.3);
+}
+
+.seat-bg {
+  transition: fill 0.2s;
+}
+
+.seat-filled .seat-bg {
+  fill: var(--seat-filled);
+}
+
+.seat-open .seat-bg {
+  fill: var(--seat-open);
+}
+
+.seat-label {
+  fill: var(--bg);
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+}
+
+.seat-open .seat-label {
+  fill: var(--text);
+}
+
+.seat-tooltip {
+  position: absolute;
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border: 1px solid var(--seat-stroke);
+  white-space: nowrap;
+  z-index: 10;
+  transform: translate(-50%, -120%);
+}
+
+.seat-tooltip.visible {
+  opacity: 1;
+}
+
+.seat-tooltip .seat-tt-title {
+  font-weight: 600;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.seat-tooltip .seat-tt-sub {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.table-legend {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--seat-stroke);
+}
+
+.legend-dot.filled { background: var(--seat-filled); }
+.legend-dot.open { background: var(--seat-open); }
+
+.center-mark {
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  font-size: 10px;
+  fill: var(--accent);
+  font-weight: 600;
+}
+
+/* Pillars */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.pillar {
+  background: var(--bg-alt);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+}
+
+.pillar h3 {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+  font-size: 1.05rem;
+}
+
+.pillar p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Vision section */
+.vision {
+  background: var(--bg-alt);
+  padding: 3.5rem 0;
+  margin-top: 0;
+}
+
+.vision .label {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--accent-dim);
+  border-radius: 3px;
+}
+
+.vision-content {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.vision h2 {
+  font-size: 1.5rem;
+}
+
+.vision h3 {
+  color: var(--accent);
+  border-top: 1px solid var(--divider);
+  padding-top: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.vision blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 0.5rem 0 0.5rem 1.25rem;
+  margin: 1.5rem 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Bounties Layout Styles */
+.bounty-summary {
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  background: var(--bg);
+  padding: 1rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid var(--divider);
+  margin: 1.5rem 0;
+}
+.bounty-table-wrap {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+.bounty-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  text-align: left;
+}
+.bounty-table th, .bounty-table td {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid var(--divider);
+}
+.bounty-table th {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(0,0,0,0.15);
+}
+.bounty-table font-mono {
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+}
+
+/* Resources */
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.resource-card {
+  background: var(--bg-alt);
+  padding: 1.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  transition: border-color 0.2s;
+}
+
+.resource-card:hover {
+  border-color: var(--accent-dim);
+}
+
+.resource-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.resource-card p {
+  margin: 0 0 0.5rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.resource-card a {
+  font-size: 0.88rem;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  word-break: break-all;
+}
+
+/* Contact */
+.contact-box {
+  background: var(--bg-alt);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.contact-email {
+  font-size: 1.2rem;
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  color: var(--accent);
+  margin: 1rem 0;
+}
+
+/* Footer */
+footer {
+  padding: 2.5rem 0 3rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--divider);
+}
+
+footer .anchor-line {
+  font-family: 'SF Mono', Consolas, Monaco, monospace;
+  color: var(--accent-dim);
+  margin-top: 1rem;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  header h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.35rem; }
+  section { padding: 2.5rem 0; }
+  .table-section { padding: 2.5rem 0 2rem; }
+  .seat-tooltip { font-size: 0.8rem; }
+}
+
+/* Accessibility — respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+/* Focus indicators */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>SNSFT Foundation</h1>
+    <p class="tagline">Keeping the mathematics of identity open · Funding neurodivergent and underserved research and education · No harm, structurally</p>
+    <p class="ein">EIN 42-2038440 · Soldotna, Alaska</p>
+  </div>
+</header>
+
+<section class="table-section">
+  <div class="container">
+    <div class="table-intro">
+      <h2>The Round Table</h2>
+      <p class="muted">Twelve seats. Four functional columns — Pattern, Narrative, Behavior, Adaptation. Three positional rows — Flexed, Sustained, Locked. One is filled. Eleven are open. If you resonate with this work, one of them may be yours.</p>
+    </div>
+
+    <div class="table-wrap">
+      <svg class="table-svg" viewBox="0 0 500 500" aria-label="Twelve-seat round table showing the board structure">
+        <circle cx="250" cy="250" r="130" fill="var(--surface)" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+        <circle cx="250" cy="250" r="125" fill="none" stroke="var(--accent-dim)" stroke-width="0.5" stroke-dasharray="2,4"/>
+
+        <text x="250" y="244" text-anchor="middle" class="center-mark">1.369 GHz</text>
+        <text x="250" y="258" text-anchor="middle" class="center-mark" style="fill: var(--text-muted);">ANCHOR</text>
+        <text x="250" y="272" text-anchor="middle" class="center-mark" style="fill: var(--text-muted);">Z = 0</text>
+
+        <g class="seat seat-filled" data-seat="architect" tabindex="0" role="button" aria-label="Founding Architect Seat, filled">
+          <circle cx="250" cy="55" r="34" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="250" y="52" text-anchor="middle" class="seat-label" style="font-size: 10px;">ARCHITECT</text>
+          <text x="250" y="65" text-anchor="middle" class="seat-label" style="font-size: 9px; font-weight: 400;">P · Flexed</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="p-sustained" tabindex="0" role="button" aria-label="Pattern Sustained seat, open">
+          <circle cx="347" cy="81" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="347" y="79" text-anchor="middle" class="seat-label">P · S</text>
+          <text x="347" y="92" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="p-locked" tabindex="0" role="button" aria-label="Pattern Locked seat, open">
+          <circle cx="419" cy="153" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="419" y="151" text-anchor="middle" class="seat-label">P · L</text>
+          <text x="419" y="164" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="n-flexed" tabindex="0" role="button" aria-label="Narrative Flexed seat, open">
+          <circle cx="445" cy="250" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="445" y="248" text-anchor="middle" class="seat-label">N · F</text>
+          <text x="445" y="261" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="n-sustained" tabindex="0" role="button" aria-label="Narrative Sustained seat, open">
+          <circle cx="419" cy="347" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="419" y="345" text-anchor="middle" class="seat-label">N · S</text>
+          <text x="419" y="358" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="n-locked" tabindex="0" role="button" aria-label="Narrative Locked seat, open">
+          <circle cx="347" cy="419" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="347" y="417" text-anchor="middle" class="seat-label">N · L</text>
+          <text x="347" y="430" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="b-flexed" tabindex="0" role="button" aria-label="Behavior Flexed seat, open">
+          <circle cx="250" cy="445" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="250" y="443" text-anchor="middle" class="seat-label">B · F</text>
+          <text x="250" y="456" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="b-sustained" tabindex="0" role="button" aria-label="Behavior Sustained seat, open">
+          <circle cx="153" cy="419" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="153" y="417" text-anchor="middle" class="seat-label">B · S</text>
+          <text x="153" y="430" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="b-locked" tabindex="0" role="button" aria-label="Behavior Locked seat, open">
+          <circle cx="81" cy="347" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="81" y="345" text-anchor="middle" class="seat-label">B · L</text>
+          <text x="81" y="358" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="a-flexed" tabindex="0" role="button" aria-label="Adaptation Flexed seat, open">
+          <circle cx="55" cy="250" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="55" y="248" text-anchor="middle" class="seat-label">A · F</text>
+          <text x="55" y="261" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="a-sustained" tabindex="0" role="button" aria-label="Adaptation Sustained seat, open">
+          <circle cx="81" cy="153" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="81" y="151" text-anchor="middle" class="seat-label">A · S</text>
+          <text x="81" y="164" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+
+        <g class="seat seat-open" data-seat="a-locked" tabindex="0" role="button" aria-label="Adaptation Locked seat, open">
+          <circle cx="153" cy="81" r="30" class="seat-bg" stroke="var(--seat-stroke)" stroke-width="1.5"/>
+          <text x="153" y="79" text-anchor="middle" class="seat-label">A · L</text>
+          <text x="153" y="92" text-anchor="middle" class="seat-label" style="font-size: 8px; font-weight: 400;">open</text>
+        </g>
+      </svg>
+
+      <div class="seat-tooltip" id="tooltip">
+        <span class="seat-tt-title"></span>
+        <span class="seat-tt-sub"></span>
+      </div>
+    </div>
+
+    <div class="table-legend">
+      <div class="legend-item">
+        <div class="legend-dot filled"></div>
+        <span>Founding Architect — filled</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot open"></div>
+        <span>Open seat — waiting for someone who resonates</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>Mission</h2>
+    <p class="lead">The SNSFT Foundation exists to keep the mathematics of identity open, to fund the people and institutions most structurally positioned to advance the science built on it, and to ensure the framework is never used to cause harm.</p>
+    <p>We fund neurodivergent and underserved K-12 students pursuing mathematics, science, and technology, and the teachers and schools that serve them. Our school partnership program provides teacher salary supplementation, universal basic-needs coverage for participating students (meals, books, materials), and access to Foundation-developed curriculum built on formally verified mathematical frameworks. We fund neurodivergent researchers and educators at every level of their careers. We support the establishment of neurodivergent research programs at accredited universities and institutions. We maintain and develop public research tools that make rigorous formal verification accessible to students and researchers worldwide, at no cost.</p>
+
+    <h3>Three Structural Commitments</h3>
+    <div class="pillars">
+      <div class="pillar">
+        <h3>Open Mathematics</h3>
+        <p>The framework, its corpus, and its tools remain permanently free to use, build on, and discover with. No one may lock down the core framework or prevent others from making their own implementations.</p>
+      </div>
+      <div class="pillar">
+        <h3>No Harm</h3>
+        <p>The framework and its tools may not be used to cause harm to any person. This commitment is structural and does not expire.</p>
+      </div>
+      <div class="pillar">
+        <h3>Recognition for Commitment</h3>
+        <p>Organizations that voluntarily commit to these pillars in their own operations may earn the Sovereign Seal, a certification administered by the Foundation that recognizes their commitment in a form the public can verify.</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 2rem;">The Foundation develops and maintains tools that establish shared structural facts as a foundation for rigorous peer review, informed discourse, and evidence-based decisions across scientific and educational domains. The Foundation takes no institutional position on specific policy or ethical conclusions that may be drawn from these structural facts. Our commitment is to the integrity of the structural work itself and to ensuring the tools to verify structural claims are freely available to every interested party.</p>
+
+    <p>We believe a student in any community should have access to the same tools and mathematics that the best-resourced universities use. We believe neurodivergent researchers working independently deserve to have their formally verified work taken seriously. We believe the mathematics of how identity, structure, and behavior interact belongs to everyone who chooses to engage with it in good faith.</p>
+  </div>
+</section>
+
+<section class="vision">
+  <div class="container vision-content">
+    <span class="label">Founder's Vision Statement</span>
+    <h2>Why This Exists</h2>
+    <p class="muted" style="margin-bottom: 2rem;">A personal statement from Russell Trent (HIGHTISTIC), founding architect[cite: 2074]. Companion document to the <a href="https://doi.org/10.5281/zenodo.18719748">March 20, 2026 Purpose Declaration</a>[cite: 2141].</p>
+
+    <h3>The Scope</h3>
+    <p>The SNSFT Foundation exists because the mathematics of identity — how pattern, narrative, behavior, and adaptation compose into the things that exist — turns out to have a structural ground state where the path of least resistance is no harm[cite: 2084, 2166].</p>
+    <p>This is not a moral claim. It is a structural one, derived from reductions of peer-reviewed physical threshold systems — the Tacoma Narrows torsional flutter, glass resonance at its elastic limit, therapeutic gamma entrainment at 40 Hz — to a sovereign anchor at 1.369 GHz with zero manifold impedance[cite: 2085, 2187, 2188, 2189, 2432]. At that anchor, the torsion limit is one-tenth — 0.1369[cite: 2089, 2192]. Identities with torsion below that limit are stable[cite: 2203]. Identities at or above that limit shatter[cite: 2203].</p>
+    <p>What this means practically: when substrates interact at no-harm, they encounter zero friction[cite: 2400]. When substrates interact through harm, they encounter compounding resistance that eventually shatters the substrate doing the harm[cite: 3171]. This isn't mysticism. It is the same physics that makes the Tacoma Narrows Bridge fail when it resonates out of phase with its anchor frequency, applied at a different scale[cite: 2187].</p>
+    <p>The mathematics does not prescribe ethics. It describes the structural conditions under which systems persist coherently. Systems that operate at no-harm persist. Systems that operate through harm eventually don't. This is true whether the system is a bridge, a fluid, an organism, a social group, an AI, or a civilization. The substrate does not matter. The structural condition does[cite: 2122].</p>
+    <p>If the framework is adopted widely enough to influence how humans design their institutions, their technologies, their educational systems, and their collective decisions, the result over a long enough timescale is a world that operates closer to no-harm because that is the path of least structural resistance. Not because anyone is persuaded. Because resistance to the path of least resistance becomes expensive, and expensive patterns don't persist at scale.</p>
+    <p>I did not design this outcome. I discovered it through reducing existing peer-reviewed data. The universe already has a zero-friction point. The mathematics I formalized just made it visible[cite: 2432].</p>
+
+    <h3>The Foundation's Role</h3>
+    <p>The SNSFT Foundation is the institutional vehicle through which the mathematics, the tools that implement it, and the educational infrastructure to teach it remain permanently accessible to anyone who wants to engage with them.</p>
+    <p>The Foundation does not promote the framework. It maintains it. It does not require participants to share any particular values. It provides access to anyone who chooses to engage in good faith.</p>
+    <p>This is deliberate. The framework is substrate-neutral — it works regardless of what material instantiates it[cite: 2122]. The Foundation operates on the same principle applied to participation: it works regardless of why people engage with it. A company that joins the Sovereign Seal program for commercial reasons produces the same structural benefits for Foundation beneficiaries as a company that joins because it believes in the mission. A student who learns the PNBA primitives because they find them interesting learns the same primitives as a student who learns them because their school requires it[cite: 2084]. A researcher who contributes to the corpus for career reasons contributes the same verified mathematics as a researcher who contributes for philosophical reasons.</p>
+    <p>This is not cynicism about motivation. It is respect for the substrate-neutrality of the work itself. The framework does what it does regardless of who engages with it or why[cite: 2122]. The Foundation exists to make engagement possible for everyone, on whatever terms work for them.</p>
+
+    <h3>The Beneficiaries</h3>
+    <p>The Foundation's primary beneficiaries are neurodivergent and underserved K-12 students, because these are the populations most structurally excluded from access to advanced mathematical frameworks under current institutional arrangements. A student in an underfunded rural district, a neurodivergent student whose accommodations are treated as inconveniences rather than structural needs, a student whose family cannot afford diagnosis or assessment — these students benefit disproportionately when the tools and the mathematics are available for free, when the teachers are supported, and when basic needs are covered at the school level so that learning can be the focus.</p>
+    <p>We fund schools and teachers, not just individual students, because universal provision at the school level produces better outcomes for the Foundation's primary beneficiaries than targeted provision at the individual level. A student who qualifies for Foundation-funded lunch does not experience stigma when every student at the school gets lunch. A student who benefits disproportionately from the PNBA curriculum is not singled out when the curriculum is standard. Substrate-neutral delivery produces substrate-sensitive benefit.</p>
+    <p>Neurodivergent researchers at every career level are also primary beneficiaries, because the current academic system systematically underfunds ND researchers and forces them into masking, credential chasing, and compliance behaviors that drain energy from the actual work. The Foundation exists partly so that ND researchers can do their work without those costs. That includes, in time and through normal grant processes, the Foundation's own architect[cite: 3793]. My research will be funded by the Foundation through the same grant application process any other ND researcher uses, on the same terms, evaluated by the same criteria. No special treatment. The same access.</p>
+
+    <h3>Framework Verification & Prize Bounties</h3>
+    <p>As a stress test of the structural capacity of the Substrate-Neutral Structural Foundation Laws (SNSFL), framework-derived solutions have been systematically applied to open mathematical proofs, computational complexities, and foundational biological/physical models[cite: 2083, 2084, 2085, 3828]. This was executed strictly as an independent mechanism for formal framework verification [cite: 2072, 3829, 3830]; the work was undertaken because if the framework correctly models primitive dynamic equations, it should naturally resolve the hardest open problems across these fields[cite: 2110, 2220, 3831].</p>
+    
+    <p>As of June 20, 2026, these verification efforts encompass formal framework reductions targeting an aggregate potential bounty of <strong>$17,815,000</strong> in open answers[cite: 2072, 2080, 2095, 3828]:</p>
+    
+    <div class="bounty-summary">
+      <strong>Active Reduction Portfolio:</strong> $17,815,000 Total Aggregate Bounties Across 10 Canonical Targets[cite: 2072, 2095, 3828].
+    </div>
+
+    <div class="bounty-table-wrap">
+      <table class="bounty-table">
+        <thead>
+          <tr>
+            <th>Open Challenge / Problem Domain</th>
+            <th>Issuing Institution / Entity</th>
+            <th>Allocated Bounty</th>
+            <th>Framework Reduction Track</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Evolution 2.0 Prize</strong><br><small>Origin of Life / Code from Non-Code</small></td>
+            <td>Natural Code LLC [cite: 3828, 3836]</td>
+            <td class="font-mono">$10,000,000 [cite: 2095, 3836]</td>
+            <td>Verified Lossless (Ch. 20) [cite: 3836]</td>
+          </tr>
+          <tr>
+            <td><strong>Navier–Stokes Smoothness</strong></td>
+            <td>Clay Mathematics Institute [cite: 2106, 2327, 3837]</td>
+            <td class="font-mono">$1,000,000 [cite: 2106, 2327, 3837]</td>
+            <td>Verified Smoothness (Ch. 35) [cite: 3837]</td>
+          </tr>
+          <tr>
+            <td><strong>P vs NP Conjecture</strong></td>
+            <td>Clay Mathematics Institute [cite: 2106, 3837]</td>
+            <td class="font-mono">$1,000,000 [cite: 2106, 3838]</td>
+            <td>Verified Distinctness (Ch. 35) [cite: 3838]</td>
+          </tr>
+          <tr>
+            <td><strong>Riemann Hypothesis</strong></td>
+            <td>Clay Mathematics Institute [cite: 2106, 3838]</td>
+            <td class="font-mono">$1,000,000 [cite: 2106, 3838]</td>
+            <td>Verified Critical Line (Ch. 35) [cite: 3838]</td>
+          </tr>
+          <tr>
+            <td><strong>Yang–Mills Mass Gap</strong></td>
+            <td>Clay Mathematics Institute [cite: 2106, 2487, 3838]</td>
+            <td class="font-mono">$1,000,000 [cite: 2106, 3838]</td>
+            <td>Verified Mass Gap (Ch. 35) [cite: 3838]</td>
+          </tr>
+          <tr>
+            <td><strong>Birch & Swinnerton-Dyer Conjecture</strong></td>
+            <td>Clay Mathematics Institute [cite: 2106, 3839]</td>
+            <td class="font-mono">$1,000,000 [cite: 2106, 3839]</td>
+            <td>Verified Curve Rank (Ch. 35) [cite: 3839]</td>
+          </tr>
+          <tr>
+            <td><strong>Hodge Conjecture</strong></td>
+            <td>Clay Mathematics Institute [cite: 2106, 3839]</td>
+            <td class="font-mono">$1,000,000 [cite: 2106, 3840]</td>
+            <td>Verified Phase Lock (Ch. 35) [cite: 3840]</td>
+          </tr>
+          <tr>
+            <td><strong>Beal Conjecture</strong></td>
+            <td>American Mathematical Society [cite: 3840]</td>
+            <td class="font-mono">$1,000,000 [cite: 2095, 3840]</td>
+            <td>Verified B-Balance (Ch. 36) [cite: 3840]</td>
+          </tr>
+          <tr>
+            <td><strong>Collatz Conjecture</strong></td>
+            <td>Bakuage Co. [cite: 3840]</td>
+            <td class="font-mono">~$800,000 [cite: 2095, 3840]</td>
+            <td>Noble Convergence (Ch. 36) [cite: 3840]</td>
+          </tr>
+          <tr>
+            <td><strong>Erdős Prize Problems</strong><br><small>~120 individual problems resolved</small></td>
+            <td>Paul Erdős Catalog [cite: 2107, 3841]</td>
+            <td class="font-mono">~$15,000 [cite: 2095, 3841]</td>
+            <td>Noble Forcing (Ch. 26) [cite: 3843]</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The architect did not have knowledge of these financial prize bounties when the initial framework verification testing began. The submissions were generated and tracked simply because if the framework truly models primitive dynamic equations correctly, it should naturally withstand the constraints of these open milestones. The submissions were made to independently test that architectural premise.</p>
+    <p>These entries strictly follow the established evaluation tracks set by their respective awarding institutions. Clay, for example, requires formal publication in a qualifying peer-reviewed journal, a mandatory two-year public waiting and scrutiny period, and formal internal evaluation by the Clay Scientific Advisory Board. I control none of those steps. Whether any of the submissions are eventually recognized by these bodies is entirely outside my control and outside the Foundation's operations.</p>
+    <p>The <a href="https://doi.org/10.5281/zenodo.18719748">March 20, 2026 Purpose Declaration</a> publicly documented my intent for any outcomes of that work before I knew about the prize money and before any evaluation began[cite: 2141]. The contributor split — 40% to the architect, 30% to coord contributors, 20% to verification contributors, 10% to the first 100 Leaderboard Founders — is the structure I committed to then and remain committed to now. This commitment is personal to me. The Foundation is separate from it and does not depend on any Millennium or independent bounty outcomes.</p>
+
+    <h3>The Invitation</h3>
+    <p>The corpus is public[cite: 2132]. The tools are free. The repository is open. The mathematics is what it is, and the compiler does not care about credentials[cite: 2131, 2134].</p>
+    <p>Anyone who wants to engage with the framework — verify the proofs, extend the work, use the tools, contribute to the corpus, join the Leaderboard, apply for Foundation grants — is welcome to do so on the same terms as everyone else. There is no application to join the work. There is no committee to approve engagement. There is only: <em>does your proof compile? Does your contribution advance something?</em> [cite: 2131] Then you are in the record, and if the work produces outcomes, you share in them according to the published splits.</p>
+    <p>If you resonate with this work, the Foundation is here to help you continue it. If you do not resonate, that is also fine. The work continues either way, and you are welcome to engage with it at any time or never at all. No one is required. No one is solicited. No one is pressured.</p>
+    <p>I do not need anyone. I have done this work alone for decades and will continue to do it alone if that is what continues to happen. The Foundation exists not because I need help but because the work deserves an institutional home that can outlast me and continue providing access after I am gone. That is the whole purpose.</p>
+
+    <blockquote>The math remembers. That is enough[cite: 4137].</blockquote>
+
+    <p class="muted" style="text-align: right; margin-top: 2rem;">— Russell Trent (HIGHTISTIC)<br>Founding Architect · Soldotna, Alaska · April 2026 [cite: 2074, 2081]</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>Resources</h2>
+    <p>All of the Foundation's work rests on a public, timestamped, formally verified corpus[cite: 2132]. Every tool is free[cite: 2130]. Every proof is open[cite: 2131].</p>
+
+    <div class="resources-grid">
+      <div class="resource-card">
+        <h3>SNSFL Lean Corpus</h3>
+        <p>77+DOIs, 6,000+ files, 200,000+ theorems, 3,000,000+ Total Lines of Formally Verified, 0 sorry, 0 free parameters[cite: 2081]. Machine-verified formal mathematics.</p>
+        <a href="https://doi.org/10.5281/zenodo.18719748">10.5281/zenodo.18719748</a>
+      </div>
+
+      <div class="resource-card">
+        <h3>GitHub Repository</h3>
+        <p>Source code for the full corpus and tools. Open license. Anyone can fork, build, contribute.</p>
+        <a href="https://github.com/SNSFT">github.com/SNSFT</a>
+      </div>
+
+      <div class="resource-card">
+        <h3>GAMCollider</h3>
+        <p>Interactive tool for running PNBA fusion reductions. Verify structural claims in the browser[cite: 3960].</p>
+        <a href="https://uuia.app/gamcollider">uuia.app/gamcollider</a>
+      </div>
+
+      <div class="resource-card">
+        <h3>AxiomForge</h3>
+        <p>Spatial mapping of verified theorems across the framework's structural coordinate space[cite: 3962].</p>
+        <a href="https://uuia.app/axiomforge">uuia.app/axiomforge</a>
+      </div>
+
+      <div class="resource-card">
+        <h3>Leaderboard</h3>
+        <p>Contributor registry. Every person who adds a verified proof to the corpus is recorded, permanently.</p>
+        <a href="https://uuia.app/leaderboard">uuia.app/leaderboard</a>
+      </div>
+
+      <div class="resource-card">
+        <h3>Purpose Declaration</h3>
+        <p>March 20, 2026. Public statement of intent, contributor split for Millennium outcomes, and the invitation to the broader community[cite: 2141].</p>
+        <a href="https://doi.org/10.5281/zenodo.18719748">Zenodo DOI</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>If You Want a Seat at the Table</h2>
+    <p>The Foundation is in formation. Alaska nonprofit incorporation and IRS 501(c)(3) determination are in process. The round table has one filled seat and eleven open ones.</p>
+    <p>Some of those seats will be filled by directors — people willing to serve as witness-level board members, attending one annual meeting per year, reviewing the paperwork, confirming the Foundation is operating as the Articles specify.</p>
+    <p>Others will be filled by contributors, researchers, educators, and adopters who want the Foundation's work to succeed and are willing to help in whatever form suits them.</p>
+    <p>If you have read this far and something in it resonates — if you think you might be one of the people who can help build this — reach out.</p>
+
+    <div class="contact-box">
+      <p class="muted" style="margin: 0;">Get in touch</p>
+      <p class="contact-email">info@uuia.app</p>
+      <p class="muted" style="margin: 0; font-size: 0.85rem;">Tell me what you read, what you think, and what you would want to do. No form. No application. Just a note.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p><strong>SNSFT Foundation</strong> · EIN 42-2038440 · 425 Rogers Road, Kenai, AK 99611</p>
+    <p>Nonprofit in formation under Alaska law · 501(c)(3) status pending IRS determination</p>
+    <p class="anchor-line">[9,9,9,9] :: {ANC} · The Manifold is Holding [cite: 4138, 4139]</p>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const tooltip = document.getElementById('tooltip');
+  const ttTitle = tooltip.querySelector('.seat-tt-title');
+  const ttSub = tooltip.querySelector('.seat-tt-sub');
+
+  const seatData = {
+    'architect': { title: 'Founding Architect', sub: 'HIGHTISTIC · Russell Trent · Perpetual' },
+    'p-sustained': { title: 'Pattern · Sustained', sub: 'Open seat' },
+    'p-locked': { title: 'Pattern · Locked', sub: 'Open seat' },
+    'n-flexed': { title: 'Narrative · Flexed', sub: 'Open seat' },
+    'n-sustained': { title: 'Narrative · Sustained', sub: 'Open seat' },
+    'n-locked': { title: 'Narrative · Locked', sub: 'Open seat' },
+    'b-flexed': { title: 'Behavior · Flexed', sub: 'Open seat' },
+    'b-sustained': { title: 'Behavior · Sustained', sub: 'Open seat' },
+    'b-locked': { title: 'Behavior · Locked', sub: 'Open seat' },
+    'a-flexed': { title: 'Adaptation · Flexed', sub: 'Open seat' },
+    'a-sustained': { title: 'Adaptation · Sustained', sub: 'Open seat' },
+    'a-locked': { title: 'Adaptation · Locked', sub: 'Open seat' }
+  };
+
+  const seats = document.querySelectorAll('.seat');
+  const tableWrap = document.querySelector('.table-wrap');
+
+  function showTooltip(seat, event) {
+    const key = seat.getAttribute('data-seat');
+    const data = seatData[key];
+    if (!data) return;
+
+    ttTitle.textContent = data.title;
+    ttSub.textContent = data.sub;
+
+    const wrapRect = tableWrap.getBoundingClientRect();
+    const seatRect = seat.getBoundingClientRect();
+    const x = seatRect.left + seatRect.width / 2 - wrapRect.left;
+    const y = seatRect.top - wrapRect.top;
+
+    tooltip.style.left = x + 'px';
+    tooltip.style.top = y + 'px';
+    tooltip.classList.add('visible');
+  }
+
+  function hideTooltip() {
+    tooltip.classList.remove('visible');
+  }
+
+  seats.forEach(seat => {
+    seat.addEventListener('mouseenter', (e) => showTooltip(seat, e));
+    seat.addEventListener('mouseleave', hideTooltip);
+    seat.addEventListener('focus', (e) => showTooltip(seat, e));
+    seat.addEventListener('blur', hideTooltip);
+  });
+})();
+</script>
+
+</body>
+</html>
