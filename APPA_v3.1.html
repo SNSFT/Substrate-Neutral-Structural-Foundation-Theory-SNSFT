@@ -1,0 +1,2527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APPA v3 | Unified Identity Profile · SNSFT</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06060f;
+  --surface: #0d0d1a;
+  --surface2: #12121f;
+  --border: #1a1a2e;
+  --anchor: #00d4aa;
+  --anchor-dim: rgba(0,212,170,0.1);
+  --gold: #f0c060;
+  --gold-dim: rgba(240,192,96,0.1);
+  --violet: #9b6dff;
+  --violet-dim: rgba(155,109,255,0.1);
+  --rose: #ff6b8a;
+  --rose-dim: rgba(255,107,138,0.1);
+  --shatter: #ff4070;
+  --shatter-dim: rgba(255,64,112,0.1);
+  --false-lock: #ff8c00;
+  --false-lock-dim: rgba(255,140,0,0.1);
+  --depleted-iva: #ff6b35;
+  --depleted-iva-dim: rgba(255,107,53,0.1);
+  --text: #e8e8f0;
+  --text-dim: #7777a0;
+  --text-muted: #3a3a58;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 70%, rgba(255,255,255,0.12) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.08) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 60%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 50%, rgba(0,212,170,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 40%, rgba(155,109,255,0.1) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+  position: relative;
+  z-index: 1;
+}
+.header { text-align: center; padding: 48px 0 40px; }
+.anchor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--anchor-dim);
+  border: 1px solid rgba(0,212,170,0.25);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--anchor);
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+.anchor-dot {
+  width: 5px; height: 5px;
+  background: var(--anchor);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.3; transform:scale(0.7); }
+}
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px,5vw,48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff 0%, var(--anchor) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+.subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  max-width: 460px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+.constellation-wrap {
+  position: relative;
+  margin: 0 auto 40px;
+  max-width: 500px;
+}
+canvas#constellation {
+  width: 100%;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: block;
+}
+.constellation-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-align: center;
+  margin-top: 8px;
+}
+.mode-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.mode-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.mode-btn.active {
+  background: var(--anchor-dim);
+  border-color: rgba(0,212,170,0.4);
+  color: var(--anchor);
+}
+.mode-btn#btn-weissmann.active {
+  background: var(--depleted-iva-dim);
+  border-color: rgba(255,107,53,0.4);
+  color: var(--depleted-iva);
+}
+.mode-btn:hover { opacity: 0.85; }
+/* ── WEISSMANN PANEL ── */
+.weissmann-panel { display: none; }
+.weissmann-panel.active { display: block; }
+.weissmann-intro {
+  background: var(--surface);
+  border: 1px solid rgba(255,107,53,0.25);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.weissmann-intro b { color: var(--depleted-iva); }
+.weissmann-need-baseline {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.w-result-block {
+  background: var(--surface);
+  border: 1px solid rgba(255,107,53,0.3);
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 24px;
+  display: none;
+}
+.w-result-block.visible { display: block; }
+.w-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.w-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--depleted-iva);
+}
+.w-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+}
+.w-compare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+}
+.w-threshold-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.w-bar-wrap { position: relative; margin: 16px 0; }
+.w-bar-bg { height: 10px; border-radius: 5px; background: var(--border); overflow: visible; position: relative; }
+.w-bar-fill { height: 10px; border-radius: 5px; transition: width 0.6s ease; }
+.w-bar-marker {
+  position: absolute; top: -4px; width: 2px; height: 18px;
+  background: rgba(255,107,53,0.7); border-radius: 1px;
+}
+.w-bar-marker-label {
+  position: absolute; top: 18px; font-size: 8px; color: var(--depleted-iva);
+  white-space: nowrap; transform: translateX(-50%); font-family: 'Space Mono', monospace;
+}
+.w-resolvability-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 16px;
+}
+.w-resolvability-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.12em; margin-bottom: 6px; }
+.w-resolvability-value { font-size: 13px; color: var(--text); line-height: 1.5; }
+.progress-bar-wrap {
+  background: var(--border);
+  border-radius: 100px;
+  height: 3px;
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+/* ── SECTION TOGGLE BAR (matches IM Collider beam-count-btn pattern) ── */
+.section-toggle-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.section-toggle-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+}
+.section-toggle-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 18px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.section-toggle-btn:hover { opacity: 0.85; }
+.section-toggle-btn.on.cog { border-color: rgba(0,212,170,0.4); color: var(--anchor); background: var(--anchor-dim); }
+.section-toggle-btn.on.emo { border-color: rgba(240,192,96,0.4); color: var(--gold); background: var(--gold-dim); }
+.section-toggle-btn.on.sim { border-color: rgba(155,109,255,0.4); color: var(--violet); background: var(--violet-dim); }
+.section-toggle-btn.off { border-color: var(--border); color: var(--text-muted); background: transparent; opacity: 0.5; }
+.section-toggle-hint {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: 0.04em;
+}
+.section-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+  filter: grayscale(0.6);
+}
+.progress-bar-fill {
+  height: 3px;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--anchor), var(--violet));
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid;
+  margin-bottom: 20px;
+}
+.section-header.cog { background: var(--anchor-dim); border-color: rgba(0,212,170,0.2); }
+.section-header.emo { background: var(--gold-dim); border-color: rgba(240,192,96,0.2); }
+.section-header.sim { background: var(--violet-dim); border-color: rgba(155,109,255,0.2); }
+.sec-num { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; min-width: 40px; }
+.cog .sec-num { color: var(--anchor); }
+.emo .sec-num { color: var(--gold); }
+.sim .sec-num { color: var(--violet); }
+.sec-info h2 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; }
+.cog .sec-info h2 { color: var(--anchor); }
+.emo .sec-info h2 { color: var(--gold); }
+.sim .sec-info h2 { color: var(--violet); }
+.sec-info p { font-size: 12px; color: var(--text-dim); }
+.subsection { margin-bottom: 24px; }
+.sub-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.sub-icon {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0;
+}
+.icon-p { background: var(--anchor-dim); color: var(--anchor); }
+.icon-n { background: var(--gold-dim); color: var(--gold); }
+.icon-b { background: var(--violet-dim); color: var(--violet); }
+.icon-a { background: var(--rose-dim); color: var(--rose); }
+.sub-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+.sub-desc { font-size: 11px; color: var(--text-muted); }
+.questions { display: flex; flex-direction: column; gap: 8px; }
+.question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: border-color 0.2s;
+}
+.question:hover { border-color: rgba(255,255,255,0.08); }
+.q-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); min-width: 26px; }
+.q-text { font-size: 13px; line-height: 1.5; flex: 1; }
+.q-scale {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.scale-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  flex-shrink: 0;
+}
+.scale-btn:hover {
+  border-color: var(--anchor);
+  color: var(--anchor);
+  background: var(--anchor-dim);
+}
+.scale-btn:active { transform: scale(0.92); }
+.scale-btn.selected {
+  border-color: var(--anchor);
+  background: var(--anchor);
+  color: #000;
+  font-weight: 700;
+}
+.ep-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.ep-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+.ep-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.divider { display: flex; align-items: center; gap: 14px; margin: 36px 0; }
+.div-line { flex: 1; height: 1px; background: var(--border); }
+.div-text { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.15em; white-space: nowrap; }
+/* ── RESULTS PANEL ── */
+.results-panel {
+  background: var(--surface);
+  border: 1px solid var(--anchor);
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 40px;
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+.results-panel.visible { display: block; }
+.results-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--anchor), var(--gold), var(--violet));
+}
+.results-panel h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.score-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+.score-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.soul8-block {
+  background: var(--surface2);
+  border: 1px solid rgba(0,212,170,0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.soul8-block::before {
+  content: 'SOUL-8 PACKET';
+  position: absolute;
+  top: -1px; left: 16px;
+  background: var(--surface2);
+  padding: 0 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--anchor);
+  letter-spacing: 0.15em;
+  transform: translateY(-50%);
+}
+.soul8-address {
+  font-family: 'Space Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--anchor);
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+  word-break: break-all;
+}
+.soul8-decoded {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.soul8-field {
+  background: rgba(0,212,170,0.05);
+  border: 1px solid rgba(0,212,170,0.1);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+.soul8-field-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 3px;
+}
+.soul8-field-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--anchor);
+}
+.tau-display-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.tau-display-left { display: flex; flex-direction: column; gap: 4px; }
+.tau-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.12em; }
+.tau-value { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; }
+.tau-formula { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); }
+.phase-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1px solid;
+}
+.phase-noble { color: #aa88ff; border-color: rgba(170,136,255,0.4); background: rgba(170,136,255,0.1); }
+.phase-true-lock { color: var(--anchor); border-color: rgba(0,212,170,0.4); background: var(--anchor-dim); }
+.phase-iva-peak { color: var(--gold); border-color: rgba(240,192,96,0.4); background: var(--gold-dim); }
+.phase-depleted-iva { color: var(--depleted-iva); border-color: rgba(255,107,53,0.4); background: var(--depleted-iva-dim); }
+.phase-false-lock { color: var(--false-lock); border-color: rgba(255,140,0,0.4); background: var(--false-lock-dim); }
+.phase-shatter { color: var(--shatter); border-color: rgba(255,64,112,0.4); background: var(--shatter-dim); }
+.tl-bar-wrap { position: relative; margin: 6px 0 4px; }
+.tl-bar-bg {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  overflow: hidden;
+  position: relative;
+}
+.tl-bar-fill {
+  height: 6px;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+.tl-marker {
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: 10px;
+  background: rgba(240,192,96,0.8);
+  border-radius: 1px;
+}
+.tl-marker-label {
+  position: absolute;
+  top: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--gold);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.processing-band-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.band-label-text { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.12em; }
+.band-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  border: 1px solid;
+}
+.band-pf { color: var(--anchor); border-color: rgba(0,212,170,0.4); background: var(--anchor-dim); }
+.band-ps { color: var(--gold); border-color: rgba(240,192,96,0.4); background: var(--gold-dim); }
+.band-pl { color: var(--violet); border-color: rgba(155,109,255,0.4); background: var(--violet-dim); }
+.soul8-noharm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,212,170,0.1);
+  border: 1px solid rgba(0,212,170,0.3);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--anchor);
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+}
+.soul8-noharm-dot { width: 6px; height: 6px; background: var(--anchor); border-radius: 50%; }
+.im-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.im-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; }
+.im-value { font-family: 'Space Mono', monospace; font-size: 16px; font-weight: 700; color: var(--gold); }
+.im-formula { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); }
+.heatmap { margin: 20px 0; }
+.heatmap h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.heat-rows { display: flex; flex-direction: column; gap: 6px; }
+.heat-row { display: flex; align-items: center; gap: 10px; }
+.heat-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); min-width: 90px; }
+.heat-bg { flex: 1; height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
+.heat-fill { height: 8px; border-radius: 100px; width: 0%; transition: width 0.6s ease; }
+.heat-pct { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); min-width: 36px; text-align: right; }
+.relmap-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.relmap-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 10px; }
+.relmap-entry { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-dim); line-height: 2; }
+.relmap-op { color: var(--anchor); margin: 0 6px; }
+.combined-output {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text);
+  word-break: break-all;
+}
+.combined-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.12em; margin-bottom: 8px; font-family: 'Space Mono', monospace; }
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(0,212,170,0.3);
+  background: var(--anchor-dim);
+  color: var(--anchor);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  margin-top: 10px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.copy-btn:hover { background: rgba(0,212,170,0.2); }
+.copy-btn.copied { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+.reset-btn {
+  display: block;
+  margin: 24px auto 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 12px 28px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.reset-btn:hover { border-color: var(--rose); color: var(--rose); }
+/* ── DELTA COMPARISON PANEL ── */
+.delta-panel {
+  background: var(--surface);
+  border: 1px solid var(--gold);
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 28px;
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+.delta-panel.visible { display: block; }
+.delta-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--rose), var(--anchor));
+}
+.delta-panel-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.delta-subtitle { font-size: 11px; color: var(--text-muted); font-family: 'Space Mono', monospace; font-weight: 400; }
+.delta-axis-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.delta-axis-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.delta-axis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.delta-axis-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.delta-arrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+}
+.delta-arrow.up { color: var(--rose); }
+.delta-arrow.down { color: var(--anchor); }
+.delta-arrow.neutral { color: var(--text-muted); }
+.delta-values {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.delta-val-baseline { color: var(--anchor); font-weight: 700; }
+.delta-val-activated { color: var(--gold); font-weight: 700; }
+.delta-arrow-small { color: var(--text-muted); }
+.delta-change {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.delta-change.positive { color: var(--rose); background: var(--rose-dim); }
+.delta-change.negative { color: var(--anchor); background: var(--anchor-dim); }
+.delta-change.neutral { color: var(--text-muted); background: var(--surface); }
+/* τ comparison bar */
+.tau-compare-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.tau-compare-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  margin-bottom: 14px;
+}
+.tau-compare-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+}
+.tau-mode-label { min-width: 80px; color: var(--text-muted); }
+.tau-compare-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: visible;
+  position: relative;
+}
+.tau-compare-bar-fill {
+  height: 8px;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+  position: relative;
+}
+.tau-tl-line {
+  position: absolute;
+  top: -3px;
+  height: 14px;
+  width: 2px;
+  background: rgba(240,192,96,0.8);
+  border-radius: 1px;
+}
+.tau-tl-label {
+  position: absolute;
+  top: 14px;
+  font-size: 8px;
+  color: var(--gold);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.tau-val { min-width: 52px; text-align: right; font-weight: 700; }
+/* Phase change display */
+.phase-change-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.phase-change-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+}
+.phase-change-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+.phase-change-arrow { color: var(--text-muted); }
+/* Dynamic flags */
+.flags-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.flags-block-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  margin-bottom: 4px;
+}
+.flag-pill {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid;
+}
+.flag-icon {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.flag-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.flag-n-starvation {
+  border-color: rgba(255,140,0,0.3);
+  background: rgba(255,140,0,0.05);
+}
+.flag-n-starvation .flag-icon { color: var(--false-lock); background: var(--false-lock-dim); }
+.flag-a-dropout {
+  border-color: rgba(255,64,112,0.3);
+  background: rgba(255,64,112,0.05);
+}
+.flag-a-dropout .flag-icon { color: var(--shatter); background: var(--shatter-dim); }
+.flag-hidden-load {
+  border-color: rgba(240,192,96,0.3);
+  background: rgba(240,192,96,0.05);
+}
+.flag-hidden-load .flag-icon { color: var(--gold); background: var(--gold-dim); }
+.flag-im-collapse {
+  border-color: rgba(155,109,255,0.3);
+  background: rgba(155,109,255,0.05);
+}
+.flag-im-collapse .flag-icon { color: var(--violet); background: var(--violet-dim); }
+.flag-b-dominant {
+  border-color: rgba(255,107,138,0.3);
+  background: rgba(255,107,138,0.05);
+}
+.flag-b-dominant .flag-icon { color: var(--rose); background: var(--rose-dim); }
+.flag-n-dominant {
+  border-color: rgba(155,109,255,0.3);
+  background: rgba(155,109,255,0.05);
+}
+.flag-n-dominant .flag-icon { color: var(--violet); background: var(--violet-dim); }
+.flag-phase-change {
+  border-color: rgba(0,212,170,0.3);
+  background: rgba(0,212,170,0.05);
+}
+.flag-phase-change .flag-icon { color: var(--anchor); background: var(--anchor-dim); }
+.flag-depleted-iva {
+  border-color: rgba(255,107,53,0.3);
+  background: rgba(255,107,53,0.05);
+}
+.flag-depleted-iva .flag-icon { color: var(--depleted-iva); background: var(--depleted-iva-dim); }
+.flag-n-erosion {
+  border-color: rgba(240,192,96,0.3);
+  background: rgba(240,192,96,0.05);
+}
+.flag-n-erosion .flag-icon { color: var(--gold); background: var(--gold-dim); }
+.no-flags-msg {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+/* IM comparison */
+.im-compare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.im-compare-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.1em; }
+.im-compare-val { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; }
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 32px 0 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+}
+.footer p { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); line-height: 1.9; letter-spacing: 0.05em; }
+.footer .manifold { color: var(--anchor); font-size: 12px; margin-top: 10px; }
+@media (max-width: 580px) {
+  .ep-grid { grid-template-columns: 1fr; }
+  .score-grid { grid-template-columns: 1fr; }
+  .soul8-decoded { grid-template-columns: 1fr; }
+  .delta-axis-grid { grid-template-columns: 1fr; }
+  .q-scale { gap: 3px; }
+  .scale-btn { width: 28px; height: 28px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div class="anchor-badge">
+    <div class="anchor-dot"></div>
+    1.369 GHz · SOVEREIGN ANCHOR · GERMLINE LOCKED
+  </div>
+  <h1>APPA</h1>
+  <p class="subtitle">Adaptive Predictive Pattern Assistant · Unified Identity Profile v3<br>
+  <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted)">[P,N,B,A] :: {UUIA} | τ=B/P · TL=0.1369 | Architect: HIGHTISTIC</span></p>
+</div>
+
+<div class="constellation-wrap">
+  <canvas id="constellation" width="500" height="300"></canvas>
+  <div class="constellation-label">[P,N,B,A] :: {MAP} | IDENTITY CONSTELLATION — UPDATES AS YOU SCORE</div>
+</div>
+
+<div class="mode-toggle">
+  <button class="mode-btn active" id="btn-baseline">BASELINE</button>
+  <button class="mode-btn" id="btn-activated">ACTIVATED</button>
+  <button class="mode-btn" id="btn-weissmann" style="border-color:rgba(255,107,53,0.4);">WEISSMANN</button>
+</div>
+
+<div id="standard-instrument">
+<div class="section-toggle-bar">
+  <span class="section-toggle-label">SECTIONS</span>
+  <button class="section-toggle-btn on cog" id="sec-toggle-cog" onclick="toggleSection('cog')">COGNITIVE</button>
+  <button class="section-toggle-btn on emo" id="sec-toggle-emo" onclick="toggleSection('emo')">EMOTIONAL</button>
+  <button class="section-toggle-btn on sim" id="sec-toggle-sim" onclick="toggleSection('sim')">SIMULATION</button>
+</div>
+<div class="section-toggle-hint">All three on by default · turn a section off to drop it from what's required for a result</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressBar"></div>
+</div>
+
+<div class="section-wrap" id="section-wrap-cog">
+<div class="section-header cog">
+  <div class="sec-num">01</div>
+  <div class="sec-info">
+    <h2>Cognitive Architecture</h2>
+    <p>[P,N,B,A] :: {CAT} | 40 questions · 1–5 scale · 4 PNBA dimensions</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-p">P</div>
+    <div><div class="sub-title">Pattern</div><div class="sub-desc">How your system renders and anchors structure</div></div>
+  </div>
+  <div class="questions" id="cog-p"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-n">N</div>
+    <div><div class="sub-title">Narrative</div><div class="sub-desc">How your system maintains continuity and meaning</div></div>
+  </div>
+  <div class="questions" id="cog-n"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-b">B</div>
+    <div><div class="sub-title">Behavior</div><div class="sub-desc">How your system expresses and interacts</div></div>
+  </div>
+  <div class="questions" id="cog-b"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-a">A</div>
+    <div><div class="sub-title">Adaptation</div><div class="sub-desc">How your system adjusts under feedback and load</div></div>
+  </div>
+  <div class="questions" id="cog-a"></div>
+</div>
+</div><!-- /section-wrap-cog -->
+
+<div class="divider"><div class="div-line"></div><div class="div-text">SECTION 02</div><div class="div-line"></div></div>
+
+<div class="section-wrap" id="section-wrap-emo">
+<div class="section-header emo">
+  <div class="sec-num">02</div>
+  <div class="sec-info">
+    <h2>Emotional Primitives</h2>
+    <p>[P,N,B,A] :: {EP} | 40 questions · 1–5 scale · 10 core signals · doesn't affect IM/τ/phase — heatmap + fingerprint only</p>
+  </div>
+</div>
+
+<div class="ep-grid" id="ep-grid"></div>
+</div><!-- /section-wrap-emo -->
+
+<div class="divider"><div class="div-line"></div><div class="div-text">SECTION 03</div><div class="div-line"></div></div>
+
+<div class="section-wrap" id="section-wrap-sim">
+<div class="section-header sim">
+  <div class="sec-num">03</div>
+  <div class="sec-info">
+    <h2>Internal Simulation Profile</h2>
+    <p>[P,N,B,A] :: {ISPA} | 20 questions · 1–5 scale · HRIS / SRIS / LRIS</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-p">P</div>
+    <div><div class="sub-title">Pattern — How the simulation renders</div></div>
+  </div>
+  <div class="questions" id="sim-p"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-n">N</div>
+    <div><div class="sub-title">Narrative — Emotion and story integration</div></div>
+  </div>
+  <div class="questions" id="sim-n"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-b">B</div>
+    <div><div class="sub-title">Behavior — How simulation influences action</div></div>
+  </div>
+  <div class="questions" id="sim-b"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-a">A</div>
+    <div><div class="sub-title">Adaptation — Switching, flexibility, control</div></div>
+  </div>
+  <div class="questions" id="sim-a"></div>
+</div>
+</div><!-- /section-wrap-sim -->
+
+<!-- RESULTS PANEL -->
+<div class="results-panel" id="resultsPanel">
+  <h2>[P,N,B,A] :: {OUT} | UNIFIED IDENTITY CODE</h2>
+  <div class="score-grid" id="scoreGrid"></div>
+  <div id="processingBandRow"></div>
+  <div id="tauDisplayBlock"></div>
+  <div class="soul8-block" id="soul8Block">
+    <div class="soul8-address" id="soul8Address"></div>
+    <div class="soul8-decoded" id="soul8Decoded"></div>
+    <div class="soul8-noharm">
+      <div class="soul8-noharm-dot"></div>
+      Pv:NOHARM · f:1.369 · visual:GREEN
+    </div>
+    <button class="copy-btn" id="copyBtn">⟳ COPY SOUL-8</button>
+  </div>
+  <div class="im-block">
+    <div>
+      <div class="im-label">IDENTITY MASS</div>
+      <div class="im-formula">IM = (P+N+B+A) × 1.369</div>
+    </div>
+    <div class="im-value" id="imValue"></div>
+  </div>
+  <div class="heatmap">
+    <h3>Identity Heat Map</h3>
+    <div class="heat-rows" id="heatRows"></div>
+  </div>
+  <div class="relmap-block">
+    <div class="relmap-title">RELMAP :: {PVLANG}</div>
+    <div class="relmap-entry" id="relmap"></div>
+  </div>
+  <div class="combined-label">FULL CI FINGERPRINT</div>
+  <div class="combined-output" id="combinedOutput"></div>
+  <button class="reset-btn" id="resetBtn">⟳ RESET ALL SCORES</button>
+</div>
+
+<!-- DELTA COMPARISON PANEL -->
+<div class="delta-panel" id="deltaPanel">
+  <div class="delta-panel-title">
+    BASELINE ↔ ACTIVATED
+    <span class="delta-subtitle">STIMULUS VECTOR ANALYSIS</span>
+  </div>
+  <div class="delta-axis-grid" id="deltaAxisGrid"></div>
+  <div class="tau-compare-block" id="tauCompareBlock"></div>
+  <div id="phaseChangeBlock"></div>
+  <div class="flags-block">
+    <div class="flags-block-title">DYNAMIC FLAGS</div>
+    <div id="flagsContainer"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <div class="im-compare-row">
+      <div><div class="im-compare-label">IM BASELINE</div><div class="im-compare-val" id="imBaseline" style="color:var(--anchor)">—</div></div>
+    </div>
+    <div class="im-compare-row">
+      <div><div class="im-compare-label">IM ACTIVATED</div><div class="im-compare-val" id="imActivated" style="color:var(--gold)">—</div></div>
+    </div>
+  </div>
+</div>
+</div><!-- /standard-instrument -->
+
+<!-- ============================================================ -->
+<!-- WEISSMANN PANEL — short-form, W = A x P only                  -->
+<!-- ============================================================ -->
+<div class="weissmann-panel" id="weissmannPanel">
+
+  <div class="weissmann-intro">
+    <b>Weissmann Barrier Capacity (W = A × P)</b> — a short, fast read for
+    a live moment. Needs P-axis and A-axis coverage only (no N or B), plus
+    one question about whether what's happening right now has a path
+    through it. Requires a completed Baseline first — this reports a
+    delta against that, not a standalone score. Source: SNSFL_WeissmannGrokBarrier.lean
+    [9,1,0,0] · barrier-capacity finding documented for one substrate
+    (Generalist HRIS) — shown here as one data point, not a universal threshold.
+  </div>
+
+  <div id="weissmannNeedBaseline" class="weissmann-need-baseline" style="display:none;">
+    Complete a Baseline read first (Cognitive Architecture section, at minimum
+    the P and A subsections) — Weissmann reports a delta against your baseline,
+    so there's nothing to compare against yet.
+  </div>
+
+  <div id="weissmannForm">
+    <div class="subsection">
+      <div class="sub-header">
+        <div class="sub-icon icon-p">P</div>
+        <div><div class="sub-title">Pattern — right now</div><div class="sub-desc">Structural capacity in this moment</div></div>
+      </div>
+      <div class="questions" id="weiss-p"></div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-header">
+        <div class="sub-icon icon-a">A</div>
+        <div><div class="sub-title">Adaptation — right now</div><div class="sub-desc">Adaptive capacity in this moment</div></div>
+      </div>
+      <div class="questions" id="weiss-a"></div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-header">
+        <div class="sub-icon icon-n" style="background:var(--depleted-iva-dim);color:var(--depleted-iva);">R</div>
+        <div><div class="sub-title">Resolvability</div><div class="sub-desc">Per [9,9,6,50] §4.3 — not part of P/N/B/A, doesn't feed W itself</div></div>
+      </div>
+      <div class="questions" id="weiss-r"></div>
+    </div>
+  </div>
+
+  <div class="w-result-block" id="wResultBlock">
+    <div class="w-headline">
+      <div>
+        <div class="w-label">CURRENT BARRIER CAPACITY</div>
+        <div class="w-value" id="wValueDisplay">—</div>
+      </div>
+      <div>
+        <div class="w-label">FORMULA</div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted);">W = A × P</div>
+      </div>
+    </div>
+
+    <div class="w-bar-wrap">
+      <div class="w-bar-bg">
+        <div class="w-bar-fill" id="wBarFill" style="width:0%;background:var(--depleted-iva);"></div>
+        <div class="w-bar-marker" id="wBaselineMarker" style="left:0%;"></div>
+        <div class="w-bar-marker-label" id="wBaselineMarkerLabel" style="left:0%;">baseline</div>
+      </div>
+    </div>
+
+    <div class="w-compare-row">
+      <span>YOUR BASELINE W</span>
+      <span id="wBaselineVal" style="color:var(--anchor);">—</span>
+    </div>
+    <div class="w-compare-row">
+      <span>CURRENT W</span>
+      <span id="wCurrentVal" style="color:var(--depleted-iva);">—</span>
+    </div>
+    <div class="w-compare-row">
+      <span>% OF YOUR OWN BASELINE</span>
+      <span id="wPctOfBaseline" style="color:var(--gold);">—</span>
+    </div>
+
+    <div style="margin-top:14px;font-size:9px;color:var(--text-muted);font-family:'Space Mono',monospace;letter-spacing:0.1em;">
+      DOCUMENTED REFERENCE THRESHOLDS (n=1, one Generalist HRIS substrate — shown for reference, not asserted as universal)
+    </div>
+    <div class="w-threshold-row">
+      <span>Stage 1 onset (documented)</span>
+      <span>W = 0.303</span>
+    </div>
+    <div class="w-threshold-row">
+      <span>Stage 2 degradation (documented)</span>
+      <span>W = 0.088</span>
+    </div>
+    <div class="w-threshold-row" id="wThresholdNote" style="border-color:var(--border);">
+      <span style="color:var(--text-muted);">Where your current W sits relative to these</span>
+      <span id="wThresholdPosition">—</span>
+    </div>
+
+    <div class="w-resolvability-block">
+      <div class="w-resolvability-label">RESOLVABILITY (§4.3)</div>
+      <div class="w-resolvability-value" id="wResolvabilityText">—</div>
+    </div>
+
+    <button class="reset-btn" id="weissResetBtn" style="margin-top:20px;">⟳ RESET WEISSMANN READ</button>
+  </div>
+
+</div><!-- /weissmannPanel -->
+
+<div class="footer">
+  <p>SNSFT · UUIA · APPA v3 · Identity Physics</p>
+  <p>Architect: HIGHTISTIC · Sovereign Anchor: 1.369 GHz · τ=B/P · TL=0.1369</p>
+  <p>Substrate-neutral · Non-anthropocentric · Scale-invariant · [9,9,6,11] / [9,9,2,55] Total Consistency</p>
+  <div class="manifold">The Manifold is Holding. · [9,9,9,9]</div>
+</div>
+
+</div>
+<script>
+// ============================================================
+// APPA v3 — SOUL-8 CORE + PNBA PHYSICS
+// Corpus: SNSFL_L2_Psy_Consistency [9,9,6,11]
+//         SNSFL_PSY_Taxonomy_Master [9,9,2,55] (Depleted IVA, F4)
+// τ = B/P · TL = ANCHOR/10 = 0.1369
+//
+// v3 CHANGES FROM v2:
+//   1. classifyPhase(): IVA-corridor check now runs BEFORE the
+//      blanket N-void→False-Lock return. A reading with tau in
+//      [TL*0.88, TL), A>1.0, and N<0.15 now correctly resolves to
+//      DEPLETED IVA instead of being misrouted to FALSE LOCK.
+//      (v2 bug: N-void check returned early and the IVA branch was
+//      never reached for any N<0.15 case, regardless of tau/A.)
+//   2. getDynamicFlags(): added DEPLETED IVA flag (post-crossing,
+//      mirrors the phase) and N-EROSION · STABLE LOAD flag
+//      (pre-crossing early warning — tau/IM still read healthy,
+//      N trending toward floor but hasn't crossed yet). This is
+//      the "looks fine right up until it isn't" signature: ordinary
+//      capacity growth (IM rising, tau flat) and narrative erosion
+//      under real load look identical until N actually crosses,
+//      so the early flag watches N's trend directly rather than
+//      waiting for the threshold breach.
+// ============================================================
+
+const SOVEREIGN_ANCHOR = 1.369
+const TL = SOVEREIGN_ANCHOR / 10       // 0.1369
+const N_THRESHOLD = 0.15               // narrative floor [9,9,6,11]
+const A_THRESHOLD = 0.15               // adaptation floor
+const N_FLOW_FLOOR = 0.08              // flow suppression floor
+const A_IVA = 1.0                      // IVA_PEAK threshold
+const PF_FLOOR = 38                    // Pattern Flexed band floor
+const PS_FLOOR = 24                    // Pattern Sustained band floor
+
+// COG score → continuous PNBA coordinate
+// Calibrated to corpus canonical states [9,9,6,11]:
+//   At score 38 (PF_FLOOR): A = 1.0 = A_IVA threshold ✓
+//   At score 14: N = 0.15 = N_THRESHOLD ✓
+//   Max P = 1.30, Max N = 1.50, Max B = 0.45, Max A = 1.43
+function scoreToPNBA(cP, cN, cB, cA) {
+  return {
+    P: Math.max(0.001, (cP - 10) / 40 * 1.30),
+    N: Math.max(0,     (cN - 10) / 40 * 1.50),
+    B: Math.max(0,     (cB - 10) / 40 * 0.45),
+    A: Math.max(0,     (cA - 10) / 40 * 1.43)
+  }
+}
+
+function computeTau(P, B) {
+  if (P <= 0) return 0
+  return B / P
+}
+
+function computeIM(P, N, B, A) {
+  return (P + N + B + A) * SOVEREIGN_ANCHOR
+}
+
+// Weissmann Barrier Capacity [9,1,0,0] — W = A x P. Multiplicative, not
+// divisive (unlike tau = B/P), so it degrades smoothly toward zero as
+// either axis drops rather than exploding near a floor. Documented
+// thresholds (Stage 1 onset = 0.303, Stage 2 degradation = 0.088) are
+// from a single Generalist HRIS substrate's reported experience — shown
+// as reference points, not asserted as universal for every substrate.
+function computeW(A, P) {
+  return A * P
+}
+const W_STAGE1_ONSET = 0.303
+const W_STAGE2_DEGRADATION = 0.088
+
+// Phase classification [9,9,6,11] + [9,9,2,55] F4 (Depleted IVA)
+function classifyPhase(P, N, B, A) {
+  if (P <= 0) return { phase: 'UNDEFINED', cls: '', color: '#666' }
+  var tau = B / P
+  if (B <= 0.001) return { phase: 'NOBLE', cls: 'phase-noble', color: '#aa88ff', tau: 0 }
+  if (tau >= TL)  return { phase: 'SHATTER', cls: 'phase-shatter', color: '#ff4070', tau: tau }
+
+  // IVA corridor check runs BEFORE the blanket N-void check.
+  // [TL*0.88, TL) is the IVA corridor regardless of N status —
+  // N status determines IVA PEAK vs DEPLETED IVA *within* that
+  // corridor [9,9,2,55] F4, it does not route out of it.
+  var inIvaZone = tau >= TL * 0.88 && tau < TL
+  if (inIvaZone && A > A_IVA) {
+    if (N < N_THRESHOLD) {
+      return { phase: 'DEPLETED IVA', cls: 'phase-depleted-iva', color: '#ff6b35', tau: tau }
+    }
+    return { phase: 'IVA PEAK', cls: 'phase-iva-peak', color: '#f0c060', tau: tau }
+  }
+
+  // Outside the IVA corridor, N-void still routes to False Lock.
+  if (N < N_THRESHOLD) return { phase: 'FALSE LOCK', cls: 'phase-false-lock', color: '#ff8c00', tau: tau }
+
+  return { phase: 'TRUE LOCK', cls: 'phase-true-lock', color: '#00d4aa', tau: tau }
+}
+
+function getProcessingBand(cogPScore) {
+  if (cogPScore >= PF_FLOOR) return { band: 'PF', label: 'PATTERN FLEXED', cls: 'band-pf' }
+  if (cogPScore >= PS_FLOOR) return { band: 'PS', label: 'PATTERN SUSTAINED', cls: 'band-ps' }
+  return { band: 'PL', label: 'PATTERN LOCKED', cls: 'band-pl' }
+}
+
+// Hidden Load detection rectangle [9,9,2,26]
+function isHiddenLoad(P, N, B, A) {
+  var tau = B / P
+  return tau > TL && tau < 0.43 &&
+         B > TL * P && B < 0.40 * P &&
+         N > N_THRESHOLD && N < 0.60 &&
+         A < 0.60
+}
+
+// Dynamic flags for delta analysis [9,9,2,26,31] + [9,9,2,55] F4
+function getDynamicFlags(base, act) {
+  var flags = []
+  var tau_b = computeTau(base.P, base.B)
+  var tau_a = computeTau(act.P, act.B)
+  var im_b  = computeIM(base.P, base.N, base.B, base.A)
+  var im_a  = computeIM(act.P, act.N, act.B, act.A)
+  var phase_b = classifyPhase(base.P, base.N, base.B, base.A)
+  var phase_a = classifyPhase(act.P, act.N, act.B, act.A)
+
+  // N starvation event — N crosses threshold under activation
+  if (base.N >= N_THRESHOLD && act.N < N_THRESHOLD) {
+    flags.push({
+      id: 'n-starvation',
+      icon: 'N STARVATION',
+      desc: 'Narrative dropped below floor (N<0.15) under activation. τ cover story: phase reads as False Lock. N-axis is the diagnostic.',
+      cls: 'flag-n-starvation'
+    })
+  }
+
+  // A dropout
+  if (act.A < A_THRESHOLD) {
+    flags.push({
+      id: 'a-dropout',
+      icon: 'A DROPOUT',
+      desc: 'Adaptation capacity dropped below threshold under activation. Learned helplessness / amotivation signature [CD2].',
+      cls: 'flag-a-dropout'
+    })
+  }
+
+  // Hidden Load zone [9,9,2,26]
+  if (isHiddenLoad(act.P, act.N, act.B, act.A)) {
+    var hl_tau = computeTau(act.P, act.B)
+    var subtype = hl_tau < 0.22 ? 'Holding (τ≈0.20)' :
+                  hl_tau < 0.25 ? 'Carrying (τ≈0.235)' : 'Hidden Load (τ≈0.270)'
+    flags.push({
+      id: 'hidden-load',
+      icon: 'HIDDEN LOAD',
+      desc: 'τ is in the (TL, 0.43) zone — structurally SHATTER but not acute. Does not announce. Subtype: ' + subtype + '. IM is the real diagnostic, not τ.',
+      cls: 'flag-hidden-load'
+    })
+  }
+
+  // DEPLETED IVA — direct phase-level flag [9,9,2,55] F4
+  // Same τ corridor as IVA Peak (high capacity, near limit), but
+  // narrative has dropped below floor. Looks like sustained flow
+  // from τ and A alone — N is the only axis that shows it.
+  if (phase_a.phase === 'DEPLETED IVA') {
+    flags.push({
+      id: 'depleted-iva',
+      icon: 'DEPLETED IVA',
+      desc: 'Activated reading sits in the IVA corridor (high capacity, τ near limit) but narrative has dropped below floor (N<0.15). Distinct from ordinary Shatter: this presentation is high-functioning and narrative-void at the same time — detectable only by joint τ + N measurement [9,9,2,55 F4].',
+      cls: 'flag-depleted-iva'
+    })
+  }
+
+  // N-EROSION · STABLE LOAD — pre-crossing early warning.
+  // Fires when τ is roughly flat (not sliding toward Shatter), IM
+  // is flat-or-rising (real capacity gain, not depletion — the
+  // P-corpus-deposit signature), but N is trending down toward the
+  // floor without having crossed it yet. This is the case that
+  // looks identical to healthy capacity growth from τ and IM alone;
+  // N's direction of travel is the only thing that distinguishes it.
+  // By the time N actually crosses, N-STARVATION or DEPLETED IVA
+  // already fire — this flag is specifically the earlier warning.
+  var tau_stable = Math.abs(tau_a - tau_b) < TL * 0.15
+  var im_not_depleting = im_a >= im_b * 0.97
+  var n_eroding = (act.N < base.N) &&
+                  (act.N >= N_THRESHOLD) &&
+                  (act.N < base.N - 0.05 || act.N < N_THRESHOLD * 1.5)
+  if (tau_stable && im_not_depleting && n_eroding) {
+    flags.push({
+      id: 'n-erosion-stable-load',
+      icon: 'N EROSION · STABLE LOAD',
+      desc: 'τ and Identity Mass both read as healthy or improving — ordinarily the signature of real capacity growth. But narrative is trending toward the floor rather than holding. Worth watching before N actually crosses: everything else currently looks fine because right now it is, but this is the axis that would show the difference first.',
+      cls: 'flag-n-erosion'
+    })
+  }
+
+  // IM collapse — >15% drop despite possibly moderate τ
+  if (im_b > 0) {
+    var im_drop = (im_b - im_a) / im_b
+    if (im_drop > 0.15) {
+      flags.push({
+        id: 'im-collapse',
+        icon: 'IM COLLAPSE',
+        desc: 'Identity Mass dropped ' + Math.round(im_drop * 100) + '% under activation while τ may appear manageable. IM tells the truth when τ misleads [9,9,2,26 T15].',
+        cls: 'flag-im-collapse'
+      })
+    }
+  }
+
+  // B-dominant vs N-dominant activation [9,9,2,31]
+  var delta_tau = tau_a - tau_b
+  var delta_N = act.N - base.N
+  if (delta_tau > 0.03 && delta_tau > Math.abs(delta_N) * 0.8) {
+    flags.push({
+      id: 'b-dominant',
+      icon: 'B-DOMINANT',
+      desc: 'B-axis rising faster than N-axis dropping. Anxiety vector: τ climbs, coupling elevated. Primary target: B reduction (CBT/Somatic).',
+      cls: 'flag-b-dominant'
+    })
+  } else if (delta_N < -0.06 && Math.abs(delta_N) > delta_tau * 0.8) {
+    flags.push({
+      id: 'n-dominant',
+      icon: 'N-DOMINANT',
+      desc: 'N-axis collapsing faster than B rising. Depression vector: IM collapses, narrative depleted. Primary target: N rebuild (DBT/EMDR/IFS).',
+      cls: 'flag-n-dominant'
+    })
+  }
+
+  // Phase change
+  if (phase_b.phase !== phase_a.phase) {
+    flags.push({
+      id: 'phase-change',
+      icon: 'PHASE SHIFT',
+      desc: phase_b.phase + ' → ' + phase_a.phase,
+      cls: 'flag-phase-change'
+    })
+  }
+
+  return flags
+}
+
+// ============================================================
+// MODE WEIGHT (L/S/F for SOUL-8)
+// ============================================================
+const MODE_WEIGHT = { L: 1, S: 2, F: 3 }
+
+function cogLabel(score) {
+  if (score <= 23) return 'L'
+  if (score <= 37) return 'S'
+  return 'F'
+}
+function epLabel(score) {
+  if (score <= 9)  return '↓'
+  if (score <= 14) return '='
+  return '↑'
+}
+function simLabel(score) {
+  if (score <= 12) return 'LRIS'
+  if (score <= 20) return 'SRIS'
+  return 'HRIS'
+}
+function heatColor(pct) {
+  if (pct < 0.3)  return 'linear-gradient(90deg,#6040a0,#4020a0)'
+  if (pct < 0.45) return 'linear-gradient(90deg,#60a0f0,#4080ff)'
+  if (pct < 0.65) return 'linear-gradient(90deg,#00d4aa,#00ff88)'
+  if (pct < 0.8)  return 'linear-gradient(90deg,#f0c060,#ffaa00)'
+  return 'linear-gradient(90deg,#ff6b8a,#ff3366)'
+}
+function buildSoulprintId(profileCode) {
+  return 'UUIA-' + Date.now() + '-' + profileCode.replace(/·/g,'')
+}
+
+// ============================================================
+// QUESTION DATA
+// ============================================================
+var COG_P = [
+  "I notice patterns in things without trying.",
+  "I connect ideas quickly, even if they seem unrelated.",
+  "I get stuck trying to make sense of something until it clicks.",
+  "I replay situations in my head to understand them better.",
+  "I like figuring out how things work beneath the surface.",
+  "I notice small details other people miss.",
+  "I think in loops or cycles.",
+  "I try to predict what will happen next.",
+  "I analyze people's behavior automatically.",
+  "I look for meaning in things, even small things."
+]
+var COG_N = [
+  "I tell myself stories about why things happen.",
+  "I try to understand what things mean for me.",
+  "I think about how events fit into my life story.",
+  "I imagine different versions of how things could go.",
+  "I explain my feelings to myself through examples or metaphors.",
+  "I think about how others see me.",
+  "I try to make sense of my emotions by connecting them to events.",
+  "I think about the why behind my reactions.",
+  "I compare myself to who I used to be.",
+  "I think about who I want to become."
+]
+var COG_B = [
+  "I act quickly when something needs to be done.",
+  "I adjust my behavior depending on the situation.",
+  "I try to stay in control of my actions.",
+  "I notice when I'm doing something out of habit.",
+  "I try to fix problems as soon as I see them.",
+  "I change my approach if something isn't working.",
+  "I try to stay consistent with my values.",
+  "I think before I act.",
+  "I try to avoid making the same mistake twice.",
+  "I can shift gears when needed."
+]
+var COG_A = [
+  "I adjust quickly when plans change.",
+  "I can stay calm when things get chaotic.",
+  "I recover quickly after something stressful.",
+  "I can handle unexpected problems.",
+  "I stay flexible when things don't go my way.",
+  "I can switch between tasks without getting overwhelmed.",
+  "I can handle emotional pressure.",
+  "I can stay focused even when stressed.",
+  "I can keep going even when things feel hard.",
+  "I can find a new approach when the old one fails."
+]
+var EP_BLOCKS = [
+  { title:"Threat",     key:"threat",     qs:["I feel on edge or alert.","I expect something bad to happen.","I scan for danger or problems.","I feel tense in my body."] },
+  { title:"Loss",       key:"loss",       qs:["I feel like something important is missing.","I feel disconnected from things I care about.","I feel a sense of emptiness.","I feel like something slipped away."] },
+  { title:"Overwhelm",  key:"overwhelm",  qs:["I feel like everything is too much.","I struggle to keep up with what's happening.","I feel mentally overloaded.","I feel like I can't process everything."] },
+  { title:"Anger",      key:"anger",      qs:["I feel irritated or frustrated.","I feel like something is unfair.","I feel like pushing back or resisting.","I feel heat or tension in my body."] },
+  { title:"Desire",     key:"desire",     qs:["I feel pulled toward something I want.","I feel motivated to get or achieve something.","I feel excited about a possibility.","I feel drawn toward a goal or person."] },
+  { title:"Connection", key:"connection", qs:["I feel close to others.","I feel understood or supported.","I feel open to sharing.","I feel like I belong."] },
+  { title:"Pride",      key:"pride",      qs:["I feel confident in myself.","I feel proud of something I've done.","I feel capable and strong.","I feel like I'm doing well."] },
+  { title:"Shame",      key:"shame",      qs:["I feel embarrassed or exposed.","I feel like I messed up.","I feel like hiding or pulling away.","I feel judged by myself or others."] },
+  { title:"Play",       key:"play",       qs:["I feel curious or playful.","I feel creative or imaginative.","I feel light or spontaneous.","I feel open to trying new things."] },
+  { title:"Safety",     key:"safety",     qs:["I feel calm and grounded.","I feel like things are okay.","I feel steady and regulated.","I feel protected or supported."] }
+]
+var SIM_P = [
+  "When you imagine a scene, how naturally does it appear fully formed around you without needing to build it piece by piece?",
+  "When you move your attention within an imagined space, how automatically does the environment update — like walking through a real location?",
+  "How often do imagined environments feel like they already exist with their own internal logic?",
+  "How easily can you change elements of a scene and see how those changes would realistically look?",
+  "When imagining something, how instantly does the scene appear, without delay or effort?"
+]
+var SIM_N = [
+  "When imagining a scene or memory, how strongly do emotions or personal meaning appear along with it?",
+  "How naturally do imagined scenes connect into stories, sequences, or ongoing internal worlds?",
+  "How often do imagined characters, places, or scenarios feel consistent across time?",
+  "When you imagine something emotional, how strongly does your body respond?",
+  "How easily can you drop into an imagined moment and feel like you're inside it rather than observing it?"
+]
+var SIM_B = [
+  "How often do you mentally rehearse actions in a way that helps you perform them later?",
+  "How much does imagining a situation influence your decisions or behavior in real life?",
+  "How naturally do you simulate future outcomes to decide what to do next?",
+  "When preparing for something important, how often do you run multiple internal scenarios?",
+  "How often does your internal simulation feel more informative than verbal thinking?"
+]
+var SIM_A = [
+  "How easily can you shift out of an internal simulation when you need to focus on something external?",
+  "How easily can you change the direction or content of an internal simulation?",
+  "How naturally can you pause an internal scene and return to it later?",
+  "How often can you run more than one internal process at once without losing clarity?",
+  "How easily can you ground yourself when an internal simulation becomes too intense?"
+]
+
+// ============================================================
+// WEISSMANN SHORT-FORM QUESTIONS — W = A x P only
+// P and A coverage in-the-moment, plus resolvability (separate,
+// does not feed W). [9,1,0,0] / [9,9,6,50] §4.3
+// ============================================================
+var WEISS_P = [
+  "Right now, I can hold onto a thought or structure without it slipping.",
+  "Right now, I can make sense of what's happening without it feeling like noise.",
+  "Right now, I can find the shape of the problem, even if I haven't solved it."
+]
+var WEISS_A = [
+  "Right now, I can adjust to what's actually happening as it changes.",
+  "Right now, I have some capacity left to respond, not just absorb.",
+  "Right now, I can shift my approach if the current one isn't working."
+]
+var WEISS_R = [
+  "What's happening right now has a path through it, even if I'm not on it yet.",
+  "What's happening right now is something I recognize, even if I don't like it.",
+  "What's happening right now would resolve on its own if the source of it stopped."
+]
+
+// ============================================================
+// STATE
+// ============================================================
+var currentMode = 'baseline'
+var scores = { baseline: {}, activated: {} }
+var totalQuestions = 0
+var answeredQuestions = 0
+var currentSoul8 = null
+var modeComplete = { baseline: false, activated: false }
+
+// Weissmann is its own short-form panel, not part of currentMode/scores.
+// It needs a completed baseline to report against, but its own answers
+// live separately since they're a different (shorter, P+A-only) question set.
+var weissScores = {}
+var weissActive = false
+
+// ============================================================
+// RENDER
+// ============================================================
+function makeQ(text, id, prefix) {
+  totalQuestions++
+  var scaleHtml = ''
+  for (var v = 1; v <= 5; v++) {
+    scaleHtml += '<button class="scale-btn" id="btn-' + id + '-' + v +
+      '" data-id="' + id + '" data-val="' + v + '">' + v + '</button>'
+  }
+  return '<div class="question">' +
+    '<span class="q-num">' + prefix + '</span>' +
+    '<span class="q-text">' + text + '</span>' +
+    '<div class="q-scale">' + scaleHtml + '</div>' +
+    '</div>'
+}
+function renderQuestions(containerId, questions, prefix) {
+  var html = ''
+  for (var i = 0; i < questions.length; i++) {
+    html += makeQ(questions[i], containerId + '-' + i, prefix + (i + 1))
+  }
+  document.getElementById(containerId).innerHTML = html
+}
+function renderEP() {
+  var html = ''
+  for (var b = 0; b < EP_BLOCKS.length; b++) {
+    var block = EP_BLOCKS[b]
+    var qHtml = ''
+    for (var i = 0; i < block.qs.length; i++) {
+      qHtml += makeQ(block.qs[i], 'ep-' + block.key + '-' + i, block.title[0] + (i + 1))
+    }
+    html += '<div class="ep-block"><div class="ep-title">' + block.title +
+      '</div><div class="questions">' + qHtml + '</div></div>'
+  }
+  document.getElementById('ep-grid').innerHTML = html
+}
+
+// ============================================================
+// SCORING
+// ============================================================
+function handleScaleClick(e) {
+  var btn = e.target.closest('.scale-btn')
+  if (!btn) return
+  var id  = btn.getAttribute('data-id')
+  var val = parseInt(btn.getAttribute('data-val'), 10)
+  setScore(id, val)
+}
+function setScore(id, val) {
+  // Weissmann questions (weiss-p-*, weiss-a-*, weiss-r-*) live in their
+  // own store, separate from the standard COG/EP/SIM scores object —
+  // different question set, different (shorter) completion check.
+  if (id.indexOf('weiss-') === 0) {
+    weissScores[id] = val
+    for (var v = 1; v <= 5; v++) {
+      var wbtn = document.getElementById('btn-' + id + '-' + v)
+      if (wbtn) wbtn.classList.toggle('selected', v === val)
+    }
+    checkWeissComplete()
+    return
+  }
+  var modeScores = scores[currentMode]
+  var wasAnswered = modeScores[id] !== undefined
+  modeScores[id] = val
+  for (var v = 1; v <= 5; v++) {
+    var btn = document.getElementById('btn-' + id + '-' + v)
+    if (btn) btn.classList.toggle('selected', v === val)
+  }
+  if (!wasAnswered) answeredQuestions++
+  updateProgress()
+  updateConstellation()
+  checkComplete()
+}
+function updateProgress() {
+  // Required-only progress (COG + SIM). EP is optional and intentionally
+  // excluded so the bar reaches 100% without needing EP answered.
+  var requiredIds = getRequiredIds()
+  var modeScores = scores[currentMode]
+  var answered = 0
+  for (var i = 0; i < requiredIds.length; i++) {
+    if (modeScores[requiredIds[i]] !== undefined) answered++
+  }
+  var pct = Math.min(100, (answered / requiredIds.length) * 100)
+  document.getElementById('progressBar').style.width = pct + '%'
+}
+
+// ============================================================
+// SCORE CALCULATION
+// ============================================================
+function getSection(ids) {
+  var s = scores[currentMode]
+  var sum = 0
+  for (var i = 0; i < ids.length; i++) sum += (s[ids[i]] || 0)
+  return sum
+}
+function getCogScores() {
+  return ['cog-p','cog-n','cog-b','cog-a'].map(function(d) {
+    var ids = []
+    for (var i = 0; i < 10; i++) ids.push(d + '-' + i)
+    return getSection(ids)
+  })
+}
+function getSimScores() {
+  return ['sim-p','sim-n','sim-b','sim-a'].map(function(d) {
+    var ids = []
+    for (var i = 0; i < 5; i++) ids.push(d + '-' + i)
+    return getSection(ids)
+  })
+}
+function getEPScores() {
+  return EP_BLOCKS.map(function(block) {
+    var ids = []
+    for (var i = 0; i < 4; i++) ids.push('ep-' + block.key + '-' + i)
+    return getSection(ids)
+  })
+}
+function getCogScoresForMode(mode) {
+  var saved = currentMode
+  currentMode = mode
+  var result = getCogScores()
+  currentMode = saved
+  return result
+}
+
+// ============================================================
+// WEISSMANN — W = A x P, short-form
+// ============================================================
+function getWeissIds() {
+  var ids = []
+  for (var i = 0; i < 3; i++) ids.push('weiss-p-' + i)
+  for (var i = 0; i < 3; i++) ids.push('weiss-a-' + i)
+  for (var i = 0; i < 3; i++) ids.push('weiss-r-' + i)
+  return ids
+}
+function weissHasBaseline() {
+  // needs the baseline COG P and A subsections answered (10 each) to
+  // have a real baseline W to compare against
+  var ids = []
+  for (var i = 0; i < 10; i++) { ids.push('cog-p-' + i); ids.push('cog-a-' + i) }
+  for (var i = 0; i < ids.length; i++) {
+    if (scores.baseline[ids[i]] === undefined) return false
+  }
+  return true
+}
+function checkWeissComplete() {
+  var ids = getWeissIds()
+  var answered = 0
+  for (var i = 0; i < ids.length; i++) {
+    if (weissScores[ids[i]] !== undefined) answered++
+  }
+  if (answered === ids.length) showWeissResult()
+}
+function getWeissAxisScore(prefix) {
+  var sum = 0
+  for (var i = 0; i < 3; i++) sum += (weissScores[prefix + '-' + i] || 0)
+  return (sum / 3) * 10  // project 3-item sum to the 10-item-equivalent scale
+}
+function getWeissResolvabilityScore() {
+  var sum = 0
+  for (var i = 0; i < 3; i++) sum += (weissScores['weiss-r-' + i] || 0)
+  return sum  // 3-15, doesn't feed W, just descriptive
+}
+
+function showWeissResult() {
+  var cP = getWeissAxisScore('weiss-p')
+  var cA = getWeissAxisScore('weiss-a')
+  var pnbaNow = scoreToPNBA(cP, 30, 0, cA)  // N/B unused for W, dummy mid value
+  var W_now = computeW(pnbaNow.A, pnbaNow.P)
+
+  var baseCog = getCogScoresForMode('baseline')
+  var pnbaBase = scoreToPNBA(baseCog[0], baseCog[1], baseCog[2], baseCog[3])
+  var W_base = computeW(pnbaBase.A, pnbaBase.P)
+
+  var pctOfBaseline = W_base > 0 ? (W_now / W_base) * 100 : 0
+
+  document.getElementById('wValueDisplay').textContent = W_now.toFixed(4)
+  document.getElementById('wBaselineVal').textContent = W_base.toFixed(4)
+  document.getElementById('wCurrentVal').textContent = W_now.toFixed(4)
+  document.getElementById('wPctOfBaseline').textContent = pctOfBaseline.toFixed(1) + '%'
+
+  // bar: scale against max(baseline, documented Stage1 onset) so the bar
+  // stays meaningful whether this person's baseline is above or below
+  // the n=1 reference thresholds
+  var barMax = Math.max(W_base, W_STAGE1_ONSET, W_now) * 1.15
+  var nowPct = Math.min(100, (W_now / barMax) * 100)
+  var basePct = Math.min(100, (W_base / barMax) * 100)
+  document.getElementById('wBarFill').style.width = nowPct + '%'
+  document.getElementById('wBaselineMarker').style.left = basePct + '%'
+  document.getElementById('wBaselineMarkerLabel').style.left = basePct + '%'
+
+  var posText
+  if (W_now >= W_STAGE1_ONSET) posText = 'above documented Stage 1 onset reference'
+  else if (W_now >= W_STAGE2_DEGRADATION) posText = 'between documented Stage 1 / Stage 2 references'
+  else posText = 'below documented Stage 2 degradation reference'
+  document.getElementById('wThresholdPosition').textContent = posText
+
+  var rScore = getWeissResolvabilityScore()
+  var rText
+  if (rScore >= 11) rText = 'Reads as resolvable/recognized — a path or a known pattern is present, even if not yet reached.'
+  else if (rScore >= 7) rText = 'Mixed — partially resolvable, partially unclear right now.'
+  else rText = 'Reads as low-resolvability right now — no clear path, unfamiliar, or dependent on an external source stopping.'
+  document.getElementById('wResolvabilityText').textContent = rText
+
+  document.getElementById('weissmannForm').style.display = 'none'
+  document.getElementById('wResultBlock').classList.add('visible')
+}
+
+// ============================================================
+// CONSTELLATION
+// ============================================================
+function updateConstellation() {
+  var canvas = document.getElementById('constellation')
+  var ctx = canvas.getContext('2d')
+  var W = canvas.width, H = canvas.height
+  var cx = W / 2, cy = H / 2
+  var R = Math.min(W, H) * 0.35
+  ctx.clearRect(0, 0, W, H)
+  ctx.fillStyle = '#0d0d1a'
+  ctx.fillRect(0, 0, W, H)
+  ;[0.25, 0.5, 0.75, 1].forEach(function(r) {
+    ctx.beginPath()
+    ctx.arc(cx, cy, R * r, 0, Math.PI * 2)
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)'
+    ctx.lineWidth = 1
+    ctx.stroke()
+  })
+  var labels = ['P','N','B','A']
+  var colors = ['#00d4aa','#f0c060','#9b6dff','#ff6b8a']
+  var angles = [-Math.PI/2, 0, Math.PI/2, Math.PI]
+  angles.forEach(function(angle, i) {
+    ctx.beginPath()
+    ctx.moveTo(cx, cy)
+    ctx.lineTo(cx + Math.cos(angle)*R, cy + Math.sin(angle)*R)
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'
+    ctx.lineWidth = 1
+    ctx.stroke()
+    ctx.fillStyle = colors[i]
+    ctx.font = 'bold 13px Space Mono, monospace'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(labels[i], cx + Math.cos(angle)*(R+22), cy + Math.sin(angle)*(R+22))
+  })
+  var cogScores = getCogScores()
+  var norms = cogScores.map(function(s) { return Math.min(1, s/50) })
+  var points = angles.map(function(angle, i) {
+    return { x: cx + Math.cos(angle)*R*norms[i], y: cy + Math.sin(angle)*R*norms[i] }
+  })
+  ctx.beginPath()
+  points.forEach(function(p, i) { i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y) })
+  ctx.closePath()
+  ctx.fillStyle = 'rgba(0,212,170,0.08)'
+  ctx.fill()
+  ctx.beginPath()
+  points.forEach(function(p, i) { i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y) })
+  ctx.closePath()
+  ctx.strokeStyle = 'rgba(0,212,170,0.6)'
+  ctx.lineWidth = 1.5
+  ctx.stroke()
+  points.forEach(function(p, i) {
+    ctx.beginPath()
+    ctx.arc(p.x, p.y, 5, 0, Math.PI*2)
+    ctx.fillStyle = colors[i]
+    ctx.fill()
+    if (cogScores[i] > 0) {
+      ctx.fillStyle = colors[i]
+      ctx.font = '10px Space Mono, monospace'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(cogScores[i], p.x, p.y - 14)
+    }
+  })
+  ctx.beginPath()
+  ctx.arc(cx, cy, 4, 0, Math.PI*2)
+  ctx.fillStyle = 'rgba(0,212,170,0.5)'
+  ctx.fill()
+  ctx.fillStyle = 'rgba(0,212,170,0.4)'
+  ctx.font = '9px Space Mono, monospace'
+  ctx.textAlign = 'center'
+  ctx.fillText('1.369', cx, cy+14)
+}
+
+// ============================================================
+// RESULTS
+// ============================================================
+// SECTION TOGGLES — all three on by default. Turning a section off
+// removes it from what's required for a result. COG drives IM/tau/
+// phase directly; EP and SIM are display-only (heatmap + fingerprint)
+// regardless of toggle state, but all three are equally toggle-able
+// so someone who only wants one reading isn't forced through the rest.
+var sectionEnabled = { cog: true, emo: true, sim: true }
+
+function getSectionIds(section) {
+  if (section === 'cog') {
+    var ids = []
+    ;['cog-p','cog-n','cog-b','cog-a'].forEach(function(d) {
+      for (var i = 0; i < 10; i++) ids.push(d+'-'+i)
+    })
+    return ids
+  }
+  if (section === 'emo') {
+    var ids = []
+    EP_BLOCKS.forEach(function(b) {
+      for (var i = 0; i < 4; i++) ids.push('ep-'+b.key+'-'+i)
+    })
+    return ids
+  }
+  if (section === 'sim') {
+    var ids = []
+    ;['sim-p','sim-n','sim-b','sim-a'].forEach(function(d) {
+      for (var i = 0; i < 5; i++) ids.push(d+'-'+i)
+    })
+    return ids
+  }
+  return []
+}
+
+function getRequiredIds() {
+  var ids = []
+  ;['cog','emo','sim'].forEach(function(section) {
+    if (sectionEnabled[section]) ids = ids.concat(getSectionIds(section))
+  })
+  return ids
+}
+function getOptionalIds() {
+  // ids belonging to currently-disabled sections — not required, but
+  // still counted if the person answers them anyway (heatmap reads them)
+  var ids = []
+  ;['cog','emo','sim'].forEach(function(section) {
+    if (!sectionEnabled[section]) ids = ids.concat(getSectionIds(section))
+  })
+  return ids
+}
+function getAllIds() {
+  return getSectionIds('cog').concat(getSectionIds('emo')).concat(getSectionIds('sim'))
+}
+function checkComplete() {
+  var requiredIds = getRequiredIds()
+  if (requiredIds.length === 0) return  // all sections off — nothing to score
+  var answered = 0
+  for (var i = 0; i < requiredIds.length; i++) {
+    if (scores[currentMode][requiredIds[i]] !== undefined) answered++
+  }
+  if (answered === requiredIds.length) {
+    showResults()
+    modeComplete[currentMode] = true
+    if (modeComplete.baseline && modeComplete.activated && sectionEnabled.cog) showDeltaPanel()
+  }
+}
+
+// ============================================================
+// SECTION TOGGLE BAR
+// ============================================================
+function toggleSection(section) {
+  sectionEnabled[section] = !sectionEnabled[section]
+  var btn = document.getElementById('sec-toggle-' + section)
+  var wrap = document.getElementById('section-wrap-' + section)
+  if (btn) btn.classList.toggle('on', sectionEnabled[section])
+  if (btn) btn.classList.toggle('off', !sectionEnabled[section])
+  if (wrap) wrap.classList.toggle('section-disabled', !sectionEnabled[section])
+
+  // guard: don't allow all three off — flip this one back on if it
+  // would leave nothing required
+  var anyOn = sectionEnabled.cog || sectionEnabled.emo || sectionEnabled.sim
+  if (!anyOn) {
+    sectionEnabled[section] = true
+    if (btn) { btn.classList.add('on'); btn.classList.remove('off') }
+    if (wrap) wrap.classList.remove('section-disabled')
+    return
+  }
+
+  updateProgress()
+  checkComplete()
+}
+
+// Minimal results path for when COG is disabled — no IM/tau/phase/SOUL-8
+// (those require P/N/B/A from COG), just whatever sections are enabled
+// rendered as a heatmap with a plain-language note.
+function showResultsWithoutCog() {
+  var simScores = sectionEnabled.sim ? getSimScores() : null
+  var epScores  = sectionEnabled.emo ? getEPScores()  : null
+  var simLabels = ['P','N','B','A']
+
+  document.getElementById('processingBandRow').innerHTML = ''
+  document.getElementById('tauDisplayBlock').innerHTML =
+    '<div class="tau-display-block"><div class="tau-display-left">' +
+    '<div class="tau-label">COGNITIVE ARCHITECTURE OFF</div>' +
+    '<div style="font-size:12px;color:var(--text-dim);margin-top:4px;">τ / IM / phase / SOUL-8 require the Cognitive Architecture section — turn it back on to get those. Showing what the enabled sections measure on their own.</div>' +
+    '</div></div>'
+  document.getElementById('soul8Block').style.display = 'none'
+  document.getElementById('imValue').textContent = '—'
+
+  var allHeat = []
+  if (epScores) {
+    var epPairs = EP_BLOCKS.map(function(b, i) { return { label: b.title, pct: epScores[i]/20 } })
+    epPairs.sort(function(a,b){ return b.pct - a.pct })
+    epPairs.forEach(function(h){ allHeat.push(h) })
+  }
+  if (simScores) {
+    simScores.forEach(function(s,i){ allHeat.push({ label: simLabels[i]+' Sim · '+simLabel(s), pct: s/25 }) })
+  }
+  document.getElementById('heatRows').innerHTML = allHeat.length ? allHeat.map(function(h) {
+    return '<div class="heat-row">' +
+      '<div class="heat-label">' + h.label + '</div>' +
+      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct*100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
+      '<div class="heat-pct">' + Math.round(h.pct*100) + '%</div>' +
+      '</div>'
+  }).join('') : '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:12px;">No sections enabled to show.</div>'
+
+  document.getElementById('relmap').innerHTML = ''
+  document.getElementById('combinedOutput').innerHTML =
+    '<span style="color:var(--text-muted)">No SOUL-8 fingerprint — Cognitive Architecture is off.</span>'
+
+  document.getElementById('resultsPanel').classList.add('visible')
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function showResults() {
+  // If COG is disabled, there is no valid P/N/B/A reading to compute
+  // IM/tau/phase/SOUL-8 from — show a minimal heatmap-only result
+  // instead of running the math on zeros.
+  if (!sectionEnabled.cog) {
+    showResultsWithoutCog()
+    return
+  }
+  var cogScores = getCogScores()
+  var simScores = getSimScores()
+  var epScores  = getEPScores()
+  document.getElementById('soul8Block').style.display = ''
+
+  // PNBA continuous coordinates
+  var pnba = scoreToPNBA(cogScores[0], cogScores[1], cogScores[2], cogScores[3])
+  var tau  = computeTau(pnba.P, pnba.B)
+  var im   = computeIM(pnba.P, pnba.N, pnba.B, pnba.A)
+  var phase = classifyPhase(pnba.P, pnba.N, pnba.B, pnba.A)
+  var band  = getProcessingBand(cogScores[0])
+
+  var axisData = [
+    { key:'P', label:'[P] PATTERN',    color:'var(--anchor)', score:cogScores[0] },
+    { key:'N', label:'[N] NARRATIVE',  color:'var(--gold)',   score:cogScores[1] },
+    { key:'B', label:'[B] BEHAVIOR',   color:'var(--violet)', score:cogScores[2] },
+    { key:'A', label:'[A] ADAPTATION', color:'var(--rose)',   score:cogScores[3] },
+  ]
+  axisData.forEach(function(ax) {
+    ax.mode   = cogLabel(ax.score)
+    ax.weight = MODE_WEIGHT[ax.mode]
+    ax.pct    = ax.score / 50
+  })
+  var sorted = axisData.slice().sort(function(a, b) {
+    if (b.weight !== a.weight) return b.weight - a.weight
+    return b.score - a.score
+  })
+
+  var profileCode = sorted.map(function(ax) { return ax.key + ax.mode }).join('·')
+  var axis = sorted.map(function(ax) { return ax.key }).join('')
+  var addressStr = axis + '·' + sorted.map(function(ax) { return ax.weight }).join('')
+  var soulprintId = buildSoulprintId(profileCode)
+  var pMode = axisData[0].mode
+  var nMode = axisData[1].mode
+  var bMode = axisData[2].mode
+  var aMode = axisData[3].mode
+  var imLegacy = ((MODE_WEIGHT[pMode]+MODE_WEIGHT[nMode]+MODE_WEIGHT[bMode]+MODE_WEIGHT[aMode]) * SOVEREIGN_ANCHOR).toFixed(4)
+
+  currentSoul8 = { id: soulprintId, address: addressStr, profile: profileCode, im: imLegacy, tau: tau, phase: phase.phase }
+
+  // Processing band
+  document.getElementById('processingBandRow').innerHTML =
+    '<div class="processing-band-row">' +
+    '<div class="band-label-text">PROCESSING BAND</div>' +
+    '<div class="band-badge ' + band.cls + '">' + band.band + ' · ' + band.label + '</div>' +
+    '</div>'
+
+  // τ display block
+  var tauPct = Math.min(100, tau / 0.65 * 100)
+  var tauColor = phase.color
+  var tlPct = (TL / 0.65 * 100).toFixed(1)
+  document.getElementById('tauDisplayBlock').innerHTML =
+    '<div class="tau-display-block">' +
+    '<div class="tau-display-left">' +
+    '<div class="tau-label">TORSION RATIO</div>' +
+    '<div class="tau-value" style="color:' + tauColor + '">' + tau.toFixed(4) + '</div>' +
+    '<div class="tau-formula">τ = B/P = ' + pnba.B.toFixed(3) + '/' + pnba.P.toFixed(3) + ' · TL=0.1369</div>' +
+    '<div class="tl-bar-wrap" style="margin-top:10px;min-width:140px;">' +
+    '<div class="tl-bar-bg">' +
+    '<div class="tl-bar-fill" style="width:' + Math.min(100,tauPct) + '%;background:' + tauColor + '"></div>' +
+    '<div class="tl-marker" style="left:' + tlPct + '%"><div class="tl-marker-label" style="left:' + tlPct + '%">TL</div></div>' +
+    '</div></div>' +
+    '</div>' +
+    '<div class="phase-badge ' + phase.cls + '">' + phase.phase + '</div>' +
+    '</div>'
+
+  // SOUL-8 address
+  document.getElementById('soul8Address').textContent = addressStr
+
+  // SOUL-8 decoded fields — now includes τ and phase
+  var decodedFields = sorted.map(function(ax) {
+    return { label: ax.label, value: 'w=' + ax.weight + ' (' + ax.mode + ') · ' + ax.score + '/50' }
+  })
+  decodedFields.push({ label: 'τ = B/P', value: tau.toFixed(5) + (tau < TL ? ' ✓ LOCKED' : ' SHATTER') })
+  decodedFields.push({ label: 'PHASE', value: phase.phase })
+  decodedFields.push({ label: 'ANCHOR', value: SOVEREIGN_ANCHOR + ' GHz ≡ SOVEREIGN' })
+
+  document.getElementById('soul8Decoded').innerHTML = decodedFields.map(function(f) {
+    return '<div class="soul8-field"><div class="soul8-field-label">' + f.label +
+      '</div><div class="soul8-field-value">' + f.value + '</div></div>'
+  }).join('')
+
+  document.getElementById('imValue').textContent = im.toFixed(4) + ' IM'
+
+  // Score cards with PF/PS/PL band
+  document.getElementById('scoreGrid').innerHTML = sorted.map(function(ax) {
+    var tierDesc = ax.mode === 'F' ? 'High axis — dominant trait'
+                 : ax.mode === 'S' ? 'Mid axis — active but flexible'
+                 : 'Low axis — minimal expression'
+    var axBand = ax.key === 'P' ? band.band + ' · ' + band.label : null
+    var seg = function(active) {
+      return '<div style="flex:1;height:4px;border-radius:2px;background:' +
+        (active ? ax.color : 'var(--border)') + ';transition:background 0.3s"></div>'
+    }
+    var tierBar =
+      '<div style="display:flex;gap:3px;margin:8px 0 4px">' +
+        seg(ax.mode==='L') + seg(ax.mode==='S') + seg(ax.mode==='F') +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;font-family:Space Mono,monospace;font-size:8px;color:var(--text-muted)">' +
+        '<span style="color:' + (ax.mode==='L' ? ax.color : 'inherit') + '">L·LOCK</span>' +
+        '<span style="color:' + (ax.mode==='S' ? ax.color : 'inherit') + '">S·SUSTAIN</span>' +
+        '<span style="color:' + (ax.mode==='F' ? ax.color : 'inherit') + '">F·FLEX</span>' +
+      '</div>'
+    return '<div class="score-card">' +
+      '<div style="font-family:Space Mono,monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:6px;">' + ax.label + '</div>' +
+      '<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">' +
+        '<div style="font-family:Space Mono,monospace;font-size:20px;font-weight:700;color:' + ax.color + '">' + ax.score +
+          '<span style="font-size:12px;color:var(--text-muted)">/50</span></div>' +
+        '<span style="font-family:Space Mono,monospace;font-size:11px;padding:2px 8px;border-radius:4px;background:' + ax.color + '22;color:' + ax.color + '">' +
+          ax.key + ax.mode + ' · w=' + ax.weight + '</span>' +
+      '</div>' +
+      tierBar +
+      (axBand ? '<div style="font-family:Space Mono,monospace;font-size:9px;color:var(--anchor);margin-top:6px;letter-spacing:0.08em;">' + axBand + '</div>' : '') +
+      '<div style="font-size:11px;color:var(--text-muted);margin-top:4px;font-family:DM Sans,sans-serif;">' + tierDesc + '</div>' +
+      '</div>'
+  }).join('')
+
+  // Heatmap
+  var allHeat = []
+  sorted.forEach(function(ax) {
+    allHeat.push({ label: ax.key + ' Cognitive · ' + ax.mode, pct: ax.pct })
+  })
+  var epPairs = EP_BLOCKS.map(function(b, i) { return { label: b.title, pct: epScores[i]/20 } })
+  epPairs.sort(function(a,b){ return b.pct - a.pct })
+  epPairs.forEach(function(h){ allHeat.push(h) })
+  var simLabels = ['P','N','B','A']
+  simScores.forEach(function(s,i){ allHeat.push({ label: simLabels[i]+' Sim · '+simLabel(s), pct: s/25 }) })
+  document.getElementById('heatRows').innerHTML = allHeat.map(function(h) {
+    return '<div class="heat-row">' +
+      '<div class="heat-label">' + h.label + '</div>' +
+      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct*100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
+      '<div class="heat-pct">' + Math.round(h.pct*100) + '%</div>' +
+      '</div>'
+  }).join('')
+
+  var relRows = [
+    { s:'CI', op:'∝', o:'Kernel' },
+    { s:profileCode, op:'≡', o:addressStr },
+    { s:'τ=B/P', op:'=', o:tau.toFixed(4) + (tau < TL ? ' (LOCKED)' : ' (SHATTER)') },
+    { s:'IM', op:'=', o:im.toFixed(4) + ' · f:1.369' },
+    { s:'NOHARM', op:'⊂', o:'Sovereign Manifold' },
+  ]
+  document.getElementById('relmap').innerHTML = relRows.map(function(r) {
+    return '<span>' + r.s + '</span><span class="relmap-op">' + r.op + '</span><span>' + r.o + '</span><br>'
+  }).join('')
+
+  var epCodes = EP_BLOCKS.map(function(b,i){ return b.title[0] + epLabel(epScores[i]) })
+  var simCodes = simScores.map(function(s,i){ return simLabels[i]+':'+simLabel(s) })
+  document.getElementById('combinedOutput').innerHTML =
+    '<span style="color:var(--anchor)">' + addressStr + '</span><br>' +
+    '<span style="color:var(--text-dim)">' + soulprintId + '</span><br>' +
+    '<span style="color:var(--rose)">τ=' + tau.toFixed(5) + ' · ' + phase.phase + ' · IM=' + im.toFixed(4) + '</span><br><br>' +
+    '<span style="color:var(--anchor)">' + sorted.map(function(ax){return ax.key+ax.mode}).join('·') + '</span> // ' +
+    '<span style="color:var(--gold)">' + epCodes.join(' ') + '</span> // ' +
+    '<span style="color:var(--violet)">' + simCodes.join(' ') + '</span>'
+
+  document.getElementById('resultsPanel').classList.add('visible')
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+// ============================================================
+// DELTA PANEL
+// ============================================================
+function showDeltaPanel() {
+  var baseCog = getCogScoresForMode('baseline')
+  var actCog  = getCogScoresForMode('activated')
+  var base = scoreToPNBA(baseCog[0], baseCog[1], baseCog[2], baseCog[3])
+  var act  = scoreToPNBA(actCog[0], actCog[1], actCog[2], actCog[3])
+  var tau_b = computeTau(base.P, base.B)
+  var tau_a = computeTau(act.P, act.B)
+  var im_b  = computeIM(base.P, base.N, base.B, base.A)
+  var im_a  = computeIM(act.P, act.N, act.B, act.A)
+  var phase_b = classifyPhase(base.P, base.N, base.B, base.A)
+  var phase_a = classifyPhase(act.P, act.N, act.B, act.A)
+
+  // Axis delta cards
+  var axes = [
+    { key:'P', label:'[P] PATTERN', cBase: base.P, cAct: act.P, colorUp:'var(--anchor)', colorDown:'var(--rose)' },
+    { key:'N', label:'[N] NARRATIVE', cBase: base.N, cAct: act.N, colorUp:'var(--gold)', colorDown:'var(--rose)' },
+    { key:'B', label:'[B] BEHAVIOR', cBase: base.B, cAct: act.B, colorUp:'var(--rose)', colorDown:'var(--anchor)' },
+    { key:'A', label:'[A] ADAPTATION', cBase: base.A, cAct: act.A, colorUp:'var(--anchor)', colorDown:'var(--rose)' },
+  ]
+  document.getElementById('deltaAxisGrid').innerHTML = axes.map(function(ax) {
+    var delta = ax.cAct - ax.cBase
+    var arrowCls = delta > 0.02 ? 'up' : delta < -0.02 ? 'down' : 'neutral'
+    var arrowSym = delta > 0.02 ? '↑' : delta < -0.02 ? '↓' : '→'
+    var changeCls = delta > 0.02 ? 'positive' : delta < -0.02 ? 'negative' : 'neutral'
+    return '<div class="delta-axis-card">' +
+      '<div class="delta-axis-header">' +
+        '<div class="delta-axis-name">' + ax.label + '</div>' +
+        '<div class="delta-arrow ' + arrowCls + '">' + arrowSym + '</div>' +
+      '</div>' +
+      '<div class="delta-values">' +
+        '<span class="delta-val-baseline">' + ax.cBase.toFixed(3) + '</span>' +
+        '<span class="delta-arrow-small">→</span>' +
+        '<span class="delta-val-activated">' + ax.cAct.toFixed(3) + '</span>' +
+      '</div>' +
+      '<div class="delta-change ' + changeCls + '">' +
+        (delta >= 0 ? '+' : '') + delta.toFixed(3) +
+      '</div>' +
+      '</div>'
+  }).join('')
+
+  // τ comparison bar
+  var maxTau = Math.max(tau_b, tau_a, TL * 2.5)
+  var tlPct = (TL / maxTau * 100).toFixed(1)
+  var bPct  = Math.min(100, tau_b / maxTau * 100).toFixed(1)
+  var aPct  = Math.min(100, tau_a / maxTau * 100).toFixed(1)
+  var bColor = tau_b >= TL ? '#ff4070' : '#00d4aa'
+  var aColor = tau_a >= TL ? '#ff4070' : '#f0c060'
+  document.getElementById('tauCompareBlock').innerHTML =
+    '<div class="tau-compare-title">τ = B/P COMPARISON · TL = 0.1369</div>' +
+    '<div class="tau-compare-row">' +
+      '<div class="tau-mode-label">BASELINE</div>' +
+      '<div class="tau-compare-bar-bg">' +
+        '<div class="tau-compare-bar-fill" style="width:' + bPct + '%;background:' + bColor + '"></div>' +
+        '<div class="tl-marker" style="left:' + tlPct + '%"><div class="tl-marker-label">TL</div></div>' +
+      '</div>' +
+      '<div class="tau-val" style="color:' + bColor + '">' + tau_b.toFixed(4) + '</div>' +
+    '</div>' +
+    '<div class="tau-compare-row">' +
+      '<div class="tau-mode-label">ACTIVATED</div>' +
+      '<div class="tau-compare-bar-bg">' +
+        '<div class="tau-compare-bar-fill" style="width:' + aPct + '%;background:' + aColor + '"></div>' +
+        '<div class="tl-marker" style="left:' + tlPct + '%"></div>' +
+      '</div>' +
+      '<div class="tau-val" style="color:' + aColor + '">' + tau_a.toFixed(4) + '</div>' +
+    '</div>'
+
+  // Phase change block
+  var phaseChangeHtml = ''
+  if (phase_b.phase !== phase_a.phase) {
+    phaseChangeHtml = '<div class="phase-change-block">' +
+      '<div class="phase-change-label">PHASE TRANSITION</div>' +
+      '<div class="phase-change-value">' +
+        '<span class="phase-badge ' + phase_b.cls + '">' + phase_b.phase + '</span>' +
+        '<span class="phase-change-arrow">→</span>' +
+        '<span class="phase-badge ' + phase_a.cls + '">' + phase_a.phase + '</span>' +
+      '</div>' +
+      '</div>'
+  } else {
+    phaseChangeHtml = '<div class="phase-change-block">' +
+      '<div class="phase-change-label">PHASE STABLE</div>' +
+      '<div class="phase-change-value">' +
+        '<span class="phase-badge ' + phase_b.cls + '">' + phase_b.phase + '</span>' +
+        '<span class="phase-change-arrow">→→</span>' +
+        '<span class="phase-badge ' + phase_a.cls + '">' + phase_a.phase + '</span>' +
+      '</div>' +
+      '</div>'
+  }
+  document.getElementById('phaseChangeBlock').innerHTML = phaseChangeHtml
+
+  // Dynamic flags
+  var flags = getDynamicFlags(base, act)
+  var flagsHtml = ''
+  if (flags.length === 0) {
+    flagsHtml = '<div class="no-flags-msg">NO FLAGS · STABLE ACTIVATION PROFILE</div>'
+  } else {
+    flagsHtml = flags.map(function(f) {
+      return '<div class="flag-pill ' + f.cls + '">' +
+        '<div class="flag-icon">' + f.icon + '</div>' +
+        '<div class="flag-desc">' + f.desc + '</div>' +
+        '</div>'
+    }).join('')
+  }
+  document.getElementById('flagsContainer').innerHTML = flagsHtml
+
+  // IM comparison
+  document.getElementById('imBaseline').textContent = im_b.toFixed(4)
+  document.getElementById('imActivated').textContent = im_a.toFixed(4)
+
+  document.getElementById('deltaPanel').classList.add('visible')
+  document.getElementById('deltaPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+// ============================================================
+// MODE SWITCH + RESET
+// ============================================================
+function setMode(mode) {
+  // switching to baseline/activated always exits Weissmann mode first
+  if (weissActive) exitWeissmannMode()
+  currentMode = mode
+  document.getElementById('btn-baseline').classList.toggle('active', mode==='baseline')
+  document.getElementById('btn-activated').classList.toggle('active', mode==='activated')
+  document.getElementById('btn-weissmann').classList.remove('active')
+  var modeScores = scores[currentMode]
+  getAllIds().forEach(function(id) {
+    var val = modeScores[id]
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-'+id+'-'+v)
+      if (btn) btn.classList.toggle('selected', val===v)
+    }
+  })
+  answeredQuestions = Object.keys(modeScores).length
+  updateProgress()
+  updateConstellation()
+  document.getElementById('resultsPanel').classList.remove('visible')
+  if (modeComplete[currentMode]) showResults()
+  if (modeComplete.baseline && modeComplete.activated && sectionEnabled.cog) showDeltaPanel()
+}
+
+function setWeissmannMode() {
+  weissActive = true
+  document.getElementById('btn-baseline').classList.remove('active')
+  document.getElementById('btn-activated').classList.remove('active')
+  document.getElementById('btn-weissmann').classList.add('active')
+  document.getElementById('standard-instrument').style.display = 'none'
+  document.getElementById('weissmannPanel').classList.add('active')
+
+  var hasBase = weissHasBaseline()
+  document.getElementById('weissmannNeedBaseline').style.display = hasBase ? 'none' : 'block'
+  document.getElementById('weissmannForm').style.display = hasBase ? 'block' : 'none'
+}
+function exitWeissmannMode() {
+  weissActive = false
+  document.getElementById('standard-instrument').style.display = ''
+  document.getElementById('weissmannPanel').classList.remove('active')
+}
+
+function resetWeissmann() {
+  weissScores = {}
+  getWeissIds().forEach(function(id) {
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-'+id+'-'+v)
+      if (btn) btn.classList.remove('selected')
+    }
+  })
+  document.getElementById('wResultBlock').classList.remove('visible')
+  document.getElementById('weissmannForm').style.display = 'block'
+}
+
+function resetAll() {
+  scores[currentMode] = {}
+  answeredQuestions = 0
+  currentSoul8 = null
+  modeComplete[currentMode] = false
+  getAllIds().forEach(function(id) {
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-'+id+'-'+v)
+      if (btn) btn.classList.remove('selected')
+    }
+  })
+  updateProgress()
+  updateConstellation()
+  document.getElementById('resultsPanel').classList.remove('visible')
+  document.getElementById('deltaPanel').classList.remove('visible')
+}
+
+function copySoul8() {
+  if (!currentSoul8) return
+  var text = currentSoul8.address + ' | ' + currentSoul8.id +
+    ' | τ=' + currentSoul8.tau.toFixed(5) +
+    ' | ' + currentSoul8.phase +
+    ' | Pv:NOHARM | f:1.369 | visual:GREEN'
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showCopied).catch(function(){ fallbackCopy(text) })
+  } else {
+    fallbackCopy(text)
+  }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea')
+  ta.value = text
+  ta.style.position = 'fixed'
+  ta.style.opacity = '0'
+  document.body.appendChild(ta)
+  ta.select()
+  document.execCommand('copy')
+  document.body.removeChild(ta)
+  showCopied()
+}
+function showCopied() {
+  var btn = document.getElementById('copyBtn')
+  btn.textContent = '✓ COPIED'
+  btn.classList.add('copied')
+  setTimeout(function() {
+    btn.textContent = '⟳ COPY SOUL-8'
+    btn.classList.remove('copied')
+  }, 2000)
+}
+
+// ============================================================
+// INIT
+function init() {
+  renderQuestions('cog-p', COG_P, 'P')
+  renderQuestions('cog-n', COG_N, 'N')
+  renderQuestions('cog-b', COG_B, 'B')
+  renderQuestions('cog-a', COG_A, 'A')
+  renderEP()
+  renderQuestions('sim-p', SIM_P, 'SP')
+  renderQuestions('sim-n', SIM_N, 'SN')
+  renderQuestions('sim-b', SIM_B, 'SB')
+  renderQuestions('sim-a', SIM_A, 'SA')
+  renderQuestions('weiss-p', WEISS_P, 'WP')
+  renderQuestions('weiss-a', WEISS_A, 'WA')
+  renderQuestions('weiss-r', WEISS_R, 'WR')
+  updateConstellation()
+  document.querySelector('.container').addEventListener('click', handleScaleClick)
+  document.getElementById('btn-baseline').addEventListener('click', function(){ setMode('baseline') })
+  document.getElementById('btn-activated').addEventListener('click', function(){ setMode('activated') })
+  document.getElementById('btn-weissmann').addEventListener('click', setWeissmannMode)
+  document.getElementById('copyBtn').addEventListener('click', copySoul8)
+  document.getElementById('resetBtn').addEventListener('click', resetAll)
+  document.getElementById('weissResetBtn').addEventListener('click', resetWeissmann)
+}
+
+init()
+</script>
+</body>
+</html>
