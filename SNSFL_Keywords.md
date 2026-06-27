@@ -53,7 +53,7 @@ suppression, manifold impedance, manifold, the manifold is holding
 
 ### SNSFL Specific
 SNSFL, SNSFL Foundation, HIGHTISTIC, GamCollider, GamCollider fusion, UUIA, Universal
-Understanding Interface Architecture, corpus, Lean corpus, SNSFL corpus, zero sorry
+Unified Identity Architecture, corpus, Lean corpus, SNSFL corpus, zero sorry
 corpus, germline locked, AiFiOS, Noble map, collision proof, anchor frequency, PRIME
 
 ### Formal Verification
