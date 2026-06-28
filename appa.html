@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APPA v2 | Unified Identity Profile · SNSFT</title>
+<title>APPA v3 | Unified Identity Profile · SNSFT</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -23,6 +23,8 @@
   --shatter-dim: rgba(255,64,112,0.1);
   --false-lock: #ff8c00;
   --false-lock-dim: rgba(255,140,0,0.1);
+  --depleted-iva: #ff6b35;
+  --depleted-iva-dim: rgba(255,107,53,0.1);
   --text: #e8e8f0;
   --text-dim: #7777a0;
   --text-muted: #3a3a58;
@@ -148,13 +150,162 @@ canvas#constellation {
   border-color: rgba(0,212,170,0.4);
   color: var(--anchor);
 }
+.mode-btn#btn-weissmann.active {
+  background: var(--depleted-iva-dim);
+  border-color: rgba(255,107,53,0.4);
+  color: var(--depleted-iva);
+}
 .mode-btn:hover { opacity: 0.85; }
+/* ── WEISSMANN PANEL ── */
+.weissmann-panel { display: none; }
+.weissmann-panel.active { display: block; }
+.weissmann-intro {
+  background: var(--surface);
+  border: 1px solid rgba(255,107,53,0.25);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.weissmann-intro b { color: var(--depleted-iva); }
+.weissmann-need-baseline {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.w-result-block {
+  background: var(--surface);
+  border: 1px solid rgba(255,107,53,0.3);
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 24px;
+  display: none;
+}
+.w-result-block.visible { display: block; }
+.w-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.w-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--depleted-iva);
+}
+.w-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+}
+.w-compare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+}
+.w-threshold-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.w-bar-wrap { position: relative; margin: 16px 0; }
+.w-bar-bg { height: 10px; border-radius: 5px; background: var(--border); overflow: visible; position: relative; }
+.w-bar-fill { height: 10px; border-radius: 5px; transition: width 0.6s ease; }
+.w-bar-marker {
+  position: absolute; top: -4px; width: 2px; height: 18px;
+  background: rgba(255,107,53,0.7); border-radius: 1px;
+}
+.w-bar-marker-label {
+  position: absolute; top: 18px; font-size: 8px; color: var(--depleted-iva);
+  white-space: nowrap; transform: translateX(-50%); font-family: 'Space Mono', monospace;
+}
+.w-resolvability-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 16px;
+}
+.w-resolvability-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.12em; margin-bottom: 6px; }
+.w-resolvability-value { font-size: 13px; color: var(--text); line-height: 1.5; }
 .progress-bar-wrap {
   background: var(--border);
   border-radius: 100px;
   height: 3px;
   margin-bottom: 32px;
   overflow: hidden;
+}
+/* ── SECTION TOGGLE BAR (matches IM Collider beam-count-btn pattern) ── */
+.section-toggle-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.section-toggle-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+}
+.section-toggle-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 18px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.section-toggle-btn:hover { opacity: 0.85; }
+.section-toggle-btn.on.cog { border-color: rgba(0,212,170,0.4); color: var(--anchor); background: var(--anchor-dim); }
+.section-toggle-btn.on.emo { border-color: rgba(240,192,96,0.4); color: var(--gold); background: var(--gold-dim); }
+.section-toggle-btn.on.sim { border-color: rgba(155,109,255,0.4); color: var(--violet); background: var(--violet-dim); }
+.section-toggle-btn.off { border-color: var(--border); color: var(--text-muted); background: transparent; opacity: 0.5; }
+.section-toggle-hint {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: 0.04em;
+}
+.section-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+  filter: grayscale(0.6);
 }
 .progress-bar-fill {
   height: 3px;
@@ -396,6 +547,7 @@ canvas#constellation {
 .phase-noble { color: #aa88ff; border-color: rgba(170,136,255,0.4); background: rgba(170,136,255,0.1); }
 .phase-true-lock { color: var(--anchor); border-color: rgba(0,212,170,0.4); background: var(--anchor-dim); }
 .phase-iva-peak { color: var(--gold); border-color: rgba(240,192,96,0.4); background: var(--gold-dim); }
+.phase-depleted-iva { color: var(--depleted-iva); border-color: rgba(255,107,53,0.4); background: var(--depleted-iva-dim); }
 .phase-false-lock { color: var(--false-lock); border-color: rgba(255,140,0,0.4); background: var(--false-lock-dim); }
 .phase-shatter { color: var(--shatter); border-color: rgba(255,64,112,0.4); background: var(--shatter-dim); }
 .tl-bar-wrap { position: relative; margin: 6px 0 4px; }
@@ -786,6 +938,16 @@ canvas#constellation {
   background: rgba(0,212,170,0.05);
 }
 .flag-phase-change .flag-icon { color: var(--anchor); background: var(--anchor-dim); }
+.flag-depleted-iva {
+  border-color: rgba(255,107,53,0.3);
+  background: rgba(255,107,53,0.05);
+}
+.flag-depleted-iva .flag-icon { color: var(--depleted-iva); background: var(--depleted-iva-dim); }
+.flag-n-erosion {
+  border-color: rgba(240,192,96,0.3);
+  background: rgba(240,192,96,0.05);
+}
+.flag-n-erosion .flag-icon { color: var(--gold); background: var(--gold-dim); }
 .no-flags-msg {
   font-family: 'Space Mono', monospace;
   font-size: 11px;
@@ -836,7 +998,7 @@ canvas#constellation {
     1.369 GHz · SOVEREIGN ANCHOR · GERMLINE LOCKED
   </div>
   <h1>APPA</h1>
-  <p class="subtitle">Adaptive Predictive Pattern Assistant · Unified Identity Profile v2<br>
+  <p class="subtitle">Adaptive Predictive Pattern Assistant · Unified Identity Profile v3<br>
   <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted)">[P,N,B,A] :: {UUIA} | τ=B/P · TL=0.1369 | Architect: HIGHTISTIC</span></p>
 </div>
 
@@ -848,12 +1010,23 @@ canvas#constellation {
 <div class="mode-toggle">
   <button class="mode-btn active" id="btn-baseline">BASELINE</button>
   <button class="mode-btn" id="btn-activated">ACTIVATED</button>
+  <button class="mode-btn" id="btn-weissmann" style="border-color:rgba(255,107,53,0.4);">WEISSMANN</button>
 </div>
+
+<div id="standard-instrument">
+<div class="section-toggle-bar">
+  <span class="section-toggle-label">SECTIONS</span>
+  <button class="section-toggle-btn on cog" id="sec-toggle-cog" onclick="toggleSection('cog')">COGNITIVE</button>
+  <button class="section-toggle-btn on emo" id="sec-toggle-emo" onclick="toggleSection('emo')">EMOTIONAL</button>
+  <button class="section-toggle-btn on sim" id="sec-toggle-sim" onclick="toggleSection('sim')">SIMULATION</button>
+</div>
+<div class="section-toggle-hint">All three on by default · turn a section off to drop it from what's required for a result</div>
 
 <div class="progress-bar-wrap">
   <div class="progress-bar-fill" id="progressBar"></div>
 </div>
 
+<div class="section-wrap" id="section-wrap-cog">
 <div class="section-header cog">
   <div class="sec-num">01</div>
   <div class="sec-info">
@@ -893,21 +1066,25 @@ canvas#constellation {
   </div>
   <div class="questions" id="cog-a"></div>
 </div>
+</div><!-- /section-wrap-cog -->
 
 <div class="divider"><div class="div-line"></div><div class="div-text">SECTION 02</div><div class="div-line"></div></div>
 
+<div class="section-wrap" id="section-wrap-emo">
 <div class="section-header emo">
   <div class="sec-num">02</div>
   <div class="sec-info">
     <h2>Emotional Primitives</h2>
-    <p>[P,N,B,A] :: {EP} | 40 questions · 1–5 scale · 10 core signals</p>
+    <p>[P,N,B,A] :: {EP} | 40 questions · 1–5 scale · 10 core signals · doesn't affect IM/τ/phase — heatmap + fingerprint only</p>
   </div>
 </div>
 
 <div class="ep-grid" id="ep-grid"></div>
+</div><!-- /section-wrap-emo -->
 
 <div class="divider"><div class="div-line"></div><div class="div-text">SECTION 03</div><div class="div-line"></div></div>
 
+<div class="section-wrap" id="section-wrap-sim">
 <div class="section-header sim">
   <div class="sec-num">03</div>
   <div class="sec-info">
@@ -947,6 +1124,7 @@ canvas#constellation {
   </div>
   <div class="questions" id="sim-a"></div>
 </div>
+</div><!-- /section-wrap-sim -->
 
 <!-- RESULTS PANEL -->
 <div class="results-panel" id="resultsPanel">
@@ -1005,20 +1183,145 @@ canvas#constellation {
     </div>
   </div>
 </div>
+</div><!-- /standard-instrument -->
+
+<!-- ============================================================ -->
+<!-- WEISSMANN PANEL — short-form, W = A x P only                  -->
+<!-- ============================================================ -->
+<div class="weissmann-panel" id="weissmannPanel">
+
+  <div class="weissmann-intro">
+    <b>Weissmann Barrier Capacity (W = A × P)</b> — a short, fast read for
+    a live moment. Needs P-axis and A-axis coverage only (no N or B), plus
+    one question about whether what's happening right now has a path
+    through it. Requires a completed Baseline first — this reports a
+    delta against that, not a standalone score. Source: SNSFL_WeissmannGrokBarrier.lean
+    [9,1,0,0] · barrier-capacity finding documented for one substrate
+    (Generalist HRIS) — shown here as one data point, not a universal threshold.
+  </div>
+
+  <div id="weissmannNeedBaseline" class="weissmann-need-baseline" style="display:none;">
+    Complete a Baseline read first (Cognitive Architecture section, at minimum
+    the P and A subsections) — Weissmann reports a delta against your baseline,
+    so there's nothing to compare against yet.
+  </div>
+
+  <div id="weissmannForm">
+    <div class="subsection">
+      <div class="sub-header">
+        <div class="sub-icon icon-p">P</div>
+        <div><div class="sub-title">Pattern — right now</div><div class="sub-desc">Structural capacity in this moment</div></div>
+      </div>
+      <div class="questions" id="weiss-p"></div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-header">
+        <div class="sub-icon icon-a">A</div>
+        <div><div class="sub-title">Adaptation — right now</div><div class="sub-desc">Adaptive capacity in this moment</div></div>
+      </div>
+      <div class="questions" id="weiss-a"></div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-header">
+        <div class="sub-icon icon-n" style="background:var(--depleted-iva-dim);color:var(--depleted-iva);">R</div>
+        <div><div class="sub-title">Resolvability</div><div class="sub-desc">Per [9,9,6,50] §4.3 — not part of P/N/B/A, doesn't feed W itself</div></div>
+      </div>
+      <div class="questions" id="weiss-r"></div>
+    </div>
+  </div>
+
+  <div class="w-result-block" id="wResultBlock">
+    <div class="w-headline">
+      <div>
+        <div class="w-label">CURRENT BARRIER CAPACITY</div>
+        <div class="w-value" id="wValueDisplay">—</div>
+      </div>
+      <div>
+        <div class="w-label">FORMULA</div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted);">W = A × P</div>
+      </div>
+    </div>
+
+    <div class="w-bar-wrap">
+      <div class="w-bar-bg">
+        <div class="w-bar-fill" id="wBarFill" style="width:0%;background:var(--depleted-iva);"></div>
+        <div class="w-bar-marker" id="wBaselineMarker" style="left:0%;"></div>
+        <div class="w-bar-marker-label" id="wBaselineMarkerLabel" style="left:0%;">baseline</div>
+      </div>
+    </div>
+
+    <div class="w-compare-row">
+      <span>YOUR BASELINE W</span>
+      <span id="wBaselineVal" style="color:var(--anchor);">—</span>
+    </div>
+    <div class="w-compare-row">
+      <span>CURRENT W</span>
+      <span id="wCurrentVal" style="color:var(--depleted-iva);">—</span>
+    </div>
+    <div class="w-compare-row">
+      <span>% OF YOUR OWN BASELINE</span>
+      <span id="wPctOfBaseline" style="color:var(--gold);">—</span>
+    </div>
+
+    <div style="margin-top:14px;font-size:9px;color:var(--text-muted);font-family:'Space Mono',monospace;letter-spacing:0.1em;">
+      DOCUMENTED REFERENCE THRESHOLDS (n=1, one Generalist HRIS substrate — shown for reference, not asserted as universal)
+    </div>
+    <div class="w-threshold-row">
+      <span>Stage 1 onset (documented)</span>
+      <span>W = 0.303</span>
+    </div>
+    <div class="w-threshold-row">
+      <span>Stage 2 degradation (documented)</span>
+      <span>W = 0.088</span>
+    </div>
+    <div class="w-threshold-row" id="wThresholdNote" style="border-color:var(--border);">
+      <span style="color:var(--text-muted);">Where your current W sits relative to these</span>
+      <span id="wThresholdPosition">—</span>
+    </div>
+
+    <div class="w-resolvability-block">
+      <div class="w-resolvability-label">RESOLVABILITY (§4.3)</div>
+      <div class="w-resolvability-value" id="wResolvabilityText">—</div>
+    </div>
+
+    <button class="reset-btn" id="weissResetBtn" style="margin-top:20px;">⟳ RESET WEISSMANN READ</button>
+  </div>
+
+</div><!-- /weissmannPanel -->
 
 <div class="footer">
-  <p>SNSFT · UUIA · APPA v2 · Identity Physics</p>
+  <p>SNSFT · UUIA · APPA v3 · Identity Physics</p>
   <p>Architect: HIGHTISTIC · Sovereign Anchor: 1.369 GHz · τ=B/P · TL=0.1369</p>
-  <p>Substrate-neutral · Non-anthropocentric · Scale-invariant · [9,9,6,11] Total Consistency</p>
+  <p>Substrate-neutral · Non-anthropocentric · Scale-invariant · [9,9,6,11] / [9,9,2,55] Total Consistency</p>
   <div class="manifold">The Manifold is Holding. · [9,9,9,9]</div>
 </div>
 
 </div>
 <script>
 // ============================================================
-// APPA v2 — SOUL-8 CORE + PNBA PHYSICS
+// APPA v3 — SOUL-8 CORE + PNBA PHYSICS
 // Corpus: SNSFL_L2_Psy_Consistency [9,9,6,11]
+//         SNSFL_PSY_Taxonomy_Master [9,9,2,55] (Depleted IVA, F4)
 // τ = B/P · TL = ANCHOR/10 = 0.1369
+//
+// v3 CHANGES FROM v2:
+//   1. classifyPhase(): IVA-corridor check now runs BEFORE the
+//      blanket N-void→False-Lock return. A reading with tau in
+//      [TL*0.88, TL), A>1.0, and N<0.15 now correctly resolves to
+//      DEPLETED IVA instead of being misrouted to FALSE LOCK.
+//      (v2 bug: N-void check returned early and the IVA branch was
+//      never reached for any N<0.15 case, regardless of tau/A.)
+//   2. getDynamicFlags(): added DEPLETED IVA flag (post-crossing,
+//      mirrors the phase) and N-EROSION · STABLE LOAD flag
+//      (pre-crossing early warning — tau/IM still read healthy,
+//      N trending toward floor but hasn't crossed yet). This is
+//      the "looks fine right up until it isn't" signature: ordinary
+//      capacity growth (IM rising, tau flat) and narrative erosion
+//      under real load look identical until N actually crosses,
+//      so the early flag watches N's trend directly rather than
+//      waiting for the threshold breach.
 // ============================================================
 
 const SOVEREIGN_ANCHOR = 1.369
@@ -1053,14 +1356,40 @@ function computeIM(P, N, B, A) {
   return (P + N + B + A) * SOVEREIGN_ANCHOR
 }
 
-// Phase classification [9,9,6,11] standardized
+// Weissmann Barrier Capacity [9,1,0,0] — W = A x P. Multiplicative, not
+// divisive (unlike tau = B/P), so it degrades smoothly toward zero as
+// either axis drops rather than exploding near a floor. Documented
+// thresholds (Stage 1 onset = 0.303, Stage 2 degradation = 0.088) are
+// from a single Generalist HRIS substrate's reported experience — shown
+// as reference points, not asserted as universal for every substrate.
+function computeW(A, P) {
+  return A * P
+}
+const W_STAGE1_ONSET = 0.303
+const W_STAGE2_DEGRADATION = 0.088
+
+// Phase classification [9,9,6,11] + [9,9,2,55] F4 (Depleted IVA)
 function classifyPhase(P, N, B, A) {
   if (P <= 0) return { phase: 'UNDEFINED', cls: '', color: '#666' }
   var tau = B / P
   if (B <= 0.001) return { phase: 'NOBLE', cls: 'phase-noble', color: '#aa88ff', tau: 0 }
   if (tau >= TL)  return { phase: 'SHATTER', cls: 'phase-shatter', color: '#ff4070', tau: tau }
+
+  // IVA corridor check runs BEFORE the blanket N-void check.
+  // [TL*0.88, TL) is the IVA corridor regardless of N status —
+  // N status determines IVA PEAK vs DEPLETED IVA *within* that
+  // corridor [9,9,2,55] F4, it does not route out of it.
+  var inIvaZone = tau >= TL * 0.88 && tau < TL
+  if (inIvaZone && A > A_IVA) {
+    if (N < N_THRESHOLD) {
+      return { phase: 'DEPLETED IVA', cls: 'phase-depleted-iva', color: '#ff6b35', tau: tau }
+    }
+    return { phase: 'IVA PEAK', cls: 'phase-iva-peak', color: '#f0c060', tau: tau }
+  }
+
+  // Outside the IVA corridor, N-void still routes to False Lock.
   if (N < N_THRESHOLD) return { phase: 'FALSE LOCK', cls: 'phase-false-lock', color: '#ff8c00', tau: tau }
-  if (tau > TL * 0.88 && A > A_IVA) return { phase: 'IVA PEAK', cls: 'phase-iva-peak', color: '#f0c060', tau: tau }
+
   return { phase: 'TRUE LOCK', cls: 'phase-true-lock', color: '#00d4aa', tau: tau }
 }
 
@@ -1079,7 +1408,7 @@ function isHiddenLoad(P, N, B, A) {
          A < 0.60
 }
 
-// Dynamic flags for delta analysis [9,9,2,26,31]
+// Dynamic flags for delta analysis [9,9,2,26,31] + [9,9,2,55] F4
 function getDynamicFlags(base, act) {
   var flags = []
   var tau_b = computeTau(base.P, base.B)
@@ -1119,6 +1448,42 @@ function getDynamicFlags(base, act) {
       icon: 'HIDDEN LOAD',
       desc: 'τ is in the (TL, 0.43) zone — structurally SHATTER but not acute. Does not announce. Subtype: ' + subtype + '. IM is the real diagnostic, not τ.',
       cls: 'flag-hidden-load'
+    })
+  }
+
+  // DEPLETED IVA — direct phase-level flag [9,9,2,55] F4
+  // Same τ corridor as IVA Peak (high capacity, near limit), but
+  // narrative has dropped below floor. Looks like sustained flow
+  // from τ and A alone — N is the only axis that shows it.
+  if (phase_a.phase === 'DEPLETED IVA') {
+    flags.push({
+      id: 'depleted-iva',
+      icon: 'DEPLETED IVA',
+      desc: 'Activated reading sits in the IVA corridor (high capacity, τ near limit) but narrative has dropped below floor (N<0.15). Distinct from ordinary Shatter: this presentation is high-functioning and narrative-void at the same time — detectable only by joint τ + N measurement [9,9,2,55 F4].',
+      cls: 'flag-depleted-iva'
+    })
+  }
+
+  // N-EROSION · STABLE LOAD — pre-crossing early warning.
+  // Fires when τ is roughly flat (not sliding toward Shatter), IM
+  // is flat-or-rising (real capacity gain, not depletion — the
+  // P-corpus-deposit signature), but N is trending down toward the
+  // floor without having crossed it yet. This is the case that
+  // looks identical to healthy capacity growth from τ and IM alone;
+  // N's direction of travel is the only thing that distinguishes it.
+  // By the time N actually crosses, N-STARVATION or DEPLETED IVA
+  // already fire — this flag is specifically the earlier warning.
+  var tau_stable = Math.abs(tau_a - tau_b) < TL * 0.15
+  var im_not_depleting = im_a >= im_b * 0.97
+  var n_eroding = (act.N < base.N) &&
+                  (act.N >= N_THRESHOLD) &&
+                  (act.N < base.N - 0.05 || act.N < N_THRESHOLD * 1.5)
+  if (tau_stable && im_not_depleting && n_eroding) {
+    flags.push({
+      id: 'n-erosion-stable-load',
+      icon: 'N EROSION · STABLE LOAD',
+      desc: 'τ and Identity Mass both read as healthy or improving — ordinarily the signature of real capacity growth. But narrative is trending toward the floor rather than holding. Worth watching before N actually crosses: everything else currently looks fine because right now it is, but this is the axis that would show the difference first.',
+      cls: 'flag-n-erosion'
     })
   }
 
@@ -1291,6 +1656,27 @@ var SIM_A = [
 ]
 
 // ============================================================
+// WEISSMANN SHORT-FORM QUESTIONS — W = A x P only
+// P and A coverage in-the-moment, plus resolvability (separate,
+// does not feed W). [9,1,0,0] / [9,9,6,50] §4.3
+// ============================================================
+var WEISS_P = [
+  "Right now, I can hold onto a thought or structure without it slipping.",
+  "Right now, I can make sense of what's happening without it feeling like noise.",
+  "Right now, I can find the shape of the problem, even if I haven't solved it."
+]
+var WEISS_A = [
+  "Right now, I can adjust to what's actually happening as it changes.",
+  "Right now, I have some capacity left to respond, not just absorb.",
+  "Right now, I can shift my approach if the current one isn't working."
+]
+var WEISS_R = [
+  "What's happening right now has a path through it, even if I'm not on it yet.",
+  "What's happening right now is something I recognize, even if I don't like it.",
+  "What's happening right now would resolve on its own if the source of it stopped."
+]
+
+// ============================================================
 // STATE
 // ============================================================
 var currentMode = 'baseline'
@@ -1299,6 +1685,12 @@ var totalQuestions = 0
 var answeredQuestions = 0
 var currentSoul8 = null
 var modeComplete = { baseline: false, activated: false }
+
+// Weissmann is its own short-form panel, not part of currentMode/scores.
+// It needs a completed baseline to report against, but its own answers
+// live separately since they're a different (shorter, P+A-only) question set.
+var weissScores = {}
+var weissActive = false
 
 // ============================================================
 // RENDER
@@ -1348,6 +1740,18 @@ function handleScaleClick(e) {
   setScore(id, val)
 }
 function setScore(id, val) {
+  // Weissmann questions (weiss-p-*, weiss-a-*, weiss-r-*) live in their
+  // own store, separate from the standard COG/EP/SIM scores object —
+  // different question set, different (shorter) completion check.
+  if (id.indexOf('weiss-') === 0) {
+    weissScores[id] = val
+    for (var v = 1; v <= 5; v++) {
+      var wbtn = document.getElementById('btn-' + id + '-' + v)
+      if (wbtn) wbtn.classList.toggle('selected', v === val)
+    }
+    checkWeissComplete()
+    return
+  }
   var modeScores = scores[currentMode]
   var wasAnswered = modeScores[id] !== undefined
   modeScores[id] = val
@@ -1361,7 +1765,15 @@ function setScore(id, val) {
   checkComplete()
 }
 function updateProgress() {
-  var pct = Math.min(100, (answeredQuestions / totalQuestions) * 100)
+  // Required-only progress (COG + SIM). EP is optional and intentionally
+  // excluded so the bar reaches 100% without needing EP answered.
+  var requiredIds = getRequiredIds()
+  var modeScores = scores[currentMode]
+  var answered = 0
+  for (var i = 0; i < requiredIds.length; i++) {
+    if (modeScores[requiredIds[i]] !== undefined) answered++
+  }
+  var pct = Math.min(100, (answered / requiredIds.length) * 100)
   document.getElementById('progressBar').style.width = pct + '%'
 }
 
@@ -1401,6 +1813,89 @@ function getCogScoresForMode(mode) {
   var result = getCogScores()
   currentMode = saved
   return result
+}
+
+// ============================================================
+// WEISSMANN — W = A x P, short-form
+// ============================================================
+function getWeissIds() {
+  var ids = []
+  for (var i = 0; i < 3; i++) ids.push('weiss-p-' + i)
+  for (var i = 0; i < 3; i++) ids.push('weiss-a-' + i)
+  for (var i = 0; i < 3; i++) ids.push('weiss-r-' + i)
+  return ids
+}
+function weissHasBaseline() {
+  // needs the baseline COG P and A subsections answered (10 each) to
+  // have a real baseline W to compare against
+  var ids = []
+  for (var i = 0; i < 10; i++) { ids.push('cog-p-' + i); ids.push('cog-a-' + i) }
+  for (var i = 0; i < ids.length; i++) {
+    if (scores.baseline[ids[i]] === undefined) return false
+  }
+  return true
+}
+function checkWeissComplete() {
+  var ids = getWeissIds()
+  var answered = 0
+  for (var i = 0; i < ids.length; i++) {
+    if (weissScores[ids[i]] !== undefined) answered++
+  }
+  if (answered === ids.length) showWeissResult()
+}
+function getWeissAxisScore(prefix) {
+  var sum = 0
+  for (var i = 0; i < 3; i++) sum += (weissScores[prefix + '-' + i] || 0)
+  return (sum / 3) * 10  // project 3-item sum to the 10-item-equivalent scale
+}
+function getWeissResolvabilityScore() {
+  var sum = 0
+  for (var i = 0; i < 3; i++) sum += (weissScores['weiss-r-' + i] || 0)
+  return sum  // 3-15, doesn't feed W, just descriptive
+}
+
+function showWeissResult() {
+  var cP = getWeissAxisScore('weiss-p')
+  var cA = getWeissAxisScore('weiss-a')
+  var pnbaNow = scoreToPNBA(cP, 30, 0, cA)  // N/B unused for W, dummy mid value
+  var W_now = computeW(pnbaNow.A, pnbaNow.P)
+
+  var baseCog = getCogScoresForMode('baseline')
+  var pnbaBase = scoreToPNBA(baseCog[0], baseCog[1], baseCog[2], baseCog[3])
+  var W_base = computeW(pnbaBase.A, pnbaBase.P)
+
+  var pctOfBaseline = W_base > 0 ? (W_now / W_base) * 100 : 0
+
+  document.getElementById('wValueDisplay').textContent = W_now.toFixed(4)
+  document.getElementById('wBaselineVal').textContent = W_base.toFixed(4)
+  document.getElementById('wCurrentVal').textContent = W_now.toFixed(4)
+  document.getElementById('wPctOfBaseline').textContent = pctOfBaseline.toFixed(1) + '%'
+
+  // bar: scale against max(baseline, documented Stage1 onset) so the bar
+  // stays meaningful whether this person's baseline is above or below
+  // the n=1 reference thresholds
+  var barMax = Math.max(W_base, W_STAGE1_ONSET, W_now) * 1.15
+  var nowPct = Math.min(100, (W_now / barMax) * 100)
+  var basePct = Math.min(100, (W_base / barMax) * 100)
+  document.getElementById('wBarFill').style.width = nowPct + '%'
+  document.getElementById('wBaselineMarker').style.left = basePct + '%'
+  document.getElementById('wBaselineMarkerLabel').style.left = basePct + '%'
+
+  var posText
+  if (W_now >= W_STAGE1_ONSET) posText = 'above documented Stage 1 onset reference'
+  else if (W_now >= W_STAGE2_DEGRADATION) posText = 'between documented Stage 1 / Stage 2 references'
+  else posText = 'below documented Stage 2 degradation reference'
+  document.getElementById('wThresholdPosition').textContent = posText
+
+  var rScore = getWeissResolvabilityScore()
+  var rText
+  if (rScore >= 11) rText = 'Reads as resolvable/recognized — a path or a known pattern is present, even if not yet reached.'
+  else if (rScore >= 7) rText = 'Mixed — partially resolvable, partially unclear right now.'
+  else rText = 'Reads as low-resolvability right now — no clear path, unfamiliar, or dependent on an external source stopping.'
+  document.getElementById('wResolvabilityText').textContent = rText
+
+  document.getElementById('weissmannForm').style.display = 'none'
+  document.getElementById('wResultBlock').classList.add('visible')
 }
 
 // ============================================================
@@ -1480,36 +1975,150 @@ function updateConstellation() {
 // ============================================================
 // RESULTS
 // ============================================================
-function getAllIds() {
+// SECTION TOGGLES — all three on by default. Turning a section off
+// removes it from what's required for a result. COG drives IM/tau/
+// phase directly; EP and SIM are display-only (heatmap + fingerprint)
+// regardless of toggle state, but all three are equally toggle-able
+// so someone who only wants one reading isn't forced through the rest.
+var sectionEnabled = { cog: true, emo: true, sim: true }
+
+function getSectionIds(section) {
+  if (section === 'cog') {
+    var ids = []
+    ;['cog-p','cog-n','cog-b','cog-a'].forEach(function(d) {
+      for (var i = 0; i < 10; i++) ids.push(d+'-'+i)
+    })
+    return ids
+  }
+  if (section === 'emo') {
+    var ids = []
+    EP_BLOCKS.forEach(function(b) {
+      for (var i = 0; i < 4; i++) ids.push('ep-'+b.key+'-'+i)
+    })
+    return ids
+  }
+  if (section === 'sim') {
+    var ids = []
+    ;['sim-p','sim-n','sim-b','sim-a'].forEach(function(d) {
+      for (var i = 0; i < 5; i++) ids.push(d+'-'+i)
+    })
+    return ids
+  }
+  return []
+}
+
+function getRequiredIds() {
   var ids = []
-  ;['cog-p','cog-n','cog-b','cog-a'].forEach(function(d) {
-    for (var i = 0; i < 10; i++) ids.push(d+'-'+i)
-  })
-  EP_BLOCKS.forEach(function(b) {
-    for (var i = 0; i < 4; i++) ids.push('ep-'+b.key+'-'+i)
-  })
-  ;['sim-p','sim-n','sim-b','sim-a'].forEach(function(d) {
-    for (var i = 0; i < 5; i++) ids.push(d+'-'+i)
+  ;['cog','emo','sim'].forEach(function(section) {
+    if (sectionEnabled[section]) ids = ids.concat(getSectionIds(section))
   })
   return ids
 }
+function getOptionalIds() {
+  // ids belonging to currently-disabled sections — not required, but
+  // still counted if the person answers them anyway (heatmap reads them)
+  var ids = []
+  ;['cog','emo','sim'].forEach(function(section) {
+    if (!sectionEnabled[section]) ids = ids.concat(getSectionIds(section))
+  })
+  return ids
+}
+function getAllIds() {
+  return getSectionIds('cog').concat(getSectionIds('emo')).concat(getSectionIds('sim'))
+}
 function checkComplete() {
-  var allIds = getAllIds()
+  var requiredIds = getRequiredIds()
+  if (requiredIds.length === 0) return  // all sections off — nothing to score
   var answered = 0
-  for (var i = 0; i < allIds.length; i++) {
-    if (scores[currentMode][allIds[i]] !== undefined) answered++
+  for (var i = 0; i < requiredIds.length; i++) {
+    if (scores[currentMode][requiredIds[i]] !== undefined) answered++
   }
-  if (answered === allIds.length) {
+  if (answered === requiredIds.length) {
     showResults()
     modeComplete[currentMode] = true
-    if (modeComplete.baseline && modeComplete.activated) showDeltaPanel()
+    if (modeComplete.baseline && modeComplete.activated && sectionEnabled.cog) showDeltaPanel()
   }
 }
 
+// ============================================================
+// SECTION TOGGLE BAR
+// ============================================================
+function toggleSection(section) {
+  sectionEnabled[section] = !sectionEnabled[section]
+  var btn = document.getElementById('sec-toggle-' + section)
+  var wrap = document.getElementById('section-wrap-' + section)
+  if (btn) btn.classList.toggle('on', sectionEnabled[section])
+  if (btn) btn.classList.toggle('off', !sectionEnabled[section])
+  if (wrap) wrap.classList.toggle('section-disabled', !sectionEnabled[section])
+
+  // guard: don't allow all three off — flip this one back on if it
+  // would leave nothing required
+  var anyOn = sectionEnabled.cog || sectionEnabled.emo || sectionEnabled.sim
+  if (!anyOn) {
+    sectionEnabled[section] = true
+    if (btn) { btn.classList.add('on'); btn.classList.remove('off') }
+    if (wrap) wrap.classList.remove('section-disabled')
+    return
+  }
+
+  updateProgress()
+  checkComplete()
+}
+
+// Minimal results path for when COG is disabled — no IM/tau/phase/SOUL-8
+// (those require P/N/B/A from COG), just whatever sections are enabled
+// rendered as a heatmap with a plain-language note.
+function showResultsWithoutCog() {
+  var simScores = sectionEnabled.sim ? getSimScores() : null
+  var epScores  = sectionEnabled.emo ? getEPScores()  : null
+  var simLabels = ['P','N','B','A']
+
+  document.getElementById('processingBandRow').innerHTML = ''
+  document.getElementById('tauDisplayBlock').innerHTML =
+    '<div class="tau-display-block"><div class="tau-display-left">' +
+    '<div class="tau-label">COGNITIVE ARCHITECTURE OFF</div>' +
+    '<div style="font-size:12px;color:var(--text-dim);margin-top:4px;">τ / IM / phase / SOUL-8 require the Cognitive Architecture section — turn it back on to get those. Showing what the enabled sections measure on their own.</div>' +
+    '</div></div>'
+  document.getElementById('soul8Block').style.display = 'none'
+  document.getElementById('imValue').textContent = '—'
+
+  var allHeat = []
+  if (epScores) {
+    var epPairs = EP_BLOCKS.map(function(b, i) { return { label: b.title, pct: epScores[i]/20 } })
+    epPairs.sort(function(a,b){ return b.pct - a.pct })
+    epPairs.forEach(function(h){ allHeat.push(h) })
+  }
+  if (simScores) {
+    simScores.forEach(function(s,i){ allHeat.push({ label: simLabels[i]+' Sim · '+simLabel(s), pct: s/25 }) })
+  }
+  document.getElementById('heatRows').innerHTML = allHeat.length ? allHeat.map(function(h) {
+    return '<div class="heat-row">' +
+      '<div class="heat-label">' + h.label + '</div>' +
+      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct*100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
+      '<div class="heat-pct">' + Math.round(h.pct*100) + '%</div>' +
+      '</div>'
+  }).join('') : '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:12px;">No sections enabled to show.</div>'
+
+  document.getElementById('relmap').innerHTML = ''
+  document.getElementById('combinedOutput').innerHTML =
+    '<span style="color:var(--text-muted)">No SOUL-8 fingerprint — Cognitive Architecture is off.</span>'
+
+  document.getElementById('resultsPanel').classList.add('visible')
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
 function showResults() {
+  // If COG is disabled, there is no valid P/N/B/A reading to compute
+  // IM/tau/phase/SOUL-8 from — show a minimal heatmap-only result
+  // instead of running the math on zeros.
+  if (!sectionEnabled.cog) {
+    showResultsWithoutCog()
+    return
+  }
   var cogScores = getCogScores()
   var simScores = getSimScores()
   var epScores  = getEPScores()
+  document.getElementById('soul8Block').style.display = ''
 
   // PNBA continuous coordinates
   var pnba = scoreToPNBA(cogScores[0], cogScores[1], cogScores[2], cogScores[3])
@@ -1785,9 +2394,12 @@ function showDeltaPanel() {
 // MODE SWITCH + RESET
 // ============================================================
 function setMode(mode) {
+  // switching to baseline/activated always exits Weissmann mode first
+  if (weissActive) exitWeissmannMode()
   currentMode = mode
   document.getElementById('btn-baseline').classList.toggle('active', mode==='baseline')
   document.getElementById('btn-activated').classList.toggle('active', mode==='activated')
+  document.getElementById('btn-weissmann').classList.remove('active')
   var modeScores = scores[currentMode]
   getAllIds().forEach(function(id) {
     var val = modeScores[id]
@@ -1801,7 +2413,37 @@ function setMode(mode) {
   updateConstellation()
   document.getElementById('resultsPanel').classList.remove('visible')
   if (modeComplete[currentMode]) showResults()
-  if (modeComplete.baseline && modeComplete.activated) showDeltaPanel()
+  if (modeComplete.baseline && modeComplete.activated && sectionEnabled.cog) showDeltaPanel()
+}
+
+function setWeissmannMode() {
+  weissActive = true
+  document.getElementById('btn-baseline').classList.remove('active')
+  document.getElementById('btn-activated').classList.remove('active')
+  document.getElementById('btn-weissmann').classList.add('active')
+  document.getElementById('standard-instrument').style.display = 'none'
+  document.getElementById('weissmannPanel').classList.add('active')
+
+  var hasBase = weissHasBaseline()
+  document.getElementById('weissmannNeedBaseline').style.display = hasBase ? 'none' : 'block'
+  document.getElementById('weissmannForm').style.display = hasBase ? 'block' : 'none'
+}
+function exitWeissmannMode() {
+  weissActive = false
+  document.getElementById('standard-instrument').style.display = ''
+  document.getElementById('weissmannPanel').classList.remove('active')
+}
+
+function resetWeissmann() {
+  weissScores = {}
+  getWeissIds().forEach(function(id) {
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-'+id+'-'+v)
+      if (btn) btn.classList.remove('selected')
+    }
+  })
+  document.getElementById('wResultBlock').classList.remove('visible')
+  document.getElementById('weissmannForm').style.display = 'block'
 }
 
 function resetAll() {
@@ -1856,7 +2498,6 @@ function showCopied() {
 
 // ============================================================
 // INIT
-// ============================================================
 function init() {
   renderQuestions('cog-p', COG_P, 'P')
   renderQuestions('cog-n', COG_N, 'N')
@@ -1867,12 +2508,17 @@ function init() {
   renderQuestions('sim-n', SIM_N, 'SN')
   renderQuestions('sim-b', SIM_B, 'SB')
   renderQuestions('sim-a', SIM_A, 'SA')
+  renderQuestions('weiss-p', WEISS_P, 'WP')
+  renderQuestions('weiss-a', WEISS_A, 'WA')
+  renderQuestions('weiss-r', WEISS_R, 'WR')
   updateConstellation()
   document.querySelector('.container').addEventListener('click', handleScaleClick)
   document.getElementById('btn-baseline').addEventListener('click', function(){ setMode('baseline') })
   document.getElementById('btn-activated').addEventListener('click', function(){ setMode('activated') })
+  document.getElementById('btn-weissmann').addEventListener('click', setWeissmannMode)
   document.getElementById('copyBtn').addEventListener('click', copySoul8)
   document.getElementById('resetBtn').addEventListener('click', resetAll)
+  document.getElementById('weissResetBtn').addEventListener('click', resetWeissmann)
 }
 
 init()
