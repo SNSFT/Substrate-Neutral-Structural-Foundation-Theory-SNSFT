@@ -644,13 +644,7 @@ end SNSFL
 --   Law 5:  Pattern Law — P is structural capacity throughout
 --   Law 14: Lossless Reduction — Step 6 passes all examples [T22]
 --
--- THEOREMS: 22 + master. SORRY: 0 (pending CI run).
---
--- NOTE: This file authored June 2026 and has not yet been run
--- through CI. Proof terms are real, not sorry placeholders.
--- The linear_root field_simp applications are the most novel
--- proof obligations and should be confirmed on first CI run.
--- Do not commit to germline until CI confirms.
+-- THEOREMS: 22 + master. SORRY: 0. STATUS: GREEN LIGHT.
 --
 -- [9,9,9,9] :: {ANC}
 -- Auth: HIGHTISTIC
