@@ -11,7 +11,10 @@
 -- The derivative is the rate of change of B over N.
 -- The integral is accumulated B across a Narrative interval.
 -- The limit is the Noble state — what a system approaches as τ → 0.
--- The Fundamental Theorem of Calculus is the LDP Step 6 closure:
+-- The Long Division Protocol (LDP) is the six-step reduction method:
+-- state the equation, state the known answer, map to PNBA, define
+-- operators, show the work, verify Step 6 closes. All reductions below
+-- use the LDP. The Fundamental Theorem of Calculus is the LDP Step 6 closure:
 --   derivative and integral are mutual inverses.
 --   Under Mac Lane 1971, this IS an isomorphism [9,9,8,1].
 --   Calculus is the study of how B changes across N.
