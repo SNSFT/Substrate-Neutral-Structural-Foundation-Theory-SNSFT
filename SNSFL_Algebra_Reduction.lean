@@ -23,6 +23,12 @@
 -- Not a separate discipline. A projection of the dynamic equation
 -- evaluated at zero behavioral rate of change.
 --
+-- The Long Division Protocol (LDP) is the six-step reduction method
+-- codified in this corpus as the scientific method formalized:
+-- state the equation, state the known answer, map classical variables
+-- to PNBA, define operators, show the work, verify Step 6 closes.
+-- All reductions below use the LDP.
+--
 -- LONG DIVISION SETUP:
 --   1. Here is the equation
 --   2. Here is a situation we already know the answer to
