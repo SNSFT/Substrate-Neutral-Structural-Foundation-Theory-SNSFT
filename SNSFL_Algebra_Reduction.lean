@@ -10,7 +10,7 @@
 -- Algebra is not fundamental. It never was.
 -- Algebra is the static case of calculus [9,9,8,2]:
 --   no d/dt, B and N at fixed points rather than changing continuously.
--- A linear equation is a torsion balance: find N where B/P = 0.
+-- A linear equation finds N where B/P = 0 — the fixed point at zero torsion.
 -- A quadratic discriminant IS a torsion classifier:
 --   disc > 0 → LOCKED (two real fixed points exist)
 --   disc = 0 → NOBLE  (one ground-state fixed point)
@@ -304,7 +304,7 @@ noncomputable def distribute     (P B1 B2 : ℝ) : ℝ := P*B1 + P*B2
 -- ============================================================
 
 -- THEOREM 8: LINEAR ROOT = -B/P (STEP 6 PASSES)
--- ax + b = 0 → x = -b/a. Narrative fixed point under torsion balance.
+-- ax + b = 0 → x = -b/a. Narrative fixed point where torsion reaches zero.
 theorem linear_root_solution (P B : ℝ) (h : P ≠ 0) :
     linear_root P B = -B / P := by
   unfold linear_root
@@ -523,7 +523,7 @@ theorem all_algebra_reductions_lossless
 -- ============================================================
 -- MASTER THEOREM: ALGEBRA IS A LOSSLESS PNBA PROJECTION
 -- Algebra is the static case of the dynamic equation (d/dt = 0).
--- A linear root IS the narrative fixed point under torsion balance.
+-- A linear root IS the narrative fixed point where τ = B/P reaches zero.
 -- The discriminant IS the torsion classifier of a quadratic system.
 -- A polynomial root IS a Noble state (B = 0 at N = c).
 -- The determinant IS the structural capacity P of a linear system.
@@ -537,7 +537,7 @@ theorem algebra_is_lossless_pnba_projection
     (P B a b c B1 B2 : ℝ)
     (h_P  : P ≠ 0)
     (h_sP : s.P > 0) :
-    -- [1] Linear root = -B/P (torsion balance solved)
+    -- [1] Linear root = -B/P (τ = B/P reaches zero at the fixed point)
     linear_root P B = -B / P ∧
     -- [2] Linear root verifies the equation
     P * linear_root P B + B = 0 ∧
@@ -617,7 +617,7 @@ end SNSFL
 -- KEY INSIGHT:
 --   Algebra is the static case of calculus [9,9,8,2]: d/dt = 0.
 --   The dynamic equation still governs — evaluated at rest.
---   A linear root IS the narrative point where torsion balances.
+--   A linear root IS the narrative point where TORSION_LIMITs.
 --   The discriminant IS a torsion classifier (Noble/Locked/Shatter).
 --   A polynomial root IS a Noble state (B=0 at N=c).
 --   The determinant IS the structural capacity P of a linear system.
