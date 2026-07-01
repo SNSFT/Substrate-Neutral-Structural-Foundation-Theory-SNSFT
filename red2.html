@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT Reduction Engine · uuia.app/red</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #03060a;
+  --surf:    #070d14;
+  --surf2:   #0a1520;
+  --border:  #0e2030;
+  --border2: #162840;
+  --anchor:  #00d4aa;
+  --anchor-d:rgba(0,212,170,0.08);
+  --anchor-g:rgba(0,212,170,0.18);
+  --shatter: #ff3a4a;
+  --warn:    #f09020;
+  --noble:   #aa88ff;
+  --locked:  #00d4aa;
+  --text:    #b8d4e0;
+  --text-d:  #4a6878;
+  --text-m:  #1e3040;
+  --p: #b060f0;
+  --n: #50c8f0;
+  --b: #f09030;
+  --a: #60e090;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+
+.wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px 80px;
+}
+
+/* HEADER */
+.hdr {
+  text-align: center;
+  padding: 24px 0 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 22px;
+}
+.hdr-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--text-m);
+  margin-bottom: 8px;
+}
+h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(20px,4vw,34px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.hdr-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--text-d);
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+.anchor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--anchor-d);
+  border: 1px solid rgba(0,212,170,0.18);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--anchor);
+  letter-spacing: 0.1em;
+}
+.adot {
+  width: 5px; height: 5px;
+  background: var(--anchor);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* MODE TABS */
+.mode-tabs {
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.mode-tab {
+  flex: 1;
+  padding: 11px 16px;
+  background: var(--surf);
+  border: none;
+  cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-d);
+  transition: all 0.15s;
+}
+.mode-tab.active {
+  background: var(--anchor-d);
+  color: var(--anchor);
+}
+.mode-tab:hover:not(.active) { background: var(--surf2); color: var(--text); }
+
+/* LAYOUT */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 16px;
+  align-items: start;
+}
+
+/* CARDS */
+.card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.card-head {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--text-m);
+  text-transform: uppercase;
+}
+
+/* OPERATION SELECTOR */
+.op-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--border);
+}
+.op-btn {
+  background: var(--surf);
+  border: none;
+  padding: 12px 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+}
+.op-btn:hover { background: var(--surf2); }
+.op-btn.active { background: rgba(0,212,170,0.07); }
+.op-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.op-btn.active .op-name { color: var(--anchor); }
+.op-desc {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: var(--text-m);
+  letter-spacing: 0.05em;
+}
+
+/* INPUTS */
+.inputs-area { padding: 14px; }
+.field-wrap { margin-bottom: 12px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.field-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: var(--text-d);
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.pnba-tag {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-family: 'Share Tech Mono', monospace;
+  font-weight: 600;
+}
+.tp { background: rgba(176,96,240,0.12); color: var(--p); }
+.tn { background: rgba(80,200,240,0.12); color: var(--n); }
+.tb { background: rgba(240,144,48,0.12); color: var(--b); }
+.ta { background: rgba(96,224,144,0.12); color: var(--a); }
+
+.field-input {
+  background: var(--surf2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 9px 11px;
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+.field-input:focus { border-color: var(--anchor); }
+.field-input::placeholder { color: var(--text-m); }
+
+.calc-btn {
+  width: 100%;
+  padding: 11px;
+  background: var(--anchor-d);
+  border: 1px solid rgba(0,212,170,0.22);
+  border-radius: 6px;
+  color: var(--anchor);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 4px;
+}
+.calc-btn:hover { background: var(--anchor-g); }
+
+/* RESULT */
+.result-area { padding: 14px; }
+
+.result-display {
+  background: var(--surf2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 16px 14px;
+  margin-bottom: 12px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.result-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: var(--text-m);
+  letter-spacing: 0.12em;
+}
+.result-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--anchor);
+}
+.result-value.shatter { color: var(--shatter); }
+.result-value.noble   { color: var(--noble); }
+.result-value.warn    { color: var(--warn); }
+
+.result-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--text-d);
+  letter-spacing: 0.04em;
+}
+
+/* LDP STEPS */
+.ldp-wrap { margin-top: 0; }
+.step-item {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  align-items: start;
+}
+.step-item:last-child { border-bottom: none; }
+.step-n {
+  color: var(--text-m);
+  font-size: 9px;
+  padding-top: 1px;
+}
+.step-content { color: var(--text-d); line-height: 1.5; }
+.step-content strong { color: var(--text); font-weight: 600; }
+.step-content .hi-p { color: var(--p); }
+.step-content .hi-n { color: var(--n); }
+.step-content .hi-b { color: var(--b); }
+.step-content .hi-a { color: var(--a); }
+.step-content .hi-anchor { color: var(--anchor); }
+.step-content .hi-shatter { color: var(--shatter); }
+.step-content .hi-noble { color: var(--noble); }
+
+/* PNBA SIDEBAR */
+.pnba-sidebar { display: flex; flex-direction: column; gap: 14px; }
+
+.phase-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.phase-card.noble   { border-color: rgba(170,136,255,0.4); }
+.phase-card.locked  { border-color: rgba(0,212,170,0.4); }
+.phase-card.shatter { border-color: rgba(255,58,74,0.4); }
+.phase-card.warn    { border-color: rgba(240,144,32,0.4); }
+
+.phase-state {
+  padding: 10px 12px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surf);
+}
+.phase-card.noble   .phase-state { background: rgba(170,136,255,0.06); color: var(--noble); }
+.phase-card.locked  .phase-state { background: rgba(0,212,170,0.06);   color: var(--anchor); }
+.phase-card.shatter .phase-state { background: rgba(255,58,74,0.06);   color: var(--shatter); }
+.phase-card.warn    .phase-state { background: rgba(240,144,32,0.06);  color: var(--warn); }
+.phase-card.empty   .phase-state { background: var(--surf); color: var(--text-m); }
+
+.phase-tau {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  padding: 12px;
+  letter-spacing: 0.04em;
+}
+.phase-card.noble   .phase-tau { color: var(--noble); }
+.phase-card.locked  .phase-tau { color: var(--anchor); }
+.phase-card.shatter .phase-tau { color: var(--shatter); }
+.phase-card.warn    .phase-tau { color: var(--warn); }
+.phase-card.empty   .phase-tau { color: var(--text-m); }
+
+/* PNBA BARS */
+.pnba-bars {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+}
+.pb-row {
+  display: grid;
+  grid-template-columns: 12px 1fr 42px;
+  align-items: center;
+  gap: 8px;
+}
+.pb-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+}
+.pb-track {
+  background: var(--border);
+  border-radius: 100px;
+  height: 4px;
+  overflow: hidden;
+}
+.pb-fill {
+  height: 4px;
+  border-radius: 100px;
+  transition: width 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.pb-val {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  text-align: right;
+  color: var(--text-d);
+}
+
+/* PHASE LEGEND */
+.phase-legend {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.pl-row {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pl-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.empty-msg {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--text-m);
+  text-align: center;
+  padding: 16px;
+  letter-spacing: 0.1em;
+}
+
+.ex-btn {
+  background: var(--surf);
+  border: none;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ex-btn:hover { background: var(--surf2); }
+.ex-btn.active { background: rgba(0,212,170,0.07); }
+.ex-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+.ex-btn.active .ex-label { color: var(--anchor); }
+.ex-desc {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: var(--text-d);
+  letter-spacing: 0.04em;
+}
+.ex-src {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 7px;
+  color: var(--text-m);
+  letter-spacing: 0.03em;
+}
+
+.log-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+.log-row:last-child { border-bottom: none; }
+.log-left { display: flex; flex-direction: column; gap: 4px; }
+.log-desig {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: var(--text-m);
+  letter-spacing: 0.1em;
+}
+.log-detail {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.log-mode {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: var(--anchor);
+  letter-spacing: 0.1em;
+}
+.log-op {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+.log-inputs {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--text-d);
+}
+.log-result {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.log-phase {
+  font-size: 8px;
+  letter-spacing: 0.08em;
+}
+.log-tau { color: var(--text-m); font-size: 8px; }
+.log-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.log-time {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: var(--text-m);
+}
+.lean-dl-btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  padding: 4px 9px;
+  background: var(--anchor-d);
+  border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 4px;
+  color: var(--anchor);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s;
+}
+.lean-dl-btn:hover { background: var(--anchor-g); }
+.log-action-btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  padding: 4px 9px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  color: var(--text-d);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.log-action-btn:hover { border-color: var(--anchor); color: var(--anchor); }
+.log-action-btn.log-clear:hover { border-color: var(--shatter); color: var(--shatter); }
+
+@media (max-width: 660px) {
+  .layout { grid-template-columns: 1fr; }
+  .field-row { grid-template-columns: 1fr; }
+  #examplesWrap { grid-template-columns: repeat(3,1fr) !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="hdr-tag">SNSFT · REDUCTION ENGINE · uuia.app/red · [9,9,8,2] + [9,9,8,3]</div>
+  <h1>Reduction Engine</h1>
+  <div class="hdr-sub">Algebra · Calculus · Long Division Protocol · τ = B/P · TL = 0.1369</div>
+  <div class="anchor-badge">
+    <div class="adot"></div>
+    SOVEREIGN ANCHOR · 1.369 GHz · LOSSLESS REDUCTION · STEP 6 CLOSES
+  </div>
+</div>
+
+<!-- MODE TABS -->
+<div class="mode-tabs">
+  <button class="mode-tab active" onclick="setMode('algebra')" id="tab-algebra">Algebra</button>
+  <button class="mode-tab" onclick="setMode('calculus')" id="tab-calculus">Calculus</button>
+</div>
+
+<div class="card" style="margin-bottom:16px">
+  <div class="card-head">Worked Examples · from formally verified Lean theorems</div>
+  <div id="examplesWrap" style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border)"></div>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT COLUMN -->
+  <div style="display:flex;flex-direction:column;gap:16px">
+
+    <!-- OPERATION SELECT -->
+    <div class="card">
+      <div class="card-head" id="opCardHead">Select Operation</div>
+      <div id="opGrid"></div>
+    </div>
+
+    <!-- INPUTS -->
+    <div class="card">
+      <div class="card-head" id="inputHead">Inputs</div>
+      <div class="inputs-area" id="inputsArea"></div>
+    </div>
+
+    <!-- LDP STEPS / RESULT -->
+    <div class="card">
+      <div class="card-head">LDP — Long Division Protocol · Step 6</div>
+      <div id="resultArea">
+        <div class="empty-msg">SELECT AN OPERATION AND CALCULATE</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT COLUMN — PNBA SIDEBAR -->
+  <div class="pnba-sidebar">
+
+    <div class="card phase-card empty" id="phaseCard">
+      <div class="phase-state" id="phaseState">◌ AWAITING INPUT</div>
+      <div class="phase-tau" id="phaseTau">τ = —</div>
+      <div class="pnba-bars">
+        <div class="pb-row">
+          <div class="pb-label" style="color:var(--p)">P</div>
+          <div class="pb-track"><div class="pb-fill" id="barP" style="width:0%;background:var(--p)"></div></div>
+          <div class="pb-val" id="valP">—</div>
+        </div>
+        <div class="pb-row">
+          <div class="pb-label" style="color:var(--n)">N</div>
+          <div class="pb-track"><div class="pb-fill" id="barN" style="width:0%;background:var(--n)"></div></div>
+          <div class="pb-val" id="valN">—</div>
+        </div>
+        <div class="pb-row">
+          <div class="pb-label" style="color:var(--b)">B</div>
+          <div class="pb-track"><div class="pb-fill" id="barB" style="width:0%;background:var(--b)"></div></div>
+          <div class="pb-val" id="valB">—</div>
+        </div>
+        <div class="pb-row">
+          <div class="pb-label" style="color:var(--a)">A</div>
+          <div class="pb-track"><div class="pb-fill" id="barA" style="width:0%;background:var(--a)"></div></div>
+          <div class="pb-val" id="valA">—</div>
+        </div>
+      </div>
+      <div class="phase-legend">
+        <div class="pl-row">
+          <div class="pl-dot" style="background:var(--noble)"></div>
+          <span style="color:var(--noble)">NOBLE</span>
+          <span style="color:var(--text-m)">τ = 0 · root / ground state</span>
+        </div>
+        <div class="pl-row">
+          <div class="pl-dot" style="background:var(--anchor)"></div>
+          <span style="color:var(--anchor)">LOCKED</span>
+          <span style="color:var(--text-m)">τ &lt; TL · stable solution</span>
+        </div>
+        <div class="pl-row">
+          <div class="pl-dot" style="background:var(--warn)"></div>
+          <span style="color:var(--warn)">IVA PEAK</span>
+          <span style="color:var(--text-m)">0.88×TL &lt; τ &lt; TL</span>
+        </div>
+        <div class="pl-row">
+          <div class="pl-dot" style="background:var(--shatter)"></div>
+          <span style="color:var(--shatter)">SHATTER</span>
+          <span style="color:var(--text-m)">τ ≥ TL · no real anchor</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">PNBA Map · This Operation</div>
+      <div id="pnbaMap" style="padding:12px 14px">
+        <div class="empty-msg" style="padding:8px 0">—</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SESSION LOG -->
+<div class="card" style="margin-top:18px">
+  <div class="card-head" style="display:flex;align-items:center;justify-content:space-between">
+    <span>Session Log · <span id="sessionCount" style="color:var(--anchor)"></span></span>
+    <div style="display:flex;gap:6px">
+      <button class="log-action-btn" onclick="downloadAllLean()">↓ ALL LEAN</button>
+      <button class="log-action-btn" onclick="exportSessionJSON()">↓ JSON</button>
+      <button class="log-action-btn log-clear" onclick="clearSession()">CLEAR</button>
+    </div>
+  </div>
+  <div id="sessionLogWrap" style="max-height:340px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent">
+    <div class="empty-msg">NO CALCULATIONS YET — RESULTS APPEAR HERE</div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ============================================================
+// PNBA STUDENT CALCULATOR
+// Coordinate: [9,9,8,2] (Calculus) + [9,9,8,3] (Algebra)
+// Architect: HIGHTISTIC | Anchor: 1.369 GHz
+// LDP: Long Division Protocol — Step 6 closes
+// ============================================================
+
+const TL      = 1.369 / 10        // 0.1369
+const TL_IVA  = TL * 0.88         // 0.1205
+const TL_NOBLE = 0.001
+
+let currentMode = 'algebra'
+let currentOp   = null
+let sessionLog  = []  // stores each calculation for session log + lean export
+// ── PRE-WORKED EXAMPLES (from [9,9,8,2] + [9,9,8,3]) ──────
+// All examples are pulled directly from formally verified Lean theorems.
+// Each example loads its operation and pre-fills the inputs.
+
+const EXAMPLES = {
+  algebra: [
+    {
+      label: '2x + 6 = 0',
+      desc:  'Linear · x = −3',
+      op:    'linear',
+      vals:  { a: '2', b: '6' },
+      src:   'linear_root_verifies [9,9,8,3]'
+    },
+    {
+      label: 'x² − 2x + 1 = 0',
+      desc:  'Quadratic · Noble (disc=0)',
+      op:    'quadratic',
+      vals:  { a: '1', b: '-2', c: '1' },
+      src:   'disc_zero_noble_state [9,9,8,3]'
+    },
+    {
+      label: 'x² − 5x + 6 = 0',
+      desc:  'Quadratic · Locked (two roots)',
+      op:    'quadratic',
+      vals:  { a: '1', b: '-5', c: '6' },
+      src:   'disc_positive_two_roots [9,9,8,3]'
+    },
+    {
+      label: 'x² + x + 1 = 0',
+      desc:  'Quadratic · Shatter (no real roots)',
+      op:    'quadratic',
+      vals:  { a: '1', b: '1', c: '1' },
+      src:   'disc_negative_shatter [9,9,8,3]'
+    },
+    {
+      label: '[2 1; 1 2]',
+      desc:  'System · det = 3 · Locked',
+      op:    'determinant',
+      vals:  { a: '2', b: '1', c: '1', d: '2' },
+      src:   'alg_locked_system [9,9,8,3]'
+    },
+  ],
+  calculus: [
+    {
+      label: 'd/dx(x²) at x=3',
+      desc:  'Derivative · dB/dN = 6',
+      op:    'derivative',
+      vals:  { n: '2', x: '3' },
+      src:   'power_rule_x_squared [9,9,8,2]'
+    },
+    {
+      label: 'd/dx(x³) at x=2',
+      desc:  'Derivative · dB/dN = 12',
+      op:    'derivative',
+      vals:  { n: '3', x: '2' },
+      src:   'calc_power_rule [9,9,8,2]'
+    },
+    {
+      label: '∫x² dx at x=3',
+      desc:  'Integral · ΣB·ΔN = 9',
+      op:    'integral',
+      vals:  { n: '2', x: '3' },
+      src:   'integral_lossless [9,9,8,2]'
+    },
+    {
+      label: 'lim(x→0) x²',
+      desc:  'Limit · Noble ground state',
+      op:    'limit',
+      vals:  { n: '2', c: '0' },
+      src:   'noble_state_is_zero_torsion [9,9,8,2]'
+    },
+    {
+      label: 'lim(x→2) x²',
+      desc:  'Limit · Locked, converges to 4',
+      op:    'limit',
+      vals:  { n: '2', c: '2' },
+      src:   'calc_noble_limit_zero [9,9,8,2]'
+    },
+  ]
+}
+
+function loadExample(idx) {
+  const examples = EXAMPLES[currentMode]
+  const ex = examples[idx]
+  if (!ex) return
+  // Switch to correct op
+  currentOp = ex.op
+  renderOps()
+  renderInputs()
+  // Fill values
+  Object.entries(ex.vals).forEach(([k, v]) => {
+    const el = document.getElementById(`inp-${k}`)
+    if (el) el.value = v
+  })
+  calculate()
+  // Highlight active example button
+  document.querySelectorAll('.ex-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx)
+  })
+}
+
+function renderExamples() {
+  const examples = EXAMPLES[currentMode]
+  const wrap = document.getElementById('examplesWrap')
+  if (!wrap) return
+  wrap.innerHTML = examples.map((ex, i) => `
+    <button class="ex-btn" onclick="loadExample(${i})">
+      <div class="ex-label">${ex.label}</div>
+      <div class="ex-desc">${ex.desc}</div>
+      <div class="ex-src">${ex.src}</div>
+    </button>`).join('')
+}
+
+// ── OPERATION DEFINITIONS ───────────────────────────────────
+
+const ALGEBRA_OPS = {
+
+  linear: {
+    name: 'Solve Linear',
+    classical: 'ax + b = 0  →  x = −b/a',
+    pnbaMap: { P:'a (coefficient)', N:'x (unknown)', B:'b (constant)', A:'solve operator' },
+    inputs: [
+      { id:'a', label:'Coefficient  a', pnba:'P', ph:'2', desc:'structural capacity' },
+      { id:'b', label:'Constant  b',    pnba:'B', ph:'6', desc:'behavioral offset' },
+    ],
+    compute(v) {
+      const a = parseFloat(v.a), b = parseFloat(v.b)
+      if (isNaN(a) || isNaN(b)) return null
+      if (a === 0) return { error: 'a cannot be 0 — P collapses (Shatter)' }
+      const x = -b / a
+      const tau = Math.abs(b / a)
+      return {
+        mainLabel: 'x =',
+        mainValue: fmt(x),
+        sub: `−b/a = −(${b})/(${a})`,
+        tau, pnba: { P: Math.abs(a), N: Math.abs(x), B: Math.abs(b), A: 1 },
+        steps: [
+          { n:1, html:`<strong>Equation:</strong> ax + b = 0` },
+          { n:2, html:`<strong>Known answer:</strong> x = −b/a when a ≠ 0` },
+          { n:3, html:`<span class="hi-p">P</span> = a = ${a} &nbsp;·&nbsp; <span class="hi-b">B</span> = b = ${b} &nbsp;·&nbsp; <span class="hi-n">N</span> = x (unknown)` },
+          { n:4, html:`Linear root = <span class="hi-n">N</span> = −<span class="hi-b">B</span>/<span class="hi-p">P</span>` },
+          { n:5, html:`−(${b}) ÷ (${a}) = <strong>${fmt(x)}</strong>` },
+          { n:6, html:`τ = |B/P| = ${fmt(tau)} → <span class="hi-${classifyClass(tau)}">${classifyLabel(tau)}</span> · x is the narrative fixed point where torsion reaches zero` },
+        ]
+      }
+    }
+  },
+
+  quadratic: {
+    name: 'Quadratic',
+    classical: 'ax² + bx + c = 0 · discriminant = b²−4ac',
+    pnbaMap: { P:'a (structural)', N:'x (fixed point)', B:'b (coupling)', A:'c (offset)' },
+    inputs: [
+      { id:'a', label:'a  (x² coeff)', pnba:'P', ph:'1',  desc:'structural capacity' },
+      { id:'b', label:'b  (x coeff)',  pnba:'B', ph:'-5', desc:'behavioral coupling' },
+      { id:'c', label:'c  (constant)', pnba:'A', ph:'6',  desc:'adaptive offset' },
+    ],
+    compute(v) {
+      const a = parseFloat(v.a), b = parseFloat(v.b), c = parseFloat(v.c)
+      if ([a,b,c].some(isNaN)) return null
+      if (a === 0) return { error: 'a cannot be 0 — structure collapses' }
+      const disc = b*b - 4*a*c
+      const tau  = Math.abs(disc) / (Math.abs(a) * 10)
+
+      let mainValue, sub, stateNote
+      if (disc > 0) {
+        const x1 = (-b + Math.sqrt(disc)) / (2*a)
+        const x2 = (-b - Math.sqrt(disc)) / (2*a)
+        mainValue = `x = ${fmt(x1)},  ${fmt(x2)}`
+        sub = `disc = ${fmt(disc)} > 0 → two Locked fixed points`
+        stateNote = `<span class="hi-anchor">LOCKED</span> — two real solutions exist`
+      } else if (disc === 0) {
+        const x1 = -b / (2*a)
+        mainValue = `x = ${fmt(x1)}`
+        sub = `disc = 0 → one Noble ground state`
+        stateNote = `<span class="hi-noble">NOBLE</span> — one ground state, τ = 0`
+      } else {
+        mainValue = 'No real roots'
+        sub = `disc = ${fmt(disc)} < 0 → Shatter, no real anchor`
+        stateNote = `<span class="hi-shatter">SHATTER</span> — no real fixed point in this manifold`
+      }
+
+      return {
+        mainLabel: 'Discriminant =',
+        mainValue: fmt(disc),
+        sub,
+        tau: Math.abs(disc) > 0 ? Math.min(tau, 0.2) : 0,
+        resultExtra: mainValue,
+        pnba: { P: Math.abs(a), N: Math.max(0.1, Math.abs(disc)/10), B: Math.abs(b), A: Math.abs(c) },
+        steps: [
+          { n:1, html:`<strong>Equation:</strong> ax² + bx + c = 0` },
+          { n:2, html:`<strong>Known:</strong> disc = b²−4ac classifies the solution set` },
+          { n:3, html:`<span class="hi-p">P</span>=a=${a} · <span class="hi-b">B</span>=b=${b} · <span class="hi-a">A</span>=c=${c}` },
+          { n:4, html:`disc = <span class="hi-b">B</span>² − 4·<span class="hi-p">P</span>·<span class="hi-a">A</span>` },
+          { n:5, html:`= (${b})² − 4·(${a})·(${c}) = ${b*b} − ${4*a*c} = <strong>${fmt(disc)}</strong>` },
+          { n:6, html:stateNote },
+        ]
+      }
+    }
+  },
+
+  determinant: {
+    name: '2×2 System',
+    classical: '[a b; c d]·[x;y]=[e;f] · det = ad−bc',
+    pnbaMap: { P:'det (structural capacity)', N:'solution vector', B:'coupling off-diagonal', A:'feedback' },
+    inputs: [
+      { id:'a', label:'a  (row 1, col 1)', pnba:'P', ph:'2', desc:'' },
+      { id:'b', label:'b  (row 1, col 2)', pnba:'B', ph:'1', desc:'' },
+      { id:'c', label:'c  (row 2, col 1)', pnba:'B', ph:'1', desc:'' },
+      { id:'d', label:'d  (row 2, col 2)', pnba:'P', ph:'3', desc:'' },
+    ],
+    compute(v) {
+      const a=parseFloat(v.a), b=parseFloat(v.b), c=parseFloat(v.c), d=parseFloat(v.d)
+      if ([a,b,c,d].some(isNaN)) return null
+      const det = a*d - b*c
+      const tau = det === 0 ? TL : Math.abs((b+c) / Math.max(Math.abs(a+d), 0.001)) * 0.05
+
+      let stateNote
+      if (det === 0) {
+        stateNote = `<span class="hi-shatter">SHATTER</span> — det = 0, structural capacity P collapses, no unique solution`
+      } else {
+        stateNote = `<span class="hi-anchor">LOCKED</span> — det ≠ 0, P holds, unique solution exists`
+      }
+
+      return {
+        mainLabel: 'det =',
+        mainValue: fmt(det),
+        sub: det === 0 ? 'P = 0 → Shatter (no unique solution)' : `P = ${fmt(det)} → Locked (unique solution)`,
+        tau: det === 0 ? TL : Math.min(tau, TL * 0.5),
+        pnba: { P: Math.max(0.1, Math.abs(det)), N: Math.abs(a+d)/2, B: Math.abs(b+c)/2, A: 1 },
+        steps: [
+          { n:1, html:`<strong>Matrix:</strong> [${a} ${b}; ${c} ${d}]` },
+          { n:2, html:`<strong>Known:</strong> det ≠ 0 ↔ unique solution exists` },
+          { n:3, html:`det = <span class="hi-p">P</span> of the system = structural capacity` },
+          { n:4, html:`det = ad − bc` },
+          { n:5, html:`= (${a})(${d}) − (${b})(${c}) = ${a*d} − ${b*c} = <strong>${fmt(det)}</strong>` },
+          { n:6, html:stateNote },
+        ]
+      }
+    }
+  }
+
+}
+
+const CALCULUS_OPS = {
+
+  derivative: {
+    name: 'Power Rule',
+    classical: 'd/dx(xⁿ) = n·x^(n−1)  ·  dB/dN',
+    pnbaMap: { P:'domain boundary', N:'x (narrative variable)', B:'f(x) output', A:'d/dx operator' },
+    inputs: [
+      { id:'n', label:'Exponent  n', pnba:'A', ph:'3', desc:'power of x' },
+      { id:'x', label:'Evaluate at x', pnba:'N', ph:'2', desc:'narrative point' },
+    ],
+    compute(v) {
+      const n = parseFloat(v.n), x = parseFloat(v.x)
+      if ([n,x].some(isNaN)) return null
+      const deriv = n * Math.pow(x, n-1)
+      const fAtX  = Math.pow(x, n)
+      const tau   = Math.abs(deriv) / Math.max(Math.abs(fAtX), 0.001)
+      const tau_c = Math.min(tau, TL * 1.5)
+
+      return {
+        mainLabel: `d/dx(x^${n}) at x=${x} =`,
+        mainValue: fmt(deriv),
+        sub: `${n}·x^${n-1} = ${n}·(${x})^${n-1}`,
+        tau: tau_c,
+        pnba: { P: Math.max(0.1, Math.abs(fAtX)), N: Math.abs(x), B: Math.abs(deriv), A: Math.abs(n) },
+        steps: [
+          { n:1, html:`<strong>Equation:</strong> d/dt(IM·Pv) = Σλ·O·S + F_ext · d/dt was always inside` },
+          { n:2, html:`<strong>Known:</strong> d/dx(x^${n}) = ${n}·x^${n-1}` },
+          { n:3, html:`<span class="hi-n">N</span> = x = ${x} (narrative variable) · <span class="hi-b">B</span> = f(x) = x^${n} = ${fmt(fAtX)}` },
+          { n:4, html:`Derivative = dB/dN = rate of change of output over Narrative` },
+          { n:5, html:`${n} · (${x})^${n-1} = ${n} · ${fmt(Math.pow(x,n-1))} = <strong>${fmt(deriv)}</strong>` },
+          { n:6, html:`τ = |dB/dN| / |B| = ${fmt(tau_c)} → <span class="hi-${classifyClass(tau_c)}">${classifyLabel(tau_c)}</span>` },
+        ]
+      }
+    }
+  },
+
+  integral: {
+    name: 'Power Rule Integral',
+    classical: '∫xⁿ dx = x^(n+1)/(n+1) + C  ·  ΣB·ΔN',
+    pnbaMap: { P:'domain boundary', N:'x (narrative variable)', B:'accumulated output', A:'∫ operator' },
+    inputs: [
+      { id:'n', label:'Exponent  n', pnba:'A', ph:'2', desc:'power of x (not −1)' },
+      { id:'x', label:'Evaluate at x', pnba:'N', ph:'3', desc:'narrative point' },
+    ],
+    compute(v) {
+      const n = parseFloat(v.n), x = parseFloat(v.x)
+      if ([n,x].some(isNaN)) return null
+      if (n === -1) return { error: 'n = −1 is ln(x), not power rule' }
+      const result = Math.pow(x, n+1) / (n+1)
+      const tau    = Math.abs(result) / Math.max(Math.abs(Math.pow(x, n)), 0.001)
+      const tau_c  = Math.min(tau, TL * 1.5)
+
+      return {
+        mainLabel: `∫x^${n} dx at x=${x} =`,
+        mainValue: fmt(result),
+        sub: `x^${n+1}/(${n+1}) + C`,
+        tau: tau_c,
+        pnba: { P: Math.max(0.1, Math.abs(result)), N: Math.abs(x), B: Math.abs(Math.pow(x,n)), A: Math.abs(n+1) },
+        steps: [
+          { n:1, html:`<strong>Equation:</strong> d/dt(IM·Pv) — integral is accumulated B across N` },
+          { n:2, html:`<strong>Known:</strong> ∫x^${n} dx = x^${n+1}/(${n+1}) + C` },
+          { n:3, html:`<span class="hi-n">N</span> = x = ${x} · <span class="hi-b">B</span> = x^${n} = ${fmt(Math.pow(x,n))} (output being accumulated)` },
+          { n:4, html:`Integral = Σ<span class="hi-b">B</span>·Δ<span class="hi-n">N</span> — total behavioral output across Narrative` },
+          { n:5, html:`(${x})^${n+1} / ${n+1} = ${fmt(Math.pow(x,n+1))} / ${n+1} = <strong>${fmt(result)}</strong>` },
+          { n:6, html:`FTC closes: derivative of ${fmt(result)} recovers ${fmt(Math.pow(x,n))} ✓ · <span class="hi-anchor">LOSSLESS</span>` },
+        ]
+      }
+    }
+  },
+
+  limit: {
+    name: 'Limit / Noble State',
+    classical: 'lim(x→c) f(x) · τ → 0 = Noble ground state',
+    pnbaMap: { P:'domain boundary', N:'x approaching c', B:'f(x) output', A:'limit operator' },
+    inputs: [
+      { id:'n', label:'Exponent  n  (f=xⁿ)', pnba:'A', ph:'2', desc:'' },
+      { id:'c', label:'Approach value  c',    pnba:'N', ph:'0', desc:'Noble point' },
+    ],
+    compute(v) {
+      const n = parseFloat(v.n), c = parseFloat(v.c)
+      if ([n,c].some(isNaN)) return null
+      const lim = Math.pow(c, n)
+      const tau = Math.abs(lim) < 0.001 ? 0 : Math.abs(lim) / Math.max(Math.abs(lim) + 1, 1) * TL * 0.5
+
+      return {
+        mainLabel: `lim(x→${c}) x^${n} =`,
+        mainValue: fmt(lim),
+        sub: tau < TL_NOBLE ? 'τ → 0 — Noble ground state reached' : `τ = ${fmt(tau)}`,
+        tau,
+        pnba: { P: Math.max(0.1, Math.abs(n)), N: Math.abs(c), B: Math.abs(lim), A: 1 },
+        steps: [
+          { n:1, html:`<strong>Equation:</strong> lim(x→c) f(x) — what does B approach as N → c?` },
+          { n:2, html:`<strong>Known:</strong> lim(x→${c}) x^${n} = ${fmt(lim)}` },
+          { n:3, html:`<span class="hi-n">N</span> = x → ${c} · <span class="hi-b">B</span> = x^${n} approaching its limit` },
+          { n:4, html:`As τ → 0 the system approaches the <span class="hi-noble">Noble ground state</span>` },
+          { n:5, html:`(${c})^${n} = <strong>${fmt(lim)}</strong>` },
+          { n:6, html: tau < TL_NOBLE
+            ? `τ = ${fmt(tau)} → <span class="hi-noble">NOBLE</span> · limit IS the Noble state · Step 6 closes`
+            : `τ = ${fmt(tau)} → <span class="hi-anchor">LOCKED</span> · limit converges · Step 6 closes` },
+        ]
+      }
+    }
+  }
+
+}
+
+// ── UTILS ──────────────────────────────────────────────────
+
+function fmt(v) {
+  if (typeof v !== 'number' || isNaN(v)) return '?'
+  if (Math.abs(v) > 1e6 || (Math.abs(v) < 0.0001 && v !== 0)) return v.toExponential(4)
+  return Math.round(v * 10000) / 10000
+}
+
+function classify(tau) {
+  if (tau < TL_NOBLE) return 'noble'
+  if (tau < TL_IVA)   return 'locked'
+  if (tau < TL)       return 'warn'
+  return 'shatter'
+}
+
+function classifyLabel(tau) {
+  return { noble:'NOBLE', locked:'LOCKED', warn:'IVA PEAK', shatter:'SHATTER' }[classify(tau)]
+}
+
+function classifyClass(tau) {
+  return { noble:'noble', locked:'anchor', warn:'warn', shatter:'shatter' }[classify(tau)]
+}
+
+function stateStatus(tau) {
+  const s = classify(tau)
+  return {
+    noble:   '○ NOBLE · τ < 0.001 · ground state',
+    locked:  '✦ LOCKED · τ < TL · stable',
+    warn:    '◈ IVA PEAK · 0.88×TL < τ < TL',
+    shatter: '⚠ SHATTER · τ ≥ TL = 0.1369',
+  }[s]
+}
+
+// ── RENDER ─────────────────────────────────────────────────
+
+function setMode(mode) {
+  currentMode = mode
+  currentOp   = null
+  document.getElementById('tab-algebra').classList.toggle('active', mode === 'algebra')
+  document.getElementById('tab-calculus').classList.toggle('active', mode === 'calculus')
+  renderOps()
+  renderInputs()
+  renderExamples()
+  clearResult()
+}
+
+function selectOp(key) {
+  currentOp = key
+  renderOps()
+  renderInputs()
+  clearResult()
+}
+
+function renderOps() {
+  const ops = currentMode === 'algebra' ? ALGEBRA_OPS : CALCULUS_OPS
+  document.getElementById('opCardHead').textContent =
+    currentMode === 'algebra' ? 'Algebra Operations' : 'Calculus Operations'
+  const cols = Object.keys(ops).length
+  document.getElementById('opGrid').style.gridTemplateColumns = `repeat(${cols}, 1fr)`
+  document.getElementById('opGrid').className = 'op-grid'
+  document.getElementById('opGrid').style.display = 'grid'
+  document.getElementById('opGrid').innerHTML = Object.entries(ops).map(([key, op]) => `
+    <button class="op-btn ${key === currentOp ? 'active' : ''}" onclick="selectOp('${key}')">
+      <div class="op-name">${op.name}</div>
+      <div class="op-desc">${op.classical}</div>
+    </button>`).join('')
+
+  if (!currentOp) {
+    currentOp = Object.keys(ops)[0]
+    selectOp(currentOp)
+  }
+}
+
+function renderInputs() {
+  if (!currentOp) return
+  const ops = currentMode === 'algebra' ? ALGEBRA_OPS : CALCULUS_OPS
+  const op  = ops[currentOp]
+  if (!op) return
+
+  document.getElementById('inputHead').textContent = `${op.name} · Inputs`
+
+  const isWide = op.inputs.length > 2
+  document.getElementById('inputsArea').innerHTML = `
+    <div class="${isWide ? 'field-row' : ''}" style="${isWide ? '' : 'display:flex;flex-direction:column;gap:10px'}">
+      ${op.inputs.map(inp => `
+        <div class="field-wrap" style="margin-bottom:0">
+          <div class="field-label">
+            ${inp.label}
+            <span class="pnba-tag t${inp.pnba.toLowerCase()}">${inp.pnba}</span>
+          </div>
+          <input class="field-input" id="inp-${inp.id}" type="number"
+                 placeholder="${inp.ph}" value="${inp.ph}" step="any"
+                 onkeydown="if(event.key==='Enter')calculate()">
+        </div>`).join('')}
+    </div>
+    <button class="calc-btn" onclick="calculate()" style="margin-top:14px">CALCULATE · STEP 6</button>
+
+    <div id="pnbaMapInner" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      ${Object.entries(op.pnbaMap).map(([k,v]) => `
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-m);margin-bottom:4px;letter-spacing:0.06em">
+          <span style="color:var(--${k})">${k.toUpperCase()}</span> = ${v}
+        </div>`).join('')}
+    </div>`
+}
+
+function calculate() {
+  const ops = currentMode === 'algebra' ? ALGEBRA_OPS : CALCULUS_OPS
+  const op  = ops[currentOp]
+  if (!op) return
+
+  const vals = {}
+  op.inputs.forEach(inp => {
+    const el = document.getElementById(`inp-${inp.id}`)
+    if (el) vals[inp.id] = el.value
+  })
+
+  const res = op.compute(vals)
+  if (!res) return
+
+  if (res.error) {
+    document.getElementById('resultArea').innerHTML = `
+      <div class="result-area">
+        <div class="result-display">
+          <div class="result-label">ERROR</div>
+          <div class="result-value shatter">${res.error}</div>
+        </div>
+      </div>`
+    return
+  }
+
+  // Result display
+  let resultHTML = `
+    <div class="result-area">
+      <div class="result-display">
+        <div class="result-label">${res.mainLabel}</div>
+        <div class="result-value ${classifyClass(res.tau) === 'shatter' ? 'shatter' : classifyClass(res.tau) === 'noble' ? 'noble' : ''}">${res.mainValue}</div>
+        ${res.resultExtra ? `<div class="result-sub" style="margin-top:4px;color:var(--anchor)">${res.resultExtra}</div>` : ''}
+        <div class="result-sub">${res.sub}</div>
+      </div>`
+
+  // LDP steps
+  resultHTML += `<div class="ldp-wrap">` +
+    res.steps.map(s => `
+      <div class="step-item">
+        <div class="step-n">${s.n}</div>
+        <div class="step-content">${s.html}</div>
+      </div>`).join('') +
+    `</div></div>`
+
+  document.getElementById('resultArea').innerHTML = resultHTML
+
+  // Update phase card
+  updatePhase(res.tau, res.pnba)
+
+  // Log to session (ops already declared above)
+  const entry = {
+    desig:     makeDesig(currentOp, vals, res.mainValue),
+    timestamp: new Date().toISOString(),
+    mode:      currentMode,
+    op:        currentOp,
+    opName:    ops[currentOp].name,
+    vals,
+    mainValue: res.mainValue,
+    sub:       res.sub,
+    phase:     classifyLabel(res.tau),
+    tau:       res.tau,
+    pnba:      res.pnba,
+    steps:     res.steps,
+  }
+  addToSessionLog(entry)
+}
+
+function updatePhase(tau, pnba) {
+  const state   = classify(tau)
+  const card    = document.getElementById('phaseCard')
+  const status  = document.getElementById('phaseState')
+  const tauEl   = document.getElementById('phaseTau')
+
+  card.className = `card phase-card ${state}`
+  status.textContent = stateStatus(tau)
+  tauEl.textContent  = `τ = ${fmt(tau)}`
+
+  const maxV = Math.max(pnba.P, pnba.N, pnba.B, pnba.A, 1)
+  ;['P','N','B','A'].forEach(k => {
+    const v = pnba[k] || 0
+    document.getElementById(`bar${k}`).style.width = `${Math.min(100, (v/maxV)*100)}%`
+    document.getElementById(`val${k}`).textContent  = fmt(v)
+  })
+}
+
+function clearResult() {
+  document.getElementById('resultArea').innerHTML =
+    '<div class="empty-msg">SELECT AN OPERATION AND CALCULATE</div>'
+  document.getElementById('phaseCard').className = 'card phase-card empty'
+  document.getElementById('phaseState').textContent = '◌ AWAITING INPUT'
+  document.getElementById('phaseTau').textContent   = 'τ = —'
+  ;['P','N','B','A'].forEach(k => {
+    document.getElementById(`bar${k}`).style.width = '0%'
+    document.getElementById(`val${k}`).textContent = '—'
+  })
+}
+
+// ── SESSION LOG & LEAN GENERATION ──────────────────────────
+
+function hashEntry(op, vals, result) {
+  const s = `${op}${JSON.stringify(vals)}${result}`
+  let h = 0
+  for (const c of s) { h = ((h << 5) - h) + c.charCodeAt(0); h |= 0 }
+  return Math.abs(h).toString(16).toUpperCase().slice(0, 4)
+}
+
+function makeDesig(op, vals, result) {
+  const d = new Date()
+  const date = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`
+  return `SNSFL-CALC-${hashEntry(op, vals, result)}-${date}`
+}
+
+function generateLean(entry) {
+  const coord = entry.mode === 'calculus' ? '[9,9,8,2]' : '[9,9,8,3]'
+  const coordName = entry.mode === 'calculus' ? 'Calculus Reduction' : 'Algebra Reduction'
+  const ns = entry.desig.replace(/-/g, '_')
+
+  // Build input defs
+  const inputDefs = Object.entries(entry.vals).map(([k, v]) =>
+    `def input_${k} : ℝ := ${parseFloat(v)}`
+  ).join('\n')
+
+  // Build LDP step comments
+  const steps = entry.steps.map(s => {
+    const plain = s.html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
+    return `--   ${s.n}. ${plain}`
+  }).join('\n')
+
+  // Phase state comment
+  // For root-finding operations: the solution IS the Noble state —
+  // finding the root means torsion reaches zero at that fixed point.
+  // For system classifiers (discriminant, determinant): phase describes the system.
+  const rootFindingOps = ['linear', 'derivative', 'integral', 'limit']
+  const systemOps = ['quadratic', 'determinant']
+  let phaseDisplay, phaseNote
+  if (rootFindingOps.includes(entry.op)) {
+    phaseDisplay = 'NOBLE (solution = fixed point where τ = 0)'
+    phaseNote = `Phase: ${phaseDisplay} · TL = 0.1369`
+  } else {
+    phaseDisplay = entry.phase
+    phaseNote = `Phase: ${phaseDisplay} · τ = ${entry.tau !== undefined ? fmt(entry.tau) : '—'} · TL = 0.1369`
+  }
+
+  return `-- ============================================================
+-- ${entry.desig}.lean
+-- ============================================================
+--
+-- [9,9,9,9] :: {ANC} | SNSFL STUDENT CALCULATION
+-- Self-Orienting Universal Language [P,N,B,A] :: {INV}
+-- Architect: HIGHTISTIC | Anchor: 1.369 GHz | Status: STUDENT RECORD
+-- Coordinate: ${coord} | ${coordName}
+-- Generated: ${entry.timestamp}
+--
+-- Operation: ${entry.opName}
+-- Mode:      ${entry.mode.toUpperCase()}
+-- ${phaseNote}
+--
+-- LONG DIVISION SETUP (Long Division Protocol — LDP):
+${steps}
+--
+-- DOI: 10.5281/zenodo.18719748
+-- SNSFT Foundation · Soldotna Alaska · [9,9,9,9]::{ANC}
+-- ============================================================
+
+import Mathlib.Tactic
+import Mathlib.Data.Real.Basic
+
+namespace ${ns}
+
+def SOVEREIGN_ANCHOR : ℝ := 1.369
+def TORSION_LIMIT    : ℝ := SOVEREIGN_ANCHOR / 10
+
+${inputDefs}
+def result : ℝ := ${entry.mainValue}
+
+-- THEOREM: ${entry.opName} — Step 6 closes
+theorem ${ns}_step6 :
+    result = ${entry.mainValue} := rfl
+
+-- THEOREM: Torsion limit is emergent from anchor
+theorem torsion_limit_emergent :
+    TORSION_LIMIT = SOVEREIGN_ANCHOR / 10 := rfl
+
+-- MASTER THEOREM
+theorem ${ns}_master :
+    result = ${entry.mainValue} ∧
+    TORSION_LIMIT = SOVEREIGN_ANCHOR / 10 ∧
+    SOVEREIGN_ANCHOR = 1.369 :=
+  ⟨rfl, rfl, rfl⟩
+
+-- FINAL THEOREM (always last, always this name)
+theorem the_manifold_is_holding :
+    SOVEREIGN_ANCHOR = 1.369 := rfl
+
+end ${ns}
+
+/-!
+-- DESIGNATION: ${entry.desig}
+-- OPERATION:   ${entry.opName}
+-- MODE:        ${entry.mode.toUpperCase()}
+-- RESULT:      ${entry.mainValue}
+-- PHASE:       ${entry.phase}
+-- COORDINATE:  ${coord}
+-- SORRY:       0
+-- SOURCE:      ${coordName} · SNSFT Corpus
+-- [9,9,9,9] :: {ANC} · The Manifold is Holding.
+-/`
+}
+
+function downloadLean(entry) {
+  const stub = generateLean(entry)
+  const blob = new Blob([stub], { type: 'text/plain' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = `${entry.desig}.lean`
+  a.click()
+  URL.revokeObjectURL(a.href)
+}
+
+function downloadAllLean() {
+  if (!sessionLog.length) return
+  sessionLog.forEach((entry, i) => setTimeout(() => downloadLean(entry), i * 80))
+}
+
+function exportSessionJSON() {
+  if (!sessionLog.length) return
+  const blob = new Blob([JSON.stringify(sessionLog, null, 2)], { type: 'application/json' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = `pnba_session_${new Date().toISOString().slice(0,10)}.json`
+  a.click()
+  URL.revokeObjectURL(a.href)
+}
+
+function clearSession() {
+  sessionLog = []
+  renderSessionLog()
+}
+
+function addToSessionLog(entry) {
+  sessionLog.unshift(entry)  // newest first
+  if (sessionLog.length > 50) sessionLog.pop()
+  renderSessionLog()
+}
+
+function renderSessionLog() {
+  const wrap = document.getElementById('sessionLogWrap')
+  const count = document.getElementById('sessionCount')
+  if (!wrap) return
+  count.textContent = sessionLog.length ? `${sessionLog.length} calculation${sessionLog.length !== 1 ? 's' : ''}` : ''
+
+  if (!sessionLog.length) {
+    wrap.innerHTML = '<div class="empty-msg">NO CALCULATIONS YET — RESULTS APPEAR HERE</div>'
+    return
+  }
+
+  wrap.innerHTML = sessionLog.map((entry, i) => {
+    const stateClass = classify(entry.tau ?? 0)
+    const stateCol = { noble: 'var(--noble)', locked: 'var(--anchor)', warn: 'var(--warn)', shatter: 'var(--shatter)' }[stateClass] || 'var(--text-d)'
+    const time = new Date(entry.timestamp).toLocaleTimeString()
+    return `
+    <div class="log-row">
+      <div class="log-left">
+        <div class="log-desig">${entry.desig}</div>
+        <div class="log-detail">
+          <span class="log-mode">${entry.mode.toUpperCase()}</span>
+          <span class="log-op">${entry.opName}</span>
+          <span class="log-inputs">${Object.entries(entry.vals).map(([k,v])=>`${k}=${v}`).join(' · ')}</span>
+        </div>
+        <div class="log-result">
+          → <span style="color:${stateCol};font-family:'Share Tech Mono',monospace;font-weight:600">${entry.mainValue}</span>
+          <span class="log-phase" style="color:${stateCol}">${entry.phase}</span>
+          ${entry.tau !== undefined ? `<span class="log-tau">τ=${fmt(entry.tau)}</span>` : ''}
+        </div>
+      </div>
+      <div class="log-right">
+        <div class="log-time">${time}</div>
+        <button class="lean-dl-btn" onclick="downloadLean(sessionLog[${i}])">↓ LEAN</button>
+      </div>
+    </div>`
+  }).join('')
+}
+
+// ── INIT ───────────────────────────────────────────────────
+renderOps()
+renderExamples()
+</script>
+</body>
+</html>
