@@ -162,7 +162,7 @@ All proof terms are `rfl` — definitional equality. These files compile green a
 
 ### For Neurodivergent Students
 
-The corpus was built by an autistic independent researcher and is explicitly designed for B-dominant cognition — pattern-first, structure-first, systems-first. The Reduction Engine reflects this: it shows why an answer is correct structurally, not just how to execute a procedure. For students who understand systems before memorizing rules, seeing that a linear root is the narrative fixed point where torsion reaches zero is more grounding than being told to divide both sides by a.
+The corpus was built by an autistic independent researcher and is explicitly designed for P-dominant cognition — pattern-first, structure-first, systems-first. The Reduction Engine reflects this: it shows why an answer is correct structurally, not just how to execute a procedure. For students who understand systems before memorizing rules, seeing that a linear root is the narrative fixed point where torsion reaches zero is more grounding than being told to divide both sides by a.
 
 The PNBA mapping is not additional complexity — it is a single unified language that makes the structure visible. Once a student understands P, N, B, A, every operation in both algebra and calculus becomes a variation on the same underlying question: where does the system settle?
 
