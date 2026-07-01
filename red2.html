@@ -880,6 +880,7 @@ const ALGEBRA_OPS = {
         sub,
         tau: Math.abs(disc) > 0 ? Math.min(tau, 0.2) : 0,
         resultExtra: mainValue,
+        roots: disc >= 0 ? mainValue : null,
         pnba: { P: Math.abs(a), N: Math.max(0.1, Math.abs(disc)/10), B: Math.abs(b), A: Math.abs(c) },
         steps: [
           { n:1, html:`<strong>Equation:</strong> ax² + bx + c = 0` },
@@ -1210,6 +1211,7 @@ function calculate() {
     tau:       res.tau,
     pnba:      res.pnba,
     steps:     res.steps,
+    roots:     res.roots || null,
   }
   addToSessionLog(entry)
 }
@@ -1321,6 +1323,7 @@ def TORSION_LIMIT    : ℝ := SOVEREIGN_ANCHOR / 10
 
 ${inputDefs}
 def result : ℝ := ${entry.mainValue}
+${entry.roots ? `-- Roots: ${entry.roots}` : '-- No real roots (Shatter — no fixed point in this manifold)'}
 
 -- THEOREM: ${entry.opName} — Step 6 closes
 theorem ${ns}_step6 :
