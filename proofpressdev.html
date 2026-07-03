@@ -553,9 +553,15 @@ function parseLean(src) {
   const fileMatch = src.match(/--\s*(SNSFL_\S+\.lean|SNSFT_\S+\.lean)/);
   if (fileMatch) meta['Filename'] = fileMatch[1];
 
-  // Extract namespace
-  const nsMatch = src.match(/^namespace\s+(\S+)/m);
-  if (nsMatch) meta['Namespace'] = nsMatch[1];
+  // Extract all namespaces
+  const namespaces = [];
+  const nsMatches = [...src.matchAll(/^namespace\s+(\S+)/gm)];
+  const nsEnds = [...src.matchAll(/^end\s+(\S+)/gm)];
+  for (const ns of nsMatches) {
+    namespaces.push(ns[1]);
+  }
+  meta['Namespace'] = namespaces.length === 1 ? namespaces[0] : namespaces.join(', ');
+  meta['_namespaces'] = namespaces;
 
   // Count theorems
   const theoremMatches = src.match(/^theorem\s+\w+/gm) || [];
@@ -569,13 +575,20 @@ function parseLean(src) {
   const theoremNames = theoremMatches.map(t => t.replace('theorem ', '').trim());
   meta['_theoremNames'] = theoremNames;
 
-  // Extract LDP step comments
+  // Extract LDP step comments — deduplicated, full description
   const ldpSteps = [];
+  const seenSteps = new Set();
   for (const line of lines) {
-    const ldp = line.match(/--\s*(?:Step\s*(\d)|LDP\s*Step\s*(\d)|§(\d))[\s·:]+(.+)/i);
+    const ldp = line.match(/--\s*(?:LDP\s+)?Step\s+(\d+)[:\s·]+(.+)/i);
     if (ldp) {
-      const num = ldp[1] || ldp[2] || ldp[3];
-      ldpSteps.push({ step: num, desc: ldp[4].trim() });
+      const num = ldp[1];
+      const desc = ldp[2].trim();
+      // Deduplicate by step number + first 30 chars of description
+      const key = num + '|' + desc.slice(0, 30);
+      if (!seenSteps.has(key)) {
+        seenSteps.add(key);
+        ldpSteps.push({ step: num, desc });
+      }
     }
   }
   meta['_ldpSteps'] = ldpSteps;
@@ -773,7 +786,25 @@ function buildTheoremSection(meta, src) {
     const nameDisplay = name.replace(/_/g, '\\_');
     const nameReadable = name.replace(/_/g, ' ');
 
-    out += `\\begin{theorem}[${nameReadable}]\n\\label{thm:${name}}\n${desc}\n\\end{theorem}\n\n`;
+    // Get theorem statement (what comes after the name on the same + next lines)
+    let statement = '';
+    let stmtLines = [line];
+    for (let s = i + 1; s < Math.min(i + 8, lines.length); s++) {
+      const sl = lines[s].trim();
+      if (sl.startsWith(':= by') || sl === ':= by' || sl.startsWith('by') || sl.startsWith('| ')) break;
+      if (sl.match(/^theorem\s+/) || sl.match(/^def\s+/) || sl.match(/^end\s+/)) break;
+      stmtLines.push(lines[s]);
+    }
+    // Extract just the type (between : and := by)
+    const fullSig = stmtLines.join(' ').replace(/\s+/g, ' ');
+    const typeMatch = fullSig.match(/theorem\s+\w+[^:]*:\s*(.+?)\s*(?::=|$)/);
+    if (typeMatch) statement = typeMatch[1].trim();
+
+    out += `\\begin{theorem}[${nameReadable}]\n\\label{thm:${name}}\n${desc}\n`;
+    if (statement && statement.length < 200) {
+      out += `\\begin{equation*}\n\\texttt{${statement.replace(/[_^{}\\]/g, s => '\\' + s)}}\n\\end{equation*}\n`;
+    }
+    out += `\\end{theorem}\n\n`;
   }
 
   return out;
@@ -800,9 +831,22 @@ function buildLDPSection(meta) {
   const steps = meta['_ldpSteps'] || [];
   if (steps.length === 0) return '';
 
-  let out = '\n\\section*{Long Division Protocol (LDP)}\n\n\\begin{description}\n';
+  // Group by step number, collect unique descriptions
+  const grouped = {};
   for (const s of steps) {
-    out += `    \\item[\\textbf{Step ${s.step}:}] ${s.desc}\n`;
+    if (!grouped[s.step]) grouped[s.step] = [];
+    if (!grouped[s.step].includes(s.desc)) {
+      grouped[s.step].push(s.desc);
+    }
+  }
+
+  let out = '\n\\section*{Long Division Protocol (LDP) — Step Annotations}\n\n\\begin{description}\n';
+  const nums = Object.keys(grouped).sort((a,b) => parseInt(a)-parseInt(b));
+  for (const num of nums) {
+    const descs = grouped[num];
+    // Use the most descriptive (longest) version if multiple
+    const best = descs.sort((a,b) => b.length - a.length)[0];
+    out += `    \\item[\\textbf{Step ${num}:}] ${best}\n`;
   }
   out += '\\end{description}\n';
   return out;
