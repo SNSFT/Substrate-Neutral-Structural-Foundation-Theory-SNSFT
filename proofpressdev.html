@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProofPress · Lean → LaTeX · SNSFT</title>
+<title>ProofPress · Lean → LaTeX · v1.1 · SNSFT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -233,7 +233,45 @@ textarea:focus { background: #0d121a; }
 }
 .btn-dl:hover { background: var(--gold2); }
 
-/* ── DROP ZONE ── */
+/* ── MODE TABS ── */
+.mode-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+.mode-tab {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  padding: 10px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.mode-tab:hover { color: var(--text); }
+
+.mode-tab.active {
+  color: var(--anchor);
+  border-bottom-color: var(--anchor);
+  background: var(--anchor2);
+}
+
+.mode-desc {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  padding: 8px 0 16px;
+  letter-spacing: 0.08em;
+}
+
+.mode-desc b { color: var(--anchor); }
 .drop-zone {
   border: 2px dashed var(--border2);
   padding: 12px 16px;
@@ -390,7 +428,7 @@ input:checked + .toggle-box::after {
       <div class="logo-sub">LEAN → LATEX · SNSFT CORPUS · [9,9,9,9]</div>
     </div>
     <div class="hdr-right">
-      <b>PP</b> · ProofPress · uuia.app/pp<br>
+      <b>PP</b> · ProofPress · v1.1 · uuia.app/pp<br>
       Corpus: <b>200,000+</b> theorems · <b>0</b> sorry<br>
       DOI: <b>10.5281/zenodo.18719748</b>
     </div>
@@ -403,6 +441,15 @@ input:checked + .toggle-box::after {
       Paste or drop a Lean 4 corpus file. ProofPress parses the header, extracts theorems, and outputs an Overleaf-ready <code>.tex</code> — formatted to SNSFT paper standard. One job. Done right.
     </div>
     <div class="pp-joke">PP · Because formally verified work deserves formally typeset output.</div>
+  </div>
+
+  <!-- MODE TABS -->
+  <div class="mode-bar">
+    <button class="mode-tab active" id="tab-ldp" onclick="setMode('ldp')">LDP · LEAN → LATEX</button>
+    <button class="mode-tab" id="tab-md" onclick="setMode('md')">MD · MARKDOWN → LATEX</button>
+  </div>
+  <div class="mode-desc" id="modeDesc">
+    <b>LDP mode</b> — parses SNSFT corpus conventions. Populates coordinate, DOI, ORCID, anchor constant, locked front matter. Output is an Identity Physics paper.
   </div>
 
   <!-- MAIN -->
@@ -503,7 +550,43 @@ end SNSFL_Example"
     </div>
   </div>
 
-  <!-- PARSED META -->
+  <!-- GITHUB PUSH -->
+  <div style="margin-top:16px;background:var(--surface);border:1px solid var(--border);">
+    <div class="panel-hdr">
+      <div>
+        <div class="panel-title">GITHUB PUSH · v1.1</div>
+        <div class="panel-sub">push .tex + session log to your repo · then sync in Overleaf</div>
+      </div>
+      <div id="gh-status" style="font-family:'Space Mono',monospace;font-size:7px;color:var(--muted);"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 16px;">
+      <div>
+        <div class="meta-label">GITHUB PAT</div>
+        <input id="gh-pat" type="password" placeholder="ghp_..."
+          style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:9px;padding:6px 8px;outline:none;"
+          oninput="document.getElementById('gh-pat').style.borderColor='var(--anchor)'">
+      </div>
+      <div>
+        <div class="meta-label">REPO</div>
+        <input id="gh-repo" type="text" placeholder="SNSFT/your-repo"
+          style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:9px;padding:6px 8px;outline:none;">
+      </div>
+      <div>
+        <div class="meta-label">TARGET PATH</div>
+        <input id="gh-path" type="text" placeholder="papers/" value="papers/"
+          style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:9px;padding:6px 8px;outline:none;">
+      </div>
+    </div>
+    <div class="controls" style="border-top:1px solid var(--border);">
+      <button class="btn btn-primary" onclick="pushToGitHub()">⬆ PUSH TO GITHUB</button>
+      <span style="font-family:'Space Mono',monospace;font-size:7px;color:var(--muted);">
+        pushes .tex + session JSON · PAT stored in memory only · never persisted
+      </span>
+    </div>
+    <div class="status" id="ghPushStatus">
+      <span class="status-warn">configure PAT + repo to enable GitHub push</span>
+    </div>
+  </div>
   <div id="metaSection" style="display:none;margin-top:16px;">
     <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:9px;letter-spacing:0.18em;color:var(--anchor);padding:12px 0 8px;">
       PARSED METADATA
@@ -689,6 +772,8 @@ function buildPreamble(meta) {
     stringstyle=\\color{codepurple},
     basicstyle=\\ttfamily\\footnotesize,
     breaklines=true,
+    breakatwhitespace=false,
+    columns=flexible,
     captionpos=b,
     keepspaces=true,
     numbers=left,
@@ -759,26 +844,44 @@ function buildTheoremSection(meta, src) {
     const name = thmMatch[1];
     thmIndex++;
 
-    // Look back up to 5 lines for a meaningful comment
-    // Skip lines that are just label tags like -- [T3] :: {VER} | LABEL
+    // Look back for comments above this theorem
+    // Pattern in corpus files:
+    //   -- [TAG] :: {VER} | THEOREM N: LABEL
+    //   -- Human readable description.
+    //   theorem name ...
+    // OR just:
+    //   -- Human readable description.
+    //   theorem name ...
+
     let desc = '';
-    for (let k = i - 1; k >= Math.max(0, i - 5); k--) {
+    let label = '';
+
+    // Collect all comment lines immediately above theorem
+    const commentLines = [];
+    for (let k = i - 1; k >= Math.max(0, i - 8); k--) {
       const prev = lines[k].trim();
       if (!prev.startsWith('--')) break;
-      const text = prev.replace(/^--\s*/, '').trim();
-      // Skip pure label tags
-      if (text.match(/^\[T\d+\]\s*::\s*\{[^}]+\}/)) {
-        // This is a label line — try to get the description after the pipe
-        const pipeMatch = text.match(/\|\s*(.+)$/);
-        if (pipeMatch) { desc = pipeMatch[1].trim(); break; }
+      commentLines.unshift(prev.replace(/^--\s*/, '').trim());
+    }
+
+    for (const cl of commentLines) {
+      // Tag line pattern: [X,9,0,1] :: {VER} | THEOREM N: LABEL
+      const tagMatch = cl.match(/\[.*?\]\s*::\s*\{[^}]+\}\s*\|\s*(.+)/);
+      if (tagMatch) {
+        label = tagMatch[1].trim();
         continue;
       }
-      // Skip empty or divider lines
-      if (!text || text.match(/^=+$/) || text.match(/^─+$/)) continue;
-      // Use this line
-      desc = text;
-      break;
+      // Skip divider lines
+      if (cl.match(/^=+$/) || cl.match(/^─+$/) || cl.match(/^-+$/)) continue;
+      // Skip empty
+      if (!cl) continue;
+      // This is a description line
+      if (!desc) desc = cl;
     }
+
+    // Use label as fallback if no plain description found
+    if (!desc && label) desc = label;
+    if (!desc) desc = 'Formally verified. 0 sorry.';
 
     if (!desc) desc = 'Formally verified. 0 sorry.';
 
@@ -786,23 +889,43 @@ function buildTheoremSection(meta, src) {
     const nameDisplay = name.replace(/_/g, '\\_');
     const nameReadable = name.replace(/_/g, ' ');
 
-    // Get theorem statement (what comes after the name on the same + next lines)
-    let statement = '';
-    let stmtLines = [line];
-    for (let s = i + 1; s < Math.min(i + 8, lines.length); s++) {
-      const sl = lines[s].trim();
-      if (sl.startsWith(':= by') || sl === ':= by' || sl.startsWith('by') || sl.startsWith('| ')) break;
-      if (sl.match(/^theorem\s+/) || sl.match(/^def\s+/) || sl.match(/^end\s+/)) break;
-      stmtLines.push(lines[s]);
+    // Extract return type: everything between final : and first :=
+    // Collect the full theorem declaration (may span multiple lines)
+    let fullDecl = line;
+    for (let j = i + 1; j < Math.min(i + 10, lines.length); j++) {
+      const sl = lines[j].trim();
+      if (!sl || sl.startsWith('--') ||
+          sl.match(/^theorem\s+/) || sl.match(/^def\s+/) ||
+          sl.match(/^end\s+/) || sl.match(/^namespace\s+/) ||
+          sl.match(/^noncomputable/) || sl.match(/^structure\s+/) ||
+          sl.match(/^inductive\s+/)) break;
+      fullDecl += ' ' + sl;
+      if (sl.includes(':=')) break;
     }
-    // Extract just the type (between : and := by)
-    const fullSig = stmtLines.join(' ').replace(/\s+/g, ' ');
-    const typeMatch = fullSig.match(/theorem\s+\w+[^:]*:\s*(.+?)\s*(?::=|$)/);
-    if (typeMatch) statement = typeMatch[1].trim();
+    // Extract return type: after last : before :=
+    const colonEqIdx = fullDecl.indexOf(':=');
+    const declPart = colonEqIdx > -1 ? fullDecl.slice(0, colonEqIdx) : fullDecl;
+    // Find last standalone : (not part of :: or :=)
+    let lastColon = -1;
+    for (let k = declPart.length - 1; k >= 0; k--) {
+      if (declPart[k] === ':' && declPart[k-1] !== ':' && declPart[k+1] !== ':' && declPart[k+1] !== '=') {
+        lastColon = k;
+        break;
+      }
+    }
+    const returnType = lastColon > -1 ? declPart.slice(lastColon + 1).trim() : '';
 
-    out += `\\begin{theorem}[${nameReadable}]\n\\label{thm:${name}}\n${desc}\n`;
-    if (statement && statement.length < 200) {
-      out += `\\begin{equation*}\n\\texttt{${statement.replace(/[_^{}\\]/g, s => '\\' + s)}}\n\\end{equation*}\n`;
+    out += `\\begin{theorem}[${nameReadable}]\n\\label{thm:${name}}\n`;
+    if (desc) out += `${desc}\n`;
+    // If there's a signature, show it as inline verbatim
+    if (returnType && returnType.length > 0 && returnType.length < 300) {
+      const escaped = returnType
+        .replace(/_/g, '\\_')
+        .replace(/\$/g, '\\$')
+        .replace(/%/g, '\\%')
+        .replace(/&/g, '\\&')
+        .replace(/#/g, '\\#');
+      out += `\\begin{quote}\\small\\ttfamily\\raggedright\n${escaped}\n\\end{quote}\n`;
     }
     out += `\\end{theorem}\n\n`;
   }
@@ -858,15 +981,418 @@ function buildClosing(meta) {
   return `\n\\hr\n\\centerline{\\textbf{${coord} :: \\{ANC\\} · ${sorry} sorry · The Manifold is Holding.}}\n\n\\end{document}`;
 }
 
-// ── MAIN CONVERT ──────────────────────────────────────────────
+// ── MODE SWITCHING ────────────────────────────────────────────
+
+let currentMode = 'ldp';
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('tab-ldp').classList.toggle('active', mode === 'ldp');
+  document.getElementById('tab-md').classList.toggle('active', mode === 'md');
+
+  const desc = document.getElementById('modeDesc');
+  if (mode === 'ldp') {
+    desc.innerHTML = '<b>LDP mode</b> — parses SNSFT corpus conventions. Populates coordinate, DOI, ORCID, anchor constant, locked front matter. Output is an Identity Physics paper.';
+    document.querySelector('.panel-sub').textContent = 'paste .lean file · SNSFT corpus format';
+  } else {
+    desc.innerHTML = '<b>MD mode</b> — converts any Markdown paper draft to Overleaf-ready LaTeX. Headings → sections, math → equations, code blocks → listings, tables → tabular. Works with any .md file.';
+    document.querySelector('.panel-sub').textContent = 'paste .md file · any markdown paper draft';
+  }
+
+  document.getElementById('latexOutput').value = '';
+  setStatus('outputStatus', 'warn', 'mode changed · press PRESS TO LATEX');
+}
 
 function convert() {
   const src = document.getElementById('leanInput').value.trim();
   if (!src) {
-    setStatus('inputStatus', 'error', 'no input — paste a lean file first');
+    setStatus('inputStatus', 'error', 'no input — paste a file first');
     return;
   }
+  if (currentMode === 'ldp') {
+    convertLDP(src);
+  } else {
+    convertMD(src);
+  }
+}
 
+// ── MD MODE CONVERTER ─────────────────────────────────────────
+// Converts any Markdown paper draft to Overleaf-ready LaTeX.
+
+function convertMD(src) {
+  const lines = src.split('\n');
+
+  // Extract title from first # heading
+  let title = 'Research Paper';
+  let author = 'Author';
+  let date = new Date().toLocaleDateString('en-US', { month:'long', year:'numeric' });
+
+  for (const line of lines) {
+    if (line.startsWith('# ') && title === 'Research Paper') {
+      title = line.slice(2).trim();
+    }
+    if (line.match(/^\*\*Author[s]?\*\*:?\s*(.+)/i)) {
+      author = line.replace(/^\*\*Author[s]?\*\*:?\s*/i, '').replace(/\*\*/g, '').trim();
+    }
+  }
+
+  let tex = `\\documentclass[11pt]{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage[margin=1in]{geometry}
+\\usepackage{amsmath, amssymb, amsthm}
+\\usepackage{listings}
+\\usepackage{xcolor}
+\\usepackage{hyperref}
+\\usepackage{microtype}
+\\usepackage{booktabs}
+\\usepackage{graphicx}
+
+\\newcommand{\\hr}{\\par\\noindent\\rule{\\textwidth}{0.4pt}\\par\\vspace{4pt}}
+
+\\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=cyan}
+
+\\definecolor{codebg}{rgb}{0.95,0.95,0.92}
+\\definecolor{codegreen}{rgb}{0,0.6,0}
+\\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\\lstset{
+    backgroundcolor=\\color{codebg},
+    basicstyle=\\ttfamily\\footnotesize,
+    breaklines=true,
+    columns=flexible,
+    commentstyle=\\color{codegreen},
+    numberstyle=\\tiny\\color{codegray},
+    numbers=left,
+    numbersep=5pt,
+    showstringspaces=false,
+    tabsize=2,
+}
+
+\\newtheorem{theorem}{Theorem}
+\\newtheorem{lemma}[theorem]{Lemma}
+\\newtheorem{definition}{Definition}
+\\newtheorem{remark}{Remark}
+
+\\title{\\textbf{${escMD(title)}}}
+\\author{${escMD(author)}}
+\\date{${date}}
+
+\\begin{document}
+\\maketitle
+
+`;
+
+  // Convert body line by line
+  let inCode = false;
+  let codeLang = '';
+  let inMath = false;
+  let inItemize = false;
+  let inEnumerate = false;
+  let inAbstract = false;
+  let inTable = false;
+  let tableRows = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const raw = line.trim();
+
+    // Skip title line — already in \maketitle
+    if (line.startsWith('# ') && line.slice(2).trim() === title) continue;
+
+    // Code blocks
+    if (raw.startsWith('```')) {
+      if (!inCode) {
+        inCode = true;
+        codeLang = raw.slice(3).trim() || 'text';
+        // Close any open lists
+        if (inItemize)   { tex += '\\end{itemize}\n'; inItemize = false; }
+        if (inEnumerate) { tex += '\\end{enumerate}\n'; inEnumerate = false; }
+        tex += `\\begin{lstlisting}[language=${codeLang}]\n`;
+      } else {
+        inCode = false;
+        tex += '\\end{lstlisting}\n\n';
+      }
+      continue;
+    }
+    if (inCode) { tex += line + '\n'; continue; }
+
+    // Math blocks
+    if (raw === '$$') {
+      if (!inMath) { inMath = true; tex += '\\[\n'; }
+      else         { inMath = false; tex += '\\]\n\n'; }
+      continue;
+    }
+    if (inMath) { tex += line + '\n'; continue; }
+
+    // Tables — collect rows and convert at blank line
+    if (raw.startsWith('|')) {
+      if (!raw.match(/^\|[-:\s|]+\|$/)) { // skip separator row
+        tableRows.push(raw.split('|').filter((_,i,a) => i > 0 && i < a.length-1).map(c => escMD(c.trim())));
+      }
+      continue;
+    }
+    if (inTable || (tableRows.length > 0 && !raw.startsWith('|'))) {
+      if (tableRows.length > 0) {
+        const cols = tableRows[0].length;
+        tex += `\\begin{table}[h]\\centering\n\\begin{tabular}{${'l'.repeat(cols)}}\n\\toprule\n`;
+        tex += tableRows[0].join(' & ') + ' \\\\\n\\midrule\n';
+        tableRows.slice(1).forEach(row => { tex += row.join(' & ') + ' \\\\\n'; });
+        tex += '\\bottomrule\n\\end{tabular}\n\\end{table}\n\n';
+        tableRows = [];
+        inTable = false;
+      }
+    }
+
+    // Close lists on blank line
+    if (!raw) {
+      if (inItemize)   { tex += '\\end{itemize}\n\n'; inItemize = false; continue; }
+      if (inEnumerate) { tex += '\\end{enumerate}\n\n'; inEnumerate = false; continue; }
+      if (inAbstract)  { tex += '\\end{abstract}\n\n'; inAbstract = false; continue; }
+      tex += '\n';
+      continue;
+    }
+
+    // Abstract
+    if (raw.match(/^#+\s*abstract/i)) {
+      tex += '\\begin{abstract}\n';
+      inAbstract = true;
+      continue;
+    }
+    if (inAbstract) { tex += escMDInline(raw) + '\n'; continue; }
+
+    // Headings
+    if (raw.startsWith('#### ')) { tex += `\\subsubsection*{${escMDInline(raw.slice(5))}}\n\n`; continue; }
+    if (raw.startsWith('### '))  { tex += `\\subsection*{${escMDInline(raw.slice(4))}}\n\n`; continue; }
+    if (raw.startsWith('## '))   { tex += `\\section*{${escMDInline(raw.slice(3))}}\n\n`; continue; }
+    if (raw.startsWith('# '))    { tex += `\\section*{${escMDInline(raw.slice(2))}}\n\n`; continue; }
+
+    // Horizontal rule
+    if (raw.match(/^---+$/) || raw.match(/^\*\*\*+$/)) { tex += '\\hr\n\n'; continue; }
+
+    // Unordered lists
+    if (raw.match(/^[-*+]\s/)) {
+      if (!inItemize) { tex += '\\begin{itemize}\n'; inItemize = true; }
+      tex += `  \\item ${escMDInline(raw.slice(2))}\n`;
+      continue;
+    }
+
+    // Ordered lists
+    if (raw.match(/^\d+\.\s/)) {
+      if (!inEnumerate) { tex += '\\begin{enumerate}\n'; inEnumerate = true; }
+      tex += `  \\item ${escMDInline(raw.replace(/^\d+\.\s/, ''))}\n`;
+      continue;
+    }
+
+    // Blockquote
+    if (raw.startsWith('> ')) {
+      tex += `\\begin{quote}\n${escMDInline(raw.slice(2))}\n\\end{quote}\n\n`;
+      continue;
+    }
+
+    // Normal paragraph
+    tex += escMDInline(raw) + '\n\n';
+  }
+
+  // Close any open environments
+  if (inItemize)   tex += '\\end{itemize}\n';
+  if (inEnumerate) tex += '\\end{enumerate}\n';
+  if (inAbstract)  tex += '\\end{abstract}\n';
+  if (tableRows.length > 0) {
+    const cols = tableRows[0].length;
+    tex += `\\begin{table}[h]\\centering\n\\begin{tabular}{${'l'.repeat(cols)}}\n\\toprule\n`;
+    tex += tableRows[0].join(' & ') + ' \\\\\n\\midrule\n';
+    tableRows.slice(1).forEach(row => { tex += row.join(' & ') + ' \\\\\n'; });
+    tex += '\\bottomrule\n\\end{tabular}\n\\end{table}\n';
+  }
+
+  tex += '\n\\end{document}';
+
+  document.getElementById('latexOutput').value = tex;
+  const lineCount = src.split('\n').length;
+  setStatus('outputStatus', 'ok', `✓ MD converted · ${lineCount} lines → ${tex.split('\n').length} lines LaTeX`);
+  setStatus('inputStatus', 'ok', `parsed · title: ${title.slice(0, 40)}`);
+  showMeta({ Title: title, Author: author, Mode: 'MD → LaTeX', 'Source Lines': String(lineCount) });
+}
+
+// MD escape helpers
+function escMD(str) {
+  return str
+    .replace(/\$/g, '\\$').replace(/%/g, '\\%').replace(/&/g, '\\&')
+    .replace(/#/g, '\\#').replace(/_/g, '\\_').replace(/\{/g, '\\{')
+    .replace(/\}/g, '\\}');
+}
+
+function escMDInline(str) {
+  // Handle inline math first — preserve $...$ as-is
+  const parts = str.split(/(\$[^$]+\$)/g);
+  return parts.map((p, i) => {
+    if (i % 2 === 1) return p; // math — pass through
+    return p
+      .replace(/\*\*(.+?)\*\*/g, '\\textbf{$1}')
+      .replace(/\*(.+?)\*/g, '\\textit{$1}')
+      .replace(/`([^`]+)`/g, '\\texttt{$1}')
+      .replace(/\[(.+?)\]\((.+?)\)/g, '\\href{$2}{$1}')
+      .replace(/%/g, '\\%').replace(/&/g, '\\&')
+      .replace(/#/g, '\\#').replace(/_/g, '\\_')
+      .replace(/~/g, '\\textasciitilde{}');
+  }).join('');
+}
+
+function convertGeneral(src) {
+  const lines = src.split('\n');
+
+  // Extract basic info
+  const namespaces = [...src.matchAll(/^namespace\s+(\S+)/gm)].map(m => m[1]);
+  const ns = namespaces.join(', ') || 'unnamed';
+  const thmCount = (src.match(/^theorem\s+/gm) || []).length;
+  const sorryCount = (src.match(/\bsorry\b/g) || []).length;
+
+  // Try to get a title from the first meaningful comment
+  let title = 'Lean 4 Formal Proof Document';
+  for (const line of lines) {
+    const t = line.replace(/^--\s*/, '').trim();
+    if (t && !t.match(/^=+$/) && !t.match(/^\[/) && t.length > 10 && t.length < 100) {
+      title = t;
+      break;
+    }
+  }
+
+  // Collect all theorems with ALL their surrounding comments
+  const sections = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (!lines[i].match(/^theorem\s+/)) continue;
+
+    const thmLine = lines[i];
+    const name = thmLine.match(/^theorem\s+(\w+)/)[1];
+
+    // Grab all comment lines above (up to blank line or non-comment)
+    const comments = [];
+    for (let k = i - 1; k >= Math.max(0, i - 10); k--) {
+      const l = lines[k].trim();
+      if (!l) break;
+      if (!l.startsWith('--')) break;
+      comments.unshift(l.replace(/^--\s*/, '').trim());
+    }
+
+    // Grab theorem body
+    const body = [thmLine];
+    for (let j = i + 1; j < Math.min(i + 20, lines.length); j++) {
+      const l = lines[j];
+      if (l.match(/^theorem\s+/) || l.match(/^def\s+/) || l.match(/^end\s+/) || l.match(/^namespace\s+/)) break;
+      body.push(l);
+    }
+
+    sections.push({ name, comments, body: body.join('\n') });
+  }
+
+  // Build the LaTeX
+  const date = new Date().toLocaleDateString('en-US', { month:'long', year:'numeric' });
+
+  let tex = `\\documentclass[11pt]{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage[margin=1in]{geometry}
+\\usepackage{amsmath, amssymb, amsthm}
+\\usepackage{listings}
+\\usepackage{xcolor}
+\\usepackage{hyperref}
+\\usepackage{microtype}
+
+\\newcommand{\\hr}{\\par\\noindent\\rule{\\textwidth}{0.4pt}\\par\\vspace{4pt}}
+
+\\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=cyan}
+
+\\definecolor{codegreen}{rgb}{0,0.6,0}
+\\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\\lstdefinelanguage{lean}{
+    keywords={def,theorem,noncomputable,by,unfold,simp,norm\\_num,Prop,structure,namespace,end,import,open,exact,refine,rfl,constructor,intro,apply,have,fun,let,where,if,then,else,match,with},
+    keywordstyle=\\color{blue}\\bfseries,
+    sensitive=true,
+    comment=[l]{--},
+    commentstyle=\\color{codegreen}\\ttfamily,
+    stringstyle=\\color{codepurple}\\ttfamily,
+}
+
+\\lstset{
+    backgroundcolor=\\color{backcolour},
+    basicstyle=\\ttfamily\\footnotesize,
+    breaklines=true,
+    breakatwhitespace=false,
+    columns=flexible,
+    numbers=left,
+    numberstyle=\\tiny\\color{codegray},
+    numbersep=5pt,
+    keepspaces=true,
+    showstringspaces=false,
+    tabsize=2,
+    literate=
+      {ℝ}{{$\\mathbb{R}$}}1 {→}{{$\\rightarrow$}}1
+      {∧}{{$\\wedge$}}1 {∨}{{$\\vee$}}1 {¬}{{$\\neg$}}1
+      {≥}{{$\\geq$}}1 {≤}{{$\\leq$}}1 {≠}{{$\\neq$}}1
+      {⟨}{{$\\langle$}}1 {⟩}{{$\\rangle$}}1
+      {∀}{{$\\forall$}}1 {∃}{{$\\exists$}}1
+      {τ}{{$\\tau$}}1 {Ω}{{$\\Omega$}}1 {α}{{$\\alpha$}}1
+      {π}{{$\\pi$}}1 {∈}{{$\\in$}}1 {≈}{{$\\approx$}}1,
+}
+
+\\newtheorem{theorem}{Theorem}
+\\newtheorem{lemma}[theorem]{Lemma}
+\\newtheorem{definition}{Definition}
+
+\\title{\\textbf{${title}}}
+\\author{Lean 4 Formal Proof}
+\\date{${date}}
+
+\\begin{document}
+\\maketitle
+
+\\begin{center}
+\\small
+\\textbf{Namespace(s):} \\texttt{${ns}} \\quad
+\\textbf{Theorems:} ${thmCount} \\quad
+\\textbf{Sorry:} ${sorryCount === 0 ? '0 \\checkmark' : sorryCount + ' \\texttimes'}
+\\end{center}
+
+\\hr
+
+`;
+
+  // Theorems section — all comments verbatim, then code
+  if (sections.length > 0) {
+    tex += '\\section*{Theorems}\n\n';
+    for (const s of sections) {
+      const nameReadable = s.name.replace(/_/g, ' ');
+      const desc = s.comments.filter(c =>
+        !c.match(/^=+$/) && !c.match(/^─+$/) && c.length > 0
+      ).join(' ');
+
+      tex += `\\begin{theorem}[${nameReadable}]\n`;
+      if (desc) tex += `${desc}\n`;
+      tex += `\\end{theorem}\n\n`;
+    }
+  }
+
+  // Full source listing
+  tex += `\\section*{Complete Lean 4 Source}\n\n`;
+  tex += `\\begin{lstlisting}[language=lean, caption={${ns} — ${thmCount} theorems · ${sorryCount} sorry}]\n`;
+  // Cap at 150 lines for readability
+  const srcLines = src.split('\n');
+  const display = srcLines.slice(0, 150).join('\n') + (srcLines.length > 150 ? '\n-- [...truncated — full source in .lean file...]' : '');
+  tex += display;
+  tex += `\n\\end{lstlisting}\n`;
+
+  tex += `\n\\hr\n\\centerline{\\textbf{${thmCount} theorems · ${sorryCount} sorry · Generated by ProofPress}}\n\n\\end{document}`;
+
+  document.getElementById('latexOutput').value = tex;
+  setStatus('outputStatus', 'ok', `✓ general mode · ${thmCount} theorems · ${tex.split('\n').length} lines LaTeX`);
+  setStatus('inputStatus', 'ok', `parsed · ns: ${ns} · ${sorryCount === 0 ? '0 sorry ✓' : sorryCount + ' sorry ✗'}`);
+}
+
+// ── LDP MODE CONVERTER ────────────────────────────────────────
+
+function convertLDP(src) {
   const meta = parseLean(src);
   const opts = {
     frontmatter: document.getElementById('opt-frontmatter').checked,
@@ -884,8 +1410,6 @@ function convert() {
   tex += buildClosing(meta);
 
   document.getElementById('latexOutput').value = tex;
-
-  // Show meta
   showMeta(meta);
 
   const tcount = parseInt(meta['Theorems'] || '0');
@@ -954,6 +1478,74 @@ function downloadTeX() {
   a.click();
   URL.revokeObjectURL(a.href);
   setStatus('outputStatus', 'ok', `⬇ downloaded ${filename}`);
+}
+
+// ── GITHUB PUSH ───────────────────────────────────────────────
+
+function buildSessionLog(src, meta, mode) {
+  return {
+    tool: 'ProofPress',
+    version: 'v1.1',
+    timestamp: new Date().toISOString(),
+    mode: mode,
+    coordinate: meta['Coordinate'] || '—',
+    filename: meta['Filename'] || '—',
+    namespace: meta['Namespace'] || '—',
+    theorems: parseInt(meta['Theorems'] || '0'),
+    sorry: meta['Sorry'] || '0',
+    doi: meta['DOI'] || '—',
+    orcid: meta['ORCID'] || '—',
+    theorem_names: meta['_theoremNames'] || [],
+    ldp_steps: (meta['_ldpSteps'] || []).map(s => `Step ${s.step}: ${s.desc}`),
+    source_lines: src.split('\n').length,
+    source_chars: src.length,
+  };
+}
+
+async function pushToGitHub() {
+  const pat  = document.getElementById('gh-pat').value.trim();
+  const repo = document.getElementById('gh-repo').value.trim();
+  const base = document.getElementById('gh-path').value.trim().replace(/\/$/, '');
+  const tex  = document.getElementById('latexOutput').value;
+  const src  = document.getElementById('leanInput').value;
+
+  if (!pat)  { setStatus('ghPushStatus', 'error', 'PAT required — generate one at github.com/settings/tokens'); return; }
+  if (!repo) { setStatus('ghPushStatus', 'error', 'repo required — e.g. SNSFT/your-repo'); return; }
+  if (!tex)  { setStatus('ghPushStatus', 'error', 'no LaTeX output — run PRESS TO LATEX first'); return; }
+
+  const meta = parseLean(src);
+  const stem = (meta['Filename'] || 'proofpress_output').replace('.lean', '');
+  const texPath  = `${base}/${stem}.tex`;
+  const jsonPath = `${base}/${stem}_session.json`;
+  const session  = buildSessionLog(src, meta, currentMode);
+
+  setStatus('ghPushStatus', 'warn', 'pushing to GitHub...');
+
+  try {
+    await ghPut(pat, repo, texPath,  btoa(unescape(encodeURIComponent(tex))),         `[ProofPress] ${stem}.tex`);
+    await ghPut(pat, repo, jsonPath, btoa(JSON.stringify(session, null, 2)),           `[ProofPress] ${stem} session log`);
+    document.getElementById('gh-status').textContent = `✓ ${stem} pushed`;
+    setStatus('ghPushStatus', 'ok',
+      `✓ pushed ${texPath} + session log · open Overleaf → sync GitHub to pull`);
+  } catch(e) {
+    setStatus('ghPushStatus', 'error', `push failed: ${e.message}`);
+  }
+}
+
+async function ghPut(pat, repo, path, content, message) {
+  // Check if file exists to get sha for update
+  const check = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+    headers: { 'Authorization': `token ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  const body = { message, content, branch: 'main' };
+  if (check.ok) { const d = await check.json(); body.sha = d.sha; }
+  const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+    method: 'PUT',
+    headers: { 'Authorization': `token ${pat}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText} — ${path}`);
+  return res;
 }
 
 // ── FILE DROP ─────────────────────────────────────────────────
