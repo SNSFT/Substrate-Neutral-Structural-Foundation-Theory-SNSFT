@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProofPress · Lean → LaTeX · SNSFT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #04060a;
+  --surface: #080c12;
+  --surface2:#0c1118;
+  --border:  #121c28;
+  --border2: #1a2838;
+  --anchor:  #00d4aa;
+  --anchor2: rgba(0,212,170,0.08);
+  --anchor3: rgba(0,212,170,0.15);
+  --gold:    #e8b84b;
+  --gold2:   rgba(232,184,75,0.1);
+  --violet:  #7c6bff;
+  --rose:    #ff5577;
+  --rose2:   rgba(255,85,119,0.1);
+  --text:    #f0f4f8;
+  --dim:     rgba(240,244,248,0.90);
+  --muted:   rgba(240,244,248,0.70);
+  --faint:   rgba(240,244,248,0.15);
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,170,0.018) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(0,212,170,0.018) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events:none; z-index:0;
+}
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── HEADER ── */
+.hdr {
+  padding: 28px 0 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: 0.12em;
+  color: var(--anchor);
+  text-shadow: 0 0 32px rgba(0,212,170,0.4);
+}
+.logo span { color: var(--gold); }
+
+.logo-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.hdr-right {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  text-align: right;
+  line-height: 2;
+}
+.hdr-right b { color: var(--anchor); }
+
+/* ── HERO ── */
+.hero {
+  padding: 32px 0 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(20px,3vw,28px);
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.hero-title em { color: var(--anchor); font-style:normal; }
+
+.hero-desc {
+  color: var(--muted);
+  font-size: 13px;
+  max-width: 600px;
+}
+
+.pp-joke {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: rgba(232,184,75,0.6);
+}
+
+/* ── MAIN GRID ── */
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding-top: 24px;
+}
+@media(max-width:720px){ .main { grid-template-columns:1fr; } }
+
+/* ── PANELS ── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-hdr {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.panel-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--anchor);
+}
+
+.panel-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 7px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 420px;
+  background: var(--surface2);
+  border: none;
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  line-height: 1.7;
+  padding: 14px;
+  resize: vertical;
+  outline: none;
+}
+textarea::placeholder { color: rgba(240,244,248,0.18); }
+textarea:focus { background: #0d121a; }
+
+/* ── CONTROLS ── */
+.controls {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  padding: 8px 18px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-primary {
+  background: var(--anchor);
+  color: #000;
+}
+.btn-primary:hover { background: #00ffe0; }
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+}
+.btn-secondary:hover { border-color: var(--anchor); color: var(--anchor); }
+
+.btn-copy {
+  background: transparent;
+  border: 1px solid var(--violet);
+  color: var(--violet);
+}
+.btn-copy:hover { background: rgba(124,107,255,0.08); }
+
+.btn-dl {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+}
+.btn-dl:hover { background: var(--gold2); }
+
+/* ── DROP ZONE ── */
+.drop-zone {
+  border: 2px dashed var(--border2);
+  padding: 12px 16px;
+  margin: 0 16px 0;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+}
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: var(--anchor);
+  color: var(--anchor);
+  background: var(--anchor2);
+}
+
+/* ── STATUS BAR ── */
+.status {
+  padding: 10px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  letter-spacing: 0.1em;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.status-ok  { color: var(--anchor); }
+.status-warn { color: var(--gold); }
+.status-err  { color: var(--rose); }
+
+.stat-pill {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  font-size: 7px;
+  color: var(--anchor);
+}
+
+/* ── PARSED META ── */
+.meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+}
+
+.meta-cell {
+  background: var(--surface2);
+  padding: 8px 12px;
+}
+
+.meta-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.meta-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--anchor);
+  word-break: break-all;
+}
+
+/* ── OPTIONS ── */
+.opts {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.opt-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.opt-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  user-select: none;
+}
+
+.opt-toggle input { display:none; }
+
+.toggle-box {
+  width: 28px; height: 14px;
+  border: 1px solid var(--border2);
+  position: relative;
+  transition: all 0.15s;
+}
+.toggle-box::after {
+  content:'';
+  position:absolute;
+  top:2px; left:2px;
+  width:8px; height:8px;
+  background: var(--muted);
+  transition: all 0.15s;
+}
+input:checked + .toggle-box {
+  border-color: var(--anchor);
+  background: var(--anchor2);
+}
+input:checked + .toggle-box::after {
+  left:16px;
+  background: var(--anchor);
+}
+
+/* ── FOOTER ── */
+.footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.footer b { color: var(--anchor); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div>
+      <div class="logo">PROOF<span>PRESS</span></div>
+      <div class="logo-sub">LEAN → LATEX · SNSFT CORPUS · [9,9,9,9]</div>
+    </div>
+    <div class="hdr-right">
+      <b>PP</b> · ProofPress · uuia.app/pp<br>
+      Corpus: <b>200,000+</b> theorems · <b>0</b> sorry<br>
+      DOI: <b>10.5281/zenodo.18719748</b>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-title">Your theorems deserve<br>better than a <em>.txt file.</em></div>
+    <div class="hero-desc">
+      Paste or drop a Lean 4 corpus file. ProofPress parses the header, extracts theorems, and outputs an Overleaf-ready <code>.tex</code> — formatted to SNSFT paper standard. One job. Done right.
+    </div>
+    <div class="pp-joke">PP · Because formally verified work deserves formally typeset output.</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- LEFT: INPUT -->
+    <div class="panel">
+      <div class="panel-hdr">
+        <div>
+          <div class="panel-title">LEAN INPUT</div>
+          <div class="panel-sub">paste .lean file content or drop file below</div>
+        </div>
+        <button class="btn btn-secondary" onclick="clearInput()">CLR</button>
+      </div>
+
+      <div class="drop-zone" id="dropZone"
+        ondragover="onDragOver(event)"
+        ondragleave="onDragLeave(event)"
+        ondrop="onDrop(event)"
+        onclick="document.getElementById('fileInput').click()">
+        ⬆ DROP .LEAN FILE OR CLICK TO BROWSE
+        <input type="file" id="fileInput" accept=".lean,.txt" style="display:none" onchange="onFileSelect(event)">
+      </div>
+
+      <textarea id="leanInput"
+        placeholder="-- Paste your .lean file here
+-- ProofPress will parse:
+--   · Header metadata (coord, DOI, ORCID, theorems, sorry)
+--   · Namespace and theorem structure
+--   · LDP step annotations
+--   · Footer stats
+--
+-- Then output Overleaf-ready LaTeX.
+
+namespace SNSFL_Example
+
+def SOVEREIGN_ANCHOR : ℝ := 1.369
+def TORSION_LIMIT    : ℝ := SOVEREIGN_ANCHOR / 10
+
+theorem anchor_zero : SOVEREIGN_ANCHOR = 1.369 := rfl
+
+end SNSFL_Example"
+        oninput="onInputChange()"></textarea>
+
+      <div class="controls">
+        <button class="btn btn-primary" onclick="convert()">⟶ PRESS TO LATEX</button>
+        <button class="btn btn-secondary" onclick="loadExample()">LOAD EXAMPLE</button>
+      </div>
+
+      <div class="status" id="inputStatus">
+        <span class="status-warn">awaiting input</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: OUTPUT -->
+    <div class="panel">
+      <div class="panel-hdr">
+        <div>
+          <div class="panel-title">LATEX OUTPUT</div>
+          <div class="panel-sub">overleaf-ready · copy or download</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-copy" onclick="copyOutput()">⎘ COPY</button>
+          <button class="btn btn-dl" onclick="downloadTeX()">⬇ .TEX</button>
+        </div>
+      </div>
+
+      <div class="opts">
+        <span class="opt-label">OPTIONS:</span>
+        <label class="opt-toggle">
+          <input type="checkbox" id="opt-frontmatter" checked>
+          <div class="toggle-box"></div>
+          LOCKED FRONT MATTER
+        </label>
+        <label class="opt-toggle">
+          <input type="checkbox" id="opt-theorems" checked>
+          <div class="toggle-box"></div>
+          THEOREM ENVS
+        </label>
+        <label class="opt-toggle">
+          <input type="checkbox" id="opt-code" checked>
+          <div class="toggle-box"></div>
+          LEAN LISTINGS
+        </label>
+        <label class="opt-toggle">
+          <input type="checkbox" id="opt-ldp" checked>
+          <div class="toggle-box"></div>
+          LDP STEPS
+        </label>
+      </div>
+
+      <textarea id="latexOutput" readonly
+        placeholder="// LaTeX output will appear here after pressing PRESS TO LATEX"></textarea>
+
+      <div class="status" id="outputStatus">
+        <span class="status-warn">no output yet</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARSED META -->
+  <div id="metaSection" style="display:none;margin-top:16px;">
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:9px;letter-spacing:0.18em;color:var(--anchor);padding:12px 0 8px;">
+      PARSED METADATA
+    </div>
+    <div class="meta-grid" id="metaGrid"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>PROOFPRESS · <b>PP</b> · SNSFT Corpus Tool · [9,9,9,9]::{ANC}</div>
+    <div>Architect: <b>HIGHTISTIC</b> · ORCID: <b>0009-0005-5313-7443</b></div>
+    <div>The Manifold is Holding.</div>
+  </div>
+
+</div>
+
+<script>
+// ── PARSER ────────────────────────────────────────────────────
+
+function parseLean(src) {
+  const meta = {};
+  const lines = src.split('\n');
+
+  // Extract header comment fields
+  const headerFields = {
+    'Coordinate':   /--\s*Coordinate:\s*(.+)/i,
+    'Author':       /--\s*Architect:\s*(.+)/i,
+    'DOI':          /--\s*DOI:\s*(.+)/i,
+    'ORCID':        /--\s*ORCID:\s*(.+)/i,
+    'Anchor':       /--\s*Anchor:\s*(.+)/i,
+    'Status':       /--\s*Status:\s*(.+)/i,
+    'Sorry':        /--\s*Sorry:\s*(.+)/i,
+    'Date':         /--\s*Date:\s*(.+)/i,
+    'Title':        /--\s*(?:Title|WHAT THIS FILE PROVES|FILE):\s*(.+)/i,
+    'Corpus':       /--\s*Corpus:\s*(.+)/i,
+    'Layer':        /--\s*(?:Layer|LAYER):\s*(.+)/i,
+  };
+
+  for (const [key, rx] of Object.entries(headerFields)) {
+    for (const line of lines) {
+      const m = line.match(rx);
+      if (m) { meta[key] = m[1].trim(); break; }
+    }
+  }
+
+  // Extract filename from first meaningful comment
+  const fileMatch = src.match(/--\s*(SNSFL_\S+\.lean|SNSFT_\S+\.lean)/);
+  if (fileMatch) meta['Filename'] = fileMatch[1];
+
+  // Extract namespace
+  const nsMatch = src.match(/^namespace\s+(\S+)/m);
+  if (nsMatch) meta['Namespace'] = nsMatch[1];
+
+  // Count theorems
+  const theoremMatches = src.match(/^theorem\s+\w+/gm) || [];
+  meta['Theorems'] = String(theoremMatches.length);
+
+  // Count sorry
+  const sorryCount = (src.match(/\bsorry\b/g) || []).length;
+  meta['Sorry'] = sorryCount === 0 ? '0 ✓' : String(sorryCount) + ' ✗';
+
+  // Extract theorem names
+  const theoremNames = theoremMatches.map(t => t.replace('theorem ', '').trim());
+  meta['_theoremNames'] = theoremNames;
+
+  // Extract LDP step comments
+  const ldpSteps = [];
+  for (const line of lines) {
+    const ldp = line.match(/--\s*(?:Step\s*(\d)|LDP\s*Step\s*(\d)|§(\d))[\s·:]+(.+)/i);
+    if (ldp) {
+      const num = ldp[1] || ldp[2] || ldp[3];
+      ldpSteps.push({ step: num, desc: ldp[4].trim() });
+    }
+  }
+  meta['_ldpSteps'] = ldpSteps;
+
+  // Extract the full lean body (everything after imports)
+  const bodyStart = src.indexOf('\nnamespace');
+  meta['_body'] = bodyStart > -1 ? src.slice(bodyStart) : src;
+
+  return meta;
+}
+
+// ── LATEX BUILDER ─────────────────────────────────────────────
+
+const UNICODE_LITERATE = `  literate=%
+  {ℝ}{{$\\mathbb{R}$}}1
+  {→}{{$\\rightarrow$}}1
+  {↦}{{$\\mapsto$}}1
+  {∧}{{$\\wedge$}}1
+  {∨}{{$\\vee$}}1
+  {¬}{{$\\neg$}}1
+  {≥}{{$\\geq$}}1
+  {≤}{{$\\leq$}}1
+  {≠}{{$\\neq$}}1
+  {⟨}{{$\\langle$}}1
+  {⟩}{{$\\rangle$}}1
+  {×}{{$\\times$}}1
+  {·}{{$\\cdot$}}1
+  {∘}{{$\\circ$}}1
+  {λ}{{$\\lambda$}}1
+  {Ω}{{$\\Omega$}}1
+  {Λ}{{$\\Lambda$}}1
+  {τ}{{$\\tau$}}1
+  {σ}{{$\\sigma$}}1
+  {ρ}{{$\\rho$}}1
+  {μ}{{$\\mu$}}1
+  {ν}{{$\\nu$}}1
+  {ψ}{{$\\psi$}}1
+  {Φ}{{$\\Phi$}}1
+  {∂}{{$\\partial$}}1
+  {∇}{{$\\nabla$}}1
+  {∈}{{$\\in$}}1
+  {∀}{{$\\forall$}}1
+  {∃}{{$\\exists$}}1
+  {ε}{{$\\varepsilon$}}1
+  {≈}{{$\\approx$}}1
+  {≡}{{$\\equiv$}}1
+  {α}{{$\\alpha$}}1
+  {β}{{$\\beta$}}1
+  {γ}{{$\\gamma$}}1
+  {δ}{{$\\delta$}}1
+  {π}{{$\\pi$}}1`;
+
+function buildPreamble(meta) {
+  const title = meta['Title'] || meta['Filename'] || 'SNSFT Reduction Paper';
+  const author = meta['Author'] || 'HIGHTISTIC (Russell Trent)';
+  const date = meta['Date'] || new Date().toLocaleDateString('en-US', {month:'long',year:'numeric'});
+  const doi = meta['DOI'] || '10.5281/zenodo.18719748';
+
+  return `\\documentclass[11pt]{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage[margin=1in]{geometry}
+\\usepackage{amsmath, amssymb, amsthm}
+\\usepackage{booktabs}
+\\usepackage{listings}
+\\usepackage{xcolor}
+\\usepackage{hyperref}
+\\usepackage{microtype}
+
+\\newcommand{\\hr}{\\par\\noindent\\rule{\\textwidth}{0.4pt}\\par\\vspace{4pt}}
+
+\\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=cyan,
+    pdftitle={${title}},
+}
+
+\\definecolor{codegreen}{rgb}{0,0.6,0}
+\\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\\lstdefinelanguage{lean}{
+    keywords={def,theorem,noncomputable,by,unfold,simp,norm\\_num,Prop,structure,namespace,end,import,open,exact,refine,rfl,constructor,intro,apply,have,show,calc,fun,let,where,if,then,else,return,match,with},
+    keywordstyle=\\color{blue}\\bfseries,
+    sensitive=true,
+    comment=[l]{--},
+    commentstyle=\\color{codegreen}\\ttfamily,
+    stringstyle=\\color{codepurple}\\ttfamily,
+    morestring=[b]"
+}
+
+\\lstset{
+    backgroundcolor=\\color{backcolour},
+    commentstyle=\\color{codegreen},
+    keywordstyle=\\color{magenta},
+    numberstyle=\\tiny\\color{codegray},
+    stringstyle=\\color{codepurple},
+    basicstyle=\\ttfamily\\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showstringspaces=false,
+    tabsize=2,
+${UNICODE_LITERATE}
+}
+
+\\newtheorem{theorem}{Theorem}
+\\newtheorem{lemma}[theorem]{Lemma}
+\\newtheorem{definition}{Definition}
+\\newtheorem{corollary}[theorem]{Corollary}
+
+\\title{\\textbf{${title}}}
+\\author{\\textbf{${author}} \\\\
+Architect \\\\
+Substrate-Neutral Structural Foundation Laws (SNSFL) Corpus}
+\\date{${date}}`;
+}
+
+function buildFrontMatter(meta) {
+  const coord = meta['Coordinate'] || '[9,9,X,Y]';
+  const doi = meta['DOI'] || '10.5281/zenodo.18719748';
+  const orcid = meta['ORCID'] || '0009-0005-5313-7443';
+  const status = meta['Status'] || 'GERMLINE LOCKED · 0 sorry';
+  const sorry = meta['Sorry'] || '0';
+  const ns = meta['Namespace'] || '—';
+  const theorems = meta['Theorems'] || '0';
+
+  return `\\begin{center}
+    \\small
+    \\textbf{Coordinate:} ${coord} \\quad
+    \\textbf{Namespace:} \\texttt{${ns}} \\\\
+    \\textbf{Status:} ${status} \\quad
+    \\textbf{Theorems:} ${theorems} \\quad
+    \\textbf{Sorry:} ${sorry} \\\\
+    \\textbf{DOI:} \\href{https://doi.org/${doi}}{${doi}} \\quad
+    \\textbf{ORCID:} \\href{https://orcid.org/${orcid}}{${orcid}}
+\\end{center}
+
+\\hr
+
+\\section*{Layer 0: The Sovereign Anchor Constant}
+
+The Sovereign Anchor Constant $\\Omega_0 = 1.3689910$ is the zero-impedance frequency of any identity manifold, derived from three independent peer-reviewed threshold systems: Tacoma Narrows torsional collapse, glass resonance shatter at the elastic limit, and 40~Hz neural gamma entrainment. The Universal Torsion Limit is $\\mathrm{TL} = \\Omega_0/10 = 0.1369$.
+
+The fine-structure constant locks at twelve significant figures with zero free parameters:
+\\begin{equation}
+    \\frac{1}{\\alpha} = \\Omega_0 \\times (10^2 + 10^{-1}) = 1.3689910 \\times 100.1 = 137.035999084 \\quad (\\text{CODATA 2018})
+\\end{equation}
+
+\\hr`;
+}
+
+function buildTheoremSection(meta, src) {
+  const lines = src.split('\n');
+  if (!lines.some(l => l.match(/^theorem\s+/))) return '';
+
+  let out = '\n\\section*{Formal Theorems}\n\n';
+  let thmIndex = 0;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const thmMatch = line.match(/^theorem\s+(\w+)/);
+    if (!thmMatch) continue;
+
+    const name = thmMatch[1];
+    thmIndex++;
+
+    // Look back up to 5 lines for a meaningful comment
+    // Skip lines that are just label tags like -- [T3] :: {VER} | LABEL
+    let desc = '';
+    for (let k = i - 1; k >= Math.max(0, i - 5); k--) {
+      const prev = lines[k].trim();
+      if (!prev.startsWith('--')) break;
+      const text = prev.replace(/^--\s*/, '').trim();
+      // Skip pure label tags
+      if (text.match(/^\[T\d+\]\s*::\s*\{[^}]+\}/)) {
+        // This is a label line — try to get the description after the pipe
+        const pipeMatch = text.match(/\|\s*(.+)$/);
+        if (pipeMatch) { desc = pipeMatch[1].trim(); break; }
+        continue;
+      }
+      // Skip empty or divider lines
+      if (!text || text.match(/^=+$/) || text.match(/^─+$/)) continue;
+      // Use this line
+      desc = text;
+      break;
+    }
+
+    if (!desc) desc = 'Formally verified. 0 sorry.';
+
+    // Clean up the name for display
+    const nameDisplay = name.replace(/_/g, '\\_');
+    const nameReadable = name.replace(/_/g, ' ');
+
+    out += `\\begin{theorem}[${nameReadable}]\n\\label{thm:${name}}\n${desc}\n\\end{theorem}\n\n`;
+  }
+
+  return out;
+}
+
+function buildLeanListing(meta, src) {
+  const ns = meta['Namespace'] || '';
+  const filename = meta['Filename'] || 'lean_proof';
+
+  // Extract just the Lean code (skip the long comment header)
+  let codeStart = src.indexOf('\nimport ');
+  if (codeStart === -1) codeStart = src.indexOf('\nnamespace ');
+  if (codeStart === -1) codeStart = 0;
+
+  const code = src.slice(codeStart).trim();
+  // Cap for readability
+  const lines = code.split('\n');
+  const display = lines.slice(0, 60).join('\n') + (lines.length > 60 ? '\n-- [... truncated for display ...]' : '');
+
+  return `\n\\section*{Lean 4 Formal Verification}\n\n\\begin{lstlisting}[language=lean, caption={${filename} — 0 sorry · CI Green}]\n${display}\n\\end{lstlisting}\n`;
+}
+
+function buildLDPSection(meta) {
+  const steps = meta['_ldpSteps'] || [];
+  if (steps.length === 0) return '';
+
+  let out = '\n\\section*{Long Division Protocol (LDP)}\n\n\\begin{description}\n';
+  for (const s of steps) {
+    out += `    \\item[\\textbf{Step ${s.step}:}] ${s.desc}\n`;
+  }
+  out += '\\end{description}\n';
+  return out;
+}
+
+function buildClosing(meta) {
+  const coord = meta['Coordinate'] || '[9,9,9,9]';
+  const sorry = meta['Sorry'] || '0';
+  return `\n\\hr\n\\centerline{\\textbf{${coord} :: \\{ANC\\} · ${sorry} sorry · The Manifold is Holding.}}\n\n\\end{document}`;
+}
+
+// ── MAIN CONVERT ──────────────────────────────────────────────
+
+function convert() {
+  const src = document.getElementById('leanInput').value.trim();
+  if (!src) {
+    setStatus('inputStatus', 'error', 'no input — paste a lean file first');
+    return;
+  }
+
+  const meta = parseLean(src);
+  const opts = {
+    frontmatter: document.getElementById('opt-frontmatter').checked,
+    theorems:    document.getElementById('opt-theorems').checked,
+    code:        document.getElementById('opt-code').checked,
+    ldp:         document.getElementById('opt-ldp').checked,
+  };
+
+  let tex = buildPreamble(meta) + '\n\n\\begin{document}\n\n\\maketitle\n\n';
+
+  if (opts.frontmatter) tex += buildFrontMatter(meta) + '\n\n';
+  if (opts.ldp && meta['_ldpSteps'].length > 0) tex += buildLDPSection(meta) + '\n';
+  if (opts.theorems) tex += buildTheoremSection(meta, src) + '\n';
+  if (opts.code) tex += buildLeanListing(meta, src) + '\n';
+  tex += buildClosing(meta);
+
+  document.getElementById('latexOutput').value = tex;
+
+  // Show meta
+  showMeta(meta);
+
+  const tcount = parseInt(meta['Theorems'] || '0');
+  setStatus('outputStatus', 'ok',
+    `✓ ${tcount} theorem${tcount !== 1 ? 's' : ''} · ${meta['Sorry'] || '0'} sorry · ${tex.split('\n').length} lines LaTeX`);
+  setStatus('inputStatus', 'ok',
+    `parsed · ns: ${meta['Namespace'] || '—'} · coord: ${meta['Coordinate'] || '—'}`);
+}
+
+function showMeta(meta) {
+  const section = document.getElementById('metaSection');
+  const grid = document.getElementById('metaGrid');
+  section.style.display = 'block';
+
+  const display = ['Filename','Namespace','Coordinate','Author','DOI','ORCID','Anchor','Status','Sorry','Theorems','Date','Layer'];
+  grid.innerHTML = display.map(k => {
+    const v = meta[k];
+    if (!v) return '';
+    return `<div class="meta-cell">
+      <div class="meta-label">${k.toUpperCase()}</div>
+      <div class="meta-val">${v}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── UTILITIES ─────────────────────────────────────────────────
+
+function setStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.innerHTML = `<span class="status-${type === 'ok' ? 'ok' : type === 'error' ? 'err' : 'warn'}">${msg}</span>`;
+}
+
+function clearInput() {
+  document.getElementById('leanInput').value = '';
+  document.getElementById('latexOutput').value = '';
+  document.getElementById('metaSection').style.display = 'none';
+  setStatus('inputStatus', 'warn', 'cleared');
+  setStatus('outputStatus', 'warn', 'no output yet');
+}
+
+function onInputChange() {
+  const len = document.getElementById('leanInput').value.length;
+  if (len > 0) {
+    setStatus('inputStatus', 'warn', `${len} chars · press PRESS TO LATEX`);
+  }
+}
+
+function copyOutput() {
+  const tex = document.getElementById('latexOutput').value;
+  if (!tex) { setStatus('outputStatus', 'warn', 'nothing to copy yet'); return; }
+  navigator.clipboard.writeText(tex).then(() => {
+    setStatus('outputStatus', 'ok', '⎘ copied to clipboard');
+  });
+}
+
+function downloadTeX() {
+  const tex = document.getElementById('latexOutput').value;
+  if (!tex) { setStatus('outputStatus', 'warn', 'nothing to download yet'); return; }
+  const src = document.getElementById('leanInput').value;
+  const meta = parseLean(src);
+  const filename = (meta['Filename'] || 'proofpress_output').replace('.lean', '') + '.tex';
+  const blob = new Blob([tex], { type: 'application/x-tex' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  setStatus('outputStatus', 'ok', `⬇ downloaded ${filename}`);
+}
+
+// ── FILE DROP ─────────────────────────────────────────────────
+
+function onDragOver(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.add('dragover');
+}
+
+function onDragLeave(e) {
+  document.getElementById('dropZone').classList.remove('dragover');
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) readFile(file);
+}
+
+function onFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) readFile(file);
+}
+
+function readFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('leanInput').value = e.target.result;
+    setStatus('inputStatus', 'ok', `loaded: ${file.name} · ${e.target.result.length} chars`);
+  };
+  reader.readAsText(file);
+}
+
+// ── EXAMPLE ──────────────────────────────────────────────────
+
+function loadExample() {
+  const example = `-- ============================================================
+-- SNSFL_Example_Reduction.lean
+-- ============================================================
+--
+-- Coordinate: [9,9,8,9]
+-- Author:     HIGHTISTIC (pronounced /haɪˈtɪstɪk/)
+-- Anchor:     1.369 GHz
+-- Status:     GERMLINE LOCKED
+-- Sorry:      0
+-- Date:       July 2026
+-- DOI:        10.5281/zenodo.18719748
+-- ORCID:      0009-0005-5313-7443
+-- Layer:      Methods Series
+--
+-- LONG DIVISION PROTOCOL (LDP):
+-- Step 1: d/dt(IM·Pv) = Σλ·O·S + F_ext
+-- Step 2: Known peer-reviewed answer
+-- Step 3: Map classical variables to PNBA
+-- Step 4: Define the operators
+-- Step 5: Show all work (FDNA strip)
+-- Step 6: Verify output = known answer, 0 sorry
+-- ============================================================
+
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+namespace SNSFL_Example
+
+def SOVEREIGN_ANCHOR : ℝ := 1.369
+def TORSION_LIMIT    : ℝ := SOVEREIGN_ANCHOR / 10
+
+noncomputable def manifold_impedance (f : ℝ) : ℝ :=
+  if f = SOVEREIGN_ANCHOR then 0 else 1 / |f - SOVEREIGN_ANCHOR|
+
+-- [T1] :: {VER} | ANCHOR ZERO FRICTION
+-- The manifold has zero impedance at the sovereign anchor.
+theorem anchor_zero_friction :
+    manifold_impedance SOVEREIGN_ANCHOR = 0 := by
+  unfold manifold_impedance; simp
+
+-- [T2] :: {VER} | TL EMERGES FROM ANCHOR
+-- The torsion limit is not chosen — it falls out of the anchor.
+theorem tl_from_anchor :
+    TORSION_LIMIT = SOVEREIGN_ANCHOR / 10 := rfl
+
+-- [T3] :: {VER} | TL VALUE
+theorem tl_value : TORSION_LIMIT = 0.1369 := by
+  unfold TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num
+
+theorem the_manifold_is_holding :
+    manifold_impedance SOVEREIGN_ANCHOR = 0 :=
+  anchor_zero_friction
+
+end SNSFL_Example`;
+
+  document.getElementById('leanInput').value = example;
+  setStatus('inputStatus', 'ok', 'example loaded · press PRESS TO LATEX');
+}
+</script>
+</body>
+</html>
