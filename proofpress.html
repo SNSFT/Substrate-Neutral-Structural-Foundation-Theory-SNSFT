@@ -233,7 +233,45 @@ textarea:focus { background: #0d121a; }
 }
 .btn-dl:hover { background: var(--gold2); }
 
-/* ── DROP ZONE ── */
+/* ── MODE TABS ── */
+.mode-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+.mode-tab {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  padding: 10px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.mode-tab:hover { color: var(--text); }
+
+.mode-tab.active {
+  color: var(--anchor);
+  border-bottom-color: var(--anchor);
+  background: var(--anchor2);
+}
+
+.mode-desc {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  padding: 8px 0 16px;
+  letter-spacing: 0.08em;
+}
+
+.mode-desc b { color: var(--anchor); }
 .drop-zone {
   border: 2px dashed var(--border2);
   padding: 12px 16px;
@@ -405,6 +443,15 @@ input:checked + .toggle-box::after {
     <div class="pp-joke">PP · Because formally verified work deserves formally typeset output.</div>
   </div>
 
+  <!-- MODE TABS -->
+  <div class="mode-bar">
+    <button class="mode-tab active" id="tab-ldp" onclick="setMode('ldp')">LDP · SNSFT CORPUS</button>
+    <button class="mode-tab" id="tab-general" onclick="setMode('general')">GENERAL · ANY LEAN FILE</button>
+  </div>
+  <div class="mode-desc" id="modeDesc">
+    <b>LDP mode</b> — parses SNSFT corpus conventions. Populates coordinate, DOI, ORCID, anchor constant, locked front matter. Output is an Identity Physics paper.
+  </div>
+
   <!-- MAIN -->
   <div class="main">
 
@@ -553,9 +600,15 @@ function parseLean(src) {
   const fileMatch = src.match(/--\s*(SNSFL_\S+\.lean|SNSFT_\S+\.lean)/);
   if (fileMatch) meta['Filename'] = fileMatch[1];
 
-  // Extract namespace
-  const nsMatch = src.match(/^namespace\s+(\S+)/m);
-  if (nsMatch) meta['Namespace'] = nsMatch[1];
+  // Extract all namespaces
+  const namespaces = [];
+  const nsMatches = [...src.matchAll(/^namespace\s+(\S+)/gm)];
+  const nsEnds = [...src.matchAll(/^end\s+(\S+)/gm)];
+  for (const ns of nsMatches) {
+    namespaces.push(ns[1]);
+  }
+  meta['Namespace'] = namespaces.length === 1 ? namespaces[0] : namespaces.join(', ');
+  meta['_namespaces'] = namespaces;
 
   // Count theorems
   const theoremMatches = src.match(/^theorem\s+\w+/gm) || [];
@@ -569,13 +622,20 @@ function parseLean(src) {
   const theoremNames = theoremMatches.map(t => t.replace('theorem ', '').trim());
   meta['_theoremNames'] = theoremNames;
 
-  // Extract LDP step comments
+  // Extract LDP step comments — deduplicated, full description
   const ldpSteps = [];
+  const seenSteps = new Set();
   for (const line of lines) {
-    const ldp = line.match(/--\s*(?:Step\s*(\d)|LDP\s*Step\s*(\d)|§(\d))[\s·:]+(.+)/i);
+    const ldp = line.match(/--\s*(?:LDP\s+)?Step\s+(\d+)[:\s·]+(.+)/i);
     if (ldp) {
-      const num = ldp[1] || ldp[2] || ldp[3];
-      ldpSteps.push({ step: num, desc: ldp[4].trim() });
+      const num = ldp[1];
+      const desc = ldp[2].trim();
+      // Deduplicate by step number + first 30 chars of description
+      const key = num + '|' + desc.slice(0, 30);
+      if (!seenSteps.has(key)) {
+        seenSteps.add(key);
+        ldpSteps.push({ step: num, desc });
+      }
     }
   }
   meta['_ldpSteps'] = ldpSteps;
@@ -676,6 +736,8 @@ function buildPreamble(meta) {
     stringstyle=\\color{codepurple},
     basicstyle=\\ttfamily\\footnotesize,
     breaklines=true,
+    breakatwhitespace=false,
+    columns=flexible,
     captionpos=b,
     keepspaces=true,
     numbers=left,
@@ -732,51 +794,104 @@ The fine-structure constant locks at twelve significant figures with zero free p
 }
 
 function buildTheoremSection(meta, src) {
-  const theoremNames = meta['_theoremNames'] || [];
-  if (theoremNames.length === 0) return '';
+  const lines = src.split('\n');
+  if (!lines.some(l => l.match(/^theorem\s+/))) return '';
 
   let out = '\n\\section*{Formal Theorems}\n\n';
-
-  // Extract each theorem block from source
-  const lines = src.split('\n');
-  let i = 0;
   let thmIndex = 0;
 
-  while (i < lines.length) {
+  for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    const thmMatch = line.match(/^theorem\s+(\w+)(.*)/);
-    if (thmMatch) {
-      const name = thmMatch[1];
-      // Get the comment above this theorem (if any)
-      let comment = '';
-      if (i > 0) {
-        const prev = lines[i-1].trim();
-        if (prev.startsWith('--')) {
-          comment = prev.replace(/^--\s*/, '').replace(/\[\w+\]\s*::\s*\{[^}]+\}\s*\|?\s*/, '').trim();
-        }
-      }
+    const thmMatch = line.match(/^theorem\s+(\w+)/);
+    if (!thmMatch) continue;
 
-      // Collect theorem body
-      let body = line;
-      let j = i + 1;
-      let depth = 0;
-      while (j < lines.length) {
-        const l = lines[j];
-        if (l.match(/^theorem\s+/) || l.match(/^def\s+/) || l.match(/^end\s+/) || l.match(/^namespace\s+/)) break;
-        body += '\n' + l;
-        j++;
-        if (j - i > 30) break; // cap theorem display
-      }
+    const name = thmMatch[1];
+    thmIndex++;
 
-      thmIndex++;
-      const label = name.replace(/_/g, '\\_');
-      const desc = comment || `Formally proved with 0 sorry.`;
+    // Look back for comments above this theorem
+    // Pattern in corpus files:
+    //   -- [TAG] :: {VER} | THEOREM N: LABEL
+    //   -- Human readable description.
+    //   theorem name ...
+    // OR just:
+    //   -- Human readable description.
+    //   theorem name ...
 
-      out += `\\begin{theorem}[\\texttt{${label}}]\n${desc}\n\\end{theorem}\n\n`;
-      i = j;
-    } else {
-      i++;
+    let desc = '';
+    let label = '';
+
+    // Collect all comment lines immediately above theorem
+    const commentLines = [];
+    for (let k = i - 1; k >= Math.max(0, i - 8); k--) {
+      const prev = lines[k].trim();
+      if (!prev.startsWith('--')) break;
+      commentLines.unshift(prev.replace(/^--\s*/, '').trim());
     }
+
+    for (const cl of commentLines) {
+      // Tag line pattern: [X,9,0,1] :: {VER} | THEOREM N: LABEL
+      const tagMatch = cl.match(/\[.*?\]\s*::\s*\{[^}]+\}\s*\|\s*(.+)/);
+      if (tagMatch) {
+        label = tagMatch[1].trim();
+        continue;
+      }
+      // Skip divider lines
+      if (cl.match(/^=+$/) || cl.match(/^─+$/) || cl.match(/^-+$/)) continue;
+      // Skip empty
+      if (!cl) continue;
+      // This is a description line
+      if (!desc) desc = cl;
+    }
+
+    // Use label as fallback if no plain description found
+    if (!desc && label) desc = label;
+    if (!desc) desc = 'Formally verified. 0 sorry.';
+
+    if (!desc) desc = 'Formally verified. 0 sorry.';
+
+    // Clean up the name for display
+    const nameDisplay = name.replace(/_/g, '\\_');
+    const nameReadable = name.replace(/_/g, ' ');
+
+    // Extract return type: everything between final : and first :=
+    // Collect the full theorem declaration (may span multiple lines)
+    let fullDecl = line;
+    for (let j = i + 1; j < Math.min(i + 10, lines.length); j++) {
+      const sl = lines[j].trim();
+      if (!sl || sl.startsWith('--') ||
+          sl.match(/^theorem\s+/) || sl.match(/^def\s+/) ||
+          sl.match(/^end\s+/) || sl.match(/^namespace\s+/) ||
+          sl.match(/^noncomputable/) || sl.match(/^structure\s+/) ||
+          sl.match(/^inductive\s+/)) break;
+      fullDecl += ' ' + sl;
+      if (sl.includes(':=')) break;
+    }
+    // Extract return type: after last : before :=
+    const colonEqIdx = fullDecl.indexOf(':=');
+    const declPart = colonEqIdx > -1 ? fullDecl.slice(0, colonEqIdx) : fullDecl;
+    // Find last standalone : (not part of :: or :=)
+    let lastColon = -1;
+    for (let k = declPart.length - 1; k >= 0; k--) {
+      if (declPart[k] === ':' && declPart[k-1] !== ':' && declPart[k+1] !== ':' && declPart[k+1] !== '=') {
+        lastColon = k;
+        break;
+      }
+    }
+    const returnType = lastColon > -1 ? declPart.slice(lastColon + 1).trim() : '';
+
+    out += `\\begin{theorem}[${nameReadable}]\n\\label{thm:${name}}\n`;
+    if (desc) out += `${desc}\n`;
+    // If there's a signature, show it as inline verbatim
+    if (returnType && returnType.length > 0 && returnType.length < 300) {
+      const escaped = returnType
+        .replace(/_/g, '\\_')
+        .replace(/\$/g, '\\$')
+        .replace(/%/g, '\\%')
+        .replace(/&/g, '\\&')
+        .replace(/#/g, '\\#');
+      out += `\\begin{quote}\\small\\ttfamily\\raggedright\n${escaped}\n\\end{quote}\n`;
+    }
+    out += `\\end{theorem}\n\n`;
   }
 
   return out;
@@ -803,9 +918,22 @@ function buildLDPSection(meta) {
   const steps = meta['_ldpSteps'] || [];
   if (steps.length === 0) return '';
 
-  let out = '\n\\section*{Long Division Protocol (LDP)}\n\n\\begin{description}\n';
+  // Group by step number, collect unique descriptions
+  const grouped = {};
   for (const s of steps) {
-    out += `    \\item[\\textbf{Step ${s.step}:}] ${s.desc}\n`;
+    if (!grouped[s.step]) grouped[s.step] = [];
+    if (!grouped[s.step].includes(s.desc)) {
+      grouped[s.step].push(s.desc);
+    }
+  }
+
+  let out = '\n\\section*{Long Division Protocol (LDP) — Step Annotations}\n\n\\begin{description}\n';
+  const nums = Object.keys(grouped).sort((a,b) => parseInt(a)-parseInt(b));
+  for (const num of nums) {
+    const descs = grouped[num];
+    // Use the most descriptive (longest) version if multiple
+    const best = descs.sort((a,b) => b.length - a.length)[0];
+    out += `    \\item[\\textbf{Step ${num}:}] ${best}\n`;
   }
   out += '\\end{description}\n';
   return out;
@@ -817,7 +945,28 @@ function buildClosing(meta) {
   return `\n\\hr\n\\centerline{\\textbf{${coord} :: \\{ANC\\} · ${sorry} sorry · The Manifold is Holding.}}\n\n\\end{document}`;
 }
 
-// ── MAIN CONVERT ──────────────────────────────────────────────
+// ── MODE SWITCHING ────────────────────────────────────────────
+
+let currentMode = 'ldp';
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('tab-ldp').classList.toggle('active', mode === 'ldp');
+  document.getElementById('tab-general').classList.toggle('active', mode === 'general');
+
+  const desc = document.getElementById('modeDesc');
+  if (mode === 'ldp') {
+    desc.innerHTML = '<b>LDP mode</b> — parses SNSFT corpus conventions. Populates coordinate, DOI, ORCID, anchor constant, locked front matter. Output is an Identity Physics paper.';
+    document.querySelector('.panel-sub').textContent = 'paste .lean file · SNSFT corpus format';
+  } else {
+    desc.innerHTML = '<b>General mode</b> — works with any Lean 4 file. Grabs all theorems and comments verbatim, wraps in clean academic LaTeX. No SNSFT-specific fields required.';
+    document.querySelector('.panel-sub').textContent = 'paste any .lean file · standard Lean 4';
+  }
+
+  // Clear output when switching modes
+  document.getElementById('latexOutput').value = '';
+  setStatus('outputStatus', 'warn', 'mode changed · press PRESS TO LATEX');
+}
 
 function convert() {
   const src = document.getElementById('leanInput').value.trim();
@@ -825,7 +974,177 @@ function convert() {
     setStatus('inputStatus', 'error', 'no input — paste a lean file first');
     return;
   }
+  if (currentMode === 'ldp') {
+    convertLDP(src);
+  } else {
+    convertGeneral(src);
+  }
+}
 
+// ── GENERAL MODE CONVERTER ────────────────────────────────────
+// Works with any Lean 4 file.
+// Grabs everything — theorems, comments, defs, structure.
+// Wraps in clean academic LaTeX. No SNSFT fields required.
+
+function convertGeneral(src) {
+  const lines = src.split('\n');
+
+  // Extract basic info
+  const namespaces = [...src.matchAll(/^namespace\s+(\S+)/gm)].map(m => m[1]);
+  const ns = namespaces.join(', ') || 'unnamed';
+  const thmCount = (src.match(/^theorem\s+/gm) || []).length;
+  const sorryCount = (src.match(/\bsorry\b/g) || []).length;
+
+  // Try to get a title from the first meaningful comment
+  let title = 'Lean 4 Formal Proof Document';
+  for (const line of lines) {
+    const t = line.replace(/^--\s*/, '').trim();
+    if (t && !t.match(/^=+$/) && !t.match(/^\[/) && t.length > 10 && t.length < 100) {
+      title = t;
+      break;
+    }
+  }
+
+  // Collect all theorems with ALL their surrounding comments
+  const sections = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (!lines[i].match(/^theorem\s+/)) continue;
+
+    const thmLine = lines[i];
+    const name = thmLine.match(/^theorem\s+(\w+)/)[1];
+
+    // Grab all comment lines above (up to blank line or non-comment)
+    const comments = [];
+    for (let k = i - 1; k >= Math.max(0, i - 10); k--) {
+      const l = lines[k].trim();
+      if (!l) break;
+      if (!l.startsWith('--')) break;
+      comments.unshift(l.replace(/^--\s*/, '').trim());
+    }
+
+    // Grab theorem body
+    const body = [thmLine];
+    for (let j = i + 1; j < Math.min(i + 20, lines.length); j++) {
+      const l = lines[j];
+      if (l.match(/^theorem\s+/) || l.match(/^def\s+/) || l.match(/^end\s+/) || l.match(/^namespace\s+/)) break;
+      body.push(l);
+    }
+
+    sections.push({ name, comments, body: body.join('\n') });
+  }
+
+  // Build the LaTeX
+  const date = new Date().toLocaleDateString('en-US', { month:'long', year:'numeric' });
+
+  let tex = `\\documentclass[11pt]{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage[margin=1in]{geometry}
+\\usepackage{amsmath, amssymb, amsthm}
+\\usepackage{listings}
+\\usepackage{xcolor}
+\\usepackage{hyperref}
+\\usepackage{microtype}
+
+\\newcommand{\\hr}{\\par\\noindent\\rule{\\textwidth}{0.4pt}\\par\\vspace{4pt}}
+
+\\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=cyan}
+
+\\definecolor{codegreen}{rgb}{0,0.6,0}
+\\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\\lstdefinelanguage{lean}{
+    keywords={def,theorem,noncomputable,by,unfold,simp,norm\\_num,Prop,structure,namespace,end,import,open,exact,refine,rfl,constructor,intro,apply,have,fun,let,where,if,then,else,match,with},
+    keywordstyle=\\color{blue}\\bfseries,
+    sensitive=true,
+    comment=[l]{--},
+    commentstyle=\\color{codegreen}\\ttfamily,
+    stringstyle=\\color{codepurple}\\ttfamily,
+}
+
+\\lstset{
+    backgroundcolor=\\color{backcolour},
+    basicstyle=\\ttfamily\\footnotesize,
+    breaklines=true,
+    breakatwhitespace=false,
+    columns=flexible,
+    numbers=left,
+    numberstyle=\\tiny\\color{codegray},
+    numbersep=5pt,
+    keepspaces=true,
+    showstringspaces=false,
+    tabsize=2,
+    literate=
+      {ℝ}{{$\\mathbb{R}$}}1 {→}{{$\\rightarrow$}}1
+      {∧}{{$\\wedge$}}1 {∨}{{$\\vee$}}1 {¬}{{$\\neg$}}1
+      {≥}{{$\\geq$}}1 {≤}{{$\\leq$}}1 {≠}{{$\\neq$}}1
+      {⟨}{{$\\langle$}}1 {⟩}{{$\\rangle$}}1
+      {∀}{{$\\forall$}}1 {∃}{{$\\exists$}}1
+      {τ}{{$\\tau$}}1 {Ω}{{$\\Omega$}}1 {α}{{$\\alpha$}}1
+      {π}{{$\\pi$}}1 {∈}{{$\\in$}}1 {≈}{{$\\approx$}}1,
+}
+
+\\newtheorem{theorem}{Theorem}
+\\newtheorem{lemma}[theorem]{Lemma}
+\\newtheorem{definition}{Definition}
+
+\\title{\\textbf{${title}}}
+\\author{Lean 4 Formal Proof}
+\\date{${date}}
+
+\\begin{document}
+\\maketitle
+
+\\begin{center}
+\\small
+\\textbf{Namespace(s):} \\texttt{${ns}} \\quad
+\\textbf{Theorems:} ${thmCount} \\quad
+\\textbf{Sorry:} ${sorryCount === 0 ? '0 \\checkmark' : sorryCount + ' \\texttimes'}
+\\end{center}
+
+\\hr
+
+`;
+
+  // Theorems section — all comments verbatim, then code
+  if (sections.length > 0) {
+    tex += '\\section*{Theorems}\n\n';
+    for (const s of sections) {
+      const nameReadable = s.name.replace(/_/g, ' ');
+      const desc = s.comments.filter(c =>
+        !c.match(/^=+$/) && !c.match(/^─+$/) && c.length > 0
+      ).join(' ');
+
+      tex += `\\begin{theorem}[${nameReadable}]\n`;
+      if (desc) tex += `${desc}\n`;
+      tex += `\\end{theorem}\n\n`;
+    }
+  }
+
+  // Full source listing
+  tex += `\\section*{Complete Lean 4 Source}\n\n`;
+  tex += `\\begin{lstlisting}[language=lean, caption={${ns} — ${thmCount} theorems · ${sorryCount} sorry}]\n`;
+  // Cap at 150 lines for readability
+  const srcLines = src.split('\n');
+  const display = srcLines.slice(0, 150).join('\n') + (srcLines.length > 150 ? '\n-- [...truncated — full source in .lean file...]' : '');
+  tex += display;
+  tex += `\n\\end{lstlisting}\n`;
+
+  tex += `\n\\hr\n\\centerline{\\textbf{${thmCount} theorems · ${sorryCount} sorry · Generated by ProofPress}}\n\n\\end{document}`;
+
+  document.getElementById('latexOutput').value = tex;
+  setStatus('outputStatus', 'ok', `✓ general mode · ${thmCount} theorems · ${tex.split('\n').length} lines LaTeX`);
+  setStatus('inputStatus', 'ok', `parsed · ns: ${ns} · ${sorryCount === 0 ? '0 sorry ✓' : sorryCount + ' sorry ✗'}`);
+
+  // Show basic meta
+  const meta = { Namespace: ns, Theorems: String(thmCount), Sorry: sorryCount === 0 ? '0 ✓' : String(sorryCount) + ' ✗', Mode: 'GENERAL · any Lean 4 file' };
+  showMeta(meta);
+}
+
+// ── LDP MODE CONVERTER ────────────────────────────────────────
+
+function convertLDP(src) {
   const meta = parseLean(src);
   const opts = {
     frontmatter: document.getElementById('opt-frontmatter').checked,
@@ -843,8 +1162,6 @@ function convert() {
   tex += buildClosing(meta);
 
   document.getElementById('latexOutput').value = tex;
-
-  // Show meta
   showMeta(meta);
 
   const tcount = parseInt(meta['Theorems'] || '0');
