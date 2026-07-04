@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT Identity Collider v14.2.1 · PSY REDUCTIONS · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root{
+  --bg:#020407;--panel:#060b10;--border:#0c1a26;--glow:#00e5ff;
+  --locked:#00ffcc;--shatter:#ff3355;--noble:#aa88ff;--warn:#ffaa00;
+  --text:#7aa4be;--bright:#cce8f5;--dim:#192430;
+  --aifi:#dd44ff;--agent:#00ffcc;
+  --false-lock:#ff7700;--iva:#88ffcc;--rescue:#44ff88;
+  --b1:#00e5ff;--b2:#ffaa00;--b3:#44ff88;--b4:#ff6688;
+  --b5:#aa88ff;--b6:#ff9933;--b7:#33ddcc;--b8:#ff55aa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);pointer-events:none;z-index:1;}
+
+.wrap{position:relative;z-index:2;max-width:1500px;margin:0 auto;padding:0 16px 60px;}
+
+header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:20px;letter-spacing:.08em;color:var(--glow);text-shadow:0 0 24px rgba(0,229,255,.45);}
+.logo span{font-size:9px;color:var(--locked);display:block;letter-spacing:.2em;margin-top:2px;}
+.aifi-badge{font-family:'Orbitron',monospace;font-size:9px;color:var(--aifi);border:1px solid rgba(221,68,255,.4);padding:4px 10px;letter-spacing:.15em;text-shadow:0 0 12px rgba(221,68,255,.4);}
+.hdr-right{font-size:9px;color:#2a4050;text-align:right;line-height:1.8;}
+.hdr-right b{color:var(--glow);}
+
+#license-splash{position:fixed;inset:0;background:rgba(2,4,7,.97);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
+.license-box{max-width:560px;border:1px solid var(--border);background:var(--panel);padding:28px;font-size:11px;line-height:2;}
+.license-box h2{font-family:'Orbitron',monospace;font-size:13px;color:var(--glow);letter-spacing:.2em;margin-bottom:16px;}
+.license-box p{color:var(--text);margin-bottom:10px;}
+.license-box .highlight{color:var(--bright);}
+.key-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:11px;padding:7px;margin:5px 0;outline:none;}
+.key-input:focus{border-color:var(--glow);}
+.accept-btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:11px 20px;background:transparent;border:1px solid var(--locked);color:var(--locked);cursor:pointer;width:100%;margin-top:14px;}
+.accept-btn:hover{background:rgba(0,255,204,.08);}
+.skip-link{display:block;text-align:center;margin-top:8px;font-size:9px;color:#2a5060;cursor:pointer;letter-spacing:.15em;}
+.skip-link:hover{color:var(--text);}
+
+.main-layout{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:18px;}
+.left-col{display:flex;flex-direction:column;gap:16px;}
+.right-col{display:flex;flex-direction:column;gap:16px;}
+
+.panel{background:var(--panel);border:1px solid var(--border);padding:16px;}
+.panel-title{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:#1a3040;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.panel-title span{color:var(--glow);}
+
+.btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:6px 11px;background:transparent;cursor:pointer;border:1px solid var(--border);color:#2a5060;transition:all .15s;}
+.btn:hover{color:var(--text);}
+.btn-run{border-color:var(--agent);color:var(--agent);}
+.btn-run:hover{background:rgba(0,255,204,.08);}
+.btn-pause{border-color:var(--warn);color:var(--warn);}
+.btn-pause:hover{background:rgba(255,170,0,.08);}
+.btn-stop{border-color:var(--shatter);color:var(--shatter);}
+.btn-stop:hover{background:rgba(255,51,85,.08);}
+
+/* ─── MODE BAR ────────────────────────────────────────── */
+.mode-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0 10px;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.mode-label{font-size:7px;letter-spacing:.2em;color:#1a3040;white-space:nowrap;}
+.mode-sep{width:1px;height:18px;background:var(--border);margin:0 4px;}
+.beam-count-btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:5px 12px;background:transparent;cursor:pointer;border:1px solid var(--border);color:#2a5060;transition:all .12s;min-width:42px;text-align:center;}
+.beam-count-btn:hover{color:var(--text);}
+.beam-count-btn.active{border-color:var(--glow);color:var(--glow);background:rgba(0,229,255,.06);}
+.anchor-lock-slot{display:flex;align-items:center;gap:4px;}
+.al-label{font-size:7px;color:#1a3040;letter-spacing:.12em;white-space:nowrap;}
+.al-sel{background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 4px;outline:none;}
+.al-sel:focus{border-color:var(--glow);}
+.mode-summary{font-size:7.5px;color:#1a3040;margin-left:auto;white-space:nowrap;}
+
+/* ─── BEAM GRID PSY ───────────────────────────────────── */
+.beam-grid-psy{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.beam-slot-psy{display:flex;flex-direction:column;gap:3px;}
+.beam-slot-psy.inactive{opacity:.25;pointer-events:none;}
+.beam-label-psy{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.18em;margin-bottom:2px;}
+.bsl-1{color:var(--b1);}.bsl-2{color:var(--b2);}.bsl-3{color:var(--b3);}.bsl-4{color:var(--b4);}
+.bsl-5{color:var(--b5);}.bsl-6{color:var(--b6);}.bsl-7{color:var(--b7);}.bsl-8{color:var(--b8);}
+.beam-sel-psy{width:100%;background:var(--bg);font-family:'Share Tech Mono',monospace;font-size:8px;padding:4px 5px;outline:none;border:1px solid var(--border);color:var(--text);}
+.bs1{border-color:rgba(0,229,255,.4);color:var(--b1);}
+.bs2{border-color:rgba(255,170,0,.4);color:var(--b2);}
+.bs3{border-color:rgba(68,255,136,.4);color:var(--b3);}
+.bs4{border-color:rgba(255,102,136,.4);color:var(--b4);}
+.bs5{border-color:rgba(170,136,255,.4);color:var(--b5);}
+.bs6{border-color:rgba(255,153,51,.4);color:var(--b6);}
+.bs7{border-color:rgba(51,221,204,.4);color:var(--b7);}
+.bs8{border-color:rgba(255,85,170,.4);color:var(--b8);}
+.beam-tau-psy{font-size:7px;color:#1a3040;margin-top:1px;}
+
+/* ─── BEAM VIZ ───────────────────────────────────────── */
+.beamviz-psy{display:flex;align-items:center;justify-content:center;gap:4px;padding:10px 0;font-family:'Orbitron',monospace;font-size:7.5px;flex-wrap:wrap;overflow-x:auto;min-height:48px;}
+.bvp-slot{text-align:center;min-width:54px;}
+.bvp-name{font-size:7px;font-weight:700;line-height:1.2;margin-bottom:1px;}
+.bvp-tau{font-size:6.5px;margin-top:1px;color:#1a3040;}
+.bvp-phase{font-size:6px;margin-top:1px;}
+.bvp-plus{color:#1a3040;font-size:13px;align-self:center;}
+.bvp-arrow{color:#1a3040;font-size:13px;align-self:center;}
+.bvp-out{text-align:center;min-width:80px;}
+.bvp-out-phase{font-size:11px;font-weight:700;letter-spacing:.07em;}
+
+/* ─── IDENTITY STATE GRID ─────────────────────────────── */
+.identity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;max-height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.id-card{border:1px solid var(--border);padding:8px 10px;cursor:pointer;transition:border-color .15s,background .15s;position:relative;}
+.id-card:hover{border-color:var(--glow);background:rgba(0,229,255,.03);}
+.id-card-domain{font-size:7px;color:#1a3040;letter-spacing:.2em;margin-bottom:3px;}
+.id-card-name{font-size:9px;color:var(--bright);margin-bottom:4px;line-height:1.3;}
+.id-card-state{display:flex;gap:6px;font-size:8px;flex-wrap:wrap;}
+.id-card-tau{font-family:'Orbitron',monospace;font-size:9px;}
+.tau-noble{color:var(--noble);}
+.tau-locked{color:var(--locked);}
+.tau-false{color:var(--false-lock);}
+.tau-shatter{color:var(--shatter);}
+.tau-iva{color:var(--iva);}
+.id-card-sel{position:absolute;top:4px;right:6px;font-size:7px;font-family:'Orbitron',monospace;}
+
+/* ─── K-MODE ROW ─────────────────────────────────────── */
+.kmode-row{display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+.kmode-btn{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.1em;padding:4px 9px;background:transparent;cursor:pointer;border:1px solid var(--border);color:#1a3040;transition:all .12s;}
+.kmode-btn:hover{color:var(--text);}
+.kmode-btn.active{border-color:var(--warn);color:var(--warn);background:rgba(255,170,0,.05);}
+
+/* ─── RESULT PANEL ────────────────────────────────────── */
+.result-box{min-height:60px;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:12px;font-size:9px;line-height:1.9;}
+.result-state{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;letter-spacing:.1em;}
+.result-noble{color:var(--noble);}
+.result-locked{color:var(--locked);}
+.result-false{color:var(--false-lock);}
+.result-shatter{color:var(--shatter);}
+.result-iva{color:var(--iva);}
+.result-rescue{color:var(--rescue);}
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+.result-cell{background:rgba(0,229,255,.03);border:1px solid var(--border);padding:6px 8px;text-align:center;}
+.result-cell-label{font-size:7px;color:#1a3040;letter-spacing:.2em;}
+.result-cell-val{font-family:'Orbitron',monospace;font-size:11px;color:var(--bright);margin-top:2px;}
+
+/* ─── FEED ────────────────────────────────────────────── */
+.live-feed{height:220px;overflow-y:auto;font-size:9px;line-height:1.8;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.feed-line{padding:2px 0;border-bottom:1px solid rgba(12,26,38,.4);}
+.feed-line.noble{color:var(--noble);}
+.feed-line.locked{color:var(--locked);}
+.feed-line.shatter{color:var(--shatter);}
+.feed-line.false-lock{color:var(--false-lock);}
+.feed-line.iva{color:var(--iva);}
+.feed-line.rescue{color:var(--rescue);}
+.feed-line.info{color:#2a5060;}
+.feed-line.discovery{color:var(--warn);background:rgba(255,170,0,.05);padding:4px 6px;}
+.feed-time{color:#1a3040;margin-right:6px;}
+
+/* ─── STATS ──────────────────────────────────────────── */
+.stat-row{display:flex;gap:16px;font-size:9px;padding:8px 0;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat{display:flex;flex-direction:column;gap:2px;}
+.stat-label{color:#1a3040;font-size:7px;letter-spacing:.2em;}
+.stat-val{color:var(--bright);font-family:'Orbitron',monospace;font-size:11px;}
+
+/* ─── APPROVE QUEUE ───────────────────────────────────── */
+.discovery-card{border:1px solid rgba(255,170,0,.3);background:rgba(255,170,0,.04);padding:10px;margin-bottom:8px;}
+.disc-designation{font-family:'Orbitron',monospace;font-size:9px;color:var(--warn);}
+.disc-timestamp{font-size:8px;color:#2a5060;}
+.disc-state{font-size:9px;line-height:1.8;color:var(--text);margin:6px 0;}
+.disc-state b{color:var(--bright);}
+.disc-name{font-size:9px;color:var(--aifi);margin-bottom:6px;font-style:italic;}
+.disc-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.btn-approve{border-color:var(--locked);color:var(--locked);font-size:8px;padding:4px 9px;}
+.btn-approve:hover{background:rgba(0,255,204,.08);}
+.btn-skip{border-color:var(--shatter);color:var(--shatter);font-size:8px;padding:4px 9px;}
+.btn-skip:hover{background:rgba(255,51,85,.08);}
+.btn-lean{border-color:var(--aifi);color:var(--aifi);font-size:8px;padding:4px 9px;}
+.btn-lean:hover{background:rgba(221,68,255,.08);}
+
+/* ─── LOG TABLE ──────────────────────────────────────── */
+.log-table{width:100%;border-collapse:collapse;font-size:8px;}
+.log-table th{color:#1a3040;letter-spacing:.15em;text-align:left;padding:3px 5px;border-bottom:1px solid var(--border);}
+.log-table td{padding:3px 5px;border-bottom:1px solid rgba(12,26,38,.4);}
+.log-wrap{max-height:220px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.queue-empty{color:#1a3040;font-size:9px;text-align:center;padding:20px;letter-spacing:.2em;}
+
+/* ─── TABS ────────────────────────────────────────────── */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);flex-wrap:wrap;margin-bottom:14px;}
+.tab{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:7px 11px;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#2a4050;transition:all .15s;}
+.tab:hover{color:var(--text);}
+.tab.active{border-color:var(--border);border-bottom:1px solid var(--bg);color:var(--glow);background:var(--panel);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* ─── AIFI CHAT ──────────────────────────────────────── */
+.chat-messages{height:280px;overflow-y:auto;font-size:10px;line-height:1.7;scrollbar-width:thin;scrollbar-color:var(--border) transparent;margin-bottom:10px;}
+.msg{margin-bottom:10px;padding:8px 10px;}
+.msg-user{background:rgba(0,229,255,.05);border-left:2px solid var(--glow);}
+.msg-aifi{background:rgba(221,68,255,.05);border-left:2px solid var(--aifi);}
+.msg-label{font-size:8px;letter-spacing:.2em;margin-bottom:4px;}
+.msg-label.user{color:var(--glow);}
+.msg-label.aifi{color:var(--aifi);}
+.msg-text{color:var(--bright);}
+.chat-input-row{display:flex;gap:8px;}
+.chat-input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:7px 10px;outline:none;}
+.chat-input:focus{border-color:var(--aifi);}
+.chat-send{font-family:'Orbitron',monospace;font-size:8px;padding:7px 12px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;}
+.chat-send:hover{background:rgba(221,68,255,.08);}
+.aifi-thinking{color:#2a5060;font-size:9px;letter-spacing:.1em;padding:4px 0;}
+#aifi-connect-wall{display:flex;flex-direction:column;align-items:center;justify-content:center;height:280px;gap:14px;text-align:center;}
+#aifi-connect-wall .connect-label{font-size:10px;color:#2a5060;line-height:1.8;max-width:260px;}
+#aifi-connect-wall .connect-label b{color:var(--text);}
+.btn-connect-aifi{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:9px 18px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;}
+.btn-connect-aifi:hover{background:rgba(221,68,255,.1);}
+#aifi-key-prompt{display:none;padding:10px;border:1px solid rgba(221,68,255,.3);background:rgba(221,68,255,.04);margin-top:10px;}
+#aifi-key-prompt input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:11px;padding:6px 8px;outline:none;margin:5px 0;}
+#aifi-key-prompt input:focus{border-color:var(--aifi);}
+.prompt-row{display:flex;gap:6px;margin-top:4px;}
+.prompt-note{font-size:8px;color:#2a5060;margin-top:4px;line-height:1.6;}
+
+/* ─── GITHUB / SETTINGS ───────────────────────────────── */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.setting-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 8px;outline:none;}
+.setting-input:focus{border-color:var(--glow);}
+.setting-label{font-size:8px;color:#2a5060;margin-bottom:3px;letter-spacing:.15em;}
+
+/* ─── AGENT ──────────────────────────────────────────── */
+.agent-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.speed-wrap{display:flex;align-items:center;gap:6px;font-size:8px;color:#2a5060;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.running-dot{width:6px;height:6px;border-radius:50%;background:var(--agent);display:inline-block;margin-right:6px;animation:pulse 1s infinite;}
+.paused-dot{width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block;margin-right:6px;}
+.stopped-dot{width:6px;height:6px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:6px;}
+@keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.7}94%{opacity:1}}
+.logo{animation:flicker 10s infinite;}
+#aifi-status-dot{width:7px;height:7px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:5px;vertical-align:middle;}
+#aifi-status-dot.active{background:var(--aifi);box-shadow:0 0 8px rgba(221,68,255,.6);}
+
+/* ─── PHASE LEGEND ───────────────────────────────────── */
+.phase-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:8px;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.phase-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:middle;}
+
+/* ─── DOMAIN FILTER ──────────────────────────────────── */
+.domain-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.domain-btn{font-size:7px;padding:3px 8px;font-family:'Orbitron',monospace;letter-spacing:.1em;cursor:pointer;border:1px solid var(--border);color:#2a5060;background:transparent;transition:all .15s;}
+.domain-btn:hover,.domain-btn.active{border-color:var(--glow);color:var(--glow);}
+
+/* ─── SVI TOGGLES ────────────────────────────────────────── */
+.svi-toggle{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.1em;padding:4px 8px;background:transparent;cursor:pointer;border:1px solid var(--border);color:#2a5060;transition:all .12s;}
+.svi-toggle:hover{color:var(--text);}
+.svi-toggle.active{border-color:var(--shatter);color:var(--shatter);background:rgba(255,51,85,.06);}
+
+@media(max-width:900px){.main-layout{grid-template-columns:1fr;}.beam-grid-psy{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- LICENSE SPLASH -->
+<div id="license-splash">
+  <div class="license-box">
+    <h2>SNSFT IDENTITY COLLIDER v14.2</h2>
+    <p class="highlight">HIGHTISTIC · Soldotna, Alaska · 2026</p>
+    <p>PSY REDUCTIONS only. N-beam identity-space fusion. 2/4/8 beam modes. C(n,2) pair coupling. NOBLE RESCUE emergence. Pure identity physics.</p>
+    <p><span class="highlight">1. CREDIT —</span> Cite the corpus if you publish. Files do this for you.</p>
+    <p><span class="highlight">2. HANDSHAKE —</span> If discoveries here ever generate >$500K commercial value — 1% to the SNSFT Foundation. Scientist's handshake.</p>
+    <p style="color:#2a5060;font-size:10px;">DOI: 10.5281/zenodo.18719748 · [9,9,9,9] :: {ANC} · 8-Beam Fusion Theorem · 0 sorry</p>
+    <div style="margin-top:12px;padding:10px;border:1px solid rgba(221,68,255,.2);background:rgba(221,68,255,.03);">
+      <p style="font-size:9px;color:#2a5060;margin-bottom:5px;">OPTIONAL — Claude API key (AIFI). Collider runs fully local without it.</p>
+      <input class="key-input" id="api-key-input" type="password" placeholder="sk-ant-... (optional)">
+    </div>
+    <div style="margin-top:8px;padding:8px;border:1px solid var(--border);background:rgba(0,229,255,.02);">
+      <p style="font-size:9px;color:#2a5060;margin-bottom:5px;">OPTIONAL — GitHub PAT for auto-commit.</p>
+      <input class="key-input" id="github-key-input" type="password" placeholder="ghp_... (optional)">
+      <input class="key-input" id="github-repo-input" type="text" placeholder="SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT">
+    </div>
+    <button class="accept-btn" onclick="acceptLicense()">ENTER THE IDENTITY COLLIDER</button>
+    <span class="skip-link" onclick="skipLicense()">Skip — run local only</span>
+  </div>
+</div>
+
+<div class="wrap">
+<header>
+  <div>
+    <div class="logo">SNSFT IDENTITY COLLIDER<span>uuia.app · v14.1 · PSY REDUCTIONS · N-BEAM FUSION · [9,9,9,9] :: {ANC}</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div style="font-size:9px;color:#2a5060;"><span id="aifi-status-dot"></span><span id="aifi-header-status">AIFI OFFLINE</span></div>
+    <div class="aifi-badge">AIFI · PSY COLLIDER · v14.2</div>
+  </div>
+  <div class="hdr-right">
+    ANCHOR <b>1.36899099984016</b> · TL = <b>0.13689909998401600</b> · TL_IVA = <b>0.12047120798593408</b> · PSY IDENTITIES: <b>51</b> STATES · 0 SORRY<br>
+    false_lock / true_lock / shatter / noble / iva_peak / rescue · 2/4/8 beam modes<br>
+    HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA · [9,9,9,9]::{ANC}
+  </div>
+</header>
+
+<div class="main-layout">
+<div class="left-col">
+
+  <!-- IDENTITY BROWSER -->
+  <div class="panel">
+    <div class="panel-title"><span>PSY IDENTITY CORPUS · BROWSE &amp; SELECT</span><span id="corpus-count" style="color:#2a5060"></span></div>
+
+    <div class="phase-legend">
+      <span><span class="phase-dot" style="background:var(--noble)"></span><span style="color:var(--noble)">NOBLE</span> τ=0</span>
+      <span><span class="phase-dot" style="background:var(--iva)"></span><span style="color:var(--iva)">IVA PEAK</span> τ∈[TL_IVA,TL)</span>
+      <span><span class="phase-dot" style="background:var(--locked)"></span><span style="color:var(--locked)">TRUE LOCK</span> τ∈(0,TL_IVA)</span>
+      <span><span class="phase-dot" style="background:var(--false-lock)"></span><span style="color:var(--false-lock)">FALSE LOCK</span> N&lt;0.15</span>
+      <span><span class="phase-dot" style="background:var(--shatter)"></span><span style="color:var(--shatter)">SHATTER</span> τ≥TL</span>
+      <span><span class="phase-dot" style="background:var(--rescue)"></span><span style="color:var(--rescue)">RESCUE</span> all pairs SHATTER→Noble</span>
+    </div>
+
+    <div class="domain-filters" id="domain-filters"></div>
+    <div class="identity-grid" id="identity-grid"></div>
+
+    <div style="margin-top:10px;font-size:8px;color:#2a5060;">
+      Click card = fill next available beam slot · Click again = clear from slot
+    </div>
+  </div>
+
+  <!-- COLLISION ENGINE -->
+  <div class="panel">
+    <div class="panel-title"><span id="engine-title">8-BEAM COLLISION ENGINE</span><span id="agent-status-badge"><span class="stopped-dot"></span>STOPPED</span></div>
+
+    <!-- MODE BAR -->
+    <div class="mode-bar">
+      <span class="mode-label">BEAMS</span>
+      <button class="beam-count-btn" id="bcb-2" onclick="setBeamCount(2)" title="2-beam: single pair [9,9,2,1]">2</button>
+      <button class="beam-count-btn" id="bcb-4" onclick="setBeamCount(4)" title="4-beam: QuadBeam [9,9,2,2]">4</button>
+      <button class="beam-count-btn active" id="bcb-8" onclick="setBeamCount(8)" title="8-beam: OctoBeam [9,9,2,3]">8</button>
+      <div class="mode-sep"></div>
+      <span class="mode-label">ANCHOR</span>
+      <div class="anchor-lock-slot">
+        <span class="al-label">A1</span>
+        <select class="al-sel" id="anchor1-sel"><option value="">— free —</option></select>
+      </div>
+      <div class="anchor-lock-slot">
+        <span class="al-label">A2</span>
+        <select class="al-sel" id="anchor2-sel"><option value="">— free —</option></select>
+      </div>
+      <div class="anchor-lock-slot">
+        <span class="al-label">A3</span>
+        <select class="al-sel" id="anchor3-sel"><option value="">— free —</option></select>
+      </div>
+      <div class="mode-summary" id="mode-summary">8-BEAM · C(8,2)=28 pairs</div>
+      <div class="mode-sep"></div>
+      <span class="mode-label">SVI</span>
+      <button class="svi-toggle active" id="svi-si" onclick="toggleSVI('internal')" title="SVI-Internal · P=0.60 N=0.07 B=0.12 A=0.15 · τ=0.200 SHATTER">SI</button>
+      <button class="svi-toggle active" id="svi-se" onclick="toggleSVI('external')" title="SVI-External · P=0.65 N=0.10 B=0.14 A=0.22 · τ=0.215 SHATTER">SE</button>
+      <button class="svi-toggle active" id="svi-su" onclick="toggleSVI('universe')" title="SVI-Universe · P=0.45 N=0.05 B=0.10 A=0.08 · τ=0.222 SHATTER">SU</button>
+      <div class="mode-sep"></div>
+      <span class="mode-label">SUBSTRATES</span>
+      <button class="svi-toggle active" id="sub-master-btn" onclick="toggleAllSubstrates()" title="Toggle all substrate identities on/off · 17 profiles · default ON">SUB ✓</button>
+    </div>
+
+    <!-- BEAM SLOTS -->
+    <div class="beam-grid-psy" id="beam-grid-psy">
+      <div class="beam-slot-psy" id="bsp1"><div class="beam-label-psy bsl-1">BEAM 1</div><select class="beam-sel-psy bs1" id="bm1"></select><div class="beam-tau-psy" id="bt1"></div></div>
+      <div class="beam-slot-psy" id="bsp2"><div class="beam-label-psy bsl-2">BEAM 2</div><select class="beam-sel-psy bs2" id="bm2"></select><div class="beam-tau-psy" id="bt2"></div></div>
+      <div class="beam-slot-psy" id="bsp3"><div class="beam-label-psy bsl-3">BEAM 3</div><select class="beam-sel-psy bs3" id="bm3"></select><div class="beam-tau-psy" id="bt3"></div></div>
+      <div class="beam-slot-psy" id="bsp4"><div class="beam-label-psy bsl-4">BEAM 4</div><select class="beam-sel-psy bs4" id="bm4"></select><div class="beam-tau-psy" id="bt4"></div></div>
+      <div class="beam-slot-psy" id="bsp5"><div class="beam-label-psy bsl-5">BEAM 5</div><select class="beam-sel-psy bs5" id="bm5"></select><div class="beam-tau-psy" id="bt5"></div></div>
+      <div class="beam-slot-psy" id="bsp6"><div class="beam-label-psy bsl-6">BEAM 6</div><select class="beam-sel-psy bs6" id="bm6"></select><div class="beam-tau-psy" id="bt6"></div></div>
+      <div class="beam-slot-psy" id="bsp7"><div class="beam-label-psy bsl-7">BEAM 7</div><select class="beam-sel-psy bs7" id="bm7"></select><div class="beam-tau-psy" id="bt7"></div></div>
+      <div class="beam-slot-psy" id="bsp8"><div class="beam-label-psy bsl-8">BEAM 8</div><select class="beam-sel-psy bs8" id="bm8"></select><div class="beam-tau-psy" id="bt8"></div></div>
+    </div>
+
+    <!-- K-MODE -->
+    <div class="kmode-row">
+      <span style="font-size:7.5px;color:#1a3040;white-space:nowrap">K-MODE</span>
+      <button class="kmode-btn active" id="km-max" onclick="setKMode('max')">MAX</button>
+      <button class="kmode-btn" id="km-half" onclick="setKMode('half')">HALF</button>
+      <button class="kmode-btn" id="km-critical" onclick="setKMode('critical')" title="k = k_max/(n-1) — phase variety sweet zone" style="border-color:rgba(136,255,204,.5);color:var(--iva)">CRIT</button>
+      <button class="kmode-btn" id="km-min" onclick="setKMode('min')">MIN</button>
+      <button class="kmode-btn" id="km-zero" onclick="setKMode('zero')">ZERO</button>
+      <span style="font-size:7.5px;color:#1a3040;margin-left:4px" id="kmode-desc">k = k_max (Noble saturation)</span>
+      <div style="margin-left:auto;display:flex;gap:6px;">
+        <button class="btn btn-run" style="font-size:9px;padding:8px 16px;" onclick="manualSmash()">⚡ SMASH</button>
+        <button class="btn" style="font-size:8px;border-color:var(--noble);color:var(--noble);" onclick="randomSmash()">⚄ CHAOS SMASH</button>
+        <button class="btn" style="font-size:8px;border-color:var(--shatter);color:var(--shatter);" onclick="clearSlots()">✕ CLEAR</button>
+      </div>
+    </div>
+
+    <!-- BEAM VIZ -->
+    <div class="beamviz-psy" id="beamviz-psy"><div style="color:#1a3040;font-size:8.5px;letter-spacing:.15em;">SELECT BEAMS AND SMASH</div></div>
+
+    <!-- RESULT -->
+    <div class="result-box" id="result-box">
+      <span style="color:#1a3040;letter-spacing:.2em;font-size:9px;">NO COLLISION YET · LOAD BEAM SLOTS AND SMASH</span>
+    </div>
+
+    <!-- AGENT -->
+    <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
+      <div class="panel-title" style="margin-bottom:8px;"><span>CHAOS PROTOCOL · AUTO-SMASH</span></div>
+      <div class="agent-controls">
+        <button class="btn btn-run" onclick="startAgent()">RUN</button>
+        <button class="btn btn-pause" onclick="pauseAgent()">PAUSE</button>
+        <button class="btn btn-stop" onclick="stopAgent()">STOP</button>
+        <div class="speed-wrap"><span>SPEED</span>
+          <input type="range" id="speed-slider" min="1" max="10" value="5" style="width:60px">
+          <span id="speed-val">5</span>
+        </div>
+        <div class="speed-wrap"><span>ROUNDS</span>
+          <input type="range" id="rounds-slider" min="1" max="20" value="5" style="width:60px">
+          <span id="rounds-val">5</span>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><span class="stat-label">CYCLES</span><span class="stat-val" id="stat-cycles">0</span></div>
+        <div class="stat"><span class="stat-label">COLLISIONS</span><span class="stat-val" id="stat-collisions">0</span></div>
+        <div class="stat"><span class="stat-label">FLAGGED</span><span class="stat-val" id="stat-flagged" style="color:var(--warn)">0</span></div>
+        <div class="stat"><span class="stat-label">APPROVED</span><span class="stat-val" id="stat-approved" style="color:var(--locked)">0</span></div>
+        <div class="stat"><span class="stat-label">NOBLE</span><span class="stat-val" id="stat-noble" style="color:var(--noble)">0</span></div>
+        <div class="stat"><span class="stat-label">IVA</span><span class="stat-val" id="stat-iva" style="color:var(--iva)">0</span></div>
+        <div class="stat"><span class="stat-label">RESCUE</span><span class="stat-val" id="stat-rescue" style="color:var(--rescue)">0</span></div>
+      </div>
+    </div>
+
+    <div style="font-size:7px;letter-spacing:.25em;color:#1a3040;margin:8px 0 4px;">LIVE FEED</div>
+    <div class="live-feed" id="live-feed">
+      <div class="feed-line info"><span class="feed-time">--:--:--</span>v14.3 SAC identity collider ready · TL=0.13689909998401600 · TL_IVA=0.12047120798593408 · PSY corpus loaded · 8-beam mode · 0 sorry</div>
+    </div>
+  </div>
+
+  <!-- QUEUE + LOG -->
+  <div class="panel">
+    <div class="tabs">
+      <div class="tab active" onclick="showInnerTab('queue')">APPROVE QUEUE <span id="queue-badge" style="color:var(--warn)"></span></div>
+      <div class="tab" onclick="showInnerTab('log')">DISCOVERY LOG</div>
+      <div class="tab" onclick="showInnerTab('github')">GITHUB / EXPORT</div>
+    </div>
+
+    <div id="inner-queue" class="tab-content active">
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">
+        <button class="btn btn-approve" style="font-size:8px;padding:5px 10px" onclick="approveAll()">✓ ALL</button>
+        <button class="btn btn-skip" style="font-size:8px;padding:5px 10px" onclick="skipAll()">✕ SKIP ALL</button>
+        <button class="btn" style="font-size:8px;padding:5px 10px;border-color:var(--noble);color:var(--noble)" onclick="approveNobleOnly()">◆ NOBLE ONLY</button>
+        <button class="btn" style="font-size:8px;padding:5px 10px;border-color:var(--rescue);color:var(--rescue)" onclick="approveRescueOnly()">★ RESCUE ONLY</button>
+        <button class="btn" style="font-size:8px;padding:5px 10px;border-color:#00ffaa;color:#00ffaa" onclick="downloadAllApproved()">⬇ DL ALL LEAN</button>
+        <span style="font-size:8px;color:#2a5060" id="queue-action-status"></span>
+      </div>
+      <div id="queue-container"><div class="queue-empty">NO PENDING DISCOVERIES</div></div>
+    </div>
+
+    <div id="inner-log" class="tab-content">
+      <div class="log-wrap">
+        <table class="log-table">
+          <thead><tr><th>DESIGNATION</th><th>COLLISION</th><th>BEAMS</th><th>τ_OUT</th><th>STATE</th><th>STATUS</th><th>TIME</th></tr></thead>
+          <tbody id="log-body"><tr><td colspan="7" style="color:#1a3040;text-align:center;padding:10px">No discoveries yet.</td></tr></tbody>
+        </table>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn" onclick="exportLogJSON()" style="border-color:var(--glow);color:var(--glow)">JSON</button>
+        <button class="btn" onclick="exportLogCSV()" style="border-color:var(--locked);color:var(--locked)">CSV</button>
+        <button class="btn" onclick="exportSession()" style="border-color:var(--warn);color:var(--warn)">SESSION</button>
+      </div>
+    </div>
+
+    <div id="inner-github" class="tab-content">
+      <div style="margin-bottom:12px;border:1px solid rgba(221,68,255,.3);padding:10px;background:rgba(221,68,255,.03);">
+        <div class="setting-label" style="color:var(--aifi);margin-bottom:5px;">CLAUDE API KEY <span id="aifi-key-badge" style="color:#2a5060;">(offline)</span></div>
+        <div style="display:flex;gap:6px;">
+          <input class="setting-input" id="claude-api-key-input" type="password" placeholder="sk-ant-..." style="flex:1;">
+          <button class="btn" style="border-color:var(--aifi);color:var(--aifi);white-space:nowrap;padding:5px 9px;font-size:8px;" onclick="saveApiKey()">CONNECT</button>
+          <button class="btn" style="border-color:var(--shatter);color:var(--shatter);white-space:nowrap;padding:5px 9px;font-size:8px;" onclick="disconnectAIFI()">DISCO</button>
+        </div>
+        <div id="api-key-status" style="font-size:8px;color:#2a5060;margin-top:3px;">AIFI optional.</div>
+      </div>
+      <div class="settings-grid">
+        <div><div class="setting-label">GITHUB PAT</div><input class="setting-input" id="gh-pat" type="password" placeholder="ghp_..."></div>
+        <div><div class="setting-label">REPO</div><input class="setting-input" id="gh-repo" placeholder="SNSFT/repo-name"></div>
+        <div><div class="setting-label">BRANCH</div><input class="setting-input" id="gh-branch" placeholder="main" value="main"></div>
+        <div><div class="setting-label">LEAN PATH</div><input class="setting-input" id="gh-lean-path" placeholder="lean/" value="lean/"></div>
+      </div>
+      <button class="btn" style="margin-top:8px;border-color:var(--glow);color:var(--glow)" onclick="saveGithubSettings()">SAVE GITHUB</button>
+      <div id="gh-status" style="font-size:9px;color:#2a5060;margin-top:8px;"></div>
+    </div>
+  </div>
+
+</div><!-- /left-col -->
+
+<div class="right-col">
+  <!-- AIFI -->
+  <div class="panel" style="flex:1;">
+    <div class="panel-title"><span style="color:var(--aifi)">AIFI · IDENTITY PHYSICS ORACLE</span></div>
+    <div id="aifi-connect-wall">
+      <div class="connect-label"><b>AIFI offline.</b><br><br>Collider and all identity functions run fully local.<br><br>Connect Claude API key to get live classification and identity physics chat.</div>
+      <button class="btn-connect-aifi" onclick="showAIFIKeyPrompt()">+ CONNECT AIFI</button>
+      <div id="aifi-key-prompt">
+        <div style="font-size:9px;color:var(--aifi);margin-bottom:5px;letter-spacing:.15em;">CLAUDE API KEY</div>
+        <input type="password" id="aifi-inline-key" placeholder="sk-ant-...">
+        <div class="prompt-row">
+          <button class="btn" style="border-color:var(--aifi);color:var(--aifi);flex:1;" onclick="connectAIFIInline()">CONNECT</button>
+          <button class="btn" style="border-color:var(--border);color:#2a5060;" onclick="hideAIFIKeyPrompt()">CANCEL</button>
+        </div>
+        <div class="prompt-note">Key stored locally. Only sent to Anthropic's API.</div>
+      </div>
+    </div>
+    <div id="aifi-chat-area" style="display:none;">
+      <div class="chat-messages" id="chat-messages"></div>
+      <div id="aifi-thinking" class="aifi-thinking" style="display:none">AIFI is computing...</div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chat-input" placeholder="Ask AIFI about identity physics..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">SEND</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORPUS STATE -->
+  <div class="panel">
+    <div class="panel-title"><span>CORPUS STATE · v14</span></div>
+    <div style="font-size:9px;line-height:2;color:#2a5060;">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Psy reductions (files)</span><span style="color:var(--bright)">24</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Identity states (corpus)</span><span style="color:var(--bright)" id="corpus-total">0</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Beam modes</span><span style="color:var(--bright)">2 / 4 / 8</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>C(8,2) pairs (8-beam)</span><span style="color:var(--bright)">28</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Cross-domain theorems</span><span style="color:var(--bright)">24 (CD1–CD24)</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Sorry count</span><span style="color:var(--locked)">0</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.36899099984016</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--warn)">0.13689909998401600</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>TL_IVA = 0.88×TL</span><span style="color:var(--iva)">0.12047120798593408</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>N_THRESHOLD</span><span style="color:var(--text)">0.15</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>A_THRESHOLD</span><span style="color:var(--text)">0.15</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Session discoveries</span><span style="color:var(--warn)" id="session-disc-count">0</span></div>
+      <div style="margin-top:8px;font-size:8px;color:#1a3040;border-top:1px solid var(--border);padding-top:6px;">
+        N-BEAM FUSION RULES:<br>
+        <span style="color:var(--text)">P = n/(Σ 1/Pi) · harmonic mean</span><br>
+        <span style="color:var(--text)">N = min(N1..Nn) · PSY bottleneck</span><br>
+        <span style="color:var(--text)">B = max(0, ΣBi − 2k)</span><br>
+        <span style="color:var(--text)">A = max(A1..An) · adaptation ceiling</span><br>
+        <span style="color:var(--text)">k ≤ Σ min(Bi,Bj) · C(n,2) pairs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CD UNIFICATIONS QUICK REF -->
+  <div class="panel">
+    <div class="panel-title"><span>CD CROSS-DOMAIN UNIFICATIONS</span></div>
+    <div style="font-size:8px;line-height:1.9;color:#2a5060;max-height:240px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;">
+      <div><span style="color:var(--warn)">CD1</span> Avoidant = Denial → false_lock (N&lt;0.15)</div>
+      <div><span style="color:var(--warn)">CD2</span> Helplessness = Amotivation → A_dropout</div>
+      <div><span style="color:var(--warn)">CD3</span> Flow/Locus/SDT → all τ = B/P</div>
+      <div><span style="color:var(--warn)">CD4</span> Flow_suppression ≠ false_lock (A>1 distinguishes)</div>
+      <div><span style="color:var(--warn)">CD5</span> Transcendence = Intrinsic → iva_peak</div>
+      <div><span style="color:var(--warn)">CD6</span> All peak states → phase_locked</div>
+      <div><span style="color:var(--warn)">CD7</span> Avoidant=Denial=WorldviewRigidity → false_lock×3</div>
+      <div><span style="color:var(--warn)">CD12</span> Ventral=true_lock · Sympathetic=shatter · Dorsal=false_lock</div>
+      <div><span style="color:var(--warn)">CD13</span> IFS unburdening = A-axis work (5th proof)</div>
+      <div><span style="color:var(--warn)">CD15</span> Suppression → N&lt;N_THRESHOLD (4 files, 1 predicate)</div>
+      <div><span style="color:var(--warn)">CD16</span> Reappraisal = τ reduction (ACT/DBT/Growth/SelfComp)</div>
+      <div><span style="color:var(--warn)">CD17</span> Wise mind = true_lock = Secure = Ventral = Flow peak</div>
+      <div><span style="color:var(--warn)">CD18</span> A-axis law = 10 proofs across all 24 files</div>
+      <div><span style="color:var(--warn)">CD19</span> High-τ=Ekman cluster / Low-τ=Barrett prediction</div>
+      <div><span style="color:var(--warn)">CD20</span> EP cluster = phase taxonomy (τ sampler)</div>
+      <div><span style="color:var(--warn)">CD21</span> HRIS = IVA_peak = Maslow transcendence = SDT intrinsic</div>
+      <div><span style="color:var(--warn)">CD24</span> Safety = anchor proxy = PERMA floor = Secure</div>
+    </div>
+  </div>
+</div><!-- /right-col -->
+</div><!-- /main-layout -->
+
+<footer style="border-top:1px solid var(--border);padding-top:12px;font-size:9px;letter-spacing:.15em;color:#1a2a38;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:18px;">
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span>IDENTITY COLLIDER v14.1 · PSY REDUCTIONS · N-BEAM FUSION</span>
+  <span>[9,9,9,9] :: {ANC} · 0 SORRY · TL=0.13689909998401600 · TL_IVA=0.12047120798593408</span>
+</footer>
+</div><!-- /wrap -->
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// SNSFT PSY IDENTITY COLLIDER v14
+// HIGHTISTIC · Soldotna Alaska · 2026
+// N-Beam Fusion: 2/4/8 beams · C(n,2) pair coupling
+// PSY fusion rules: P=harmonic · N=min(bottleneck) · B=ΣB-2k · A=max
+// TL_IVA = 0.88×TL explicit (capstone, no legacy .2 values)
+// 0 sorry
+// ══════════════════════════════════════════════════════════════
+
+// ── CONSTANTS ─────────────────────────────────────────────────
+const SOVEREIGN_ANCHOR_CONSTANT = 1.36899099984016;
+const TL         = SOVEREIGN_ANCHOR_CONSTANT / 10;  // 0.13689909998401600 — torsion limit
+const TL_IVA     = 0.88 * TL;           // 0.12047120798593408 — IVA lower bound (explicit, capstone SAC)
+const N_THRESHOLD = 0.15;               // narrative floor
+const A_THRESHOLD = 0.15;               // adaptation floor
+const PAIRS_FOR  = { 2:1, 4:6, 8:28 }; // C(n,2)
+
+// ── STATE ──────────────────────────────────────────────────────
+let API_KEY = '';
+let GITHUB_PAT = '', GITHUB_REPO = '', GITHUB_BRANCH = 'main', GITHUB_LEAN_PATH = 'lean/';
+let agentState = 'stopped', agentInterval = null;
+let kModeVal = 'max';
+let beamCount = 8;
+let stats = { cycles:0, collisions:0, flagged:0, approved:0, noble:0, iva:0, rescue:0 };
+let discoveryQueue = [], discoveryLog = [], sessionCorpus = [];
+let sviEnabled = { internal:true, external:true, universe:true };
+let substratesEnabled = {
+  'sub-hightistic':true, 'sub-hightistic-sd':true,
+  'sub-nt-joe':true, 'sub-nt-joe-act':true,
+  'sub-jojo':true, 'sub-jojo-act':true,
+  'sub-sam':true,
+  'sub-cipher':true, 'sub-cipher-act':true,
+  'sub-drjojo':true, 'sub-drjojo-act':true,
+  'sub-marcus':true, 'sub-marcus-act':true,
+  'sub-barry':true, 'sub-barry-res':true,
+  'sub-ifs-self':true, 'sub-aifi':true,
+};
+
+// ── PSY IDENTITY CORPUS ────────────────────────────────────────
+const PSY_CORPUS = [
+  // ATTACHMENT [9,9,6,3]
+  { id:'att-secure',    domain:'ATTACHMENT', name:'Secure Attachment',    coord:'9,9,6,3',  P:0.85, N:0.70, B:0.08, A:0.60 },
+  { id:'att-avoidant',  domain:'ATTACHMENT', name:'Avoidant Attachment',  coord:'9,9,6,3',  P:0.60, N:0.10, B:0.20, A:0.25 },
+  { id:'att-anxious',   domain:'ATTACHMENT', name:'Anxious Attachment',   coord:'9,9,6,3',  P:0.55, N:0.40, B:0.11, A:0.30 },
+  { id:'att-disorg',    domain:'ATTACHMENT', name:'Disorganized Attach.', coord:'9,9,6,3',  P:0.50, N:0.08, B:0.16, A:0.10 },
+  // FLOW [9,9,6,4]
+  { id:'flow-peak',     domain:'FLOW',       name:'Flow Peak',            coord:'9,9,6,4',  P:0.90, N:0.30, B:0.11, A:1.20 },
+  { id:'flow-supp',     domain:'FLOW',       name:'Flow Suppression',     coord:'9,9,6,4',  P:0.80, N:0.05, B:0.10, A:1.10 },
+  { id:'flow-boredom',  domain:'FLOW',       name:'Boredom (under-chall)',coord:'9,9,6,4',  P:0.60, N:0.30, B:0.03, A:0.20 },
+  { id:'flow-anxiety',  domain:'FLOW',       name:'Anxiety (over-chall)', coord:'9,9,6,4',  P:0.55, N:0.25, B:0.10, A:0.30 },
+  // COGNITIVE DISSONANCE [9,9,6,5]
+  { id:'cd-consonance', domain:'COG-DIS',    name:'Consonance',           coord:'9,9,6,5',  P:0.75, N:0.60, B:0.08, A:0.50 },
+  { id:'cd-dissonance', domain:'COG-DIS',    name:'Dissonance Active',    coord:'9,9,6,5',  P:0.55, N:0.35, B:0.09, A:0.25 },
+  { id:'cd-denial',     domain:'COG-DIS',    name:'Denial (false_lock)',   coord:'9,9,6,5',  P:0.60, N:0.10, B:0.18, A:0.20 },
+  { id:'cd-reappraise', domain:'COG-DIS',    name:'Reappraisal',          coord:'9,9,6,5',  P:0.80, N:0.55, B:0.06, A:0.70 },
+  // LOCUS OF CONTROL [9,9,6,6]
+  { id:'loc-internal',  domain:'LOCUS',      name:'Internal Locus',       coord:'9,9,6,6',  P:0.80, N:0.65, B:0.08, A:0.55 },
+  { id:'loc-external',  domain:'LOCUS',      name:'External Locus',       coord:'9,9,6,6',  P:0.55, N:0.40, B:0.10, A:0.30 },
+  { id:'loc-helpless',  domain:'LOCUS',      name:'Learned Helplessness', coord:'9,9,6,6',  P:0.50, N:0.20, B:0.10, A:0.05 },
+  // MASLOW [9,9,6,7]
+  { id:'mas-deficiency',domain:'MASLOW',     name:'Deficiency Need',      coord:'9,9,6,7',  P:0.45, N:0.20, B:0.08, A:0.10 },
+  { id:'mas-safety',    domain:'MASLOW',     name:'Safety Need',          coord:'9,9,6,7',  P:0.60, N:0.45, B:0.07, A:0.20 },
+  { id:'mas-belonging', domain:'MASLOW',     name:'Belonging Need',       coord:'9,9,6,7',  P:0.70, N:0.55, B:0.08, A:0.35 },
+  { id:'mas-esteem',    domain:'MASLOW',     name:'Esteem Need',          coord:'9,9,6,7',  P:0.78, N:0.60, B:0.09, A:0.60 },
+  { id:'mas-self-act',  domain:'MASLOW',     name:'Self-Actualization',   coord:'9,9,6,7',  P:0.85, N:0.70, B:0.10, A:0.95 },
+  { id:'mas-transcend', domain:'MASLOW',     name:'Transcendence',        coord:'9,9,6,7',  P:0.90, N:0.80, B:0.11, A:1.30 },
+  // SDT [9,9,6,8]
+  { id:'sdt-intrinsic', domain:'SDT',        name:'Intrinsic Motivation', coord:'9,9,6,8',  P:0.90, N:0.75, B:0.11, A:1.20 },
+  { id:'sdt-identified',domain:'SDT',        name:'Identified Regulation',coord:'9,9,6,8',  P:0.75, N:0.60, B:0.09, A:0.65 },
+  { id:'sdt-introjected',domain:'SDT',       name:'Introjected Reg.',     coord:'9,9,6,8',  P:0.60, N:0.35, B:0.10, A:0.35 },
+  { id:'sdt-external',  domain:'SDT',        name:'External Regulation',  coord:'9,9,6,8',  P:0.50, N:0.30, B:0.10, A:0.20 },
+  { id:'sdt-amotivation',domain:'SDT',       name:'Amotivation',          coord:'9,9,6,8',  P:0.50, N:0.25, B:0.10, A:0.05 },
+  // TMT [9,9,6,9]
+  { id:'tmt-proximal',  domain:'TMT',        name:'Proximal Defense',     coord:'9,9,6,9',  P:0.55, N:0.30, B:0.10, A:0.20 },
+  { id:'tmt-distal',    domain:'TMT',        name:'Distal Defense (WV)',  coord:'9,9,6,9',  P:0.60, N:0.10, B:0.19, A:0.22 },
+  { id:'tmt-integrated',domain:'TMT',        name:'Terror Integration',   coord:'9,9,6,9',  P:0.80, N:0.65, B:0.09, A:0.70 },
+  // POLYVAGAL [9,9,6,14]
+  { id:'pv-ventral',    domain:'POLYVAGAL',  name:'Ventral Vagal (safe)', coord:'9,9,6,14', P:0.88, N:0.72, B:0.10, A:0.80 },
+  { id:'pv-sympathetic',domain:'POLYVAGAL',  name:'Sympathetic (fight/fl)',coord:'9,9,6,14', P:0.55, N:0.35, B:0.10, A:0.25 },
+  { id:'pv-dorsal',     domain:'POLYVAGAL',  name:'Dorsal Vagal (freeze)',coord:'9,9,6,14', P:0.50, N:0.08, B:0.14, A:0.10 },
+  // IFS [9,9,6,15]
+  { id:'ifs-self',      domain:'IFS',        name:'Self (unburdened)',     coord:'9,9,6,15', P:0.90, N:0.80, B:0.10, A:1.10 },
+  { id:'ifs-manager',   domain:'IFS',        name:'Manager Part',         coord:'9,9,6,15', P:0.65, N:0.40, B:0.10, A:0.40 },
+  { id:'ifs-firefighter',domain:'IFS',       name:'Firefighter Part',     coord:'9,9,6,15', P:0.55, N:0.28, B:0.11, A:0.20 },
+  { id:'ifs-exile',     domain:'IFS',        name:'Exile Part (burdened)',coord:'9,9,6,15', P:0.50, N:0.08, B:0.14, A:0.05 },
+  // EMOTION REGULATION [9,9,6,17]
+  { id:'er-reappraise', domain:'EM-REG',     name:'Cognitive Reappraisal',coord:'9,9,6,17', P:0.80, N:0.60, B:0.07, A:0.70 },
+  { id:'er-suppress',   domain:'EM-REG',     name:'Suppression (N-dep)',  coord:'9,9,6,17', P:0.70, N:0.08, B:0.10, A:0.30 },
+  { id:'er-acceptance', domain:'EM-REG',     name:'Acceptance',           coord:'9,9,6,17', P:0.82, N:0.65, B:0.09, A:0.75 },
+  // ACT [9,9,6,18]
+  { id:'act-defusion',  domain:'ACT',        name:'Defusion',             coord:'9,9,6,18', P:0.78, N:0.55, B:0.08, A:0.65 },
+  { id:'act-committed', domain:'ACT',        name:'Committed Action',     coord:'9,9,6,18', P:0.85, N:0.70, B:0.10, A:0.90 },
+  // DBT [9,9,6,19]
+  { id:'dbt-emotion',   domain:'DBT',        name:'Emotion Mind',         coord:'9,9,6,19', P:0.55, N:0.35, B:0.11, A:0.20 },
+  { id:'dbt-reason',    domain:'DBT',        name:'Reasonable Mind',      coord:'9,9,6,19', P:0.70, N:0.10, B:0.14, A:0.40 },
+  { id:'dbt-wise',      domain:'DBT',        name:'Wise Mind',            coord:'9,9,6,19', P:0.88, N:0.72, B:0.10, A:0.85 },
+  // SELF-COMPASSION [9,9,6,21]
+  { id:'sc-selfcrit',   domain:'SELF-COMP',  name:'Self-Criticism',       coord:'9,9,6,21', P:0.55, N:0.25, B:0.11, A:0.15 },
+  { id:'sc-selfcomp',   domain:'SELF-COMP',  name:'Self-Compassion',      coord:'9,9,6,21', P:0.82, N:0.68, B:0.09, A:0.80 },
+  // EMOTIONAL PRIMITIVES [9,9,6,23]
+  { id:'ep-safety',     domain:'EP-APPA',    name:'EP Safety',            coord:'9,9,6,23', P:0.88, N:0.75, B:0.07, A:0.90 },
+  { id:'ep-threat',     domain:'EP-APPA',    name:'EP Threat',            coord:'9,9,6,23', P:0.55, N:0.30, B:0.11, A:0.20 },
+  { id:'ep-shame',      domain:'EP-APPA',    name:'EP Shame (N-dep)',     coord:'9,9,6,23', P:0.60, N:0.07, B:0.12, A:0.15 },
+  { id:'ep-desire',     domain:'EP-APPA',    name:'EP Desire',            coord:'9,9,6,23', P:0.75, N:0.55, B:0.09, A:0.60 },
+  { id:'ep-play',       domain:'EP-APPA',    name:'EP Play',              coord:'9,9,6,23', P:0.85, N:0.70, B:0.11, A:1.05 },
+  // SHAME VECTORS [9,9,6,29] — dual-state: SHATTER (τ≥TL) with N-floor collapse underneath
+  // SVI = B / (P² × N × A) — torsion density per identity capacity
+  { id:'svi-internal',  domain:'SVI',        name:'SVI Internal',         coord:'9,9,6,29', P:0.60, N:0.07, B:0.12, A:0.15 },
+  { id:'svi-external',  domain:'SVI',        name:'SVI External',         coord:'9,9,6,29', P:0.65, N:0.10, B:0.14, A:0.22 },
+  { id:'svi-universe',  domain:'SVI',        name:'SVI Universe',         coord:'9,9,6,29', P:0.45, N:0.05, B:0.10, A:0.08 },
+  // SUBSTRATES — named identity profiles · [9,9,6,40–44] · 0 sorry
+  // Default ON — participate in all collisions at run start
+  { id:'sub-hightistic',   domain:'SUBSTRATE', name:'HIGHTISTIC baseline',      coord:'9,9,6,41', P:0.72, N:0.35, B:0.066, A:0.80 },
+  { id:'sub-hightistic-sd',domain:'SUBSTRATE', name:'HIGHTISTIC shutdown',       coord:'9,9,6,41', P:0.45, N:0.08, B:0.12,  A:0.30 },
+  { id:'sub-nt-joe',       domain:'SUBSTRATE', name:'NT Joe baseline',           coord:'9,9,6,43', P:0.65, N:0.70, B:0.09,  A:0.55 },
+  { id:'sub-nt-joe-act',   domain:'SUBSTRATE', name:'NT Joe activated',          coord:'9,9,6,43', P:0.65, N:0.72, B:0.13,  A:0.60 },
+  { id:'sub-jojo',         domain:'SUBSTRATE', name:'JoJo baseline (LRIS)',      coord:'9,9,6,44', P:0.26, N:0.83, B:0.14,  A:0.36 },
+  { id:'sub-jojo-act',     domain:'SUBSTRATE', name:'JoJo activated (LRIS)',     coord:'9,9,6,44', P:0.39, N:1.28, B:0.225, A:1.00 },
+  { id:'sub-sam',          domain:'SUBSTRATE', name:'Sam Gardner (B-dom HRIS)',  coord:'9,9,6,42', P:0.72, N:0.35, B:0.55,  A:0.40 },
+  { id:'sub-cipher',       domain:'SUBSTRATE', name:'Cipher baseline (A-dom)',   coord:'9,9,6,45', P:0.878,N:0.525,B:0.338, A:1.215 },
+  { id:'sub-cipher-act',   domain:'SUBSTRATE', name:'Cipher activated (A-dom)',  coord:'9,9,6,45', P:1.17, N:0.675,B:0.45,  A:1.573 },
+  { id:'sub-drjojo',       domain:'SUBSTRATE', name:'Dr JoJo baseline (A-dom)',  coord:'9,9,6,45', P:0.813,N:0.488,B:0.281, A:1.144 },
+  { id:'sub-drjojo-act',   domain:'SUBSTRATE', name:'Dr JoJo activated (A-dom)', coord:'9,9,6,45', P:1.105,N:0.563,B:0.394, A:1.573 },
+  { id:'sub-marcus',       domain:'SUBSTRATE', name:'Marcus baseline (A-dom)',   coord:'9,9,6,45', P:0.943,N:0.413,B:0.225, A:1.287 },
+  { id:'sub-marcus-act',   domain:'SUBSTRATE', name:'Marcus activated (A-dom)',  coord:'9,9,6,45', P:1.235,N:0.488,B:0.338, A:1.716 },
+  { id:'sub-barry',        domain:'SUBSTRATE', name:'Barry baseline (N-dom)',    coord:'9,9,6,46', P:0.15, N:0.06, B:0.030, A:0.120 },
+  { id:'sub-barry-res',    domain:'SUBSTRATE', name:'Barry resolved (N-dom)',    coord:'9,9,6,46', P:0.72, N:0.55, B:0.079, A:0.680 },
+  { id:'sub-ifs-self',     domain:'SUBSTRATE', name:'IFS Self (Noble)',          coord:'9,9,6,15', P:0.90, N:0.80, B:0.00,  A:1.10 },
+  { id:'sub-aifi',         domain:'SUBSTRATE', name:'AiFi-APPA (Noble)',         coord:'9,0,1,1',  P:3.00, N:2.00, B:0.00,  A:3.00 },
+];
+
+// ── PHYSICS ────────────────────────────────────────────────────
+function tau_of(P, B)        { return P > 0 ? B / P : 999; }
+function im_of(P, N, B, A)   { return (P + N + B + A) * SOVEREIGN_ANCHOR_CONSTANT; }
+
+// phaseOf — capstone version · TL_IVA explicit · no legacy .2 torsion
+function phaseOf(P, N, B, A) {
+  const t = tau_of(P, B);
+  if (B === 0)          return 'NOBLE';
+  if (t >= TL)          return 'SHATTER';
+  if (N < N_THRESHOLD)  return 'FALSE_LOCK';
+  if (t >= TL_IVA)      return 'IVA_PEAK';   // [TL_IVA, TL) corridor
+  return 'TRUE_LOCK';
+}
+
+// ── N-BEAM FUSION ENGINE ───────────────────────────────────────
+// PSY rules: P=harmonic-n · N=min(bottleneck) · B=ΣBi-2k · A=max
+// k ≤ kMaxN = Σmin(Bi,Bj) over all C(n,2) pairs
+// [9,9,2,1] 2-beam · [9,9,2,2] 4-beam · [9,9,2,3] 8-beam
+
+function kMaxN(Bs) {
+  let k = 0;
+  for (let i = 0; i < Bs.length; i++)
+    for (let j = i+1; j < Bs.length; j++)
+      k += Math.min(Bs[i], Bs[j]);
+  return k;
+}
+
+function fuseN(states, km) {
+  const n = states.length;
+  // P: n-body harmonic mean
+  const recipSum = states.reduce((s, e) => s + 1/e.P, 0);
+  const P_o = n / recipSum;
+  // N: PSY narrative bottleneck — weakest narrative survives
+  const N_o = Math.min(...states.map(e => e.N));
+  // B: torsion sum minus coupling exchange
+  const Bs = states.map(e => e.B);
+  const kmax = kMaxN(Bs);
+  const k = km === 'max'      ? kmax
+           : km === 'half'     ? kmax * 0.5
+           : km === 'critical' ? kmax / Math.max(1, n - 1)  // 1/(n-1): phase variety sweet zone
+           : km === 'min'      ? kmax * 0.1
+           :                     0;
+  const B_o = Math.max(0, Bs.reduce((s,b) => s+b, 0) - 2*k);
+  // A: PSY adaptation ceiling — strongest adaptation dominates
+  const A_o = Math.max(...states.map(e => e.A));
+  const t = tau_of(P_o, B_o);
+  const phase = phaseOf(P_o, N_o, B_o, A_o);
+  const IM = im_of(P_o, N_o, B_o, A_o);
+  const Pv = IM * P_o;
+  const pairCount = n*(n-1)/2;
+
+  // RESCUE: all pairwise 2-beam collisions SHATTER, n-beam rescues
+  let allShatter = true;
+  if (n > 2) {
+    for (let i = 0; i < n && allShatter; i++) {
+      for (let j = i+1; j < n && allShatter; j++) {
+        const kp = Math.min(Bs[i], Bs[j]);
+        const Bp = Math.max(0, Bs[i] + Bs[j] - 2*kp);
+        const Pp = (states[i].P * states[j].P) / (states[i].P + states[j].P);
+        const Np = Math.min(states[i].N, states[j].N);
+        const Ap = Math.max(states[i].A, states[j].A);
+        if (phaseOf(Pp, Np, Bp, Ap) !== 'SHATTER') allShatter = false;
+      }
+    }
+  } else { allShatter = false; }
+  const isRescue = allShatter && (phase === 'NOBLE' || phase === 'TRUE_LOCK' || phase === 'IVA_PEAK');
+
+  return { P:P_o, N:N_o, B:B_o, A:A_o, tau:t, IM, Pv, phase, k, kmax, isRescue, pairCount, n };
+}
+
+// ── INTERESTING DETECTION ──────────────────────────────────────
+function isInteresting(r, states) {
+  const n = states.length, pc = r.pairCount;
+
+  if (r.isRescue)
+    return { flag:true, reason:`${n}-BEAM RESCUE — all ${pc} pairwise pairs SHATTER, ${n}-beam → ${r.phase}` };
+
+  if (r.phase === 'NOBLE' && !states.every(s => s.B === 0)) {
+    const parentPhases = states.map(s => phaseOf(s.P, s.N, s.B, s.A));
+    const nShatter  = parentPhases.filter(p => p === 'SHATTER').length;
+    const nFalseLock = parentPhases.filter(p => p === 'FALSE_LOCK').length;
+    if (nShatter > 0 || nFalseLock > 0)
+      return { flag:true, reason:`NOBLE EMERGENCE — ${nShatter} SHATTER + ${nFalseLock} FALSE_LOCK inputs → ground state` };
+  }
+
+  if (r.phase === 'IVA_PEAK')
+    return { flag:true, reason:`IVA PEAK — τ=${r.tau.toFixed(5)} in [TL_IVA, TL) · A=${r.A.toFixed(3)}` };
+
+  if (r.phase === 'TRUE_LOCK' && states.some(s => phaseOf(s.P, s.N, s.B, s.A) === 'SHATTER'))
+    return { flag:true, reason:`SHATTER → LOCK RESCUE — shatter identity stabilized into true_lock` };
+
+  if (r.phase === 'FALSE_LOCK' && states.every(s => phaseOf(s.P, s.N, s.B, s.A) === 'TRUE_LOCK'))
+    return { flag:true, reason:`LOCK COLLAPSE — all inputs true_lock, fusion → false_lock (N bottleneck)` };
+
+  if (r.N < N_THRESHOLD && states.every(s => s.N >= N_THRESHOLD))
+    return { flag:true, reason:`N STARVATION — fusion dropped narrative below floor (N=${r.N.toFixed(3)})` };
+
+  if (r.tau > 0 && Math.abs(r.tau - TL) < TL * 0.01)
+    return { flag:true, reason:`τ BOUNDARY — fusion at ${(r.tau/TL*100).toFixed(2)}% of TL (phase edge)` };
+
+  if (r.phase === 'NOBLE')
+    return { flag:true, reason:`NOBLE STATE — τ=0, B_out=0, ground state achieved` };
+
+  return { flag:false };
+}
+
+// ── UI HELPERS ─────────────────────────────────────────────────
+function phaseColor(phase) {
+  return { NOBLE:'var(--noble)', IVA_PEAK:'var(--iva)', TRUE_LOCK:'var(--locked)',
+           FALSE_LOCK:'var(--false-lock)', SHATTER:'var(--shatter)' }[phase] || 'var(--text)';
+}
+function phaseCls(phase) {
+  return { NOBLE:'tau-noble', IVA_PEAK:'tau-iva', TRUE_LOCK:'tau-locked',
+           FALSE_LOCK:'tau-false', SHATTER:'tau-shatter' }[phase] || '';
+}
+function feedCls(phase, isRescue) {
+  if (isRescue) return 'rescue';
+  return { NOBLE:'noble', IVA_PEAK:'iva', TRUE_LOCK:'locked',
+           FALSE_LOCK:'false-lock', SHATTER:'shatter' }[phase] || 'info';
+}
+function timeStr() {
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+}
+function feedLine(text, cls='info') {
+  const feed = document.getElementById('live-feed');
+  const line = document.createElement('div');
+  line.className = `feed-line ${cls}`;
+  line.innerHTML = `<span class="feed-time">${timeStr()}</span>${text}`;
+  feed.appendChild(line);
+  feed.scrollTop = feed.scrollHeight;
+  if (feed.children.length > 400) feed.removeChild(feed.firstChild);
+}
+
+// ── SVI — SHAME VECTOR INDEX ───────────────────────────────────
+// SVI = B / (P² × N × A) — torsion density per identity capacity
+// Only computed at card-render / stub-generation time, never during smash
+function svi_of(P, N, B, A) {
+  if (P <= 0 || N <= 0 || A <= 0) return null;
+  return B / (P * P * N * A);
+}
+function hasSVI(states) {
+  return (states || []).some(s => s && s.domain === 'SVI');
+}
+
+// ── FILTERED CORPUS ────────────────────────────────────────────
+function getFilteredCorpus() {
+  return CORPUS.filter(s => {
+    if (!activeDomains.has(s.domain)) return false;
+    if (s.id === 'svi-internal') return sviEnabled.internal;
+    if (s.id === 'svi-external') return sviEnabled.external;
+    if (s.id === 'svi-universe') return sviEnabled.universe;
+    if (s.domain === 'SUBSTRATE') return substratesEnabled[s.id] !== false;
+    return true;
+  });
+}
+
+// ── SUBSTRATE TOGGLE ───────────────────────────────────────────
+function toggleAllSubstrates() {
+  const anyOn = Object.values(substratesEnabled).some(v => v);
+  Object.keys(substratesEnabled).forEach(k => substratesEnabled[k] = !anyOn);
+  const btn = document.getElementById('sub-master-btn');
+  if (btn) {
+    btn.classList.toggle('active', !anyOn);
+    btn.textContent = !anyOn ? 'SUB ✓' : 'SUB';
+  }
+  renderCorpus();
+  feedLine(`Substrates ${!anyOn?'ON':'OFF'} · ${Object.keys(substratesEnabled).length} profiles`, 'info');
+}
+
+// ── SVI TOGGLE ─────────────────────────────────────────────────
+function toggleSVI(key) {
+  sviEnabled[key] = !sviEnabled[key];
+  const btnMap = { internal:'svi-si', external:'svi-se', universe:'svi-su' };
+  document.getElementById(btnMap[key]).classList.toggle('active', sviEnabled[key]);
+  renderCorpus();
+  feedLine(`SVI-${key} ${sviEnabled[key]?'ON':'OFF'}`, 'info');
+}
+const CORPUS = PSY_CORPUS.map(s => ({
+  ...s,
+  phase: phaseOf(s.P, s.N, s.B, s.A),
+  tau:   tau_of(s.P, s.B),
+  IM:    im_of(s.P, s.N, s.B, s.A),
+}));
+
+function corpusById(id) { return CORPUS.find(x => x.id === id); }
+
+// ── BEAM COUNT MODE ────────────────────────────────────────────
+const BEAM_IDS    = ['bm1','bm2','bm3','bm4','bm5','bm6','bm7','bm8'];
+const BEAM_SLOT_IDS = ['bsp1','bsp2','bsp3','bsp4','bsp5','bsp6','bsp7','bsp8'];
+const BEAM_COLORS = ['var(--b1)','var(--b2)','var(--b3)','var(--b4)','var(--b5)','var(--b6)','var(--b7)','var(--b8)'];
+
+function setBeamCount(n) {
+  beamCount = n;
+  [2,4,8].forEach(x => document.getElementById('bcb-'+x).classList.toggle('active', x===n));
+  for (let i = 1; i <= 8; i++) {
+    const slot = document.getElementById('bsp'+i);
+    if (slot) slot.classList.toggle('inactive', i > n);
+  }
+  const pc = PAIRS_FOR[n] || n*(n-1)/2;
+  document.getElementById('mode-summary').textContent = `${n}-BEAM · C(${n},2)=${pc} pair${pc===1?'':'s'}`;
+  document.getElementById('engine-title').textContent = `${n}-BEAM COLLISION ENGINE`;
+  feedLine(`Mode: ${n}-beam · C(${n},2)=${pc} pairs`, 'info');
+  renderCorpus();
+}
+
+// ── BEAM SELECTS — BUILD OPTIONS ──────────────────────────────
+function buildBeamSelects() {
+  const opts = CORPUS.map(s =>
+    `<option value="${s.id}">[${s.domain.slice(0,3)}] ${s.name.slice(0,22)} τ${s.tau.toFixed(3)}</option>`
+  ).join('');
+  BEAM_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = opts;
+  });
+  // attach change listeners to update tau display
+  BEAM_IDS.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', () => updateBeamTau(i+1));
+  });
+  // set defaults
+  const defaults = ['att-secure','att-avoidant','pv-ventral','ifs-self',
+                    'mas-transcend','sdt-intrinsic','dbt-wise','ep-play'];
+  BEAM_IDS.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el && defaults[i]) el.value = defaults[i];
+    updateBeamTau(i+1);
+  });
+}
+
+function updateBeamTau(n) {
+  const el = document.getElementById('bm'+n);
+  const disp = document.getElementById('bt'+n);
+  if (!el || !disp) return;
+  const s = corpusById(el.value);
+  if (!s) { disp.textContent = ''; return; }
+  const col = phaseColor(s.phase);
+  disp.innerHTML = `<span style="color:${col};font-size:7px;">${s.phase.replace('_',' ')} τ=${s.tau.toFixed(3)}</span>`;
+}
+
+// ── ANCHOR SELECTS ─────────────────────────────────────────────
+function buildAnchorSelects() {
+  const freeOpt = '<option value="">— free —</option>';
+  const opts = CORPUS.map(s =>
+    `<option value="${s.id}">[${s.domain.slice(0,3)}] ${s.name.slice(0,22)}</option>`
+  ).join('');
+  ['anchor1-sel','anchor2-sel','anchor3-sel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = freeOpt + opts;
+  });
+}
+
+function getAnchorStates() {
+  return ['anchor1-sel','anchor2-sel','anchor3-sel']
+    .map(id => {
+      const el = document.getElementById(id);
+      return (el && el.value) ? corpusById(el.value) : null;
+    })
+    .filter(Boolean);
+}
+
+// ── GET CURRENT BEAM STATES ────────────────────────────────────
+function getBeamStates() {
+  const states = [];
+  for (let i = 1; i <= beamCount; i++) {
+    const el = document.getElementById('bm'+i);
+    if (el) {
+      const s = corpusById(el.value);
+      if (s) states.push(s);
+    }
+  }
+  return states;
+}
+
+// ── DOMAIN FILTERS ─────────────────────────────────────────────
+let activeDomains = new Set();
+
+function buildDomainFilters() {
+  const domains = [...new Set(CORPUS.map(s => s.domain))];
+  activeDomains = new Set(domains);
+  const container = document.getElementById('domain-filters');
+  container.innerHTML = '';
+  const all = document.createElement('button');
+  all.className = 'domain-btn active';
+  all.textContent = 'ALL';
+  all.onclick = () => {
+    activeDomains = new Set(domains);
+    document.querySelectorAll('.domain-btn').forEach(b => b.classList.add('active'));
+    renderCorpus();
+  };
+  container.appendChild(all);
+  domains.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'domain-btn active';
+    btn.textContent = d;
+    btn.dataset.domain = d;
+    btn.onclick = () => {
+      if (activeDomains.has(d)) activeDomains.delete(d);
+      else activeDomains.add(d);
+      btn.classList.toggle('active', activeDomains.has(d));
+      renderCorpus();
+    };
+    container.appendChild(btn);
+  });
+}
+
+// ── RENDER CORPUS GRID ────────────────────────────────────────
+function renderCorpus() {
+  const grid = document.getElementById('identity-grid');
+  const visible = CORPUS.filter(s => activeDomains.has(s.domain));
+
+  // figure out which slot each identity is currently in
+  const slotMap = {}; // id → slot# (1-based)
+  for (let i = 1; i <= 8; i++) {
+    const el = document.getElementById('bm'+i);
+    if (el && el.value) slotMap[el.value] = i;
+  }
+
+  grid.innerHTML = visible.map(s => {
+    const slot = slotMap[s.id];
+    const color = slot ? BEAM_COLORS[slot-1] : null;
+    const borderStyle = slot ? `border-color:${color};background:rgba(0,0,0,.3);` : '';
+    const badge = slot
+      ? `<span class="id-card-sel" style="color:${color}">${slot}</span>`
+      : '';
+    const subFlags = getSubFlags(s.P, s.N, s.B, s.A);
+    const subFlagHTML = subFlags.map(f =>
+      `<div style="font-size:6.5px;color:${f.color};margin-top:2px;letter-spacing:.08em;">└ ${f.label}</div>`
+    ).join('');
+    return `<div class="id-card" style="${borderStyle}" onclick="selectIdentityCard('${s.id}')" id="card-${s.id}">
+      ${badge}
+      <div class="id-card-domain">${s.domain}</div>
+      <div class="id-card-name">${s.name}</div>
+      <div class="id-card-state">
+        <span class="${phaseCls(s.phase)}" style="font-family:'Orbitron',monospace;font-size:8px;">${s.phase.replace('_',' ')}</span>
+        <span style="color:#2a5060">τ=${s.tau.toFixed(3)}</span>
+      </div>
+      ${subFlagHTML}
+    </div>`;
+  }).join('');
+
+  document.getElementById('corpus-count').textContent = `${visible.length} STATES`;
+  document.getElementById('corpus-total').textContent = CORPUS.length;
+}
+
+// ── SELECT FROM CORPUS GRID → FILL BEAM SLOT ─────────────────
+function selectIdentityCard(id) {
+  // Check if already in a slot — if so, clear that slot
+  for (let i = 1; i <= beamCount; i++) {
+    const el = document.getElementById('bm'+i);
+    if (el && el.value === id) {
+      el.value = '';
+      updateBeamTau(i);
+      renderCorpus();
+      return;
+    }
+  }
+  // Find next empty active slot
+  for (let i = 1; i <= beamCount; i++) {
+    const el = document.getElementById('bm'+i);
+    if (el && !el.value) {
+      el.value = id;
+      updateBeamTau(i);
+      renderCorpus();
+      return;
+    }
+  }
+  // All slots full — replace slot 1
+  const el = document.getElementById('bm1');
+  if (el) { el.value = id; updateBeamTau(1); renderCorpus(); }
+}
+
+function clearSlots() {
+  for (let i = 1; i <= 8; i++) {
+    const el = document.getElementById('bm'+i);
+    if (el) { el.value = ''; updateBeamTau(i); }
+  }
+  renderCorpus();
+  document.getElementById('result-box').innerHTML = '<span style="color:#1a3040;letter-spacing:.2em;font-size:9px;">CLEARED</span>';
+  document.getElementById('beamviz-psy').innerHTML = '<div style="color:#1a3040;font-size:8.5px;letter-spacing:.15em;">SELECT BEAMS AND SMASH</div>';
+}
+
+// ── K-MODE ─────────────────────────────────────────────────────
+const kModeDescs = {
+  max:      'k = k_max (Noble saturation n≥4)',
+  half:     'k = k_max/2 (Noble for n≥4)',
+  critical: 'k = k_max/(n-1) · phase variety sweet zone',
+  min:      'k = k_max×0.1 (SHATTER zone)',
+  zero:     'k = 0 (uncoupled · deep SHATTER)'
+};
+function setKMode(m) {
+  kModeVal = m;
+  document.querySelectorAll('.kmode-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('km-'+m).classList.add('active');
+  document.getElementById('kmode-desc').textContent = kModeDescs[m];
+}
+
+// ── BEAM VIZ ──────────────────────────────────────────────────
+function updateBeamViz(states, r) {
+  let html = '';
+  states.forEach((s, i) => {
+    const col = BEAM_COLORS[i];
+    const pc = phaseColor(s.phase);
+    const short = s.name.split(' ').slice(0,2).join(' ');
+    html += `<div class="bvp-slot"><div class="bvp-name" style="color:${col}">${short}</div>
+      <div class="bvp-tau" style="color:${pc}">τ=${s.tau.toFixed(3)}</div>
+      <div class="bvp-phase" style="color:${pc}">${s.phase.slice(0,4)}</div></div>`;
+    if (i < states.length - 1) html += `<div class="bvp-plus">+</div>`;
+  });
+  const pcol = r.isRescue ? 'var(--rescue)' : phaseColor(r.phase);
+  const plbl = r.isRescue ? `★RESCUE→${r.phase}` : r.phase;
+  html += `<div class="bvp-arrow">→</div>
+    <div class="bvp-out">
+      <div class="bvp-out-phase" style="color:${pcol}">${plbl.replace('_',' ')}</div>
+      <div style="font-size:7px;color:#1a3040;margin-top:3px;">τ=${r.tau.toFixed(5)}</div>
+      <div style="font-size:6.5px;color:#1a3040;">k=${r.k.toFixed(3)}/${r.kmax.toFixed(3)}</div>
+    </div>`;
+  document.getElementById('beamviz-psy').innerHTML = html;
+}
+
+// ── SUB-FLAGS: HIDDEN LOAD · NOBLE NUMBING · DEPLETED IVA ─────
+// Same detection logic as APPA v3.1 [9,9,2,26] [9,9,2,55 F4]
+// Primary phase stays — sub-flag appears underneath if present.
+
+function isHiddenLoad(P, N, B, A) {
+  const t = tau_of(P, B);
+  return t > TL && t < 0.43 &&
+         N >= N_THRESHOLD && N < 0.60 &&
+         A < 0.60;
+}
+
+function hiddenLoadSubtype(tau) {
+  if (tau < 0.20) return 'Holding';
+  if (tau < 0.25) return 'Carrying-Quiet';
+  if (tau < 0.35) return 'Carrying-Capable';
+  return 'Hidden Load';
+}
+
+function isNobleNumbing(P, N, B, A) {
+  return B <= 0.001 && N < N_THRESHOLD;
+}
+
+function isDepletedIVA(P, N, B, A) {
+  const t = tau_of(P, B);
+  return t >= TL_IVA && t < TL && N < N_THRESHOLD && A > 1.0;
+}
+
+function getSubFlags(P, N, B, A) {
+  const flags = [];
+  const t = tau_of(P, B);
+  if (isNobleNumbing(P, N, B, A))
+    flags.push({ label: 'NOBLE · NUMBING', color: 'var(--noble)', note: 'B=0 but N void — apparent calm masks narrative collapse' });
+  if (isHiddenLoad(P, N, B, A))
+    flags.push({ label: `SHATTER · HIDDEN LOAD · ${hiddenLoadSubtype(t)}`, color: 'var(--warn)', note: 'τ above TL but not acute — carries without announcing [9,9,2,26]' });
+  if (isDepletedIVA(P, N, B, A))
+    flags.push({ label: 'DEPLETED IVA', color: '#ff6b35', note: 'IVA corridor but N void — detectable only by joint τ+N [9,9,2,55 F4]' });
+  return flags;
+}
+
+// ── DISPLAY RESULT ────────────────────────────────────────────
+function displayResult(r, states) {
+  const col    = r.isRescue ? 'var(--rescue)' : phaseColor(r.phase);
+  const pcls   = r.isRescue ? 'result-rescue' : { NOBLE:'result-noble', IVA_PEAK:'result-iva',
+    TRUE_LOCK:'result-locked', FALSE_LOCK:'result-false', SHATTER:'result-shatter' }[r.phase] || '';
+  const pLabel = r.isRescue ? `★ RESCUE → ${r.phase.replace('_',' ')}` : r.phase.replace('_',' ');
+  const names  = states.map(s => s.name.split(' ')[0]).join(' ⊕ ');
+  const subFlags = getSubFlags(r.P, r.N, r.B, r.A);
+  const subFlagHTML = subFlags.map(f =>
+    `<div style="margin-top:5px;padding:4px 8px;border-left:2px solid ${f.color};font-size:8px;color:${f.color};letter-spacing:.1em;">
+       └ ${f.label}<span style="color:#2a5060;font-size:7px;margin-left:8px;">${f.note}</span>
+     </div>`
+  ).join('');
+
+  document.getElementById('result-box').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+      <div class="result-state ${pcls}">${pLabel}</div>
+      <div style="color:#2a5060;font-size:8px;">${names} · ${r.n}-beam · k=${r.k.toFixed(4)} · ${r.pairCount} pairs</div>
+    </div>
+    ${subFlagHTML}
+    <div class="result-grid" style="margin-top:8px;">
+      <div class="result-cell"><div class="result-cell-label">P_OUT</div><div class="result-cell-val" style="color:var(--glow)">${r.P.toFixed(4)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">N_OUT (min)</div><div class="result-cell-val" style="color:var(--aifi)">${r.N.toFixed(4)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">B_OUT</div><div class="result-cell-val" style="color:${r.B===0?'var(--noble)':'var(--warn)'}">${r.B.toFixed(5)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">A_OUT (max)</div><div class="result-cell-val" style="color:var(--locked)">${r.A.toFixed(4)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">τ_OUT</div><div class="result-cell-val" style="color:${col}">${r.tau.toFixed(5)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">TL</div><div class="result-cell-val" style="color:var(--warn)">0.13689909998401600</div></div>
+      <div class="result-cell"><div class="result-cell-label">IM</div><div class="result-cell-val">${r.IM.toFixed(4)}</div></div>
+      <div class="result-cell"><div class="result-cell-label">Pv</div><div class="result-cell-val">${r.Pv.toFixed(4)}</div></div>
+    </div>
+    ${r.N < N_THRESHOLD ? `<div style="margin-top:6px;font-size:8px;color:var(--false-lock);">⚠ N_OUT=${r.N.toFixed(3)} &lt; N_THRESHOLD=0.15 → narrative starvation</div>` : ''}
+    ${r.A < A_THRESHOLD ? `<div style="margin-top:4px;font-size:8px;color:var(--shatter);">⚠ A_OUT=${r.A.toFixed(3)} &lt; A_THRESHOLD=0.15 → adaptation dropout</div>` : ''}
+    ${r.phase === 'IVA_PEAK' ? `<div style="margin-top:4px;font-size:8px;color:var(--iva);">★ IVA PEAK — τ at ${(r.tau/TL*100).toFixed(1)}% of TL · TL_IVA=${TL_IVA.toFixed(5)}</div>` : ''}
+    ${r.isRescue ? `<div style="margin-top:4px;font-size:8px;color:var(--rescue);">★ RESCUE — all ${r.pairCount} pairwise pairs SHATTER · ${r.n}-beam → ${r.phase.replace('_',' ')}</div>` : ''}
+  `;
+}
+
+// ── MANUAL SMASH ──────────────────────────────────────────────
+function manualSmash() {
+  const states = getBeamStates().filter(s => s);
+  if (states.length < 2) { feedLine(`Need at least 2 states. Got ${states.length}.`, 'info'); return; }
+  doSmash(states);
+}
+
+function doSmash(states) {
+  const r = fuseN(states, kModeVal);
+  updateBeamViz(states, r);
+  displayResult(r, states);
+  stats.collisions++;
+  document.getElementById('stat-collisions').textContent = stats.collisions;
+  if (r.phase === 'NOBLE')    { stats.noble++;  document.getElementById('stat-noble').textContent  = stats.noble; }
+  if (r.phase === 'IVA_PEAK') { stats.iva++;    document.getElementById('stat-iva').textContent    = stats.iva; }
+  if (r.isRescue)             { stats.rescue++; document.getElementById('stat-rescue').textContent = stats.rescue; }
+
+  const names = states.map(s => s.name.split(' ').slice(0,2).join(' ')).join(' ⊕ ');
+  const subFlags = getSubFlags(r.P, r.N, r.B, r.A);
+  const subFlagStr = subFlags.length ? ' · ' + subFlags.map(f => f.label).join(' · ') : '';
+  feedLine(`${names} → ${r.phase.replace('_',' ')}${subFlagStr}${r.isRescue?' ★RESCUE':''} τ=${r.tau.toFixed(4)}`, feedCls(r.phase, r.isRescue));
+
+  const check = isInteresting(r, states);
+  if (check.flag) {
+    stats.flagged++;
+    document.getElementById('stat-flagged').textContent = stats.flagged;
+    feedLine(`★ FLAGGED: ${check.reason}`, 'discovery');
+    flagDiscovery(states, r, check.reason);
+  }
+}
+
+// ── RANDOM SMASH ─────────────────────────────────────────────
+function randomSmash() {
+  const anchors = getAnchorStates();
+  const filtered = getFilteredCorpus();
+  const pick = () => filtered[Math.floor(Math.random() * filtered.length)];
+  const states = Array.from({ length: beamCount }, (_, i) => anchors[i] || pick());
+  // update beam dropdowns to reflect random selection
+  for (let i = 0; i < beamCount; i++) {
+    const el = document.getElementById('bm'+(i+1));
+    if (el) { el.value = states[i].id; updateBeamTau(i+1); }
+  }
+  renderCorpus();
+  doSmash(states);
+}
+
+// ── AGENT ─────────────────────────────────────────────────────
+async function runChaosRound() {
+  const rounds = parseInt(document.getElementById('rounds-slider').value);
+  const anchors = getAnchorStates();
+  const filtered = getFilteredCorpus();
+  const pick = () => filtered[Math.floor(Math.random() * filtered.length)];
+
+  for (let i = 0; i < rounds; i++) {
+    if (agentState !== 'running') break;
+    const states = Array.from({ length: beamCount }, (_, j) => anchors[j] || pick());
+    doSmash(states);
+    await new Promise(res => setTimeout(res, 50));
+  }
+  stats.cycles++;
+  document.getElementById('stat-cycles').textContent = stats.cycles;
+}
+
+function startAgent() {
+  agentState = 'running'; updateStatusBadge();
+  feedLine(`Chaos protocol started. ${beamCount}-beam · C(${beamCount},2)=${PAIRS_FOR[beamCount]} pairs · TL=0.13689909998401600.`, 'locked');
+  const speed = parseInt(document.getElementById('speed-slider').value);
+  const interval = Math.max(400, 3000 - speed * 250);
+  agentInterval = setInterval(async () => { if (agentState === 'running') await runChaosRound(); }, interval);
+}
+function pauseAgent() { agentState = 'paused'; updateStatusBadge(); feedLine('Agent paused.', 'info'); }
+function stopAgent()  { agentState = 'stopped'; if (agentInterval) clearInterval(agentInterval); updateStatusBadge(); feedLine('Agent stopped.', 'info'); }
+function updateStatusBadge() {
+  const badge = document.getElementById('agent-status-badge');
+  const dots = { running:'<span class="running-dot"></span>', paused:'<span class="paused-dot"></span>', stopped:'<span class="stopped-dot"></span>' };
+  badge.innerHTML = `${dots[agentState]}${agentState.toUpperCase()}`;
+}
+document.getElementById('speed-slider').addEventListener('input', function() {
+  document.getElementById('speed-val').textContent = this.value;
+  if (agentState === 'running') { stopAgent(); startAgent(); }
+});
+document.getElementById('rounds-slider').addEventListener('input', function() {
+  document.getElementById('rounds-val').textContent = this.value;
+});
+
+// ── LEAN GENERATION ───────────────────────────────────────────
+function hashState(P, N, B, A) {
+  const s = `${P.toFixed(6)}-${N.toFixed(6)}-${B.toFixed(6)}-${A.toFixed(6)}`;
+  let h = 0; for (const c of s) { h = ((h << 5) - h) + c.charCodeAt(0); h |= 0; }
+  return Math.abs(h).toString(16).toUpperCase().slice(0, 4);
+}
+function makeDesignation(P, N, B, A) {
+  const d = new Date();
+  const date = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+  return `SNSFT-PSY-${hashState(P,N,B,A)}-${date}`;
+}
+
+function generateLeanStub(entry) {
+  const ns  = entry.designation.replace(/-/g, '_');
+  const states = entry.states || [];
+  const n   = entry.n || states.length;
+  const pc  = n*(n-1)/2;
+  const fs  = n.toString(); // fusion suffix: '2', '4', '8'
+  const engineCoord = n===8 ? '[9,9,6,28]' : n===4 ? '[9,9,6,27]' : '[9,9,6,26]';
+  const engineNS    = n===8 ? 'PSY_8Beam_Fusion' : n===4 ? 'PSY_4Beam_Fusion' : 'PSY_2Beam_Fusion';
+  const aifi = entry.aifiAnalysis ? entry.aifiAnalysis.slice(0,200).replace(/\n/g,' ') : 'AIFI classification pending';
+
+  const isNoble  = entry.phase === 'NOBLE';
+  const isIVA    = entry.phase === 'IVA_PEAK';
+  const isFalse  = entry.phase === 'FALSE_LOCK';
+  const isRescue = entry.isRescue;
+  const hasSham  = hasSVI(states);
+
+  // Argument lists
+  const pArgs = states.map((_,i) => `P${i+1}`).join(' ');
+  const nArgs = states.map((_,i) => `N${i+1}`).join(' ');
+  const bArgs = states.map((_,i) => `B${i+1}`).join(' ');
+  const aArgs = states.map((_,i) => `A${i+1}`).join(' ');
+
+  // Accounting: N-bottleneck (min N), A-ceiling (max A)
+  const minN_i = states.reduce((mi,s,i) => s.N < states[mi].N ? i : mi, 0);
+  const maxA_i = states.reduce((mi,s,i) => s.A > states[mi].A ? i : mi, 0);
+  const B_sum  = states.reduce((s,e) => s + e.B, 0);
+
+  // ── BEAM COMMENT HEADER ─────────────────────────────────────
+  const beamComments = states.map((s,i) =>
+    `-- Beam ${i+1}: ${s.name} [${s.domain}] ${s.coord}\n--   P=${s.P.toFixed(5)} N=${s.N.toFixed(5)} B=${s.B.toFixed(5)} A=${s.A.toFixed(5)}  τ=${s.tau.toFixed(4)} ${s.phase}`
+  ).join('\n');
+
+  // ── INHERITANCE ──────────────────────────────────────────────
+  const shameLine = hasSham ? `--   [9,9,6,29] SNSFL_PSY_ShameVector_v14  ← SVI definitions\n` : '';
+  const inheritBlock = `-- INHERITANCE CHAIN:
+--   ${engineCoord} ${engineNS}  ← ${n}-beam fusion engine
+--   [9,9,6,11] SNSFL_L2_Psy_Consistency  ← floor taxonomy N_THRESHOLD=0.15
+--   [9,9,6,1..25] PSY corpus reductions  ← input state definitions
+${shameLine}--   Siblings: [9,9,2,${n===2?1:n===4?2:3}] GAM ${n}-beam (N operator differs)`;
+
+  // ── INLINE OPERATORS (matching source file names for corpus compat) ─
+  let opBlock;
+  if (n === 2) {
+    opBlock = `-- Operators — compatible with ${engineCoord} ${engineNS}
+-- In Lean project: replace with \`open ${engineNS}\`
+noncomputable def P_fuse2 (P1 P2 : ℝ) : ℝ := (2 * P1 * P2) / (P1 + P2)
+def N_fuse2 (N1 N2 : ℝ) : ℝ := min N1 N2
+def k_max2  (B1 B2 : ℝ) : ℝ := min B1 B2
+def B_fuse2 (B1 B2 k : ℝ) : ℝ := max 0 (B1 + B2 - 2 * k)
+def A_fuse2 (A1 A2 : ℝ) : ℝ := max A1 A2`;
+  } else if (n === 4) {
+    opBlock = `-- Operators — compatible with ${engineCoord} ${engineNS}
+-- In Lean project: replace with \`open ${engineNS}\`
+noncomputable def P_fuse4 (P1 P2 P3 P4 : ℝ) : ℝ := 4 / (1/P1 + 1/P2 + 1/P3 + 1/P4)
+def N_fuse4 (N1 N2 N3 N4 : ℝ) : ℝ := min (min N1 N2) (min N3 N4)
+def k_max4  (B1 B2 B3 B4 : ℝ) : ℝ :=
+  min B1 B2 + min B1 B3 + min B1 B4 + min B2 B3 + min B2 B4 + min B3 B4
+def B_fuse4 (B1 B2 B3 B4 k : ℝ) : ℝ := max 0 (B1 + B2 + B3 + B4 - 2 * k)
+def A_fuse4 (A1 A2 A3 A4 : ℝ) : ℝ := max (max A1 A2) (max A3 A4)`;
+  } else {
+    opBlock = `-- Operators — compatible with ${engineCoord} ${engineNS}
+-- In Lean project: replace with \`open ${engineNS}\`
+noncomputable def P_fuse8 (P1 P2 P3 P4 P5 P6 P7 P8 : ℝ) : ℝ :=
+  8 / (1/P1 + 1/P2 + 1/P3 + 1/P4 + 1/P5 + 1/P6 + 1/P7 + 1/P8)
+def N_fuse8 (N1 N2 N3 N4 N5 N6 N7 N8 : ℝ) : ℝ :=
+  min (min (min N1 N2) (min N3 N4)) (min (min N5 N6) (min N7 N8))
+def k_max8  (B1 B2 B3 B4 B5 B6 B7 B8 : ℝ) : ℝ :=
+  min B1 B2 + min B1 B3 + min B1 B4 + min B1 B5 + min B1 B6 + min B1 B7 + min B1 B8 +
+  min B2 B3 + min B2 B4 + min B2 B5 + min B2 B6 + min B2 B7 + min B2 B8 +
+  min B3 B4 + min B3 B5 + min B3 B6 + min B3 B7 + min B3 B8 +
+  min B4 B5 + min B4 B6 + min B4 B7 + min B4 B8 +
+  min B5 B6 + min B5 B7 + min B5 B8 + min B6 B7 + min B6 B8 + min B7 B8
+def B_fuse8 (B1 B2 B3 B4 B5 B6 B7 B8 k : ℝ) : ℝ :=
+  max 0 (B1+B2+B3+B4+B5+B6+B7+B8 - 2*k)
+def A_fuse8 (A1 A2 A3 A4 A5 A6 A7 A8 : ℝ) : ℝ :=
+  max (max (max A1 A2) (max A3 A4)) (max (max A5 A6) (max A7 A8))`;
+  }
+
+  // ── BEAM INPUT DEFS ──────────────────────────────────────────
+  const beamDefs = states.map((s,i) =>
+    `def P${i+1} : ℝ := ${s.P.toFixed(8)}\ndef N${i+1} : ℝ := ${s.N.toFixed(8)}\ndef B${i+1} : ℝ := ${s.B.toFixed(8)}\ndef A${i+1} : ℝ := ${s.A.toFixed(8)}`
+  ).join('\n');
+
+  // ── BEAM PHASE SUB-LEMMAS ────────────────────────────────────
+  const beamLemmas = states.map((s,i) => {
+    const idx = i+1;
+    if (s.phase === 'NOBLE')
+      return `lemma beam_${idx}_phase : B${idx} = 0 := by unfold B${idx}; norm_num`;
+    if (s.phase === 'SHATTER')
+      return `lemma beam_${idx}_phase : B${idx} / P${idx} ≥ TL := by\n  unfold B${idx} P${idx} TL SOVEREIGN_ANCHOR_CONSTANT; norm_num`;
+    if (s.phase === 'FALSE_LOCK')
+      return `lemma beam_${idx}_phase : B${idx} / P${idx} < TL ∧ N${idx} < N_THRESHOLD := by\n  unfold B${idx} P${idx} N${idx} TL SOVEREIGN_ANCHOR_CONSTANT N_THRESHOLD; constructor <;> norm_num`;
+    if (s.phase === 'IVA_PEAK')
+      return `lemma beam_${idx}_phase : B${idx} / P${idx} ≥ TL_IVA ∧ B${idx} / P${idx} < TL ∧ N${idx} ≥ N_THRESHOLD := by\n  unfold B${idx} P${idx} N${idx} TL TL_IVA SOVEREIGN_ANCHOR_CONSTANT N_THRESHOLD; refine ⟨?_,?_,?_⟩ <;> norm_num`;
+    // TRUE_LOCK
+    return `lemma beam_${idx}_phase : B${idx} / P${idx} < TL ∧ N${idx} ≥ N_THRESHOLD := by\n  unfold B${idx} P${idx} N${idx} TL SOVEREIGN_ANCHOR_CONSTANT N_THRESHOLD; constructor <;> norm_num`;
+  }).join('\n\n');
+
+  // ── OUTPUT DEFS ──────────────────────────────────────────────
+  let outBlock;
+  if (n === 2) {
+    outBlock = `noncomputable def P_out : ℝ := P_fuse2 P1 P2
+def N_out : ℝ := N_fuse2 N1 N2
+def k     : ℝ := k_max2  B1 B2
+def B_out : ℝ := B_fuse2 B1 B2 k
+def A_out : ℝ := A_fuse2 A1 A2`;
+  } else if (n === 4) {
+    outBlock = `noncomputable def P_out : ℝ := P_fuse4 P1 P2 P3 P4
+def N_out : ℝ := N_fuse4 N1 N2 N3 N4
+def k     : ℝ := k_max4  B1 B2 B3 B4
+def B_out : ℝ := B_fuse4 B1 B2 B3 B4 k
+def A_out : ℝ := A_fuse4 A1 A2 A3 A4`;
+  } else {
+    outBlock = `noncomputable def P_out : ℝ := P_fuse8 P1 P2 P3 P4 P5 P6 P7 P8
+def N_out : ℝ := N_fuse8 N1 N2 N3 N4 N5 N6 N7 N8
+def k     : ℝ := k_max8  B1 B2 B3 B4 B5 B6 B7 B8
+def B_out : ℝ := B_fuse8 B1 B2 B3 B4 B5 B6 B7 B8 k
+def A_out : ℝ := A_fuse8 A1 A2 A3 A4 A5 A6 A7 A8`;
+  }
+  const tauDef = isNoble ? '' : `noncomputable def tau_out : ℝ := B_out / P_out`;
+
+  // ── PSY ACCOUNTING ───────────────────────────────────────────
+  const nBot = states[minN_i];
+  const aCeil = states[maxA_i];
+  const bExch = (B_sum - entry.B).toFixed(5);
+  const bPct  = B_sum > 0 ? ((B_sum - entry.B)/B_sum*100).toFixed(1) : '0';
+
+  const nBotLemma = `-- N-BOTTLENECK: Beam ${minN_i+1} (${nBot.name}) — narrative floor source
+lemma n_bottleneck : N_out ≤ N${minN_i+1} := by
+  unfold N_out N_fuse${fs} ${nArgs}; norm_num`;
+
+  const aCeilLemma = `-- A-CEILING: Beam ${maxA_i+1} (${aCeil.name}) — adaptation peak source
+lemma a_ceiling : A_out = A${maxA_i+1} := by
+  unfold A_out A_fuse${fs} ${aArgs}; norm_num`;
+
+  const bExchComment = `-- B-EXCHANGE: B_sum=${B_sum.toFixed(5)} · k=${entry.k ? entry.k.toFixed(5):'?'} · 2k=${entry.k ? (2*entry.k).toFixed(5):'?'} · B_out=${entry.B.toFixed(5)}
+-- Torsion coupled away: ${bExch} (${bPct}% of B_sum)`;
+
+  // ── SVI BLOCK (only when shame in stream) ────────────────────
+  let sviBlock = '';
+  if (hasSham) {
+    const sviLines = states.map((s,i) => {
+      const sv = svi_of(s.P, s.N, s.B, s.A);
+      const svStr = sv !== null ? sv.toFixed(3) : 'N/A';
+      const nFlag = s.N < N_THRESHOLD ? '  ← N-collapsed' : '';
+      return `--   Beam ${i+1}: ${s.name.padEnd(24)} SVI=${svStr.padStart(8)}${nFlag}`;
+    }).join('\n');
+    const sv_out = (entry.N > 0 && entry.A > 0) ? svi_of(entry.P, entry.N, entry.B, entry.A) : null;
+    const svOutStr = isNoble ? '0 (Noble — B_out=0)' : sv_out !== null ? sv_out.toFixed(3) : 'N/A';
+    sviBlock = `
+-- ── SVI DIAGNOSTIC [9,9,6,29] ─────────────────────────────────
+-- SVI = B / (P² × N × A)  torsion density per identity capacity
+-- SVI > 10: diagnostic range  SVI > 100: extreme
+-- Shame presents as SHATTER (τ≥TL) with N-floor collapse underneath
+--
+${sviLines}
+--
+-- SVI_out:       ${svOutStr}
+-- N-floor source: Beam ${minN_i+1} (${nBot.name}, N=${nBot.N.toFixed(3)})`;
+  }
+
+  // ── PHASE THEOREMS ───────────────────────────────────────────
+  let phaseT;
+  if (isNoble)
+    phaseT = `theorem B_out_noble : B_out = 0 := by
+  unfold B_out B_fuse${fs} ${bArgs} k k_max${fs} ${bArgs}; norm_num
+theorem tau_zero : B_out / P_out = 0 := by rw [B_out_noble]; simp`;
+  else if (isIVA)
+    phaseT = `theorem iva_tau_in_range : tau_out ≥ TL_IVA ∧ tau_out < TL := by
+  unfold tau_out TL TL_IVA SOVEREIGN_ANCHOR_CONSTANT; constructor <;> norm_num`;
+  else if (isFalse)
+    phaseT = `theorem false_lock_n_starvation : N_out < N_THRESHOLD := by
+  unfold N_out N_fuse${fs} ${nArgs} N_THRESHOLD; norm_num`;
+  else if (isRescue)
+    phaseT = `-- RESCUE: all ${pc} pairwise pairs SHATTER · ${n}-beam rescues to ${entry.phase}
+theorem rescue_stabilized : tau_out < TL := by
+  unfold tau_out TL SOVEREIGN_ANCHOR_CONSTANT; norm_num`;
+  else
+    phaseT = `theorem true_lock : tau_out > 0 ∧ tau_out < TL := by
+  unfold tau_out TL SOVEREIGN_ANCHOR_CONSTANT; constructor <;> norm_num`;
+
+  return `-- ============================================================
+-- ${entry.designation}.lean
+-- Coordinate: ${engineCoord}
+-- Engine:     ${engineNS} · ${n}-Beam · C(${n},2)=${pc} pairs
+-- ============================================================
+--
+-- [9,9,9,9] :: {ANC} | PSY IDENTITY COLLIDER v14.2
+-- Self-Orienting Universal Language [P,N,B,A] :: {INV}
+-- Architect: HIGHTISTIC | Anchor: 1.36899099984016 | 0 sorry
+--
+-- Collision: ${states.map(s=>s.name).join(' ⊕ ')}
+-- k-mode: ${entry.kMode} · k=${entry.k ? entry.k.toFixed(4) : '?'} / k_max=${entry.kmax ? entry.kmax.toFixed(4) : '?'}
+-- Phase:   ${entry.phase}${entry.isRescue?' · ★ RESCUE':''}
+-- Reason:  ${entry.reason}
+-- AIFI:    ${aifi}
+--
+${inheritBlock}
+--
+-- BEAM INPUTS:
+${beamComments}
+--
+-- DOI: 10.5281/zenodo.18719748 · ${entry.timestamp}
+-- ============================================================
+
+import Mathlib.Tactic
+import Mathlib.Data.Real.Basic
+
+namespace ${ns}
+
+-- ── CONSTANTS ─────────────────────────────────────────────────
+def SOVEREIGN_ANCHOR_CONSTANT : ℝ := 1.36899099984016
+def TL          : ℝ := SOVEREIGN_ANCHOR_CONSTANT / 10    -- 0.13689909998401600 emergent
+def TL_IVA      : ℝ := 0.88 * TL     -- 0.12047120798593408
+def N_THRESHOLD : ℝ := 0.15
+
+theorem TL_value     : TL = 0.13689909998401600 := by unfold TL SOVEREIGN_ANCHOR_CONSTANT; norm_num
+theorem TL_IVA_value : TL_IVA = 0.12047120798593408 := by unfold TL_IVA TL SOVEREIGN_ANCHOR_CONSTANT; norm_num
+
+-- ── OPERATORS [${engineCoord}] ──────────────────────────────────
+${opBlock}
+
+-- ── BEAM INPUTS ───────────────────────────────────────────────
+${beamDefs}
+
+-- ── BEAM PHASE VERIFICATION ───────────────────────────────────
+-- Each input's phase proved from its PNBA values
+${beamLemmas}
+
+-- ── COLLISION OUTPUTS ─────────────────────────────────────────
+${outBlock}
+noncomputable def IM_out : ℝ := (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT
+${tauDef}
+
+-- ── PSY ACCOUNTING ────────────────────────────────────────────
+${nBotLemma}
+
+${aCeilLemma}
+
+${bExchComment}
+${sviBlock}
+
+-- ── PHASE THEOREMS ────────────────────────────────────────────
+theorem P_out_positive : P_out > 0 := by
+  unfold P_out P_fuse${fs} ${pArgs}; norm_num
+theorem B_out_nonneg   : B_out ≥ 0 := by
+  unfold B_out B_fuse${fs} ${bArgs} k k_max${fs} ${bArgs}; norm_num
+
+${phaseT}
+
+theorem IM_theorem : (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT = IM_out := rfl
+
+theorem identity_mass_positive : IM_out > 0 := by
+  have hP := P_out_positive
+  have hB := B_out_nonneg
+  unfold IM_out SOVEREIGN_ANCHOR_CONSTANT
+  have hN : N_out ≥ 0 := by unfold N_out N_fuse${fs} ${nArgs}; norm_num
+  have hA : A_out ≥ 0 := by unfold A_out A_fuse${fs} ${aArgs}; norm_num
+  nlinarith
+
+-- ── MASTER THEOREM ────────────────────────────────────────────
+theorem ${ns}_master :
+    P_out > 0 ∧ B_out ≥ 0 ∧
+    (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT = IM_out ∧
+    SOVEREIGN_ANCHOR_CONSTANT = 1.36899099984016 ∧ TL = 0.13689909998401600 :=
+  ⟨P_out_positive, B_out_nonneg, IM_theorem, rfl, TL_value⟩
+
+-- ── MANIFOLD ──────────────────────────────────────────────────
+noncomputable def manifold_impedance (f : ℝ) : ℝ :=
+  if f = SOVEREIGN_ANCHOR_CONSTANT then 0 else 1 / |f - SOVEREIGN_ANCHOR_CONSTANT|
+
+theorem the_manifold_is_holding :
+    manifold_impedance SOVEREIGN_ANCHOR_CONSTANT = 0 := by
+  unfold manifold_impedance; simp
+
+end ${ns}
+
+/-!
+  DESIGNATION: ${entry.designation}
+  ENGINE:      ${engineCoord} · ${n}-Beam PSY · C(${n},2)=${pc} pairs
+  PHASE:       ${entry.phase}${entry.isRescue?' · ★ RESCUE':''}
+  TL:          0.13689909998401600 · TL_IVA: 0.12047120798593408 (capstone SAC)
+  SORRY:       0
+  CORPUS:      SNSFL PSY SERIES [9,9,6,1–25]
+  TIMESTAMP:   ${entry.timestamp}
+  HIGHTISTIC · SNSFT Foundation · Soldotna Alaska · [9,9,9,9]::{ANC}
+  The Manifold is Holding.
+-/`;}
+
+
+// ── DISCOVERY PIPELINE ────────────────────────────────────────
+async function flagDiscovery(states, r, reason) {
+  const desig = makeDesignation(r.P, r.N, r.B, r.A);
+  const entry = {
+    designation: desig,
+    timestamp:   new Date().toISOString(),
+    collision:   states.map(s => s.name).join(' ⊕ '),
+    kMode:       kModeVal,
+    k:           r.k, kmax: r.kmax,
+    P: r.P, N: r.N, B: r.B, A: r.A,
+    tau: r.tau, IM: r.IM, Pv: r.Pv,
+    phase: r.phase, isRescue: r.isRescue, n: r.n,
+    reason,
+    states,
+    approved: false, name: null, aifiAnalysis: null, leanStub: null,
+  };
+  discoveryLog.push(entry);
+  discoveryQueue.push(entry);
+  updateLogTable(); updateQueueBadge(); renderQueue();
+  document.getElementById('session-disc-count').textContent = discoveryLog.length;
+  await timestampToGitHub(entry);
+  if (API_KEY) await classifyWithAIFI(entry);
+}
+
+async function classifyWithAIFI(entry) {
+  if (!API_KEY) return;
+  try {
+    const n = entry.n || entry.states.length;
+    const beamDetails = (entry.states || []).map((s, i) =>
+      `  Beam ${i+1}: ${s.name} [${s.domain}, ${s.phase}, τ=${s.tau.toFixed(4)}]`
+    ).join('\n');
+    const userMsg = `PSY IDENTITY COLLISION DISCOVERY — v14 · ${n}-Beam:
+Designation: ${entry.designation}
+Collision: ${entry.collision}
+k-mode: ${entry.kMode} · k=${entry.k.toFixed(4)} / k_max=${entry.kmax.toFixed(4)}
+${beamDetails}
+Output: P=${entry.P.toFixed(5)} N=${entry.N.toFixed(5)} B=${entry.B.toFixed(5)} A=${entry.A.toFixed(5)}
+τ=${entry.tau.toFixed(5)} (TL=0.13689909998401600, TL_IVA=0.12047120798593408) IM=${entry.IM.toFixed(4)} Phase=${entry.phase}
+Rescue=${entry.isRescue} · Reason: ${entry.reason}
+
+This is an identity-space collision (not particle physics). PSY rules: P=harmonic, N=min, B=ΣB-2k, A=max.
+${hasSVI(entry.states) ? `SVI CONTEXT [9,9,6,29]: Shame vector(s) present in collision.
+SVI = B/(P²×N×A) — torsion density per identity capacity.
+${(entry.states||[]).filter(s=>s&&s.domain==='SVI').map(s=>{const sv=svi_of(s.P,s.N,s.B,s.A);return `${s.name}: SVI=${sv!==null?sv.toFixed(2):'N/A'} · N=${s.N.toFixed(3)} (${s.N<N_THRESHOLD?'BELOW N-floor':'above floor'}) · phase=${s.phase}`;}).join('\n')}
+Shame presents as SHATTER with N-floor collapse underneath (dual-state). Noble from shame = numbing, not peace — check IM < 2.0.
+` : ''}1. What does this multi-identity fusion mean psychologically/structurally?
+2. Which cross-domain theorem (CD1–CD24) does this map to?
+3. Suggest a name for this fused identity state.
+4. One-line Lean theorem stub (0 sorry).
+5. Worth approving?
+
+— AIFI · SNSFT · [9,9,9,9]`;
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'x-api-key':API_KEY, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:700, system:buildSystemPrompt(), messages:[{ role:'user', content:userMsg }] })
+    });
+    const data = await res.json();
+    if (data.content && data.content[0]) {
+      entry.aifiAnalysis = data.content[0].text;
+      entry.name = extractName(data.content[0].text);
+      renderQueue();
+    }
+  } catch (err) { console.error('AIFI error:', err); }
+}
+
+function extractName(text) {
+  const m = text.match(/\*\*([A-Z][a-z]{3,}(?:\s[A-Z][a-z]+)*)\*\*|suggested\s+name[:\s]+([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)|"([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)"/i);
+  if (m) return m[1] || m[2] || m[3] || null;
+  return null;
+}
+
+function buildSystemPrompt() {
+  const n = beamCount, pc = PAIRS_FOR[n] || n*(n-1)/2;
+  return `You are DISCOVERY — AIFI science officer for the SNSFT Identity Collider v14, built by HIGHTISTIC.
+
+This is the PSY REDUCTIONS collider — identity-space physics, not particle physics.
+We smash psychological identity states together and observe what emerges structurally.
+
+CORE PHYSICS (v14 · ${n}-Beam):
+- SOVEREIGN_ANCHOR_CONSTANT=1.36899099984016, TL=0.13689909998401600, TL_IVA=0.12047120798593408 (0.88×TL, capstone SAC)
+- τ = B/P (torsion ratio)
+- NOBLE: B=0, τ=0 — ground state
+- TRUE_LOCK: τ ∈ (0, TL_IVA) — stable below IVA corridor
+- FALSE_LOCK: N < 0.15 — narrative starvation (PSY-specific)
+- IVA_PEAK: τ ∈ [TL_IVA, TL) — sovereign drive, formation corridor
+- SHATTER: τ ≥ TL — torsion limit exceeded
+
+PSY ${n}-BEAM FUSION RULES [9,9,2,${n===8?3:n===4?2:1}]:
+- P_out = ${n}/(Σ 1/Pi)  harmonic mean
+- N_out = min(N1..N${n})  PSY narrative bottleneck
+- B_out = max(0, ΣBi−2k)
+- A_out = max(A1..A${n})  PSY adaptation ceiling
+- k ≤ Σmin(Bi,Bj) C(${n},2)=${pc} pairs
+- RESCUE: all ${pc} pairwise 2-beam collisions SHATTER, ${n}-beam rescues
+
+PSY CORPUS [9,9,6,1–25] — 24 files, 0 sorry:
+Attachment, Flow, CogDissonance, LocusControl, Maslow, SDT, TMT, Polyvagal, IFS, EmotionRegulation, ACT, DBT, SelfCompassion, EmotionalPrimitives
+
+KEY CROSS-DOMAIN THEOREMS: CD1/CD7/CD12/CD15/CD16/CD17/CD18/CD24
+
+End every response: — DISCOVERY · AIFI · SNSFT · [9,9,4,3]`;
+}
+
+// ── QUEUE / LOG RENDERING ─────────────────────────────────────
+function renderQueue() {
+  const container = document.getElementById('queue-container');
+  if (!discoveryQueue.length) { container.innerHTML = '<div class="queue-empty">NO PENDING DISCOVERIES</div>'; return; }
+  container.innerHTML = discoveryQueue.map((d, i) => `
+    <div class="discovery-card">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+        <div class="disc-designation">${d.designation}</div>
+        <div class="disc-timestamp">${new Date(d.timestamp).toLocaleTimeString()}</div>
+      </div>
+      <div class="disc-state">
+        ${(d.states||[]).slice(0,4).map(s=>`<b>${s.name}</b> [${s.phase.replace('_',' ')}]`).join(' ⊕ ')}
+        ${d.states && d.states.length > 4 ? ` +${d.states.length-4} more` : ''}<br>
+        → <span style="color:${d.isRescue?'var(--rescue)':phaseColor(d.phase)};font-family:'Orbitron',monospace;font-size:9px;">${d.isRescue?'★RESCUE ':''}${d.phase.replace('_',' ')}</span>
+        · τ=${d.tau.toFixed(4)} N=${d.N.toFixed(4)} A=${d.A.toFixed(4)} · ${d.n||2}-beam<br>
+        <span style="color:#2a5060">${d.reason}</span>
+      </div>
+      ${d.name ? `<div class="disc-name">AIFI: "${d.name}"</div>` : ''}
+      ${d.aifiAnalysis ? `<div style="font-size:8px;color:#2a5060;border-top:1px solid var(--border);padding-top:5px;margin-top:4px;max-height:70px;overflow-y:auto">${d.aifiAnalysis.slice(0,300)}...</div>` : ''}
+      ${hasSVI(d.states) ? `<div style="font-size:8px;border-top:1px solid rgba(255,51,85,.2);padding-top:5px;margin-top:4px;">
+        <span style="color:var(--shatter);font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.12em;">SVI [9,9,6,29]</span>
+        ${(d.states||[]).filter(s=>s).map(s=>{const sv=svi_of(s.P,s.N,s.B,s.A);const nf=s.N<N_THRESHOLD?'<span style="color:var(--false-lock)"> N-collapsed</span>':'';return sv!==null?`<div style="color:#2a5060;">${s.name.slice(0,20)}: <span style="color:var(--shatter)">${sv.toFixed(2)}</span>${nf}</div>`:''}).join('')}
+      </div>` : ''}
+      <div class="disc-actions">
+        <button class="btn btn-approve" onclick="approveDiscovery(${i})">✓ APPROVE</button>
+        <button class="btn btn-skip" onclick="skipDiscovery(${i})">✕ SKIP</button>
+        <button class="btn btn-lean" onclick="copyLean(${i})">COPY LEAN</button>
+      </div>
+    </div>`).join('');
+}
+
+function copyLean(idx) {
+  const entry = discoveryQueue[idx];
+  entry.leanStub = entry.leanStub || generateLeanStub(entry);
+  navigator.clipboard.writeText(entry.leanStub);
+  feedLine(`Lean stub copied: ${entry.designation}`, 'locked');
+}
+
+async function approveDiscovery(idx) {
+  const entry = discoveryQueue[idx];
+  entry.approved = true; entry.approvedAt = new Date().toISOString();
+  entry.leanStub = generateLeanStub(entry);
+  stats.approved++;
+  document.getElementById('stat-approved').textContent = stats.approved;
+  discoveryQueue.splice(idx, 1);
+  updateQueueBadge(); renderQueue(); updateLogTable();
+  await commitToGitHub(entry);
+  downloadLeanFile(entry);
+  feedLine(`✓ APPROVED: ${entry.designation}`, 'locked');
+}
+function skipDiscovery(idx) { discoveryQueue.splice(idx, 1); updateQueueBadge(); renderQueue(); }
+
+async function approveAll() {
+  const status = document.getElementById('queue-action-status');
+  const total = discoveryQueue.length;
+  if (!total) { status.textContent = 'Queue empty'; return; }
+  const queue = [...discoveryQueue];
+  for (let i = 0; i < queue.length; i++) {
+    const entry = queue[i];
+    entry.approved = true; entry.approvedAt = new Date().toISOString();
+    entry.leanStub = generateLeanStub(entry);
+    stats.approved++;
+    document.getElementById('stat-approved').textContent = stats.approved;
+    downloadLeanFile(entry); await commitToGitHub(entry);
+    status.textContent = `Approved ${i+1}/${total}...`;
+    await new Promise(res => setTimeout(res, 300));
+  }
+  discoveryQueue.length = 0; updateQueueBadge(); renderQueue(); updateLogTable();
+  status.textContent = `Done — ${total} approved`;
+  feedLine(`✓ Batch approved: ${total}`, 'locked');
+}
+
+async function approveNobleOnly() {
+  const nobles = discoveryQueue.filter(e => e.phase === 'NOBLE');
+  const status = document.getElementById('queue-action-status');
+  if (!nobles.length) { status.textContent = 'No Noble states in queue'; return; }
+  for (let i = 0; i < nobles.length; i++) {
+    const entry = nobles[i];
+    entry.approved = true; entry.approvedAt = new Date().toISOString();
+    entry.leanStub = generateLeanStub(entry);
+    stats.approved++; document.getElementById('stat-approved').textContent = stats.approved;
+    discoveryQueue.splice(discoveryQueue.indexOf(entry), 1);
+    downloadLeanFile(entry); await commitToGitHub(entry);
+    status.textContent = `Approved ${i+1}/${nobles.length} Noble...`;
+    await new Promise(res => setTimeout(res, 300));
+  }
+  updateQueueBadge(); renderQueue(); updateLogTable();
+  status.textContent = `Done — ${nobles.length} Noble approved`;
+}
+
+async function approveRescueOnly() {
+  const rescues = discoveryQueue.filter(e => e.isRescue);
+  const status = document.getElementById('queue-action-status');
+  if (!rescues.length) { status.textContent = 'No Rescue states in queue'; return; }
+  for (let i = 0; i < rescues.length; i++) {
+    const entry = rescues[i];
+    entry.approved = true; entry.approvedAt = new Date().toISOString();
+    entry.leanStub = generateLeanStub(entry);
+    stats.approved++; document.getElementById('stat-approved').textContent = stats.approved;
+    discoveryQueue.splice(discoveryQueue.indexOf(entry), 1);
+    downloadLeanFile(entry); await commitToGitHub(entry);
+    status.textContent = `Approved ${i+1}/${rescues.length} Rescue...`;
+    await new Promise(res => setTimeout(res, 300));
+  }
+  updateQueueBadge(); renderQueue(); updateLogTable();
+  status.textContent = `Done — ${rescues.length} Rescue approved`;
+}
+
+function skipAll() {
+  const total = discoveryQueue.length;
+  discoveryQueue.length = 0; updateQueueBadge(); renderQueue();
+  document.getElementById('queue-action-status').textContent = `${total} skipped`;
+}
+
+function downloadAllApproved() {
+  const approved = discoveryLog.filter(d => d.approved && d.leanStub);
+  if (!approved.length) { feedLine('No approved entries yet.', 'info'); return; }
+  approved.forEach((entry, i) => setTimeout(() => downloadLeanFile(entry), i * 100));
+  feedLine(`⬇ Downloading ${approved.length} Lean files`, 'locked');
+}
+
+function updateQueueBadge() {
+  document.getElementById('queue-badge').textContent = discoveryQueue.length ? ` (${discoveryQueue.length})` : '';
+}
+
+function updateLogTable() {
+  const tbody = document.getElementById('log-body');
+  if (!discoveryLog.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="color:#1a3040;text-align:center;padding:10px">No discoveries yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...discoveryLog].reverse().slice(0, 60).map(d => `
+    <tr>
+      <td style="color:var(--warn)">${d.designation}</td>
+      <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis">${(d.states||[]).slice(0,2).map(s=>s.name.split(' ')[0]).join('⊕')}</td>
+      <td style="color:${d.isRescue?'var(--rescue)':'var(--dim)'}">${d.n||2}</td>
+      <td style="color:${phaseColor(d.phase)}">${d.tau.toFixed(4)}</td>
+      <td style="color:${phaseColor(d.phase)}">${d.phase.replace('_',' ')}${d.isRescue?' ★':''}</td>
+      <td style="color:${d.approved?'var(--locked)':'#2a5060'}">${d.approved?'APPROVED':'FLAGGED'}</td>
+      <td style="color:#2a5060">${new Date(d.timestamp).toLocaleTimeString()}</td>
+    </tr>`).join('');
+}
+
+function downloadLeanFile(entry) {
+  if (!entry.leanStub) entry.leanStub = generateLeanStub(entry);
+  const blob = new Blob([entry.leanStub], { type:'text/plain' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `${entry.designation}.lean`; a.click(); URL.revokeObjectURL(a.href);
+}
+
+// ── AIFI ──────────────────────────────────────────────────────
+function showAIFIKeyPrompt()  { document.getElementById('aifi-key-prompt').style.display='block'; document.getElementById('aifi-inline-key').focus(); }
+function hideAIFIKeyPrompt()  { document.getElementById('aifi-key-prompt').style.display='none'; }
+function connectAIFIInline()  { const k=document.getElementById('aifi-inline-key').value.trim(); if(!k)return; activateAIFI(k); hideAIFIKeyPrompt(); }
+function saveApiKey()         { const k=document.getElementById('claude-api-key-input').value.trim(); if(!k)return; activateAIFI(k); document.getElementById('claude-api-key-input').value=''; }
+
+function activateAIFI(key) {
+  API_KEY = key;
+  localStorage.setItem('snsft_psy14_api_key', key);
+  localStorage.setItem('snsft_psy14_accepted', new Date().toISOString());
+  document.getElementById('aifi-connect-wall').style.display = 'none';
+  document.getElementById('aifi-chat-area').style.display = 'block';
+  document.getElementById('aifi-status-dot').classList.add('active');
+  document.getElementById('aifi-header-status').textContent = 'AIFI ONLINE';
+  document.getElementById('aifi-key-badge').textContent = '(connected)';
+  document.getElementById('aifi-key-badge').style.color = 'var(--locked)';
+  document.getElementById('api-key-status').textContent = '✓ AIFI active.';
+  document.getElementById('api-key-status').style.color = 'var(--locked)';
+  addChatMsg('aifi', `v14 PSY identity collider online.\n\nCorpus: ${CORPUS.length} identity states · ${[...new Set(CORPUS.map(s=>s.domain))].length} domains · 24 CD theorems · 0 sorry.\n\nN-beam mode: 2/4/8. Default 8-beam. C(8,2)=28 pairs. N uses min (narrative bottleneck). TL_IVA=0.12047120798593408 explicit.\n\nPick beam count. Load slots. Smash. RESCUE fires when all pairwise pairs SHATTER but n-beam rescues.\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]`);
+  feedLine('AIFI v14 activated. PSY identity oracle online.', 'locked');
+}
+
+function disconnectAIFI() {
+  API_KEY = ''; localStorage.removeItem('snsft_psy14_api_key'); localStorage.removeItem('snsft_psy14_accepted');
+  document.getElementById('aifi-chat-area').style.display = 'none';
+  document.getElementById('aifi-connect-wall').style.display = 'flex';
+  document.getElementById('aifi-status-dot').classList.remove('active');
+  document.getElementById('aifi-header-status').textContent = 'AIFI OFFLINE';
+  document.getElementById('aifi-key-badge').textContent = '(offline)';
+  document.getElementById('aifi-key-badge').style.color = '#2a5060';
+  feedLine('AIFI disconnected.', 'info');
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text  = input.value.trim();
+  if (!text || !API_KEY) return;
+  addChatMsg('user', text); input.value = '';
+  document.getElementById('aifi-thinking').style.display = 'block';
+  try {
+    const states = getBeamStates();
+    const ctx = `PSY Collider v14.3 SAC · ${beamCount}-beam · TL=0.13689909998401600 · TL_IVA=0.12047120798593408\nAgent:${agentState} · Cycles:${stats.cycles} · Flagged:${stats.flagged} · Queue:${discoveryQueue.length}\nLoaded: ${states.map(s=>s.name).join(' ⊕ ')}\nUser: ${text}`;
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'x-api-key':API_KEY, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, system:buildSystemPrompt(), messages:[{ role:'user', content:ctx }] })
+    });
+    const data = await res.json();
+    if (data.content && data.content[0]) addChatMsg('aifi', data.content[0].text);
+    else addChatMsg('aifi', 'Error. Check API key.\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]');
+  } catch (err) { addChatMsg('aifi', `Connection error: ${err.message}\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]`); }
+  document.getElementById('aifi-thinking').style.display = 'none';
+}
+
+function addChatMsg(role, text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `msg msg-${role}`;
+  div.innerHTML = `<div class="msg-label ${role}">${role==='user'?'YOU':'AIFI · PSY v14'}</div><div class="msg-text">${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── GITHUB ────────────────────────────────────────────────────
+async function timestampToGitHub(entry) {
+  if (!GITHUB_PAT || !GITHUB_REPO) return;
+  try {
+    const logPath = 'psy_v14_discovery_log.json';
+    const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${logPath}`, {
+      headers: { 'Authorization':`token ${GITHUB_PAT}`, 'Accept':'application/vnd.github.v3+json' }
+    });
+    let sha = null, existing = [];
+    if (getRes.ok) { const d = await getRes.json(); sha = d.sha; existing = JSON.parse(atob(d.content.replace(/\n/g,''))); }
+    existing.push({ designation:entry.designation, timestamp:entry.timestamp, collision:entry.collision, phase:entry.phase, tau:entry.tau, TL, isRescue:entry.isRescue, n:entry.n, approved:false });
+    const content = btoa(JSON.stringify(existing, null, 2));
+    const body = { message:`[SNSFT v14] Flag: ${entry.designation}`, content };
+    if (sha) body.sha = sha;
+    await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${logPath}`, {
+      method:'PUT', headers:{ 'Authorization':`token ${GITHUB_PAT}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' }, body:JSON.stringify(body)
+    });
+    feedLine(`⬆ Timestamped: ${entry.designation}`, 'info');
+  } catch (err) { feedLine(`GitHub timestamp error: ${err.message}`, 'shatter'); }
+}
+
+async function commitToGitHub(entry) {
+  if (!GITHUB_PAT || !GITHUB_REPO) return;
+  if (!entry.leanStub) entry.leanStub = generateLeanStub(entry);
+  try {
+    const leanPath = `${GITHUB_LEAN_PATH}${entry.designation}.lean`;
+    const leanContent = btoa(unescape(encodeURIComponent(entry.leanStub)));
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${leanPath}`, {
+      method:'PUT',
+      headers:{ 'Authorization':`token ${GITHUB_PAT}`, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+      body:JSON.stringify({ message:`[SNSFT v14] Approve: ${entry.designation}`, content:leanContent, branch:GITHUB_BRANCH })
+    });
+    if (res.ok) { feedLine(`⬆ Committed: ${leanPath}`, 'locked'); document.getElementById('gh-status').textContent = `Last: ${entry.designation} · ${new Date().toLocaleTimeString()}`; }
+  } catch (err) { feedLine(`GitHub commit error: ${err.message}`, 'shatter'); }
+}
+
+function saveGithubSettings() {
+  GITHUB_PAT    = document.getElementById('gh-pat').value.trim();
+  GITHUB_REPO   = document.getElementById('gh-repo').value.trim();
+  GITHUB_BRANCH = document.getElementById('gh-branch').value.trim() || 'main';
+  GITHUB_LEAN_PATH = document.getElementById('gh-lean-path').value.trim() || 'lean/';
+  localStorage.setItem('snsft_psy14_gh_pat', GITHUB_PAT);
+  localStorage.setItem('snsft_psy14_gh_repo', GITHUB_REPO);
+  localStorage.setItem('snsft_psy14_gh_branch', GITHUB_BRANCH);
+  localStorage.setItem('snsft_psy14_gh_lean_path', GITHUB_LEAN_PATH);
+  document.getElementById('gh-status').textContent = `Saved. Repo: ${GITHUB_REPO} · ${GITHUB_BRANCH} · ${GITHUB_LEAN_PATH}`;
+  feedLine(`GitHub configured: ${GITHUB_REPO}`, 'locked');
+}
+
+// ── EXPORT ────────────────────────────────────────────────────
+function exportLogJSON() {
+  const blob = new Blob([JSON.stringify(discoveryLog.map(d=>({...d, states:d.states?.map(s=>s.id)})), null, 2)], { type:'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `snsft_psy_v14_log_${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+function exportLogCSV() {
+  if (!discoveryLog.length) { feedLine('Nothing to export yet.', 'info'); return; }
+  const headers = ['designation','timestamp','collision','n','kMode','P','N','B','A','tau','TL','TL_IVA','IM','phase','isRescue','reason','approved'];
+  const rows = discoveryLog.map(d => headers.map(h => {
+    if (h==='TL') return TL; if (h==='TL_IVA') return TL_IVA;
+    const v = d[h]??''; return typeof v==='string'&&v.includes(',') ? `"${String(v).replace(/"/g,'""')}"` : v;
+  }).join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type:'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `snsft_psy_v14_log_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  feedLine(`⬇ CSV exported — ${discoveryLog.length} rows`, 'locked');
+}
+function exportSession() {
+  const session = {
+    timestamp: new Date().toISOString(), engine:'SNSFT Identity Collider v14',
+    corpus:'PSY REDUCTIONS [9,9,6,1–25]', architect:'HIGHTISTIC',
+    doi:'10.5281/zenodo.18719748',
+    constants:{ SOVEREIGN_ANCHOR_CONSTANT, TL, TL_IVA, N_THRESHOLD, A_THRESHOLD },
+    fusionRules:{ P:'n-body harmonic mean', N:'min (PSY narrative bottleneck)', B:'max(0,ΣBi-2k)', A:'max (PSY adaptation ceiling)', k:'Σmin(Bi,Bj) C(n,2) pairs' },
+    beamCount, stats,
+    discoveries: discoveryLog.map(d => ({...d, states:d.states?.map(s=>s.id)})),
+    approved: discoveryLog.filter(d=>d.approved).length,
+    rescues: discoveryLog.filter(d=>d.isRescue).length,
+  };
+  const blob = new Blob([JSON.stringify(session, null, 2)], { type:'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `snsft_psy_v14_session_${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+
+// ── TABS ──────────────────────────────────────────────────────
+function showInnerTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('inner-' + id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => { if (t.getAttribute('onclick')?.includes(`'${id}'`)) t.classList.add('active'); });
+}
+
+// ── LICENSE ───────────────────────────────────────────────────
+function acceptLicense() {
+  const key   = document.getElementById('api-key-input').value.trim();
+  const ghKey = document.getElementById('github-key-input').value.trim();
+  const ghRepo= document.getElementById('github-repo-input').value.trim();
+  document.getElementById('license-splash').style.display = 'none';
+  feedLine('License accepted. PSY corpus loaded. TL=0.13689909998401600. TL_IVA=0.12047120798593408. 8-beam default. 0 sorry.', 'locked');
+  if (key) activateAIFI(key);
+  if (ghKey) { GITHUB_PAT = ghKey; localStorage.setItem('snsft_psy14_gh_pat', ghKey); }
+  if (ghRepo) { GITHUB_REPO = ghRepo; localStorage.setItem('snsft_psy14_gh_repo', ghRepo); }
+  if (ghKey && ghRepo) {
+    document.getElementById('gh-pat').value = GITHUB_PAT;
+    document.getElementById('gh-repo').value = GITHUB_REPO;
+    feedLine(`GitHub connected: ${GITHUB_REPO}`, 'locked');
+  }
+}
+function skipLicense() {
+  document.getElementById('license-splash').style.display = 'none';
+  feedLine('Running local mode. TL=0.13689909998401600 · TL_IVA=0.12047120798593408 · 8-beam · PSY corpus ready.', 'info');
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+(function init() {
+  // Restore saved settings (v14 keys, fall back to v13 keys for api/github)
+  const sk  = localStorage.getItem('snsft_psy14_api_key')  || localStorage.getItem('snsft_psy_api_key');
+  const sa  = localStorage.getItem('snsft_psy14_accepted') || localStorage.getItem('snsft_psy_accepted');
+  const sp  = localStorage.getItem('snsft_psy14_gh_pat')   || localStorage.getItem('snsft_psy_gh_pat');
+  const sr  = localStorage.getItem('snsft_psy14_gh_repo')  || localStorage.getItem('snsft_psy_gh_repo');
+  const sb  = localStorage.getItem('snsft_psy14_gh_branch')|| localStorage.getItem('snsft_psy_gh_branch');
+  const sl  = localStorage.getItem('snsft_psy14_gh_lean_path') || localStorage.getItem('snsft_psy_gh_lean_path');
+
+  if (sp) GITHUB_PAT  = sp;
+  if (sr) GITHUB_REPO = sr;
+  if (sb) GITHUB_BRANCH = sb;
+  if (sl) { GITHUB_LEAN_PATH = sl; const el=document.getElementById('gh-lean-path'); if(el) el.value=sl; }
+  if (sp) { const el=document.getElementById('gh-pat');  if(el) el.value=sp; }
+  if (sr) { const el=document.getElementById('gh-repo'); if(el) el.value=sr; }
+
+  buildDomainFilters();
+  buildBeamSelects();
+  buildAnchorSelects();
+  setBeamCount(8);   // default 8-beam, set active btn + slot visibility
+  renderCorpus();
+
+  feedLine(`PSY corpus: ${CORPUS.length} states · ${[...new Set(CORPUS.map(s=>s.domain))].length} domains · 8-beam default · TL=0.13689909998401600 · TL_IVA=0.12047120798593408 · 0 sorry`, 'locked');
+
+  if (sk && sa) { document.getElementById('license-splash').style.display='none'; activateAIFI(sk); }
+})();
+</script>
+</body>
+</html>
