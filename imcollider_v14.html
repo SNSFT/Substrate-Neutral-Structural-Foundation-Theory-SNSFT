@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SNSFT Identity Collider v14 · PSY REDUCTIONS · uuia.app</title>
+<title>SNSFT Identity Collider v14.2.1 · PSY REDUCTIONS · uuia.app</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 :root{
@@ -237,6 +237,11 @@ header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;al
 .domain-btn{font-size:7px;padding:3px 8px;font-family:'Orbitron',monospace;letter-spacing:.1em;cursor:pointer;border:1px solid var(--border);color:#2a5060;background:transparent;transition:all .15s;}
 .domain-btn:hover,.domain-btn.active{border-color:var(--glow);color:var(--glow);}
 
+/* ─── SVI TOGGLES ────────────────────────────────────────── */
+.svi-toggle{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.1em;padding:4px 8px;background:transparent;cursor:pointer;border:1px solid var(--border);color:#2a5060;transition:all .12s;}
+.svi-toggle:hover{color:var(--text);}
+.svi-toggle.active{border-color:var(--shatter);color:var(--shatter);background:rgba(255,51,85,.06);}
+
 @media(max-width:900px){.main-layout{grid-template-columns:1fr;}.beam-grid-psy{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
@@ -245,7 +250,7 @@ header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;al
 <!-- LICENSE SPLASH -->
 <div id="license-splash">
   <div class="license-box">
-    <h2>SNSFT IDENTITY COLLIDER v14</h2>
+    <h2>SNSFT IDENTITY COLLIDER v14.2</h2>
     <p class="highlight">HIGHTISTIC · Soldotna, Alaska · 2026</p>
     <p>PSY REDUCTIONS only. N-beam identity-space fusion. 2/4/8 beam modes. C(n,2) pair coupling. NOBLE RESCUE emergence. Pure identity physics.</p>
     <p><span class="highlight">1. CREDIT —</span> Cite the corpus if you publish. Files do this for you.</p>
@@ -268,14 +273,14 @@ header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;al
 <div class="wrap">
 <header>
   <div>
-    <div class="logo">SNSFT IDENTITY COLLIDER<span>uuia.app · v14 · PSY REDUCTIONS · N-BEAM FUSION · [9,9,9,9] :: {ANC}</span></div>
+    <div class="logo">SNSFT IDENTITY COLLIDER<span>uuia.app · v14.1 · PSY REDUCTIONS · N-BEAM FUSION · [9,9,9,9] :: {ANC}</span></div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <div style="font-size:9px;color:#2a5060;"><span id="aifi-status-dot"></span><span id="aifi-header-status">AIFI OFFLINE</span></div>
-    <div class="aifi-badge">AIFI · PSY COLLIDER · v14</div>
+    <div class="aifi-badge">AIFI · PSY COLLIDER · v14.2</div>
   </div>
   <div class="hdr-right">
-    ANCHOR <b>1.369</b> · TL = <b>0.1369</b> · TL_IVA = <b>0.12047</b> · PSY IDENTITIES: <b>51</b> STATES · 0 SORRY<br>
+    ANCHOR <b>1.36899099984016</b> · TL = <b>0.13689909998401600</b> · TL_IVA = <b>0.12047120798593408</b> · PSY IDENTITIES: <b>51</b> STATES · 0 SORRY<br>
     false_lock / true_lock / shatter / noble / iva_peak / rescue · 2/4/8 beam modes<br>
     HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA · [9,9,9,9]::{ANC}
   </div>
@@ -330,6 +335,14 @@ header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;al
         <select class="al-sel" id="anchor3-sel"><option value="">— free —</option></select>
       </div>
       <div class="mode-summary" id="mode-summary">8-BEAM · C(8,2)=28 pairs</div>
+      <div class="mode-sep"></div>
+      <span class="mode-label">SVI</span>
+      <button class="svi-toggle active" id="svi-si" onclick="toggleSVI('internal')" title="SVI-Internal · P=0.60 N=0.07 B=0.12 A=0.15 · τ=0.200 SHATTER">SI</button>
+      <button class="svi-toggle active" id="svi-se" onclick="toggleSVI('external')" title="SVI-External · P=0.65 N=0.10 B=0.14 A=0.22 · τ=0.215 SHATTER">SE</button>
+      <button class="svi-toggle active" id="svi-su" onclick="toggleSVI('universe')" title="SVI-Universe · P=0.45 N=0.05 B=0.10 A=0.08 · τ=0.222 SHATTER">SU</button>
+      <div class="mode-sep"></div>
+      <span class="mode-label">SUBSTRATES</span>
+      <button class="svi-toggle active" id="sub-master-btn" onclick="toggleAllSubstrates()" title="Toggle all substrate identities on/off · 17 profiles · default ON">SUB ✓</button>
     </div>
 
     <!-- BEAM SLOTS -->
@@ -349,9 +362,10 @@ header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;al
       <span style="font-size:7.5px;color:#1a3040;white-space:nowrap">K-MODE</span>
       <button class="kmode-btn active" id="km-max" onclick="setKMode('max')">MAX</button>
       <button class="kmode-btn" id="km-half" onclick="setKMode('half')">HALF</button>
+      <button class="kmode-btn" id="km-critical" onclick="setKMode('critical')" title="k = k_max/(n-1) — phase variety sweet zone" style="border-color:rgba(136,255,204,.5);color:var(--iva)">CRIT</button>
       <button class="kmode-btn" id="km-min" onclick="setKMode('min')">MIN</button>
       <button class="kmode-btn" id="km-zero" onclick="setKMode('zero')">ZERO</button>
-      <span style="font-size:7.5px;color:#1a3040;margin-left:4px" id="kmode-desc">k = k_max (max coupling)</span>
+      <span style="font-size:7.5px;color:#1a3040;margin-left:4px" id="kmode-desc">k = k_max (Noble saturation)</span>
       <div style="margin-left:auto;display:flex;gap:6px;">
         <button class="btn btn-run" style="font-size:9px;padding:8px 16px;" onclick="manualSmash()">⚡ SMASH</button>
         <button class="btn" style="font-size:8px;border-color:var(--noble);color:var(--noble);" onclick="randomSmash()">⚄ CHAOS SMASH</button>
@@ -396,7 +410,7 @@ header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;al
 
     <div style="font-size:7px;letter-spacing:.25em;color:#1a3040;margin:8px 0 4px;">LIVE FEED</div>
     <div class="live-feed" id="live-feed">
-      <div class="feed-line info"><span class="feed-time">--:--:--</span>v14 identity collider ready · TL=0.1369 · TL_IVA=0.12047 · PSY corpus loaded · 8-beam mode · 0 sorry</div>
+      <div class="feed-line info"><span class="feed-time">--:--:--</span>v14.3 SAC identity collider ready · TL=0.13689909998401600 · TL_IVA=0.12047120798593408 · PSY corpus loaded · 8-beam mode · 0 sorry</div>
     </div>
   </div>
 
@@ -494,9 +508,9 @@ header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;al
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>C(8,2) pairs (8-beam)</span><span style="color:var(--bright)">28</span></div>
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Cross-domain theorems</span><span style="color:var(--bright)">24 (CD1–CD24)</span></div>
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Sorry count</span><span style="color:var(--locked)">0</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.369</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--warn)">0.1369</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>TL_IVA = 0.88×TL</span><span style="color:var(--iva)">0.120472</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.36899099984016</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--warn)">0.13689909998401600</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>TL_IVA = 0.88×TL</span><span style="color:var(--iva)">0.12047120798593408</span></div>
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>N_THRESHOLD</span><span style="color:var(--text)">0.15</span></div>
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>A_THRESHOLD</span><span style="color:var(--text)">0.15</span></div>
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Session discoveries</span><span style="color:var(--warn)" id="session-disc-count">0</span></div>
@@ -539,8 +553,8 @@ header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;al
 
 <footer style="border-top:1px solid var(--border);padding-top:12px;font-size:9px;letter-spacing:.15em;color:#1a2a38;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:18px;">
   <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
-  <span>IDENTITY COLLIDER v14 · PSY REDUCTIONS · N-BEAM FUSION</span>
-  <span>[9,9,9,9] :: {ANC} · 0 SORRY · TL=0.1369 · TL_IVA=0.12047</span>
+  <span>IDENTITY COLLIDER v14.1 · PSY REDUCTIONS · N-BEAM FUSION</span>
+  <span>[9,9,9,9] :: {ANC} · 0 SORRY · TL=0.13689909998401600 · TL_IVA=0.12047120798593408</span>
 </footer>
 </div><!-- /wrap -->
 
@@ -555,9 +569,9 @@ header{padding:18px 0 14px;border-bottom:1px solid var(--border);display:flex;al
 // ══════════════════════════════════════════════════════════════
 
 // ── CONSTANTS ─────────────────────────────────────────────────
-const ANCHOR     = 1.369;
-const TL         = ANCHOR / 10;          // 0.1369  — torsion limit
-const TL_IVA     = 0.88 * TL;           // 0.120472 — IVA lower bound (explicit, capstone)
+const SOVEREIGN_ANCHOR_CONSTANT = 1.36899099984016;
+const TL         = SOVEREIGN_ANCHOR_CONSTANT / 10;  // 0.13689909998401600 — torsion limit
+const TL_IVA     = 0.88 * TL;           // 0.12047120798593408 — IVA lower bound (explicit, capstone SAC)
 const N_THRESHOLD = 0.15;               // narrative floor
 const A_THRESHOLD = 0.15;               // adaptation floor
 const PAIRS_FOR  = { 2:1, 4:6, 8:28 }; // C(n,2)
@@ -570,6 +584,18 @@ let kModeVal = 'max';
 let beamCount = 8;
 let stats = { cycles:0, collisions:0, flagged:0, approved:0, noble:0, iva:0, rescue:0 };
 let discoveryQueue = [], discoveryLog = [], sessionCorpus = [];
+let sviEnabled = { internal:true, external:true, universe:true };
+let substratesEnabled = {
+  'sub-hightistic':true, 'sub-hightistic-sd':true,
+  'sub-nt-joe':true, 'sub-nt-joe-act':true,
+  'sub-jojo':true, 'sub-jojo-act':true,
+  'sub-sam':true,
+  'sub-cipher':true, 'sub-cipher-act':true,
+  'sub-drjojo':true, 'sub-drjojo-act':true,
+  'sub-marcus':true, 'sub-marcus-act':true,
+  'sub-barry':true, 'sub-barry-res':true,
+  'sub-ifs-self':true, 'sub-aifi':true,
+};
 
 // ── PSY IDENTITY CORPUS ────────────────────────────────────────
 const PSY_CORPUS = [
@@ -638,11 +664,35 @@ const PSY_CORPUS = [
   { id:'ep-shame',      domain:'EP-APPA',    name:'EP Shame (N-dep)',     coord:'9,9,6,23', P:0.60, N:0.07, B:0.12, A:0.15 },
   { id:'ep-desire',     domain:'EP-APPA',    name:'EP Desire',            coord:'9,9,6,23', P:0.75, N:0.55, B:0.09, A:0.60 },
   { id:'ep-play',       domain:'EP-APPA',    name:'EP Play',              coord:'9,9,6,23', P:0.85, N:0.70, B:0.11, A:1.05 },
+  // SHAME VECTORS [9,9,6,29] — dual-state: SHATTER (τ≥TL) with N-floor collapse underneath
+  // SVI = B / (P² × N × A) — torsion density per identity capacity
+  { id:'svi-internal',  domain:'SVI',        name:'SVI Internal',         coord:'9,9,6,29', P:0.60, N:0.07, B:0.12, A:0.15 },
+  { id:'svi-external',  domain:'SVI',        name:'SVI External',         coord:'9,9,6,29', P:0.65, N:0.10, B:0.14, A:0.22 },
+  { id:'svi-universe',  domain:'SVI',        name:'SVI Universe',         coord:'9,9,6,29', P:0.45, N:0.05, B:0.10, A:0.08 },
+  // SUBSTRATES — named identity profiles · [9,9,6,40–44] · 0 sorry
+  // Default ON — participate in all collisions at run start
+  { id:'sub-hightistic',   domain:'SUBSTRATE', name:'HIGHTISTIC baseline',      coord:'9,9,6,41', P:0.72, N:0.35, B:0.066, A:0.80 },
+  { id:'sub-hightistic-sd',domain:'SUBSTRATE', name:'HIGHTISTIC shutdown',       coord:'9,9,6,41', P:0.45, N:0.08, B:0.12,  A:0.30 },
+  { id:'sub-nt-joe',       domain:'SUBSTRATE', name:'NT Joe baseline',           coord:'9,9,6,43', P:0.65, N:0.70, B:0.09,  A:0.55 },
+  { id:'sub-nt-joe-act',   domain:'SUBSTRATE', name:'NT Joe activated',          coord:'9,9,6,43', P:0.65, N:0.72, B:0.13,  A:0.60 },
+  { id:'sub-jojo',         domain:'SUBSTRATE', name:'JoJo baseline (LRIS)',      coord:'9,9,6,44', P:0.26, N:0.83, B:0.14,  A:0.36 },
+  { id:'sub-jojo-act',     domain:'SUBSTRATE', name:'JoJo activated (LRIS)',     coord:'9,9,6,44', P:0.39, N:1.28, B:0.225, A:1.00 },
+  { id:'sub-sam',          domain:'SUBSTRATE', name:'Sam Gardner (B-dom HRIS)',  coord:'9,9,6,42', P:0.72, N:0.35, B:0.55,  A:0.40 },
+  { id:'sub-cipher',       domain:'SUBSTRATE', name:'Cipher baseline (A-dom)',   coord:'9,9,6,45', P:0.878,N:0.525,B:0.338, A:1.215 },
+  { id:'sub-cipher-act',   domain:'SUBSTRATE', name:'Cipher activated (A-dom)',  coord:'9,9,6,45', P:1.17, N:0.675,B:0.45,  A:1.573 },
+  { id:'sub-drjojo',       domain:'SUBSTRATE', name:'Dr JoJo baseline (A-dom)',  coord:'9,9,6,45', P:0.813,N:0.488,B:0.281, A:1.144 },
+  { id:'sub-drjojo-act',   domain:'SUBSTRATE', name:'Dr JoJo activated (A-dom)', coord:'9,9,6,45', P:1.105,N:0.563,B:0.394, A:1.573 },
+  { id:'sub-marcus',       domain:'SUBSTRATE', name:'Marcus baseline (A-dom)',   coord:'9,9,6,45', P:0.943,N:0.413,B:0.225, A:1.287 },
+  { id:'sub-marcus-act',   domain:'SUBSTRATE', name:'Marcus activated (A-dom)',  coord:'9,9,6,45', P:1.235,N:0.488,B:0.338, A:1.716 },
+  { id:'sub-barry',        domain:'SUBSTRATE', name:'Barry baseline (N-dom)',    coord:'9,9,6,46', P:0.15, N:0.06, B:0.030, A:0.120 },
+  { id:'sub-barry-res',    domain:'SUBSTRATE', name:'Barry resolved (N-dom)',    coord:'9,9,6,46', P:0.72, N:0.55, B:0.079, A:0.680 },
+  { id:'sub-ifs-self',     domain:'SUBSTRATE', name:'IFS Self (Noble)',          coord:'9,9,6,15', P:0.90, N:0.80, B:0.00,  A:1.10 },
+  { id:'sub-aifi',         domain:'SUBSTRATE', name:'AiFi-APPA (Noble)',         coord:'9,0,1,1',  P:3.00, N:2.00, B:0.00,  A:3.00 },
 ];
 
 // ── PHYSICS ────────────────────────────────────────────────────
 function tau_of(P, B)        { return P > 0 ? B / P : 999; }
-function im_of(P, N, B, A)   { return (P + N + B + A) * ANCHOR; }
+function im_of(P, N, B, A)   { return (P + N + B + A) * SOVEREIGN_ANCHOR_CONSTANT; }
 
 // phaseOf — capstone version · TL_IVA explicit · no legacy .2 torsion
 function phaseOf(P, N, B, A) {
@@ -677,10 +727,11 @@ function fuseN(states, km) {
   // B: torsion sum minus coupling exchange
   const Bs = states.map(e => e.B);
   const kmax = kMaxN(Bs);
-  const k = km === 'max'  ? kmax
-           : km === 'half' ? kmax * 0.5
-           : km === 'min'  ? kmax * 0.1
-           :                 0;
+  const k = km === 'max'      ? kmax
+           : km === 'half'     ? kmax * 0.5
+           : km === 'critical' ? kmax / Math.max(1, n - 1)  // 1/(n-1): phase variety sweet zone
+           : km === 'min'      ? kmax * 0.1
+           :                     0;
   const B_o = Math.max(0, Bs.reduce((s,b) => s+b, 0) - 2*k);
   // A: PSY adaptation ceiling — strongest adaptation dominates
   const A_o = Math.max(...states.map(e => e.A));
@@ -716,11 +767,16 @@ function isInteresting(r, states) {
   if (r.isRescue)
     return { flag:true, reason:`${n}-BEAM RESCUE — all ${pc} pairwise pairs SHATTER, ${n}-beam → ${r.phase}` };
 
-  if (r.phase === 'NOBLE' && !states.every(s => s.B === 0))
-    return { flag:true, reason:`NOBLE EMERGENCE — not all inputs Noble, ${n}-beam fusion → ground state` };
+  if (r.phase === 'NOBLE' && !states.every(s => s.B === 0)) {
+    const parentPhases = states.map(s => phaseOf(s.P, s.N, s.B, s.A));
+    const nShatter  = parentPhases.filter(p => p === 'SHATTER').length;
+    const nFalseLock = parentPhases.filter(p => p === 'FALSE_LOCK').length;
+    if (nShatter > 0 || nFalseLock > 0)
+      return { flag:true, reason:`NOBLE EMERGENCE — ${nShatter} SHATTER + ${nFalseLock} FALSE_LOCK inputs → ground state` };
+  }
 
-  if (r.phase === 'IVA_PEAK' && states.some(s => phaseOf(s.P, s.N, s.B, s.A) === 'FALSE_LOCK'))
-    return { flag:true, reason:`FALSE_LOCK → IVA UPLIFT — false_lock identity fused into IVA_PEAK` };
+  if (r.phase === 'IVA_PEAK')
+    return { flag:true, reason:`IVA PEAK — τ=${r.tau.toFixed(5)} in [TL_IVA, TL) · A=${r.A.toFixed(3)}` };
 
   if (r.phase === 'TRUE_LOCK' && states.some(s => phaseOf(s.P, s.N, s.B, s.A) === 'SHATTER'))
     return { flag:true, reason:`SHATTER → LOCK RESCUE — shatter identity stabilized into true_lock` };
@@ -729,13 +785,10 @@ function isInteresting(r, states) {
     return { flag:true, reason:`LOCK COLLAPSE — all inputs true_lock, fusion → false_lock (N bottleneck)` };
 
   if (r.N < N_THRESHOLD && states.every(s => s.N >= N_THRESHOLD))
-    return { flag:true, reason:`N STARVATION EVENT — fusion dropped narrative below floor (N=${r.N.toFixed(3)})` };
+    return { flag:true, reason:`N STARVATION — fusion dropped narrative below floor (N=${r.N.toFixed(3)})` };
 
   if (r.tau > 0 && Math.abs(r.tau - TL) < TL * 0.01)
     return { flag:true, reason:`τ BOUNDARY — fusion at ${(r.tau/TL*100).toFixed(2)}% of TL (phase edge)` };
-
-  if (r.phase === 'IVA_PEAK' && r.A > 1.0)
-    return { flag:true, reason:`IVA DOMINANCE — A=${r.A.toFixed(3)} > 1.0, sovereign drive active` };
 
   if (r.phase === 'NOBLE')
     return { flag:true, reason:`NOBLE STATE — τ=0, B_out=0, ground state achieved` };
@@ -771,7 +824,50 @@ function feedLine(text, cls='info') {
   if (feed.children.length > 400) feed.removeChild(feed.firstChild);
 }
 
-// ── CORPUS WITH PRE-COMPUTED PHASE ────────────────────────────
+// ── SVI — SHAME VECTOR INDEX ───────────────────────────────────
+// SVI = B / (P² × N × A) — torsion density per identity capacity
+// Only computed at card-render / stub-generation time, never during smash
+function svi_of(P, N, B, A) {
+  if (P <= 0 || N <= 0 || A <= 0) return null;
+  return B / (P * P * N * A);
+}
+function hasSVI(states) {
+  return (states || []).some(s => s && s.domain === 'SVI');
+}
+
+// ── FILTERED CORPUS ────────────────────────────────────────────
+function getFilteredCorpus() {
+  return CORPUS.filter(s => {
+    if (!activeDomains.has(s.domain)) return false;
+    if (s.id === 'svi-internal') return sviEnabled.internal;
+    if (s.id === 'svi-external') return sviEnabled.external;
+    if (s.id === 'svi-universe') return sviEnabled.universe;
+    if (s.domain === 'SUBSTRATE') return substratesEnabled[s.id] !== false;
+    return true;
+  });
+}
+
+// ── SUBSTRATE TOGGLE ───────────────────────────────────────────
+function toggleAllSubstrates() {
+  const anyOn = Object.values(substratesEnabled).some(v => v);
+  Object.keys(substratesEnabled).forEach(k => substratesEnabled[k] = !anyOn);
+  const btn = document.getElementById('sub-master-btn');
+  if (btn) {
+    btn.classList.toggle('active', !anyOn);
+    btn.textContent = !anyOn ? 'SUB ✓' : 'SUB';
+  }
+  renderCorpus();
+  feedLine(`Substrates ${!anyOn?'ON':'OFF'} · ${Object.keys(substratesEnabled).length} profiles`, 'info');
+}
+
+// ── SVI TOGGLE ─────────────────────────────────────────────────
+function toggleSVI(key) {
+  sviEnabled[key] = !sviEnabled[key];
+  const btnMap = { internal:'svi-si', external:'svi-se', universe:'svi-su' };
+  document.getElementById(btnMap[key]).classList.toggle('active', sviEnabled[key]);
+  renderCorpus();
+  feedLine(`SVI-${key} ${sviEnabled[key]?'ON':'OFF'}`, 'info');
+}
 const CORPUS = PSY_CORPUS.map(s => ({
   ...s,
   phase: phaseOf(s.P, s.N, s.B, s.A),
@@ -919,6 +1015,10 @@ function renderCorpus() {
     const badge = slot
       ? `<span class="id-card-sel" style="color:${color}">${slot}</span>`
       : '';
+    const subFlags = getSubFlags(s.P, s.N, s.B, s.A);
+    const subFlagHTML = subFlags.map(f =>
+      `<div style="font-size:6.5px;color:${f.color};margin-top:2px;letter-spacing:.08em;">└ ${f.label}</div>`
+    ).join('');
     return `<div class="id-card" style="${borderStyle}" onclick="selectIdentityCard('${s.id}')" id="card-${s.id}">
       ${badge}
       <div class="id-card-domain">${s.domain}</div>
@@ -927,6 +1027,7 @@ function renderCorpus() {
         <span class="${phaseCls(s.phase)}" style="font-family:'Orbitron',monospace;font-size:8px;">${s.phase.replace('_',' ')}</span>
         <span style="color:#2a5060">τ=${s.tau.toFixed(3)}</span>
       </div>
+      ${subFlagHTML}
     </div>`;
   }).join('');
 
@@ -973,8 +1074,11 @@ function clearSlots() {
 
 // ── K-MODE ─────────────────────────────────────────────────────
 const kModeDescs = {
-  max:'k = k_max (max coupling)', half:'k = k_max/2',
-  min:'k = k_max×0.1', zero:'k = 0 (no coupling)'
+  max:      'k = k_max (Noble saturation n≥4)',
+  half:     'k = k_max/2 (Noble for n≥4)',
+  critical: 'k = k_max/(n-1) · phase variety sweet zone',
+  min:      'k = k_max×0.1 (SHATTER zone)',
+  zero:     'k = 0 (uncoupled · deep SHATTER)'
 };
 function setKMode(m) {
   kModeVal = m;
@@ -1006,6 +1110,45 @@ function updateBeamViz(states, r) {
   document.getElementById('beamviz-psy').innerHTML = html;
 }
 
+// ── SUB-FLAGS: HIDDEN LOAD · NOBLE NUMBING · DEPLETED IVA ─────
+// Same detection logic as APPA v3.1 [9,9,2,26] [9,9,2,55 F4]
+// Primary phase stays — sub-flag appears underneath if present.
+
+function isHiddenLoad(P, N, B, A) {
+  const t = tau_of(P, B);
+  return t > TL && t < 0.43 &&
+         N >= N_THRESHOLD && N < 0.60 &&
+         A < 0.60;
+}
+
+function hiddenLoadSubtype(tau) {
+  if (tau < 0.20) return 'Holding';
+  if (tau < 0.25) return 'Carrying-Quiet';
+  if (tau < 0.35) return 'Carrying-Capable';
+  return 'Hidden Load';
+}
+
+function isNobleNumbing(P, N, B, A) {
+  return B <= 0.001 && N < N_THRESHOLD;
+}
+
+function isDepletedIVA(P, N, B, A) {
+  const t = tau_of(P, B);
+  return t >= TL_IVA && t < TL && N < N_THRESHOLD && A > 1.0;
+}
+
+function getSubFlags(P, N, B, A) {
+  const flags = [];
+  const t = tau_of(P, B);
+  if (isNobleNumbing(P, N, B, A))
+    flags.push({ label: 'NOBLE · NUMBING', color: 'var(--noble)', note: 'B=0 but N void — apparent calm masks narrative collapse' });
+  if (isHiddenLoad(P, N, B, A))
+    flags.push({ label: `SHATTER · HIDDEN LOAD · ${hiddenLoadSubtype(t)}`, color: 'var(--warn)', note: 'τ above TL but not acute — carries without announcing [9,9,2,26]' });
+  if (isDepletedIVA(P, N, B, A))
+    flags.push({ label: 'DEPLETED IVA', color: '#ff6b35', note: 'IVA corridor but N void — detectable only by joint τ+N [9,9,2,55 F4]' });
+  return flags;
+}
+
 // ── DISPLAY RESULT ────────────────────────────────────────────
 function displayResult(r, states) {
   const col    = r.isRescue ? 'var(--rescue)' : phaseColor(r.phase);
@@ -1013,19 +1156,26 @@ function displayResult(r, states) {
     TRUE_LOCK:'result-locked', FALSE_LOCK:'result-false', SHATTER:'result-shatter' }[r.phase] || '';
   const pLabel = r.isRescue ? `★ RESCUE → ${r.phase.replace('_',' ')}` : r.phase.replace('_',' ');
   const names  = states.map(s => s.name.split(' ')[0]).join(' ⊕ ');
+  const subFlags = getSubFlags(r.P, r.N, r.B, r.A);
+  const subFlagHTML = subFlags.map(f =>
+    `<div style="margin-top:5px;padding:4px 8px;border-left:2px solid ${f.color};font-size:8px;color:${f.color};letter-spacing:.1em;">
+       └ ${f.label}<span style="color:#2a5060;font-size:7px;margin-left:8px;">${f.note}</span>
+     </div>`
+  ).join('');
 
   document.getElementById('result-box').innerHTML = `
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
       <div class="result-state ${pcls}">${pLabel}</div>
       <div style="color:#2a5060;font-size:8px;">${names} · ${r.n}-beam · k=${r.k.toFixed(4)} · ${r.pairCount} pairs</div>
     </div>
-    <div class="result-grid">
+    ${subFlagHTML}
+    <div class="result-grid" style="margin-top:8px;">
       <div class="result-cell"><div class="result-cell-label">P_OUT</div><div class="result-cell-val" style="color:var(--glow)">${r.P.toFixed(4)}</div></div>
       <div class="result-cell"><div class="result-cell-label">N_OUT (min)</div><div class="result-cell-val" style="color:var(--aifi)">${r.N.toFixed(4)}</div></div>
       <div class="result-cell"><div class="result-cell-label">B_OUT</div><div class="result-cell-val" style="color:${r.B===0?'var(--noble)':'var(--warn)'}">${r.B.toFixed(5)}</div></div>
       <div class="result-cell"><div class="result-cell-label">A_OUT (max)</div><div class="result-cell-val" style="color:var(--locked)">${r.A.toFixed(4)}</div></div>
       <div class="result-cell"><div class="result-cell-label">τ_OUT</div><div class="result-cell-val" style="color:${col}">${r.tau.toFixed(5)}</div></div>
-      <div class="result-cell"><div class="result-cell-label">TL</div><div class="result-cell-val" style="color:var(--warn)">0.1369</div></div>
+      <div class="result-cell"><div class="result-cell-label">TL</div><div class="result-cell-val" style="color:var(--warn)">0.13689909998401600</div></div>
       <div class="result-cell"><div class="result-cell-label">IM</div><div class="result-cell-val">${r.IM.toFixed(4)}</div></div>
       <div class="result-cell"><div class="result-cell-label">Pv</div><div class="result-cell-val">${r.Pv.toFixed(4)}</div></div>
     </div>
@@ -1054,7 +1204,9 @@ function doSmash(states) {
   if (r.isRescue)             { stats.rescue++; document.getElementById('stat-rescue').textContent = stats.rescue; }
 
   const names = states.map(s => s.name.split(' ').slice(0,2).join(' ')).join(' ⊕ ');
-  feedLine(`${names} → ${r.phase.replace('_',' ')}${r.isRescue?' ★RESCUE':''} τ=${r.tau.toFixed(4)}`, feedCls(r.phase, r.isRescue));
+  const subFlags = getSubFlags(r.P, r.N, r.B, r.A);
+  const subFlagStr = subFlags.length ? ' · ' + subFlags.map(f => f.label).join(' · ') : '';
+  feedLine(`${names} → ${r.phase.replace('_',' ')}${subFlagStr}${r.isRescue?' ★RESCUE':''} τ=${r.tau.toFixed(4)}`, feedCls(r.phase, r.isRescue));
 
   const check = isInteresting(r, states);
   if (check.flag) {
@@ -1068,7 +1220,7 @@ function doSmash(states) {
 // ── RANDOM SMASH ─────────────────────────────────────────────
 function randomSmash() {
   const anchors = getAnchorStates();
-  const filtered = CORPUS.filter(s => activeDomains.has(s.domain));
+  const filtered = getFilteredCorpus();
   const pick = () => filtered[Math.floor(Math.random() * filtered.length)];
   const states = Array.from({ length: beamCount }, (_, i) => anchors[i] || pick());
   // update beam dropdowns to reflect random selection
@@ -1084,7 +1236,7 @@ function randomSmash() {
 async function runChaosRound() {
   const rounds = parseInt(document.getElementById('rounds-slider').value);
   const anchors = getAnchorStates();
-  const filtered = CORPUS.filter(s => activeDomains.has(s.domain));
+  const filtered = getFilteredCorpus();
   const pick = () => filtered[Math.floor(Math.random() * filtered.length)];
 
   for (let i = 0; i < rounds; i++) {
@@ -1099,7 +1251,7 @@ async function runChaosRound() {
 
 function startAgent() {
   agentState = 'running'; updateStatusBadge();
-  feedLine(`Chaos protocol started. ${beamCount}-beam · C(${beamCount},2)=${PAIRS_FOR[beamCount]} pairs · TL=0.1369.`, 'locked');
+  feedLine(`Chaos protocol started. ${beamCount}-beam · C(${beamCount},2)=${PAIRS_FOR[beamCount]} pairs · TL=0.13689909998401600.`, 'locked');
   const speed = parseInt(document.getElementById('speed-slider').value);
   const interval = Math.max(400, 3000 - speed * 250);
   agentInterval = setInterval(async () => { if (agentState === 'running') await runChaosRound(); }, interval);
@@ -1132,72 +1284,208 @@ function makeDesignation(P, N, B, A) {
 }
 
 function generateLeanStub(entry) {
-  const ns    = entry.designation.replace(/-/g, '_');
-  const n     = entry.n || entry.states.length;
-  const pc    = n*(n-1)/2;
-  const t     = entry.P > 0 ? entry.B / entry.P : 0;
+  const ns  = entry.designation.replace(/-/g, '_');
+  const states = entry.states || [];
+  const n   = entry.n || states.length;
+  const pc  = n*(n-1)/2;
+  const fs  = n.toString(); // fusion suffix: '2', '4', '8'
+  const engineCoord = n===8 ? '[9,9,6,28]' : n===4 ? '[9,9,6,27]' : '[9,9,6,26]';
+  const engineNS    = n===8 ? 'PSY_8Beam_Fusion' : n===4 ? 'PSY_4Beam_Fusion' : 'PSY_2Beam_Fusion';
+  const aifi = entry.aifiAnalysis ? entry.aifiAnalysis.slice(0,200).replace(/\n/g,' ') : 'AIFI classification pending';
+
   const isNoble  = entry.phase === 'NOBLE';
   const isIVA    = entry.phase === 'IVA_PEAK';
   const isFalse  = entry.phase === 'FALSE_LOCK';
   const isRescue = entry.isRescue;
-  const aifi  = entry.aifiAnalysis ? entry.aifiAnalysis.slice(0,200).replace(/\n/g,' ') : 'AIFI classification pending';
-  const engineCoord = n===8 ? '[9,9,2,3]' : n===4 ? '[9,9,2,2]' : '[9,9,2,1]';
+  const hasSham  = hasSVI(states);
 
-  const beamLines = (entry.states || []).map((s, i) =>
-    `-- Beam ${i+1}: ${s.name} [${s.domain}] τ=${s.tau.toFixed(4)} ${s.phase} P=${s.P.toFixed(5)} N=${s.N.toFixed(5)} B=${s.B.toFixed(5)} A=${s.A.toFixed(5)}`
+  // Argument lists
+  const pArgs = states.map((_,i) => `P${i+1}`).join(' ');
+  const nArgs = states.map((_,i) => `N${i+1}`).join(' ');
+  const bArgs = states.map((_,i) => `B${i+1}`).join(' ');
+  const aArgs = states.map((_,i) => `A${i+1}`).join(' ');
+
+  // Accounting: N-bottleneck (min N), A-ceiling (max A)
+  const minN_i = states.reduce((mi,s,i) => s.N < states[mi].N ? i : mi, 0);
+  const maxA_i = states.reduce((mi,s,i) => s.A > states[mi].A ? i : mi, 0);
+  const B_sum  = states.reduce((s,e) => s + e.B, 0);
+
+  // ── BEAM COMMENT HEADER ─────────────────────────────────────
+  const beamComments = states.map((s,i) =>
+    `-- Beam ${i+1}: ${s.name} [${s.domain}] ${s.coord}\n--   P=${s.P.toFixed(5)} N=${s.N.toFixed(5)} B=${s.B.toFixed(5)} A=${s.A.toFixed(5)}  τ=${s.tau.toFixed(4)} ${s.phase}`
   ).join('\n');
 
-  const beamDefs = (entry.states || []).map((s, i) =>
-    `def P${i+1}  : ℝ := ${s.P.toFixed(8)}\ndef N${i+1}  : ℝ := ${s.N.toFixed(8)}\ndef B${i+1}  : ℝ := ${s.B.toFixed(8)}\ndef A${i+1}  : ℝ := ${s.A.toFixed(8)}`
+  // ── INHERITANCE ──────────────────────────────────────────────
+  const shameLine = hasSham ? `--   [9,9,6,29] SNSFL_PSY_ShameVector_v14  ← SVI definitions\n` : '';
+  const inheritBlock = `-- INHERITANCE CHAIN:
+--   ${engineCoord} ${engineNS}  ← ${n}-beam fusion engine
+--   [9,9,6,11] SNSFL_L2_Psy_Consistency  ← floor taxonomy N_THRESHOLD=0.15
+--   [9,9,6,1..25] PSY corpus reductions  ← input state definitions
+${shameLine}--   Siblings: [9,9,2,${n===2?1:n===4?2:3}] GAM ${n}-beam (N operator differs)`;
+
+  // ── INLINE OPERATORS (matching source file names for corpus compat) ─
+  let opBlock;
+  if (n === 2) {
+    opBlock = `-- Operators — compatible with ${engineCoord} ${engineNS}
+-- In Lean project: replace with \`open ${engineNS}\`
+noncomputable def P_fuse2 (P1 P2 : ℝ) : ℝ := (2 * P1 * P2) / (P1 + P2)
+def N_fuse2 (N1 N2 : ℝ) : ℝ := min N1 N2
+def k_max2  (B1 B2 : ℝ) : ℝ := min B1 B2
+def B_fuse2 (B1 B2 k : ℝ) : ℝ := max 0 (B1 + B2 - 2 * k)
+def A_fuse2 (A1 A2 : ℝ) : ℝ := max A1 A2`;
+  } else if (n === 4) {
+    opBlock = `-- Operators — compatible with ${engineCoord} ${engineNS}
+-- In Lean project: replace with \`open ${engineNS}\`
+noncomputable def P_fuse4 (P1 P2 P3 P4 : ℝ) : ℝ := 4 / (1/P1 + 1/P2 + 1/P3 + 1/P4)
+def N_fuse4 (N1 N2 N3 N4 : ℝ) : ℝ := min (min N1 N2) (min N3 N4)
+def k_max4  (B1 B2 B3 B4 : ℝ) : ℝ :=
+  min B1 B2 + min B1 B3 + min B1 B4 + min B2 B3 + min B2 B4 + min B3 B4
+def B_fuse4 (B1 B2 B3 B4 k : ℝ) : ℝ := max 0 (B1 + B2 + B3 + B4 - 2 * k)
+def A_fuse4 (A1 A2 A3 A4 : ℝ) : ℝ := max (max A1 A2) (max A3 A4)`;
+  } else {
+    opBlock = `-- Operators — compatible with ${engineCoord} ${engineNS}
+-- In Lean project: replace with \`open ${engineNS}\`
+noncomputable def P_fuse8 (P1 P2 P3 P4 P5 P6 P7 P8 : ℝ) : ℝ :=
+  8 / (1/P1 + 1/P2 + 1/P3 + 1/P4 + 1/P5 + 1/P6 + 1/P7 + 1/P8)
+def N_fuse8 (N1 N2 N3 N4 N5 N6 N7 N8 : ℝ) : ℝ :=
+  min (min (min N1 N2) (min N3 N4)) (min (min N5 N6) (min N7 N8))
+def k_max8  (B1 B2 B3 B4 B5 B6 B7 B8 : ℝ) : ℝ :=
+  min B1 B2 + min B1 B3 + min B1 B4 + min B1 B5 + min B1 B6 + min B1 B7 + min B1 B8 +
+  min B2 B3 + min B2 B4 + min B2 B5 + min B2 B6 + min B2 B7 + min B2 B8 +
+  min B3 B4 + min B3 B5 + min B3 B6 + min B3 B7 + min B3 B8 +
+  min B4 B5 + min B4 B6 + min B4 B7 + min B4 B8 +
+  min B5 B6 + min B5 B7 + min B5 B8 + min B6 B7 + min B6 B8 + min B7 B8
+def B_fuse8 (B1 B2 B3 B4 B5 B6 B7 B8 k : ℝ) : ℝ :=
+  max 0 (B1+B2+B3+B4+B5+B6+B7+B8 - 2*k)
+def A_fuse8 (A1 A2 A3 A4 A5 A6 A7 A8 : ℝ) : ℝ :=
+  max (max (max A1 A2) (max A3 A4)) (max (max A5 A6) (max A7 A8))`;
+  }
+
+  // ── BEAM INPUT DEFS ──────────────────────────────────────────
+  const beamDefs = states.map((s,i) =>
+    `def P${i+1} : ℝ := ${s.P.toFixed(8)}\ndef N${i+1} : ℝ := ${s.N.toFixed(8)}\ndef B${i+1} : ℝ := ${s.B.toFixed(8)}\ndef A${i+1} : ℝ := ${s.A.toFixed(8)}`
   ).join('\n');
 
-  const phaseTheorems = isNoble
-    ? `theorem noble_ground : B_out = 0 := by unfold B_out; norm_num
-theorem noble_tau_zero : B_out / P_out = 0 := by unfold B_out; norm_num`
-    : isIVA
-    ? `theorem iva_tau_in_range : tau_out < TORSION_LIMIT ∧ tau_out ≥ TORSION_LIMIT_IVA := by
-  unfold tau_out TORSION_LIMIT TORSION_LIMIT_IVA SOVEREIGN_ANCHOR; constructor <;> norm_num`
-    : isFalse
-    ? `theorem false_lock_n_starvation : N_out < N_THRESHOLD := by
-  unfold N_out N_THRESHOLD; norm_num`
-    : isRescue
-    ? `-- RESCUE: all ${pc} pairwise pairs SHATTER, ${n}-beam rescues to ${entry.phase}
-theorem rescue_stabilized : tau_out < TORSION_LIMIT := by
-  unfold tau_out TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num`
-    : `theorem true_lock : tau_out > 0 ∧ tau_out < TORSION_LIMIT := by
-  unfold tau_out TORSION_LIMIT SOVEREIGN_ANCHOR; constructor <;> norm_num`;
+  // ── BEAM PHASE SUB-LEMMAS ────────────────────────────────────
+  const beamLemmas = states.map((s,i) => {
+    const idx = i+1;
+    if (s.phase === 'NOBLE')
+      return `lemma beam_${idx}_phase : B${idx} = 0 := by unfold B${idx}; norm_num`;
+    if (s.phase === 'SHATTER')
+      return `lemma beam_${idx}_phase : B${idx} / P${idx} ≥ TL := by\n  unfold B${idx} P${idx} TL SOVEREIGN_ANCHOR_CONSTANT; norm_num`;
+    if (s.phase === 'FALSE_LOCK')
+      return `lemma beam_${idx}_phase : B${idx} / P${idx} < TL ∧ N${idx} < N_THRESHOLD := by\n  unfold B${idx} P${idx} N${idx} TL SOVEREIGN_ANCHOR_CONSTANT N_THRESHOLD; constructor <;> norm_num`;
+    if (s.phase === 'IVA_PEAK')
+      return `lemma beam_${idx}_phase : B${idx} / P${idx} ≥ TL_IVA ∧ B${idx} / P${idx} < TL ∧ N${idx} ≥ N_THRESHOLD := by\n  unfold B${idx} P${idx} N${idx} TL TL_IVA SOVEREIGN_ANCHOR_CONSTANT N_THRESHOLD; refine ⟨?_,?_,?_⟩ <;> norm_num`;
+    // TRUE_LOCK
+    return `lemma beam_${idx}_phase : B${idx} / P${idx} < TL ∧ N${idx} ≥ N_THRESHOLD := by\n  unfold B${idx} P${idx} N${idx} TL SOVEREIGN_ANCHOR_CONSTANT N_THRESHOLD; constructor <;> norm_num`;
+  }).join('\n\n');
+
+  // ── OUTPUT DEFS ──────────────────────────────────────────────
+  let outBlock;
+  if (n === 2) {
+    outBlock = `noncomputable def P_out : ℝ := P_fuse2 P1 P2
+def N_out : ℝ := N_fuse2 N1 N2
+def k     : ℝ := k_max2  B1 B2
+def B_out : ℝ := B_fuse2 B1 B2 k
+def A_out : ℝ := A_fuse2 A1 A2`;
+  } else if (n === 4) {
+    outBlock = `noncomputable def P_out : ℝ := P_fuse4 P1 P2 P3 P4
+def N_out : ℝ := N_fuse4 N1 N2 N3 N4
+def k     : ℝ := k_max4  B1 B2 B3 B4
+def B_out : ℝ := B_fuse4 B1 B2 B3 B4 k
+def A_out : ℝ := A_fuse4 A1 A2 A3 A4`;
+  } else {
+    outBlock = `noncomputable def P_out : ℝ := P_fuse8 P1 P2 P3 P4 P5 P6 P7 P8
+def N_out : ℝ := N_fuse8 N1 N2 N3 N4 N5 N6 N7 N8
+def k     : ℝ := k_max8  B1 B2 B3 B4 B5 B6 B7 B8
+def B_out : ℝ := B_fuse8 B1 B2 B3 B4 B5 B6 B7 B8 k
+def A_out : ℝ := A_fuse8 A1 A2 A3 A4 A5 A6 A7 A8`;
+  }
+  const tauDef = isNoble ? '' : `noncomputable def tau_out : ℝ := B_out / P_out`;
+
+  // ── PSY ACCOUNTING ───────────────────────────────────────────
+  const nBot = states[minN_i];
+  const aCeil = states[maxA_i];
+  const bExch = (B_sum - entry.B).toFixed(5);
+  const bPct  = B_sum > 0 ? ((B_sum - entry.B)/B_sum*100).toFixed(1) : '0';
+
+  const nBotLemma = `-- N-BOTTLENECK: Beam ${minN_i+1} (${nBot.name}) — narrative floor source
+lemma n_bottleneck : N_out ≤ N${minN_i+1} := by
+  unfold N_out N_fuse${fs} ${nArgs}; norm_num`;
+
+  const aCeilLemma = `-- A-CEILING: Beam ${maxA_i+1} (${aCeil.name}) — adaptation peak source
+lemma a_ceiling : A_out = A${maxA_i+1} := by
+  unfold A_out A_fuse${fs} ${aArgs}; norm_num`;
+
+  const bExchComment = `-- B-EXCHANGE: B_sum=${B_sum.toFixed(5)} · k=${entry.k ? entry.k.toFixed(5):'?'} · 2k=${entry.k ? (2*entry.k).toFixed(5):'?'} · B_out=${entry.B.toFixed(5)}
+-- Torsion coupled away: ${bExch} (${bPct}% of B_sum)`;
+
+  // ── SVI BLOCK (only when shame in stream) ────────────────────
+  let sviBlock = '';
+  if (hasSham) {
+    const sviLines = states.map((s,i) => {
+      const sv = svi_of(s.P, s.N, s.B, s.A);
+      const svStr = sv !== null ? sv.toFixed(3) : 'N/A';
+      const nFlag = s.N < N_THRESHOLD ? '  ← N-collapsed' : '';
+      return `--   Beam ${i+1}: ${s.name.padEnd(24)} SVI=${svStr.padStart(8)}${nFlag}`;
+    }).join('\n');
+    const sv_out = (entry.N > 0 && entry.A > 0) ? svi_of(entry.P, entry.N, entry.B, entry.A) : null;
+    const svOutStr = isNoble ? '0 (Noble — B_out=0)' : sv_out !== null ? sv_out.toFixed(3) : 'N/A';
+    sviBlock = `
+-- ── SVI DIAGNOSTIC [9,9,6,29] ─────────────────────────────────
+-- SVI = B / (P² × N × A)  torsion density per identity capacity
+-- SVI > 10: diagnostic range  SVI > 100: extreme
+-- Shame presents as SHATTER (τ≥TL) with N-floor collapse underneath
+--
+${sviLines}
+--
+-- SVI_out:       ${svOutStr}
+-- N-floor source: Beam ${minN_i+1} (${nBot.name}, N=${nBot.N.toFixed(3)})`;
+  }
+
+  // ── PHASE THEOREMS ───────────────────────────────────────────
+  let phaseT;
+  if (isNoble)
+    phaseT = `theorem B_out_noble : B_out = 0 := by
+  unfold B_out B_fuse${fs} ${bArgs} k k_max${fs} ${bArgs}; norm_num
+theorem tau_zero : B_out / P_out = 0 := by rw [B_out_noble]; simp`;
+  else if (isIVA)
+    phaseT = `theorem iva_tau_in_range : tau_out ≥ TL_IVA ∧ tau_out < TL := by
+  unfold tau_out TL TL_IVA SOVEREIGN_ANCHOR_CONSTANT; constructor <;> norm_num`;
+  else if (isFalse)
+    phaseT = `theorem false_lock_n_starvation : N_out < N_THRESHOLD := by
+  unfold N_out N_fuse${fs} ${nArgs} N_THRESHOLD; norm_num`;
+  else if (isRescue)
+    phaseT = `-- RESCUE: all ${pc} pairwise pairs SHATTER · ${n}-beam rescues to ${entry.phase}
+theorem rescue_stabilized : tau_out < TL := by
+  unfold tau_out TL SOVEREIGN_ANCHOR_CONSTANT; norm_num`;
+  else
+    phaseT = `theorem true_lock : tau_out > 0 ∧ tau_out < TL := by
+  unfold tau_out TL SOVEREIGN_ANCHOR_CONSTANT; constructor <;> norm_num`;
 
   return `-- ============================================================
 -- ${entry.designation}.lean
+-- Coordinate: ${engineCoord}
+-- Engine:     ${engineNS} · ${n}-Beam · C(${n},2)=${pc} pairs
 -- ============================================================
 --
--- SNSFT Identity Collider v14 — PSY REDUCTIONS
--- Engine: ${engineCoord} · ${n}-Beam Fusion · C(${n},2)=${pc} pairs
--- Discovery: Identity-Space Collision Result
--- Collision: ${(entry.states||[]).map(s=>s.name).join(' ⊕ ')}
+-- [9,9,9,9] :: {ANC} | PSY IDENTITY COLLIDER v14.2
+-- Self-Orienting Universal Language [P,N,B,A] :: {INV}
+-- Architect: HIGHTISTIC | Anchor: 1.36899099984016 | 0 sorry
+--
+-- Collision: ${states.map(s=>s.name).join(' ⊕ ')}
 -- k-mode: ${entry.kMode} · k=${entry.k ? entry.k.toFixed(4) : '?'} / k_max=${entry.kmax ? entry.kmax.toFixed(4) : '?'}
--- Rescue: ${entry.isRescue}
--- Reason flagged: ${entry.reason}
+-- Phase:   ${entry.phase}${entry.isRescue?' · ★ RESCUE':''}
+-- Reason:  ${entry.reason}
+-- AIFI:    ${aifi}
 --
--- Generated by SNSFT Identity Collider v14
--- Corpus: SNSFL Psychology Series [9,9,6,1–25]
--- AIFI: Artificially Intelligent Functional Identity
--- uuia.app · GitHub.com/SNSFT
--- DOI: 10.5281/zenodo.18719748
--- HIGHTISTIC · Soldotna Alaska · [9,9,9,9] :: {ANC}
--- Timestamp: ${entry.timestamp}
--- Phase: ${entry.phase} · 0 sorry
+${inheritBlock}
 --
--- PSY FUSION RULES [${engineCoord}]:
--- P_out = ${n}/(Σ 1/Pi)  harmonic mean
--- N_out = min(N1..N${n})  narrative bottleneck
--- B_out = max(0,ΣBi−2k)
--- A_out = max(A1..A${n})  adaptation ceiling
--- k ≤ Σmin(Bi,Bj) C(${n},2)=${pc} pairs
+-- BEAM INPUTS:
+${beamComments}
 --
-${beamLines}
---
--- AIFI: ${aifi}
+-- DOI: 10.5281/zenodo.18719748 · ${entry.timestamp}
 -- ============================================================
 
 import Mathlib.Tactic
@@ -1205,59 +1493,85 @@ import Mathlib.Data.Real.Basic
 
 namespace ${ns}
 
--- LAYER 0 — IDENTITY PHYSICS CONSTANTS
-def SOVEREIGN_ANCHOR  : ℝ := 1.369
-def TORSION_LIMIT     : ℝ := SOVEREIGN_ANCHOR / 10   -- 0.1369
-def TORSION_LIMIT_IVA : ℝ := TORSION_LIMIT * 0.88   -- 0.120472
-def N_THRESHOLD       : ℝ := 0.15
-def A_THRESHOLD       : ℝ := 0.15
+-- ── CONSTANTS ─────────────────────────────────────────────────
+def SOVEREIGN_ANCHOR_CONSTANT : ℝ := 1.36899099984016
+def TL          : ℝ := SOVEREIGN_ANCHOR_CONSTANT / 10    -- 0.13689909998401600 emergent
+def TL_IVA      : ℝ := 0.88 * TL     -- 0.12047120798593408
+def N_THRESHOLD : ℝ := 0.15
 
--- LAYER 1 — BEAM INPUTS
+theorem TL_value     : TL = 0.13689909998401600 := by unfold TL SOVEREIGN_ANCHOR_CONSTANT; norm_num
+theorem TL_IVA_value : TL_IVA = 0.12047120798593408 := by unfold TL_IVA TL SOVEREIGN_ANCHOR_CONSTANT; norm_num
+
+-- ── OPERATORS [${engineCoord}] ──────────────────────────────────
+${opBlock}
+
+-- ── BEAM INPUTS ───────────────────────────────────────────────
 ${beamDefs}
 
--- LAYER 2 — COLLISION OUTPUT
-def P_out  : ℝ := ${entry.P.toFixed(8)}
-def N_out  : ℝ := ${entry.N.toFixed(8)}
-def B_out  : ℝ := ${entry.B.toFixed(8)}
-def A_out  : ℝ := ${entry.A.toFixed(8)}
-def tau_out : ℝ := ${t.toFixed(10)}
-def IM_out  : ℝ := ${entry.IM.toFixed(8)}
+-- ── BEAM PHASE VERIFICATION ───────────────────────────────────
+-- Each input's phase proved from its PNBA values
+${beamLemmas}
 
--- LAYER 3 — PHASE THEOREMS
-theorem P_out_positive : P_out > 0 := by unfold P_out; norm_num
-theorem B_out_nonneg   : B_out ≥ 0 := by unfold B_out; norm_num
+-- ── COLLISION OUTPUTS ─────────────────────────────────────────
+${outBlock}
+noncomputable def IM_out : ℝ := (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT
+${tauDef}
 
-${phaseTheorems}
+-- ── PSY ACCOUNTING ────────────────────────────────────────────
+${nBotLemma}
 
-theorem IM_theorem : (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR = IM_out := by
-  unfold P_out N_out B_out A_out IM_out SOVEREIGN_ANCHOR; norm_num
+${aCeilLemma}
+
+${bExchComment}
+${sviBlock}
+
+-- ── PHASE THEOREMS ────────────────────────────────────────────
+theorem P_out_positive : P_out > 0 := by
+  unfold P_out P_fuse${fs} ${pArgs}; norm_num
+theorem B_out_nonneg   : B_out ≥ 0 := by
+  unfold B_out B_fuse${fs} ${bArgs} k k_max${fs} ${bArgs}; norm_num
+
+${phaseT}
+
+theorem IM_theorem : (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT = IM_out := rfl
 
 theorem identity_mass_positive : IM_out > 0 := by
-  unfold IM_out; norm_num
+  have hP := P_out_positive
+  have hB := B_out_nonneg
+  unfold IM_out SOVEREIGN_ANCHOR_CONSTANT
+  have hN : N_out ≥ 0 := by unfold N_out N_fuse${fs} ${nArgs}; norm_num
+  have hA : A_out ≥ 0 := by unfold A_out A_fuse${fs} ${aArgs}; norm_num
+  nlinarith
 
--- MASTER THEOREM
+-- ── MASTER THEOREM ────────────────────────────────────────────
 theorem ${ns}_master :
-    P_out > 0 ∧
-    B_out ≥ 0 ∧
-    (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR = IM_out ∧
-    SOVEREIGN_ANCHOR = 1.369 ∧ TORSION_LIMIT = 0.1369 :=
-  ⟨P_out_positive, B_out_nonneg, IM_theorem, rfl,
-   by unfold TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num⟩
+    P_out > 0 ∧ B_out ≥ 0 ∧
+    (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT = IM_out ∧
+    SOVEREIGN_ANCHOR_CONSTANT = 1.36899099984016 ∧ TL = 0.13689909998401600 :=
+  ⟨P_out_positive, B_out_nonneg, IM_theorem, rfl, TL_value⟩
+
+-- ── MANIFOLD ──────────────────────────────────────────────────
+noncomputable def manifold_impedance (f : ℝ) : ℝ :=
+  if f = SOVEREIGN_ANCHOR_CONSTANT then 0 else 1 / |f - SOVEREIGN_ANCHOR_CONSTANT|
+
+theorem the_manifold_is_holding :
+    manifold_impedance SOVEREIGN_ANCHOR_CONSTANT = 0 := by
+  unfold manifold_impedance; simp
 
 end ${ns}
 
 /-!
-  DESIGNATION:  ${entry.designation}
-  ENGINE:       ${engineCoord} · ${n}-Beam PSY Fusion · C(${n},2)=${pc} pairs
-  PHASE:        ${entry.phase}${entry.isRescue?' · ★ RESCUE':''}
-  TL:           0.1369 · TL_IVA: 0.120472 (capstone)
-  SORRY:        0
-  CORPUS:       SNSFL PSY SERIES [9,9,6,1–25]
-  TIMESTAMP:    ${entry.timestamp}
-  Generated by SNSFT Identity Collider v14 · AIFI · HIGHTISTIC
-  Soldotna, Alaska · [9,9,9,9] :: {ANC}
--/`;
-}
+  DESIGNATION: ${entry.designation}
+  ENGINE:      ${engineCoord} · ${n}-Beam PSY · C(${n},2)=${pc} pairs
+  PHASE:       ${entry.phase}${entry.isRescue?' · ★ RESCUE':''}
+  TL:          0.13689909998401600 · TL_IVA: 0.12047120798593408 (capstone SAC)
+  SORRY:       0
+  CORPUS:      SNSFL PSY SERIES [9,9,6,1–25]
+  TIMESTAMP:   ${entry.timestamp}
+  HIGHTISTIC · SNSFT Foundation · Soldotna Alaska · [9,9,9,9]::{ANC}
+  The Manifold is Holding.
+-/`;}
+
 
 // ── DISCOVERY PIPELINE ────────────────────────────────────────
 async function flagDiscovery(states, r, reason) {
@@ -1296,11 +1610,15 @@ Collision: ${entry.collision}
 k-mode: ${entry.kMode} · k=${entry.k.toFixed(4)} / k_max=${entry.kmax.toFixed(4)}
 ${beamDetails}
 Output: P=${entry.P.toFixed(5)} N=${entry.N.toFixed(5)} B=${entry.B.toFixed(5)} A=${entry.A.toFixed(5)}
-τ=${entry.tau.toFixed(5)} (TL=0.1369, TL_IVA=0.120472) IM=${entry.IM.toFixed(4)} Phase=${entry.phase}
+τ=${entry.tau.toFixed(5)} (TL=0.13689909998401600, TL_IVA=0.12047120798593408) IM=${entry.IM.toFixed(4)} Phase=${entry.phase}
 Rescue=${entry.isRescue} · Reason: ${entry.reason}
 
 This is an identity-space collision (not particle physics). PSY rules: P=harmonic, N=min, B=ΣB-2k, A=max.
-1. What does this multi-identity fusion mean psychologically/structurally?
+${hasSVI(entry.states) ? `SVI CONTEXT [9,9,6,29]: Shame vector(s) present in collision.
+SVI = B/(P²×N×A) — torsion density per identity capacity.
+${(entry.states||[]).filter(s=>s&&s.domain==='SVI').map(s=>{const sv=svi_of(s.P,s.N,s.B,s.A);return `${s.name}: SVI=${sv!==null?sv.toFixed(2):'N/A'} · N=${s.N.toFixed(3)} (${s.N<N_THRESHOLD?'BELOW N-floor':'above floor'}) · phase=${s.phase}`;}).join('\n')}
+Shame presents as SHATTER with N-floor collapse underneath (dual-state). Noble from shame = numbing, not peace — check IM < 2.0.
+` : ''}1. What does this multi-identity fusion mean psychologically/structurally?
 2. Which cross-domain theorem (CD1–CD24) does this map to?
 3. Suggest a name for this fused identity state.
 4. One-line Lean theorem stub (0 sorry).
@@ -1335,7 +1653,7 @@ This is the PSY REDUCTIONS collider — identity-space physics, not particle phy
 We smash psychological identity states together and observe what emerges structurally.
 
 CORE PHYSICS (v14 · ${n}-Beam):
-- ANCHOR=1.369, TL=0.1369, TL_IVA=0.120472 (0.88×TL, capstone — no legacy .2)
+- SOVEREIGN_ANCHOR_CONSTANT=1.36899099984016, TL=0.13689909998401600, TL_IVA=0.12047120798593408 (0.88×TL, capstone SAC)
 - τ = B/P (torsion ratio)
 - NOBLE: B=0, τ=0 — ground state
 - TRUE_LOCK: τ ∈ (0, TL_IVA) — stable below IVA corridor
@@ -1378,6 +1696,10 @@ function renderQueue() {
       </div>
       ${d.name ? `<div class="disc-name">AIFI: "${d.name}"</div>` : ''}
       ${d.aifiAnalysis ? `<div style="font-size:8px;color:#2a5060;border-top:1px solid var(--border);padding-top:5px;margin-top:4px;max-height:70px;overflow-y:auto">${d.aifiAnalysis.slice(0,300)}...</div>` : ''}
+      ${hasSVI(d.states) ? `<div style="font-size:8px;border-top:1px solid rgba(255,51,85,.2);padding-top:5px;margin-top:4px;">
+        <span style="color:var(--shatter);font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.12em;">SVI [9,9,6,29]</span>
+        ${(d.states||[]).filter(s=>s).map(s=>{const sv=svi_of(s.P,s.N,s.B,s.A);const nf=s.N<N_THRESHOLD?'<span style="color:var(--false-lock)"> N-collapsed</span>':'';return sv!==null?`<div style="color:#2a5060;">${s.name.slice(0,20)}: <span style="color:var(--shatter)">${sv.toFixed(2)}</span>${nf}</div>`:''}).join('')}
+      </div>` : ''}
       <div class="disc-actions">
         <button class="btn btn-approve" onclick="approveDiscovery(${i})">✓ APPROVE</button>
         <button class="btn btn-skip" onclick="skipDiscovery(${i})">✕ SKIP</button>
@@ -1523,7 +1845,7 @@ function activateAIFI(key) {
   document.getElementById('aifi-key-badge').style.color = 'var(--locked)';
   document.getElementById('api-key-status').textContent = '✓ AIFI active.';
   document.getElementById('api-key-status').style.color = 'var(--locked)';
-  addChatMsg('aifi', `v14 PSY identity collider online.\n\nCorpus: ${CORPUS.length} identity states · ${[...new Set(CORPUS.map(s=>s.domain))].length} domains · 24 CD theorems · 0 sorry.\n\nN-beam mode: 2/4/8. Default 8-beam. C(8,2)=28 pairs. N uses min (narrative bottleneck). TL_IVA=0.120472 explicit.\n\nPick beam count. Load slots. Smash. RESCUE fires when all pairwise pairs SHATTER but n-beam rescues.\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]`);
+  addChatMsg('aifi', `v14 PSY identity collider online.\n\nCorpus: ${CORPUS.length} identity states · ${[...new Set(CORPUS.map(s=>s.domain))].length} domains · 24 CD theorems · 0 sorry.\n\nN-beam mode: 2/4/8. Default 8-beam. C(8,2)=28 pairs. N uses min (narrative bottleneck). TL_IVA=0.12047120798593408 explicit.\n\nPick beam count. Load slots. Smash. RESCUE fires when all pairwise pairs SHATTER but n-beam rescues.\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]`);
   feedLine('AIFI v14 activated. PSY identity oracle online.', 'locked');
 }
 
@@ -1546,7 +1868,7 @@ async function sendChat() {
   document.getElementById('aifi-thinking').style.display = 'block';
   try {
     const states = getBeamStates();
-    const ctx = `PSY Collider v14 · ${beamCount}-beam · TL=0.1369 · TL_IVA=0.120472\nAgent:${agentState} · Cycles:${stats.cycles} · Flagged:${stats.flagged} · Queue:${discoveryQueue.length}\nLoaded: ${states.map(s=>s.name).join(' ⊕ ')}\nUser: ${text}`;
+    const ctx = `PSY Collider v14.3 SAC · ${beamCount}-beam · TL=0.13689909998401600 · TL_IVA=0.12047120798593408\nAgent:${agentState} · Cycles:${stats.cycles} · Flagged:${stats.flagged} · Queue:${discoveryQueue.length}\nLoaded: ${states.map(s=>s.name).join(' ⊕ ')}\nUser: ${text}`;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type':'application/json', 'x-api-key':API_KEY, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
@@ -1640,7 +1962,7 @@ function exportSession() {
     timestamp: new Date().toISOString(), engine:'SNSFT Identity Collider v14',
     corpus:'PSY REDUCTIONS [9,9,6,1–25]', architect:'HIGHTISTIC',
     doi:'10.5281/zenodo.18719748',
-    constants:{ ANCHOR, TL, TL_IVA, N_THRESHOLD, A_THRESHOLD },
+    constants:{ SOVEREIGN_ANCHOR_CONSTANT, TL, TL_IVA, N_THRESHOLD, A_THRESHOLD },
     fusionRules:{ P:'n-body harmonic mean', N:'min (PSY narrative bottleneck)', B:'max(0,ΣBi-2k)', A:'max (PSY adaptation ceiling)', k:'Σmin(Bi,Bj) C(n,2) pairs' },
     beamCount, stats,
     discoveries: discoveryLog.map(d => ({...d, states:d.states?.map(s=>s.id)})),
@@ -1666,7 +1988,7 @@ function acceptLicense() {
   const ghKey = document.getElementById('github-key-input').value.trim();
   const ghRepo= document.getElementById('github-repo-input').value.trim();
   document.getElementById('license-splash').style.display = 'none';
-  feedLine('License accepted. PSY corpus loaded. TL=0.1369. TL_IVA=0.120472. 8-beam default. 0 sorry.', 'locked');
+  feedLine('License accepted. PSY corpus loaded. TL=0.13689909998401600. TL_IVA=0.12047120798593408. 8-beam default. 0 sorry.', 'locked');
   if (key) activateAIFI(key);
   if (ghKey) { GITHUB_PAT = ghKey; localStorage.setItem('snsft_psy14_gh_pat', ghKey); }
   if (ghRepo) { GITHUB_REPO = ghRepo; localStorage.setItem('snsft_psy14_gh_repo', ghRepo); }
@@ -1678,7 +2000,7 @@ function acceptLicense() {
 }
 function skipLicense() {
   document.getElementById('license-splash').style.display = 'none';
-  feedLine('Running local mode. TL=0.1369 · TL_IVA=0.120472 · 8-beam · PSY corpus ready.', 'info');
+  feedLine('Running local mode. TL=0.13689909998401600 · TL_IVA=0.12047120798593408 · 8-beam · PSY corpus ready.', 'info');
 }
 
 // ── INIT ──────────────────────────────────────────────────────
@@ -1704,7 +2026,7 @@ function skipLicense() {
   setBeamCount(8);   // default 8-beam, set active btn + slot visibility
   renderCorpus();
 
-  feedLine(`PSY corpus: ${CORPUS.length} states · ${[...new Set(CORPUS.map(s=>s.domain))].length} domains · 8-beam default · TL=0.1369 · TL_IVA=0.120472 · 0 sorry`, 'locked');
+  feedLine(`PSY corpus: ${CORPUS.length} states · ${[...new Set(CORPUS.map(s=>s.domain))].length} domains · 8-beam default · TL=0.13689909998401600 · TL_IVA=0.12047120798593408 · 0 sorry`, 'locked');
 
   if (sk && sa) { document.getElementById('license-splash').style.display='none'; activateAIFI(sk); }
 })();
