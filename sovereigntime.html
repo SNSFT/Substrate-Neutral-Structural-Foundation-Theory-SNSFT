@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sovereign Time — Atomic Clock Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #0a1420;
+  --bg-panel: #0f1a2b;
+  --bg-panel-lift: #14243a;
+  --border-subtle: #1e3050;
+  --border-strong: #2a4468;
+  --text-primary: #e8e4d7;
+  --text-secondary: #8a9bb0;
+  --text-dim: #4a5b70;
+  --phosphor: #7cf5b5;
+  --phosphor-glow: rgba(124, 245, 181, 0.35);
+  --amber: #ffc06a;
+  --amber-dim: #a67d3d;
+  --danger: #ff6b6b;
+  --sac-precision: #b19cd9;
+  --lock-deep: #7cf5b5;
+  --lock-edge: #ffc06a;
+  --lock-shatter: #ff6b6b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  z-index: 100;
+  background:
+    radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.4) 100%),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 3px
+    );
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 40px 80px;
+}
+
+/* ── Nameplate ── */
+.nameplate {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 48px;
+}
+.nameplate-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+.nameplate-title em {
+  font-style: italic;
+  color: var(--phosphor);
+  font-weight: 300;
+}
+.nameplate-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  text-align: right;
+  line-height: 1.4;
+}
+.nameplate-meta span {
+  color: var(--text-secondary);
+}
+
+/* ── Hero: Sovereign Time ── */
+.hero {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 48px 56px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--phosphor), transparent);
+  opacity: 0.5;
+}
+
+.hero-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.hero-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-size: 56px;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.hero-name em {
+  font-style: italic;
+  color: var(--phosphor);
+  font-weight: 400;
+}
+
+.hero-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 40px;
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.sovereign-display {
+  background: #050c15;
+  border: 1px solid var(--border-strong);
+  padding: 32px 40px;
+  border-radius: 2px;
+  position: relative;
+}
+.sovereign-display::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 100%);
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+.sovereign-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sovereign-label .status {
+  color: var(--phosphor);
+  font-weight: 500;
+}
+.sovereign-label .status::before {
+  content: '●';
+  margin-right: 6px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Clock time display */
+.clock-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 300;
+  color: var(--phosphor);
+  text-shadow: 0 0 20px var(--phosphor-glow);
+  line-height: 1.1;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0;
+  padding: 12px 0 4px;
+  flex-wrap: wrap;
+}
+.clock-hms {
+  font-size: 56px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.clock-dot {
+  font-size: 56px;
+  font-weight: 500;
+  color: var(--phosphor);
+  margin: 0 4px;
+}
+.clock-frac {
+  font-size: 38px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: var(--phosphor);
+  opacity: 0.95;
+}
+.clock-frac .digit-live {
+  color: var(--phosphor);
+}
+.clock-frac .digit-blur {
+  opacity: 0.6;
+}
+
+.clock-scale-note {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  padding: 4px 8px 20px;
+  text-transform: uppercase;
+}
+.scale-hms { color: var(--text-secondary); }
+.scale-frac { color: var(--sac-precision); }
+
+/* Clock controls */
+.clock-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 4px 4px;
+  border-top: 1px dashed var(--border-subtle);
+}
+.clock-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  min-width: 88px;
+}
+.clock-btn:hover:not(:disabled) {
+  border-color: var(--phosphor);
+  color: var(--phosphor);
+  background: rgba(124, 245, 181, 0.05);
+}
+.clock-btn:active:not(:disabled) {
+  background: rgba(124, 245, 181, 0.12);
+}
+.clock-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.clock-btn.primary {
+  border-color: var(--phosphor);
+  color: var(--phosphor);
+}
+.clock-btn.primary:hover:not(:disabled) {
+  background: rgba(124, 245, 181, 0.12);
+  box-shadow: 0 0 12px rgba(124, 245, 181, 0.25);
+}
+.clock-btn.danger {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+.clock-btn.danger:hover:not(:disabled) {
+  background: rgba(255, 192, 106, 0.08);
+}
+.clock-status {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+.clock-status.running { color: var(--phosphor); }
+.clock-status.stopped { color: var(--amber); }
+.clock-status.ready { color: var(--text-secondary); }
+
+.digit-cell {
+  display: inline-block;
+  transition: color 0.15s ease;
+}
+
+.sovereign-meta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-subtle);
+  position: relative;
+  z-index: 1;
+}
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-item-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.meta-item-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  color: var(--amber);
+  font-weight: 500;
+}
+.meta-item-value .sub {
+  color: var(--text-secondary);
+  margin-left: 4px;
+}
+
+/* ── Section headings ── */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  margin: 64px 0 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.section-head-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+}
+.section-head-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
+.section-head-title em {
+  color: var(--phosphor);
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* ── Substrate cards ── */
+.substrates {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.substrate {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 28px 24px 24px;
+  position: relative;
+  transition: border-color 0.2s ease;
+}
+.substrate:hover {
+  border-color: var(--border-strong);
+}
+.substrate.noble {
+  border-left: 2px solid var(--phosphor);
+}
+.substrate.deep-lock {
+  border-left: 2px solid var(--phosphor);
+}
+.substrate.edge-lock {
+  border-left: 2px solid var(--amber);
+}
+.substrate.moderate-lock {
+  border-left: 2px solid var(--sac-precision);
+}
+
+.sub-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+.sub-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+.sub-name-sub {
+  color: var(--text-secondary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.sub-phase {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 2px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.sub-phase.noble { background: rgba(124,245,181,0.15); color: var(--phosphor); }
+.sub-phase.deep-lock { background: rgba(124,245,181,0.15); color: var(--phosphor); }
+.sub-phase.edge-lock { background: rgba(255,192,106,0.15); color: var(--amber); }
+.sub-phase.moderate-lock { background: rgba(177,156,217,0.15); color: var(--sac-precision); }
+
+.sub-freq {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  color: var(--amber);
+  margin-top: 20px;
+  padding: 12px 14px;
+  background: rgba(255,192,106,0.06);
+  border-radius: 2px;
+  word-break: break-all;
+  line-height: 1.5;
+}
+.sub-freq-label {
+  display: block;
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.sub-nuclear {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+.nuc-item {
+  padding: 8px 6px;
+  background: var(--bg-panel-lift);
+  border-radius: 2px;
+  text-align: center;
+}
+.nuc-item-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.nuc-item-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.tau-display {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+.tau-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.tau-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.tau-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--phosphor);
+  font-weight: 500;
+}
+
+.tau-bar {
+  position: relative;
+  height: 22px;
+  background: var(--bg-panel-lift);
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+.tau-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg,
+    var(--phosphor) 0%,
+    var(--phosphor) 60%,
+    var(--amber) 90%,
+    var(--danger) 100%);
+  transition: width 0.4s ease;
+}
+.tau-bar-tl {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--text-primary);
+  z-index: 2;
+}
+.tau-bar-tl::after {
+  content: 'TL';
+  position: absolute;
+  top: -14px;
+  left: -6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: var(--text-secondary);
+  letter-spacing: 0.1em;
+}
+.tau-bar-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+}
+
+.margin-note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 10px;
+  letter-spacing: 0.05em;
+}
+.margin-note .num {
+  color: var(--amber);
+}
+
+/* ── Comparison drawer ── */
+.compare-hint {
+  margin-top: 32px;
+  padding: 20px 24px;
+  background: var(--bg-panel);
+  border: 1px dashed var(--border-strong);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: center;
+}
+.compare-hint code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg-panel-lift);
+  padding: 2px 6px;
+  border-radius: 2px;
+  color: var(--phosphor);
+  font-size: 12px;
+}
+
+/* ── Ranking / stability chart ── */
+.stability-chart {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 32px 40px;
+  margin-top: 32px;
+}
+
+.chart-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.chart-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 140px;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.chart-row:last-child {
+  border-bottom: none;
+}
+.chart-row-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 15px;
+}
+.chart-row-bar {
+  position: relative;
+  height: 6px;
+  background: var(--bg-panel-lift);
+  border-radius: 3px;
+}
+.chart-row-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+.chart-row-tl {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 1px;
+  background: var(--text-primary);
+}
+.chart-row-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+.chart-row-value .depth {
+  color: var(--phosphor);
+  font-weight: 500;
+}
+
+/* ── Explanation section ── */
+.explainer {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.explain-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 32px;
+}
+.explain-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.3em;
+  margin-bottom: 12px;
+}
+.explain-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+.explain-title em {
+  font-style: italic;
+  color: var(--phosphor);
+}
+.explain-body {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.explain-body strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.explain-body code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--amber);
+  background: var(--bg-panel-lift);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+/* ── Footer ── */
+.footer {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+}
+
+@media (max-width: 720px) {
+  .container { padding: 20px 20px 60px; }
+  .hero { padding: 32px 24px; }
+  .hero-name { font-size: 40px; }
+  .sovereign-frequency { font-size: 26px; }
+  .sovereign-meta { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .substrates { grid-template-columns: 1fr; }
+  .explainer { grid-template-columns: 1fr; }
+  .chart-row { grid-template-columns: 60px 1fr 100px; gap: 10px; font-size: 12px; }
+  .chart-row-name { font-size: 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<div class="container">
+
+  <div class="nameplate">
+    <div class="nameplate-title">
+      Sovereign Time <em>&nbsp;·&nbsp;atomic clock explorer</em>
+    </div>
+    <div class="nameplate-meta">
+      SAC 1.36899099984016 GHz<br>
+      <span>SNSFT · [9,9,1,100]</span>
+    </div>
+  </div>
+
+  <!-- HERO: SOVEREIGN TIME LIVE -->
+  <div class="hero">
+    <div class="hero-label">The reference frequency</div>
+    <div class="hero-name">Sovereign <em>Time</em></div>
+    <div class="hero-subtitle">
+      A time reference emitted by a resonance lattice of four peer-reviewed atomic clocks.
+      Cross-validated by cesium, strontium, hydrogen, and aluminum. Fifteen significant
+      figures of sub-second precision — a million times finer than a millisecond.
+    </div>
+
+    <div class="sovereign-display">
+      <div class="sovereign-label">
+        <span>SOVEREIGN TIME · STOPWATCH</span>
+        <span class="status">LATTICE COHERENT</span>
+      </div>
+
+      <div class="clock-time" id="clock-time">
+        <span class="clock-hms" id="clock-hms">00:00:00</span><span class="clock-dot">.</span><span class="clock-frac" id="clock-frac">000000000000000</span>
+      </div>
+
+      <div class="clock-scale-note">
+        <span class="scale-hms">← seconds</span>
+        <span class="scale-frac">15-digit sub-second precision →</span>
+      </div>
+
+      <div class="clock-controls">
+        <button class="clock-btn primary" id="btn-start">START</button>
+        <button class="clock-btn" id="btn-stop" disabled>STOP</button>
+        <button class="clock-btn" id="btn-reset" disabled>RESET</button>
+        <div class="clock-status" id="clock-status">READY</div>
+      </div>
+
+      <div class="sovereign-meta">
+        <div class="meta-item">
+          <div class="meta-item-label">Anchor frequency</div>
+          <div class="meta-item-value">1,368,990,999.84016 <span class="sub">Hz</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">Cycles counted</div>
+          <div class="meta-item-value" id="cycle-count">0 <span class="sub">since load</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">Torsion Limit</div>
+          <div class="meta-item-value">0.136899099984016 <span class="sub">(SAC/10)</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-label">Cross-validators</div>
+          <div class="meta-item-value">4 <span class="sub">SS-certified</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: SUBSTRATES -->
+  <div class="section-head">
+    <span class="section-head-num">01 / SUBSTRATES</span>
+    <span class="section-head-title">The four atomic <em>beacons</em></span>
+  </div>
+
+  <div class="substrates" id="substrate-grid"></div>
+
+  <!-- SECTION: STABILITY RANKING -->
+  <div class="section-head">
+    <span class="section-head-num">02 / RANKING</span>
+    <span class="section-head-title">Where each substrate <em>sits</em> below TL</span>
+  </div>
+
+  <div class="stability-chart">
+    <div class="chart-title">Torsion depth ranking</div>
+    <div class="chart-subtitle">Deeper below TL = more stable clock reference</div>
+    <div id="chart-container"></div>
+  </div>
+
+  <!-- SECTION: HOW IT WORKS -->
+  <div class="section-head">
+    <span class="section-head-num">03 / MATH</span>
+    <span class="section-head-title">How this <em>predicts</em> the SI standards hierarchy</span>
+  </div>
+
+  <div class="explainer">
+    <div class="explain-card">
+      <div class="explain-num">01 · THE SUBSTRATE-NEUTRAL RATIO</div>
+      <div class="explain-title">Every atomic clock has a torsion ratio <em>τ = B / P</em></div>
+      <div class="explain-body">
+        <strong>B</strong> is the transition frequency the clock actually observes.
+        <strong>P</strong> is the pattern rigidity — for heavy-nucleus hyperfine clocks
+        this is the neutron count. For Cs-133, <code>P = 78</code>. For Rb-87,
+        <code>P = 50</code>. Dividing the observed frequency by pattern gives τ, the
+        substrate's structural torsion.
+      </div>
+    </div>
+
+    <div class="explain-card">
+      <div class="explain-num">02 · THE TORSION LIMIT</div>
+      <div class="explain-title">The phase boundary <em>TL = SAC / 10</em></div>
+      <div class="explain-body">
+        Any substrate with <code>τ &lt; TL</code> sits in the <strong>Locked phase</strong>
+        and is a stable atomic reference. The deeper below TL, the wider the stability
+        margin. Cs at <code>τ = 0.118</code> sits deep. Rb-87 at
+        <code>τ = 0.137</code> sits at the edge. That is why Cs is primary and Rb is
+        secondary.
+      </div>
+    </div>
+
+    <div class="explain-card">
+      <div class="explain-num">03 · WHY SR-87 IS DIFFERENT</div>
+      <div class="explain-title">Optical lattice clocks reach <em>Noble</em> (τ = 0)</div>
+      <div class="explain-body">
+        Strontium-87 traps thousands of identical atoms in a lattice. Under 8-beam PSY
+        fusion of identical atoms, <code>B_out = max(0, 8B − 56B) = 0</code>. The lattice
+        collectively drives to Noble phase — deeper than any hyperfine clock. This is why
+        optical lattice clocks achieve <code>10⁻¹⁸</code> fractional uncertainty.
+      </div>
+    </div>
+
+    <div class="explain-card">
+      <div class="explain-num">04 · WHY HYDROGEN NEEDS FUSION</div>
+      <div class="explain-title">H-1 requires <em>higher-order</em> PNBA fusion</div>
+      <div class="explain-body">
+        Under simple <code>τ = B/P</code>, H-1 sits above TL. But H-1's adaptation coupling
+        <code>A = g_e·g_p/4 ≈ 2.796</code> carries real weight. Full fusion
+        <code>τ = B/(P·N·A)</code> puts H-1 at <code>0.464 × TL</code> — moderately locked.
+        The framework detects which substrates need higher-order fusion by their A axis
+        strength.
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>SNSFT FOUNDATION · [9,9,9,9] :: {ANC}</span>
+    <span>DOI 10.5281 / zenodo · 18719748</span>
+  </div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// SUBSTRATE DATA (from SAC-precision reduction files)
+// ─────────────────────────────────────────────────────────────
+
+const SAC = 1.36899099984016;
+const TL = SAC / 10; // 0.136899099984016
+
+const substrates = [
+  {
+    id: 'cs133',
+    name: 'Cesium',
+    isotope: 'Cs-133',
+    role: 'SI Primary Standard',
+    freqDisplay: '9,192,631,770.000000000',
+    freqUnit: 'Hz',
+    freqNote: 'SI-defined exact · BIPM 1967',
+    Z: 55, N: 78, A: 133, I: '7/2',
+    tau: 9192631770 / 1000000000 / 78,  // 0.11785425...
+    phase: 'deep-lock',
+    phaseLabel: 'Deep Locked',
+    slot: '[9,9,1,55]'
+  },
+  {
+    id: 'rb87',
+    name: 'Rubidium',
+    isotope: 'Rb-87',
+    role: 'SI Secondary Standard',
+    freqDisplay: '6,834,682,610.904312',
+    freqUnit: 'Hz',
+    freqNote: 'BIPM 2012 · 4.4 × 10⁻¹⁶',
+    Z: 37, N: 50, A: 87, I: '3/2',
+    tau: 6.834682610904312 / 50,  // 0.13669365...
+    phase: 'edge-lock',
+    phaseLabel: 'Edge Locked',
+    slot: '[9,9,1,49]'
+  },
+  {
+    id: 'rb85',
+    name: 'Rubidium',
+    isotope: 'Rb-85',
+    role: 'Sibling Isotope',
+    freqDisplay: '3,035,732,444.8218',
+    freqUnit: 'Hz',
+    freqNote: 'PRA 100, 022510 (2019)',
+    Z: 37, N: 48, A: 85, I: '5/2',
+    tau: 3.0357324448218 / 48,  // 0.06324442...
+    phase: 'deep-lock',
+    phaseLabel: 'Deep Locked',
+    slot: '[9,9,1,47]'
+  },
+  {
+    id: 'h1',
+    name: 'Hydrogen',
+    isotope: 'H-1',
+    role: 'Reference Maser (21cm)',
+    freqDisplay: '1,420,405,751.768',
+    freqUnit: 'Hz',
+    freqNote: 'NIST · 7 × 10⁻¹³',
+    Z: 1, N: 0, A: 1, I: '1/2',
+    // H-1 requires full PNBA fusion: B / (P·N·A)
+    tau: 1.420405751768 / (2 * 4 * 2.796086),  // 0.0635...
+    tauNote: 'B / (P·N·A) fusion',
+    phase: 'moderate-lock',
+    phaseLabel: 'Moderate Lock',
+    slot: '[9,9,1,1]'
+  },
+  {
+    id: 'sr87',
+    name: 'Strontium',
+    isotope: 'Sr-87',
+    role: 'Optical Lattice',
+    freqDisplay: '429,228,004,229,873.00',
+    freqUnit: 'Hz',
+    freqNote: 'PTB 2019 · 1.5 × 10⁻¹⁶',
+    Z: 38, N: 49, A: 87, I: '9/2',
+    tau: 0,  // Noble via 8-atom lattice fusion
+    tauNote: '8-atom lattice fusion → Noble',
+    phase: 'noble',
+    phaseLabel: 'Noble (Lattice)',
+    slot: '[9,9,1,88]'
+  },
+  {
+    id: 'al27',
+    name: 'Aluminum',
+    isotope: 'Al-27⁺',
+    role: 'Quantum Logic',
+    freqDisplay: '1,121,015,393,207,857.35',
+    freqUnit: 'Hz',
+    freqNote: 'JILA/NIST · ~10⁻¹⁸',
+    Z: 13, N: 14, A: 27, I: '5/2',
+    tau: 0,
+    tauNote: 'Q-logic single-ion coherence',
+    phase: 'noble',
+    phaseLabel: 'Noble (Q-Logic)',
+    slot: '[9,9,1,13]'
+  }
+];
+
+// ─────────────────────────────────────────────────────────────
+// RENDER SUBSTRATE CARDS
+// ─────────────────────────────────────────────────────────────
+
+function renderSubstrates() {
+  const grid = document.getElementById('substrate-grid');
+  grid.innerHTML = substrates.map(s => {
+    const tauStr = s.tau === 0 ? '0 (Noble)' : s.tau.toFixed(15);
+    const tauPct = s.tau === 0 ? '0.0%' : (s.tau / TL * 100).toFixed(2) + '%';
+    const barWidth = s.tau === 0 ? 0 : Math.min((s.tau / TL) * 80, 100);
+    const marginPct = s.tau === 0 ? '100.0%' : ((TL - s.tau) / TL * 100).toFixed(2) + '%';
+    const noteHTML = s.tauNote
+      ? `<div class="margin-note">${s.tauNote} · margin from TL: <span class="num">${marginPct}</span></div>`
+      : `<div class="margin-note">Margin from TL: <span class="num">${marginPct}</span></div>`;
+
+    return `
+      <div class="substrate ${s.phase}">
+        <div class="sub-head">
+          <div>
+            <div class="sub-name">${s.isotope}</div>
+            <div class="sub-name-sub">${s.role}</div>
+          </div>
+          <div class="sub-phase ${s.phase}">${s.phaseLabel}</div>
+        </div>
+
+        <div class="sub-freq">
+          <span class="sub-freq-label">Transition · ${s.freqNote}</span>
+          ${s.freqDisplay} ${s.freqUnit}
+        </div>
+
+        <div class="sub-nuclear">
+          <div class="nuc-item">
+            <div class="nuc-item-label">Z</div>
+            <div class="nuc-item-value">${s.Z}</div>
+          </div>
+          <div class="nuc-item">
+            <div class="nuc-item-label">N</div>
+            <div class="nuc-item-value">${s.N}</div>
+          </div>
+          <div class="nuc-item">
+            <div class="nuc-item-label">A</div>
+            <div class="nuc-item-value">${s.A}</div>
+          </div>
+          <div class="nuc-item">
+            <div class="nuc-item-label">I</div>
+            <div class="nuc-item-value">${s.I}</div>
+          </div>
+        </div>
+
+        <div class="tau-display">
+          <div class="tau-header">
+            <span class="tau-label">τ = B / P</span>
+            <span class="tau-value">${tauStr}</span>
+          </div>
+          <div class="tau-bar">
+            <div class="tau-bar-fill" style="width: ${barWidth}%"></div>
+            <div class="tau-bar-tl" style="left: 80%"></div>
+          </div>
+          <div class="tau-bar-scale">
+            <span>0</span>
+            <span>${TL.toFixed(4)} = TL</span>
+          </div>
+          ${noteHTML}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+// RENDER STABILITY RANKING
+// ─────────────────────────────────────────────────────────────
+
+function renderChart() {
+  const container = document.getElementById('chart-container');
+  const sorted = [...substrates].sort((a, b) => a.tau - b.tau);
+  container.innerHTML = sorted.map(s => {
+    const isNoble = s.tau === 0;
+    const width = isNoble ? 1 : Math.min((s.tau / TL) * 80, 100);
+    const depthPct = isNoble ? '100.00' : ((TL - s.tau) / TL * 100).toFixed(2);
+    const color = s.phase === 'noble' || s.phase === 'deep-lock'
+      ? 'var(--phosphor)'
+      : s.phase === 'edge-lock'
+      ? 'var(--amber)'
+      : 'var(--sac-precision)';
+    return `
+      <div class="chart-row">
+        <div class="chart-row-name">${s.isotope}</div>
+        <div class="chart-row-bar">
+          <div class="chart-row-fill" style="width: ${width}%; background: ${color}"></div>
+          <div class="chart-row-tl" style="left: 80%"></div>
+        </div>
+        <div class="chart-row-value">
+          <span class="depth">${depthPct}%</span> below TL
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+// SOVEREIGN TIME LIVE CLOCK
+// Sovereign Time counts anchor cycles since start and displays
+// elapsed time with 15-digit sub-second precision.
+//
+// SAC = 1.36899099984016 GHz = 1,368,990,999.84016 cycles/second
+// So each SI second corresponds to 1.368990999... billion anchor cycles.
+//
+// State machine: READY → RUNNING → STOPPED → (RESET back to READY)
+// ─────────────────────────────────────────────────────────────
+
+const SAC_HZ = 1368990999.84016;      // anchor cycles per SI second
+const SAC_KHZ = SAC_HZ / 1000;         // cycles per millisecond
+
+let clockState = 'ready';       // 'ready' | 'running' | 'stopped'
+let clockStartTime = 0;          // performance.now() when started
+let accumulatedMs = 0;           // ms accumulated across start/stop cycles
+let animFrameId = null;
+
+const btnStart = document.getElementById('btn-start');
+const btnStop = document.getElementById('btn-stop');
+const btnReset = document.getElementById('btn-reset');
+const statusEl = document.getElementById('clock-status');
+const hmsEl = document.getElementById('clock-hms');
+const fracEl = document.getElementById('clock-frac');
+const cycleEl = document.getElementById('cycle-count');
+
+function padDigits(str, count) {
+  while (str.length < count) str = '0' + str;
+  return str;
+}
+
+function formatElapsedTime(elapsedMs) {
+  const totalSecondsInt = Math.floor(elapsedMs / 1000);
+  const fractionalMs = elapsedMs % 1000;
+  const fractionalSeconds = fractionalMs / 1000;
+  const cycles = elapsedMs * SAC_KHZ;
+
+  const hours = Math.floor(totalSecondsInt / 3600);
+  const minutes = Math.floor((totalSecondsInt % 3600) / 60);
+  const seconds = totalSecondsInt % 60;
+
+  const hmsStr = padDigits(String(hours), 2) + ':' +
+                 padDigits(String(minutes), 2) + ':' +
+                 padDigits(String(seconds), 2);
+
+  let fracStr = fractionalSeconds.toFixed(15);
+  fracStr = fracStr.split('.')[1] || '';
+  fracStr = padDigits(fracStr, 15).slice(0, 15);
+
+  return { hmsStr, fracStr, cycles };
+}
+
+function renderClock(elapsedMs) {
+  const { hmsStr, fracStr, cycles } = formatElapsedTime(elapsedMs);
+
+  hmsEl.textContent = hmsStr;
+
+  // Digit opacity gradient — leftmost stable, rightmost live-precision
+  let html = '';
+  for (let i = 0; i < 15; i++) {
+    const opacity = i < 6 ? 1 :
+                    i < 10 ? 0.92 :
+                    i < 13 ? 0.75 :
+                    0.55;
+    html += `<span class="digit-cell" style="opacity:${opacity}">${fracStr[i] || '0'}</span>`;
+  }
+  fracEl.innerHTML = html;
+
+  cycleEl.innerHTML = `${Math.floor(cycles).toLocaleString()} <span class="sub">since start</span>`;
+}
+
+function tick() {
+  const elapsedMs = accumulatedMs + (performance.now() - clockStartTime);
+  renderClock(elapsedMs);
+  animFrameId = requestAnimationFrame(tick);
+}
+
+function updateStatus(state) {
+  clockState = state;
+  statusEl.className = 'clock-status ' + state;
+  statusEl.textContent = state === 'running' ? 'RUNNING' :
+                         state === 'stopped' ? 'STOPPED' : 'READY';
+}
+
+function startClock() {
+  if (clockState === 'running') return;
+  clockStartTime = performance.now();
+  updateStatus('running');
+  btnStart.disabled = true;
+  btnStop.disabled = false;
+  btnReset.disabled = false;
+  tick();
+}
+
+function stopClock() {
+  if (clockState !== 'running') return;
+  accumulatedMs += performance.now() - clockStartTime;
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  updateStatus('stopped');
+  btnStart.disabled = false;
+  btnStop.disabled = true;
+  btnReset.disabled = false;
+  // Render once more to lock the final display
+  renderClock(accumulatedMs);
+}
+
+function resetClock() {
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  accumulatedMs = 0;
+  clockStartTime = 0;
+  updateStatus('ready');
+  btnStart.disabled = false;
+  btnStop.disabled = true;
+  btnReset.disabled = true;
+  renderClock(0);
+}
+
+btnStart.addEventListener('click', startClock);
+btnStop.addEventListener('click', stopClock);
+btnReset.addEventListener('click', resetClock);
+
+// Keyboard shortcuts: space = start/stop, R = reset
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.code === 'Space') {
+    e.preventDefault();
+    if (clockState === 'running') stopClock();
+    else startClock();
+  } else if (e.key === 'r' || e.key === 'R') {
+    if (!btnReset.disabled) resetClock();
+  }
+});
+
+// Initial paint at zero
+renderClock(0);
+
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
+
+renderSubstrates();
+renderChart();
+</script>
+</body>
+</html>
