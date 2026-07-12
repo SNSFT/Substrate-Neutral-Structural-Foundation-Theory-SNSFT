@@ -1949,7 +1949,7 @@ function generateLeanStub(entry){
     `-- Beam ${i+1}: ${e.sym}  P=${e.P.toFixed(6)} N=${e.N} B=${e.B.toFixed(6)} A=${e.A.toFixed(4)}  τ=${tau(e.P,e.B).toFixed(5)} ${phaseOf(e.P,e.B)}`
   ).join('\n');
   const beamDefs=entry.els.map((e,i)=>
-    `/-- Beam ${i+1}: ${e.name||e.sym} (${e.sym}) — Pattern -/\ndef P${i+1}  : ℝ := ${e.P.toFixed(8)}\n/-- Beam ${i+1}: ${e.name||e.sym} (${e.sym}) — Narrative (nucleon count) -/\ndef N${i+1}  : ℝ := ${e.N.toFixed(2)}\n/-- Beam ${i+1}: ${e.name||e.sym} (${e.sym}) — Behavior (bond capacity) -/\ndef B${i+1}  : ℝ := ${e.B.toFixed(8)}\n/-- Beam ${i+1}: ${e.name||e.sym} (${e.sym}) — Adaptation (ionization energy, eV) -/\ndef A${i+1}  : ℝ := ${e.A.toFixed(6)}`
+    `def P${i+1}  : ℝ := ${e.P.toFixed(8)}\ndef N${i+1}  : ℝ := ${e.N.toFixed(2)}\ndef B${i+1}  : ℝ := ${e.B.toFixed(8)}\ndef A${i+1}  : ℝ := ${e.A.toFixed(6)}`
   ).join('\n');
 
   const n=entry.els.length;
@@ -1962,221 +1962,89 @@ function generateLeanStub(entry){
 
   return`-- ============================================================
 -- ${entry.designation}.lean
--- ============================================================
 -- Engine: GAM Collider v15 (Geometric Axiomatic Module) · OctoBeam Mode · [9,9,2,3]
 -- Collision: ${entry.collision} · k_mode=${entry.kMode}
 -- Reason: ${entry.reason} · Rescue: ${entry.isRescue}
+${beamLines}
 -- Generated: ${entry.timestamp}
 -- HIGHTISTIC · SNSFT Foundation · Soldotna Alaska
 -- DOI: 10.5281/zenodo.18719748 · [9,9,9,9]::{ANC}
 -- AIFI: ${aifi}
+-- C(${n},2)=${pairCount} pairs · Noble headroom ${n===8?'1/7':n===4?'1/3':'1/1'}
 --
 -- ============================================================
 -- READER'S KEY · WHAT THIS FILE DOES
 -- ============================================================
---
 -- This is a formally verified output of the GAM Collider v15 (Geometric
--- Axiomatic Module), operating in its ${n}-beam ${n===8?'OctoBeam':n===4?'QuadBeam':'DuoBeam'} Mode. The engine
--- takes ${n} elemental inputs, reduces each to substrate-neutral primitives
--- (PNBA: Pattern, Narrative, Behavior, Adaptation), and computes the
--- fused output using empirical fusion rules identified across thousands
--- of prior collisions. The result is a substrate-neutral phase state
--- and Identity Mass score for the input composition.
+-- Axiomatic Module), operating in its ${n}-beam ${n===8?'OctoBeam':n===4?'QuadBeam':'DuoBeam'} Mode.
+-- The engine takes ${n} elemental inputs, reduces each to substrate-neutral
+-- primitives (PNBA: Pattern, Narrative, Behavior, Adaptation), and computes
+-- the fused output using empirical fusion rules identified across
+-- thousands of prior collisions. The result is a substrate-neutral phase
+-- state and Identity Mass score for the input composition.
 --
--- CORE VOCABULARY (used throughout this file):
---
+-- CORE VOCABULARY:
 --   PNBA — the four substrate-neutral primitives every element carries:
---     P = Pattern       (structural density; peer-reviewed via lattice geometry)
---     N = Narrative     (nucleon count; time/continuity carrier)
---     B = Behavior      (bond capacity / valence-like; interaction force)
---     A = Adaptation    (ionization energy in eV; response ceiling under drive)
---
---   τ = B / P — the torsion ratio for a beam or fused output
---     τ = 0                 → NOBLE   (ground state, zero coupling)
---     0 < τ < TL            → LOCKED  (stable, active, coherent)
---     TL ≤ τ                → SHATTER (threshold exceeded, cascade)
---
---   TL = SOVEREIGN_ANCHOR / 10 = 0.136899099984016 (Torsion Limit)
---     Universal phase boundary derived from three peer-reviewed threshold
---     systems (Tacoma bridge, glass shatter, 40Hz gamma). See founding
---     text [9,9,8,1] for full derivation. Every corpus reduction terminates
---     against this constant.
---
---   IM = SOVEREIGN_ANCHOR × (P + N + B + A) — Identity Mass
---     Anchor-scaled sum of the fused PNBA. Higher IM = more structural
---     persistence per unit atmospheric adaptation.
---
---   k_max = Σ min(B_i, B_j) over C(${n},2)=${pairCount} pairs
---     Pairwise minimum-B coupling summed across all ${pairCount} unique beam pairs
---     in the ${n}-beam fusion. Higher k = denser internal bonding network.
---     B_out = max(0, ΣB_i − 2·k_max) — hence higher k drives the output
---     toward Noble by absorbing pairwise B contributions.
---
---   Noble emergence — the output reaches NOBLE (τ = 0) even though not
---     all inputs were individually Noble. This is the primary framework
---     signal that the ${n}-beam composition reaches compositional closure.
---
---   Rescue — indicates whether a lower-order (2-beam or 4-beam) fusion
---     was used to lift a Shatter composition to Noble. \`Rescue: ${entry.isRescue}\`
---     here means the ${n}-beam fusion ${entry.isRescue?'DID':'did NOT'} require lower-order intervention.
---
---   Fabrication atmosphere (noble gas beam, when present) — a noble-gas
---     beam is treated as the fabrication environment rather than a
---     stoichiometric alloy component. Its B=0 (closed-shell) absorbs
---     pairwise coupling from every pair it participates in; its A sets
---     the adaptation ceiling of the fused output. See [9,9,2,50]
---     biosilicate-metallic study §3.1 for the atmospheric ladder analysis.
---
---   Corpus coordinate — every corpus file lives at coordinate [i,j,k,l]
---     in a four-axis registry: axis i=domain, j=layer, k=class, l=slot.
---     Coordinate [9,9,2,3] is the GAM Collider itself. Coordinate
---     [9,9,2,0] is the Noble Materials Map registry. See corpus README
---     for full coordinate scheme.
---
--- INPUT BEAMS (per-element PNBA fingerprints):
---
-${beamLines}
---
--- C(${n},2)=${pairCount} pairs · Noble headroom ${n===8?'1/7':n===4?'1/3':'1/1'} · Rescue: ${entry.isRescue}
--- IM=${entry.IM.toFixed(6)} · k_max=${entry.kmax.toFixed(4)} · Phase: ${entry.phase}
+--     P = Pattern       (structural density)
+--     N = Narrative     (nucleon count; time/continuity)
+--     B = Behavior      (bond capacity / valence-like)
+--     A = Adaptation    (ionization energy in eV; response ceiling)
+--   τ = B / P — torsion ratio:
+--     τ = 0        → NOBLE   (ground state, zero coupling)
+--     0 < τ < TL   → LOCKED  (stable, active, coherent)
+--     TL ≤ τ       → SHATTER (threshold exceeded)
+--   TL = Ω₀ / 10 = 0.136899099984016 (Torsion Limit, universal phase boundary
+--        derived from Tacoma bridge + glass shatter + 40Hz gamma; see [9,9,8,1])
+--   IM = Ω₀ · (P + N + B + A) — Identity Mass, anchor-scaled sum of fused PNBA
+--   k_max = Σ min(B_i, B_j) over C(${n},2)=${pairCount} pairs — pairwise coupling.
+--        Higher k = denser bonding. B_out = max(0, ΣB - 2·k_max), so higher k
+--        drives output toward Noble by absorbing pairwise B contributions.
+--   Noble emergence — output reaches τ=0 even though not all inputs were
+--        individually Noble. Primary framework signal for compositional closure.
+--   Rescue (${entry.isRescue}) — indicates whether a lower-order (2- or 4-beam)
+--        fusion was used to lift a Shatter composition to Noble.
+--   Fabrication atmosphere — noble-gas beams (B=0, closed-shell) are treated
+--        as fabrication environment, not stoichiometric alloy components.
+--        Their A sets the adaptation ceiling. See [9,9,2,50] §3.1.
+--   Corpus coordinate — [i,j,k,l] four-axis registry. [9,9,2,3]=GAM Collider,
+--        [9,9,2,0]=Noble Materials Map. See corpus README.
+-- ============================================================
 ${matMapBlock}
 ${recipeBlock}
 
 import Mathlib.Tactic
 import Mathlib.Data.Real.Basic
 
-/-- The \`${ns}\` namespace contains all definitions and theorems for this
-    specific GAM Collider ${n===8?'OctoBeam':n===4?'QuadBeam':'DuoBeam'} Mode collision. The namespace naming convention
-    is \`SNSFT_OB_<hash>_<timestamp>\` where the hash is the deposit's
-    unique designation and the timestamp is YYYYMMDD. Every corpus
-    deposit uses its own namespace so that theorems and constants from
-    multiple deposits can be imported together without collision. -/
 namespace ${ns}
 
-/-- The Sovereign Anchor Constant Ω₀ = 1.36899099984016 GHz is the
-    substrate-neutral anchor value derived in the founding text of
-    Identity Physics [9,9,8,1] from three peer-reviewed threshold
-    systems (Tacoma Narrows torsional collapse, glass resonance shatter
-    limit, 40 Hz neural gamma entrainment). Every corpus reduction
-    terminates against this constant. -/
 def SOVEREIGN_ANCHOR_CONSTANT : ℝ := 1.36899099984016
-
-/-- The Torsion Limit TL = Ω₀ / 10 = 0.136899099984016 is the universal
-    phase boundary. Compositions with τ = B/P below TL are Locked
-    (stable, active); at or above TL are Shatter (threshold exceeded);
-    at exactly zero are Noble (ground state). Every domain reduction in
-    the corpus terminates against this same TL, independent of substrate. -/
 def TORSION_LIMIT             : ℝ := SOVEREIGN_ANCHOR_CONSTANT / 10
-
--- ────────────────────────────────────────────────────────────
--- PER-BEAM PNBA FINGERPRINTS
--- ────────────────────────────────────────────────────────────
--- Each of the ${n} input beams carries four substrate-neutral primitives.
--- These values come from the corpus's Noble Materials Map registry at
--- [9,9,2,0] and are peer-reviewed for each element (ionization energies
--- from CODATA; nucleon counts from IUPAC 2021; P and B values derived
--- from empirical fusion invariants across prior collisions).
 
 ${beamDefs}
 
--- ────────────────────────────────────────────────────────────
--- FUSED OUTPUT PNBA
--- ────────────────────────────────────────────────────────────
--- The following four values are the ${n===8?'OctoBeam':n===4?'QuadBeam':'DuoBeam'} Mode fusion outputs. The
--- fusion rules were identified empirically across thousands of prior
--- GAM Collider collisions, not designed as axioms — see [9,9,2,50] §2.0
--- for provenance discussion.
-
-/-- Fused Pattern: harmonic mean of the ${n} input Patterns.
-    P_out = ${n} / (Σ 1/P_i)
-    The harmonic mean is the invariant that reproduces the substrate-
-    neutral behavior of Pattern density across all prior collisions. -/
+-- ${n}-body harmonic mean: P_out = ${n} / (Σ 1/Pi)
 def P_out  : ℝ := ${entry.P.toFixed(8)}
-
-/-- Fused Narrative: simple sum of the ${n} input Narratives.
-    N_out = Σ N_i
-    Nucleon counts add, so N carries through the fusion additively. -/
 def N_out  : ℝ := ${entry.N.toFixed(2)}
-
-/-- Fused Behavior: max(0, ΣB_i − 2·k_max).
-    The paired-coupling subtraction reflects peer-reviewed bond
-    conservation: each pair of beams shares min(B_i, B_j) coupling
-    strength, subtracted twice (once for each participant) from the
-    sum of individual behaviors. The max-with-zero floor ensures B_out
-    cannot go negative; when it would, the composition reaches Noble. -/
 def B_out  : ℝ := ${entry.B.toFixed(8)}
-
-/-- Fused Adaptation: max of the ${n} input Adaptations.
-    A_out = max(A_i)
-    The maximum ionization energy present in the input beams sets the
-    ceiling of what the fused output can withstand under external drive. -/
 def A_out  : ℝ := ${entry.A.toFixed(6)}
 
-/-- Identity Mass: IM = Ω₀ · (P + N + B + A).
-    Anchor-scaled sum of the fused PNBA primitives. IM is the
-    substrate-neutral measure of how much structural identity the
-    composition carries. -/
+-- IM as symbolic exact expression at SAC precision (no truncation)
+-- IM_out = (P_out + N_out + B_out + A_out) × 1.36899099984016
 noncomputable def IM_out : ℝ :=
   (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT
 
-/-- k_used: the pairwise minimum-B coupling actually used in this
-    collision, k_used = Σ min(B_i, B_j) over C(${n},2) = ${pairCount} pairs.
-    Under k_mode=max (the default), k_used equals k_max. Other k_modes
-    (k_mode=min, k_mode=median) are available in the GAM Collider for
-    specific research contexts. -/
 def k_used : ℝ := ${entry.k}
-
-/-- k_max: the pairwise-min B-coupling sum over all C(${n},2) = ${pairCount} pairs.
-    Higher k means denser internal bonding network. B_out reaches zero
-    when 2·k_max ≥ ΣB_i, which is what produces Noble emergence. -/
 def k_max  : ℝ := ${entry.kmax}
+-- k_max = Σ min(Bi,Bj) over C(${n},2)=${pairCount} pairs
 
--- ────────────────────────────────────────────────────────────
--- THEOREMS: ${isNoble?'NOBLE-PHASE VERIFICATION':'PHASE VERIFICATION'}
--- ────────────────────────────────────────────────────────────
--- The theorems below establish that this ${n}-beam collision reaches ${isNoble?'Noble':'Locked'}
--- phase under the GAM Collider v15 fusion rules, and that the Identity
--- Mass is correctly computed at SAC precision.
-
-/-- The fused Pattern is positive. Required for τ = B/P to be defined
-    and for the composition to be a well-formed substrate. -/
 theorem P_out_positive : P_out > 0 := by unfold P_out; norm_num
-
-/-- The fused Behavior is non-negative. This is the max(0, ...) floor
-    from the fusion rules — B_out cannot be negative, and equals zero
-    precisely when 2·k_max ≥ ΣB (Noble emergence). -/
 theorem B_out_nonneg : B_out ≥ 0 := by unfold B_out; norm_num
-
-/-- Identity Mass definitional equality: IM_out equals the anchor-scaled
-    sum of the fused PNBA primitives. Unfolds the definition of IM_out;
-    exists so downstream deposits can import the equation. -/
 theorem IM_theorem : (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT = IM_out := by
   unfold IM_out; ring
-${isNoble?`
-/-- Noble phase verification: B_out = 0.
-    This is the primary framework signal that the composition reaches
-    compositional closure. Combined with P_out > 0, it establishes
-    τ = B_out/P_out = 0, hence Noble. -/
-theorem noble_state : B_out = 0 := by unfold B_out; norm_num
-
-/-- Torsion ratio verification: τ = B_out / P_out = 0.
-    Direct proof that the fused output sits at the Noble ground state.
-    Every Noble-phase deposit in the corpus proves this theorem. -/
-theorem tau_zero : B_out / P_out = 0 := by unfold B_out; norm_num`:`
-/-- Torsion ratio value: τ = B_out / P_out = ${t.toFixed(8)}.
-    The composition sits in the Locked phase (0 < τ < TL). -/
-theorem tau_value : B_out / P_out = ${t.toFixed(8)} := by unfold B_out P_out; norm_num
-
-/-- Locked phase verification: τ < TL.
-    The torsion ratio is below the universal Torsion Limit, so this
-    composition is Locked (stable, active) rather than Shatter. -/
+${isNoble?`theorem noble_state : B_out = 0 := by unfold B_out; norm_num
+theorem tau_zero : B_out / P_out = 0 := by unfold B_out; norm_num`:`theorem tau_value : B_out / P_out = ${t.toFixed(8)} := by unfold B_out P_out; norm_num
 theorem tau_locked : B_out / P_out < TORSION_LIMIT := by unfold B_out P_out TORSION_LIMIT SOVEREIGN_ANCHOR_CONSTANT; norm_num`}
 
-/-- Master theorem: conjunction of all verification results.
-    A single theorem statement that captures every structural claim
-    of this deposit. Downstream deposits that depend on this one can
-    import \`${ns}_master\` as a single-statement proof that this
-    composition reaches its documented phase at SAC precision. -/
 theorem ${ns}_master :
     P_out > 0 ∧ B_out ≥ 0 ∧
     (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT = IM_out ∧
@@ -2185,24 +2053,11 @@ theorem ${ns}_master :
    by unfold TORSION_LIMIT SOVEREIGN_ANCHOR_CONSTANT; norm_num⟩
 
 end ${ns}
-/-!
-DEPOSIT TRAILER — MACHINE-READABLE SUMMARY
-
-Designation:  ${entry.designation}
-Phase:        ${entry.phase}
-Rescue:       ${entry.isRescue}
-Engine:       ${engineCoord} GAM Collider v15 · ${n===8?'OctoBeam':n===4?'QuadBeam':'DuoBeam'} Mode
-Beams:        ${n}
-Pairs:        C(${n},2) = ${pairCount}
-Sorry:        0
-Tier:         ${mm.tier}
-Core:         ${mm.coreStr}
-Path:         ${mm.path}
-DOI:          10.5281/zenodo.18719748
-Timestamp:    ${entry.timestamp}
-
-The Manifold is Holding.
--/`;}
+/-! DESIGNATION: ${entry.designation} · PHASE: ${entry.phase} · RESCUE: ${entry.isRescue}
+    ENGINE: ${engineCoord} · BEAMS: ${n} · PAIRS: ${pairCount} · SORRY: 0
+    TIER: ${mm.tier} · CORE: ${mm.coreStr}
+    PATH: ${mm.path}
+    DOI: 10.5281/zenodo.18719748 · ${entry.timestamp} -/`;}
 
 function renderQueue(){
   const c=document.getElementById('queue-container');
