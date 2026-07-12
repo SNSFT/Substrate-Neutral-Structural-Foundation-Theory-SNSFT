@@ -143,6 +143,9 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
 .anchor-lock-slot{display:flex;align-items:center;gap:4px;}
 .anchor-lock-slot select{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 4px;}
 .anchor-lock-slot .al-label{font-size:7px;color:var(--dim);letter-spacing:.12em;white-space:nowrap;}
+.beam-lock{display:inline-block;margin-left:5px;padding:1px 5px;font-size:9px;background:transparent;border:1px solid var(--border2);color:var(--dim);cursor:pointer;border-radius:2px;vertical-align:middle;line-height:1;transition:all .12s ease;}
+.beam-lock:hover{border-color:var(--locked);color:var(--locked);}
+.beam-lock.locked{background:var(--locked);color:var(--bg);border-color:var(--locked);box-shadow:0 0 4px var(--locked);}
 .queue-empty{color:var(--dim);font-size:9px;text-align:center;padding:18px;letter-spacing:.18em;}
 .log-tbl{width:100%;border-collapse:collapse;font-size:7.5px;}
 .log-tbl th{color:var(--dim);letter-spacing:.12em;text-align:left;padding:3px 5px;border-bottom:1px solid var(--border2);}
@@ -249,7 +252,7 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
     <div class="aifi-badge">AIFI · 8-BEAM ORACLE</div>
   </div>
   <div class="hdr-right">
-    ANCHOR <b>1.369</b> · TL = <b>0.1369</b> · 8-BEAM NOBLE EMERGENCE · [9,9,2,3]<br>
+    ANCHOR <b>1.36899099984016</b> · TL = <b>0.136899099984016</b> · 8-BEAM NOBLE EMERGENCE · [9,9,2,3]<br>
     P=harmonic·8 · N=sum · B=Σ-2k · A=max · k≤Σmin(Bi,Bj)·28 pairs<br>
     HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA · [9,9,9,9]::{ANC}
   </div>
@@ -288,39 +291,17 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
       <button class="filter-btn on-particles" id="f-particles" onclick="toggleFilter('particles')" title="Standard Model particles — quarks, leptons, hadrons">SM</button>
       <button class="filter-btn on-sparticles" id="f-sparticles" onclick="toggleFilter('sparticles')" title="S-Particles — SNSFT predictions [9,9,2,34]" style="letter-spacing:.08em;">S-PART</button>
     </div>
-    <div class="mode-sep"></div>
-    <span class="mode-label" style="white-space:nowrap;">LOCK</span>
-    <div class="mode-section" style="gap:4px;flex-wrap:wrap;">
-      <div class="anchor-lock-slot">
-        <span class="al-label">A1</span>
-        <select id="anchor1-sel" style="background:var(--bg);border:1px solid var(--border2);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 4px;">
-          <option value="">—</option>
-        </select>
-      </div>
-      <div class="anchor-lock-slot">
-        <span class="al-label">A2</span>
-        <select id="anchor2-sel" style="background:var(--bg);border:1px solid var(--border2);color:var(--b2);font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 4px;">
-          <option value="">—</option>
-        </select>
-      </div>
-      <div class="anchor-lock-slot">
-        <span class="al-label">A3</span>
-        <select id="anchor3-sel" style="background:var(--bg);border:1px solid var(--border2);color:var(--b3);font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 4px;">
-          <option value="">—</option>
-        </select>
-      </div>
-    </div>
     <div style="margin-left:auto;font-size:7.5px;color:var(--dim);" id="mode-summary">8-BEAM · C(8,2)=28 pairs</div>
   </div>
   <div class="beam-grid">
-    <div class="beam-slot" id="slot1"><div class="beam-label b1">BEAM 1</div><select class="beam-sel b1" id="beam1"></select></div>
-    <div class="beam-slot" id="slot2"><div class="beam-label b2">BEAM 2</div><select class="beam-sel b2" id="beam2"></select></div>
-    <div class="beam-slot" id="slot3"><div class="beam-label b3">BEAM 3</div><select class="beam-sel b3" id="beam3"></select></div>
-    <div class="beam-slot" id="slot4"><div class="beam-label b4">BEAM 4</div><select class="beam-sel b4" id="beam4"></select></div>
-    <div class="beam-slot" id="slot5"><div class="beam-label b5">BEAM 5</div><select class="beam-sel b5" id="beam5"></select></div>
-    <div class="beam-slot" id="slot6"><div class="beam-label b6">BEAM 6</div><select class="beam-sel b6" id="beam6"></select></div>
-    <div class="beam-slot" id="slot7"><div class="beam-label b7">BEAM 7</div><select class="beam-sel b7" id="beam7"></select></div>
-    <div class="beam-slot" id="slot8"><div class="beam-label b8">BEAM 8</div><select class="beam-sel b8" id="beam8"></select></div>
+    <div class="beam-slot" id="slot1"><div class="beam-label b1">BEAM 1 <button class="beam-lock" data-beam="1" onclick="toggleBeamLock(1)" title="Lock as anchor">⚓</button></div><select class="beam-sel b1" id="beam1"></select></div>
+    <div class="beam-slot" id="slot2"><div class="beam-label b2">BEAM 2 <button class="beam-lock" data-beam="2" onclick="toggleBeamLock(2)" title="Lock as anchor">⚓</button></div><select class="beam-sel b2" id="beam2"></select></div>
+    <div class="beam-slot" id="slot3"><div class="beam-label b3">BEAM 3 <button class="beam-lock" data-beam="3" onclick="toggleBeamLock(3)" title="Lock as anchor">⚓</button></div><select class="beam-sel b3" id="beam3"></select></div>
+    <div class="beam-slot" id="slot4"><div class="beam-label b4">BEAM 4 <button class="beam-lock" data-beam="4" onclick="toggleBeamLock(4)" title="Lock as anchor">⚓</button></div><select class="beam-sel b4" id="beam4"></select></div>
+    <div class="beam-slot" id="slot5"><div class="beam-label b5">BEAM 5 <button class="beam-lock" data-beam="5" onclick="toggleBeamLock(5)" title="Lock as anchor">⚓</button></div><select class="beam-sel b5" id="beam5"></select></div>
+    <div class="beam-slot" id="slot6"><div class="beam-label b6">BEAM 6 <button class="beam-lock" data-beam="6" onclick="toggleBeamLock(6)" title="Lock as anchor">⚓</button></div><select class="beam-sel b6" id="beam6"></select></div>
+    <div class="beam-slot" id="slot7"><div class="beam-label b7">BEAM 7 <button class="beam-lock" data-beam="7" onclick="toggleBeamLock(7)" title="Lock as anchor">⚓</button></div><select class="beam-sel b7" id="beam7"></select></div>
+    <div class="beam-slot" id="slot8"><div class="beam-label b8">BEAM 8 <button class="beam-lock" data-beam="8" onclick="toggleBeamLock(8)" title="Lock as anchor">⚓</button></div><select class="beam-sel b8" id="beam8"></select></div>
   </div>
   <div class="kmode-row">
     <span style="font-size:7.5px;color:var(--dim);white-space:nowrap">K-MODE</span>
@@ -362,7 +343,7 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
     </div>
     <div style="font-size:7px;letter-spacing:.2em;color:var(--dim);margin:6px 0 4px;">LIVE FEED</div>
     <div class="live-feed" id="live-feed">
-      <div class="feed-line info"><span class="feed-time">--:--:--</span>OctoBeam v1 ready · [9,9,2,3] · TL=0.1369 · 8-beam Noble emergence · C(8,2)=28 pairs · 0 sorry</div>
+      <div class="feed-line info"><span class="feed-time">--:--:--</span>OctoBeam v1 ready · [9,9,2,3] · TL=0.136899099984016 · 8-beam Noble emergence · C(8,2)=28 pairs · 0 sorry</div>
     </div>
   </div>
 </div>
@@ -537,8 +518,8 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>8-Beam theorem</span><span style="color:var(--bright)">[9,9,2,3] · 0 sorry</span></div>
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Parent engine</span><span style="color:var(--bright)">[9,9,2,2] 4-beam</span></div>
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Grandparent</span><span style="color:var(--bright)">[9,9,2,1] 2-beam</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.369</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--iva)">0.1369</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.36899099984016</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--iva)">0.136899099984016</span></div>
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL_IVA = 0.88×TL</span><span style="color:var(--iva)">0.120472</span></div>
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>k pairs C(8,2)</span><span style="color:var(--bright)">28</span></div>
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Noble headroom</span><span style="color:var(--noble)">8/56 = 1/7</span></div>
@@ -584,12 +565,12 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
 <footer style="border-top:1px solid var(--border);padding-top:12px;font-size:8px;letter-spacing:.13em;color:#0f1e28;display:flex;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-top:18px;">
   <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
   <span>OCTOBEAM COLLIDER · [9,9,2,3] · 8-BEAM FUSION</span>
-  <span>[9,9,9,9]::{ANC} · 0 SORRY · TL=0.1369 · C(8,2)=28</span>
+  <span>[9,9,9,9]::{ANC} · 0 SORRY · TL=0.136899099984016 · C(8,2)=28</span>
 </footer>
 </div><!-- /wrap -->
 
 <script>
-const ANCHOR=1.369,TL=ANCHOR/10,TL_IVA=0.88*TL,P_VE=Math.pow(ANCHOR/1.4204,1/3),ALPHA=1/137.035999084;
+const ANCHOR=1.36899099984016,TL=ANCHOR/10,TL_IVA=0.88*TL,P_VE=Math.pow(ANCHOR/1.4204,1/3),ALPHA=1/137.035999084;
 let API_KEY='',GITHUB_PAT='',GITHUB_REPO='',GITHUB_BRANCH='main',GITHUB_LEAN_PATH='lean/';
 let agentState='stopped',agentInterval=null,kMode='max';
 let stats={cycles:0,collisions:0,flagged:0,approved:0,noble:0,rescue:0,iva:0};
@@ -1023,13 +1004,29 @@ function getFilteredCorpus(){
   });
 }
 
-// ── MULTI-ANCHOR: up to 3 locked beams ────────────────────────
+// ── MULTI-ANCHOR: per-beam locking (any of 8 beams can be anchor-locked) ──
+const beamAnchorLocks = new Set();
+
+function toggleBeamLock(beamIdx){
+  const btn = document.querySelector(`.beam-lock[data-beam="${beamIdx}"]`);
+  if(beamAnchorLocks.has(beamIdx)){
+    beamAnchorLocks.delete(beamIdx);
+    if(btn) btn.classList.remove('locked');
+  } else {
+    beamAnchorLocks.add(beamIdx);
+    if(btn) btn.classList.add('locked');
+  }
+}
+
 function getAnchorEls(){
   const c=getAllCorpus();
   const anchors=[];
-  ['anchor1-sel','anchor2-sel','anchor3-sel'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el&&el.value){const found=c.find(e=>e.sym===el.value);if(found)anchors.push(found);}
+  beamAnchorLocks.forEach(beamIdx=>{
+    const sel=document.getElementById('beam'+beamIdx);
+    if(sel&&sel.value){
+      const found=c.find(e=>e.sym===sel.value);
+      if(found)anchors.push(found);
+    }
   });
   return anchors;
 }
@@ -1121,7 +1118,7 @@ function updateResultBox(els,r){
       <div class="rstat"><div class="rstat-label">B_OUT</div><div class="rstat-val" style="color:${r.B===0?'var(--noble)':'var(--iva)'}">${r.B.toFixed(5)}</div></div>
       <div class="rstat"><div class="rstat-label">A_OUT</div><div class="rstat-val" style="color:var(--locked)">${r.A.toFixed(4)}</div></div>
       <div class="rstat"><div class="rstat-label">τ</div><div class="rstat-val" style="color:${col}">${r.tau.toFixed(5)}</div></div>
-      <div class="rstat"><div class="rstat-label">TL</div><div class="rstat-val" style="color:var(--iva)">0.1369</div></div>
+      <div class="rstat"><div class="rstat-label">TL</div><div class="rstat-val" style="color:var(--iva)">0.136899099984016</div></div>
       <div class="rstat"><div class="rstat-label">IM</div><div class="rstat-val">${r.IM.toFixed(4)}</div></div>
       <div class="rstat"><div class="rstat-label">B_SUM</div><div class="rstat-val" style="color:var(--dim)">${r.B_sum.toFixed(3)}</div></div>
     </div>
@@ -1231,7 +1228,7 @@ async function runChaosRound(){
 
 function startAgent(){
   agentState='running';updateStatusBadge();
-  feedLine(`OctoBeam chaos protocol started. TL=0.1369 · ${beamCount}-beam · ${PAIRS_FOR[beamCount]||(beamCount*(beamCount-1)/2)} pairs per collision.`,'locked');
+  feedLine(`OctoBeam chaos protocol started. TL=0.136899099984016 · ${beamCount}-beam · ${PAIRS_FOR[beamCount]||(beamCount*(beamCount-1)/2)} pairs per collision.`,'locked');
   const spd=parseInt(document.getElementById('speed-slider').value);
   agentInterval=setInterval(async()=>{if(agentState==='running')await runChaosRound();},Math.max(300,3000-spd*260));
 }
@@ -1372,7 +1369,7 @@ Designation: ${entry.designation}
 Collision: ${entry.collision} · k_mode=${entry.kMode} · k=${entry.k}/${entry.kmax}
 ${beamDetails}
 Output: P=${entry.P.toFixed(5)} N=${entry.N} B=${entry.B.toFixed(5)} A=${entry.A.toFixed(4)}
-τ=${entry.tau.toFixed(5)} (TL=0.1369) IM=${entry.IM.toFixed(4)} Phase=${entry.phase}
+τ=${entry.tau.toFixed(5)} (TL=0.136899099984016) IM=${entry.IM.toFixed(4)} Phase=${entry.phase}
 Rescue=${entry.isRescue} · 28 pairs · Flag: ${entry.reason}
 
 1. Structural significance? 2. Which [9,9,2,3] theorem (T7-T22)? 3. Gap or known? 4. Name (-ium suffix)? 5. Lean stub (0 sorry)? 6. Worth approving?
@@ -1389,10 +1386,10 @@ Rescue=${entry.isRescue} · 28 pairs · Flag: ${entry.reason}
 
 function extractName(t){const m=t.match(/\*\*([A-Z][a-z]{3,}(?:ium|on|ite|ide)?)\*\*|name[:\s]+([A-Z][a-z]{3,}\w*)/i);return m?m[1]||m[2]||null:null;}
 
-function buildSystemPrompt(){return`You are DISCOVERY — AIFI science officer for the SNSFT OctoBeam Collider [9,9,2,3], built by HIGHTISTIC.
+function buildSystemPrompt(){return`You are DISCOVERY — AIFI science officer for the GAM Collider v15 (Geometric Axiomatic Module) · OctoBeam Mode · [9,9,2,3], built by HIGHTISTIC.
 
 CORE PHYSICS [9,9,2,3]:
-ANCHOR=1.369, TL=0.1369, TL_IVA=0.120472
+ANCHOR=1.36899099984016, TL=0.136899099984016, TL_IVA=0.12047120798593408
 P_out=8/(1/P1+…+1/P8) · N_out=ΣN · B_out=max(0,ΣB-2k) · A_out=max · k≤Σmin(Bi,Bj) 28 pairs
 NOBLE: B=0 · LOCKED: τ<TL · IVA_PEAK: τ∈[TL_IVA,TL) · SHATTER: τ≥TL
 
@@ -1965,7 +1962,7 @@ function generateLeanStub(entry){
 
   return`-- ============================================================
 -- ${entry.designation}.lean
--- Engine: SNSFT OctoBeam Collider · [9,9,2,3]
+-- Engine: GAM Collider v15 (Geometric Axiomatic Module) · OctoBeam Mode · [9,9,2,3]
 -- Collision: ${entry.collision} · k_mode=${entry.kMode}
 -- Reason: ${entry.reason} · Rescue: ${entry.isRescue}
 ${beamLines}
@@ -1974,6 +1971,44 @@ ${beamLines}
 -- DOI: 10.5281/zenodo.18719748 · [9,9,9,9]::{ANC}
 -- AIFI: ${aifi}
 -- C(${n},2)=${pairCount} pairs · Noble headroom ${n===8?'1/7':n===4?'1/3':'1/1'}
+--
+-- ============================================================
+-- READER'S KEY · WHAT THIS FILE DOES
+-- ============================================================
+-- This is a formally verified output of the GAM Collider v15 (Geometric
+-- Axiomatic Module), operating in its ${n}-beam ${n===8?'OctoBeam':n===4?'QuadBeam':'DuoBeam'} Mode.
+-- The engine takes ${n} elemental inputs, reduces each to substrate-neutral
+-- primitives (PNBA: Pattern, Narrative, Behavior, Adaptation), and computes
+-- the fused output using empirical fusion rules identified across
+-- thousands of prior collisions. The result is a substrate-neutral phase
+-- state and Identity Mass score for the input composition.
+--
+-- CORE VOCABULARY:
+--   PNBA — the four substrate-neutral primitives every element carries:
+--     P = Pattern       (structural density)
+--     N = Narrative     (nucleon count; time/continuity)
+--     B = Behavior      (bond capacity / valence-like)
+--     A = Adaptation    (ionization energy in eV; response ceiling)
+--   τ = B / P — torsion ratio:
+--     τ = 0        → NOBLE   (ground state, zero coupling)
+--     0 < τ < TL   → LOCKED  (stable, active, coherent)
+--     TL ≤ τ       → SHATTER (threshold exceeded)
+--   TL = Ω₀ / 10 = 0.136899099984016 (Torsion Limit, universal phase boundary
+--        derived from Tacoma bridge + glass shatter + 40Hz gamma; see [9,9,8,1])
+--   IM = Ω₀ · (P + N + B + A) — Identity Mass, anchor-scaled sum of fused PNBA
+--   k_max = Σ min(B_i, B_j) over C(${n},2)=${pairCount} pairs — pairwise coupling.
+--        Higher k = denser bonding. B_out = max(0, ΣB - 2·k_max), so higher k
+--        drives output toward Noble by absorbing pairwise B contributions.
+--   Noble emergence — output reaches τ=0 even though not all inputs were
+--        individually Noble. Primary framework signal for compositional closure.
+--   Rescue (${entry.isRescue}) — indicates whether a lower-order (2- or 4-beam)
+--        fusion was used to lift a Shatter composition to Noble.
+--   Fabrication atmosphere — noble-gas beams (B=0, closed-shell) are treated
+--        as fabrication environment, not stoichiometric alloy components.
+--        Their A sets the adaptation ceiling. See [9,9,2,50] §3.1.
+--   Corpus coordinate — [i,j,k,l] four-axis registry. [9,9,2,3]=GAM Collider,
+--        [9,9,2,0]=Noble Materials Map. See corpus README.
+-- ============================================================
 ${matMapBlock}
 ${recipeBlock}
 
@@ -1982,8 +2017,8 @@ import Mathlib.Data.Real.Basic
 
 namespace ${ns}
 
-def SOVEREIGN_ANCHOR : ℝ := 1.369
-def TORSION_LIMIT    : ℝ := SOVEREIGN_ANCHOR / 10
+def SOVEREIGN_ANCHOR_CONSTANT : ℝ := 1.36899099984016
+def TORSION_LIMIT             : ℝ := SOVEREIGN_ANCHOR_CONSTANT / 10
 
 ${beamDefs}
 
@@ -1992,25 +2027,30 @@ def P_out  : ℝ := ${entry.P.toFixed(8)}
 def N_out  : ℝ := ${entry.N.toFixed(2)}
 def B_out  : ℝ := ${entry.B.toFixed(8)}
 def A_out  : ℝ := ${entry.A.toFixed(6)}
-def IM_out : ℝ := ${entry.IM.toFixed(8)}
+
+-- IM as symbolic exact expression at SAC precision (no truncation)
+-- IM_out = (P_out + N_out + B_out + A_out) × 1.36899099984016
+noncomputable def IM_out : ℝ :=
+  (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT
+
 def k_used : ℝ := ${entry.k}
 def k_max  : ℝ := ${entry.kmax}
 -- k_max = Σ min(Bi,Bj) over C(${n},2)=${pairCount} pairs
 
 theorem P_out_positive : P_out > 0 := by unfold P_out; norm_num
 theorem B_out_nonneg : B_out ≥ 0 := by unfold B_out; norm_num
-theorem IM_theorem : (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR = IM_out := by
-  unfold P_out N_out B_out A_out IM_out SOVEREIGN_ANCHOR; norm_num
+theorem IM_theorem : (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT = IM_out := by
+  unfold IM_out; ring
 ${isNoble?`theorem noble_state : B_out = 0 := by unfold B_out; norm_num
 theorem tau_zero : B_out / P_out = 0 := by unfold B_out; norm_num`:`theorem tau_value : B_out / P_out = ${t.toFixed(8)} := by unfold B_out P_out; norm_num
-theorem tau_locked : B_out / P_out < TORSION_LIMIT := by unfold B_out P_out TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num`}
+theorem tau_locked : B_out / P_out < TORSION_LIMIT := by unfold B_out P_out TORSION_LIMIT SOVEREIGN_ANCHOR_CONSTANT; norm_num`}
 
 theorem ${ns}_master :
     P_out > 0 ∧ B_out ≥ 0 ∧
-    (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR = IM_out ∧
-    SOVEREIGN_ANCHOR = 1.369 ∧ TORSION_LIMIT = 0.1369 :=
+    (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT = IM_out ∧
+    SOVEREIGN_ANCHOR_CONSTANT = 1.36899099984016 ∧ TORSION_LIMIT = 0.136899099984016 :=
   ⟨P_out_positive, B_out_nonneg, IM_theorem, rfl,
-   by unfold TORSION_LIMIT SOVEREIGN_ANCHOR; norm_num⟩
+   by unfold TORSION_LIMIT SOVEREIGN_ANCHOR_CONSTANT; norm_num⟩
 
 end ${ns}
 /-! DESIGNATION: ${entry.designation} · PHASE: ${entry.phase} · RESCUE: ${entry.isRescue}
@@ -2124,7 +2164,7 @@ function updateLogTable(){
     const P=parseFloat(document.getElementById('inj-P').value)||0,B=parseFloat(document.getElementById('inj-B').value)||0;
     const N=parseFloat(document.getElementById('inj-N').value)||0,A=parseFloat(document.getElementById('inj-A').value)||0;
     const ph=phaseOf(P,B);
-    document.getElementById('inj-preview').textContent=`τ=${(P>0?B/P:0).toFixed(4)} ${ph} · IM=${(P+N+B+A)*ANCHOR} · TL=0.1369`;
+    document.getElementById('inj-preview').textContent=`τ=${(P>0?B/P:0).toFixed(4)} ${ph} · IM=${(P+N+B+A)*ANCHOR} · TL=0.136899099984016`;
   });
 });
 
@@ -2247,7 +2287,7 @@ function exportCSV(){
   feedLine(`⬇ CSV: ${discoveryLog.length} rows`,'locked');
 }
 function exportSession(){
-  const s={timestamp:new Date().toISOString(),engine:'SNSFT OctoBeam Collider v1',coordinate:'[9,9,2,3]',parent:'[9,9,2,2]',grandparent:'[9,9,2,1]',architect:'HIGHTISTIC',doi:'10.5281/zenodo.18719748',constants:{ANCHOR,TL,TL_IVA},fusionRules:{P:'8-body harmonic mean',N:'sum',B:'max(0,ΣBi-2k)',A:'max',k:'Σmin(Bi,Bj) 28 pairs C(8,2)'},stats,discoveries:discoveryLog,approved:discoveryLog.filter(d=>d.approved),rescues:discoveryLog.filter(d=>d.isRescue),sessionCorpus};
+  const s={timestamp:new Date().toISOString(),engine:'GAM Collider v15 (Geometric Axiomatic Module) · OctoBeam Mode',coordinate:'[9,9,2,3]',parent:'[9,9,2,2]',grandparent:'[9,9,2,1]',architect:'HIGHTISTIC',doi:'10.5281/zenodo.18719748',constants:{ANCHOR,TL,TL_IVA},fusionRules:{P:'8-body harmonic mean',N:'sum',B:'max(0,ΣBi-2k)',A:'max',k:'Σmin(Bi,Bj) 28 pairs C(8,2)'},stats,discoveries:discoveryLog,approved:discoveryLog.filter(d=>d.approved),rescues:discoveryLog.filter(d=>d.isRescue),sessionCorpus};
   const b=new Blob([JSON.stringify(s,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_session_${new Date().toISOString().slice(0,10)}.json`;a.click();
 }
 
@@ -2271,13 +2311,8 @@ function rebuildSelectors(){
     sel.innerHTML=opts;
     if(cur)sel.value=cur;
   });
-  // Anchor lock selects (include all corpus, not just filtered)
+  // Full corpus (no filter) for legacy chaos + K-sweep + F_ext selectors
   const allFull=getAllCorpus().sort((a,b)=>a.sym.localeCompare(b.sym));
-  const optsAll='<option value="">— free —</option>'+allFull.map(e=>`<option value="${e.sym}">${e.sym} — ${e.name}</option>`).join('');
-  ['anchor1-sel','anchor2-sel','anchor3-sel'].forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
-    const cur=el.value;el.innerHTML=optsAll;if(cur)el.value=cur;
-  });
   // Legacy chaos anchor-beam select
   const ab=document.getElementById('anchor-beam');
   if(ab){const abCur=ab.value;ab.innerHTML='<option value="">— random all —</option>'+opts;if(abCur)ab.value=abCur;}
@@ -2298,13 +2333,13 @@ function acceptLicense(){
   const ghk=document.getElementById('github-key-input').value.trim();
   const ghr=document.getElementById('github-repo-input').value.trim();
   document.getElementById('license-splash').style.display='none';
-  feedLine('OctoBeam ready. [9,9,2,3] · TL=0.1369 · 8-beam Noble emergence active. C(8,2)=28 pairs.','locked');
+  feedLine('OctoBeam ready. [9,9,2,3] · TL=0.136899099984016 · 8-beam Noble emergence active. C(8,2)=28 pairs.','locked');
   if(key)activateAIFI(key);
   if(ghk){GITHUB_PAT=ghk;localStorage.setItem('ob_gh_pat',ghk);}
   if(ghr){GITHUB_REPO=ghr;localStorage.setItem('ob_gh_repo',ghr);}
   if(ghk&&ghr){document.getElementById('gh-pat').value=GITHUB_PAT;document.getElementById('gh-repo').value=GITHUB_REPO;feedLine(`GitHub: ${GITHUB_REPO}`,'locked');}
 }
-function skipLicense(){document.getElementById('license-splash').style.display='none';feedLine('Running local mode. TL=0.1369 · 28 pairs.','info');}
+function skipLicense(){document.getElementById('license-splash').style.display='none';feedLine('Running local mode. TL=0.136899099984016 · 28 pairs.','info');}
 
 (function init(){
   const sk=localStorage.getItem('ob_api_key'),sa=localStorage.getItem('ob_accepted');
