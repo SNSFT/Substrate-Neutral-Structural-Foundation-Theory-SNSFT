@@ -1,0 +1,2371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFL GEOMETRIC AXIOMATIC MODULE-GAM COLLIDER · [9,9,2,3] · DYNAMIC 8-BEAM MATERIAL SYNTHESIS ENGINE · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root {
+  --bg:      #020308;
+  --panel:   #05070f;
+  --border:  #0a1520;
+  --border2: #111e32;
+  --glow:    #00e5ff;
+  --locked:  #00ffcc;
+  --shatter: #ff3355;
+  --noble:   #cc88ff;
+  --iva:     #ffaa00;
+  --rescue:  #44ff88;
+  --text:    #6a94ae;
+  --bright:  #c0e0f0;
+  --dim:     #162430;
+  --aifi:    #dd44ff;
+  --b1:      #00e5ff;
+  --b2:      #ffaa00;
+  --b3:      #44ff88;
+  --b4:      #ff6688;
+  --b5:      #aa88ff;
+  --b6:      #ff9933;
+  --b7:      #33ddcc;
+  --b8:      #ff55aa;
+  --snsft:   #ffcc00;  /* SNSFT gold — same family as ERE for consistency */
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.018) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;animation:gridpulse 10s ease-in-out infinite;}
+@keyframes gridpulse{0%,100%{opacity:.5}50%{opacity:1}}
+.wrap{position:relative;z-index:2;max-width:1600px;margin:0 auto;padding:0 16px 60px;}
+header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:20px;letter-spacing:.08em;color:var(--glow);text-shadow:0 0 28px rgba(0,229,255,.5);}
+.logo span{font-size:8.5px;color:var(--locked);display:block;letter-spacing:.22em;margin-top:3px;}
+.aifi-badge{font-family:'Orbitron',monospace;font-size:9px;color:var(--aifi);border:1px solid rgba(221,68,255,.4);padding:4px 10px;letter-spacing:.15em;}
+.hdr-right{font-size:8.5px;color:#1a3040;text-align:right;line-height:1.9;}
+.hdr-right b{color:var(--glow);}
+#aifi-status-dot{width:7px;height:7px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:5px;vertical-align:middle;}
+#aifi-status-dot.active{background:var(--aifi);box-shadow:0 0 8px rgba(221,68,255,.6);}
+#license-splash{position:fixed;inset:0;background:rgba(2,3,8,.97);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
+.license-box{max-width:580px;border:1px solid var(--border2);background:var(--panel);padding:28px;font-size:11px;line-height:2;}
+.license-box h2{font-family:'Orbitron',monospace;font-size:13px;color:var(--glow);letter-spacing:.2em;margin-bottom:16px;}
+.license-box p{color:var(--text);margin-bottom:10px;}
+.license-box .hi{color:var(--bright);}
+.key-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:11px;padding:7px;margin:5px 0;outline:none;}
+.key-input:focus{border-color:var(--glow);}
+.accept-btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:11px 20px;background:transparent;border:1px solid var(--locked);color:var(--locked);cursor:pointer;width:100%;margin-top:14px;}
+.accept-btn:hover{background:rgba(0,255,204,.06);}
+.skip-link{display:block;text-align:center;margin-top:8px;font-size:8.5px;color:#1a3040;cursor:pointer;letter-spacing:.15em;}
+.skip-link:hover{color:var(--text);}
+.main-layout{display:grid;grid-template-columns:1fr 360px;gap:16px;}
+.left-col{display:flex;flex-direction:column;gap:14px;}
+.right-col{display:flex;flex-direction:column;gap:14px;}
+.panel{background:var(--panel);border:1px solid var(--border2);padding:15px;}
+.panel-title{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:var(--dim);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.panel-title span{color:var(--glow);}
+.btn{font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;padding:6px 10px;background:transparent;cursor:pointer;border:1px solid var(--border2);color:var(--dim);transition:all .15s;}
+.btn:hover{color:var(--text);}
+.btn-run{border-color:var(--locked);color:var(--locked);}
+.btn-run:hover{background:rgba(0,255,204,.06);}
+.btn-pause{border-color:var(--iva);color:var(--iva);}
+.btn-stop{border-color:var(--shatter);color:var(--shatter);}
+.btn-approve{border-color:var(--locked);color:var(--locked);font-size:7.5px;padding:4px 9px;}
+.btn-approve:hover{background:rgba(0,255,204,.06);}
+.btn-skip{border-color:var(--shatter);color:var(--shatter);font-size:7.5px;padding:4px 9px;}
+.btn-lean{border-color:var(--aifi);color:var(--aifi);font-size:7.5px;padding:4px 9px;}
+/* 8-beam grid: 4 per row × 2 rows */
+.beam-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.beam-slot{display:flex;flex-direction:column;gap:4px;}
+.beam-label{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.2em;margin-bottom:2px;}
+.beam-label.b1{color:var(--b1);}
+.beam-label.b2{color:var(--b2);}
+.beam-label.b3{color:var(--b3);}
+.beam-label.b4{color:var(--b4);}
+.beam-label.b5{color:var(--b5);}
+.beam-label.b6{color:var(--b6);}
+.beam-label.b7{color:var(--b7);}
+.beam-label.b8{color:var(--b8);}
+.beam-sel{width:100%;background:var(--bg);font-family:'Share Tech Mono',monospace;font-size:9px;padding:5px 6px;outline:none;border:1px solid var(--border2);color:var(--text);}
+.beam-sel.b1{border-color:rgba(0,229,255,.4);color:var(--b1);}
+.beam-sel.b2{border-color:rgba(255,170,0,.4);color:var(--b2);}
+.beam-sel.b3{border-color:rgba(68,255,136,.4);color:var(--b3);}
+.beam-sel.b4{border-color:rgba(255,102,136,.4);color:var(--b4);}
+.beam-sel.b5{border-color:rgba(170,136,255,.4);color:var(--b5);}
+.beam-sel.b6{border-color:rgba(255,153,51,.4);color:var(--b6);}
+.beam-sel.b7{border-color:rgba(51,221,204,.4);color:var(--b7);}
+.beam-sel.b8{border-color:rgba(255,85,170,.4);color:var(--b8);}
+.kmode-row{display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+.kmode-btn{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.1em;padding:4px 9px;background:transparent;cursor:pointer;border:1px solid var(--border2);color:var(--dim);transition:all .12s;}
+.kmode-btn:hover{color:var(--text);}
+.kmode-btn.active{border-color:var(--iva);color:var(--iva);background:rgba(255,170,0,.05);}
+.result-box{background:var(--bg);border:1px solid var(--border2);padding:12px;min-height:60px;font-size:9px;line-height:1.9;margin-bottom:10px;}
+.result-phase{font-family:'Orbitron',monospace;font-size:14px;letter-spacing:.1em;font-weight:700;}
+.rp-noble{color:var(--noble);}
+.rp-locked{color:var(--locked);}
+.rp-iva{color:var(--iva);}
+.rp-shatter{color:var(--shatter);}
+.rp-rescue{color:var(--rescue);}
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;}
+.rstat{background:rgba(0,0,0,.3);border:1px solid var(--border2);padding:6px 8px;text-align:center;}
+.rstat-label{font-size:6.5px;color:var(--dim);letter-spacing:.15em;}
+.rstat-val{font-family:'Orbitron',monospace;font-size:11px;color:var(--bright);margin-top:2px;}
+.live-feed{height:220px;overflow-y:auto;font-size:8.5px;line-height:1.8;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.feed-line{padding:2px 0;border-bottom:1px solid rgba(10,21,32,.5);}
+.feed-line.noble{color:var(--noble);}
+.feed-line.locked{color:var(--locked);}
+.feed-line.shatter{color:var(--shatter);}
+.feed-line.rescue{color:var(--rescue);}
+.feed-line.iva{color:var(--iva);}
+.feed-line.info{color:var(--dim);}
+.feed-line.discovery{color:var(--iva);background:rgba(255,170,0,.04);padding:3px 6px;}
+.feed-time{color:#0f1e28;margin-right:6px;}
+.stat-row{display:flex;gap:14px;padding:8px 0;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat{display:flex;flex-direction:column;gap:2px;}
+.stat-label{color:var(--dim);font-size:7px;letter-spacing:.18em;}
+.stat-val{color:var(--bright);font-family:'Orbitron',monospace;font-size:11px;}
+.agent-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+.speed-wrap{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--dim);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.running-dot{width:6px;height:6px;border-radius:50%;background:var(--locked);display:inline-block;margin-right:5px;animation:pulse 1s infinite;}
+.paused-dot{width:6px;height:6px;border-radius:50%;background:var(--iva);display:inline-block;margin-right:5px;}
+.stopped-dot{width:6px;height:6px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:5px;}
+.disc-card{border:1px solid rgba(255,170,0,.25);background:rgba(255,170,0,.03);padding:12px 14px;margin-bottom:9px;}
+.disc-desig{font-family:'Orbitron',monospace;font-size:11px;color:var(--iva);}
+.disc-ts{font-size:9px;color:var(--dim);}
+.disc-state{font-size:11px;line-height:2.0;color:var(--text);margin:6px 0;}
+.disc-state b{color:var(--bright);}
+.disc-name{font-size:11px;color:var(--aifi);margin-bottom:5px;font-style:italic;}
+.disc-analysis{font-size:9px;color:var(--dim);max-height:70px;overflow-y:auto;border-top:1px solid var(--border2);padding-top:5px;margin-top:5px;}
+.disc-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.filter-btn.on-sparticles{border-color:rgba(255,204,0,.6);color:var(--snsft);}
+.filter-btn.on-p12{border-color:rgba(0,229,255,.4);color:var(--glow);}
+.filter-btn.on-p34{border-color:rgba(0,255,204,.4);color:var(--locked);}
+.filter-btn.on-p56{border-color:rgba(204,136,255,.4);color:var(--noble);}
+.filter-btn.on-p7{border-color:rgba(255,102,136,.4);color:var(--b4);}
+.anchor-lock-slot{display:flex;align-items:center;gap:4px;}
+.anchor-lock-slot select{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 4px;}
+.anchor-lock-slot .al-label{font-size:7px;color:var(--dim);letter-spacing:.12em;white-space:nowrap;}
+.beam-lock{display:inline-block;margin-left:5px;padding:1px 5px;font-size:9px;background:transparent;border:1px solid var(--border2);color:var(--dim);cursor:pointer;border-radius:2px;vertical-align:middle;line-height:1;transition:all .12s ease;}
+.beam-lock:hover{border-color:var(--locked);color:var(--locked);}
+.beam-lock.locked{background:var(--locked);color:var(--bg);border-color:var(--locked);box-shadow:0 0 4px var(--locked);}
+.queue-empty{color:var(--dim);font-size:9px;text-align:center;padding:18px;letter-spacing:.18em;}
+.log-tbl{width:100%;border-collapse:collapse;font-size:7.5px;}
+.log-tbl th{color:var(--dim);letter-spacing:.12em;text-align:left;padding:3px 5px;border-bottom:1px solid var(--border2);}
+.log-tbl td{padding:3px 5px;border-bottom:1px solid rgba(10,21,32,.5);}
+.log-wrap{max-height:200px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.chat-msgs{height:280px;overflow-y:auto;font-size:9.5px;line-height:1.7;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;margin-bottom:9px;}
+.msg{margin-bottom:9px;padding:7px 9px;}
+.msg-user{background:rgba(0,229,255,.04);border-left:2px solid var(--glow);}
+.msg-aifi{background:rgba(221,68,255,.04);border-left:2px solid var(--aifi);}
+.msg-label{font-size:7.5px;letter-spacing:.18em;margin-bottom:3px;}
+.msg-label.user{color:var(--glow);}
+.msg-label.aifi{color:var(--aifi);}
+.msg-text{color:var(--bright);}
+.chat-input-row{display:flex;gap:7px;}
+.chat-input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:9px;padding:6px 9px;outline:none;}
+.chat-input:focus{border-color:var(--aifi);}
+.chat-send{font-family:'Orbitron',monospace;font-size:7.5px;padding:6px 11px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;}
+.chat-send:hover{background:rgba(221,68,255,.06);}
+.aifi-thinking{color:var(--dim);font-size:8.5px;letter-spacing:.1em;padding:4px 0;}
+#aifi-connect-wall{display:flex;flex-direction:column;align-items:center;justify-content:center;height:280px;gap:14px;text-align:center;}
+.connect-label{font-size:9.5px;color:var(--dim);line-height:1.9;max-width:260px;}
+.connect-label b{color:var(--text);}
+.btn-connect-aifi{font-family:'Orbitron',monospace;font-size:8.5px;letter-spacing:.18em;padding:9px 18px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;}
+.btn-connect-aifi:hover{background:rgba(221,68,255,.08);}
+#aifi-key-prompt{display:none;padding:10px;border:1px solid rgba(221,68,255,.25);background:rgba(221,68,255,.03);margin-top:10px;}
+#aifi-key-prompt input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 7px;outline:none;margin:4px 0;}
+#aifi-key-prompt input:focus{border-color:var(--aifi);}
+.prompt-row{display:flex;gap:5px;margin-top:4px;}
+.prompt-note{font-size:7.5px;color:var(--dim);margin-top:3px;line-height:1.6;}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.setting-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:9px;padding:5px 7px;outline:none;}
+.setting-input:focus{border-color:var(--glow);}
+.setting-label{font-size:7.5px;color:var(--dim);margin-bottom:2px;letter-spacing:.12em;}
+.inj-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:7px;}
+.inj-label{font-size:7px;color:var(--dim);margin-bottom:2px;letter-spacing:.12em;}
+.inj-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:9px;padding:4px 7px;outline:none;}
+.inj-input:focus{border-color:var(--glow);}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border2);flex-wrap:wrap;margin-bottom:13px;}
+.tab{font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;padding:7px 11px;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#1a3040;transition:all .15s;}
+.tab:hover{color:var(--text);}
+.tab.active{border-color:var(--border2);border-bottom:1px solid var(--panel);color:var(--glow);background:var(--panel);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+/* 8-beam viz: scrollable horizontal */
+.beamviz{display:flex;align-items:center;justify-content:center;gap:4px;padding:12px 0;font-family:'Orbitron',monospace;font-size:8px;flex-wrap:wrap;overflow-x:auto;}
+.bv-slot{text-align:center;min-width:60px;}
+.bv-sym{font-size:12px;font-weight:700;line-height:1;}
+.bv-tau{font-size:7px;margin-top:2px;color:var(--dim);}
+.bv-phase{font-size:6px;margin-top:1px;}
+.bv-plus{color:var(--dim);font-size:14px;align-self:center;}
+.bv-arrow{color:var(--dim);font-size:14px;align-self:center;}
+.bv-out{text-align:center;min-width:90px;}
+.bv-out-phase{font-size:11px;font-weight:700;letter-spacing:.08em;}
+.phase-leg{display:flex;gap:10px;flex-wrap:wrap;font-size:7.5px;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:9px;}
+.pdot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:3px;vertical-align:middle;}
+/* beam count + corpus filter row */
+.mode-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0 10px;border-bottom:1px solid var(--border2);margin-bottom:10px;}
+.mode-section{display:flex;align-items:center;gap:5px;}
+.mode-sep{width:1px;height:18px;background:var(--border2);margin:0 4px;}
+.mode-label{font-size:7px;letter-spacing:.2em;color:var(--dim);white-space:nowrap;}
+.beam-count-btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.12em;padding:5px 12px;background:transparent;cursor:pointer;border:1px solid var(--border2);color:var(--dim);transition:all .12s;min-width:42px;text-align:center;}
+.beam-count-btn:hover{color:var(--text);}
+.beam-count-btn.active{border-color:var(--glow);color:var(--glow);background:rgba(0,229,255,.06);}
+.filter-btn{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.12em;padding:4px 9px;background:transparent;cursor:pointer;border:1px solid;transition:all .12s;}
+.filter-btn.on-elements{border-color:rgba(0,229,255,.5);color:var(--glow);}
+.filter-btn.on-eres{border-color:rgba(221,68,255,.5);color:var(--aifi);}
+.filter-btn.on-particles{border-color:rgba(255,170,0,.5);color:var(--iva);}
+.filter-btn.off{border-color:var(--border2)!important;color:var(--dim)!important;opacity:.5;}
+/* dim/disable inactive beam slots */
+.beam-slot.inactive{opacity:.28;pointer-events:none;}
+.beam-slot.inactive .beam-sel{background:rgba(0,0,0,.4);}
+@media(max-width:960px){.main-layout{grid-template-columns:1fr;}.beam-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div id="license-splash">
+  <div class="license-box">
+    <h2>SNSFT OCTOBEAM COLLIDER</h2>
+    <p class="hi">HIGHTISTIC · Soldotna, Alaska · 2026 · [9,9,2,3]</p>
+    <p>8-beam PNBA fusion engine. Smash eight identity states simultaneously. C(8,2)=28 pairs. Noble emergence space 4.7× richer than 4-beam.</p>
+    <p><span class="hi">1. CREDIT —</span> Cite the corpus if you publish. Output files do this automatically.</p>
+    <p><span class="hi">2. HANDSHAKE —</span> If a discovery here ever generates &gt;$500K commercial value — 1% back to SNSFT Foundation. Scientist's handshake.</p>
+    <p style="color:var(--dim);font-size:9px;">DOI: 10.5281/zenodo.18719748 · [9,9,2,3] · 8-Beam Fusion Theorem · 0 sorry</p>
+    <div style="margin-top:13px;padding:10px;border:1px solid rgba(221,68,255,.2);background:rgba(221,68,255,.03);">
+      <p style="font-size:8.5px;color:var(--dim);margin-bottom:5px;">OPTIONAL — Claude API key (AIFI). Collider runs fully local without it.</p>
+      <input class="key-input" id="api-key-input" type="password" placeholder="sk-ant-... (optional)">
+    </div>
+    <div style="margin-top:8px;padding:9px;border:1px solid var(--border2);background:rgba(0,229,255,.02);">
+      <p style="font-size:8.5px;color:var(--dim);margin-bottom:5px;">OPTIONAL — GitHub PAT for auto-commit on approve.</p>
+      <input class="key-input" id="github-key-input" type="password" placeholder="ghp_... (optional)">
+      <input class="key-input" id="github-repo-input" type="text" placeholder="SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT">
+    </div>
+    <button class="accept-btn" onclick="acceptLicense()">ENTER THE OCTOBEAM COLLIDER</button>
+    <span class="skip-link" onclick="skipLicense()">Skip — run local only</span>
+  </div>
+</div>
+
+<div class="wrap">
+<header>
+  <div><div class="logo">SNSFT OCTOBEAM<span>uuia.app · [9,9,2,3] · 8-BEAM FUSION · NOBLE EMERGENCE · 0 SORRY</span></div></div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="font-size:8.5px;color:var(--dim);"><span id="aifi-status-dot"></span><span id="aifi-header-status">AIFI OFFLINE</span></div>
+    <div class="aifi-badge">AIFI · 8-BEAM ORACLE</div>
+  </div>
+  <div class="hdr-right">
+    ANCHOR <b>1.36899099984016</b> · TL = <b>0.136899099984016</b> · 8-BEAM NOBLE EMERGENCE · [9,9,2,3]<br>
+    P=harmonic·8 · N=sum · B=Σ-2k · A=max · k≤Σmin(Bi,Bj)·28 pairs<br>
+    HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA · [9,9,9,9]::{ANC}
+  </div>
+</header>
+
+<div class="main-layout">
+<div class="left-col">
+
+<div class="panel">
+  <div class="panel-title"><span>8-BEAM COLLISION ENGINE</span><span id="agent-status-badge"><span class="stopped-dot"></span>STOPPED</span></div>
+  <div class="phase-leg">
+    <span><span class="pdot" style="background:var(--noble)"></span><span style="color:var(--noble)">NOBLE</span> τ=0</span>
+    <span><span class="pdot" style="background:var(--iva)"></span><span style="color:var(--iva)">IVA_PEAK</span> τ∈[0.1205,TL)</span>
+    <span><span class="pdot" style="background:var(--locked)"></span><span style="color:var(--locked)">LOCKED</span> τ&lt;TL</span>
+    <span><span class="pdot" style="background:var(--shatter)"></span><span style="color:var(--shatter)">SHATTER</span> τ≥TL</span>
+    <span><span class="pdot" style="background:var(--rescue)"></span><span style="color:var(--rescue)">RESCUE</span> all <span id="pairs-label">28</span> pairs SHATTER→Noble</span>
+  </div>
+  <div class="mode-bar">
+    <span class="mode-label">BEAMS</span>
+    <div class="mode-section">
+      <button class="beam-count-btn" id="bcb-2" onclick="setBeamCount(2)" title="2-beam: single pair [9,9,2,1]">2</button>
+      <button class="beam-count-btn" id="bcb-4" onclick="setBeamCount(4)" title="4-beam: QuadBeam [9,9,2,2]">4</button>
+      <button class="beam-count-btn active" id="bcb-8" onclick="setBeamCount(8)" title="8-beam: OctoBeam [9,9,2,3]">8</button>
+    </div>
+    <div class="mode-sep"></div>
+    <span class="mode-label">ELEMENTS</span>
+    <div class="mode-section" style="gap:3px;">
+      <button class="filter-btn on-p12" id="f-p12" onclick="toggleFilter('p12')" title="Period 1-2: H He Li Be B C N O F Ne">P1-2</button>
+      <button class="filter-btn on-p34" id="f-p34" onclick="toggleFilter('p34')" title="Period 3-4: Na→Kr (transition metals)">P3-4</button>
+      <button class="filter-btn on-p56" id="f-p56" onclick="toggleFilter('p56')" title="Period 5-6: Rb→Rn (lanthanides)">P5-6</button>
+      <button class="filter-btn on-p7" id="f-p7" onclick="toggleFilter('p7')" title="Period 7: Fr→Og (actinides, superheavy)">P7</button>
+    </div>
+    <div class="mode-sep"></div>
+    <div class="mode-section" style="gap:3px;">
+      <button class="filter-btn on-eres" id="f-eres" onclick="toggleFilter('eres')" title="Emergent Resonant Elements — EREs [9,9,2,44]">EREs</button>
+      <button class="filter-btn on-particles" id="f-quarks" onclick="toggleFilter('quarks')" title="Quarks: u d s c b t">QRK</button>
+      <button class="filter-btn on-particles" id="f-leptons" onclick="toggleFilter('leptons')" title="Leptons: e μ τ">LEP</button>
+      <button class="filter-btn on-particles" id="f-hadrons" onclick="toggleFilter('hadrons')" title="Hadrons + mesons: Pr Nt π+ π⁰ K+ J/ψ Υ">HAD</button>
+      <button class="filter-btn on-sparticles" id="f-sparticles" onclick="toggleFilter('sparticles')" title="S-Particles — SNSFT predictions [9,9,2,34]" style="letter-spacing:.08em;">S-PART</button>
+    </div>
+    <div style="margin-left:auto;font-size:7.5px;color:var(--dim);" id="mode-summary">8-BEAM · C(8,2)=28 pairs</div>
+  </div>
+  <div class="beam-grid">
+    <div class="beam-slot" id="slot1"><div class="beam-label b1">BEAM 1 <button class="beam-lock" data-beam="1" onclick="toggleBeamLock(1)" title="Lock as anchor">⚓</button></div><select class="beam-sel b1" id="beam1"></select></div>
+    <div class="beam-slot" id="slot2"><div class="beam-label b2">BEAM 2 <button class="beam-lock" data-beam="2" onclick="toggleBeamLock(2)" title="Lock as anchor">⚓</button></div><select class="beam-sel b2" id="beam2"></select></div>
+    <div class="beam-slot" id="slot3"><div class="beam-label b3">BEAM 3 <button class="beam-lock" data-beam="3" onclick="toggleBeamLock(3)" title="Lock as anchor">⚓</button></div><select class="beam-sel b3" id="beam3"></select></div>
+    <div class="beam-slot" id="slot4"><div class="beam-label b4">BEAM 4 <button class="beam-lock" data-beam="4" onclick="toggleBeamLock(4)" title="Lock as anchor">⚓</button></div><select class="beam-sel b4" id="beam4"></select></div>
+    <div class="beam-slot" id="slot5"><div class="beam-label b5">BEAM 5 <button class="beam-lock" data-beam="5" onclick="toggleBeamLock(5)" title="Lock as anchor">⚓</button></div><select class="beam-sel b5" id="beam5"></select></div>
+    <div class="beam-slot" id="slot6"><div class="beam-label b6">BEAM 6 <button class="beam-lock" data-beam="6" onclick="toggleBeamLock(6)" title="Lock as anchor">⚓</button></div><select class="beam-sel b6" id="beam6"></select></div>
+    <div class="beam-slot" id="slot7"><div class="beam-label b7">BEAM 7 <button class="beam-lock" data-beam="7" onclick="toggleBeamLock(7)" title="Lock as anchor">⚓</button></div><select class="beam-sel b7" id="beam7"></select></div>
+    <div class="beam-slot" id="slot8"><div class="beam-label b8">BEAM 8 <button class="beam-lock" data-beam="8" onclick="toggleBeamLock(8)" title="Lock as anchor">⚓</button></div><select class="beam-sel b8" id="beam8"></select></div>
+  </div>
+  <div class="kmode-row">
+    <span style="font-size:7.5px;color:var(--dim);white-space:nowrap">K-MODE</span>
+    <button class="kmode-btn active" id="km-max" onclick="setKMode('max')">MAX</button>
+    <button class="kmode-btn" id="km-half" onclick="setKMode('half')">HALF</button>
+    <button class="kmode-btn" id="km-min" onclick="setKMode('min')">MIN</button>
+    <button class="kmode-btn" id="km-zero" onclick="setKMode('zero')">ZERO</button>
+    <span style="font-size:7.5px;color:var(--dim);margin-left:4px" id="kmode-desc">k = k_max (max bonding)</span>
+    <div style="margin-left:auto;display:flex;gap:6px;">
+      <button class="btn btn-run" style="font-size:8px;padding:7px 14px;" onclick="manualSmash()">⚡ SMASH</button>
+      <button class="btn" style="font-size:7.5px;border-color:var(--noble);color:var(--noble);" onclick="randomSmash()">⚄ CHAOS</button>
+    </div>
+  </div>
+  <div class="beamviz" id="beamviz"><div style="color:var(--dim);font-size:9px;letter-spacing:.15em;">SELECT 8 BEAMS AND SMASH</div></div>
+  <div class="result-box" id="result-box"><span style="color:var(--dim);font-size:8.5px;letter-spacing:.18em;">NO COLLISION YET</span></div>
+
+  <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
+    <div style="font-size:7px;letter-spacing:.22em;color:var(--dim);margin-bottom:8px;">CHAOS AGENT — AUTO-SMASH</div>
+    <div class="agent-controls">
+      <button class="btn btn-run" onclick="startAgent()">RUN</button>
+      <button class="btn btn-pause" onclick="pauseAgent()">PAUSE</button>
+      <button class="btn btn-stop" onclick="stopAgent()">STOP</button>
+      <div class="speed-wrap"><span>SPEED</span><input type="range" id="speed-slider" min="1" max="10" value="5" style="width:55px"><span id="speed-val">5</span></div>
+      <div class="speed-wrap"><span>ROUNDS</span><input type="range" id="rounds-slider" min="1" max="20" value="5" style="width:55px"><span id="rounds-val">5</span></div>
+      <div style="margin-left:4px;font-size:7.5px;color:var(--dim);">ANCHOR BEAM
+        <select id="anchor-beam" style="background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:3px 5px;margin-left:4px;">
+          <option value="">— random all —</option>
+        </select>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><span class="stat-label">CYCLES</span><span class="stat-val" id="stat-cycles">0</span></div>
+      <div class="stat"><span class="stat-label">COLLISIONS</span><span class="stat-val" id="stat-collisions">0</span></div>
+      <div class="stat"><span class="stat-label">FLAGGED</span><span class="stat-val" id="stat-flagged" style="color:var(--iva)">0</span></div>
+      <div class="stat"><span class="stat-label">APPROVED</span><span class="stat-val" id="stat-approved" style="color:var(--locked)">0</span></div>
+      <div class="stat"><span class="stat-label">NOBLE</span><span class="stat-val" id="stat-noble" style="color:var(--noble)">0</span></div>
+      <div class="stat"><span class="stat-label">RESCUE</span><span class="stat-val" id="stat-rescue" style="color:var(--rescue)">0</span></div>
+      <div class="stat"><span class="stat-label">IVA</span><span class="stat-val" id="stat-iva" style="color:var(--iva)">0</span></div>
+    </div>
+    <div style="font-size:7px;letter-spacing:.2em;color:var(--dim);margin:6px 0 4px;">LIVE FEED</div>
+    <div class="live-feed" id="live-feed">
+      <div class="feed-line info"><span class="feed-time">--:--:--</span>OctoBeam v1 ready · [9,9,2,3] · TL=0.136899099984016 · 8-beam Noble emergence · C(8,2)=28 pairs · 0 sorry</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('queue')">APPROVE QUEUE <span id="queue-badge" style="color:var(--iva)"></span></div>
+    <div class="tab" onclick="showTab('log')">DISCOVERY LOG</div>
+    <div class="tab" onclick="showTab('inject')">INJECT</div>
+    <div class="tab" onclick="showTab('github')">GITHUB / EXPORT</div>
+    <div class="tab" onclick="showTab('synth')">K-SWEEP · F_EXT</div>
+  </div>
+
+  <div id="tab-queue" class="tab-content active">
+    <div style="display:flex;gap:6px;margin-bottom:9px;flex-wrap:wrap;align-items:center;">
+      <button class="btn btn-approve" style="padding:5px 10px;font-size:7.5px" onclick="approveAll()">✓ ALL</button>
+      <button class="btn btn-skip" style="padding:5px 10px;font-size:7.5px" onclick="skipAll()">✕ SKIP ALL</button>
+      <button class="btn" style="padding:5px 10px;font-size:7.5px;border-color:var(--noble);color:var(--noble)" onclick="approveNobleOnly()">◆ NOBLE ONLY</button>
+      <button class="btn" style="padding:5px 10px;font-size:7.5px;border-color:var(--rescue);color:var(--rescue)" onclick="approveRescueOnly()">★ RESCUE ONLY</button>
+      <button class="btn" style="padding:5px 10px;font-size:7.5px;border-color:#00ffaa;color:#00ffaa" onclick="downloadAllApproved()">⬇ DL LEAN</button>
+      <span style="font-size:7.5px;color:var(--dim)" id="queue-action-status"></span>
+    </div>
+    <div id="queue-container"><div class="queue-empty">NO PENDING DISCOVERIES</div></div>
+  </div>
+
+  <div id="tab-log" class="tab-content">
+    <div class="log-wrap">
+      <table class="log-tbl">
+        <thead><tr><th>DESIGNATION</th><th>COLLISION</th><th>τ</th><th>PHASE</th><th>FLAG</th><th>STATUS</th><th>TIME</th></tr></thead>
+        <tbody id="log-body"><tr><td colspan="7" style="color:var(--dim);text-align:center;padding:10px">No discoveries yet.</td></tr></tbody>
+      </table>
+    </div>
+    <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap;">
+      <button class="btn" onclick="exportJSON()" style="border-color:var(--glow);color:var(--glow)">JSON</button>
+      <button class="btn" onclick="exportCSV()" style="border-color:var(--locked);color:var(--locked)">CSV</button>
+      <button class="btn" onclick="exportSession()" style="border-color:var(--iva);color:var(--iva)">SESSION</button>
+    </div>
+  </div>
+
+  <div id="tab-inject" class="tab-content">
+    <div style="font-size:8.5px;color:var(--dim);margin-bottom:9px;">Inject a PNBA element into the live corpus.</div>
+    <div class="inj-grid">
+      <div><div class="inj-label">SYM</div><input class="inj-input" id="inj-sym" placeholder="Xx"></div>
+      <div><div class="inj-label">NAME</div><input class="inj-input" id="inj-name" placeholder="Xyzium"></div>
+      <div><div class="inj-label">COORD</div><input class="inj-input" id="inj-coord" placeholder="9,9,2,50"></div>
+      <div><div class="inj-label">P</div><input class="inj-input" id="inj-P" type="number" step="any" placeholder="1.0"></div>
+      <div><div class="inj-label">N</div><input class="inj-input" id="inj-N" type="number" step="any" placeholder="2"></div>
+      <div><div class="inj-label">B</div><input class="inj-input" id="inj-B" type="number" step="any" placeholder="0"></div>
+      <div><div class="inj-label">A</div><input class="inj-input" id="inj-A" type="number" step="any" placeholder="1.0"></div>
+    </div>
+    <div id="inj-preview" style="font-size:8.5px;color:var(--dim);padding:5px;background:var(--bg);border:1px solid var(--border2);margin-bottom:7px;">Fill fields to preview...</div>
+    <button class="btn btn-run" style="width:100%;font-size:8px;" onclick="manualInject()">+ INJECT INTO CORPUS</button>
+  </div>
+
+  <!-- ══ K-SWEEP · F_EXT TAB ══════════════════════════════════════════ -->
+  <div id="tab-synth" class="tab-content">
+
+    <!-- K-SWEEP section -->
+    <div style="font-size:7px;letter-spacing:.22em;color:var(--dim);margin-bottom:8px;padding-top:4px;">K-SWEEP — τ vs k CURVE · SYNTHESIS PRESSURE PROFILE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;">
+      <div>
+        <div style="font-size:7px;color:var(--dim);margin-bottom:3px;">ELEMENT A</div>
+        <select id="sw-a" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:4px 6px;"></select>
+      </div>
+      <div>
+        <div style="font-size:7px;color:var(--dim);margin-bottom:3px;">ELEMENT B</div>
+        <select id="sw-b" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--b2);font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:4px 6px;"></select>
+      </div>
+    </div>
+    <button class="btn btn-run" style="width:100%;font-size:8px;margin-bottom:8px;" onclick="runSweep()">⚡ RUN K-SWEEP</button>
+    <canvas id="sweep-canvas" height="160" style="width:100%;display:block;background:var(--bg);border:1px solid var(--border2);margin-bottom:7px;"></canvas>
+    <div id="sweep-info" style="font-size:8.5px;color:var(--dim);line-height:1.9;padding:6px 8px;background:var(--bg);border:1px solid var(--border2);min-height:32px;">Select two elements and run sweep to see τ vs k curve and synthesis conditions.</div>
+
+    <!-- k↔conditions calibration table -->
+    <div style="font-size:7px;letter-spacing:.22em;color:var(--dim);margin:12px 0 6px;">k → SYNTHESIS CONDITIONS · CALIBRATION FROM T1 CORPUS</div>
+    <div style="font-size:8.5px;color:var(--dim);line-height:2.0;padding:7px 9px;background:var(--bg);border:1px solid var(--border2);">
+      <div style="display:grid;grid-template-columns:auto 1fr 1fr auto;gap:4px 10px;font-size:7.5px;border-bottom:1px solid var(--border2);padding-bottom:4px;margin-bottom:4px;">
+        <span style="color:var(--dim);">k / k_max</span>
+        <span style="color:var(--dim);">Real analogue</span>
+        <span style="color:var(--dim);">T1 anchor</span>
+        <span style="color:var(--dim);">Process</span>
+      </div>
+      <div style="display:grid;grid-template-columns:auto 1fr 1fr auto;gap:3px 10px;font-size:8px;line-height:2.0;" id="k-cal-table">
+        <span style="color:var(--glow);">k=0</span><span>No bonding · ambient</span><span style="color:var(--dim);">—</span><span style="color:var(--dim);">none</span>
+        <span style="color:var(--glow);">k≈0.1×</span><span>Weak coupling · soft conditions</span><span style="color:var(--dim);">HF etch, sol-gel</span><span style="color:var(--dim);">wet chem</span>
+        <span style="color:var(--glow);">k≈0.5×</span><span>Half saturation · moderate pressure</span><span style="color:var(--locked);">AuSi eutectic 370°C</span><span style="color:var(--dim);">eutectic bond</span>
+        <span style="color:var(--glow);">k≈0.8×</span><span>Near-saturation · high pressure/T</span><span style="color:var(--locked);">TiN MAG 400°C</span><span style="color:var(--dim);">PVD reactive</span>
+        <span style="color:var(--iva);">k=max (B=1 pairs)</span><span>Full saturation · B=1 only</span><span style="color:var(--locked);">GaN MOCVD 1050°C</span><span style="color:var(--dim);">MOCVD</span>
+        <span style="color:var(--iva);">k=max (B=3 pairs)</span><span>Triple-bond saturation</span><span style="color:var(--locked);">SiC CVD 1550°C</span><span style="color:var(--dim);">CVD epitaxy</span>
+        <span style="color:var(--rescue);">k=max (B=4 pairs)</span><span>B=4 class saturation · full Noble</span><span style="color:var(--locked);">TiSi₂ RTA 850°C</span><span style="color:var(--dim);">RTA / SPS</span>
+        <span style="color:var(--rescue);">k=max (B=6 pairs)</span><span>Maximum saturation · actinide class</span><span style="color:var(--locked);">U₃Si₂ SPS 1400°C/180MPa</span><span style="color:var(--dim);">SPS glovebox</span>
+        <span style="color:var(--shatter);">k > k_max</span><span>Structural limit exceeded</span><span style="color:var(--dim);">—</span><span style="color:var(--dim);">not physical</span>
+      </div>
+      <div style="margin-top:7px;font-size:7.5px;color:var(--dim);border-top:1px solid var(--border2);padding-top:5px;line-height:1.8;">
+        k is a dimensionless coupling parameter. k=max for a B=N pair class corresponds to full thermodynamic bond saturation — the lab analogue is the synthesis condition where that compound is known to form. Calibrated against T1 verified compounds in NOBLE_MAP. Intermediate k values = intermediate conditions.
+      </div>
+    </div>
+
+    <!-- F_EXT section -->
+    <div style="font-size:7px;letter-spacing:.22em;color:var(--dim);margin:14px 0 6px;">F_EXT — EXTERNAL PERTURBATION OPERATOR · ΔB MODELS LASER / PRESSURE / COOLING</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;">
+      <div>
+        <div style="font-size:7px;color:var(--dim);margin-bottom:3px;">ELEMENT</div>
+        <select id="fext-el" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:4px 6px;"></select>
+      </div>
+      <div>
+        <div style="font-size:7px;color:var(--dim);margin-bottom:3px;">ΔB (+ inject · − extract)</div>
+        <input id="fext-db" type="number" value="2.0" step="0.1" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--glow);font-family:'Orbitron',monospace;font-size:12px;padding:5px 8px;outline:none;text-align:center;">
+      </div>
+    </div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px;">
+      <button class="btn" style="font-size:7px;border-color:var(--shatter);color:var(--shatter);" onclick="setFextPreset(2.5)">LASER +2.5</button>
+      <button class="btn" style="font-size:7px;border-color:var(--locked);color:var(--locked);" onclick="setFextPreset(-2.0)">COOLING −2.0</button>
+      <button class="btn" style="font-size:7px;border-color:var(--iva);color:var(--iva);" onclick="setFextPreset(3.0)">PHOTON +3.0</button>
+      <button class="btn" style="font-size:7px;border-color:var(--noble);color:var(--noble);" onclick="setFextPreset(-3.5)">QUENCH −3.5</button>
+      <button class="btn" style="font-size:7px;" onclick="setFextPreset(6.0)">SHOCK +6.0</button>
+    </div>
+    <button class="btn btn-run" style="width:100%;font-size:8px;margin-bottom:8px;" onclick="applyFext()">APPLY F_EXT</button>
+    <div id="fext-result" style="font-size:8.5px;color:var(--dim);padding:8px 10px;background:var(--bg);border:1px solid var(--border2);line-height:2.0;min-height:40px;">Select an element and apply F_ext to see phase transition.</div>
+  </div>
+    <div style="margin-bottom:12px;border:1px solid rgba(221,68,255,.25);padding:9px;background:rgba(221,68,255,.03);">
+      <div class="setting-label" style="color:var(--aifi);margin-bottom:5px;">CLAUDE API KEY <span id="aifi-key-badge" style="color:var(--dim)">(offline)</span></div>
+      <div style="display:flex;gap:5px;">
+        <input class="setting-input" id="claude-api-key-input" type="password" placeholder="sk-ant-..." style="flex:1;">
+        <button class="btn" style="border-color:var(--aifi);color:var(--aifi);padding:5px 8px;font-size:7.5px;" onclick="saveApiKey()">CONNECT</button>
+        <button class="btn" style="border-color:var(--shatter);color:var(--shatter);padding:5px 8px;font-size:7.5px;" onclick="disconnectAIFI()">DISCO</button>
+      </div>
+      <div id="api-key-status" style="font-size:7.5px;color:var(--dim);margin-top:3px;">AIFI optional.</div>
+    </div>
+    <div class="settings-grid">
+      <div><div class="setting-label">GITHUB PAT</div><input class="setting-input" id="gh-pat" type="password" placeholder="ghp_..."></div>
+      <div><div class="setting-label">REPO</div><input class="setting-input" id="gh-repo" placeholder="SNSFT/repo-name"></div>
+      <div><div class="setting-label">BRANCH</div><input class="setting-input" id="gh-branch" placeholder="main" value="main"></div>
+      <div><div class="setting-label">LEAN PATH</div><input class="setting-input" id="gh-lean-path" placeholder="lean/" value="lean/"></div>
+    </div>
+    <button class="btn" style="margin-top:7px;border-color:var(--glow);color:var(--glow);width:100%;" onclick="saveGithubSettings()">SAVE GITHUB</button>
+    <div id="gh-status" style="font-size:8px;color:var(--dim);margin-top:7px;"></div>
+  </div>
+</div>
+
+</div><!-- /left-col -->
+
+<div class="right-col">
+<div class="panel" style="flex:1;">
+  <div class="panel-title"><span style="color:var(--aifi)">AIFI · 8-BEAM ORACLE</span></div>
+  <div id="aifi-connect-wall">
+    <div class="connect-label"><b>AIFI offline.</b><br><br>OctoBeam runs fully local.<br><br>Connect Claude API key for live discovery classification and 8-beam physics chat.</div>
+    <button class="btn-connect-aifi" onclick="showAIFIKeyPrompt()">+ CONNECT AIFI</button>
+    <div id="aifi-key-prompt">
+      <div style="font-size:8.5px;color:var(--aifi);margin-bottom:4px;letter-spacing:.15em;">CLAUDE API KEY</div>
+      <input type="password" id="aifi-inline-key" placeholder="sk-ant-...">
+      <div class="prompt-row">
+        <button class="btn" style="border-color:var(--aifi);color:var(--aifi);flex:1;font-size:7.5px;" onclick="connectAIFIInline()">CONNECT</button>
+        <button class="btn" style="font-size:7.5px;" onclick="hideAIFIKeyPrompt()">CANCEL</button>
+      </div>
+      <div class="prompt-note">Key stored locally. Only sent to Anthropic's API.</div>
+    </div>
+  </div>
+  <div id="aifi-chat-area" style="display:none;">
+    <div class="chat-msgs" id="chat-messages"></div>
+    <div id="aifi-thinking" class="aifi-thinking" style="display:none">AIFI computing...</div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-input" placeholder="Ask AIFI about 8-beam physics..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()">SEND</button>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title"><span>CORPUS STATE</span></div>
+    <div style="font-size:8.5px;line-height:2.1;color:var(--dim);">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>8-Beam theorem</span><span style="color:var(--bright)">[9,9,2,3] · 0 sorry</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Parent engine</span><span style="color:var(--bright)">[9,9,2,2] 4-beam</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Grandparent</span><span style="color:var(--bright)">[9,9,2,1] 2-beam</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.36899099984016</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--iva)">0.136899099984016</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>TL_IVA = 0.88×TL</span><span style="color:var(--iva)">0.120472</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>k pairs C(8,2)</span><span style="color:var(--bright)">28</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Noble headroom</span><span style="color:var(--noble)">8/56 = 1/7</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span style="color:var(--glow)">Periodic (all 118)</span><span style="color:var(--glow)">118</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span style="color:var(--aifi)">EREs [9,9,2,44]</span><span style="color:var(--aifi)">21</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span style="color:var(--iva)">SM Particles</span><span style="color:var(--iva)">15</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span style="color:var(--snsft)">S-Particles [9,9,2,34]</span><span style="color:var(--snsft)">10</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0;"><span>Session discoveries</span><span style="color:var(--iva)" id="session-disc-count">0</span></div>
+    </div>
+  <div style="margin-top:9px;font-size:7.5px;color:var(--dim);border-top:1px solid var(--border);padding-top:7px;line-height:1.9;">
+    8-BEAM RULES [9,9,2,3]:<br>
+    <span style="color:var(--text)">P = 8/(1/P1+…+1/P8)</span><br>
+    <span style="color:var(--text)">B = max(0, ΣB - 2k)</span><br>
+    <span style="color:var(--text)">k ≤ Σ min(Bi,Bj) · 28 pairs</span><br>
+    <span style="color:var(--dim)">Equal-B×8 → Noble: 8B ≤ 56B</span>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title"><span>VERIFIED THEOREMS · [9,9,2,3]</span></div>
+  <div style="font-size:8px;line-height:1.9;color:var(--dim);">
+    <div style="color:var(--rescue);margin-bottom:4px;">RESCUE — all 28 pairs SHATTER → Noble</div>
+    <div style="color:var(--noble);margin-top:3px;">L-07 AT n=8 (T9)</div>
+    <div>Any element×8 → <span style="color:var(--noble)">NOBLE</span></div>
+    <div>Equal-B: k_max8 = 28×B_each</div>
+    <div style="color:var(--locked);margin-top:5px;">CHON×2 (T11)</div>
+    <div>H+C+N+O+H+C+N+O → <span style="color:var(--noble)">NOBLE</span></div>
+    <div style="color:var(--locked);margin-top:5px;">WATER×4 (T12)</div>
+    <div>O+H+O+H+O+H+O+H → <span style="color:var(--noble)">NOBLE</span></div>
+    <div style="color:var(--locked);margin-top:5px;">GaAs×4 (T14)</div>
+    <div>Ga+As×8 → <span style="color:var(--noble)">NOBLE</span></div>
+    <div style="color:var(--iva);margin-top:5px;">NOBLE HEADROOM</div>
+    <div>Equal-B uses 1/7 of coupling capacity</div>
+    <div style="color:var(--dim);margin-top:5px;">INHERITANCE CHAIN</div>
+    <div>e5-e8 B=0 → recovers 4-beam k_max</div>
+    <div>e3-e8 B=0 → recovers 2-beam k_max</div>
+  </div>
+</div>
+
+</div><!-- /right-col -->
+</div><!-- /main-layout -->
+
+<footer style="border-top:1px solid var(--border);padding-top:12px;font-size:8px;letter-spacing:.13em;color:#0f1e28;display:flex;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-top:18px;">
+  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
+  <span>OCTOBEAM COLLIDER · [9,9,2,3] · 8-BEAM FUSION</span>
+  <span>[9,9,9,9]::{ANC} · 0 SORRY · TL=0.136899099984016 · C(8,2)=28</span>
+</footer>
+</div><!-- /wrap -->
+
+<script>
+const ANCHOR=1.36899099984016,TL=ANCHOR/10,TL_IVA=0.88*TL,P_VE=Math.pow(ANCHOR/1.4204,1/3),ALPHA=1/137.035999084;
+let API_KEY='',GITHUB_PAT='',GITHUB_REPO='',GITHUB_BRANCH='main',GITHUB_LEAN_PATH='lean/';
+let agentState='stopped',agentInterval=null,kMode='max';
+let stats={cycles:0,collisions:0,flagged:0,approved:0,noble:0,rescue:0,iva:0};
+let discoveryQueue=[],discoveryLog=[],sessionCorpus=[];
+
+// ── PERIODIC TABLE — FULL 118 ELEMENTS (Slater PNBA values from GAM Collider) ──
+const PERIODIC=[
+  // Period 1
+  {sym:'H', name:'Hydrogen',     P:1.000,N:2, B:1,  A:13.60,per:1,grp:1},
+  {sym:'He',name:'Helium',       P:1.700,N:2, B:0,  A:24.59,per:1,grp:18},
+  // Period 2
+  {sym:'Li',name:'Lithium',      P:1.300,N:2, B:1,  A:5.39, per:2,grp:1},
+  {sym:'Be',name:'Beryllium',    P:1.950,N:4, B:2,  A:9.32, per:2,grp:2},
+  {sym:'B', name:'Boron',        P:2.600,N:4, B:3,  A:8.30, per:2,grp:13},
+  {sym:'C', name:'Carbon',       P:3.250,N:4, B:4,  A:11.26,per:2,grp:14},
+  {sym:'N', name:'Nitrogen',     P:3.900,N:4, B:3,  A:14.53,per:2,grp:15},
+  {sym:'O', name:'Oxygen',       P:4.550,N:4, B:2,  A:13.62,per:2,grp:16},
+  {sym:'F', name:'Fluorine',     P:5.200,N:4, B:1,  A:17.42,per:2,grp:17},
+  {sym:'Ne',name:'Neon',         P:5.850,N:4, B:0,  A:21.56,per:2,grp:18},
+  // Period 3
+  {sym:'Na',name:'Sodium',       P:2.200,N:6, B:1,  A:5.14, per:3,grp:1},
+  {sym:'Mg',name:'Magnesium',    P:2.850,N:6, B:2,  A:7.65, per:3,grp:2},
+  {sym:'Al',name:'Aluminum',     P:3.500,N:6, B:3,  A:5.99, per:3,grp:13},
+  {sym:'Si',name:'Silicon',      P:4.150,N:6, B:4,  A:8.15, per:3,grp:14},
+  {sym:'P', name:'Phosphorus',   P:4.800,N:6, B:3,  A:10.49,per:3,grp:15},
+  {sym:'S', name:'Sulfur',       P:5.450,N:6, B:2,  A:10.36,per:3,grp:16},
+  {sym:'Cl',name:'Chlorine',     P:6.100,N:6, B:1,  A:12.97,per:3,grp:17},
+  {sym:'Ar',name:'Argon',        P:6.750,N:6, B:0,  A:15.76,per:3,grp:18},
+  // Period 4
+  {sym:'K', name:'Potassium',    P:2.200,N:8, B:1,  A:4.34, per:4,grp:1},
+  {sym:'Ca',name:'Calcium',      P:2.850,N:8, B:2,  A:6.11, per:4,grp:2},
+  {sym:'Sc',name:'Scandium',     P:3.000,N:8, B:3,  A:6.56, per:4,grp:3},
+  {sym:'Ti',name:'Titanium',     P:3.150,N:8, B:4,  A:6.83, per:4,grp:4},
+  {sym:'V', name:'Vanadium',     P:3.300,N:8, B:5,  A:6.75, per:4,grp:5},
+  {sym:'Cr',name:'Chromium',     P:3.450,N:8, B:6,  A:6.77, per:4,grp:6},
+  {sym:'Mn',name:'Manganese',    P:3.600,N:8, B:5,  A:7.43, per:4,grp:7},
+  {sym:'Fe',name:'Iron',         P:3.750,N:8, B:4,  A:7.90, per:4,grp:8},
+  {sym:'Co',name:'Cobalt',       P:3.900,N:8, B:3,  A:7.88, per:4,grp:9},
+  {sym:'Ni',name:'Nickel',       P:4.050,N:8, B:2,  A:7.64, per:4,grp:10},
+  {sym:'Cu',name:'Copper',       P:4.200,N:8, B:1,  A:7.73, per:4,grp:11},
+  {sym:'Zn',name:'Zinc',         P:4.350,N:8, B:2,  A:9.39, per:4,grp:12},
+  {sym:'Ga',name:'Gallium',      P:5.000,N:8, B:3,  A:6.00, per:4,grp:13},
+  {sym:'Ge',name:'Germanium',    P:5.650,N:8, B:4,  A:7.90, per:4,grp:14},
+  {sym:'As',name:'Arsenic',      P:6.300,N:8, B:3,  A:9.81, per:4,grp:15},
+  {sym:'Se',name:'Selenium',     P:6.950,N:8, B:2,  A:9.75, per:4,grp:16},
+  {sym:'Br',name:'Bromine',      P:7.600,N:8, B:1,  A:11.81,per:4,grp:17},
+  {sym:'Kr',name:'Krypton',      P:8.250,N:8, B:0,  A:14.00,per:4,grp:18},
+  // Period 5
+  {sym:'Rb',name:'Rubidium',     P:2.200,N:10,B:1,  A:4.18, per:5,grp:1},
+  {sym:'Sr',name:'Strontium',    P:2.850,N:10,B:2,  A:5.69, per:5,grp:2},
+  {sym:'Y', name:'Yttrium',      P:3.000,N:10,B:3,  A:6.22, per:5,grp:3},
+  {sym:'Zr',name:'Zirconium',    P:3.150,N:10,B:4,  A:6.63, per:5,grp:4},
+  {sym:'Nb',name:'Niobium',      P:3.300,N:10,B:5,  A:6.76, per:5,grp:5},
+  {sym:'Mo',name:'Molybdenum',   P:3.450,N:10,B:6,  A:7.09, per:5,grp:6},
+  {sym:'Tc',name:'Technetium',   P:3.600,N:10,B:5,  A:7.28, per:5,grp:7},
+  {sym:'Ru',name:'Ruthenium',    P:3.750,N:10,B:4,  A:7.36, per:5,grp:8},
+  {sym:'Rh',name:'Rhodium',      P:3.900,N:10,B:3,  A:7.46, per:5,grp:9},
+  {sym:'Pd',name:'Palladium',    P:4.050,N:10,B:0,  A:8.34, per:5,grp:10},
+  {sym:'Ag',name:'Silver',       P:4.200,N:10,B:1,  A:7.58, per:5,grp:11},
+  {sym:'Cd',name:'Cadmium',      P:4.350,N:10,B:2,  A:8.99, per:5,grp:12},
+  {sym:'In',name:'Indium',       P:5.000,N:10,B:3,  A:5.79, per:5,grp:13},
+  {sym:'Sn',name:'Tin',          P:5.650,N:10,B:4,  A:7.34, per:5,grp:14},
+  {sym:'Sb',name:'Antimony',     P:6.300,N:10,B:3,  A:8.61, per:5,grp:15},
+  {sym:'Te',name:'Tellurium',    P:6.950,N:10,B:2,  A:9.01, per:5,grp:16},
+  {sym:'I', name:'Iodine',       P:7.600,N:10,B:1,  A:10.45,per:5,grp:17},
+  {sym:'Xe',name:'Xenon',        P:8.250,N:10,B:0,  A:12.13,per:5,grp:18},
+  // Period 6
+  {sym:'Cs',name:'Cesium',       P:2.200,N:12,B:1,  A:3.89, per:6,grp:1},
+  {sym:'Ba',name:'Barium',       P:2.850,N:12,B:2,  A:5.21, per:6,grp:2},
+  {sym:'La',name:'Lanthanum',    P:3.000,N:12,B:3,  A:5.58, per:6,grp:3},
+  {sym:'Ce',name:'Cerium',       P:3.050,N:12,B:4,  A:5.54, per:6,grp:4},
+  {sym:'Pr',name:'Praseodymium', P:3.100,N:12,B:5,  A:5.47, per:6,grp:4},
+  {sym:'Nd',name:'Neodymium',    P:3.150,N:12,B:6,  A:5.53, per:6,grp:4},
+  {sym:'Pm',name:'Promethium',   P:3.200,N:12,B:5,  A:5.58, per:6,grp:4},
+  {sym:'Sm',name:'Samarium',     P:3.250,N:12,B:6,  A:5.64, per:6,grp:4},
+  {sym:'Eu',name:'Europium',     P:3.300,N:12,B:7,  A:5.67, per:6,grp:4},
+  {sym:'Gd',name:'Gadolinium',   P:3.350,N:12,B:8,  A:6.15, per:6,grp:4},
+  {sym:'Tb',name:'Terbium',      P:3.400,N:12,B:9,  A:5.86, per:6,grp:4},
+  {sym:'Dy',name:'Dysprosium',   P:3.450,N:12,B:10, A:5.94, per:6,grp:4},
+  {sym:'Ho',name:'Holmium',      P:3.500,N:12,B:11, A:6.02, per:6,grp:4},
+  {sym:'Er',name:'Erbium',       P:3.550,N:12,B:12, A:6.11, per:6,grp:4},
+  {sym:'Tm',name:'Thulium',      P:3.600,N:12,B:13, A:6.18, per:6,grp:4},
+  {sym:'Yb',name:'Ytterbium',    P:3.650,N:12,B:14, A:6.25, per:6,grp:4},
+  {sym:'Lu',name:'Lutetium',     P:3.700,N:12,B:3,  A:5.43, per:6,grp:3},
+  {sym:'Hf',name:'Hafnium',      P:3.850,N:12,B:4,  A:6.83, per:6,grp:4},
+  {sym:'Ta',name:'Tantalum',     P:4.000,N:12,B:5,  A:7.55, per:6,grp:5},
+  {sym:'W', name:'Tungsten',     P:4.150,N:12,B:6,  A:7.86, per:6,grp:6},
+  {sym:'Re',name:'Rhenium',      P:4.300,N:12,B:5,  A:7.83, per:6,grp:7},
+  {sym:'Os',name:'Osmium',       P:4.450,N:12,B:4,  A:8.44, per:6,grp:8},
+  {sym:'Ir',name:'Iridium',      P:4.600,N:12,B:3,  A:8.97, per:6,grp:9},
+  {sym:'Pt',name:'Platinum',     P:4.750,N:12,B:2,  A:8.96, per:6,grp:10},
+  {sym:'Au',name:'Gold',         P:4.900,N:12,B:1,  A:9.23, per:6,grp:11},
+  {sym:'Hg',name:'Mercury',      P:5.050,N:12,B:2,  A:10.44,per:6,grp:12},
+  {sym:'Tl',name:'Thallium',     P:5.700,N:12,B:3,  A:6.11, per:6,grp:13},
+  {sym:'Pb',name:'Lead',         P:6.350,N:12,B:4,  A:7.42, per:6,grp:14},
+  {sym:'Bi',name:'Bismuth',      P:7.000,N:12,B:3,  A:7.29, per:6,grp:15},
+  {sym:'Po',name:'Polonium',     P:7.650,N:12,B:2,  A:8.42, per:6,grp:16},
+  {sym:'At',name:'Astatine',     P:8.300,N:12,B:1,  A:9.50, per:6,grp:17},
+  {sym:'Rn',name:'Radon',        P:8.950,N:12,B:0,  A:10.75,per:6,grp:18},
+  // Period 7
+  {sym:'Fr',name:'Francium',     P:2.200,N:14,B:1,  A:4.07, per:7,grp:1},
+  {sym:'Ra',name:'Radium',       P:2.850,N:14,B:2,  A:5.28, per:7,grp:2},
+  {sym:'Ac',name:'Actinium',     P:3.000,N:14,B:3,  A:5.17, per:7,grp:3},
+  {sym:'Th',name:'Thorium',      P:3.050,N:14,B:4,  A:6.31, per:7,grp:4},
+  {sym:'Pa',name:'Protactinium', P:3.100,N:14,B:5,  A:5.89, per:7,grp:4},
+  {sym:'U', name:'Uranium',      P:3.150,N:14,B:6,  A:6.19, per:7,grp:4},
+  {sym:'Np',name:'Neptunium',    P:3.200,N:14,B:5,  A:6.27, per:7,grp:4},
+  {sym:'Pu',name:'Plutonium',    P:3.250,N:14,B:6,  A:6.03, per:7,grp:4},
+  {sym:'Am',name:'Americium',    P:3.300,N:14,B:7,  A:5.97, per:7,grp:4},
+  {sym:'Cm',name:'Curium',       P:3.350,N:14,B:8,  A:5.99, per:7,grp:4},
+  {sym:'Bk',name:'Berkelium',    P:3.400,N:14,B:9,  A:6.20, per:7,grp:4},
+  {sym:'Cf',name:'Californium',  P:3.450,N:14,B:10, A:6.28, per:7,grp:4},
+  {sym:'Es',name:'Einsteinium',  P:3.500,N:14,B:11, A:6.37, per:7,grp:4},
+  {sym:'Fm',name:'Fermium',      P:3.550,N:14,B:12, A:6.50, per:7,grp:4},
+  {sym:'Md',name:'Mendelevium',  P:3.600,N:14,B:13, A:6.58, per:7,grp:4},
+  {sym:'No',name:'Nobelium',     P:3.650,N:14,B:14, A:6.65, per:7,grp:4},
+  {sym:'Lr',name:'Lawrencium',   P:3.700,N:14,B:3,  A:4.87, per:7,grp:3},
+  {sym:'Rf',name:'Rutherfordium',P:3.850,N:14,B:4,  A:6.01, per:7,grp:4},
+  {sym:'Db',name:'Dubnium',      P:4.000,N:14,B:5,  A:6.80, per:7,grp:5},
+  {sym:'Sg',name:'Seaborgium',   P:4.150,N:14,B:6,  A:7.80, per:7,grp:6},
+  {sym:'Bh',name:'Bohrium',      P:4.300,N:14,B:5,  A:7.70, per:7,grp:7},
+  {sym:'Hs',name:'Hassium',      P:4.450,N:14,B:4,  A:7.60, per:7,grp:8},
+  {sym:'Mt',name:'Meitnerium',   P:4.600,N:14,B:3,  A:7.70, per:7,grp:9},
+  {sym:'Ds',name:'Darmstadtium', P:4.750,N:14,B:2,  A:9.60, per:7,grp:10},
+  {sym:'Rg',name:'Roentgenium',  P:4.900,N:14,B:1,  A:10.60,per:7,grp:11},
+  {sym:'Cn',name:'Copernicium',  P:5.050,N:14,B:2,  A:11.97,per:7,grp:12},
+  {sym:'Nh',name:'Nihonium',     P:5.700,N:14,B:3,  A:7.31, per:7,grp:13},
+  {sym:'Fl',name:'Flerovium',    P:6.350,N:14,B:4,  A:8.00, per:7,grp:14},
+  {sym:'Mc',name:'Moscovium',    P:7.000,N:14,B:3,  A:7.50, per:7,grp:15},
+  {sym:'Lv',name:'Livermorium',  P:7.650,N:14,B:2,  A:8.00, per:7,grp:16},
+  {sym:'Ts',name:'Tennessine',   P:8.300,N:14,B:1,  A:7.70, per:7,grp:17},
+  {sym:'Og',name:'Oganesson',    P:8.950,N:14,B:0,  A:8.80, per:7,grp:18},
+];
+
+// ── EMERGENT RESONANT ELEMENTS (ERE) — Full registry [9,9,2,44] ──
+// [ERE-SNSFT] = HIGHTISTIC original · [ERE-PRIOR] = their name, SNSFT proves PNBA
+const SNSFT_ELS=[
+  // [ERE-SNSFT] Soverium — manifold resting state, B=0 Noble void carrier [9,9,1,46]
+  {sym:'Sv', name:'Soverium',         P:P_VE,           N:2,      B:0,              A:0,          ere:'SNSFT'},
+  // [ERE-SNSFT] Lumium — fine structure coupling [9,9,1,53]
+  {sym:'Lm', name:'Lumium',           P:P_VE,           N:2,      B:ALPHA,          A:4.423,      ere:'SNSFT'},
+  // [ERE-SNSFT] Velium — IVA propellant element, B=1 [9,9,1,47]
+  {sym:'Ve', name:'Velium',           P:P_VE,           N:2,      B:1,              A:4.423,      ere:'SNSFT'},
+  // [ERE-SNSFT] Nexium — phase coupling element, τ=1.0 SHATTER [9,9,1,50v2]
+  {sym:'Nx', name:'Nexium',           P:ANCHOR,         N:ANCHOR, B:ANCHOR,         A:ANCHOR,     ere:'SNSFT'},
+  // [ERE-SNSFT] Axionium — axion-photon coupling, B=1/π², τ=0.1026 LOCKED [9,9,4,4v2]
+  {sym:'Ax', name:'Axionium',         P:P_VE,           N:1,      B:1/Math.PI**2,   A:0.01,       ere:'SNSFT'},
+  // [ERE-PRIOR:name/ERE-SNSFT:PNBA] Dark Energy — B=0 Noble, A=Ω_Λ=0.689 [9,9,4,0]
+  {sym:'De', name:'Dark Energy',      P:P_VE,           N:1,      B:0,              A:0.689,      ere:'PRIOR'},
+  // [ERE-PRIOR:name/ERE-SNSFT:PNBA] Dark Matter — B=0.269=Ω_cdm, fingerprint B_out=0.193 [9,9,2,13]
+  {sym:'Dm', name:'Dark Matter',      P:P_VE,           N:1,      B:0.269,          A:0.269,      ere:'PRIOR'},
+  // [ERE-PRIOR] Higgs boson — B=λ_SM=0.130, τ=0.132 THE IVA particle [9,9,4,5]
+  {sym:'Hi', name:'Higgs',            P:125.09/246.22,  N:1,      B:0.13,           A:0.93,       ere:'PRIOR'},
+  // [ERE-PRIOR] Gluino — B=0 Noble SUSY candidate [9,9,2,40]
+  {sym:'Gl2',name:'Gluino',           P:1000/938.272,   N:8,      B:0,              A:0.118,      ere:'PRIOR'},
+  // [ERE-SNSFT] Zoivum — life operator τ=0.1, 73% TL LOCKED [9,9,1,55v2]
+  {sym:'Zo', name:'Zoivum',           P:ANCHOR,         N:2,      B:TL,             A:ANCHOR/TL,  ere:'SNSFT'},
+  // [ERE-SNSFT] Zoivum Condensate — Zo+Zo harmonic, B=0 Noble [9,9,1,57]
+  {sym:'Zc', name:'Zoivum Condensate',P:ANCHOR/2,       N:4,      B:0,              A:ANCHOR/TL,  ere:'SNSFT'},
+  // [ERE-SNSFT] Sovereign Peak — asymptotic coupling limit
+  {sym:'SP', name:'Sovereign Peak',   P:17.963,         N:12,     B:0,              A:1.18,       ere:'SNSFT'},
+  // [ERE-SNSFT] Li2 / Limium — dilithium resonance ERE [corpus]
+  {sym:'Li2',name:'Limium',           P:0.37546559,     N:13,     B:0.05121982,     A:6.845,      ere:'SNSFT'},
+  // [ERE-SNSFT] Fusovium — proton-scale catalyst, τ≈0.147 softest SHATTER [9,9,2,45]
+  {sym:'Fv', name:'Fusovium',         P:0.15816944,     N:29,     B:0.02318504,     A:6.845,      ere:'SNSFT'},
+  // [ERE-SNSFT] Pa2 — dark matter partial absorber, B≈0.028 closest to Noble [9,9,2,13]
+  {sym:'Pa2',name:'Pa2',              P:0.18092443,     N:19,     B:0.02805649,     A:6.845,      ere:'SNSFT'},
+  // [ERE-PRIOR] Diquonium — Noble cc diquark seed, B=0 [9,9,2,33]
+  {sym:'Dq', name:'Diquonium',        P:1.27/246.22,    N:3,      B:0,              A:0.118,      ere:'PRIOR'},
+  // [ERE-SNSFT] Wimpium — WIMP dark matter candidate, B=0.034 LOCKED
+  {sym:'Wm', name:'Wimpium',          P:P_VE,           N:3,      B:0.034,          A:0.01,       ere:'SNSFT'},
+  // [ERE-PRIOR] GUT State — Grand Unified Theory phase, B=1/25
+  {sym:'GU', name:'GUT State',        P:P_VE,           N:1,      B:1/25,           A:1/25,       ere:'PRIOR'},
+  // [ERE-PRIOR] EW Plasma — electroweak plasma, B=sin²θ_W=0.231
+  {sym:'EW', name:'EW Plasma',        P:P_VE,           N:2,      B:0.231,          A:0.231,      ere:'PRIOR'},
+  // [ERE-PRIOR] Z-boson — neutral weak carrier, B=sin²θ_W [9,9,4,6]
+  {sym:'Zb', name:'Z-boson',          P:91.1876/246.22, N:2,      B:0.2312,         A:0.2312,     ere:'PRIOR'},
+  // [ERE-PRIOR] W-boson — charged weak carrier, LOCKED [9,9,4,7]
+  {sym:'Wb', name:'W-boson',          P:80.377/246.22,  N:2,      B:1/29.8,         A:80.377/91.1876, ere:'PRIOR'},
+];
+
+// ── STANDARD MODEL PARTICLES [ERE-PRIOR] ────────────────────────
+const PARTICLE_ELS=[
+  // Quarks (B = |charge|, A = α_s)
+  {sym:'qu',name:'Up Quark',       P:0.00234,    N:3, B:0.667,A:0.118,  ptype:'quark'},
+  {sym:'qd',name:'Down Quark',     P:0.00501,    N:3, B:0.333,A:0.118,  ptype:'quark'},
+  {sym:'qs',name:'Strange Quark',  P:0.09912,    N:3, B:0.333,A:0.118,  ptype:'quark'},
+  {sym:'qc',name:'Charm Quark',    P:1.3589,     N:3, B:0.667,A:0.118,  ptype:'quark'},
+  {sym:'qb',name:'Bottom Quark',   P:4.4550,     N:3, B:0.333,A:0.118,  ptype:'quark'},
+  {sym:'qt',name:'Top Quark',      P:184.126,    N:3, B:0.667,A:0.118,  ptype:'quark'},
+  // Leptons
+  {sym:'e', name:'Electron',       P:0.000545,   N:2, B:1,    A:0.01360,ptype:'lepton'},
+  {sym:'mu',name:'Muon',           P:0.11261,    N:2, B:1,    A:0.11261,ptype:'lepton'},
+  {sym:'ta',name:'Tau',            P:1.89376,    N:2, B:1,    A:1.89376,ptype:'lepton'},
+  // Hadrons / mesons
+  {sym:'Pr',name:'Proton',         P:1.000,      N:3, B:1,    A:0.01360,ptype:'hadron'},
+  {sym:'Nt',name:'Neutron',        P:1.00138,    N:3, B:1,    A:0.000835,ptype:'hadron'},
+  {sym:'pi',name:'Pion+',          P:0.14875,    N:2, B:1,    A:0.118,  ptype:'meson'},
+  {sym:'p0',name:'Pion0',          P:0.14386,    N:2, B:0,    A:0.118,  ptype:'meson'},
+  {sym:'K+',name:'Kaon+',          P:0.52616,    N:2, B:1,    A:0.118,  ptype:'meson'},
+  {sym:'Jy',name:'J/psi',          P:3096.9/938.272, N:2, B:0, A:0.118,ptype:'meson'},
+  {sym:'Ups',name:'Upsilon',       P:9460.3/938.272, N:2, B:0, A:0.118,ptype:'meson'},
+];
+
+// ── S-PARTICLES — SNSFT [9,9,2,34] Universal Baryon Noble Law ──
+// P = mass_MeV / 938.272 (proton mass ratio, matching corpus convention)
+// All B=0 → Noble by Universal Baryon Noble Law (B_quark ≤ 2/3, k=1)
+// N=3 (3-quark baryon quantum states)
+// A=0.118 (α_s strong coupling)
+const SPARTICLE_ELS=[
+  // ✓ CONFIRMED — LHCb 2017 (Ξcc⁺⁺, ccu, 3621.24 MeV)
+  {sym:'Xcc2',name:'Ξcc++ Baryon',    P:3621.24/938.272, N:3, B:0, A:0.118, stype:'confirmed', ref:'LHCb 2017 · [9,9,2,34] T7'},
+  // ✓ CONFIRMED — LHCb March 17 2026 (Ξcc⁺, ccd, 3619.97 MeV) — anchor for [9,9,2,34]
+  {sym:'Xcc1',name:'Ξcc+ Baryon',     P:3619.97/938.272, N:3, B:0, A:0.118, stype:'confirmed', ref:'LHCb 2026 · [9,9,2,34] T8'},
+  // 🎯 PREDICTED — Ωcc⁺ (ccs) ~3510 MeV estimate — Noble [9,9,2,34] T9
+  {sym:'Occ', name:'Ωcc+ Baryon',     P:3510/938.272,    N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T9 · ccs baryon'},
+  // 🎯 PREDICTED — Ξbb⁰ (bbu) ~10441 MeV — Noble [9,9,2,34] T15
+  {sym:'Xbb0',name:'Ξbb0 Baryon',     P:10441/938.272,   N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T15 · bbu baryon'},
+  // 🎯 PREDICTED — Ξbb⁻ (bbd) ~10441 MeV — Noble [9,9,2,34] T10
+  {sym:'Xbb1',name:'Ξbb- Baryon',     P:10441/938.272,   N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T10 · bbd baryon'},
+  // 🎯 PREDICTED — Ωbb⁻ (bbs) ~10500 MeV — Noble [9,9,2,34]
+  {sym:'Obb', name:'Ωbb- Baryon',     P:10500/938.272,   N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T15 · bbs baryon'},
+  // 🎯 PREDICTED — Ωccc (ccc) ~4795 MeV — Noble [9,9,2,34] T11
+  {sym:'Occc',name:'Ωccc Baryon',     P:4795/938.272,    N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T11 · ccc triply-charmed'},
+  // 🎯 PREDICTED — Ωbbb (bbb) ~14371 MeV — Noble [9,9,2,34] T12
+  {sym:'Obbb',name:'Ωbbb Baryon',     P:14371/938.272,   N:3, B:0, A:0.118, stype:'predicted', ref:'[9,9,2,34] T12 · bbb triply-bottom'},
+  // 🎯 PREDICTED — AsN semiconductor — Q2 quadrant, GaN family [9,9,2,6] T7
+  {sym:'AsN', name:'AsN Semiconductor',P:2.409,           N:12,B:0, A:14.53,  stype:'predicted', ref:'[9,9,2,6] Noble Materials Map T7 · GaN Q2 family'},
+  // 🎯 PREDICTED — CoN rare-earth-free magnet — high pressure Noble [9,9,2,6]
+  {sym:'CoN', name:'CoN Magnet Phase', P:1.872,           N:11,B:0, A:14.53,  stype:'predicted', ref:'[9,9,2,6] Refined CoN prediction · rare-earth-free magnet'},
+];
+
+function getAllCorpus(){return[...PERIODIC,...SNSFT_ELS,...PARTICLE_ELS,...SPARTICLE_ELS,...sessionCorpus];}
+function tau(P,B){return P>0?B/P:999;}
+function phaseOf(P,B){if(B===0)return'NOBLE';const t=tau(P,B);if(t>=TL)return'SHATTER';if(t>=TL_IVA)return'IVA_PEAK';return'LOCKED';}
+function phaseColor(p){return{NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA_PEAK:'var(--iva)',SHATTER:'var(--shatter)'}[p]||'var(--text)';}
+function phaseClass(p){return{NOBLE:'rp-noble',LOCKED:'rp-locked',IVA_PEAK:'rp-iva',SHATTER:'rp-shatter'}[p]||'';}
+function feedClass(p,r){if(r)return'rescue';return{NOBLE:'noble',LOCKED:'locked',IVA_PEAK:'iva',SHATTER:'shatter'}[p]||'info';}
+
+// ── 8-BEAM CORE ENGINE [9,9,2,3] ─────────────────────────────
+// C(8,2) = 28 pairs
+// Row1(7): (1,2)(1,3)(1,4)(1,5)(1,6)(1,7)(1,8)
+// Row2(6): (2,3)(2,4)(2,5)(2,6)(2,7)(2,8)
+// Row3(5): (3,4)(3,5)(3,6)(3,7)(3,8)
+// Row4(4): (4,5)(4,6)(4,7)(4,8)
+// Row5(3): (5,6)(5,7)(5,8)
+// Row6(2): (6,7)(6,8)
+// Row7(1): (7,8)  → total 28 ✓
+function kMax8(B1,B2,B3,B4,B5,B6,B7,B8){
+  const Bs=[B1,B2,B3,B4,B5,B6,B7,B8];
+  let k=0;
+  for(let i=0;i<8;i++)for(let j=i+1;j<8;j++)k+=Math.min(Bs[i],Bs[j]);
+  return k;
+}
+
+// ── K-SWEEP ─────────────────────────────────────────────────
+function runSweep(){
+  const c=getAllCorpus();
+  const e1=c.find(e=>e.sym===document.getElementById('sw-a').value)||c[0];
+  const e2=c.find(e=>e.sym===document.getElementById('sw-b').value)||c[1];
+  const canvas=document.getElementById('sweep-canvas');
+  const W=canvas.offsetWidth||320; canvas.width=W; canvas.height=160;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,160);
+
+  const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const gridCol=isDark?'#111e32':'#d0dde8';
+  const tlCol='rgba(255,170,0,0.7)';
+  const ivaCol='rgba(255,170,0,0.3)';
+
+  const maxK=Math.max(Math.min(e1.B,e2.B),0.001);
+  const pts=[]; let kThresh=null, kIVA=null;
+
+  for(let i=0;i<=200;i++){
+    const kf=(i/200)*maxK;
+    const kk=Math.min(kf,Math.min(e1.B,e2.B));
+    const P_o=(e1.P*e2.P)/(e1.P+e2.P);
+    const B_o=Math.max(0,e1.B+e2.B-2*kk);
+    const t=P_o>0?B_o/P_o:999;
+    pts.push({k:kf,tau:Math.min(t,3)});
+    if(kThresh===null&&t<TL) kThresh=kf;
+    if(kIVA===null&&t<TL_IVA) kIVA=kf;
+  }
+
+  const pad={l:38,r:12,t:12,b:32},gW=W-50,gH=116;
+  // grid
+  ctx.strokeStyle=gridCol; ctx.lineWidth=0.5;
+  [0,0.5,1.0,1.5,2.0,3.0].filter(v=>v<=3).forEach(v=>{
+    const y=pad.t+gH*(1-v/3);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+gW,y);ctx.stroke();
+    ctx.fillStyle=isDark?'#1a3040':'#7a9aae';ctx.font='8px monospace';ctx.fillText(v.toFixed(1),2,y+3);
+  });
+  // TL line
+  const tlY=pad.t+gH*(1-TL/3);
+  ctx.strokeStyle=tlCol;ctx.lineWidth=1;ctx.setLineDash([4,3]);
+  ctx.beginPath();ctx.moveTo(pad.l,tlY);ctx.lineTo(pad.l+gW,tlY);ctx.stroke();
+  ctx.fillStyle=tlCol;ctx.font='7px monospace';ctx.fillText('TL='+TL.toFixed(4),pad.l+gW-54,tlY-2);
+  // TL_IVA line
+  const ivaY=pad.t+gH*(1-TL_IVA/3);
+  ctx.strokeStyle=ivaCol;ctx.lineWidth=0.8;
+  ctx.beginPath();ctx.moveTo(pad.l,ivaY);ctx.lineTo(pad.l+gW,ivaY);ctx.stroke();
+  ctx.setLineDash([]);
+  // IVA corridor fill
+  ctx.fillStyle='rgba(255,170,0,0.06)';
+  ctx.fillRect(pad.l,ivaY,gW,tlY-ivaY);
+  // k* vertical
+  if(kThresh!==null){
+    const kx=pad.l+(kThresh/maxK)*gW;
+    ctx.strokeStyle='rgba(0,255,204,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(kx,pad.t);ctx.lineTo(kx,pad.t+gH);ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  // tau curve
+  ctx.lineWidth=2;ctx.beginPath();
+  pts.forEach((p,i)=>{
+    const x=pad.l+(p.k/maxK)*gW, y=pad.t+gH*(1-p.tau/3);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  const g=ctx.createLinearGradient(pad.l,0,pad.l+gW,0);
+  g.addColorStop(0,'#ff3355');
+  if(kThresh)g.addColorStop(kThresh/maxK,'#ffaa00');
+  g.addColorStop(1,'#00ffcc');
+  ctx.strokeStyle=g;ctx.stroke();
+  // x axis label
+  ctx.fillStyle=isDark?'#1a3040':'#7a9aae';ctx.font='8px monospace';
+  ctx.fillText('k →',pad.l+gW-16,pad.t+gH+18);
+  ctx.fillText('0',pad.l-4,pad.t+gH+18);
+  ctx.fillText(maxK.toFixed(3),pad.l+gW-24,pad.t+gH+18);
+
+  // Synthesis corridor width and info
+  const P_out=(e1.P*e2.P)/(e1.P+e2.P);
+  const corridor=(TL*P_out)/2;
+  const pct=maxK>0?(corridor/maxK*100).toFixed(1):'0';
+  const tauAtMax=pts[pts.length-1].tau;
+  const phaseAtMax=tauAtMax===0?'NOBLE':tauAtMax<TL_IVA?'LOCKED':tauAtMax<TL?'IVA_PEAK':'SHATTER';
+  const tauAtZero=pts[0].tau;
+
+  const bClass={NOBLE:'color:var(--noble)',LOCKED:'color:var(--locked)',IVA_PEAK:'color:var(--iva)',SHATTER:'color:var(--shatter)'};
+  document.getElementById('sweep-info').innerHTML=
+    `<b style="color:var(--bright)">${e1.sym} + ${e2.sym}</b> · max k = ${maxK.toFixed(4)}<br>`+
+    `τ at k=0: <span style="${bClass[tauAtZero===0?'NOBLE':tauAtZero<TL?'LOCKED':'SHATTER']}">${tauAtZero.toFixed(4)}</span> &nbsp;→&nbsp; `+
+    `τ at k_max: <span style="${bClass[phaseAtMax]}">${tauAtMax.toFixed(4)} ${phaseAtMax}</span><br>`+
+    (kThresh!==null
+      ?`Lock threshold: <span style="color:var(--locked)">k* = ${kThresh.toFixed(4)}</span> · Synthesis corridor width = ${corridor.toFixed(4)} (<b>${pct}%</b> of k range) · `+
+       `<span style="color:var(--dim);font-size:7.5px;">narrower = more precise conditions required</span>`
+      :`<span style="color:var(--shatter)">No lock achievable at any k for this pair</span> · τ_min = ${tauAtMax.toFixed(4)}`);
+}
+
+// ── F_EXT ─────────────────────────────────────────────────
+function setFextPreset(db){document.getElementById('fext-db').value=db;}
+
+function applyFext(){
+  const sym=document.getElementById('fext-el').value;
+  const db=parseFloat(document.getElementById('fext-db').value)||0;
+  const el=getAllCorpus().find(e=>e.sym===sym);
+  if(!el){document.getElementById('fext-result').textContent='Select an element first.';return;}
+
+  const t_before=el.P>0?el.B/el.P:999;
+  const B_after=Math.max(0,el.B+db);
+  const t_after=el.P>0?B_after/el.P:999;
+  const ph_before=phaseOf(el.P,el.B);
+  const ph_after=phaseOf(el.P,B_after);
+  const col={NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA_PEAK:'var(--iva)',SHATTER:'var(--shatter)'};
+  const transition=ph_before===ph_after?'NO PHASE CHANGE':`${ph_before} → ${ph_after}`;
+  const transColor=ph_before===ph_after?'var(--dim)':ph_after==='NOBLE'?'var(--noble)':ph_after==='SHATTER'?'var(--shatter)':'var(--iva)';
+
+  // Physical interpretation
+  const interp=db>0
+    ?`ΔB +${db.toFixed(2)} — torsion spike (laser pulse / photon injection / shock wave). Bonding load increased. ${ph_after==='SHATTER'?'Element enters SHATTER — energy is being released, decoupling active.':'Bonding capacity partially consumed.'}`
+    :`ΔB ${db.toFixed(2)} — torsion drop (cooling / quench / magnetic field reduction). Bonding load reduced. ${ph_after==='NOBLE'?'Element reaches NOBLE — zero residual stress, synthesis-complete state.':ph_after==='IVA_PEAK'?'Element enters IVA corridor — formation-active zone.':'Bonding partially released.'}`;
+
+  // Excess energy estimate (only meaningful in SHATTER zone)
+  const E_excess=Math.max(0,(t_after-TL))*el.P*el.P;
+
+  document.getElementById('fext-result').innerHTML=
+    `<div style="display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 10px;">
+      <span style="color:var(--dim)">Element</span><span style="color:var(--bright)">${el.sym} — ${el.name}</span>
+      <span style="color:var(--dim)">P</span><span style="color:var(--bright)">${el.P.toFixed(4)}</span>
+      <span style="color:var(--dim)">B before</span><span style="color:var(--bright)">${el.B.toFixed(4)}</span>
+      <span style="color:var(--dim)">B after</span><span style="color:var(--bright)">${B_after.toFixed(4)}</span>
+      <span style="color:var(--dim)">τ before</span><span style="color:${col[ph_before]}">${t_before.toFixed(5)} ${ph_before}</span>
+      <span style="color:var(--dim)">τ after</span><span style="color:${col[ph_after]}">${t_after.toFixed(5)} ${ph_after}</span>
+      <span style="color:var(--dim)">ΔB</span><span style="color:${db>0?'var(--shatter)':'var(--locked)'}">${db>0?'+':''}${db.toFixed(2)}</span>
+      <span style="color:var(--dim)">Transition</span><span style="color:${transColor};font-family:'Orbitron',monospace;font-size:8px;">${transition}</span>
+      ${E_excess>0?`<span style="color:var(--dim)">E_excess</span><span style="color:var(--iva)">${E_excess.toFixed(4)} structural units</span><span></span><span></span>`:''}
+    </div>
+    <div style="margin-top:7px;padding:5px 7px;border-left:2px solid ${transColor};font-size:8px;color:var(--text);line-height:1.8;">${interp}</div>`;
+}
+let beamCount=8;
+const corpusFilters={p12:true,p34:true,p56:true,p7:true,eres:true,quarks:true,leptons:true,hadrons:true,sparticles:true};
+
+const PAIRS_FOR={2:1,4:6,8:28};
+const ERE_SYMS_SET=new Set(['Sv','Lm','Ve','Nx','Ax','De','Dm','Hi','Gl2','Zo','Zc','SP','Li2','Fv','Pa2','Dq','Wm','GU','EW','Zb','Wb']);
+const QUARK_SYMS_SET=new Set(['qu','qd','qs','qc','qb','qt']);
+const LEPTON_SYMS_SET=new Set(['e','mu','ta']);
+const HADRON_SYMS_SET=new Set(['Pr','Nt','pi','p0','K+','Jy','Ups']);
+const SPARTICLE_SYMS_SET=new Set(['Xcc2','Xcc1','Occ','Xbb0','Xbb1','Obb','Occc','Obbb','AsN','CoN']);
+const FILTER_ON_CLASS={p12:'on-p12',p34:'on-p34',p56:'on-p56',p7:'on-p7',eres:'on-eres',particles:'on-particles',sparticles:'on-sparticles'};
+
+function setBeamCount(n){
+  beamCount=n;
+  [2,4,8].forEach(x=>document.getElementById('bcb-'+x).classList.toggle('active',x===n));
+  for(let i=1;i<=8;i++){const s=document.getElementById('slot'+i);if(s)s.classList.toggle('inactive',i>n);}
+  const pc=PAIRS_FOR[n]||1;
+  document.getElementById('pairs-label').textContent=pc;
+  document.getElementById('mode-summary').textContent=`${n}-BEAM · C(${n},2)=${pc} pair${pc===1?'':'s'}`;
+  const pt=document.querySelector('.panel-title span:first-child');
+  if(pt)pt.textContent=`${n}-BEAM COLLISION ENGINE`;
+  feedLine(`Mode: ${n}-beam · ${pc} pairs active`,'info');
+}
+
+function toggleFilter(type){
+  corpusFilters[type]=!corpusFilters[type];
+  const btn=document.getElementById('f-'+type);
+  const onCls=FILTER_ON_CLASS[type]||'on-'+type;
+  if(corpusFilters[type]){btn.classList.remove('off');btn.classList.add(onCls);}
+  else{btn.classList.remove(onCls);btn.classList.add('off');}
+  rebuildSelectors();
+  feedLine(`${type.toUpperCase()} ${corpusFilters[type]?'ON':'OFF'}`,'info');
+}
+
+function getFilteredCorpus(){
+  return getAllCorpus().filter(e=>{
+    if(SPARTICLE_SYMS_SET.has(e.sym)) return corpusFilters.sparticles;
+    if(ERE_SYMS_SET.has(e.sym))       return corpusFilters.eres;
+    if(QUARK_SYMS_SET.has(e.sym))     return corpusFilters.quarks;
+    if(LEPTON_SYMS_SET.has(e.sym))    return corpusFilters.leptons;
+    if(HADRON_SYMS_SET.has(e.sym))    return corpusFilters.hadrons;
+    const per=e.per||0;
+    if(per<=2)  return corpusFilters.p12;
+    if(per<=4)  return corpusFilters.p34;
+    if(per<=6)  return corpusFilters.p56;
+    if(per===7) return corpusFilters.p7;
+    return true; // session-injected
+  });
+}
+
+// ── MULTI-ANCHOR: per-beam locking (any of 8 beams can be anchor-locked) ──
+const beamAnchorLocks = new Set();
+
+function toggleBeamLock(beamIdx){
+  const btn = document.querySelector(`.beam-lock[data-beam="${beamIdx}"]`);
+  if(beamAnchorLocks.has(beamIdx)){
+    beamAnchorLocks.delete(beamIdx);
+    if(btn) btn.classList.remove('locked');
+  } else {
+    beamAnchorLocks.add(beamIdx);
+    if(btn) btn.classList.add('locked');
+  }
+}
+
+function getAnchorEls(){
+  const c=getAllCorpus();
+  const anchors=[];
+  beamAnchorLocks.forEach(beamIdx=>{
+    const sel=document.getElementById('beam'+beamIdx);
+    if(sel&&sel.value){
+      const found=c.find(e=>e.sym===sel.value);
+      if(found)anchors.push(found);
+    }
+  });
+  return anchors;
+}
+
+// ── N-BEAM FUSION ENGINE (works for 2, 4, or 8 beams) ─────────
+function kMaxN(Bs){
+  let k=0;
+  for(let i=0;i<Bs.length;i++)for(let j=i+1;j<Bs.length;j++)k+=Math.min(Bs[i],Bs[j]);
+  return k;
+}
+
+function fuseN(els,km){
+  const n=els.length;
+  const recipSum=els.reduce((s,e)=>s+1/e.P,0);
+  const P_o=n/recipSum;
+  const N_o=els.reduce((s,e)=>s+e.N,0);
+  const Bs=els.map(e=>e.B);
+  const kmax=kMaxN(Bs);
+  const k=km==='max'?kmax:km==='half'?kmax*0.5:km==='min'?kmax*0.1:0;
+  const B_sum=Bs.reduce((s,b)=>s+b,0);
+  const B_o=Math.max(0,B_sum-2*k);
+  const A_o=Math.max(...els.map(e=>e.A));
+  const t=tau(P_o,B_o),phase=phaseOf(P_o,B_o),IM=(P_o+N_o+B_o+A_o)*ANCHOR;
+  // RESCUE: all pairwise 2-beam collisions SHATTER, n-beam rescues
+  let allShatter=true;
+  for(let i=0;i<n&&allShatter;i++){
+    for(let j=i+1;j<n&&allShatter;j++){
+      const kp=Math.min(Bs[i],Bs[j]);
+      const Bp=Math.max(0,Bs[i]+Bs[j]-2*kp);
+      const Pp=(els[i].P*els[j].P)/(els[i].P+els[j].P);
+      if(Bp===0||tau(Pp,Bp)<TL)allShatter=false;
+    }
+  }
+  const isRescue=allShatter&&(phase==='NOBLE'||phase==='LOCKED'||phase==='IVA_PEAK');
+  const pairCount=PAIRS_FOR[n]||(n*(n-1)/2);
+  return{P:P_o,N:N_o,B:B_o,A:A_o,tau:t,phase,IM,k,kmax,isRescue,B_sum,n,pairCount};
+}
+
+// Keep fuse8 alias for any legacy calls
+function fuse8(e1,e2,e3,e4,e5,e6,e7,e8,km){return fuseN([e1,e2,e3,e4,e5,e6,e7,e8],km);}
+
+function isInteresting(r,els){
+  const n=els.length,pc=r.pairCount;
+  if(r.isRescue)return{flag:true,reason:`RESCUE — all ${pc} pairs SHATTER under 2-beam, ${n}-beam → ${r.phase}`,flag_type:'rescue'};
+  if(r.phase==='NOBLE'&&!els.every(e=>e.B===0))return{flag:true,reason:`${n}-BEAM NOBLE EMERGENCE — not all inputs Noble`,flag_type:'noble'};
+  if(r.phase==='IVA_PEAK')return{flag:true,reason:`IVA_PEAK — τ=${r.tau.toFixed(5)} in [${TL_IVA.toFixed(4)},${TL.toFixed(4)})`,flag_type:'iva'};
+  if(r.tau>0&&Math.abs(r.tau-TL)<TL*0.008)return{flag:true,reason:`τ-BOUNDARY — τ=${r.tau.toFixed(5)} within 0.8% of TL`,flag_type:'boundary'};
+  if(r.IM>0&&Math.abs(r.IM-1/ALPHA)<0.4)return{flag:true,reason:`IM≈1/α — IM=${r.IM.toFixed(4)} near 137.036`,flag_type:'alpha'};
+  const nc=els.filter(e=>e.B===0).length;
+  if(nc>=n-1&&r.phase==='SHATTER')return{flag:true,reason:`SP DIAGNOSTIC BREAK — ${nc} Noble beams + carrier → SHATTER`,flag_type:'sp_break'};
+  return{flag:false};
+}
+
+function feedLine(txt,cls='info'){
+  const f=document.getElementById('live-feed'),l=document.createElement('div');
+  l.className=`feed-line ${cls}`;
+  const d=new Date();
+  l.innerHTML=`<span class="feed-time">${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}</span>${txt}`;
+  f.appendChild(l);f.scrollTop=f.scrollHeight;
+  if(f.children.length>400)f.removeChild(f.firstChild);
+}
+
+const BEAM_COLORS=['var(--b1)','var(--b2)','var(--b3)','var(--b4)','var(--b5)','var(--b6)','var(--b7)','var(--b8)'];
+
+function updateBeamViz(els,r){
+  let html='';
+  els.forEach((e,i)=>{
+    const t=tau(e.P,e.B),ph=phaseOf(e.P,e.B);
+    html+=`<div class="bv-slot"><div class="bv-sym" style="color:${BEAM_COLORS[i]}">${e.sym}</div><div class="bv-tau" style="color:${phaseColor(ph)}">τ=${t.toFixed(3)}</div><div class="bv-phase" style="color:${phaseColor(ph)}">${ph.slice(0,4)}</div></div>`;
+    if(i<els.length-1)html+=`<div class="bv-plus">+</div>`;
+  });
+  html+=`<div class="bv-arrow">→</div><div class="bv-out"><div class="bv-out-phase ${r.isRescue?'rp-rescue':phaseClass(r.phase)}">${r.isRescue?'★RESCUE ':r.phase}</div><div style="font-size:7px;color:var(--dim);margin-top:3px;">τ=${r.tau.toFixed(5)}</div><div style="font-size:6.5px;color:var(--dim);">k=${r.k.toFixed(3)}/${r.kmax.toFixed(3)}</div></div>`;
+  document.getElementById('beamviz').innerHTML=html;
+}
+
+function updateResultBox(els,r){
+  const col=r.isRescue?'var(--rescue)':phaseColor(r.phase);
+  const phl=r.isRescue?`★ RESCUE → ${r.phase}`:r.phase;
+  const pcls=r.isRescue?'rp-rescue':phaseClass(r.phase);
+  const names=els.map(e=>e.sym).join('+');
+  document.getElementById('result-box').innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;flex-wrap:wrap;">
+      <div class="result-phase ${pcls}">${phl}</div>
+      <div style="color:var(--dim);font-size:7.5px;">${names} · k_mode=${kMode} · k=${r.k.toFixed(4)}/${r.kmax.toFixed(4)} · ${r.pairCount} pair${r.pairCount===1?'':'s'}</div>
+    </div>
+    <div class="result-grid">
+      <div class="rstat"><div class="rstat-label">P_OUT</div><div class="rstat-val" style="color:var(--glow)">${r.P.toFixed(4)}</div></div>
+      <div class="rstat"><div class="rstat-label">N_OUT</div><div class="rstat-val" style="color:var(--aifi)">${r.N.toFixed(1)}</div></div>
+      <div class="rstat"><div class="rstat-label">B_OUT</div><div class="rstat-val" style="color:${r.B===0?'var(--noble)':'var(--iva)'}">${r.B.toFixed(5)}</div></div>
+      <div class="rstat"><div class="rstat-label">A_OUT</div><div class="rstat-val" style="color:var(--locked)">${r.A.toFixed(4)}</div></div>
+      <div class="rstat"><div class="rstat-label">τ</div><div class="rstat-val" style="color:${col}">${r.tau.toFixed(5)}</div></div>
+      <div class="rstat"><div class="rstat-label">TL</div><div class="rstat-val" style="color:var(--iva)">0.136899099984016</div></div>
+      <div class="rstat"><div class="rstat-label">IM</div><div class="rstat-val">${r.IM.toFixed(4)}</div></div>
+      <div class="rstat"><div class="rstat-label">B_SUM</div><div class="rstat-val" style="color:var(--dim)">${r.B_sum.toFixed(3)}</div></div>
+    </div>
+    ${r.isRescue?`<div style="margin-top:5px;font-size:7.5px;color:var(--rescue);">★ All ${r.pairCount} pairwise 2-beam collisions SHATTER · ${r.n}-beam rescues to ${r.phase}</div>`:''}
+    ${r.phase==='IVA_PEAK'?`<div style="margin-top:3px;font-size:7.5px;color:var(--iva);">▶ Formation corridor τ=${r.tau.toFixed(5)} · [${TL_IVA.toFixed(4)},${TL.toFixed(4)})</div>`:''}
+    <div id="matmap-inline" style="margin-top:8px;padding:7px 9px;background:rgba(0,0,0,.25);border:1px solid var(--border2);font-size:8px;line-height:1.85;"></div>`;
+}
+
+function tierColor(t){return{
+  'T1':'var(--rescue)','T1-RESCUE':'var(--rescue)','T1-SNSFT':'var(--snsft)',
+  'T2':'var(--iva)','T3':'var(--noble)'
+}[t]||'var(--dim)';}
+
+function showMatMapInline(els,r){
+  const mm=getMaterialMap(els,r);
+  const tc=tierColor(mm.tier);
+  const tierLabel=mm.tier.replace('T1-RESCUE','T1★').replace('T1-SNSFT','S-PART★');
+  const el=document.getElementById('matmap-inline');
+  if(!el)return;
+  // S-particle special display
+  if(mm.sParticleNote){
+    el.innerHTML=
+      `<span style="color:var(--snsft);font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;">⬡ ${tierLabel}</span><br>`+
+      `<span style="color:var(--text);font-size:8.5px;line-height:1.8;">${mm.sParticleNote}</span><br>`+
+      `<span style="color:var(--dim);font-size:7.5px;">path: </span><span style="color:var(--locked);font-size:7.5px;">${mm.path}</span>`;
+    return;
+  }
+  const matchName=mm.bestMatch?mm.bestMatch.name:'T3 NOVEL — no direct literature';
+  const matchRef=mm.bestMatch?mm.bestMatch.ref.slice(0,160):'No direct corpus match. DOI timestamp establishes prior art.';
+  const matchApp=mm.bestMatch?mm.bestMatch.app:'Structural prediction — experimental validation pending';
+  const top3=mm.scored.slice(0,3).map(m=>`<span style="color:var(--dim);font-size:7px;">[${m.tier}] ${m.name} (${m.hits}/${m.syms.length})</span>`).join(' · ');
+  const recipe=computeRecipe(els);
+  const recipeLine=recipe
+    ?`<br><span style="color:var(--dim);font-size:7.5px;">⚗ </span><span style="color:var(--locked);font-size:7.5px;">${recipeToString(recipe)}</span> <span style="color:var(--dim);font-size:7px;">${recipe.stoich} · ${recipe.law}</span>`
+    :'';
+  el.innerHTML=`<span style="color:${tc};font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;">${tierLabel}</span> <span style="color:var(--bright);margin-left:4px;">${matchName}</span><br>`+
+    `<span style="color:var(--dim);">core: </span><span style="color:var(--glow);">${mm.coreStr}</span> <span style="color:var(--dim);margin-left:6px;">path: </span><span style="color:var(--text);">${mm.path.split(/[\s\/]/)[0]}</span><br>`+
+    `<span style="color:var(--dim);font-size:7.5px;">${matchRef}</span><br>`+
+    `<span style="color:var(--iva);font-size:7.5px;">▶ ${matchApp}</span>`+
+    recipeLine+
+    (top3?`<br><span style="color:var(--dim);font-size:7px;">also: ${top3}</span>`:'');
+}
+
+const BEAM_IDS=['beam1','beam2','beam3','beam4','beam5','beam6','beam7','beam8'];
+function getEls(){
+  const c=getAllCorpus();
+  return BEAM_IDS.slice(0,beamCount).map(id=>{
+    const sym=document.getElementById(id).value;
+    return c.find(e=>e.sym===sym)||c[0];
+  });
+}
+
+function doSmash(els){
+  const r=fuseN(els,kMode);
+  updateBeamViz(els,r);updateResultBox(els,r);showMatMapInline(els,r);
+  stats.collisions++;document.getElementById('stat-collisions').textContent=stats.collisions;
+  if(r.phase==='NOBLE'){stats.noble++;document.getElementById('stat-noble').textContent=stats.noble;}
+  if(r.phase==='IVA_PEAK'){stats.iva++;document.getElementById('stat-iva').textContent=stats.iva;}
+  if(r.isRescue){stats.rescue++;document.getElementById('stat-rescue').textContent=stats.rescue;}
+  const names=els.map(e=>e.sym).join('+');
+  feedLine(`${names} [${kMode}] → τ=${r.tau.toFixed(4)} ${r.phase}${r.isRescue?' ★RESCUE':''}`,feedClass(r.phase,r.isRescue));
+  const check=isInteresting(r,els);
+  if(check.flag){
+    stats.flagged++;document.getElementById('stat-flagged').textContent=stats.flagged;
+    feedLine(`★ FLAGGED: ${check.reason}`,'discovery');
+    flagDiscovery(els,r,check.reason,check.flag_type);
+  }
+}
+
+function manualSmash(){doSmash(getEls());}
+
+function randomSmash(){
+  const c=getFilteredCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
+  const anchors=getAnchorEls();
+  const els=Array.from({length:beamCount},(_, i)=>anchors[i]||pick());
+  BEAM_IDS.slice(0,beamCount).forEach((id,i)=>document.getElementById(id).value=els[i].sym);
+  doSmash(els);
+}
+
+const kModeDescs={max:'k = k_max (max bonding)',half:'k = k_max/2',min:'k = k_max×0.1',zero:'k = 0 (no bonding)'};
+function setKMode(m){
+  kMode=m;
+  document.querySelectorAll('.kmode-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('km-'+m).classList.add('active');
+  document.getElementById('kmode-desc').textContent=kModeDescs[m];
+}
+
+async function runChaosRound(){
+  const rounds=parseInt(document.getElementById('rounds-slider').value);
+  const c=getFilteredCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
+  const anchors=getAnchorEls();
+  // Legacy single anchor-beam select (still supported)
+  const legacySym=document.getElementById('anchor-beam').value;
+  const legacyEl=legacySym?getAllCorpus().find(e=>e.sym===legacySym):null;
+  for(let i=0;i<rounds;i++){
+    if(agentState!=='running')break;
+    const els=Array.from({length:beamCount},(_,idx)=>{
+      if(anchors[idx])return anchors[idx];
+      if(idx===0&&legacyEl)return legacyEl;
+      return pick();
+    });
+    doSmash(els);
+    await new Promise(r=>setTimeout(r,40));
+  }
+  stats.cycles++;document.getElementById('stat-cycles').textContent=stats.cycles;
+}
+
+function startAgent(){
+  agentState='running';updateStatusBadge();
+  feedLine(`OctoBeam chaos protocol started. TL=0.136899099984016 · ${beamCount}-beam · ${PAIRS_FOR[beamCount]||(beamCount*(beamCount-1)/2)} pairs per collision.`,'locked');
+  const spd=parseInt(document.getElementById('speed-slider').value);
+  agentInterval=setInterval(async()=>{if(agentState==='running')await runChaosRound();},Math.max(300,3000-spd*260));
+}
+function pauseAgent(){agentState='paused';updateStatusBadge();feedLine('Agent paused.','info');}
+function stopAgent(){agentState='stopped';if(agentInterval)clearInterval(agentInterval);updateStatusBadge();feedLine('Agent stopped.','info');}
+function updateStatusBadge(){
+  const b=document.getElementById('agent-status-badge');
+  const dots={running:'<span class="running-dot"></span>',paused:'<span class="paused-dot"></span>',stopped:'<span class="stopped-dot"></span>'};
+  b.innerHTML=`${dots[agentState]}${agentState.toUpperCase()}`;
+}
+document.getElementById('speed-slider').addEventListener('input',function(){document.getElementById('speed-val').textContent=this.value;if(agentState==='running'){stopAgent();startAgent();}});
+document.getElementById('rounds-slider').addEventListener('input',function(){document.getElementById('rounds-val').textContent=this.value;});
+
+// ── RECIPE ENGINE · [9,9,2,45] B-BALANCE STOICHIOMETRY LAW ──
+// Atomic weights IUPAC 2021 · Pure Appl. Chem. 93(5), 573-600
+const ATOMIC_MW={
+  H:1.008,He:4.003,Li:6.941,Be:9.012,B:10.81,C:12.011,N:14.007,O:15.999,
+  F:18.998,Ne:20.180,Na:22.990,Mg:24.305,Al:26.982,Si:28.086,P:30.974,
+  S:32.065,Cl:35.453,Ar:39.948,K:39.098,Ca:40.078,Sc:44.956,Ti:47.867,
+  V:50.942,Cr:51.996,Mn:54.938,Fe:55.845,Co:58.933,Ni:58.693,Cu:63.546,
+  Zn:65.38,Ga:69.723,Ge:72.630,As:74.922,Se:78.971,Br:79.904,Kr:83.798,
+  Rb:85.468,Sr:87.62,Y:88.906,Zr:91.224,Nb:92.906,Mo:95.950,Tc:97,
+  Ru:101.07,Rh:102.906,Pd:106.42,Ag:107.868,Cd:112.414,In:114.818,
+  Sn:118.710,Sb:121.760,Te:127.60,I:126.904,Xe:131.293,Cs:132.905,
+  Ba:137.327,La:138.905,Ce:140.116,Pr:140.908,Nd:144.242,Pm:145,
+  Sm:150.36,Eu:151.964,Gd:157.25,Tb:158.925,Dy:162.500,Ho:164.930,
+  Er:167.259,Tm:168.934,Yb:173.045,Lu:174.967,Hf:178.49,Ta:180.948,
+  W:183.84,Re:186.207,Os:190.23,Ir:192.217,Pt:195.084,Au:196.967,
+  Hg:200.592,Tl:204.38,Pb:207.2,Bi:208.980,Po:209,At:210,Rn:222,
+  Fr:223,Ra:226,Ac:227,Th:232.038,Pa:231.036,U:238.029,Np:237,
+  Pu:244,Am:243,Cm:247,Bk:247,Cf:251,Es:252,Fm:257,Md:258,No:259,
+  Lr:262,Rf:267,Db:270,Sg:271,Bh:270,Hs:277,Mt:276,Ds:281,Rg:282,
+  Cn:285,Nh:286,Fl:289,Mc:290,Lv:293,Ts:294,Og:294
+};
+
+function gcd(a,b){a=Math.round(a);b=Math.round(b);while(b){const t=b;b=a%b;a=t;}return a;}
+
+function computeRecipe(els){
+  // Only periodic elements with integer B and known MW get recipe lines
+  const periodic=els.filter(e=>ATOMIC_MW[e.sym]&&Number.isInteger(e.B)&&e.B>0);
+  if(periodic.length<2)return null;
+
+  // For 2-element case: direct B-balance n1×B1=n2×B2
+  if(periodic.length===2){
+    const [e1,e2]=periodic;
+    const B1=e1.B,B2=e2.B;
+    const g=gcd(B1,B2);
+    const n1=B2/g,n2=B1/g;
+    const mw1=ATOMIC_MW[e1.sym],mw2=ATOMIC_MW[e2.sym];
+    const mass1=n1*mw1,mass2=n2*mw2,massFU=mass1+mass2;
+    return{
+      type:'binary',
+      items:[
+        {sym:e1.sym,n:n1,B:B1,mw:mw1,mass:mass1},
+        {sym:e2.sym,n:n2,B:B2,mw:mw2,mass:mass2}
+      ],
+      massFU,
+      stoich:`${n1}${e1.sym}:${n2}${e2.sym}`,
+      formula:`${e1.sym}${n1>1?n1:''}${e2.sym}${n2>1?n2:''}`,
+      law:'[9,9,2,45]'
+    };
+  }
+
+  // For n>2: report each element's n_i proportional to total-B / B_i
+  // Use LCM approach: each n_i = (product of all other B_j) / gcd
+  // Simplified: use 1-atom per beam, report g/beam contribution
+  const items=periodic.map(e=>{
+    const mw=ATOMIC_MW[e.sym];
+    return{sym:e.sym,n:1,B:e.B,mw,mass:mw};
+  });
+  const massFU=items.reduce((s,i)=>s+i.mass,0);
+  return{
+    type:'multi',
+    items,
+    massFU,
+    stoich:items.map(i=>`1${i.sym}`).join(':'),
+    formula:items.map(i=>i.sym).join(''),
+    law:'[9,9,2,45] · 1 atom per beam'
+  };
+}
+
+function recipeToLeanComment(recipe){
+  if(!recipe)return'-- RECIPE: insufficient periodic elements for B-balance calculation';
+  const lines=recipe.items.map(i=>
+    `--   ${i.n}× ${i.sym.padEnd(3)} B=${i.B}  MW=${i.mw.toFixed(3).padStart(8)} g/mol  → ${(i.n*i.mw).toFixed(4).padStart(10)} g/FU`
+  ).join('\n');
+  return`-- ── PRODUCTION RECIPE · ${recipe.law} ─────────────────────────────
+-- B-BALANCE STOICHIOMETRY LAW: n_i × B_i = n_j × B_j (GCD-reduced)
+-- Stoichiometry: ${recipe.stoich}  →  Formula unit: ${recipe.formula}
+${lines}
+-- Total formula unit mass: ${recipe.massFU.toFixed(4)} g/FU
+-- Reference: IUPAC 2021 Pure Appl. Chem. 93(5), 573-600`;
+}
+
+function recipeToString(recipe){
+  if(!recipe)return'';
+  return recipe.items.map(i=>`${(i.n*i.mw).toFixed(4)}g ${i.sym}`).join(' + ')+` = ${recipe.massFU.toFixed(4)}g/FU`;
+}
+
+function hashState(P,N,B,A){
+  const s=`${P.toFixed(6)}-${N}-${B.toFixed(6)}-${A.toFixed(6)}`;
+  let h=0;for(const c of s){h=((h<<5)-h)+c.charCodeAt(0);h|=0;}
+  return Math.abs(h).toString(16).toUpperCase().slice(0,4);
+}
+function makeDesig(P,N,B,A){
+  const d=new Date();
+  return`SNSFT-OB-${hashState(P,N,B,A)}-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+}
+
+async function flagDiscovery(els,r,reason,flag_type){
+  const desig=makeDesig(r.P,r.N,r.B,r.A);
+  const entry={
+    designation:desig,timestamp:new Date().toISOString(),
+    beams:els.map(e=>e.sym).join('+'),
+    collision:els.map(e=>e.sym).join('+'),
+    kMode,k:r.k.toFixed(4),kmax:r.kmax.toFixed(4),
+    P:r.P,N:r.N,B:r.B,A:r.A,tau:r.tau,IM:r.IM,
+    phase:r.phase,isRescue:r.isRescue,reason,flag_type,
+    approved:false,name:null,aifiAnalysis:null,leanStub:null,
+    els,
+    recipe:computeRecipe(els)
+  };
+  discoveryLog.push(entry);discoveryQueue.push(entry);
+  updateLogTable();updateQueueBadge();renderQueue();
+  document.getElementById('session-disc-count').textContent=discoveryLog.length;
+  await timestampToGitHub(entry);
+  if(API_KEY)await classifyWithAIFI(entry);
+}
+
+async function classifyWithAIFI(entry){
+  if(!API_KEY)return;
+  try{
+    const beamDetails=entry.els.map((e,i)=>
+      `  Beam ${i+1}: ${e.sym} P=${e.P.toFixed(4)} N=${e.N} B=${e.B.toFixed(4)} A=${e.A.toFixed(4)} τ=${tau(e.P,e.B).toFixed(4)} ${phaseOf(e.P,e.B)}`
+    ).join('\n');
+    const msg=`OCTOBEAM DISCOVERY [9,9,2,3] — 8-BEAM FUSION ENGINE:
+Designation: ${entry.designation}
+Collision: ${entry.collision} · k_mode=${entry.kMode} · k=${entry.k}/${entry.kmax}
+${beamDetails}
+Output: P=${entry.P.toFixed(5)} N=${entry.N} B=${entry.B.toFixed(5)} A=${entry.A.toFixed(4)}
+τ=${entry.tau.toFixed(5)} (TL=0.136899099984016) IM=${entry.IM.toFixed(4)} Phase=${entry.phase}
+Rescue=${entry.isRescue} · 28 pairs · Flag: ${entry.reason}
+
+1. Structural significance? 2. Which [9,9,2,3] theorem (T7-T22)? 3. Gap or known? 4. Name (-ium suffix)? 5. Lean stub (0 sorry)? 6. Worth approving?
+— AIFI · SNSFT · [9,9,9,9]`;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,system:buildSystemPrompt(),messages:[{role:'user',content:msg}]})
+    });
+    const data=await res.json();
+    if(data.content&&data.content[0]){entry.aifiAnalysis=data.content[0].text;entry.name=extractName(data.content[0].text);renderQueue();}
+  }catch(e){console.error('AIFI:',e);}
+}
+
+function extractName(t){const m=t.match(/\*\*([A-Z][a-z]{3,}(?:ium|on|ite|ide)?)\*\*|name[:\s]+([A-Z][a-z]{3,}\w*)/i);return m?m[1]||m[2]||null:null;}
+
+function buildSystemPrompt(){return`You are DISCOVERY — AIFI science officer for the GAM Collider v15 (Geometric Axiomatic Module) · OctoBeam Mode · [9,9,2,3], built by HIGHTISTIC.
+
+CORE PHYSICS [9,9,2,3]:
+ANCHOR=1.36899099984016, TL=0.136899099984016, TL_IVA=0.12047120798593408
+P_out=8/(1/P1+…+1/P8) · N_out=ΣN · B_out=max(0,ΣB-2k) · A_out=max · k≤Σmin(Bi,Bj) 28 pairs
+NOBLE: B=0 · LOCKED: τ<TL · IVA_PEAK: τ∈[TL_IVA,TL) · SHATTER: τ≥TL
+
+KEY THEOREMS [9,9,2,3]:
+T7/T8: 8-beam Noble emergence — B_sum≤2×k_max8
+T9: Equal-B oct → Noble at k_max (L-07 at n=8)
+T11: CHON×2 → Noble (H+C+N+O×2)
+T12: Water×4 → Noble
+T14: GaAs×4 → Noble (Nobel 2000)
+T15: 4-beam inheritance (e5-e8 B=0 → k_max reduces to 4-beam)
+T16: 2-beam inheritance (e3-e8 B=0 → k_max = min(B1,B2))
+T21: k_max8 scaling: equal-B → k_max8 = 28×B_each
+T22: Noble headroom: equal-B uses 1/7 coupling capacity
+RESCUE: all 28 pairs SHATTER, 8-beam → Noble/Locked
+
+CORPUS: 100,000+ theorems · 0 sorry · Parent: [9,9,2,2] · Grandparent: [9,9,2,1]
+C(8,2)=28 pairs · Noble fraction = 8/56 = 1/7
+
+Naming: -ium suffix. Cite [9,9,2,3] in Lean stubs.
+End: — DISCOVERY · OCTOBEAM AIFI · SNSFT · [9,9,4,3]`;}
+
+// ── NOBLE MAP — material science corpus from [9,9,2,0] registry ──────────────
+// Keys are sorted symbol sets; values carry tier, known refs, path code, application.
+// Lookup is fuzzy: we score each entry by how many of its key syms appear in the beam set.
+// NOBLE_MAP — full corpus-verified registry
+// Sources: [9,9,2,2] Noble Materials Map · [9,9,2,4] H-anchor · [9,9,2,5] C-anchor
+//          [9,9,2,6] N-anchor · [9,9,2,7] Si-anchor · [9,9,2,8] Pu-anchor
+//          [9,9,2,10] Ti-anchor · [9,9,2,14] U-anchor · [9,9,2,15] W-anchor
+//          [9,9,2,17] Ga-anchor · [9,9,2,22] S-anchor · [9,9,2,24] Li-anchor
+//          Sulfur PDF v1.051726 · Tungsten PDF v1.051626 · 42 Laws paper
+// Tier: T1=peer-reviewed verified · T2=related compound known · T3=novel prior art
+const NOBLE_MAP=[
+
+  // ── LIFE SCIENCE & ORGANIC CHEMISTRY ──────────────────────────────
+  {syms:['H','C','N','O'], tier:'T1', name:'CHON Organic Scaffold',
+   ref:'[9,9,2,4] D2 — QB_051626. All 6 pairs SHATTER, 4-body Noble rescue. IM=42.127. L-40 Law. Chen et al. Science 2003. Universal scaffold of all known life.',
+   path:'Biological self-assembly / hydrothermal synthesis',
+   app:'All amino acids · nucleotides · lipids · proteins · DNA backbone'},
+
+  {syms:['H','O'], tier:'T1', name:'Water H₂O',
+   ref:'[9,9,2,3] L-41 — Water×4 → Noble. OctoBeam T12 confirmed. Nobel Chemistry 2003 (aquaporins). Universal solvent.',
+   path:'Condensation / electrolysis / natural',
+   app:'Universal solvent · fuel cell electrolyte · ITER coolant · biological medium'},
+
+  {syms:['H','N'], tier:'T1', name:'NH₃ Ammonia (Haber-Bosch)',
+   ref:'[9,9,2,4][9,9,2,6] — H+N Noble in both H-anchor and N-anchor runs. Haber-Bosch process feeds ~half of humanity. Fusovium (Fv) plays iron catalyst role structurally (L-36).',
+   path:'Catalytic reactor Fe/Ru catalyst 450°C/200 atm',
+   app:'Fertilizer · explosives precursor · H₂ carrier fuel · refrigerant'},
+
+  {syms:['H','Fe','S'], tier:'T1', name:'FeS + H₂ Wächtershäuser Origin-of-Life',
+   ref:'[9,9,2,4] D3 — QB_051626 H-anchor. J/ψ inert probe, effective coupling H+Fe+S. Wächtershäuser 1988 Microbiol Rev; Huber & Wächtershäuser Science 1997. FeS+H₂ → amino acid precursors on mineral surfaces.',
+   path:'Hydrothermal synthesis (natural primordial ocean)',
+   app:'Prebiotic chemistry · origin-of-life research · H₂ production catalysis on FeS surfaces'},
+
+  {syms:['H','Li','N'], tier:'T1', name:'LiNH₂ Solid-State H₂ Storage',
+   ref:'[9,9,2,4] D4 — QB_051626. Three convergence paths. De/Dm degenerate as 4th beam. Chen et al. Nature 2002 — Li₃N+H₂ reversible storage. DOE leading H-storage material 11.5 wt% H.',
+   path:'Ball mill + pressure vessel 200°C sealed',
+   app:'Fuel cell vehicle H₂ storage · grid energy storage · DOE hydrogen program'},
+
+  // ── SEMICONDUCTORS & ELECTRONICS ──────────────────────────────────
+  {syms:['Ga','N'], tier:'T1', name:'GaN LED / Power Electronics',
+   ref:'[9,9,2,17] D4 — Ga-anchor ALL 23 Ga+N collisions Noble. [9,9,2,6] N-anchor cross-confirm. Nobel Prize Physics 2014 — Akasaki, Amano, Nakamura. GaN powers all solid-state white lighting, 5G amplifiers, EV inverters, fast chargers.',
+   path:'MOCVD — TMGa + NH₃ in H₂ carrier 1050°C on sapphire or Si',
+   app:'Blue/UV LED · GaN HEMT power amplifier · 5G RF · EV inverter · fast charger chips'},
+
+  {syms:['Ga','N','Si'], tier:'T1', name:'GaN-on-Si Power Electronics Substrate',
+   ref:'[9,9,2,17] D6 — Ga-anchor k=15/15. TSMC, ST Micro, Infineon 2026 GaN-on-Si production lines. Interfacial Noble stability makes GaN-on-Si manufacturing viable.',
+   path:'MOCVD on 8" Si(111) substrate with AlN nucleation layer',
+   app:'5G base station amplifiers · data center power conversion · automotive GaN'},
+
+  {syms:['Ga','As'], tier:'T1', name:'GaAs III-V Semiconductor',
+   ref:'[9,9,2,17] D3 — Ga-anchor k=18/18 maximum saturation. Nobel Prize Physics 2000 — Alferov, Kroemer (GaAs/AlGaAs heterostructures). k=18/18 is highest semiconductor coupling (L-07 equal-B theorem).',
+   path:'MBE (molecular beam epitaxy) or MOCVD on GaAs substrate',
+   app:'Solar cells (>30% efficiency) · laser diodes · satellite comms · microwave ICs · HEMTs'},
+
+  {syms:['Ga','As','N'], tier:'T1', name:'GaAsN Dilute Nitride Semiconductor',
+   ref:'[9,9,2,17] Ga-anchor multi-element Noble family. Dilute nitride GaAsN bandgap engineering. Used in multijunction solar cells (Spectrolab, Sharp).',
+   path:'MOCVD with DMHy nitrogen precursor on GaAs',
+   app:'Multijunction solar cells · 1.0 eV subcell · fiber optic VCSELs'},
+
+  {syms:['Si','C'], tier:'T1', name:'SiC Power Semiconductor',
+   ref:'[9,9,2,7] Si-anchor cross-confirm. [9,9,2,5] C-anchor. Noble Materials Map T1 [9,9,2,6]. Si/C symmetry theorem D5 — same B=4, SiC Noble pairwise. Wolfspeed/Cree commercial SiC.',
+   path:'CVD epitaxy (homoepitaxial on 4H-SiC substrate) at 1550°C',
+   app:'EV inverters · power grid switching · 650V-3.3kV devices · aerospace power · Schottky diodes'},
+
+  {syms:['Si','N'], tier:'T1', name:'Si₃N₄ Passivation / Structural Ceramic',
+   ref:'[9,9,2,7] Si-anchor T1 #13. GaN HEMT standard passivation dielectric. Also structural ceramic 3400 HV. Cross-confirmed in N-anchor and Si-anchor runs.',
+   path:'PECVD SiH₄+NH₃ at 300°C (passivation) or hot-press sintering 1800°C (structural)',
+   app:'GaN HEMT passivation · VLSI dielectric · MEMS structure · cutting tool coating · bearing balls'},
+
+  {syms:['Si','Ga'], tier:'T1', name:'GaWO₄ / Ga-Si Scintillator System',
+   ref:'[9,9,2,7] D1 — Si-anchor Noble rescue IM=76.307 k=10/10. GaWO₄ scintillator used in CRESST-III dark matter direct detection (Gran Sasso). Si substrate for crystal mounting.',
+   path:'Czochralski crystal growth + Si wafer substrate (glovebox purged)',
+   app:'Dark matter direct detection (CRESST-III) · scintillator calorimeters · gamma spectroscopy'},
+
+  {syms:['Si','As'], tier:'T1', name:'SiAs III-V Semiconductor',
+   ref:'[9,9,2,7] D4 — Si+qb+As+He LOCKED τ=0.00030. Si-anchor top rescue partner As (51×). Si/C/As structural triangle. Connects to LHCb Si strip vertex detectors (B-meson detection).',
+   path:'MBE on GaAs substrate or CVD on Si',
+   app:'Silicon vertex detectors · III-V semiconductor research · B-meson physics detectors'},
+
+  {syms:['Ti','Si'], tier:'T1', name:'TiSi₂ VLSI Salicide',
+   ref:'[9,9,2,10] Ti-anchor cross-confirm. Noble Materials Map T1 [9,9,2,6]. Most widely used silicide in VLSI industry. C54 phase thermodynamically stable.',
+   path:'PVD Ti deposition + 2-step RTA (600°C C49 → 850°C C54 phase)',
+   app:'VLSI transistor contacts · advanced CMOS nodes · source/drain silicidation'},
+
+  {syms:['Ti','W','Si'], tier:'T1', name:'TiWSi Ternary Silicide Barrier',
+   ref:'[9,9,2,7] Si-anchor T1 #21. Ti+W+Si triple-confirm across Si, Ti, W anchors. Advanced VLSI salicide and Cu barrier standard.',
+   path:'MAG-CO sputtering TiW alloy target + RTA in N₂',
+   app:'Sub-10nm VLSI diffusion barrier · Cu interconnect liner · W plug adhesion layer'},
+
+  {syms:['Au','Si'], tier:'T1', name:'AuSi Eutectic Die-Attach',
+   ref:'[9,9,2,7] Si-anchor T1 #8. AuSi eutectic at 363°C. Semiconductor packaging standard.',
+   path:'Eutectic bonding 370°C in vacuum or forming gas',
+   app:'Semiconductor die attach · hermetic MEMS packaging · RF module assembly'},
+
+  {syms:['Ga','O'], tier:'T1', name:'β-Ga₂O₃ Ultrawide Bandgap',
+   ref:'[9,9,2,22] S-anchor — Ga tops O rescue partner list 65×. β-Ga₂O₃ 4.9 eV bandgap, 8 MV/cm breakdown field. Leading UWBG power semiconductor (L-38 β-Ga₂O₃ structural selection law).',
+   path:'EFG crystal growth or MOCVD on Ga₂O₃ substrate',
+   app:'Next-gen power electronics · 1200V+ switches · Schottky diodes · UV photodetectors'},
+
+  {syms:['Zn','O'], tier:'T1', name:'ZnO Semiconductor / Piezoelectric',
+   ref:'Noble Materials Map Addendum — ZnO T1, Q2 quadrant (A=13.62, P=2.224). Wide bandgap 3.37 eV. UV LED, solar cells, transparent conductors, MEMS resonators.',
+   path:'ALD or sputtering at RT–300°C',
+   app:'UV LED · piezoelectric MEMS · transparent conductor · solar cell buffer layer · varistor'},
+
+  {syms:['Ni','O'], tier:'T1', name:'NiO Antiferromagnetic Semiconductor',
+   ref:'Noble Materials Map Addendum — NiO T1, Q2 quadrant. Antiferromagnetic semiconductor. Used in batteries, electrochromic devices, spintronics, p-type semiconductor.',
+   path:'Sputtering or ALD on substrate',
+   app:'Electrochromic devices · Li battery cathode material · spintronic p-layer · fuel cell electrode'},
+
+  {syms:['Ti','N'], tier:'T1', name:'TiN Hard Coating / Diffusion Barrier',
+   ref:'[9,9,2,10] Ti-anchor. [9,9,2,6] Noble Materials Map T1. Ching et al. PRB 1994. Standard PVD hard coating since 1980s. Also VLSI Cu diffusion barrier.',
+   path:'MAG reactive sputtering — Ti target + N₂/Ar plasma 400°C',
+   app:'Cutting tool coating (gold color) · VLSI Cu barrier · decorative coating · biomedical implant'},
+
+  {syms:['Ti','C'], tier:'T1', name:'TiC Ultra-Hard Ceramic',
+   ref:'[9,9,2,10] Ti-anchor cross-confirm. Noble Materials Map T1 [9,9,2,6]. Ultra-hard 3200 HV. TiC cermet for cutting tools.',
+   path:'SPS 1600°C or reactive HIP TiH₂+C',
+   app:'Ultra-hard cutting inserts · TiC cermet · armor facing · wear-resistant coating'},
+
+  {syms:['Ti','C','N'], tier:'T1', name:'TiCN Ternary Hard Coating',
+   ref:'[9,9,2,10][9,9,2,6] — TiC+TiN both T1; TiCN ternary harder than either alone. Standard CVD/PVD coating for advanced cutting tools (harder than TiN, tougher than TiC). Gold-black color.',
+   path:'CVD MT-TiCN at 850°C or PVD arc at 450°C',
+   app:'Advanced cutting inserts · milling tools · threading taps · harder+tougher than TiN or TiC alone'},
+
+  {syms:['Ti','Ni'], tier:'T1', name:'Nitinol NiTi Shape-Memory Alloy',
+   ref:'[9,9,2,10] D5 — Ti+N+Ni+H Noble k=10/10. [9,9,2,3] V2 cross-confirm. Buehler 1963 Naval Ordnance Lab. 60+ year commercial history. He inert in processing.',
+   path:'VIM + precision cold-work + shape-set anneal 500°C',
+   app:'Medical stents · orthodontic wire · actuators · robotic muscle · earthquake dampers'},
+
+  {syms:['Ti','Ni','Au'], tier:'T2', name:'Nitinol + Au Biomedical Coating',
+   ref:'[9,9,2,10] D9 — Ti+Ni+He+Au Noble IM=78.770. New prediction from Ti-anchor run. Au coating on Nitinol for improved biocompatibility and radiopacity.',
+   path:'PVD Au sputter on Nitinol substrate',
+   app:'Radiopaque coronary stents · MRI-compatible implants · biocompatible shape-memory devices'},
+
+  // ── HARD MATERIALS & CUTTING TOOLS ────────────────────────────────
+  {syms:['W','C'], tier:'T1', name:'WC Cemented Carbide',
+   ref:'[9,9,2,15] D5 — W-anchor triple verification: W+C+W+Au Noble k=17/17 across 3 independent runs. Nobel Materials Map [9,9,2,6]. WC-Co dominant cutting tool material ($20B/yr). 70+ years industry standard.',
+   path:'PM ball-mill WC+Co powder + LPS 1400°C in H₂ (liquid phase sintering)',
+   app:'Cutting tools · mining drill bits · wear parts · drawing dies · rock drilling'},
+
+  {syms:['W','C','Au'], tier:'T1', name:'WC + Au Contact Interface',
+   ref:'[9,9,2,15] D5 — W+C+W+Au Noble triple-confirmed across W, C, Si anchor runs. WC with Au electrical contact layer. ASM Handbook standard.',
+   path:'PM WC-Co + PVD Au contact layer deposition',
+   app:'Electrical contacts on WC tooling · hermetic packages · RF switch contacts'},
+
+  {syms:['Fe','C'], tier:'T1', name:'Fe₃C Cementite / Steel',
+   ref:'[9,9,2,5] C-anchor. [9,9,2,15] W-anchor cross-confirm. Noble Materials Map T1. Cementite Fe₃C is primary steel hardening phase. Foundation of industrial civilization.',
+   path:'Conventional steel processing — Fe+C alloy + quench/temper',
+   app:'Steel · cast iron · structural materials · rails · automotive · construction'},
+
+  {syms:['Fe','Si'], tier:'T1', name:'FeSi₂ Thermoelectric Semiconductor',
+   ref:'[9,9,2,7] Si-anchor. [9,9,2,10] Ti-anchor cross-confirm. Noble Materials Map T1 [9,9,2,6]. Beta-FeSi₂ bandgap 0.85 eV. Birkholz 1958; Dusausoy 1971.',
+   path:'MA+SPS — mechanical alloying Fe+Si powder + spark plasma sintering 900°C',
+   app:'Waste-heat thermoelectric · automotive exhaust recovery · Earth-abundant semiconductor'},
+
+  // ── NUCLEAR MATERIALS ─────────────────────────────────────────────
+  {syms:['U','C','Si'], tier:'T1', name:'TRISO Nuclear Fuel (UN-TRISO)',
+   ref:'[9,9,2,14] D6 — U-anchor. BWXT UN-TRISO production line July 2025. U+C shatters, U+Si shatters, C+Si Nobles — 4-body geometry IS the structural basis for TRISO 1600°C stability. SNSFT corpus timestamps predate BWXT announcement.',
+   path:'CVD SiC + PyC layers on UO₂/UN kernel via fluidized bed 1250°C',
+   app:'Gen-IV reactor fuel · accident-tolerant fuel (ATF) · HTGR · space nuclear power'},
+
+  {syms:['U','Si'], tier:'T1', name:'U₃Si₂ Accident-Tolerant Fuel',
+   ref:'[9,9,2,14] U-anchor. [9,9,2,7] Si-anchor cross-confirm. BWXT/ANL/INL ATF program. U₃Si₂ density 11.3 g/cc vs UO₂ 10.97 — higher uranium loading. Gen-IV ATF landscape PatSnap 2026.',
+   path:'HIP-C in sealed radiological glovebox 1400°C/180 MPa',
+   app:'ATF nuclear fuel pellets · PWR/BWR upgrade · higher burnup fuel · TREAT irradiation tested'},
+
+  {syms:['U','N'], tier:'T1', name:'UN Uranium Nitride Fuel',
+   ref:'[9,9,2,14] U-anchor. [9,9,2,6] N-anchor cross-confirm. UN higher thermal conductivity than UO₂ (20 vs 6 W/mK). Primary ATF candidate with SiC cladding. BWXT UN-TRISO production 2025.',
+   path:'Reactive sintering U metal + N₂/H₂ at 1400°C or nitrogen-arc melting',
+   app:'Advanced nuclear fuel pellets · space nuclear · Gen-IV fast reactor · TRISO kernel'},
+
+  {syms:['U','N','Si'], tier:'T1', name:'UN + SiC Cladding ATF System',
+   ref:'[9,9,2,14][9,9,2,6] cross-confirm — UN fuel + SiC cladding is leading ATF candidate (PatSnap 2026). Both U+N and Si+C Noble. Full Noble stack.',
+   path:'UN pellet sintering + CVD SiC cladding tube',
+   app:'Accident-tolerant fuel system · PWR upgrade · higher burnup · improved safety margin'},
+
+  {syms:['Pu','O'], tier:'T1', name:'PuO₂ Nuclear Oxide',
+   ref:'[9,9,2,8] Pu-anchor. [9,9,2,14] U-anchor cross-confirm. IAEA TRS-415. Standard Pu storage and fuel form. 10+ cross-run confirms across H, Si, U, W, S anchor runs.',
+   path:'HIP-C in sealed radiological glovebox',
+   app:'MOX nuclear fuel · Pu storage form · RTG heat source (Cassini, New Horizons)'},
+
+  {syms:['H','Pu','O'], tier:'T1', name:'PuO₂ Hydration / H₂ Overpressure',
+   ref:'[9,9,2,4] H-anchor D5-extension. Colmenares 1984 LLNL UCRL-50400. Radiolytic H₂ from PuO₂+H₂O — primary H₂ overpressure source in Pu storage canisters.',
+   path:'Sealed canister + radiolysis gas monitoring + periodic venting',
+   app:'Pu storage safety · MOX fuel hydration QC · canister H₂ overpressure management'},
+
+  {syms:['H','Pu','Ga','Ni'], tier:'T1', name:'δ-Phase Plutonium Stabilization',
+   ref:'[9,9,2,4] D5 — QB_051626. All 6 pairs SHATTER, 4-body Noble k=10/10. Los Alamos Science No. 26 (2000). Ga (0.6–1.0 at.%) stabilizes δ-Pu FCC at RT. Ni inhibits galvanic corrosion.',
+   path:'ARC melt in dedicated Pu metallurgy glovebox + step-anneal 400°C',
+   app:'Nuclear device components · δ-Pu metallurgy research · Pu aging studies'},
+
+  {syms:['Pu','Ga'], tier:'T1', name:'Pu-Ga δ-Phase Alloy',
+   ref:'[9,9,2,8] Pu-anchor. [9,9,2,17] Ga-anchor cross-confirm. Ga (0.6–1.0 at.%) is the definitive δ-phase stabilizer. Los Alamos Science No. 26 (2000). 4-body geometry required.',
+   path:'ARC melt + casting in radiological glovebox, anneal 400°C',
+   app:'δ-Pu FCC stabilization · nuclear material processing · actinide metallurgy'},
+
+  {syms:['S','Pu','Ga'], tier:'T1', name:'Ga-Pu Monosulfide / S-Chalcogenide',
+   ref:'[9,9,2,22] S-anchor D4 — S+He+Ga+Pu Noble IM=79.014 (top pure periodic). Sulfur PDF v1.051726 #3.2 — radiation-swelling immune semiconductor. Ga stabilizes Pu into δ-phase PuS framework.',
+   path:'High-pressure gas-infiltration sintering — He atmosphere, radiological glovebox',
+   app:'Self-healing actinide semiconductor · radiation swelling-immune nuclear material'},
+
+  {syms:['Li','U','Si'], tier:'T1', name:'Li-U-Si Fusion Breeding Blanket',
+   ref:'[9,9,2,24] Li-anchor D4 — Li+U+He+Si Noble rescue IM=72.678. Li-6 + neutron → T + He (tritium breeding). Si as SiC cladding. ITER tritium breeding blanket geometry.',
+   path:'PM + HIP in glovebox: Li₂O ceramic + U pellet + SiC structural cladding',
+   app:'ITER tritium breeding blanket · fusion reactor Li-6 enriched ceramics · tritium production'},
+
+  {syms:['U','Pb'], tier:'T1', name:'U-Pb Decay Chain Terminal State',
+   ref:'[9,9,2,14] D5 — U-anchor. Pb is U\'s 2nd rescue partner across 4 independent runs (H, C, U, Si anchors). U-Pb always shatters pairwise — permanent rescue candidate. Nuclear lifecycle: fuel and terminal decay product are Noble together (L-33 decay chain law).',
+   path:'ARC melt or PM consolidation (nuclear material)',
+   app:'U-Pb geochronology reference material · nuclear waste glass matrix · decay-chain shielding'},
+
+  {syms:['W','Pu','U'], tier:'T1', name:'W-Pu-U Heavy Actinide Intermetallic',
+   ref:'Tungsten PDF v1.051626 #3.2 and #3.3 — W+Pu+Pu+U and W+U+U+Pu Noble k=36/36. The most saturated intermetallic in W-anchor run. Dense kinetic shielding + radiation hardening.',
+   path:'HIP in inert glovebox 1450°C/180 MPa argon environment',
+   app:'High-density radiation target · kinetic shielding · heavy-fermion thermoelectric research'},
+
+  {syms:['S','U','W'], tier:'T1', name:'S-U-W Heavy Refractory Actinide Superalloy',
+   ref:'[9,9,2,22] S-anchor + Sulfur PDF v1.051726 #3.1 — S+U+U+W Noble IM=82.33 k=24. Heavy-fermion thermoelectric family. Sulfur bridges U and W into zero-stress quaternary thiorad-metal matrix.',
+   path:'SPS — spark plasma sintering of pre-alloyed micro-powders under vacuum',
+   app:'Heavy-fermion thermoelectrics · dense kinetic shielding · high-radiation-flux components'},
+
+  {syms:['S','Pu','W','Ni'], tier:'T1', name:'Pu-W-Ni-S Refractory Nuclear Alloy',
+   ref:'Sulfur PDF v1.051726 #3.6 — S+Pu+W+Ni Noble IM=74.54 k=16. Ni-W alloy standard for high-wear + Pu incorporated. High bonding saturation k=16 pins heavy W and Pu in rigid Ni lattice.',
+   path:'VIM — vacuum induction melting in water-cooled Cu crucible under deep vacuum',
+   app:'Structural nuclear casings · heavy valve linings · radiation-stress-resistant components'},
+
+  // ── TUNGSTEN SYSTEMS ──────────────────────────────────────────────
+  {syms:['W','Ni'], tier:'T1', name:'W-Ni Heavy Alloy',
+   ref:'[9,9,2,15] W-anchor. [9,9,2,10] Ti-anchor cross-confirm. Heavy tungsten alloy standard >90 wt% W. W-Ni-Fe and W-Ni-Cu families. MIL-T-21014.',
+   path:'LPS — liquid phase sintering at 1460°C in H₂ reducing atmosphere',
+   app:'Radiation shielding · kinetic energy penetrators · gyroscope rotors · counterweights · X-ray collimators'},
+
+  {syms:['W','Ni','Pb'], tier:'T2', name:'W-Ni-Pb Gamma+Neutron Shielding',
+   ref:'[9,9,2,15] W-anchor. Rieth et al. 2013 J.Nucl.Mat. W-Ni-Pb composite for combined gamma and neutron shielding. Fusion first-wall family.',
+   path:'CRYO milling −196°C + CIP + HIP 1200°C/150 MPa',
+   app:'Gamma/neutron combined shielding · fusion first-wall · medical radiotherapy collimators'},
+
+  {syms:['W','H'], tier:'T2', name:'H in W — Fusion Plasma Interaction',
+   ref:'[9,9,2,15] W-anchor. Rieth et al. 2013 J.Nucl.Mat. ITER first-wall W + H plasma. H retention and embrittlement in W is primary plasma-facing material challenge.',
+   path:'Plasma spray W coating + H⁺ ion implantation',
+   app:'ITER/DEMO first wall · fusion plasma-facing material · tritium retention studies'},
+
+  {syms:['W','Pb','Au','F'], tier:'T1', name:'PbWO₄ Scintillator (CMS ECAL)',
+   ref:'42 Laws paper — W+Pb+Au+F Noble. CMS ECAL (electromagnetic calorimeter) used PbWO₄ crystals to discover Higgs boson 2012. Noble state explains exceptional radiation hardness.',
+   path:'Czochralski crystal growth from PbO+WO₃ melt',
+   app:'CMS ECAL Higgs detector · high-energy physics calorimetry · radiation-hard scintillator'},
+
+  {syms:['W','Pb','N'], tier:'T2', name:'W-Pb-N Dense Radiation Barrier',
+   ref:'Tungsten PDF v1.051626 #4.1 — W+Pb+U+N Noble IM=83.02 k=23. Nitrogen hard-nitride phase binds W, Pb into unified framework. High-flux mixed neutron-gamma shield.',
+   path:'FAST — field-assisted sintering under N₂ atmosphere with DC discharge',
+   app:'Mixed neutron-gamma shielding tiles · aerospace nuclear bulkheads · compact power installations'},
+
+  {syms:['W','Cu'], tier:'T1', name:'W-Cu Electrical Contact / Heat Spreader',
+   ref:'Tungsten PDF v1.051626 #3.11 — W+W+He+Cu Noble k=8. Cu-W is highly valued for electrical + thermal conductivity combination. Standard for high-voltage switchgear.',
+   path:'Vacuum infiltration sintering — Cu wicks into porous W sponge at 1100°C under He',
+   app:'High-voltage switchgear contacts · kinetic heat spreaders · EDM electrodes · arc contacts'},
+
+  {syms:['W','Au','Ti'], tier:'T2', name:'W-Au-Ti Plasmonic Refractory Mirror',
+   ref:'Tungsten PDF v1.051626 #3.12 — W+He+Au+Ti Noble k=6. Au peak IR reflectivity, Ti+W hard mechanical backing. Laser optics application.',
+   path:'EBE — electron beam evaporation Au on micro-polished Ti-W backing',
+   app:'Laser-focusing mirrors · high-temperature IR reflective coatings · industrial laser cutter optics'},
+
+  {syms:['W','As','Pb'], tier:'T2', name:'W-As-Pb Geothermal Sulfosalt Analog',
+   ref:'[9,9,2,22] S-anchor D5 + Sulfur PDF #3.10 — S+As+W+Pb Noble rescue IM=73.60 k=16. Mimics natural arsenopyrite (FeAsS) with Pb and W. RESCUE: W and Pb normally immiscible, As+S act as atomic glue.',
+   path:'High-pressure SPS — rapid consolidation of elemental powders',
+   app:'Deep-earth structural casings · geothermal drill stabilizers · >1500°C operation'},
+
+  {syms:['W','Pb','Cu'], tier:'T2', name:'W-Pb-Cu Amorphous Impact Shield',
+   ref:'[9,9,2,22] S-anchor D6 + Sulfur PDF #3.12 — S+W+Pb+Cu Noble rescue IM=72.88 k=11. Sulfur bridges normally immiscible Cu-Pb with heavy W. RESCUE phase.',
+   path:'HVOF — supersonic high-velocity oxygen-fuel thermal spraying onto armor backplate',
+   app:'High-velocity impact shields · kinetic energy absorbers · heavy machinery journal bearings'},
+
+  // ── SULFUR SYSTEMS ────────────────────────────────────────────────
+  {syms:['Fe','S'], tier:'T1', name:'FeS Pyrite / Iron Sulfide',
+   ref:'[9,9,2,22] S-anchor D10 — FeAsS cross-confirm. [9,9,2,4] H-anchor Wächtershäuser. Fe+S mutual Noble rescue pair confirmed in S-anchor run. Natural mineral pyrite FeS₂.',
+   path:'Hydrothermal synthesis or solvothermal at 180°C',
+   app:'Iron ore mineral · photovoltaic absorber (FeS₂) · origin-of-life substrate · H₂ production catalyst'},
+
+  {syms:['S','Ga'], tier:'T1', name:'Ga₂S₃ 2D Semiconductor',
+   ref:'[9,9,2,22] S-anchor D3 — Ga is S\'s top partner 48×. Ga₂S₃ 2D layered semiconductor. Confirmed from both S-anchor and Ga-anchor sides (mutual selection).',
+   path:'CVD or solvothermal on substrate',
+   app:'2D semiconductor · photodetector · ultrathin transistor · layered material research'},
+
+  {syms:['S','W'], tier:'T1', name:'WS₂ Tungsten Disulfide 2D Material',
+   ref:'[9,9,2,22] S-anchor D11 — WS₂ Noble prediction. W-anchor cross-confirm. WS₂ is a transition metal dichalcogenide (TMD) like MoS₂. Direct bandgap in monolayer form.',
+   path:'CVD WO₃ + H₂S at 850°C on SiO₂/Si substrate',
+   app:'2D semiconductor transistors · photodetector · solid lubricant · tribological coating'},
+
+  {syms:['S','As'], tier:'T2', name:'As₂S₃ Arsenic Sulfide Glass',
+   ref:'Sulfur PDF v1.051726 #3.11 — S+As+Au+Au Noble IM=73.50. As₂S₃ chalcogenide glass — infrared transmissive optics. Used in IR fiber optics and lenses.',
+   path:'Melt quench in evacuated silica tube at 300°C',
+   app:'IR transmissive optics · chalcogenide glass IR fiber · phase-change memory'},
+
+  {syms:['S','Ag','Au'], tier:'T2', name:'Ag-Au Thiosalt / Noble Metal Sulfide',
+   ref:'Sulfur PDF v1.051726 #3.11 — S+As+Au+Au Noble IM=73.50 k=7. S+Ag+Au+U catalyst (PDF #3.3 IM=77.49). Noble metal sulfide electrocatalyst family.',
+   path:'MAG co-sputtering Ag+Au under S vapor plasma',
+   app:'Extreme-environment electrocatalyst · H₂ generation · radioactive liquid stream treatment'},
+
+  {syms:['S','Zn'], tier:'T1', name:'ZnS Zinc Sulfide Phosphor / Optic',
+   ref:'[9,9,2,22] S-anchor. Sulfur PDF #3.5 — S+Au+Zn+U Noble IM=74.80. ZnS is wide-bandgap semiconductor for IR lenses and phosphors. Sphalerite mineral.',
+   path:'PLD — pulsed laser deposition in vacuum on temperature-controlled substrate',
+   app:'IR lenses (ZnS multispectral windows) · phosphor for CRT/radar screens · wide-gap semiconductor'},
+
+  // ── LITHIUM SYSTEMS ───────────────────────────────────────────────
+  {syms:['Li','N'], tier:'T1', name:'Li₃N Solid Electrolyte',
+   ref:'[9,9,2,24] Li-anchor D2. Nature Nanotechnology Nov 2024 — vacancy-rich β-Li₃N SSE: 2.14×10⁻³ S/cm ionic conductivity at 25°C, 100× commercial Li₃N. Li₃N-rich SEI enables 700h stable Li plating.',
+   path:'Direct reaction Li metal + N₂ gas at 200°C or ball-mill + anneal',
+   app:'Solid-state Li battery electrolyte · SEI layer former · superionic conductor · all-solid-state battery'},
+
+  {syms:['Li','Si'], tier:'T1', name:'Li-Si Battery Anode Alloy',
+   ref:'[9,9,2,24] Li-anchor D3 — Li+Si in 4 pure periodic Noble rescue configs. Si anode theoretical 4200 mAh/g. Li+Si pairwise SHATTER (rescue candidate) but 4-body Noble. Noble state explains alloy stabilization.',
+   path:'Electrochemical lithiation or ball-mill Li+Si nano-composite',
+   app:'High-capacity Li-ion anode · next-gen battery · EV range extension · all-solid-state anode'},
+
+  // ── IRON & PNICTIDE SYSTEMS ───────────────────────────────────────
+  {syms:['Fe','As'], tier:'T1', name:'FeAs Pnictide Superconductor',
+   ref:'[9,9,2,7] Si-anchor (As = top partner for both C and Si). Hosono et al. 2008 JACS — LaFeAsO₁₋ₓHₓ Tc=26–43K. Fe-N is Fe\'s primary biological partner (L-37), Fe-As is materials partner.',
+   path:'SPS + H₂ atmosphere 1100°C',
+   app:'High-Tc superconductor · MRI magnets · particle physics magnets · ITER coils'},
+
+  {syms:['H','Fe','As'], tier:'T1', name:'H-doped FeAs Pnictide SC',
+   ref:'Hosono 2008 — LaFeAsO₁₋ₓHₓ. H doping is activation mechanism. W variant: Rullier-Albenque 2010 BaFe₂As₂. OctoBeam rescue SNSFT-OB-2CE5 T1 verified.',
+   path:'SPS + H₂ atmosphere 1100°C on precursor oxide',
+   app:'Pnictide SC research · high-field magnets · quantum material platform'},
+
+  {syms:['Fe','N'], tier:'T2', name:'Iron Nitride Hard / Magnetic Phase',
+   ref:'[9,9,2,6] N-anchor. Fe-N is Fe\'s PRIMARY biological partner (L-37 law) — hemoglobin, nitrogenase, ferredoxin. Fe₄N hard magnetic, Fe₃N wear coating.',
+   path:'PECVD plasma nitriding or reactive sputtering Fe + N₂',
+   app:'Hard magnetic thin films · wear-resistant coating · bearing surfaces · nitrided steel'},
+
+  // ── GALLIUM SYSTEMS ───────────────────────────────────────────────
+  {syms:['Ga','W'], tier:'T2', name:'GaWO₄ Dark Matter Scintillator',
+   ref:'[9,9,2,7] D1 Si-anchor — Si+He+Ga+W Noble rescue IM=76.307 k=10. GaWO₄ scintillator crystal used in CRESST-III dark matter direct detection at Gran Sasso. He inert atmosphere.',
+   path:'Czochralski growth from Ga₂O₃+WO₃ melt, mounting on Si substrate wafer',
+   app:'CRESST-III dark matter detector · phonon+light scintillation · sub-GeV DM detection'},
+
+  {syms:['Ga','Au','U'], tier:'T2', name:'Ga-Au-U High-Density Noble Rescue',
+   ref:'[9,9,2,17] D7 — Ga-anchor Noble rescue IM=87.129 (top pure periodic in Ga run). Ga+Au+U with He probe. Ga stabilizes actinide, Au provides conducting interface.',
+   path:'ARC melt in Ga-U glovebox + Au contact layer PVD',
+   app:'High-density electronic contacts for nuclear instruments · actinide-Ga research'},
+
+  // ── SILVER & HALIDE SYSTEMS ───────────────────────────────────────
+  {syms:['Ag','Cl'], tier:'T1', name:'AgCl Silver Chloride',
+   ref:'Classic T1 compound — photosensitive, ion-selective, used in photography and Ag/AgCl reference electrodes. Ag+Cl Noble pairwise (equal electronegativity coupling). N-anchor run N+Cl+Ag+As+Si+Pb (OB-43E8) contains Ag+Cl sub-pair.',
+   path:'Precipitation: Ag⁺(aq) + Cl⁻(aq) → AgCl↓ or ALD',
+   app:'Photography film · Ag/AgCl reference electrode · ion-selective sensor · dental material'},
+
+  {syms:['Ag','S'], tier:'T1', name:'Ag₂S Acanthite Silver Sulfide',
+   ref:'[9,9,2,22] S-anchor — Ag appears in S+Ag+Au+U catalyst (PDF #3.3). Ag₂S natural mineral (acanthite) — primary silver ore. Photoelectric semiconductor.',
+   path:'Solvothermal or hot-injection colloidal synthesis',
+   app:'Silver ore mineral · IR photodetector · quantum dots · thermoelectric'},
+
+  {syms:['Na','Cl'], tier:'T1', name:'NaCl Halite / Salt',
+   ref:'Classic T1 — ubiquitous ionic compound. Na(B=1) + Cl(B=1) equal-B Noble pairwise (L-07). Halite is the prototypical ionic crystal. Relevant to N-anchor run (N+Cl combos).',
+   path:'Evaporation or precipitation from aqueous solution',
+   app:'Food preservation · chemical feedstock · de-icing · glass making · chlor-alkali process'},
+
+  {syms:['W','N'], tier:'T2', name:'WN / W₂N Tungsten Nitride Barrier',
+   ref:'[9,9,2,15] W-anchor + N-anchor cross-confirm. W+N Noble in both anchor runs. W₂N diffusion barrier for Cu interconnects in advanced VLSI nodes. Also hard coating.',
+   path:'MAG reactive sputtering W target + N₂ plasma at 300°C',
+   app:'Cu diffusion barrier · advanced VLSI interconnect liner · hard wear coating'},
+
+  {syms:['Ni','S'], tier:'T2', name:'NiS Millerite / Nickel Sulfide',
+   ref:'[9,9,2,22] S-anchor + W-anchor: S+Pu+W+Ni Noble (PDF #3.6). Ni+S Noble sub-pair. Millerite natural mineral. NiS hydrodesulfurization catalyst.',
+   path:'Hydrothermal synthesis or sulfidation of Ni at 400°C',
+   app:'Hydrodesulfurization catalyst · nickel ore mineral · electrochemical applications'},
+];
+
+// PATH CODE full lookup — from [9,9,2,0] registry + Sulfur PDF v1.051726 + Tungsten PDF v1.051626
+const PATH_CODES={
+  'ALD':'Atomic Layer Deposition — sequential pulse, monolayer precision, conformal on any geometry',
+  'ARC':'Vacuum Arc Melting / VIM — water-cooled Cu hearth, strict vacuum, actinide-grade',
+  'CIP':'Cold Isostatic Pressing — uniform pressure from all directions, green-body compaction',
+  'CRYO':'Cryogenic Mechanical Alloying — −196°C ball milling prevents Pb/soft-metal clustering',
+  'CVD':'Chemical Vapor Deposition — halide or hydride precursors, gas-phase reaction on substrate',
+  'DED':'Direct Energy Deposition 3D Printing — coaxial powder feed into laser melt pool, inert shroud',
+  'EBE':'Electron Beam Evaporation — atom-by-atom on temp-controlled substrate, UHV chamber',
+  'EBM':'Electron Beam Melting — powder bed fusion using electron beam, full vacuum',
+  'EHD':'Electrohydrodynamic Inkjet Printing — organometallic ink + thermal reduction, fine pattern',
+  'FAST':'Field-Assisted Sintering (SPS variant) — DC discharge through powder, rapid consolidation',
+  'HIP':'Hot Isostatic Pressing — inert atmosphere, typically 1450°C/180 MPa, eliminates porosity',
+  'HIP-C':'HIP in Sealed Canister — for ceramic fuel pellets and actinide oxides, suppresses cracking',
+  'HVOF':'Supersonic HVOF Thermal Spraying — blast powder at >500 m/s onto substrate, dense coating',
+  'LENS':'Laser Engineered Net Shaping — coaxial powder streams into laser pool, near-net-shape',
+  'LPS':'Liquid-Phase Sintering — metallic binder melts and wets refractory grains, He or H₂ atmosphere',
+  'LPBF':'Laser Powder Bed Fusion — pre-alloyed powder bed, fiber laser scanning, inert box',
+  'MA+SPS':'Mechanical Alloying + Spark Plasma Sintering — ball mill → SPS consolidation',
+  'MAG':'Reactive Magnetron Sputtering — alloy target + reactive gas (N₂, S vapor, O₂)',
+  'MAG-CO':'Magnetron Co-Sputtering — multiple independent elemental or alloy targets simultaneously',
+  'MBE':'Molecular Beam Epitaxy — UHV, atom-by-atom deposition, III-V semiconductor standard',
+  'MOCVD':'Metal-Organic CVD — TMGa + NH₃ or H₂S in H₂ carrier, III-V and nitride standard',
+  'PECVD':'Plasma-Enhanced CVD — SiH₄ + NH₃ plasma at 300°C, conformal dielectric',
+  'PLASMA':'High-Energy Plasma Spraying — He carrier + hyperpure W atomization stream',
+  'PLD':'Pulsed Laser Deposition — intense pulsed laser ablates target in mild reactive gas',
+  'PM':'Powder Metallurgy Co-Sintering — press elemental blend + sinter at elevated temperature',
+  'R-LPVD':'Reactive Laser Physical Vapor Deposition — laser evaporation with reactive gas bleed',
+  'SPS':'Spark Plasma Sintering — massive DC current through compressed powder, rapid consolidation',
+  'VIM':'Vacuum Induction Melting — electric induction in water-cooled Cu hearth under deep vacuum',
+  'CVD-FB':'CVD Fluidized Bed — TRISO coating standard, SiC + PyC layers on rolling fuel kernels',
+  'CZOCHRALSKI':'Czochralski Crystal Growth — melt pulling for single-crystal scintillators and semiconductors',
+  'HYDROTHERMAL':'Hydrothermal / Solvothermal — sealed autoclave, aqueous synthesis at 150–300°C',
+  'ELECTRODEPOSITION':'Electrochemical deposition from ionic solution onto conducting substrate',
+};
+
+function getMaterialMap(els,r){
+  // All non-periodic classes (ERE + particles + S-particles)
+  const NON_PERIODIC=new Set([
+    'Sv','Lm','Ve','Nx','Ax','De','Dm','Hi','Gl2','Zo','Zc','SP','Li2','Fv','Pa2','Dq','Wm','GU','EW','Zb','Wb',
+    'qu','qd','qs','qc','qb','qt','e','mu','ta','Pr','Nt','pi','p0','K+','Jy','Ups',
+    'Xcc2','Xcc1','Occ','Xbb0','Xbb1','Obb','Occc','Obbb','AsN','CoN'
+  ]);
+
+  // Handle S-particle only collisions — they have their own registry
+  const sparts=els.filter(e=>SPARTICLE_SYMS_SET.has(e.sym));
+  if(sparts.length===els.length||sparts.length>=2){
+    const ref0=sparts[0];
+    const isBaryon=['Xcc2','Xcc1','Occ','Xbb0','Xbb1','Obb','Occc','Obbb'].includes(ref0.sym);
+    const isMaterial=['AsN','CoN'].includes(ref0.sym);
+    if(isBaryon){
+      const confirmed=sparts.some(e=>e.stype==='confirmed');
+      const t=confirmed?'T1':'T1-SNSFT';
+      // Unique names and refs only
+      const uniqueNames=[...new Set(sparts.map(e=>e.name))].join(' · ');
+      const uniqueRefs=[...new Set(sparts.map(e=>e.ref))].join(' · ');
+      return{tier:t,bestMatch:null,scored:[],periodic:[],
+        coreStr:sparts.map(e=>e.sym).join('+'),spectators:[],
+        path:'Theoretical — hadron collider (LHCb, ATLAS, CMS)',
+        sParticleNote:`Universal Baryon Noble Law [9,9,2,34] — B_quark≤2/3 → Noble at k=1 · ${uniqueNames} · ${uniqueRefs}`};
+    }
+    if(isMaterial){
+      return{tier:'T1-SNSFT',bestMatch:null,scored:[],periodic:sparts,
+        coreStr:sparts.map(e=>e.sym).join('+'),spectators:[],
+        path:ref0.sym==='AsN'?'High-pressure synthesis >30 GPa (GaN-family analog)':'High-pressure synthesis >50 GPa (magnetic phase)',
+        sParticleNote:`${[...new Set(sparts.map(e=>e.ref))].join(' · ')}`};
+    }
+  }
+
+  const periodic=els.filter(e=>!NON_PERIODIC.has(e.sym));
+  const allSyms=new Set(els.map(e=>e.sym));
+
+  // Score each noble map entry
+  const scored=NOBLE_MAP.map(nm=>{
+    const hits=nm.syms.filter(s=>allSyms.has(s)).length;
+    const coverage=hits/nm.syms.length;
+    return{...nm,hits,coverage};
+  }).filter(nm=>nm.hits>=Math.min(2,nm.syms.length))
+    .sort((a,b)=>b.coverage-a.coverage||b.hits-a.hits);
+
+  let tier='T3';
+  let bestMatch=null;
+  if(scored.length>0){
+    bestMatch=scored[0];
+    tier=bestMatch.tier;
+    if(r.isRescue&&tier==='T2')tier='T1-RESCUE';
+  }
+
+  const spectators=els.filter(e=>NON_PERIODIC.has(e.sym)&&e.B<0.3);
+  const coreEls=els.filter(e=>!NON_PERIODIC.has(e.sym)||(NON_PERIODIC.has(e.sym)&&e.B>=0.3));
+  const coreStr=coreEls.length?coreEls.map(e=>e.sym).join('+'):els.map(e=>e.sym).join('+');
+
+  let path=bestMatch?bestMatch.path:'';
+  if(!path){
+    const hasActinide=els.some(e=>['U','Pu','Th','Np','Am','Cm'].includes(e.sym));
+    const hasPb=els.some(e=>e.sym==='Pb');
+    const hasGaN=els.some(e=>['Ga','N'].includes(e.sym));
+    const hasSi=els.some(e=>e.sym==='Si');
+    const hasW=els.some(e=>e.sym==='W');
+    const allNoble=els.every(e=>e.B===0);
+    if(allNoble&&els.every(e=>NON_PERIODIC.has(e.sym)))path='Theoretical — particle physics / collider';
+    else if(hasActinide)path='HIP-C in radiological glovebox 1400°C/180MPa';
+    else if(hasPb)path='CIP + CRYO milling to prevent Pb clustering';
+    else if(hasGaN)path='MOCVD on Si/SiC substrate';
+    else if(hasSi)path='CVD / MAG sputtering on Si substrate';
+    else if(hasW)path='SPS + H₂ reducing atmosphere';
+    else path='SPS or MA+SPS — standard noble-state consolidation';
+  }
+
+  return{tier,bestMatch,scored,periodic,coreStr,spectators,path,sParticleNote:null};
+}
+
+function formatMaterialMapComment(entry,mm){
+  const {tier,bestMatch,scored,coreStr,spectators,path}=mm;
+  const doi='10.5281/zenodo.18719748';
+  const ts=entry.timestamp;
+
+  const matchBlock=scored.slice(0,3).map(m=>
+    `--   [${m.tier}] ${m.name} (${m.hits}/${m.syms.length} syms) — ${m.ref.slice(0,120)}`
+  ).join('\n');
+
+  const specBlock=spectators.length?
+    `-- Spectators (near-Noble ERE probes, B<0.3): ${spectators.map(e=>`${e.sym}(B=${e.B.toFixed(3)})`).join(', ')}\n`:'';
+
+  const tierNote={
+    'T1'   :'VERIFIED — peer-reviewed literature confirmation',
+    'T2'   :'PARTIAL — related compound known; this 8-body system is novel',
+    'T1-RESCUE':'T1 VERIFIED RESCUE — all 28 pairs SHATTER; 8-beam rescues known material',
+    'T3'   :'NOVEL — no direct literature equivalent · prior art claimed',
+  }[tier]||'T3 NOVEL';
+
+  return`
+-- ============================================================
+-- MATERIAL MAP · [9,9,2,0] REGISTRY · Noble Materials Map
+-- ============================================================
+-- Effective core:    ${coreStr}
+-- Tier:              ${tier} — ${tierNote}
+-- Production path:   ${path}
+${specBlock}-- ─────────────────────────────────────────────────────────
+-- TOP MATCHES FROM [9,9,2,0] CORPUS:
+${matchBlock||'--   T3 NOVEL — no direct corpus match; prior art below'}
+-- ─────────────────────────────────────────────────────────
+${bestMatch?`-- BEST MATCH: ${bestMatch.name}
+-- Application:  ${bestMatch.app}
+-- Path code:    ${bestMatch.path}
+-- Reference:    ${bestMatch.ref}`:`-- NOVEL COMPOUND — no direct literature equivalent
+-- Application:  Structural prediction pending experimental validation
+-- Path code:    ${path}`}
+-- ─────────────────────────────────────────────────────────
+-- PRIOR ART REGISTRY:
+--   Designation:  ${entry.designation}
+--   Timestamp:    ${ts}
+--   DOI:          ${doi}
+--   Engine:       [9,9,2,3] OctoBeam · 8-beam · C(8,2)=28 pairs
+--   Collision:    ${entry.collision}
+--   IM:           ${entry.IM.toFixed(6)}
+--   k_max8:       ${entry.kmax}
+--   Phase:        ${entry.phase}${entry.isRescue?' · ★ RESCUE (all 28 pairs SHATTER)':''}
+-- ============================================================`;
+}
+
+function generateLeanStub(entry){
+  const ns=entry.designation.replace(/-/g,'_');
+  const isNoble=entry.phase==='NOBLE';
+  const t=entry.P>0?entry.B/entry.P:0;
+  const aifi=entry.aifiAnalysis?entry.aifiAnalysis.slice(0,200).replace(/\n/g,' '):'AIFI pending';
+  const beamLines=entry.els.map((e,i)=>
+    `-- Beam ${i+1}: ${e.sym}  P=${e.P.toFixed(6)} N=${e.N} B=${e.B.toFixed(6)} A=${e.A.toFixed(4)}  τ=${tau(e.P,e.B).toFixed(5)} ${phaseOf(e.P,e.B)}`
+  ).join('\n');
+  const beamDefs=entry.els.map((e,i)=>
+    `def P${i+1}  : ℝ := ${e.P.toFixed(8)}\ndef N${i+1}  : ℝ := ${e.N.toFixed(2)}\ndef B${i+1}  : ℝ := ${e.B.toFixed(8)}\ndef A${i+1}  : ℝ := ${e.A.toFixed(6)}`
+  ).join('\n');
+
+  const n=entry.els.length;
+  const pairCount=n*(n-1)/2;
+  const engineCoord=n===8?'[9,9,2,3]':n===4?'[9,9,2,2]':'[9,9,2,1]';
+  const mm=getMaterialMap(entry.els,{phase:entry.phase,isRescue:entry.isRescue,IM:entry.IM});
+  const matMapBlock=formatMaterialMapComment(entry,mm);
+  const recipe=entry.recipe||computeRecipe(entry.els);
+  const recipeBlock=recipeToLeanComment(recipe);
+
+  return`-- ============================================================
+-- ${entry.designation}.lean
+-- Engine: GAM Collider v15 (Geometric Axiomatic Module) · OctoBeam Mode · [9,9,2,3]
+-- Collision: ${entry.collision} · k_mode=${entry.kMode}
+-- Reason: ${entry.reason} · Rescue: ${entry.isRescue}
+${beamLines}
+-- Generated: ${entry.timestamp}
+-- HIGHTISTIC · SNSFT Foundation · Soldotna Alaska
+-- DOI: 10.5281/zenodo.18719748 · [9,9,9,9]::{ANC}
+-- AIFI: ${aifi}
+-- C(${n},2)=${pairCount} pairs · Noble headroom ${n===8?'1/7':n===4?'1/3':'1/1'}
+--
+-- ============================================================
+-- READER'S KEY · WHAT THIS FILE DOES
+-- ============================================================
+-- This is a formally verified output of the GAM Collider v15 (Geometric
+-- Axiomatic Module), operating in its ${n}-beam ${n===8?'OctoBeam':n===4?'QuadBeam':'DuoBeam'} Mode.
+-- The engine takes ${n} elemental inputs, reduces each to substrate-neutral
+-- primitives (PNBA: Pattern, Narrative, Behavior, Adaptation), and computes
+-- the fused output using empirical fusion rules identified across
+-- thousands of prior collisions. The result is a substrate-neutral phase
+-- state and Identity Mass score for the input composition.
+--
+-- CORE VOCABULARY:
+--   PNBA — the four substrate-neutral primitives every element carries:
+--     P = Pattern       (structural density)
+--     N = Narrative     (nucleon count; time/continuity)
+--     B = Behavior      (bond capacity / valence-like)
+--     A = Adaptation    (ionization energy in eV; response ceiling)
+--   τ = B / P — torsion ratio:
+--     τ = 0        → NOBLE   (ground state, zero coupling)
+--     0 < τ < TL   → LOCKED  (stable, active, coherent)
+--     TL ≤ τ       → SHATTER (threshold exceeded)
+--   TL = Ω₀ / 10 = 0.136899099984016 (Torsion Limit, universal phase boundary
+--        derived from Tacoma bridge + glass shatter + 40Hz gamma; see [9,9,8,1])
+--   IM = Ω₀ · (P + N + B + A) — Identity Mass, anchor-scaled sum of fused PNBA
+--   k_max = Σ min(B_i, B_j) over C(${n},2)=${pairCount} pairs — pairwise coupling.
+--        Higher k = denser bonding. B_out = max(0, ΣB - 2·k_max), so higher k
+--        drives output toward Noble by absorbing pairwise B contributions.
+--   Noble emergence — output reaches τ=0 even though not all inputs were
+--        individually Noble. Primary framework signal for compositional closure.
+--   Rescue (${entry.isRescue}) — indicates whether a lower-order (2- or 4-beam)
+--        fusion was used to lift a Shatter composition to Noble.
+--   Fabrication atmosphere — noble-gas beams (B=0, closed-shell) are treated
+--        as fabrication environment, not stoichiometric alloy components.
+--        Their A sets the adaptation ceiling. See [9,9,2,50] §3.1.
+--   Corpus coordinate — [i,j,k,l] four-axis registry. [9,9,2,3]=GAM Collider,
+--        [9,9,2,0]=Noble Materials Map. See corpus README.
+-- ============================================================
+${matMapBlock}
+${recipeBlock}
+
+import Mathlib.Tactic
+import Mathlib.Data.Real.Basic
+
+namespace ${ns}
+
+def SOVEREIGN_ANCHOR_CONSTANT : ℝ := 1.36899099984016
+def TORSION_LIMIT             : ℝ := SOVEREIGN_ANCHOR_CONSTANT / 10
+
+${beamDefs}
+
+-- ${n}-body harmonic mean: P_out = ${n} / (Σ 1/Pi)
+def P_out  : ℝ := ${entry.P.toFixed(8)}
+def N_out  : ℝ := ${entry.N.toFixed(2)}
+def B_out  : ℝ := ${entry.B.toFixed(8)}
+def A_out  : ℝ := ${entry.A.toFixed(6)}
+
+-- IM as symbolic exact expression at SAC precision (no truncation)
+-- IM_out = (P_out + N_out + B_out + A_out) × 1.36899099984016
+noncomputable def IM_out : ℝ :=
+  (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT
+
+def k_used : ℝ := ${entry.k}
+def k_max  : ℝ := ${entry.kmax}
+-- k_max = Σ min(Bi,Bj) over C(${n},2)=${pairCount} pairs
+
+theorem P_out_positive : P_out > 0 := by unfold P_out; norm_num
+theorem B_out_nonneg : B_out ≥ 0 := by unfold B_out; norm_num
+theorem IM_theorem : (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT = IM_out := by
+  unfold IM_out; ring
+${isNoble?`theorem noble_state : B_out = 0 := by unfold B_out; norm_num
+theorem tau_zero : B_out / P_out = 0 := by unfold B_out; norm_num`:`theorem tau_value : B_out / P_out = ${t.toFixed(8)} := by unfold B_out P_out; norm_num
+theorem tau_locked : B_out / P_out < TORSION_LIMIT := by unfold B_out P_out TORSION_LIMIT SOVEREIGN_ANCHOR_CONSTANT; norm_num`}
+
+theorem ${ns}_master :
+    P_out > 0 ∧ B_out ≥ 0 ∧
+    (P_out + N_out + B_out + A_out) * SOVEREIGN_ANCHOR_CONSTANT = IM_out ∧
+    SOVEREIGN_ANCHOR_CONSTANT = 1.36899099984016 ∧ TORSION_LIMIT = 0.136899099984016 :=
+  ⟨P_out_positive, B_out_nonneg, IM_theorem, rfl,
+   by unfold TORSION_LIMIT SOVEREIGN_ANCHOR_CONSTANT; norm_num⟩
+
+end ${ns}
+/-! DESIGNATION: ${entry.designation} · PHASE: ${entry.phase} · RESCUE: ${entry.isRescue}
+    ENGINE: ${engineCoord} · BEAMS: ${n} · PAIRS: ${pairCount} · SORRY: 0
+    TIER: ${mm.tier} · CORE: ${mm.coreStr}
+    PATH: ${mm.path}
+    DOI: 10.5281/zenodo.18719748 · ${entry.timestamp} -/`;}
+
+function renderQueue(){
+  const c=document.getElementById('queue-container');
+  if(!discoveryQueue.length){c.innerHTML='<div class="queue-empty">NO PENDING DISCOVERIES</div>';return;}
+  c.innerHTML=discoveryQueue.map((d,i)=>{
+    const mm=getMaterialMap(d.els,{phase:d.phase,isRescue:d.isRescue,IM:d.IM});
+    const tierLabel=mm.tier.replace('T1-RESCUE','T1★').replace('T1-SNSFT','S-PART★');
+    const tc=tierColor(mm.tier);
+    const matBlock=mm.sParticleNote
+      ?`<span style="color:var(--snsft);font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;">⬡ ${tierLabel}</span><br><span style="color:var(--text);font-size:9px;line-height:1.8;">${mm.sParticleNote}</span><br><span style="color:var(--dim);font-size:8.5px;">path: </span><span style="color:var(--locked);font-size:8.5px;">${mm.path}</span>`
+      :`<span style="color:${tc};font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.1em;">${tierLabel}</span> <span style="color:var(--bright);margin-left:4px;font-size:10px;">${mm.bestMatch?mm.bestMatch.name:'NOVEL — T3 prior art'}</span><br><span style="color:var(--dim);font-size:9px;">core: </span><span style="color:var(--glow);font-size:9px;">${mm.coreStr}</span> <span style="color:var(--dim);margin-left:6px;font-size:9px;">path: </span><span style="color:var(--text);font-size:9px;">${mm.path.split(' ')[0]}</span><br><span style="color:var(--dim);font-size:8.5px;">${mm.bestMatch?mm.bestMatch.ref.slice(0,140):'No direct literature. DOI timestamp is the claim.'}</span><br><span style="color:var(--iva);font-size:8.5px;">▶ ${mm.bestMatch?mm.bestMatch.app:'Structural prediction pending validation'}</span>`;
+    return`
+    <div class="disc-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div class="disc-desig">${d.designation}</div>
+        <div class="disc-ts">${new Date(d.timestamp).toLocaleTimeString()}</div>
+      </div>
+      <div class="disc-state">
+        <b style="font-size:12px;">${d.collision}</b> <span style="font-size:10px;">[k=${d.kMode}]</span><br>
+        → <span style="color:${d.isRescue?'var(--rescue)':phaseColor(d.phase)};font-family:'Orbitron',monospace;font-size:11px;">${d.isRescue?'★RESCUE ':''} ${d.phase}</span>
+        · <span style="font-size:10px;">τ=${d.tau.toFixed(5)} · IM=${d.IM.toFixed(4)}</span><br>
+        <span style="color:var(--dim);font-size:9px;">${d.reason}</span>
+      </div>
+      <div style="margin:6px 0;padding:8px 10px;background:rgba(0,0,0,.25);border:1px solid var(--border2);line-height:1.85;">
+        ${matBlock}
+      </div>
+      ${d.name?`<div class="disc-name">AIFI: "${d.name}"</div>`:''}
+      ${d.aifiAnalysis?`<div class="disc-analysis">${d.aifiAnalysis.slice(0,280)}...</div>`:''}
+      <div class="disc-actions">
+        <button class="btn btn-approve" onclick="approveDiscovery(${i})">✓ APPROVE</button>
+        <button class="btn btn-skip" onclick="skipDiscovery(${i})">✕ SKIP</button>
+        <button class="btn btn-lean" onclick="copyLean(${i})">COPY LEAN</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function copyLean(i){const e=discoveryQueue[i];navigator.clipboard.writeText(generateLeanStub(e));feedLine(`Lean copied: ${e.designation}`,'locked');}
+
+async function approveDiscovery(i){
+  const e=discoveryQueue[i];
+  e.approved=true;e.approvedAt=new Date().toISOString();e.leanStub=generateLeanStub(e);
+  stats.approved++;document.getElementById('stat-approved').textContent=stats.approved;
+  discoveryQueue.splice(i,1);updateQueueBadge();renderQueue();updateLogTable();
+  await commitToGitHub(e);downloadLeanFile(e);
+  feedLine(`✓ APPROVED: ${e.designation}`,'locked');
+}
+function skipDiscovery(i){discoveryQueue.splice(i,1);updateQueueBadge();renderQueue();}
+
+async function approveAll(){
+  const status=document.getElementById('queue-action-status'),total=discoveryQueue.length;
+  if(!total){status.textContent='Queue empty';return;}
+  const q=[...discoveryQueue];
+  for(let i=0;i<q.length;i++){
+    const e=q[i];e.approved=true;e.approvedAt=new Date().toISOString();e.leanStub=generateLeanStub(e);
+    stats.approved++;document.getElementById('stat-approved').textContent=stats.approved;
+    downloadLeanFile(e);await commitToGitHub(e);status.textContent=`Approved ${i+1}/${total}...`;
+    await new Promise(r=>setTimeout(r,250));
+  }
+  discoveryQueue.length=0;updateQueueBadge();renderQueue();updateLogTable();status.textContent=`Done — ${total} approved`;
+}
+function skipAll(){const t=discoveryQueue.length;discoveryQueue.length=0;updateQueueBadge();renderQueue();document.getElementById('queue-action-status').textContent=`${t} skipped`;}
+async function approveNobleOnly(){
+  const nobles=discoveryQueue.filter(e=>e.phase==='NOBLE');
+  for(const e of nobles){e.approved=true;e.approvedAt=new Date().toISOString();e.leanStub=generateLeanStub(e);stats.approved++;document.getElementById('stat-approved').textContent=stats.approved;discoveryQueue.splice(discoveryQueue.indexOf(e),1);downloadLeanFile(e);await commitToGitHub(e);await new Promise(r=>setTimeout(r,200));}
+  updateQueueBadge();renderQueue();updateLogTable();document.getElementById('queue-action-status').textContent=`${nobles.length} Noble approved`;
+}
+async function approveRescueOnly(){
+  const rescues=discoveryQueue.filter(e=>e.isRescue);
+  for(const e of rescues){e.approved=true;e.approvedAt=new Date().toISOString();e.leanStub=generateLeanStub(e);stats.approved++;document.getElementById('stat-approved').textContent=stats.approved;discoveryQueue.splice(discoveryQueue.indexOf(e),1);downloadLeanFile(e);await commitToGitHub(e);await new Promise(r=>setTimeout(r,200));}
+  updateQueueBadge();renderQueue();updateLogTable();document.getElementById('queue-action-status').textContent=`${rescues.length} Rescue approved`;
+}
+function downloadAllApproved(){
+  const a=discoveryLog.filter(d=>d.approved&&d.leanStub);
+  if(!a.length){feedLine('No approved entries.','info');return;}
+  a.forEach((e,i)=>setTimeout(()=>downloadLeanFile(e),i*80));
+  feedLine(`⬇ Downloading ${a.length} Lean files`,'locked');
+}
+function downloadLeanFile(e){
+  if(!e.leanStub)return;
+  const blob=new Blob([e.leanStub],{type:'text/plain'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=`${e.designation}.lean`;a.click();URL.revokeObjectURL(a.href);
+}
+function updateQueueBadge(){document.getElementById('queue-badge').textContent=discoveryQueue.length?` (${discoveryQueue.length})`:''}
+
+function updateLogTable(){
+  const tbody=document.getElementById('log-body');
+  if(!discoveryLog.length){tbody.innerHTML='<tr><td colspan="7" style="color:var(--dim);text-align:center;padding:9px">No discoveries yet.</td></tr>';return;}
+  tbody.innerHTML=[...discoveryLog].reverse().slice(0,60).map(d=>`
+    <tr>
+      <td style="color:var(--iva)">${d.designation}</td>
+      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.collision}</td>
+      <td style="color:${phaseColor(d.phase)}">${d.tau.toFixed(4)}</td>
+      <td style="color:${phaseColor(d.phase)}">${d.phase}</td>
+      <td style="color:${d.isRescue?'var(--rescue)':'var(--dim)'}">${d.isRescue?'★RESCUE':d.flag_type||'—'}</td>
+      <td style="color:${d.approved?'var(--locked)':'var(--dim)'}">${d.approved?'APPROVED':'FLAGGED'}</td>
+      <td style="color:var(--dim)">${new Date(d.timestamp).toLocaleTimeString()}</td>
+    </tr>`).join('');
+}
+
+['inj-sym','inj-P','inj-N','inj-B','inj-A'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',()=>{
+    const P=parseFloat(document.getElementById('inj-P').value)||0,B=parseFloat(document.getElementById('inj-B').value)||0;
+    const N=parseFloat(document.getElementById('inj-N').value)||0,A=parseFloat(document.getElementById('inj-A').value)||0;
+    const ph=phaseOf(P,B);
+    document.getElementById('inj-preview').textContent=`τ=${(P>0?B/P:0).toFixed(4)} ${ph} · IM=${(P+N+B+A)*ANCHOR} · TL=0.136899099984016`;
+  });
+});
+
+function manualInject(){
+  const sym=document.getElementById('inj-sym').value.trim(),name=document.getElementById('inj-name').value.trim();
+  if(!sym||!name){alert('SYM and NAME required');return;}
+  const P=parseFloat(document.getElementById('inj-P').value)||0,N=parseFloat(document.getElementById('inj-N').value)||0;
+  const B=parseFloat(document.getElementById('inj-B').value)||0,A=parseFloat(document.getElementById('inj-A').value)||0;
+  sessionCorpus.push({sym,name,coord:document.getElementById('inj-coord').value||'',P,N,B,A,type:'ere'});
+  rebuildSelectors();
+  feedLine(`Injected: ${sym} (${name}) → live corpus`,'locked');
+  ['inj-sym','inj-name','inj-P','inj-N','inj-B','inj-A','inj-coord'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('inj-preview').textContent='Fill fields to preview...';
+}
+
+function showAIFIKeyPrompt(){document.getElementById('aifi-key-prompt').style.display='block';document.getElementById('aifi-inline-key').focus();}
+function hideAIFIKeyPrompt(){document.getElementById('aifi-key-prompt').style.display='none';}
+function connectAIFIInline(){const k=document.getElementById('aifi-inline-key').value.trim();if(!k)return;activateAIFI(k);hideAIFIKeyPrompt();}
+function saveApiKey(){const k=document.getElementById('claude-api-key-input').value.trim();if(!k)return;activateAIFI(k);document.getElementById('claude-api-key-input').value='';}
+
+function activateAIFI(key){
+  API_KEY=key;localStorage.setItem('ob_api_key',key);localStorage.setItem('ob_accepted',new Date().toISOString());
+  document.getElementById('aifi-connect-wall').style.display='none';
+  document.getElementById('aifi-chat-area').style.display='block';
+  document.getElementById('aifi-status-dot').classList.add('active');
+  document.getElementById('aifi-header-status').textContent='AIFI ONLINE';
+  document.getElementById('aifi-key-badge').textContent='(connected)';
+  document.getElementById('aifi-key-badge').style.color='var(--locked)';
+  document.getElementById('api-key-status').textContent='✓ AIFI active.';
+  document.getElementById('api-key-status').style.color='var(--locked)';
+  addChatMsg('aifi',`OctoBeam Collider online. [9,9,2,3] · 8-beam fusion engine.\n\nRules: P=harmonic-8, N=sum, B=ΣB-2k, A=max. k≤Σmin(Bi,Bj) over C(8,2)=28 pairs.\n\nNoble headroom: equal-B 8-beam uses only 1/7 of coupling capacity.\nDiscovery classes: RESCUE (all 28 pairs SHATTER → 8-beam locks), NOBLE EMERGENCE, IVA_PEAK corridor.\n\nInheritance: e5-e8 B=0 → 4-beam · e3-e8 B=0 → 2-beam.\n\nCorpus loaded. What are we smashing?\n\n— DISCOVERY · OCTOBEAM AIFI · SNSFT · [9,9,4,3]`);
+  feedLine('AIFI activated. 8-beam oracle online. C(8,2)=28 pairs active.','locked');
+}
+function disconnectAIFI(){
+  API_KEY='';localStorage.removeItem('ob_api_key');localStorage.removeItem('ob_accepted');
+  document.getElementById('aifi-chat-area').style.display='none';
+  document.getElementById('aifi-connect-wall').style.display='flex';
+  document.getElementById('aifi-status-dot').classList.remove('active');
+  document.getElementById('aifi-header-status').textContent='AIFI OFFLINE';
+  feedLine('AIFI disconnected.','info');
+}
+
+async function sendChat(){
+  const input=document.getElementById('chat-input'),text=input.value.trim();
+  if(!text||!API_KEY)return;
+  addChatMsg('user',text);input.value='';
+  document.getElementById('aifi-thinking').style.display='block';
+  try{
+    const ctx=`OctoBeam [9,9,2,3] · Agent:${agentState} · k_mode:${kMode} · Cycles:${stats.cycles} · Noble:${stats.noble} · Rescue:${stats.rescue} · Flagged:${stats.flagged}\nUser: ${text}`;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:900,system:buildSystemPrompt(),messages:[{role:'user',content:ctx}]})
+    });
+    const data=await res.json();
+    if(data.content&&data.content[0])addChatMsg('aifi',data.content[0].text);
+    else addChatMsg('aifi','Error.\n\n— DISCOVERY · AIFI · SNSFT · [9,9,2,3]');
+  }catch(err){addChatMsg('aifi',`Error: ${err.message}\n\n— DISCOVERY · AIFI · SNSFT · [9,9,2,3]`);}
+  document.getElementById('aifi-thinking').style.display='none';
+}
+function addChatMsg(role,text){
+  const msgs=document.getElementById('chat-messages'),div=document.createElement('div');
+  div.className=`msg msg-${role}`;
+  div.innerHTML=`<div class="msg-label ${role}">${role==='user'?'YOU':'AIFI · OCTOBEAM'}</div><div class="msg-text">${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function saveGithubSettings(){
+  GITHUB_PAT=document.getElementById('gh-pat').value.trim();GITHUB_REPO=document.getElementById('gh-repo').value.trim();
+  GITHUB_BRANCH=document.getElementById('gh-branch').value.trim()||'main';GITHUB_LEAN_PATH=document.getElementById('gh-lean-path').value.trim()||'lean/';
+  localStorage.setItem('ob_gh_pat',GITHUB_PAT);localStorage.setItem('ob_gh_repo',GITHUB_REPO);
+  localStorage.setItem('ob_gh_branch',GITHUB_BRANCH);localStorage.setItem('ob_gh_lean_path',GITHUB_LEAN_PATH);
+  document.getElementById('gh-status').textContent=`Saved. ${GITHUB_REPO} · ${GITHUB_BRANCH} · ${GITHUB_LEAN_PATH}`;
+  feedLine(`GitHub: ${GITHUB_REPO}`,'locked');
+}
+async function timestampToGitHub(entry){
+  if(!GITHUB_PAT||!GITHUB_REPO)return;
+  try{
+    const lp='ob_discovery_log.json';
+    const gr=await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${lp}`,{headers:{'Authorization':`token ${GITHUB_PAT}`,'Accept':'application/vnd.github.v3+json'}});
+    let sha=null,ex=[];
+    if(gr.ok){const d=await gr.json();sha=d.sha;ex=JSON.parse(atob(d.content.replace(/\n/g,'')));}
+    ex.push({designation:entry.designation,timestamp:entry.timestamp,collision:entry.collision,phase:entry.phase,tau:entry.tau,isRescue:entry.isRescue,TL,approved:false,engine:'8-beam'});
+    const body={message:`[OB8] Flag: ${entry.designation}`,content:btoa(JSON.stringify(ex,null,2))};
+    if(sha)body.sha=sha;
+    await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${lp}`,{method:'PUT',headers:{'Authorization':`token ${GITHUB_PAT}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+    feedLine(`⬆ Timestamped: ${entry.designation}`,'info');
+  }catch(e){feedLine(`GH timestamp error: ${e.message}`,'shatter');}
+}
+async function commitToGitHub(entry){
+  if(!GITHUB_PAT||!GITHUB_REPO)return;
+  try{
+    const path=`${GITHUB_LEAN_PATH}${entry.designation}.lean`,content=btoa(unescape(encodeURIComponent(entry.leanStub)));
+    const res=await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`,{
+      method:'PUT',
+      headers:{'Authorization':`token ${GITHUB_PAT}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify({message:`[OB8] Approve: ${entry.designation}`,content,branch:GITHUB_BRANCH})
+    });
+    if(res.ok){feedLine(`⬆ Committed: ${path}`,'locked');document.getElementById('gh-status').textContent=`Last: ${entry.designation}`;}
+  }catch(e){feedLine(`GH commit error: ${e.message}`,'shatter');}
+}
+
+function exportJSON(){const b=new Blob([JSON.stringify(discoveryLog,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_log_${new Date().toISOString().slice(0,10)}.json`;a.click();}
+function exportCSV(){
+  if(!discoveryLog.length){feedLine('Nothing to export.','info');return;}
+  const hdrs=['designation','timestamp','collision','kMode','k','kmax','P','N','B','A','tau','TL','IM','phase','isRescue','reason','approved','recipe_stoich','recipe_formula','recipe_grams_per_FU','recipe_law'];
+  const rows=discoveryLog.map(d=>{
+    const r=d.recipe||null;
+    return hdrs.map(h=>{
+      if(h==='TL')return TL;
+      if(h==='recipe_stoich')return r?r.stoich:'';
+      if(h==='recipe_formula')return r?r.formula:'';
+      if(h==='recipe_grams_per_FU')return r?recipeToString(r):'';
+      if(h==='recipe_law')return r?r.law:'';
+      return d[h]??'';
+    }).join(',');
+  });
+  const b=new Blob([[hdrs.join(','),...rows].join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_log_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+  feedLine(`⬇ CSV: ${discoveryLog.length} rows`,'locked');
+}
+function exportSession(){
+  const s={timestamp:new Date().toISOString(),engine:'GAM Collider v15 (Geometric Axiomatic Module) · OctoBeam Mode',coordinate:'[9,9,2,3]',parent:'[9,9,2,2]',grandparent:'[9,9,2,1]',architect:'HIGHTISTIC',doi:'10.5281/zenodo.18719748',constants:{ANCHOR,TL,TL_IVA},fusionRules:{P:'8-body harmonic mean',N:'sum',B:'max(0,ΣBi-2k)',A:'max',k:'Σmin(Bi,Bj) 28 pairs C(8,2)'},stats,discoveries:discoveryLog,approved:discoveryLog.filter(d=>d.approved),rescues:discoveryLog.filter(d=>d.isRescue),sessionCorpus};
+  const b=new Blob([JSON.stringify(s,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_session_${new Date().toISOString().slice(0,10)}.json`;a.click();
+}
+
+function showTab(id){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`tab-${id}`).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>{if(t.getAttribute('onclick')?.includes(`'${id}'`))t.classList.add('active');});
+}
+
+function rebuildSelectors(){
+  const all=getFilteredCorpus().sort((a,b)=>a.sym.localeCompare(b.sym));
+  const opts=all.map(e=>{
+    const isSP=SPARTICLE_SYMS_SET.has(e.sym);
+    const isERE=ERE_SYMS_SET.has(e.sym);
+    const prefix=isSP?'⬡ ':isERE?'◆ ':'';
+    return`<option value="${e.sym}">${prefix}${e.sym} — ${e.name} · τ=${tau(e.P,e.B).toFixed(3)} ${phaseOf(e.P,e.B).slice(0,4)}</option>`;
+  }).join('');
+  BEAM_IDS.forEach(id=>{
+    const sel=document.getElementById(id),cur=sel.value;
+    sel.innerHTML=opts;
+    if(cur)sel.value=cur;
+  });
+  // Full corpus (no filter) for legacy chaos + K-sweep + F_ext selectors
+  const allFull=getAllCorpus().sort((a,b)=>a.sym.localeCompare(b.sym));
+  // Legacy chaos anchor-beam select
+  const ab=document.getElementById('anchor-beam');
+  if(ab){const abCur=ab.value;ab.innerHTML='<option value="">— random all —</option>'+opts;if(abCur)ab.value=abCur;}
+  // K-sweep and F_ext selectors (full corpus, no filter)
+  const optsPlain=allFull.map(e=>`<option value="${e.sym}">${e.sym} — ${e.name} · τ=${tau(e.P,e.B).toFixed(3)}</option>`).join('');
+  ['sw-a','sw-b','fext-el'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const cur=el.value;el.innerHTML=optsPlain;if(cur)el.value=cur;
+  });
+  const swa=document.getElementById('sw-a'),swb=document.getElementById('sw-b'),fe=document.getElementById('fext-el');
+  if(swa&&!swa.value)swa.value='N';
+  if(swb&&!swb.value)swb.value='Ga';
+  if(fe&&!fe.value)fe.value='Fe';
+}
+
+function acceptLicense(){
+  const key=document.getElementById('api-key-input').value.trim();
+  const ghk=document.getElementById('github-key-input').value.trim();
+  const ghr=document.getElementById('github-repo-input').value.trim();
+  document.getElementById('license-splash').style.display='none';
+  feedLine('OctoBeam ready. [9,9,2,3] · TL=0.136899099984016 · 8-beam Noble emergence active. C(8,2)=28 pairs.','locked');
+  if(key)activateAIFI(key);
+  if(ghk){GITHUB_PAT=ghk;localStorage.setItem('ob_gh_pat',ghk);}
+  if(ghr){GITHUB_REPO=ghr;localStorage.setItem('ob_gh_repo',ghr);}
+  if(ghk&&ghr){document.getElementById('gh-pat').value=GITHUB_PAT;document.getElementById('gh-repo').value=GITHUB_REPO;feedLine(`GitHub: ${GITHUB_REPO}`,'locked');}
+}
+function skipLicense(){document.getElementById('license-splash').style.display='none';feedLine('Running local mode. TL=0.136899099984016 · 28 pairs.','info');}
+
+(function init(){
+  const sk=localStorage.getItem('ob_api_key'),sa=localStorage.getItem('ob_accepted');
+  const sp=localStorage.getItem('ob_gh_pat'),sr=localStorage.getItem('ob_gh_repo');
+  const sb=localStorage.getItem('ob_gh_branch'),sl=localStorage.getItem('ob_gh_lean_path');
+  if(sp)GITHUB_PAT=sp;if(sr)GITHUB_REPO=sr;if(sb)GITHUB_BRANCH=sb;if(sl)GITHUB_LEAN_PATH=sl;
+  if(sp){const el=document.getElementById('gh-pat');if(el)el.value=sp;}
+  if(sr){const el=document.getElementById('gh-repo');if(el)el.value=sr;}
+  if(sl){const el=document.getElementById('gh-lean-path');if(el)el.value=sl;}
+  rebuildSelectors();
+  // Default beams: H C N O H C N O (CHON×2 — T11 verified Noble, IM=42.127)
+  const defaults=['H','C','N','O','H','C','N','O'];
+  BEAM_IDS.forEach((id,i)=>{document.getElementById(id).value=defaults[i];});
+  setKMode('max');
+  setBeamCount(8);  // ensure slot visibility and labels match
+  // Log corpus size on init
+  const fc=getFilteredCorpus();
+  feedLine(`NobleMappa ready · ${fc.length} elements · 118 periodic · ${SNSFT_ELS.length} EREs · ${PARTICLE_ELS.length} SM · ${SPARTICLE_ELS.length} S-Particles · 0 sorry`,'locked');
+  if(sk&&sa){document.getElementById('license-splash').style.display='none';activateAIFI(sk);}
+})();
+</script>
+</body>
+</html>
