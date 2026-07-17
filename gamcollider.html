@@ -288,7 +288,9 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
     <div class="mode-sep"></div>
     <div class="mode-section" style="gap:3px;">
       <button class="filter-btn on-eres" id="f-eres" onclick="toggleFilter('eres')" title="Emergent Resonant Elements — EREs [9,9,2,44]">EREs</button>
-      <button class="filter-btn on-particles" id="f-particles" onclick="toggleFilter('particles')" title="Standard Model particles — quarks, leptons, hadrons">SM</button>
+      <button class="filter-btn on-particles" id="f-quarks" onclick="toggleFilter('quarks')" title="Quarks: u d s c b t">QRK</button>
+      <button class="filter-btn on-particles" id="f-leptons" onclick="toggleFilter('leptons')" title="Leptons: e μ τ">LEP</button>
+      <button class="filter-btn on-particles" id="f-hadrons" onclick="toggleFilter('hadrons')" title="Hadrons + mesons: Pr Nt π+ π⁰ K+ J/ψ Υ">HAD</button>
       <button class="filter-btn on-sparticles" id="f-sparticles" onclick="toggleFilter('sparticles')" title="S-Particles — SNSFT predictions [9,9,2,34]" style="letter-spacing:.08em;">S-PART</button>
     </div>
     <div style="margin-left:auto;font-size:7.5px;color:var(--dim);" id="mode-summary">8-BEAM · C(8,2)=28 pairs</div>
@@ -960,11 +962,13 @@ function applyFext(){
     <div style="margin-top:7px;padding:5px 7px;border-left:2px solid ${transColor};font-size:8px;color:var(--text);line-height:1.8;">${interp}</div>`;
 }
 let beamCount=8;
-const corpusFilters={p12:true,p34:true,p56:true,p7:true,eres:true,particles:true,sparticles:true};
+const corpusFilters={p12:true,p34:true,p56:true,p7:true,eres:true,quarks:true,leptons:true,hadrons:true,sparticles:true};
 
 const PAIRS_FOR={2:1,4:6,8:28};
 const ERE_SYMS_SET=new Set(['Sv','Lm','Ve','Nx','Ax','De','Dm','Hi','Gl2','Zo','Zc','SP','Li2','Fv','Pa2','Dq','Wm','GU','EW','Zb','Wb']);
-const PARTICLE_SYMS_SET=new Set(['qu','qd','qs','qc','qb','qt','e','mu','ta','Pr','Nt','pi','p0','K+','Jy','Ups']);
+const QUARK_SYMS_SET=new Set(['qu','qd','qs','qc','qb','qt']);
+const LEPTON_SYMS_SET=new Set(['e','mu','ta']);
+const HADRON_SYMS_SET=new Set(['Pr','Nt','pi','p0','K+','Jy','Ups']);
 const SPARTICLE_SYMS_SET=new Set(['Xcc2','Xcc1','Occ','Xbb0','Xbb1','Obb','Occc','Obbb','AsN','CoN']);
 const FILTER_ON_CLASS={p12:'on-p12',p34:'on-p34',p56:'on-p56',p7:'on-p7',eres:'on-eres',particles:'on-particles',sparticles:'on-sparticles'};
 
@@ -994,7 +998,9 @@ function getFilteredCorpus(){
   return getAllCorpus().filter(e=>{
     if(SPARTICLE_SYMS_SET.has(e.sym)) return corpusFilters.sparticles;
     if(ERE_SYMS_SET.has(e.sym))       return corpusFilters.eres;
-    if(PARTICLE_SYMS_SET.has(e.sym))  return corpusFilters.particles;
+    if(QUARK_SYMS_SET.has(e.sym))     return corpusFilters.quarks;
+    if(LEPTON_SYMS_SET.has(e.sym))    return corpusFilters.leptons;
+    if(HADRON_SYMS_SET.has(e.sym))    return corpusFilters.hadrons;
     const per=e.per||0;
     if(per<=2)  return corpusFilters.p12;
     if(per<=4)  return corpusFilters.p34;
