@@ -767,6 +767,10 @@ const PARTICLE_ELS=[
   {sym:'e', name:'Electron',       P:0.000545,   N:2, B:1,    A:0.01360,ptype:'lepton'},
   {sym:'mu',name:'Muon',           P:0.11261,    N:2, B:1,    A:0.11261,ptype:'lepton'},
   {sym:'ta',name:'Tau',            P:1.89376,    N:2, B:1,    A:1.89376,ptype:'lepton'},
+  // Antileptons (charge partners; same mass, mirror charge)
+  {sym:'e+', name:'Positron',      P:0.000545,   N:2, B:1,    A:0.01360,ptype:'antilepton'},
+  {sym:'mu+',name:'Antimuon',      P:0.11261,    N:2, B:1,    A:0.11261,ptype:'antilepton'},
+  {sym:'ta+',name:'Antitau',       P:1.89376,    N:2, B:1,    A:1.89376,ptype:'antilepton'},
   // Hadrons / mesons
   {sym:'P+',name:'Proton',         P:1.000,      N:3, B:1,    A:0.01360,ptype:'hadron'},
   {sym:'Nt',name:'Neutron',        P:1.00138,    N:3, B:1,    A:0.000835,ptype:'hadron'},
@@ -775,6 +779,14 @@ const PARTICLE_ELS=[
   {sym:'K+',name:'Kaon+',          P:0.52616,    N:2, B:1,    A:0.118,  ptype:'meson'},
   {sym:'Jy',name:'J/psi',          P:3096.9/938.272, N:2, B:0, A:0.118,ptype:'meson'},
   {sym:'Ups',name:'Upsilon',       P:9460.3/938.272, N:2, B:0, A:0.118,ptype:'meson'},
+  // Hyperons — strange-quark baryons (PDG masses / m_p)
+  {sym:'Lam', name:'Lambda',       P:1115.683/938.272, N:3, B:1, A:0.118, ptype:'hyperon'},
+  {sym:'Sig+',name:'Sigma+',       P:1189.37/938.272,  N:3, B:1, A:0.118, ptype:'hyperon'},
+  {sym:'Sig0',name:'Sigma0',       P:1192.642/938.272, N:3, B:1, A:0.118, ptype:'hyperon'},
+  {sym:'Sig-',name:'Sigma-',       P:1197.449/938.272, N:3, B:1, A:0.118, ptype:'hyperon'},
+  {sym:'Xi0', name:'Xi0',          P:1314.86/938.272,  N:3, B:1, A:0.118, ptype:'hyperon'},
+  {sym:'Xi-', name:'Xi-',          P:1321.71/938.272,  N:3, B:1, A:0.118, ptype:'hyperon'},
+  {sym:'Om-', name:'Omega-',       P:1672.45/938.272,  N:3, B:1, A:0.118, ptype:'hyperon'},
 ];
 
 // ── S-PARTICLES — SNSFT [9,9,2,34] Universal Baryon Noble Law ──
@@ -967,8 +979,8 @@ const corpusFilters={p12:true,p34:true,p56:true,p7:true,eres:true,quarks:true,le
 const PAIRS_FOR={2:1,4:6,8:28};
 const ERE_SYMS_SET=new Set(['Sv','Lm','Ve','Nx','Ax','De','Dm','Hi','Gl2','Zo','Zc','SP','Li2','Fv','Pa2','Dq','Wm','GU','EW','Zb','Wb']);
 const QUARK_SYMS_SET=new Set(['qu','qd','qs','qc','qb','qt']);
-const LEPTON_SYMS_SET=new Set(['e','mu','ta']);
-const HADRON_SYMS_SET=new Set(['P+','Nt','pi','p0','K+','Jy','Ups']);
+const LEPTON_SYMS_SET=new Set(['e','mu','ta','e+','mu+','ta+']);
+const HADRON_SYMS_SET=new Set(['P+','Nt','pi','p0','K+','Jy','Ups','Lam','Sig+','Sig0','Sig-','Xi0','Xi-','Om-']);
 const SPARTICLE_SYMS_SET=new Set(['Xcc2','Xcc1','Occ','Xbb0','Xbb1','Obb','Occc','Obbb','AsN','CoN']);
 const FILTER_ON_CLASS={p12:'on-p12',p34:'on-p34',p56:'on-p56',p7:'on-p7',eres:'on-eres',particles:'on-particles',sparticles:'on-sparticles'};
 
@@ -1427,6 +1439,350 @@ End: — DISCOVERY · OCTOBEAM AIFI · SNSFT · [9,9,4,3]`;}
 //          [9,9,2,17] Ga-anchor · [9,9,2,22] S-anchor · [9,9,2,24] Li-anchor
 //          Sulfur PDF v1.051726 · Tungsten PDF v1.051626 · 42 Laws paper
 // Tier: T1=peer-reviewed verified · T2=related compound known · T3=novel prior art
+
+// ────────────────────────────────────────────────────────────────
+// HADRON_KNOWN_MAP · Nuclear + Particle Physics Reference Registry
+// ────────────────────────────────────────────────────────────────
+// Multiset-matched (order-independent) map of hadron/particle compositions
+// to peer-reviewed nuclear + particle physics classifications.
+// Isobar families (mass-A = Z+N) reproduce the standard nuclear physics
+// nuclide catalog; baryon-meson and multi-quarkonium entries reproduce
+// PDG-catalogued exotic hadron states.
+// NUBASE = NUBASE2020 nuclear database (Kondev et al. 2021)
+// PDG = Particle Data Group Review of Particle Physics (2024)
+
+// Multiset counter helper — returns object like {P+:4, Nt:4}
+function symMultiset(els){
+  const m={};
+  for(const e of els){m[e.sym]=(m[e.sym]||0)+1;}
+  return m;
+}
+function multisetEq(a,b){
+  const ka=Object.keys(a),kb=Object.keys(b);
+  if(ka.length!==kb.length)return false;
+  for(const k of ka){if(a[k]!==b[k])return false;}
+  return true;
+}
+
+const HADRON_KNOWN_MAP=[
+  // ── MASS-1 · FREE NUCLEONS ────────────────────────────────
+  {mset:{'P+':1}, tier:'T1', name:'Proton / Hydrogen-1 (¹H)',
+   ref:'NUBASE2020 · A=1 · stable · fundamental baryon · 99.985% natural hydrogen',
+   path:'Ubiquitous · primary constituent of visible matter'},
+  {mset:{'Nt':1}, tier:'T1', name:'Free Neutron (n)',
+   ref:'NUBASE2020 · A=1 · β⁻ decay to proton+electron+antineutrino, half-life 878.4 s · free neutron unstable',
+   path:'Reactor / spallation source · cosmic ray secondary'},
+
+  // ── MASS-2 ISOBAR FAMILY ──────────────────────────────────
+  {mset:{'P+':1,'Nt':1}, tier:'T1', name:'Deuterium (²H)',
+   ref:'NUBASE2020 · A=2 · stable isotope, primary target in NMR spectroscopy · binding energy 2.22 MeV',
+   path:'Natural abundance in water (0.0156%) / electrolysis enrichment · ITER fusion fuel'},
+  {mset:{'P+':2}, tier:'T1', name:'Diproton (²He, unbound)',
+   ref:'NUBASE2020 · A=2 · unbound resonance · Coulomb repulsion dominant',
+   path:'Nuclear reaction, immediate decay to two protons'},
+  {mset:{'Nt':2}, tier:'T2', name:'Dineutron (²n, transient)',
+   ref:'NUBASE2020 · A=2 · transient state observed in nuclear breakup reactions',
+   path:'Nuclear reaction · Be-6 / He-16 decay observation'},
+
+  // ── MASS-3 ISOBAR FAMILY ──────────────────────────────────
+  {mset:{'P+':1,'Nt':2}, tier:'T1', name:'Tritium (³H)',
+   ref:'NUBASE2020 · A=3 · β⁻ decay to ³He, half-life 12.32 years · thermonuclear fuel',
+   path:'Reactor breeding from Li-6 / cosmic ray secondary production'},
+  {mset:{'P+':2,'Nt':1}, tier:'T1', name:'Helium-3 (³He)',
+   ref:'NUBASE2020 · A=3 · stable · primordial + tritium β-decay origin · lunar regolith enriched',
+   path:'Natural (rare) / tritium decay / D-D fusion reaction product'},
+  {mset:{'P+':3}, tier:'T2', name:'Triproton (³Li, unbound)',
+   ref:'NUBASE2020 · A=3 · unbound resonance',
+   path:'Nuclear reaction, immediate decay'},
+  {mset:{'Nt':3}, tier:'T2', name:'Trineutron (³n, transient)',
+   ref:'NUBASE2020 · A=3 · reported observation 2022 (Duer et al.) · resonance state',
+   path:'Nuclear reaction · ³H(t,³He) breakup'},
+
+  // ── MASS-4 ISOBAR FAMILY ──────────────────────────────────
+  {mset:{'P+':1,'Nt':3}, tier:'T1', name:'Hydrogen-4 (⁴H)',
+   ref:'NUBASE2020 · A=4 · unbound resonance · neutron emission',
+   path:'Radioactive ion beam facility · nuclear reaction'},
+  {mset:{'P+':2,'Nt':2}, tier:'T1', name:'Helium-4 / α-particle (⁴He)',
+   ref:'NUBASE2020 · A=4 · stable double-magic nucleus · binding energy 28.3 MeV · primary α-particle',
+   path:'Radioactive α-decay of heavy nuclei / D-T fusion / stellar nucleosynthesis'},
+  {mset:{'P+':3,'Nt':1}, tier:'T1', name:'Lithium-4 (⁴Li)',
+   ref:'NUBASE2020 · A=4 · proton emission · extremely short-lived',
+   path:'Radioactive ion beam facility'},
+  {mset:{'P+':4}, tier:'T2', name:'Quadproton (⁴Be, unbound)',
+   ref:'NUBASE2020 · A=4 · unbound resonance state',
+   path:'Nuclear reaction, immediate decay'},
+  {mset:{'Nt':4}, tier:'T2', name:'Tetraneutron (⁴n)',
+   ref:'NUBASE2020 · A=4 · resonance state observed 2022 (Duer et al., Nature) · quasi-bound',
+   path:'Nuclear reaction · ⁸He beam on hydrogen target · RIKEN observation'},
+
+  // ── MASS-5 ISOBAR FAMILY ──────────────────────────────────
+  {mset:{'P+':1,'Nt':4}, tier:'T1', name:'Hydrogen-5 (⁵H)',
+   ref:'NUBASE2020 · A=5 · unbound resonance · reported observations 2001+ · neutron-rich hydrogen',
+   path:'Radioactive ion beam facility · exotic beam production'},
+  {mset:{'P+':4,'Nt':1}, tier:'T1', name:'Beryllium-5 (⁵Be)',
+   ref:'NUBASE2020 · A=5 · unbound · proton-rich · extremely short-lived',
+   path:'Radioactive ion beam facility'},
+  {mset:{'P+':2,'Nt':3}, tier:'T1', name:'Helium-5 (⁵He)',
+   ref:'NUBASE2020 · A=5 · unbound resonance · neutron emission t~7×10⁻²² s',
+   path:'Radioactive ion beam facility · neutron scattering'},
+  {mset:{'P+':3,'Nt':2}, tier:'T1', name:'Lithium-5 (⁵Li)',
+   ref:'NUBASE2020 · A=5 · unbound resonance · proton emission',
+   path:'Radioactive ion beam facility'},
+
+  // ── MASS-6 ISOBAR FAMILY ──────────────────────────────────
+  {mset:{'P+':1,'Nt':5}, tier:'T2', name:'Hydrogen-6 (⁶H)',
+   ref:'NUBASE2020 · A=6 · super-heavy hydrogen · resonance state · reported observations 2003 onwards',
+   path:'Radioactive ion beam facility · exotic beam production'},
+  {mset:{'P+':2,'Nt':4}, tier:'T1', name:'Helium-6 (⁶He)',
+   ref:'NUBASE2020 · A=6 · halo nucleus · β⁻ decay to ⁶Li, half-life 807 ms',
+   path:'Radioactive ion beam facility · Borromean nucleus'},
+  {mset:{'P+':3,'Nt':3}, tier:'T1', name:'Lithium-6 (⁶Li)',
+   ref:'NUBASE2020 · A=6 · stable · 7.5% natural abundance · thermonuclear fuel',
+   path:'Natural abundance / mineral extraction · fusion breeding blanket'},
+  {mset:{'P+':4,'Nt':2}, tier:'T1', name:'Beryllium-6 (⁶Be)',
+   ref:'NUBASE2020 · A=6 · unbound · two-proton decay',
+   path:'Radioactive ion beam facility'},
+  {mset:{'P+':5,'Nt':1}, tier:'T2', name:'Boron-6 (⁶B)',
+   ref:'NUBASE2020 · A=6 · unbound predicted state',
+   path:'Nuclear reaction · unbound'},
+
+  // ── MASS-7 ISOBAR FAMILY ──────────────────────────────────
+  {mset:{'P+':1,'Nt':6}, tier:'T1', name:'Hydrogen-7 (⁷H)',
+   ref:'NUBASE2020 · A=7 · extremely neutron-rich · unbound resonance · reported observations 2003+',
+   path:'Radioactive ion beam facility · exotic hydrogen production'},
+  {mset:{'P+':6,'Nt':1}, tier:'T1', name:'Carbon-7 (⁷C)',
+   ref:'NUBASE2020 · A=7 · unbound · proton-rich · 2-proton decay',
+   path:'Radioactive ion beam facility'},
+  {mset:{'P+':2,'Nt':5}, tier:'T2', name:'Helium-7 (⁷He)',
+   ref:'NUBASE2020 · A=7 · unbound resonance · neutron emission',
+   path:'Radioactive ion beam facility'},
+  {mset:{'P+':3,'Nt':4}, tier:'T1', name:'Lithium-7 (⁷Li)',
+   ref:'NUBASE2020 · A=7 · stable · 92.5% natural abundance · primordial nucleosynthesis',
+   path:'Natural abundance / mineral extraction · Big Bang nucleosynthesis product'},
+  {mset:{'P+':4,'Nt':3}, tier:'T1', name:'Beryllium-7 (⁷Be)',
+   ref:'NUBASE2020 · A=7 · electron capture to ⁷Li, half-life 53.22 days · solar neutrino source',
+   path:'Cosmic ray spallation / solar core / cyclotron production'},
+  {mset:{'P+':5,'Nt':2}, tier:'T1', name:'Boron-7 (⁷B)',
+   ref:'NUBASE2020 · A=7 · unbound proton-rich · extremely short-lived',
+   path:'Radioactive ion beam facility'},
+
+  // ── MASS-8 ISOBAR FAMILY ──────────────────────────────────
+  {mset:{'P+':1,'Nt':7}, tier:'T1', name:'Hydrogen-8 (⁸H)',
+   ref:'NUBASE2020 · A=8 · extremely neutron-rich · reported observation 2007 (Nikolskii et al.)',
+   path:'Radioactive ion beam facility · exotic nucleus production'},
+  {mset:{'P+':2,'Nt':6}, tier:'T1', name:'Helium-8 (⁸He)',
+   ref:'NUBASE2020 · A=8 · halo nucleus · 4 drifting neutrons around α-core · β⁻ decay, t½ 119 ms',
+   path:'Radioactive ion beam facility · GANIL/RIKEN production'},
+  {mset:{'P+':3,'Nt':5}, tier:'T1', name:'Lithium-8 (⁸Li)',
+   ref:'NUBASE2020 · A=8 · β⁻ decay to ⁸Be, half-life 838 ms',
+   path:'Radioactive ion beam facility / nuclear reaction'},
+  {mset:{'P+':4,'Nt':4}, tier:'T1', name:'Beryllium-8 (⁸Be)',
+   ref:'NUBASE2020 · A=8 · unstable · splits into two α-particles in ~10⁻¹⁶ s · triple-α resonance intermediate (Hoyle state pathway)',
+   path:'Two-α fusion (transient) / triple-α process precursor'},
+  {mset:{'P+':5,'Nt':3}, tier:'T1', name:'Boron-8 (⁸B)',
+   ref:'NUBASE2020 · A=8 · β⁺ decay to ⁸Be, half-life 770 ms · primary solar neutrino source (SNO, Super-Kamiokande)',
+   path:'Solar pp-III branch / accelerator production'},
+  {mset:{'P+':6,'Nt':2}, tier:'T1', name:'Carbon-8 (⁸C)',
+   ref:'NUBASE2020 · A=8 · unbound · 2-proton decay to ⁶Be, half-life ~2×10⁻²¹ s',
+   path:'Radioactive ion beam facility · exotic proton-rich production'},
+  {mset:{'P+':7,'Nt':1}, tier:'T2', name:'Nitrogen-8 (⁸N)',
+   ref:'NUBASE2020 · A=8 · unbound predicted state · beyond proton drip line',
+   path:'Nuclear reaction · unbound'},
+  {mset:{'P+':8}, tier:'T2', name:'Octa-proton (⁸O, unbound)',
+   ref:'NUBASE2020 · A=8 · theoretical unbound multi-proton state · beyond proton drip line',
+   path:'Theoretical · unbound electrostatic state'},
+
+  // ── PURE MULTI-NEUTRON CLUSTERS (5-8 beam) ────────────────
+  // Multi-neutron states beyond tetraneutron are theoretical.
+  // The tetraneutron 2022 observation (Duer et al., Nature) renewed
+  // active interest in the neutron cluster state landscape.
+  {mset:{'Nt':5}, tier:'T2', name:'Pentaneutron (⁵n, theoretical)',
+   ref:'Theoretical multi-neutron cluster · post-tetraneutron cluster search literature',
+   path:'Theoretical · nuclear reaction search program (RIKEN, GSI)'},
+  {mset:{'Nt':6}, tier:'T2', name:'Hexaneutron (⁶n, theoretical)',
+   ref:'Theoretical multi-neutron cluster · post-tetraneutron cluster search literature',
+   path:'Theoretical · nuclear reaction search program (RIKEN, GSI)'},
+  {mset:{'Nt':7}, tier:'T2', name:'Heptaneutron (⁷n, theoretical)',
+   ref:'Theoretical multi-neutron cluster · post-tetraneutron cluster search literature',
+   path:'Theoretical · nuclear reaction search program (RIKEN, GSI)'},
+  {mset:{'Nt':8}, tier:'T2', name:'Octaneutron (⁸n, theoretical)',
+   ref:'Theoretical multi-neutron cluster · post-tetraneutron cluster search literature · related to neutron matter equation of state',
+   path:'Theoretical · nuclear reaction search program (RIKEN, GSI) · neutron star crust analog'},
+
+  // ── PURE MULTI-PROTON CLUSTERS (5-7 beam) ─────────────────
+  {mset:{'P+':5}, tier:'T2', name:'Pentaproton (⁵Be equivalent, unbound)',
+   ref:'Theoretical multi-proton cluster · beyond proton drip line',
+   path:'Theoretical · unbound electrostatic state'},
+  {mset:{'P+':6}, tier:'T2', name:'Hexaproton (⁶C equivalent, unbound)',
+   ref:'Theoretical multi-proton cluster · beyond proton drip line',
+   path:'Theoretical · unbound electrostatic state'},
+  {mset:{'P+':7}, tier:'T2', name:'Heptaproton (⁷N equivalent, unbound)',
+   ref:'Theoretical multi-proton cluster · beyond proton drip line',
+   path:'Theoretical · unbound electrostatic state'},
+
+  // ── BARYON-MESON BOUND STATES (2-beam) ────────────────────
+  {mset:{'P+':1,'pi':1}, tier:'T1', name:'π⁻p system: Pionic Hydrogen (bound) / Δ resonance (excited)',
+   ref:'PDG · pionic hydrogen bound atomic state (PSI) · Δ(1232) resonance at higher energy · isospin-3/2 baryon family',
+   path:'PSI pionic H spectroscopy (bound) / hadron collider pion beam (Δ excitation)'},
+  {mset:{'Nt':1,'pi':1}, tier:'T1', name:'Δ Baryon family (isospin partner)',
+   ref:'PDG · neutron-pion resonances · Δ(1232) isospin partners',
+   path:'Hadron collider · pion beam scattering experiments'},
+  {mset:{'P+':1,'K+':1}, tier:'T1', name:'K⁻p system: Kaonic Hydrogen (bound) / Σ,Λ hyperon (excited)',
+   ref:'PDG · SIDDHARTA kaonic H (bound, low-energy QCD probe) · Σ(1385), Λ(1405) hyperon resonances (excited)',
+   path:'DAΦNE SIDDHARTA (bound) / hadron collider strangeness production (excited)'},
+  {mset:{'Nt':1,'K+':1}, tier:'T1', name:'Σ⁻ / Λ Hyperon neighborhood',
+   ref:'PDG · strange baryon resonances · isospin partners',
+   path:'Hadron collider · strangeness production'},
+  {mset:{'P+':1,'Jy':1}, tier:'T1', name:'Hidden-charm pentaquark family Pc(4380/4450/4312/4440/4457)',
+   ref:'LHCb 2015 (Aaij et al., PRL 115) · updated 2019 (Aaij et al., PRL 122) · pentaquark discovery',
+   path:'Hadron collider · LHCb Λ_b decay analysis'},
+  {mset:{'P+':1,'Ups':1}, tier:'T2', name:'Hidden-bottom pentaquark candidates',
+   ref:'PDG · theoretical predictions · active LHCb search',
+   path:'Hadron collider · LHCb hidden-bottom search'},
+
+  // ── LEPTON BOUND STATES (2-beam antilepton+lepton) ────────
+  {mset:{'e':1,'e+':1}, tier:'T1', name:'Positronium (Ps, e⁺e⁻)',
+   ref:'Deutsch 1951 · Wheeler 1946 · QED bound state · para/ortho-Ps · 125 ps / 142 ns lifetimes',
+   path:'Slow positron beams · positron sources · pair production'},
+  {mset:{'mu':1,'mu+':1}, tier:'T2', name:'True Muonium (μ⁺μ⁻)',
+   ref:'PDG · long-predicted QED bound state · not yet observed · active search programs',
+   path:'Muon collider / dimuon spectroscopy'},
+  {mset:{'ta':1,'ta+':1}, tier:'T2', name:'True Tauonium (τ⁺τ⁻)',
+   ref:'PDG · theoretical bound state · not yet observed',
+   path:'Tau-pair spectroscopy · e⁺e⁻ colliders'},
+
+  // ── LEPTON-HADRON BOUND STATES (2-beam) ───────────────────
+  {mset:{'mu+':1,'e':1}, tier:'T1', name:'Muonium (Mu, μ⁺e⁻)',
+   ref:'Hughes 1960 · QED-hadron mixed atom · precision test bed · lifetime 2.2 μs · Mu(1S-2S) spectroscopy',
+   path:'Slow muon beams · surface muon sources'},
+  {mset:{'mu':1,'P+':1}, tier:'T1', name:'Muonic Hydrogen (μ⁻p)',
+   ref:'Pohl 2010 (proton radius puzzle) · precision QED test · Lamb shift measurements',
+   path:'PSI / J-PARC muonic atom experiments'},
+
+  // ── Λ-HYPERNUCLEI (nucleon + Λ hyperon) ───────────────────
+  {mset:{'P+':1,'Lam':1}, tier:'T1', name:'Λp bound state (initial state for Λ-hyperon experiments)',
+   ref:'PDG · hyperon-nucleon interaction · low-energy YN scattering data',
+   path:'J-PARC / JLab hypernuclear physics program'},
+  {mset:{'Nt':1,'Lam':1}, tier:'T1', name:'Λn bound state',
+   ref:'PDG · hyperon-nucleon interaction · YN scattering',
+   path:'J-PARC / JLab hypernuclear program'},
+  {mset:{'P+':1,'Nt':1,'Lam':1}, tier:'T1', name:'³ΛH (Hypertriton)',
+   ref:'STAR 2018 · ALICE 2019 · lightest known hypernucleus · Λ replaces nucleon in triton · half-life 200-250 ps',
+   path:'Heavy-ion collision · Λ hypernuclear production'},
+  {mset:{'P+':1,'Nt':2,'Lam':1}, tier:'T1', name:'⁴ΛH (Lambda hydrogen-4)',
+   ref:'PDG · A=4 hypernucleus · CLAS / KEK observations',
+   path:'Meson-induced production · (K⁻,π⁻) or (π⁺,K⁺) reactions'},
+  {mset:{'P+':2,'Nt':1,'Lam':1}, tier:'T1', name:'⁴ΛHe (Lambda helium-4)',
+   ref:'PDG · A=4 hypernucleus · CLAS / J-PARC observations · charge symmetry breaking test',
+   path:'(K⁻,π⁻) / (π⁺,K⁺) hyperon production'},
+  {mset:{'P+':2,'Nt':2,'Lam':1}, tier:'T1', name:'⁵ΛHe (Lambda helium-5)',
+   ref:'PDG · A=5 · well-studied hypernucleus · binding energy 3.12 MeV',
+   path:'J-PARC E13 / KEK-PS E140a'},
+  {mset:{'P+':3,'Nt':3,'Lam':1}, tier:'T1', name:'⁷ΛLi (Lambda lithium-7)',
+   ref:'PDG · A=7 hypernucleus · KEK / J-PARC γ-ray spectroscopy',
+   path:'J-PARC E13 hypernuclear γ-ray'},
+  {mset:{'P+':3,'Nt':4,'Lam':1}, tier:'T1', name:'⁸ΛLi (Lambda lithium-8)',
+   ref:'PDG · A=8 hypernucleus · KEK observations',
+   path:'J-PARC hypernuclear program'},
+  {mset:{'P+':4,'Nt':3,'Lam':1}, tier:'T1', name:'⁸ΛBe (Lambda beryllium-8)',
+   ref:'PDG · A=8 hypernucleus',
+   path:'J-PARC / JLab hypernuclear program'},
+
+  // ── HYPERON-NUCLEON RESONANCES (2-beam) ───────────────────
+  {mset:{'P+':1,'Sig+':1}, tier:'T1', name:'Σ⁺p bound state / ΣN interaction',
+   ref:'PDG · Σ-nucleon low-energy scattering · YN interaction study',
+   path:'J-PARC / KEK ΣN scattering'},
+  {mset:{'P+':1,'Sig-':1}, tier:'T1', name:'Σ⁻p → Λn / Σ⁰n conversion',
+   ref:'PDG · well-documented hyperon-nucleon reaction',
+   path:'ΣN scattering experiments'},
+  {mset:{'P+':1,'Xi-':1}, tier:'T1', name:'Ξ⁻p bound state (H-dibaryon neighborhood)',
+   ref:'PDG · Ξ-nucleon interaction · H-dibaryon search',
+   path:'Belle / J-PARC E42 · exotic dibaryon search'},
+
+  // ── ELECTROWEAK BOSON INTERACTIONS AND DECAY SIGNATURES ────
+  // Higgs decay channels (ATLAS/CMS observed and measured branching ratios)
+  {mset:{'Hi':1,'Zb':2}, tier:'T1', name:'H → ZZ* (golden channel intermediate state)',
+   ref:'ATLAS 2012 · CMS 2012 · Higgs discovery channel · H→ZZ*→4ℓ branching ratio ~2.6%',
+   path:'LHC ATLAS/CMS Higgs boson observation'},
+  {mset:{'Hi':1,'Wb':2}, tier:'T1', name:'H → WW* → ℓνℓν',
+   ref:'ATLAS/CMS · Higgs decay channel · branching ratio ~21.5% · dominant discovery channel',
+   path:'LHC ATLAS/CMS Higgs decay analysis'},
+  {mset:{'Hi':1,'ta':1,'ta+':1}, tier:'T1', name:'H → τ⁺τ⁻',
+   ref:'ATLAS 2018 · CMS 2017 · fermionic Higgs decay observation · branching ratio ~6.3%',
+   path:'LHC Higgs Yukawa coupling measurement'},
+  {mset:{'Hi':1,'mu':1,'mu+':1}, tier:'T1', name:'H → μ⁺μ⁻',
+   ref:'ATLAS/CMS 2020 · rare Higgs decay observation · branching ratio ~0.022% · second-generation Yukawa',
+   path:'LHC HL-LHC Higgs precision program'},
+  {mset:{'Hi':1,'qb':2}, tier:'T1', name:'H → bb̄ (dominant channel)',
+   ref:'ATLAS/CMS 2018 · Higgs decay to bottom quarks · branching ratio ~58% · largest Higgs decay mode',
+   path:'LHC associated production (VH) analysis'},
+
+  // Z-boson decay channels (LEP era + LHC precision)
+  {mset:{'Zb':1,'e':1,'e+':1}, tier:'T1', name:'Z → e⁺e⁻',
+   ref:'LEP · PDG · Z decay channel · branching ratio 3.363%',
+   path:'e⁺e⁻ collider / hadron collider Z lineshape'},
+  {mset:{'Zb':1,'mu':1,'mu+':1}, tier:'T1', name:'Z → μ⁺μ⁻',
+   ref:'LEP · PDG · Z decay channel · branching ratio 3.366%',
+   path:'e⁺e⁻ / hadron collider Z lineshape · dimuon spectrum'},
+  {mset:{'Zb':1,'ta':1,'ta+':1}, tier:'T1', name:'Z → τ⁺τ⁻',
+   ref:'LEP · PDG · Z decay channel · branching ratio 3.370%',
+   path:'e⁺e⁻ / hadron collider tau pair production'},
+
+  // W-boson decay channels
+  {mset:{'Wb':1,'e':1}, tier:'T1', name:'W → eν (electron channel)',
+   ref:'PDG · W decay channel · branching ratio 10.71% · precision test of lepton universality',
+   path:'LHC W boson production · missing energy signature'},
+  {mset:{'Wb':1,'mu':1}, tier:'T1', name:'W → μν (muon channel)',
+   ref:'PDG · W decay channel · branching ratio 10.63%',
+   path:'LHC W boson production · muon+MET'},
+  {mset:{'Wb':1,'ta':1}, tier:'T1', name:'W → τν (tau channel)',
+   ref:'PDG · W decay channel · branching ratio 11.38%',
+   path:'LHC W boson production · tau+MET'},
+
+  // Diboson production (LHC extensively studied)
+  {mset:{'Wb':1,'Zb':1}, tier:'T1', name:'WZ diboson production',
+   ref:'ATLAS/CMS · SM triple gauge coupling test · anomalous coupling search',
+   path:'LHC diboson analysis'},
+  {mset:{'Wb':2}, tier:'T1', name:'WW diboson production',
+   ref:'ATLAS/CMS · SM measurement · anomalous quartic coupling search · vector boson scattering component',
+   path:'LHC diboson analysis / VBS'},
+  {mset:{'Zb':2}, tier:'T1', name:'ZZ diboson production',
+   ref:'ATLAS/CMS · SM measurement · Higgs discovery channel background · anomalous coupling probe',
+   path:'LHC diboson analysis / Higgs background'},
+
+  // Higgs production (associated with vector bosons)
+  {mset:{'Hi':1,'Wb':1}, tier:'T1', name:'WH associated production',
+   ref:'ATLAS/CMS · Higgs production channel · vector boson associated production · H→bb sensitivity',
+   path:'LHC VH search / Higgs coupling measurement'},
+  {mset:{'Hi':1,'Zb':1}, tier:'T1', name:'ZH associated production',
+   ref:'ATLAS/CMS · Higgs production channel · ZH→ℓℓbb clean signature',
+   path:'LHC VH search / Higgs coupling measurement'},
+  {mset:{'Hi':2}, tier:'T2', name:'Di-Higgs production (HH)',
+   ref:'ATLAS/CMS · Higgs self-coupling measurement · active search · not yet observed at discovery threshold',
+   path:'LHC HL-LHC Higgs self-coupling program'},
+
+  // ── MULTI-QUARKONIUM STATES (2-beam) ──────────────────────
+  {mset:{'Jy':2}, tier:'T1', name:'X(6900) fully-charm tetraquark',
+   ref:'LHCb 2020 (Aaij et al., Sci. Bull. 65) · di-J/ψ resonance · fully-charm tetraquark discovery',
+   path:'Hadron collider · LHCb di-J/ψ spectrum'},
+  {mset:{'Jy':1,'Ups':1}, tier:'T2', name:'Charm-bottom tetraquark candidates',
+   ref:'PDG · theoretical predictions · active search programs',
+   path:'Hadron collider · exotic hadron search'},
+  {mset:{'Ups':2}, tier:'T2', name:'Fully-bottom tetraquark candidates',
+   ref:'PDG · theoretical predictions · active CMS/LHCb search',
+   path:'Hadron collider · di-Υ spectrum analysis'},
+];
+
+// Score HADRON_KNOWN_MAP for a given els array using multiset matching
+function scoreHadronKnown(els){
+  const mset=symMultiset(els);
+  for(const entry of HADRON_KNOWN_MAP){
+    if(multisetEq(mset,entry.mset))return entry;
+  }
+  return null;
+}
+
+// Tier: T1=peer-reviewed verified · T2=related compound known · T3=novel prior art
 const NOBLE_MAP=[
 
   // ── LIFE SCIENCE & ORGANIC CHEMISTRY ──────────────────────────────
@@ -1825,7 +2181,7 @@ function getMaterialMap(els,r){
   // All non-periodic classes (ERE + particles + S-particles)
   const NON_PERIODIC=new Set([
     'Sv','Lm','Ve','Nx','Ax','De','Dm','Hi','Gl2','Zo','Zc','SP','Li2','Fv','Pa2','Dq','Wm','GU','EW','Zb','Wb',
-    'qu','qd','qs','qc','qb','qt','e','mu','ta','P+','Nt','pi','p0','K+','Jy','Ups',
+    'qu','qd','qs','qc','qb','qt','e','mu','ta','e+','mu+','ta+','P+','Nt','pi','p0','K+','Jy','Ups','Lam','Sig+','Sig0','Sig-','Xi0','Xi-','Om-',
     'Xcc2','Xcc1','Occ','Xbb0','Xbb1','Obb','Occc','Obbb','AsN','CoN'
   ]);
 
@@ -1857,6 +2213,26 @@ function getMaterialMap(els,r){
   const periodic=els.filter(e=>!NON_PERIODIC.has(e.sym));
   const allSyms=new Set(els.map(e=>e.sym));
 
+  // ── HADRON_KNOWN_MAP check ─────────────────────────────────
+  // Pure particle-substrate compositions (no periodic elements, no S-particles)
+  // are checked against the nuclear + particle physics reference registry
+  // via multiset matching (order-independent).
+  if(periodic.length===0){
+    const hadronMatch=scoreHadronKnown(els);
+    if(hadronMatch){
+      // Shim: format-comment expects .syms array and .hits count on match entries
+      const symsArr=[];
+      for(const k of Object.keys(hadronMatch.mset)){
+        for(let i=0;i<hadronMatch.mset[k];i++)symsArr.push(k);
+      }
+      const shimmedMatch={...hadronMatch,syms:symsArr,hits:symsArr.length,coverage:1.0};
+      return{tier:hadronMatch.tier,bestMatch:shimmedMatch,scored:[shimmedMatch],
+        periodic:[],coreStr:els.map(e=>e.sym).join('+'),spectators:[],
+        path:hadronMatch.path,
+        sParticleNote:`${hadronMatch.name} · ${hadronMatch.ref}`};
+    }
+  }
+
   // Score each noble map entry
   const scored=NOBLE_MAP.map(nm=>{
     const hits=nm.syms.filter(s=>allSyms.has(s)).length;
@@ -1885,7 +2261,20 @@ function getMaterialMap(els,r){
     const hasSi=els.some(e=>e.sym==='Si');
     const hasW=els.some(e=>e.sym==='W');
     const allNoble=els.every(e=>e.B===0);
-    if(allNoble&&els.every(e=>NON_PERIODIC.has(e.sym)))path='Theoretical — particle physics / collider';
+    // Pure particle-substrate (no periodic elements) — assign appropriate particle physics path
+    const pureParticle=periodic.length===0;
+    const hasQuark=els.some(e=>QUARK_SYMS_SET.has(e.sym));
+    const hasLepton=els.some(e=>LEPTON_SYMS_SET.has(e.sym));
+    const hasHadron=els.some(e=>HADRON_SYMS_SET.has(e.sym));
+    const hasQuarkonium=els.some(e=>['Jy','Ups'].includes(e.sym));
+    if(pureParticle){
+      if(hasQuark && !hasLepton && !hasHadron)path='Deep inelastic scattering / lattice QCD reference state';
+      else if(hasLepton && !hasQuark && !hasHadron)path='Electron-positron collider (BaBar, Belle II) / neutrino experiment';
+      else if(hasQuarkonium)path='Hadron collider · exotic hadron search (LHCb, BESIII, Belle II)';
+      else if(hasHadron)path='Hadron collider (LHCb, ATLAS, CMS) / nuclear reaction facility';
+      else path='Particle physics facility / accelerator';
+    }
+    else if(allNoble&&els.every(e=>NON_PERIODIC.has(e.sym)))path='Theoretical — particle physics / collider';
     else if(hasActinide)path='HIP-C in radiological glovebox 1400°C/180MPa';
     else if(hasPb)path='CIP + CRYO milling to prevent Pb clustering';
     else if(hasGaN)path='MOCVD on Si/SiC substrate';
@@ -1966,6 +2355,18 @@ function generateLeanStub(entry){
   const recipe=entry.recipe||computeRecipe(entry.els);
   const recipeBlock=recipeToLeanComment(recipe);
 
+  // Beam Symbol Legend — unique symbols in this collision with their full names/types
+  // Ensures downstream readers (human or RAG) can decode compact beam symbols
+  const seenSyms=new Set();
+  const legendEntries=[];
+  for(const e of entry.els){
+    if(seenSyms.has(e.sym))continue;
+    seenSyms.add(e.sym);
+    const typeLabel=e.ptype?e.ptype:(e.per?`element (Period ${e.per}, Group ${e.grp||'—'})`:(e.ere?'ERE (Emergent Resonant Element)':'participant'));
+    legendEntries.push(`--   ${e.sym.padEnd(6)} = ${e.name} (${typeLabel})`);
+  }
+  const legendBlock=legendEntries.join('\n');
+
   return`-- ============================================================
 -- ${entry.designation}.lean
 -- Engine: GAM Collider v15 (Geometric Axiomatic Module) · OctoBeam Mode · [9,9,2,3]
@@ -1990,6 +2391,10 @@ ${beamLines}
 -- state and Identity Mass score for the input composition.
 --
 -- CORE VOCABULARY:
+-- BEAM SYMBOL LEGEND (this collision):
+${legendBlock}
+--
+-- GENERAL VOCABULARY:
 --   PNBA — the four substrate-neutral primitives every element carries:
 --     P = Pattern       (structural density)
 --     N = Narrative     (nucleon count; time/continuity)
