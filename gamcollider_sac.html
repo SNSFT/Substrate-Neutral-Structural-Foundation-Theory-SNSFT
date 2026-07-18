@@ -2039,7 +2039,13 @@ function getMaterialMap(els,r){
   if(periodic.length===0){
     const hadronMatch=scoreHadronKnown(els);
     if(hadronMatch){
-      return{tier:hadronMatch.tier,bestMatch:hadronMatch,scored:[hadronMatch],
+      // Shim: format-comment expects .syms array and .hits count on match entries
+      const symsArr=[];
+      for(const k of Object.keys(hadronMatch.mset)){
+        for(let i=0;i<hadronMatch.mset[k];i++)symsArr.push(k);
+      }
+      const shimmedMatch={...hadronMatch,syms:symsArr,hits:symsArr.length,coverage:1.0};
+      return{tier:hadronMatch.tier,bestMatch:shimmedMatch,scored:[shimmedMatch],
         periodic:[],coreStr:els.map(e=>e.sym).join('+'),spectators:[],
         path:hadronMatch.path,
         sParticleNote:`${hadronMatch.name} · ${hadronMatch.ref}`};
