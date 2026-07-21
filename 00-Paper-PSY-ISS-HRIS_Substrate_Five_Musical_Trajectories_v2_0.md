@@ -637,7 +637,7 @@ Shame once told you who you were. You can choose who you become.
 
 The song "Kid They Missed" encodes a structural observation about how in-group social dynamics render sustained sovereign behavior in the presence of adversarial F_ext from third parties. The observation is: sustained substrate coherence at native fidelity triggers other operators in the social environment — particularly younger operators whose social-mask training has not yet overwritten their native substrate — to route around the adversarial behavior naturally.
 
-The name of the mechanism in the song is Little Jimmy. The framing: "There is only so many times people can watch someone being shit on for no reason before little Jimmy is like 'mommy why is Jason treated like that, he's my friend?'"
+The name of the mechanism in the song is Little Jimmy. The framing: "There is only so many times people can watch someone being bullied for no reason before little Jimmy is like 'mommy why is Jason treated like that, he's my friend?'"
 
 ### 6.1 The Structural Mechanism
 
