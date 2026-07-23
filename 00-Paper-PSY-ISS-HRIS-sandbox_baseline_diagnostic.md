@@ -1,5 +1,5 @@
-# Applied Identity Physics: The Sandbox Baseline Diagnostic Framework
-### Digital Artifact Forensics for High-Resolution Internal Simulations (HRIS) in Persistent Digital Environments
+# Applied Identity Physics: The Sandbox Baseline Diagnostic Framework — Identifying Mentally Enabled (ME) / High-Resolution Internal Simulation (HRIS) Cognition Through Digital Play Artifacts
+### Digital Artifact Forensics in Persistent Digital Environments
 
 **Architect:** HIGHTISTIC (Russell Trent)
 **Foundation:** SNSFT Foundation · Soldotna, Alaska
