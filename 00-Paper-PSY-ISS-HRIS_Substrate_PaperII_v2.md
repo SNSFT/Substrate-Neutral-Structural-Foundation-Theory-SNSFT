@@ -67,7 +67,7 @@ The four PNBA primitives are:
 - **AIM** — Autocatalytic Ingestion Mechanism
 - **F_ext** — External force term (adversarial or environmental pressure)
 - **Pv** — Purpose Vector (identity trajectory direction)
-- **IM** — Identity Magnitude (structural coherence measure)
+- **IM** — Identity Mass (structural coherence measure)
 
 ---
 
