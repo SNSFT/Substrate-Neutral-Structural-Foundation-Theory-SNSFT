@@ -1008,6 +1008,16 @@ async function mpCreateGame() {
   document.getElementById('mpCreateStatus').style.display = 'block'
 
   mpSubscribe(code)
+
+  // Fallback poll — in case realtime misses the join event
+  const pollInterval = setInterval(async () => {
+    if(mpState.phase !== 'waiting') { clearInterval(pollInterval); return }
+    const { data } = await sb.from('shatter_rooms').select('state').eq('code', code).single()
+    if(data && data.state.phase === 'deploy') {
+      clearInterval(pollInterval)
+      mpHandleUpdate(data.state)
+    }
+  }, 3000)
 }
 
 // ── JOIN GAME ────────────────────────────────────────────────
@@ -1042,11 +1052,16 @@ function mpSubscribe(code) {
   mpState.subscription = sb
     .channel('room-' + code)
     .on('postgres_changes', {
-      event: 'UPDATE', schema: 'public', table: 'shatter_rooms', filter: `code=eq.${code}`
+      event: 'UPDATE', schema: 'public', table: 'shatter_rooms'
     }, payload => {
-      mpHandleUpdate(payload.new.state)
+      // Filter client-side — Supabase realtime filter on text PK can miss
+      if(payload.new.code === code) mpHandleUpdate(payload.new.state)
     })
-    .subscribe()
+    .subscribe(status => {
+      if(status === 'SUBSCRIBED') {
+        console.log('Realtime subscribed to room', code)
+      }
+    })
 }
 
 // ── HANDLE INCOMING STATE UPDATE ─────────────────────────────
@@ -1056,7 +1071,10 @@ function mpHandleUpdate(state) {
     mpState.phase = 'deploy'
     mpState.oppHandCount = state.p2Hand.length
     mpState.myHand = state.p1Hand.map(mpDeserialiseCard)
+    // Hide all lobby elements, show game
     document.getElementById('mpLobby').style.display = 'none'
+    document.getElementById('mpRoomCode').style.display = 'none'
+    document.getElementById('mpCreateStatus').style.display = 'none'
     document.getElementById('mpGame').style.display = ''
     mpRender()
     mpLog('Opponent joined. Deploy your cards and lock in.', 'good')
