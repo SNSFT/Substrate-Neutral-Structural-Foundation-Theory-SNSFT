@@ -240,6 +240,7 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
   <div class="controls">
     <button class="btn btn-primary" id="btnClash" onclick="declareClash()" disabled>⚔ CLASH ALL LANES</button>
     <button class="btn btn-secondary" id="btnEndTurn" onclick="endPlayerTurn()" disabled>→ END TURN</button>
+    <button class="btn btn-secondary" id="btnDealAgain" onclick="dealAgain()" style="display:none">↻ DEAL AGAIN</button>
     <button class="btn btn-neutral" onclick="newGame()">↺ NEW GAME</button>
   </div>
 
@@ -338,6 +339,7 @@ function newGame() {
     apothecaryUsed: false,
   }
   clearLog()
+  document.getElementById('btnDealAgain').style.display = 'none'
   addLog('New game started. Deploy your cards — place wisely.', 'info')
   render()
   setStatus('DEPLOY', 'Select a card from your hand, then click a lane slot to place it.', 'YOUR TURN')
@@ -693,20 +695,33 @@ async function resolveClash() {
     const pShattered = aResult.finalB >= pShatterLimit
     const aShattered = pResult.finalB >= aShatterLimit
 
+    // Shattering disables a card's special ability going forward — it does NOT
+    // by itself decide who wins the lane. That's determined below by comparing
+    // actual stat output.
     if(pShattered) {
       pc.shattered = true
-      addLog(`  ⚠ ${pc.name} SHATTERED (took ${aResult.finalB} ≥ ${pShatterLimit})`, 'hit')
-      aiWins++
+      addLog(`  ⚠ ${pc.name} SHATTERED (took ${aResult.finalB} ≥ ${pShatterLimit}) — ability disabled`, 'hit')
     }
     if(aShattered) {
       ac.shattered = true
-      addLog(`  ✦ ${ac.name} SHATTERED (took ${pResult.finalB} ≥ ${aShatterLimit})`, 'good')
-      playerWins++
+      addLog(`  ⚠ ${ac.name} SHATTERED (took ${pResult.finalB} ≥ ${aShatterLimit}) — ability disabled`, 'hit')
     }
-    if(!pShattered && !aShattered) {
-      if(pc.N > ac.N) { playerWins++; addLog(`  ${pc.name} wins by N-priority (${pc.N} > ${ac.N})`, 'good') }
-      else if(ac.N > pc.N) { aiWins++; addLog(`  ${ac.name} wins by N-priority (${ac.N} > ${pc.N})`, 'warn') }
-      else { addLog(`  Lane drawn.`, 'info') }
+
+    // Lane winner: whoever dealt more B-damage wins the lane. Tie → N-priority. Still tied → draw.
+    if(pResult.finalB > aResult.finalB) {
+      playerWins++
+      addLog(`  ${pc.name} wins the lane — higher B output (${pResult.finalB} > ${aResult.finalB})`, 'good')
+    } else if(aResult.finalB > pResult.finalB) {
+      aiWins++
+      addLog(`  ${ac.name} wins the lane — higher B output (${aResult.finalB} > ${pResult.finalB})`, 'warn')
+    } else if(pc.N > ac.N) {
+      playerWins++
+      addLog(`  Tied output — ${pc.name} wins by N-priority (${pc.N} > ${ac.N})`, 'good')
+    } else if(ac.N > pc.N) {
+      aiWins++
+      addLog(`  Tied output — ${ac.name} wins by N-priority (${ac.N} > ${pc.N})`, 'warn')
+    } else {
+      addLog(`  Lane drawn.`, 'info')
     }
 
     if(!pc.shattered && pc.id==='knight') {
@@ -725,21 +740,24 @@ async function resolveClash() {
   render()
   addLog(`══ ROUND RESULT: Player +${playerWins} / AI +${aiWins} ══`, 'info')
 
+  let resultMsg = ''
   if(playerWins > aiWins) {
     gs.playerScore++
     addLog('ROUND VICTORY — The manifold held for you.', 'good')
-    showModal('VICTORY', `You won the round ${playerWins} to ${aiWins}. The manifold held.`)
+    resultMsg = `VICTORY — you won the round ${playerWins} to ${aiWins}.`
   } else if(aiWins > playerWins) {
     gs.aiScore++
     addLog('ROUND DEFEAT — AI shattered your formation.', 'hit')
-    showModal('SHATTERED', `AI won the round ${aiWins} to ${playerWins}. Recalibrate.`)
+    resultMsg = `DEFEAT — AI won the round ${aiWins} to ${playerWins}.`
   } else {
     addLog('ROUND DRAWN — Manifold in equilibrium.', 'info')
-    showModal('EQUILIBRIUM', `Round drawn ${playerWins}-${aiWins}. The manifold is stable.`)
+    resultMsg = `DRAWN — ${playerWins} to ${aiWins}.`
   }
 
-  gs.round++
+  gs.phase = 'roundEnd'
   render()
+  setStatus('ROUND OVER', `${resultMsg} Review the log above, then deal again when ready.`, 'ROUND COMPLETE')
+  document.getElementById('btnDealAgain').style.display = 'inline-block'
 }
 
 function rollDice(card, bonus, isAI) {
@@ -825,6 +843,10 @@ function showModal(title, body) {
 
 function closeModal() {
   document.getElementById('modal').style.display = 'none'
+}
+
+function dealAgain() {
+  gs.round++
   const prevPS = gs.playerScore, prevAS = gs.aiScore, prevR = gs.round
   newGame()
   gs.playerScore = prevPS; gs.aiScore = prevAS; gs.round = prevR
