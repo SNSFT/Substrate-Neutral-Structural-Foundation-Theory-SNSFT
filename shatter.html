@@ -230,7 +230,7 @@ const CARD_REGISTRY = [
   { id:'assassin',   name:'Assassin',    qty:2, P:4,  N:12, B:10, A:4,  cls:CLASSES.ASSASSIN,
     trait:'Waveform Ambush: Matrix bonus applies ONLY if revealed from Face-Down.' },
   { id:'farmer',     name:'Farmer',      qty:1, P:6,  N:5,  B:5,  A:10, cls:CLASSES.WORKING,
-    trait:'Solidarity: gains +3P/+3B per additional worker on field (+1 more if Prince present).' },
+    trait:"Farmer's Yield: while unshattered, every unshattered friendly card — of any class — gains +1P. The kingdom eats." },
   { id:'blacksmith', name:'Blacksmith',  qty:1, P:5,  N:6,  B:4,  A:12, cls:CLASSES.WORKING,
     trait:'Structural Reinforcement: Shatter threshold +2. Solidarity applies.' },
   { id:'apothecary', name:'Apothecary',  qty:1, P:7,  N:4,  B:5,  A:8,  cls:CLASSES.WORKING,
@@ -252,7 +252,7 @@ function buildDeck() {
     for(let i=0;i<t.qty;i++) {
       deck.push({ ...t, uid: Math.random().toString(36).slice(2),
         currentP: t.P, currentB: t.B, shattered: false, faceDown: false,
-        doublesCount: 0, waveformReveal: false, solidarityBonus: 0, queenBonus: 0 })
+        doublesCount: 0, waveformReveal: false, solidarityBonus: 0, farmerBonus: 0, queenBonus: 0 })
     }
   })
   return shuffle(deck)
@@ -297,9 +297,12 @@ function recomputeSide(lanes, side) {
   // Working Class solidarity
   const workers = lanes.map(l => l[side]).filter(c => c && c.cls === CLASSES.WORKING && !c.shattered)
   const hasPrince = lanes.some(l => l[side] && l[side].id === 'prince' && !l[side].shattered)
+  const hasFarmer = workers.some(c => c.id === 'farmer')
   const workerCount = workers.length
   const bonusPerWorker = workerCount <= 1 ? 0 : SOLIDARITY_PER + (hasPrince ? 1 : 0)
   const solidarityBonus = bonusPerWorker * (workerCount - 1)
+  // Farmer's Yield: flat +1P to every unshattered friendly card, any class
+  const farmerYield = hasFarmer ? 1 : 0
 
   // Queen's Grace: +1B per unshattered Royal on field (herself included),
   // applied to ALL friendly cards, only while Queen herself is unshattered.
@@ -321,6 +324,12 @@ function recomputeSide(lanes, side) {
       b += sol
     }
 
+    let yieldP = 0
+    if (!c.shattered && farmerYield > 0) {
+      yieldP = farmerYield
+      p += yieldP
+    }
+
     let king = 0
     ;[i - 1, i + 1].forEach(j => {
       const adj = lanes[j] && lanes[j][side]
@@ -337,10 +346,11 @@ function recomputeSide(lanes, side) {
     c.currentP = p
     c.currentB = b
     c.solidarityBonus = sol
+    c.farmerBonus = yieldP
     c.queenBonus = queen
   })
 
-  return { solidarityBonus, workerCount, hasPrince, queenAuraB, royalCount: royals.length, hasQueen }
+  return { solidarityBonus, workerCount, hasPrince, hasFarmer, farmerYield, queenAuraB, royalCount: royals.length, hasQueen }
 }
 
 // ============================================================
@@ -376,6 +386,7 @@ function renderHand(containerId, cards, isAI) {
     const tau = card.currentP > 0 ? (card.currentB/card.currentP).toFixed(3) : '∞'
     const tauColor = parseFloat(tau) >= SHATTER_RATIO ? 'var(--shatter)' : parseFloat(tau) > 0.1369 ? 'var(--warn)' : 'var(--anchor)'
     const solTag = card.solidarityBonus > 0 ? `<span style="font-size:7px;color:var(--working);margin-left:4px">+${card.solidarityBonus} SOL</span>` : ''
+    const farmerTag = card.farmerBonus > 0 ? `<span style="font-size:7px;color:var(--a-col);margin-left:4px">+${card.farmerBonus}P YIELD</span>` : ''
     const queenTag = card.queenBonus > 0 ? `<span style="font-size:7px;color:var(--royalty);margin-left:4px">+${card.queenBonus} GRACE</span>` : ''
     div.innerHTML = `
       <div class="card-header">
@@ -391,7 +402,7 @@ function renderHand(containerId, cards, isAI) {
           <div class="stat"><div class="stat-label" style="color:var(--a-col)">A</div><div class="stat-val" style="color:var(--a-col)">${card.A}</div></div>
         </div>
         <div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center">
-          <span class="card-im">IM=${card.P+card.N+card.B+card.A}${solTag}${queenTag}</span>
+          <span class="card-im">IM=${card.P+card.N+card.B+card.A}${solTag}${farmerTag}${queenTag}</span>
           <span style="font-family:Share Tech Mono,monospace;font-size:8px;color:${tauColor}">τ=${tau}</span>
         </div>
       </div>`
@@ -419,6 +430,7 @@ function miniCard(card, isAI) {
   const tau = card.currentP > 0 ? (card.currentB/card.currentP).toFixed(2) : '∞'
   const tauC = parseFloat(tau) >= SHATTER_RATIO ? 'var(--shatter)' : 'var(--anchor)'
   const solTag = card.solidarityBonus > 0 ? `<span style="color:var(--working);font-size:6px"> +${card.solidarityBonus}SOL</span>` : ''
+  const farmerTag = card.farmerBonus > 0 ? `<span style="color:var(--a-col);font-size:6px"> +${card.farmerBonus}PYLD</span>` : ''
   const queenTag = card.queenBonus > 0 ? `<span style="color:var(--royalty);font-size:6px"> +${card.queenBonus}GRACE</span>` : ''
   return `<div class="card ${card.cls}-card${card.shattered?' shattered':''}" style="width:100%;padding:5px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
@@ -431,7 +443,7 @@ function miniCard(card, isAI) {
       <div class="stat"><div class="stat-label" style="color:var(--b-col);font-size:6px">B</div><div class="stat-val" style="color:var(--b-col);font-size:10px">${card.currentB}</div></div>
       <div class="stat"><div class="stat-label" style="color:var(--a-col);font-size:6px">A</div><div class="stat-val" style="color:var(--a-col);font-size:10px">${card.A}</div></div>
     </div>
-    <div style="font-family:Share Tech Mono,monospace;font-size:7px;color:${tauC};margin-top:3px">τ=${tau}${solTag}${queenTag}${card.shattered?' ⚠SHATTERED':''}</div>
+    <div style="font-family:Share Tech Mono,monospace;font-size:7px;color:${tauC};margin-top:3px">τ=${tau}${solTag}${farmerTag}${queenTag}${card.shattered?' ⚠SHATTERED':''}</div>
   </div>`
 }
 
@@ -455,6 +467,7 @@ function placeLane(laneIdx) {
   card.currentP = card.P + ld.mod.P
   card.currentB = card.B + ld.mod.B
   card.solidarityBonus = 0
+  card.farmerBonus = 0
   card.queenBonus = 0
   gs.lanes[laneIdx].player = card
   gs.playerHand = gs.playerHand.filter(c => c.uid !== card.uid)
@@ -462,6 +475,7 @@ function placeLane(laneIdx) {
   if(card.id === 'blacksmith') card.shatterBonus = 2
   const sideInfo = recomputeSide(gs.lanes, 'player')
   if(sideInfo.workerCount > 1) addLog(`  ★ Solidarity active: ${sideInfo.workerCount} workers · +${sideInfo.solidarityBonus}P/+${sideInfo.solidarityBonus}B each${sideInfo.hasPrince ? ' (Prince +1)' : ''}`, 'solidarity')
+  if(sideInfo.hasFarmer) addLog(`  ☀ Farmer's Yield active: +${sideInfo.farmerYield}P to every unshattered card`, 'solidarity')
   if(sideInfo.hasQueen) addLog(`  ♛ Queen's Grace active: ${sideInfo.royalCount} royal(s) · +${sideInfo.queenAuraB}B to all friendly cards`, 'solidarity')
   addLog(`You deployed ${card.name} to ${ld.axis}-Lane.`, 'good')
   render()
@@ -497,7 +511,7 @@ function aiTurn() {
   })
   if(!bestCard){gs.phase='clash';setTimeout(resolveClash,400);return}
   const ld=LANE_DEFS[bestLane]
-  bestCard.currentP=bestCard.P+ld.mod.P; bestCard.currentB=bestCard.B+ld.mod.B; bestCard.solidarityBonus=0; bestCard.queenBonus=0
+  bestCard.currentP=bestCard.P+ld.mod.P; bestCard.currentB=bestCard.B+ld.mod.B; bestCard.solidarityBonus=0; bestCard.farmerBonus=0; bestCard.queenBonus=0
   if(faceDown){bestCard.faceDown=true;bestCard.waveformReveal=true}
   gs.lanes[bestLane].ai=bestCard
   gs.aiHand=gs.aiHand.filter(c=>c.uid!==bestCard.uid)
@@ -591,7 +605,9 @@ async function resolveClash(){
   const pInfo=recomputeSide(gs.lanes,'player')
   const aInfo=recomputeSide(gs.lanes,'ai')
   if(pInfo.workerCount>1) addLog(`  ★ Player solidarity: ${pInfo.workerCount} workers · +${pInfo.solidarityBonus}P/+${pInfo.solidarityBonus}B each${pInfo.hasPrince?' (Prince +1)':''}`, 'solidarity')
-  if(aInfo.workerCount>1) addLog(`  ★ AI solidarity: ${aInfo.workerCount} workers · +${aInfo.solidarityBonus}P/+${aInfo.solidarityBonus}B each`, 'solidarity')
+  if(aInfo.workerCount>1) addLog(`  ★ AI solidarity: ${aInfo.workerCount} workers · +${aInfo.solidarityBonus}P/+${aInfo.solidarityBonus}B each${aInfo.hasPrince?' (Prince +1)':''}`, 'solidarity')
+  if(pInfo.hasFarmer) addLog(`  ☀ Player Farmer's Yield: +${pInfo.farmerYield}P to every unshattered card`, 'solidarity')
+  if(aInfo.hasFarmer) addLog(`  ☀ AI Farmer's Yield: +${aInfo.farmerYield}P to every unshattered card`, 'solidarity')
   if(pInfo.hasQueen) addLog(`  ♛ Player Queen's Grace: ${pInfo.royalCount} royal(s) · +${pInfo.queenAuraB}B to all friendly cards`, 'solidarity')
   if(aInfo.hasQueen) addLog(`  ♛ AI Queen's Grace: ${aInfo.royalCount} royal(s) · +${aInfo.queenAuraB}B to all friendly cards`, 'solidarity')
 
@@ -706,6 +722,7 @@ function handleApothecary(lane, laneIdx) {
       target.currentP = target.P + ld.mod.P
       target.currentB = target.B + ld.mod.B
       target.solidarityBonus = 0
+      target.farmerBonus = 0
       target.queenBonus = 0
       addLog(`  ✦ Apothecary restores ${target.name} — bonuses recalculated.`, 'good')
       recomputeSide(gs.lanes, 'player')
@@ -726,6 +743,7 @@ function handleApothecary(lane, laneIdx) {
       target.currentP = target.P + ld.mod.P
       target.currentB = target.B + ld.mod.B
       target.solidarityBonus = 0
+      target.farmerBonus = 0
       target.queenBonus = 0
       addLog(`  AI Apothecary restores ${target.name}.`, 'warn')
       recomputeSide(gs.lanes, 'ai')
