@@ -33,48 +33,37 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { min-height: 100vh; background: var(--bg); color: var(--text);
   font-family: 'Barlow', sans-serif; font-weight: 300; }
-
 body::before {
-  content: '';
-  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
     radial-gradient(ellipse 60% 40% at 20% 10%, rgba(255,58,74,0.04) 0%, transparent 60%),
     radial-gradient(ellipse 40% 60% at 80% 90%, rgba(0,212,170,0.03) 0%, transparent 60%);
 }
-
 .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 16px; }
-
 .hdr { text-align: center; padding: 20px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
 .hdr-tag { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .22em; color: var(--text-m); margin-bottom: 8px; }
 h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px); font-weight: 900;
   letter-spacing: .1em; text-transform: uppercase; color: var(--shatter); margin-bottom: 4px;
   text-shadow: 0 0 40px rgba(255,58,74,0.3); }
 .hdr-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-d); letter-spacing: .08em; }
-
 .status-bar { display: flex; align-items: center; justify-content: space-between;
   background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
   padding: 10px 16px; margin-bottom: 14px; font-family: 'Share Tech Mono', monospace; font-size: 10px; }
 .status-phase { color: var(--anchor); letter-spacing: .1em; }
 .status-msg { color: var(--text-d); font-size: 9px; letter-spacing: .06em; max-width: 500px; text-align: center; }
 .status-turn { color: var(--warn); letter-spacing: .1em; }
-
-.game-layout { display: grid; grid-template-columns: 1fr 200px 1fr; gap: 12px; }
-
+.game-layout { display: grid; grid-template-columns: 1fr 260px 1fr; gap: 12px; }
 .hand-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .panel-head { padding: 8px 12px; border-bottom: 1px solid var(--border);
   font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .15em; color: var(--text-m);
   display: flex; justify-content: space-between; align-items: center; }
 .panel-count { color: var(--anchor); }
 .hand-cards { padding: 10px; display: flex; flex-direction: column; gap: 6px; min-height: 120px; }
-
 .card {
   background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px;
   padding: 8px 10px; cursor: pointer; transition: all .15s; position: relative; overflow: hidden;
 }
-.card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: currentColor; opacity: 0.4;
-}
+.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: currentColor; opacity: 0.4; }
 .card:hover { border-color: var(--anchor); transform: translateY(-1px); }
 .card.selected { border-color: var(--anchor); background: var(--anchor-d); box-shadow: 0 0 12px rgba(0,212,170,0.2); }
 .card.shattered { opacity: 0.5; border-color: var(--shatter); }
@@ -85,60 +74,45 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .card.face-down { cursor: default; }
 .card.face-down .card-body { visibility: hidden; }
 .card.face-down::after { content: '? ? ?'; position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%,-50%); font-family: 'Barlow Condensed', sans-serif;
-  font-size: 22px; font-weight: 700; color: var(--text-m); }
-
+  transform: translate(-50%,-50%); font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-m); }
 .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-.card-name { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700;
-  letter-spacing: .04em; }
-.card-class { font-family: 'Share Tech Mono', monospace; font-size: 7px; letter-spacing: .1em;
-  padding: 1px 5px; border-radius: 3px; opacity: .8; }
+.card-name { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .04em; }
+.card-class { font-family: 'Share Tech Mono', monospace; font-size: 7px; letter-spacing: .1em; padding: 1px 5px; border-radius: 3px; opacity: .8; }
 .card-im { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--anchor); }
-
 .card-stats { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 3px; }
 .stat { text-align: center; }
 .stat-label { font-family: 'Share Tech Mono', monospace; font-size: 7px; letter-spacing: .08em; opacity: .6; }
 .stat-val { font-family: 'Share Tech Mono', monospace; font-size: 12px; font-weight: 600; }
-
 .royalty-cls  { background: rgba(212,175,55,0.12); color: var(--royalty); }
 .military-cls { background: rgba(80,144,240,0.12); color: var(--military); }
 .assassin-cls { background: rgba(208,96,208,0.12); color: var(--assassin); }
 .working-cls  { background: rgba(96,200,144,0.12); color: var(--working); }
-
 .royalty-card  { color: var(--royalty); }
 .military-card { color: var(--military); }
 .assassin-card { color: var(--assassin); }
 .working-card  { color: var(--working); }
-
 .field-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .field-lanes { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
-
 .lane {
   background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
-  padding: 8px; display: grid; grid-template-columns: 24px 1fr 24px 1fr; gap: 6px; align-items: center;
+  padding: 8px; display: flex; gap: 6px; align-items: stretch;
   min-height: 60px; transition: border-color .15s;
 }
 .lane.active-lane { border-color: var(--anchor); box-shadow: 0 0 8px rgba(0,212,170,0.15); }
-.lane-label { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 900;
-  text-align: center; letter-spacing: .05em; }
-.lane-p { color: var(--p-col); }
-.lane-n { color: var(--n-col); }
-.lane-b { color: var(--b-col); }
-.lane-a { color: var(--a-col); }
+.lane-label { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 900; letter-spacing: .05em;
+  width: 22px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.lane-p { color: var(--p-col); } .lane-n { color: var(--n-col); } .lane-b { color: var(--b-col); } .lane-a { color: var(--a-col); }
+.lane-cards { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .lane-slot { background: var(--border); border-radius: 6px; min-height: 44px; display: flex;
   align-items: center; justify-content: center; font-family: 'Share Tech Mono', monospace;
   font-size: 8px; color: var(--text-m); letter-spacing: .08em; cursor: pointer; transition: all .15s; }
 .lane-slot:hover { background: var(--border2); }
 .lane-slot.has-card { background: transparent; padding: 0; cursor: default; }
 .lane-slot.has-card:hover { background: transparent; }
-.lane-vs { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
-  color: var(--text-m); text-align: center; }
-
+.lane-vs { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; color: var(--text-m); text-align: center; line-height: 1; }
 .controls { grid-column: 1/-1; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
-.btn {
-  padding: 10px 20px; border-radius: 6px; font-family: 'Share Tech Mono', monospace;
-  font-size: 10px; letter-spacing: .12em; cursor: pointer; border: 1px solid; transition: all .15s;
-}
+.btn { padding: 10px 20px; border-radius: 6px; font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; letter-spacing: .12em; cursor: pointer; border: 1px solid; transition: all .15s; }
 .btn-primary { background: var(--shatter-d); border-color: rgba(255,58,74,0.4); color: var(--shatter); }
 .btn-primary:hover { background: rgba(255,58,74,0.15); }
 .btn-secondary { background: var(--anchor-d); border-color: rgba(0,212,170,0.3); color: var(--anchor); }
@@ -146,50 +120,33 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .btn-neutral { background: var(--surface2); border-color: var(--border2); color: var(--text-d); }
 .btn-neutral:hover { border-color: var(--text-d); color: var(--text); }
 .btn:disabled { opacity: .3; cursor: not-allowed; }
-
-.log-panel { grid-column: 1/-1; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; overflow: hidden; }
-.log-body { padding: 10px 14px; max-height: 120px; overflow-y: auto; display: flex;
-  flex-direction: column; gap: 3px; }
-.log-entry { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .04em;
-  color: var(--text-d); }
-.log-entry.hit { color: var(--shatter); }
-.log-entry.good { color: var(--anchor); }
-.log-entry.warn { color: var(--warn); }
-.log-entry.info { color: var(--noble); }
-
+.log-panel { grid-column: 1/-1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.log-body { padding: 10px 14px; max-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
+.log-entry { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .04em; color: var(--text-d); }
+.log-entry.hit { color: var(--shatter); } .log-entry.good { color: var(--anchor); }
+.log-entry.warn { color: var(--warn); } .log-entry.info { color: var(--noble); }
+.log-entry.solidarity { color: var(--working); }
 .dice-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .die { width: 32px; height: 32px; background: var(--surface2); border: 1px solid var(--border2);
   border-radius: 6px; display: flex; align-items: center; justify-content: center;
-  font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700;
-  transition: all .08s; }
+  font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; transition: all .08s; }
 .die.p-die { color: var(--p-col); border-color: rgba(176,96,240,0.3); }
 .die.b-die { color: var(--b-col); border-color: rgba(240,144,48,0.3); }
 .die.explode { color: var(--shatter); border-color: var(--shatter); animation: flash .3s ease; }
 .die.rolling { color: var(--warn); border-color: rgba(240,144,48,0.6); animation: spin .1s linear infinite; }
 @keyframes flash { 0%,100%{opacity:1} 50%{opacity:.3} }
 @keyframes spin  { 0%{transform:scale(1)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
-
 .score-row { display: flex; gap: 12px; justify-content: center; }
-.score-box { text-align: center; padding: 6px 16px; background: var(--surface2);
-  border: 1px solid var(--border); border-radius: 6px; }
-.score-label { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: var(--text-m);
-  letter-spacing: .1em; margin-bottom: 2px; }
+.score-box { text-align: center; padding: 6px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; }
+.score-label { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: var(--text-m); letter-spacing: .1em; margin-bottom: 2px; }
 .score-val { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; }
-.score-player { color: var(--anchor); }
-.score-ai { color: var(--shatter); }
-
-.modal-overlay { position: fixed; inset: 0; background: rgba(3,6,10,0.85); z-index: 100;
-  display: flex; align-items: center; justify-content: center; }
-.modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px;
-  padding: 24px; max-width: 400px; width: 90%; text-align: center; }
-.modal h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 900;
-  letter-spacing: .08em; margin-bottom: 8px; }
+.score-player { color: var(--anchor); } .score-ai { color: var(--shatter); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(3,6,10,0.85); z-index: 100; display: flex; align-items: center; justify-content: center; }
+.modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; padding: 24px; max-width: 400px; width: 90%; text-align: center; }
+.modal h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 900; letter-spacing: .08em; margin-bottom: 8px; }
 .modal p { color: var(--text-d); font-size: 13px; line-height: 1.6; margin-bottom: 16px; }
-
 @media (max-width: 700px) {
   .game-layout { grid-template-columns: 1fr; }
-  .lane { grid-template-columns: 20px 1fr 20px 1fr; }
 }
 </style>
 </head>
@@ -215,40 +172,28 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 </div>
 
 <div class="game-layout">
-
   <div class="hand-panel">
-    <div class="panel-head">
-      <span>YOUR HAND</span>
-      <span class="panel-count" id="playerHandCount">0 cards</span>
-    </div>
+    <div class="panel-head"><span>YOUR HAND</span><span class="panel-count" id="playerHandCount">0 cards</span></div>
     <div class="hand-cards" id="playerHand"></div>
   </div>
-
   <div class="field-panel">
     <div class="panel-head"><span>FIELD · 4-AXIS MATRIX</span></div>
     <div class="field-lanes" id="fieldLanes"></div>
   </div>
-
   <div class="hand-panel">
-    <div class="panel-head">
-      <span>AI HAND</span>
-      <span class="panel-count" id="aiHandCount">0 cards</span>
-    </div>
+    <div class="panel-head"><span>AI HAND</span><span class="panel-count" id="aiHandCount">0 cards</span></div>
     <div class="hand-cards" id="aiHand"></div>
   </div>
-
   <div class="controls">
     <button class="btn btn-primary" id="btnClash" onclick="declareClash()" disabled>⚔ CLASH ALL LANES</button>
     <button class="btn btn-secondary" id="btnEndTurn" onclick="endPlayerTurn()" disabled>→ END TURN</button>
     <button class="btn btn-secondary" id="btnDealAgain" onclick="dealAgain()" style="display:none">↻ DEAL AGAIN</button>
     <button class="btn btn-neutral" onclick="newGame()">↺ NEW GAME</button>
   </div>
-
   <div class="log-panel">
     <div class="panel-head"><span>COMBAT LOG</span><div class="dice-row" id="diceDisplay"></div></div>
     <div class="log-body" id="combatLog"></div>
   </div>
-
 </div>
 </div>
 
@@ -265,46 +210,50 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 // SHATTER — IDENTITY PHYSICS CARD SYSTEM
 // Coordinate: [9,0,4,1] · SNSFT Foundation
 // Architect: HIGHTISTIC | Ω₀ = 1.36899099984016
-// v2 — animated dice rolling per lane
+// v4 — Queen Royal Aura + Identity Mass round tiebreak
 // ============================================================
 
 const CLASSES = { ROYALTY:'royalty', MILITARY:'military', ASSASSIN:'assassin', WORKING:'working' }
 const CLASS_ADV = { royalty:'military', military:'assassin', assassin:'working', working:'royalty' }
-const MATRIX_BONUS = 5
-const SHATTER_RATIO = 2
+const MATRIX_BONUS   = 5
+const SHATTER_RATIO  = 2
+const SOLIDARITY_PER = 3   // +P and +B per additional worker beyond first
 
 const CARD_REGISTRY = [
-  { id:'king',       name:'King',        qty:1, P:6,  N:10, B:20, A:2,  cls:CLASSES.ROYALTY,  trait:'Adjacent allies +2P' },
-  { id:'queen',      name:'Queen',       qty:1, P:7,  N:9,  B:16, A:4,  cls:CLASSES.ROYALTY,  trait:'Swap lane positions pre-clash' },
-  { id:'jack',       name:'Jack',        qty:1, P:5,  N:8,  B:15, A:5,  cls:CLASSES.ROYALTY,  trait:'Force opponent re-roll once' },
-  { id:'knight',     name:'Knight',      qty:2, P:10, N:4,  B:12, A:6,  cls:CLASSES.MILITARY, trait:'Counter-strike: 6dmg if survives' },
-  { id:'assassin',   name:'Assassin',    qty:2, P:4,  N:12, B:10, A:4,  cls:CLASSES.ASSASSIN, trait:'Matrix bonus only from face-down' },
-  { id:'farmer',     name:'Farmer',      qty:1, P:6,  N:5,  B:5,  A:10, cls:CLASSES.WORKING,  trait:'High A fuels ascension chains' },
-  { id:'blacksmith', name:'Blacksmith',  qty:1, P:5,  N:6,  B:4,  A:12, cls:CLASSES.WORKING,  trait:'Shatter threshold +2 (B≥2P+2)' },
-  { id:'apothecary', name:'Apothecary',  qty:1, P:7,  N:4,  B:5,  A:8,  cls:CLASSES.WORKING,  trait:'Restore 1 shattered ally 1 turn' },
+  { id:'king',       name:'King',        qty:1, P:6,  N:10, B:20, A:2,  cls:CLASSES.ROYALTY,
+    trait:"Royal Decree: while unshattered, every other unshattered friendly card gains +2P." },
+  { id:'queen',      name:'Queen',       qty:1, P:7,  N:9,  B:16, A:4,  cls:CLASSES.ROYALTY,
+    trait:"Queen's Grace: while unshattered, all friendly cards gain +1B per Royal on the field (herself included)." },
+  { id:'prince',     name:'Prince',      qty:1, P:5,  N:8,  B:15, A:5,  cls:CLASSES.ROYALTY,
+    trait:"Heir's Mandate: Working Class solidarity bonus +1P/+1B per worker while Prince is on field." },
+  { id:'knight',     name:'Knight',      qty:2, P:10, N:4,  B:12, A:6,  cls:CLASSES.MILITARY,
+    trait:'Counter-strike: deals 6P damage to attacker if Un-Shattered after clash.' },
+  { id:'assassin',   name:'Assassin',    qty:2, P:4,  N:12, B:10, A:4,  cls:CLASSES.ASSASSIN,
+    trait:'Waveform Ambush: Matrix bonus applies ONLY if revealed from Face-Down.' },
+  { id:'farmer',     name:'Farmer',      qty:1, P:6,  N:5,  B:5,  A:10, cls:CLASSES.WORKING,
+    trait:"Farmer's Yield: while unshattered, every unshattered friendly card — of any class — gains +1P. The kingdom eats." },
+  { id:'blacksmith', name:'Blacksmith',  qty:1, P:5,  N:6,  B:4,  A:12, cls:CLASSES.WORKING,
+    trait:'Structural Reinforcement: Shatter threshold +2. Solidarity applies.' },
+  { id:'apothecary', name:'Apothecary',  qty:1, P:7,  N:4,  B:5,  A:8,  cls:CLASSES.WORKING,
+    trait:'Restore 1 Shattered ally (including workers) — restores solidarity contribution.' },
 ]
 
 const LANE_DEFS = [
-  { axis:'P', label:'P', bonus:'P+2', mod:{P:2,B:0}, title:'Shield Domain' },
-  { axis:'N', label:'N', bonus:'N-priority', mod:{P:0,B:0}, title:'Rank Domain' },
-  { axis:'B', label:'B', bonus:'B+2', mod:{P:0,B:2}, title:'Attack Domain' },
-  { axis:'A', label:'A', bonus:'A-chain', mod:{P:0,B:0}, title:'Ability Domain' },
+  { axis:'P', mod:{P:2,B:0} },
+  { axis:'N', mod:{P:0,B:0} },
+  { axis:'B', mod:{P:0,B:2} },
+  { axis:'A', mod:{P:0,B:0} },
 ]
 
 let gs = {}
 
 function buildDeck() {
   const deck = []
-  CARD_REGISTRY.forEach(template => {
-    for(let i=0;i<template.qty;i++) {
-      deck.push({
-        ...template,
-        uid: Math.random().toString(36).slice(2),
-        currentP: template.P, currentB: template.B,
-        shattered: false, faceDown: false,
-        doublesCount: 0, jackUsed: false,
-        waveformReveal: false
-      })
+  CARD_REGISTRY.forEach(t => {
+    for(let i=0;i<t.qty;i++) {
+      deck.push({ ...t, uid: Math.random().toString(36).slice(2),
+        currentP: t.P, currentB: t.B, shattered: false, faceDown: false,
+        doublesCount: 0, waveformReveal: false, solidarityBonus: 0, farmerBonus: 0, kingBonus: 0, queenBonus: 0 })
     }
   })
   return shuffle(deck)
@@ -322,27 +271,89 @@ function newGame() {
   gs = {
     playerHand: fullDeck.slice(0, mid),
     aiHand:     fullDeck.slice(mid),
-    lanes: [
-      {player:null, ai:null},
-      {player:null, ai:null},
-      {player:null, ai:null},
-      {player:null, ai:null},
-    ],
-    phase: 'deploy',
-    selectedCard: null,
-    selectedLane: null,
+    lanes: [{player:null,ai:null},{player:null,ai:null},{player:null,ai:null},{player:null,ai:null}],
+    phase: 'deploy', selectedCard: null,
     playerScore: parseInt(document.getElementById('playerScore').textContent)||0,
     aiScore:     parseInt(document.getElementById('aiScore').textContent)||0,
     round:       parseInt(document.getElementById('roundNum').textContent)||1,
     log: [],
-    jackOwner: null,
-    apothecaryUsed: false,
   }
   clearLog()
   document.getElementById('btnDealAgain').style.display = 'none'
   addLog('New game started. Deploy your cards — place wisely.', 'info')
   render()
   setStatus('DEPLOY', 'Select a card from your hand, then click a lane slot to place it.', 'YOUR TURN')
+}
+
+// ============================================================
+// STAT ENGINE
+// Recomputes currentP / currentB for every card on one side from
+// scratch each time it's called: base stats + lane modifiers +
+// Working Class solidarity + King's Royal Decree + Queen's Grace.
+// Call this any time the field changes (deploy, shatter, restore)
+// so all live bonuses stay in sync with the current board state.
+// ============================================================
+
+function recomputeSide(lanes, side) {
+  // Working Class solidarity
+  const workers = lanes.map(l => l[side]).filter(c => c && c.cls === CLASSES.WORKING && !c.shattered)
+  const hasPrince = lanes.some(l => l[side] && l[side].id === 'prince' && !l[side].shattered)
+  const hasFarmer = workers.some(c => c.id === 'farmer')
+  const workerCount = workers.length
+  const bonusPerWorker = workerCount <= 1 ? 0 : SOLIDARITY_PER + (hasPrince ? 1 : 0)
+  const solidarityBonus = bonusPerWorker * (workerCount - 1)
+  // Farmer's Yield: flat +1P to every unshattered friendly card, any class
+  const farmerYield = hasFarmer ? 1 : 0
+
+  // Queen's Grace: +1B per unshattered Royal on field (herself included),
+  // applied to ALL friendly cards, only while Queen herself is unshattered.
+  const royals = lanes.map(l => l[side]).filter(c => c && c.cls === CLASSES.ROYALTY && !c.shattered)
+  const hasQueen = royals.some(c => c.id === 'queen')
+  const queenAuraB = hasQueen ? royals.length : 0
+
+  // King's Royal Decree: flat +2P to every OTHER unshattered friendly card,
+  // only while King himself is unshattered. No longer limited to adjacent lanes.
+  const hasKing = lanes.some(l => l[side] && l[side].id === 'king' && !l[side].shattered)
+
+  lanes.forEach((l, i) => {
+    const c = l[side]
+    if (!c) return
+    const ld = LANE_DEFS[i]
+    let p = c.P + ld.mod.P
+    let b = c.B + ld.mod.B
+
+    let sol = 0
+    if (c.cls === CLASSES.WORKING && !c.shattered) {
+      sol = solidarityBonus
+      p += sol
+      b += sol
+    }
+
+    let yieldP = 0
+    if (!c.shattered && farmerYield > 0) {
+      yieldP = farmerYield
+      p += yieldP
+    }
+
+    let king = 0
+    if (hasKing && !c.shattered && c.id !== 'king') king = 2
+    p += king
+
+    let queen = 0
+    if (queenAuraB > 0 && !c.shattered) {
+      queen = queenAuraB
+      b += queen
+    }
+
+    c.currentP = p
+    c.currentB = b
+    c.solidarityBonus = sol
+    c.farmerBonus = yieldP
+    c.kingBonus = king
+    c.queenBonus = queen
+  })
+
+  return { solidarityBonus, workerCount, hasPrince, hasFarmer, farmerYield, hasKing, queenAuraB, royalCount: royals.length, hasQueen }
 }
 
 // ============================================================
@@ -371,27 +382,31 @@ function renderHand(containerId, cards, isAI) {
   cards.forEach(card => {
     const div = document.createElement('div')
     div.className = 'card ' + card.cls + '-card'
-      + (card.shattered?' shattered':'')
-      + (isAI?' ai-card':'')
+      + (card.shattered?' shattered':'') + (isAI?' ai-card':'')
       + (card.faceDown?' face-down':'')
       + (gs.selectedCard && gs.selectedCard.uid===card.uid?' selected':'')
     if(!isAI) div.onclick = () => selectCard(card)
     const tau = card.currentP > 0 ? (card.currentB/card.currentP).toFixed(3) : '∞'
     const tauColor = parseFloat(tau) >= SHATTER_RATIO ? 'var(--shatter)' : parseFloat(tau) > 0.1369 ? 'var(--warn)' : 'var(--anchor)'
+    const solTag = card.solidarityBonus > 0 ? `<span style="font-size:7px;color:var(--working);margin-left:4px">+${card.solidarityBonus} SOL</span>` : ''
+    const farmerTag = card.farmerBonus > 0 ? `<span style="font-size:7px;color:var(--a-col);margin-left:4px">+${card.farmerBonus}P YIELD</span>` : ''
+    const kingTag = card.kingBonus > 0 ? `<span style="font-size:7px;color:var(--royalty);margin-left:4px">+${card.kingBonus}P DECREE</span>` : ''
+    const queenTag = card.queenBonus > 0 ? `<span style="font-size:7px;color:var(--royalty);margin-left:4px">+${card.queenBonus} GRACE</span>` : ''
     div.innerHTML = `
       <div class="card-header">
         <span class="card-name">${isAI && card.faceDown ? '???' : card.name}</span>
         <span class="card-class ${card.cls}-cls">${card.cls.toUpperCase()}</span>
       </div>
       <div class="card-body">
+        <div style="font-size:7px;color:var(--text-m);margin-bottom:4px;line-height:1.4;">${card.trait}</div>
         <div class="card-stats">
           <div class="stat"><div class="stat-label" style="color:var(--p-col)">P</div><div class="stat-val" style="color:var(--p-col)">${card.currentP}</div></div>
           <div class="stat"><div class="stat-label" style="color:var(--n-col)">N</div><div class="stat-val" style="color:var(--n-col)">${card.N}</div></div>
           <div class="stat"><div class="stat-label" style="color:var(--b-col)">B</div><div class="stat-val" style="color:var(--b-col)">${card.currentB}</div></div>
           <div class="stat"><div class="stat-label" style="color:var(--a-col)">A</div><div class="stat-val" style="color:var(--a-col)">${card.A}</div></div>
         </div>
-        <div style="display:flex;justify-content:space-between;margin-top:5px">
-          <span class="card-im">IM=${card.P+card.N+card.B+card.A}</span>
+        <div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center">
+          <span class="card-im">IM=${card.P+card.N+card.B+card.A}${solTag}${farmerTag}${kingTag}${queenTag}</span>
           <span style="font-family:Share Tech Mono,monospace;font-size:8px;color:${tauColor}">τ=${tau}</span>
         </div>
       </div>`
@@ -407,9 +422,11 @@ function renderField() {
     const div = document.createElement('div')
     div.className = 'lane' + (gs.selectedCard && !lane.player ? ' active-lane' : '')
     div.innerHTML = `<div class="lane-label lane-${ld.axis.toLowerCase()}">${ld.axis}</div>
-      <div class="lane-slot ${lane.player?'has-card':''}" onclick="placeLane(${i})" id="pslot-${i}">${lane.player ? miniCard(lane.player, false) : 'EMPTY'}</div>
-      <div class="lane-vs">VS</div>
-      <div class="lane-slot ${lane.ai?'has-card':''}" id="aslot-${i}">${lane.ai ? miniCard(lane.ai, true) : 'EMPTY'}</div>`
+      <div class="lane-cards">
+        <div class="lane-slot ${lane.player?'has-card':''}" onclick="placeLane(${i})">${lane.player ? miniCard(lane.player,false) : 'EMPTY'}</div>
+        <div class="lane-vs">VS</div>
+        <div class="lane-slot ${lane.ai?'has-card':''}">${lane.ai ? miniCard(lane.ai,true) : 'EMPTY'}</div>
+      </div>`
     el.appendChild(div)
   })
 }
@@ -418,6 +435,10 @@ function miniCard(card, isAI) {
   if(isAI && card.faceDown) return `<div class="card face-down" style="width:100%;padding:6px;font-size:8px;font-family:Share Tech Mono,monospace;color:var(--text-m)">FACE DOWN</div>`
   const tau = card.currentP > 0 ? (card.currentB/card.currentP).toFixed(2) : '∞'
   const tauC = parseFloat(tau) >= SHATTER_RATIO ? 'var(--shatter)' : 'var(--anchor)'
+  const solTag = card.solidarityBonus > 0 ? `<span style="color:var(--working);font-size:6px"> +${card.solidarityBonus}SOL</span>` : ''
+  const farmerTag = card.farmerBonus > 0 ? `<span style="color:var(--a-col);font-size:6px"> +${card.farmerBonus}PYLD</span>` : ''
+  const kingTag = card.kingBonus > 0 ? `<span style="color:var(--royalty);font-size:6px"> +${card.kingBonus}PDCR</span>` : ''
+  const queenTag = card.queenBonus > 0 ? `<span style="color:var(--royalty);font-size:6px"> +${card.queenBonus}GRACE</span>` : ''
   return `<div class="card ${card.cls}-card${card.shattered?' shattered':''}" style="width:100%;padding:5px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
       <span class="card-name" style="font-size:11px">${card.name}</span>
@@ -429,7 +450,7 @@ function miniCard(card, isAI) {
       <div class="stat"><div class="stat-label" style="color:var(--b-col);font-size:6px">B</div><div class="stat-val" style="color:var(--b-col);font-size:10px">${card.currentB}</div></div>
       <div class="stat"><div class="stat-label" style="color:var(--a-col);font-size:6px">A</div><div class="stat-val" style="color:var(--a-col);font-size:10px">${card.A}</div></div>
     </div>
-    <div style="font-family:Share Tech Mono,monospace;font-size:7px;color:${tauC};margin-top:3px">τ=${tau}${card.shattered?' ⚠SHATTERED':''}</div>
+    <div style="font-family:Share Tech Mono,monospace;font-size:7px;color:${tauC};margin-top:3px">τ=${tau}${solTag}${farmerTag}${kingTag}${queenTag}${card.shattered?' ⚠SHATTERED':''}</div>
   </div>`
 }
 
@@ -439,52 +460,42 @@ function miniCard(card, isAI) {
 
 function selectCard(card) {
   if(gs.phase !== 'deploy') return
-  gs.selectedCard = gs.selectedCard && gs.selectedCard.uid === card.uid ? null : card
+  gs.selectedCard = gs.selectedCard && gs.selectedCard.uid===card.uid ? null : card
   render()
-  setStatus('DEPLOY', gs.selectedCard ? `${card.name} selected. Click a lane to deploy.` : 'Select a card from your hand.', 'YOUR TURN')
+  setStatus('DEPLOY', gs.selectedCard ? `${card.name} selected. Click a lane to deploy.` : 'Select a card.', 'YOUR TURN')
 }
 
 function placeLane(laneIdx) {
   if(gs.phase !== 'deploy') return
-  if(!gs.selectedCard) { setMsg('Select a card from your hand first.'); return }
-  if(gs.lanes[laneIdx].player) { setMsg('That lane already has your card.'); return }
-
+  if(!gs.selectedCard) { setMsg('Select a card first.'); return }
+  if(gs.lanes[laneIdx].player) { setMsg('Lane already occupied.'); return }
   const card = gs.selectedCard
   const ld = LANE_DEFS[laneIdx]
   card.currentP = card.P + ld.mod.P
   card.currentB = card.B + ld.mod.B
-
+  card.solidarityBonus = 0
+  card.farmerBonus = 0
+  card.kingBonus = 0
+  card.queenBonus = 0
   gs.lanes[laneIdx].player = card
   gs.playerHand = gs.playerHand.filter(c => c.uid !== card.uid)
   gs.selectedCard = null
-
-  applyKingBonus()
   if(card.id === 'blacksmith') card.shatterBonus = 2
-
-  addLog(`You deployed ${card.name} (${card.cls}) to ${ld.axis}-Axis lane. IM=${card.P+card.N+card.B+card.A}`, 'good')
+  const sideInfo = recomputeSide(gs.lanes, 'player')
+  if(sideInfo.workerCount > 1) addLog(`  ★ Solidarity active: ${sideInfo.workerCount} workers · +${sideInfo.solidarityBonus}P/+${sideInfo.solidarityBonus}B each${sideInfo.hasPrince ? ' (Prince +1)' : ''}`, 'solidarity')
+  if(sideInfo.hasFarmer) addLog(`  ☀ Farmer's Yield active: +${sideInfo.farmerYield}P to every unshattered card`, 'solidarity')
+  if(sideInfo.hasKing) addLog(`  ♚ Royal Decree active: +2P to every other unshattered card`, 'solidarity')
+  if(sideInfo.hasQueen) addLog(`  ♛ Queen's Grace active: ${sideInfo.royalCount} royal(s) · +${sideInfo.queenAuraB}B to all friendly cards`, 'solidarity')
+  addLog(`You deployed ${card.name} to ${ld.axis}-Lane.`, 'good')
   render()
-  setStatus('DEPLOY', 'Card placed. Deploy more or end your turn to let AI respond.', 'YOUR TURN')
-}
-
-function applyKingBonus() {
-  gs.lanes.forEach((lane, i) => {
-    if(lane.player && lane.player.id === 'king') {
-      [-1,1].forEach(d => {
-        const adj = gs.lanes[i+d]
-        if(adj && adj.player && adj.player.id !== 'king') {
-          adj.player.currentP = adj.player.P + LANE_DEFS[i+d].mod.P + 2
-        }
-      })
-    }
-  })
+  setStatus('DEPLOY', 'Card placed. Deploy more or end your turn.', 'YOUR TURN')
 }
 
 function endPlayerTurn() {
   if(gs.phase !== 'deploy') return
-  const playerCards = gs.lanes.filter(l=>l.player).length
-  if(playerCards === 0) { setMsg('Deploy at least one card before ending your turn.'); return }
+  if(!gs.lanes.some(l=>l.player)) { setMsg('Deploy at least one card first.'); return }
   gs.phase = 'aiTurn'
-  setStatus('AI TURN', 'AI is calculating optimal deployment...', 'AI THINKING')
+  setStatus('AI TURN', 'AI is calculating...', 'AI THINKING')
   setTimeout(aiTurn, 800)
 }
 
@@ -495,364 +506,321 @@ function endPlayerTurn() {
 function aiTurn() {
   const availableLanes = gs.lanes.map((l,i)=>i).filter(i=>!gs.lanes[i].ai)
   const availableCards = [...gs.aiHand]
-
   if(!availableCards.length || !availableLanes.length) {
-    gs.phase = 'clash'
-    aiRevealFaceDown()
-    setTimeout(resolveClash, 600)
-    return
+    gs.phase = 'clash'; aiRevealFaceDown(); setTimeout(resolveClash, 600); return
   }
-
-  let bestScore = -Infinity, bestCard = null, bestLane = -1, faceDown = false
-
+  let bestScore=-Infinity, bestCard=null, bestLane=-1, faceDown=false
   availableCards.forEach(card => {
     availableLanes.forEach(laneIdx => {
-      const score = evaluatePlacement(card, laneIdx, true)
-      const fdScore = card.id === 'assassin' ? evaluatePlacement(card, laneIdx, true, true) + 8 : -Infinity
-      if(score > bestScore) { bestScore=score; bestCard=card; bestLane=laneIdx; faceDown=false }
-      if(fdScore > bestScore) { bestScore=fdScore; bestCard=card; bestLane=laneIdx; faceDown=true }
+      const score = evaluatePlacement(card, laneIdx)
+      const fdScore = card.id==='assassin' ? evaluatePlacement(card,laneIdx,true)+8 : -Infinity
+      if(score>bestScore){bestScore=score;bestCard=card;bestLane=laneIdx;faceDown=false}
+      if(fdScore>bestScore){bestScore=fdScore;bestCard=card;bestLane=laneIdx;faceDown=true}
     })
   })
-
-  if(!bestCard) { gs.phase='clash'; setTimeout(resolveClash,400); return }
-
-  const ld = LANE_DEFS[bestLane]
-  bestCard.currentP = bestCard.P + ld.mod.P
-  bestCard.currentB = bestCard.B + ld.mod.B
-  if(faceDown) { bestCard.faceDown = true; bestCard.waveformReveal = true }
-
-  gs.lanes[bestLane].ai = bestCard
-  gs.aiHand = gs.aiHand.filter(c => c.uid !== bestCard.uid)
-  applyKingBonus()
-
-  addLog(`AI deployed ${faceDown?'a face-down card':bestCard.name} to ${ld.axis}-Axis lane.`, 'warn')
-
-  const aiDeployed = gs.lanes.filter(l=>l.ai).length
-  const playerDeployed = gs.lanes.filter(l=>l.player).length
-
-  if(aiDeployed < playerDeployed && gs.aiHand.length && availableLanes.length > 1) {
-    setTimeout(aiTurn, 600)
-  } else {
-    gs.phase = 'clash'
-    render()
-    aiRevealFaceDown()
-    setStatus('CLASH', 'AI deployed. Clashing all lanes...', 'CLASH PHASE')
-    setTimeout(resolveClash, 1000)
-  }
+  if(!bestCard){gs.phase='clash';setTimeout(resolveClash,400);return}
+  const ld=LANE_DEFS[bestLane]
+  bestCard.currentP=bestCard.P+ld.mod.P; bestCard.currentB=bestCard.B+ld.mod.B; bestCard.solidarityBonus=0; bestCard.farmerBonus=0; bestCard.kingBonus=0; bestCard.queenBonus=0
+  if(faceDown){bestCard.faceDown=true;bestCard.waveformReveal=true}
+  gs.lanes[bestLane].ai=bestCard
+  gs.aiHand=gs.aiHand.filter(c=>c.uid!==bestCard.uid)
+  recomputeSide(gs.lanes,'ai')
+  addLog(`AI deployed ${faceDown?'a face-down card':bestCard.name} to ${ld.axis}-Lane.`,'warn')
+  const aiDeployed=gs.lanes.filter(l=>l.ai).length
+  const playerDeployed=gs.lanes.filter(l=>l.player).length
+  if(aiDeployed<playerDeployed&&gs.aiHand.length&&availableLanes.length>1){setTimeout(aiTurn,600)}
+  else{gs.phase='clash';render();aiRevealFaceDown();setStatus('CLASH','AI deployed. Clashing...','CLASH PHASE');setTimeout(resolveClash,1000)}
   render()
 }
 
 function aiRevealFaceDown() {
-  gs.lanes.forEach(lane => {
-    if(lane.ai && lane.ai.faceDown && lane.ai.waveformReveal) {
-      lane.ai.faceDown = false
-      if(lane.ai.id === 'assassin') {
-        const playerCard = lane.player
-        if(playerCard && CLASS_ADV[lane.ai.cls] === playerCard.cls) {
-          lane.ai.currentP += MATRIX_BONUS
-          lane.ai.currentB += MATRIX_BONUS
-          addLog(`Assassin waveform revealed — matrix bonus +${MATRIX_BONUS} applied!`, 'warn')
-        }
+  gs.lanes.forEach(lane=>{
+    if(lane.ai&&lane.ai.faceDown&&lane.ai.waveformReveal){
+      lane.ai.faceDown=false
+      if(lane.ai.id==='assassin'){
+        const pc=lane.player
+        if(pc&&CLASS_ADV[lane.ai.cls]===pc.cls){lane.ai.currentP+=MATRIX_BONUS;lane.ai.currentB+=MATRIX_BONUS;addLog(`Assassin revealed — matrix bonus +${MATRIX_BONUS}!`,'warn')}
       }
     }
   })
 }
 
-function evaluatePlacement(card, laneIdx, isAI, faceDown=false) {
-  let score = 0
-  const ld = LANE_DEFS[laneIdx]
-  const playerCard = gs.lanes[laneIdx].player
-
-  score += card.P + card.N + card.B + card.A
-
-  if(ld.axis==='P' && card.P >= 8) score += 12
-  if(ld.axis==='B' && card.B >= 12) score += 12
-  if(ld.axis==='A' && card.A >= 8) score += 10
-  if(ld.axis==='N' && card.N >= 8) score += 8
-
-  if(playerCard) {
-    if(CLASS_ADV[card.cls] === playerCard.cls) score += 20
-    const myP = card.currentP || (card.P + ld.mod.P)
-    const myB = card.currentB || (card.B + ld.mod.B)
-    const oppP = playerCard.currentP
-    const oppB = playerCard.currentB
-    const shatterThreshold = playerCard.id === 'blacksmith' ? SHATTER_RATIO + 2/oppP : SHATTER_RATIO
-    if(myB >= shatterThreshold * oppP) score += 30
-    if(oppB >= SHATTER_RATIO * myP) score -= 25
-    if(card.N > playerCard.N) score += 10
-    const tau = myB / Math.max(myP, 1)
-    if(tau >= SHATTER_RATIO) score -= 40
-    if(playerCard.shattered) score += 15
-  } else {
-    score += 5
-  }
-
-  if(card.cls === CLASSES.WORKING && card.A >= 10 && ld.axis === 'A') score += 15
-  if(card.id === 'king') score += laneIdx === 1 || laneIdx === 2 ? 8 : 0
-
+function evaluatePlacement(card,laneIdx,faceDown=false){
+  let score=0
+  const ld=LANE_DEFS[laneIdx], pc=gs.lanes[laneIdx].player
+  score+=card.P+card.N+card.B+card.A
+  if(ld.axis==='P'&&card.P>=8)score+=12
+  if(ld.axis==='B'&&card.B>=12)score+=12
+  if(ld.axis==='A'&&card.A>=8)score+=10
+  if(ld.axis==='N'&&card.N>=8)score+=8
+  if(pc){
+    if(CLASS_ADV[card.cls]===pc.cls)score+=20
+    const myP=card.P+ld.mod.P,myB=card.B+ld.mod.B
+    const thresh=pc.id==='blacksmith'?SHATTER_RATIO+2/pc.currentP:SHATTER_RATIO
+    if(myB>=thresh*pc.currentP)score+=30
+    if(pc.currentB>=SHATTER_RATIO*myP)score-=25
+    if(card.N>pc.N)score+=10
+    if(myB/Math.max(myP,1)>=SHATTER_RATIO)score-=40
+    if(pc.shattered)score+=15
+  }else{score+=5}
+  if(card.cls===CLASSES.WORKING&&card.A>=10&&ld.axis==='A')score+=15
   return score
 }
 
 // ============================================================
-// DICE — animated roll then land on real value
+// DICE
 // ============================================================
 
-function showDice(dP, dB, exploded) {
-  const el = document.getElementById('diceDisplay')
-  el.innerHTML = `
-    <div class="die p-die${exploded?' explode':''}" id="die-p">${dP}</div>
-    <div class="die b-die${exploded?' explode':''}" id="die-b">${dB}</div>
-    ${exploded ? '<span style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--shatter)">CHAIN</span>' : ''}`
+function showDice(dP,dB,exploded){
+  document.getElementById('diceDisplay').innerHTML=`
+    <div class="die p-die${exploded?' explode':''}">${dP}</div>
+    <div class="die b-die${exploded?' explode':''}">${dB}</div>
+    ${exploded?'<span style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--shatter)">CHAIN</span>':''}`
 }
 
-// Animates dice tumbling through random values before landing.
-// Returns a Promise so resolveClash can await each lane.
-function animateDice(finalP, finalB, exploded, duration=400) {
-  return new Promise(resolve => {
-    const el = document.getElementById('diceDisplay')
-    el.innerHTML = `
+function animateDice(finalP,finalB,exploded,duration=400){
+  return new Promise(resolve=>{
+    const el=document.getElementById('diceDisplay')
+    el.innerHTML=`
       <div class="die p-die rolling" id="die-p">?</div>
       <div class="die b-die rolling" id="die-b">?</div>
-      ${exploded ? '<span style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--shatter)">CHAIN</span>' : ''}`
-
-    const pEl = document.getElementById('die-p')
-    const bEl = document.getElementById('die-b')
-    const interval = 60
-    const steps = Math.floor(duration / interval)
-    let count = 0
-
-    const timer = setInterval(() => {
+      ${exploded?'<span style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--shatter)">CHAIN</span>':''}`
+    const pEl=document.getElementById('die-p'),bEl=document.getElementById('die-b')
+    const steps=Math.floor(duration/60); let count=0
+    const timer=setInterval(()=>{
       count++
-      pEl.textContent = Math.ceil(Math.random() * 10)
-      bEl.textContent = Math.ceil(Math.random() * 10)
-
-      if(count >= steps) {
+      pEl.textContent=Math.ceil(Math.random()*10)
+      bEl.textContent=Math.ceil(Math.random()*10)
+      if(count>=steps){
         clearInterval(timer)
-        pEl.textContent = finalP
-        bEl.textContent = finalB
-        pEl.classList.remove('rolling')
-        bEl.classList.remove('rolling')
-        if(exploded) {
-          pEl.classList.add('explode')
-          bEl.classList.add('explode')
-        }
+        pEl.textContent=finalP; bEl.textContent=finalB
+        pEl.classList.remove('rolling'); bEl.classList.remove('rolling')
+        if(exploded){pEl.classList.add('explode');bEl.classList.add('explode')}
         resolve()
       }
-    }, interval)
+    },60)
   })
 }
 
 // ============================================================
-// CLASH RESOLUTION — async so animateDice can await per lane
+// CLASH
 // ============================================================
 
-function declareClash() {
-  gs.phase = 'clash'
-  aiRevealFaceDown()
-  render()
-  setTimeout(resolveClash, 400)
-}
+function declareClash(){gs.phase='clash';aiRevealFaceDown();render();setTimeout(resolveClash,400)}
 
-async function resolveClash() {
-  addLog('══ CLASH PHASE ══', 'info')
-  let playerWins = 0, aiWins = 0
+async function resolveClash(){
+  // Re-apply live bonuses for both sides before clash (in case formation changed)
+  const pInfo=recomputeSide(gs.lanes,'player')
+  const aInfo=recomputeSide(gs.lanes,'ai')
+  if(pInfo.workerCount>1) addLog(`  ★ Player solidarity: ${pInfo.workerCount} workers · +${pInfo.solidarityBonus}P/+${pInfo.solidarityBonus}B each${pInfo.hasPrince?' (Prince +1)':''}`, 'solidarity')
+  if(aInfo.workerCount>1) addLog(`  ★ AI solidarity: ${aInfo.workerCount} workers · +${aInfo.solidarityBonus}P/+${aInfo.solidarityBonus}B each${aInfo.hasPrince?' (Prince +1)':''}`, 'solidarity')
+  if(pInfo.hasFarmer) addLog(`  ☀ Player Farmer's Yield: +${pInfo.farmerYield}P to every unshattered card`, 'solidarity')
+  if(aInfo.hasFarmer) addLog(`  ☀ AI Farmer's Yield: +${aInfo.farmerYield}P to every unshattered card`, 'solidarity')
+  if(pInfo.hasKing) addLog(`  ♚ Player Royal Decree: +2P to every other unshattered card`, 'solidarity')
+  if(aInfo.hasKing) addLog(`  ♚ AI Royal Decree: +2P to every other unshattered card`, 'solidarity')
+  if(pInfo.hasQueen) addLog(`  ♛ Player Queen's Grace: ${pInfo.royalCount} royal(s) · +${pInfo.queenAuraB}B to all friendly cards`, 'solidarity')
+  if(aInfo.hasQueen) addLog(`  ♛ AI Queen's Grace: ${aInfo.royalCount} royal(s) · +${aInfo.queenAuraB}B to all friendly cards`, 'solidarity')
 
-  const laneOrder = [0,1,2,3].filter(i => gs.lanes[i].player || gs.lanes[i].ai)
+  addLog('══ CLASH PHASE ══','info')
+  let playerWins=0,aiWins=0
+  const laneOrder=[0,1,2,3].filter(i=>gs.lanes[i].player||gs.lanes[i].ai)
 
-  for(const i of laneOrder) {
-    const lane = gs.lanes[i]
-    const ld = LANE_DEFS[i]
-    if(!lane.player && !lane.ai) continue
-
-    if(!lane.player || !lane.ai) {
-      addLog(`${ld.axis}-Axis: uncontested.`, 'info')
-      if(!lane.player && lane.ai) aiWins++
-      if(lane.player && !lane.ai) playerWins++
+  for(const i of laneOrder){
+    const lane=gs.lanes[i],ld=LANE_DEFS[i]
+    if(!lane.player&&!lane.ai)continue
+    if(!lane.player||!lane.ai){
+      addLog(`${ld.axis}-Axis: uncontested.`,'info')
+      if(!lane.player&&lane.ai)aiWins++
+      if(lane.player&&!lane.ai)playerWins++
       continue
     }
+    const pc=lane.player,ac=lane.ai
+    addLog(`${ld.axis}-Axis: ${pc.name} (τ=${(pc.currentB/pc.currentP).toFixed(2)}) vs ${ac.name} (τ=${(ac.currentB/ac.currentP).toFixed(2)})`,'info')
 
-    const pc = lane.player, ac = lane.ai
-    addLog(`${ld.axis}-Axis: ${pc.name} (τ=${(pc.currentB/pc.currentP).toFixed(2)}) vs ${ac.name} (τ=${(ac.currentB/ac.currentP).toFixed(2)})`, 'info')
+    let pBonus=0,aBonus=0
+    if(pc.id!=='assassin'&&CLASS_ADV[pc.cls]===ac.cls){pBonus=MATRIX_BONUS;addLog(`  ${pc.name} class advantage +${MATRIX_BONUS}`,'good')}
+    if(ac.id!=='assassin'&&CLASS_ADV[ac.cls]===pc.cls){aBonus=MATRIX_BONUS;addLog(`  ${ac.name} class advantage +${MATRIX_BONUS}`,'warn')}
 
-    let pBonus=0, aBonus=0
-    if(pc.id !== 'assassin' && CLASS_ADV[pc.cls]===ac.cls) { pBonus=MATRIX_BONUS; addLog(`  ${pc.name} has class advantage +${MATRIX_BONUS}`, 'good') }
-    if(ac.id !== 'assassin' && CLASS_ADV[ac.cls]===pc.cls) { aBonus=MATRIX_BONUS; addLog(`  ${ac.name} has class advantage +${MATRIX_BONUS}`, 'warn') }
+    const pResult=rollDice(pc,pBonus)
+    const aResult=rollDice(ac,aBonus)
 
-    const pResult = rollDice(pc, pBonus, false)
-    const aResult = rollDice(ac, aBonus, false)
+    const chainHappened=pResult.rolls>1||aResult.rolls>1
+    await animateDice(pResult.deltaP,aResult.deltaB,chainHappened,chainHappened?550:380)
+    await new Promise(r=>setTimeout(r,280))
 
-    // Animate dice — player sees them roll before results log
-    const chainHappened = pResult.rolls > 1 || aResult.rolls > 1
-    await animateDice(pResult.deltaP, aResult.deltaB, chainHappened, chainHappened ? 550 : 380)
-    await new Promise(r => setTimeout(r, 280))
+    addLog(`  ${pc.name} → P=${pResult.finalP} B=${pResult.finalB} (${pResult.rolls} roll${pResult.rolls>1?'s':''})`,'good')
+    addLog(`  ${ac.name} → P=${aResult.finalP} B=${aResult.finalB} (${aResult.rolls} roll${aResult.rolls>1?'s':''})`,'warn')
 
-    addLog(`  ${pc.name} → P=${pResult.finalP} B=${pResult.finalB} (${pResult.rolls} roll${pResult.rolls>1?'s':''})`, 'good')
-    addLog(`  ${ac.name} → P=${aResult.finalP} B=${aResult.finalB} (${aResult.rolls} roll${aResult.rolls>1?'s':''})`, 'warn')
+    // Shatter check — disables abilities only, does not automatically determine winner
+    const pShatterLimit=pc.shatterBonus?SHATTER_RATIO*pc.currentP+pc.shatterBonus:SHATTER_RATIO*pc.currentP
+    const aShatterLimit=ac.shatterBonus?SHATTER_RATIO*ac.currentP+ac.shatterBonus:SHATTER_RATIO*ac.currentP
+    if(aResult.finalB>=pShatterLimit){pc.shattered=true;addLog(`  ⚠ ${pc.name} SHATTERED — ability disabled`,'hit')}
+    if(pResult.finalB>=aShatterLimit){ac.shattered=true;addLog(`  ⚠ ${ac.name} SHATTERED — ability disabled`,'hit')}
 
-    const pShatterLimit = pc.shatterBonus ? SHATTER_RATIO * pc.currentP + pc.shatterBonus : SHATTER_RATIO * pc.currentP
-    const aShatterLimit = ac.shatterBonus ? SHATTER_RATIO * ac.currentP + ac.shatterBonus : SHATTER_RATIO * ac.currentP
+    // Re-sync live bonuses immediately after shatter (losing a worker/royal changes them)
+    recomputeSide(gs.lanes,'player')
+    recomputeSide(gs.lanes,'ai')
 
-    const pShattered = aResult.finalB >= pShatterLimit
-    const aShattered = pResult.finalB >= aShatterLimit
+    // Lane winner by B output, then N-priority
+    if(pResult.finalB>aResult.finalB){playerWins++;addLog(`  ${pc.name} wins lane — B ${pResult.finalB} > ${aResult.finalB}`,'good')}
+    else if(aResult.finalB>pResult.finalB){aiWins++;addLog(`  ${ac.name} wins lane — B ${aResult.finalB} > ${pResult.finalB}`,'warn')}
+    else if(pc.N>ac.N){playerWins++;addLog(`  Tied B — ${pc.name} wins by N-priority (${pc.N}>`+`${ac.N})`,'good')}
+    else if(ac.N>pc.N){aiWins++;addLog(`  Tied B — ${ac.name} wins by N-priority (${ac.N}>`+`${pc.N})`,'warn')}
+    else{addLog(`  Lane drawn.`,'info')}
 
-    // Shattering disables a card's special ability going forward — it does NOT
-    // by itself decide who wins the lane. That's determined below by comparing
-    // actual stat output.
-    if(pShattered) {
-      pc.shattered = true
-      addLog(`  ⚠ ${pc.name} SHATTERED (took ${aResult.finalB} ≥ ${pShatterLimit}) — ability disabled`, 'hit')
-    }
-    if(aShattered) {
-      ac.shattered = true
-      addLog(`  ⚠ ${ac.name} SHATTERED (took ${pResult.finalB} ≥ ${aShatterLimit}) — ability disabled`, 'hit')
-    }
+    // Knight counter-strike
+    if(!pc.shattered&&pc.id==='knight'){ac.currentP=Math.max(1,ac.currentP-6);addLog(`  Knight counter-strike: ${ac.name} -6P → ${ac.currentP}P`,'good')}
 
-    // Lane winner: whoever dealt more B-damage wins the lane. Tie → N-priority. Still tied → draw.
-    if(pResult.finalB > aResult.finalB) {
-      playerWins++
-      addLog(`  ${pc.name} wins the lane — higher B output (${pResult.finalB} > ${aResult.finalB})`, 'good')
-    } else if(aResult.finalB > pResult.finalB) {
-      aiWins++
-      addLog(`  ${ac.name} wins the lane — higher B output (${aResult.finalB} > ${pResult.finalB})`, 'warn')
-    } else if(pc.N > ac.N) {
-      playerWins++
-      addLog(`  Tied output — ${pc.name} wins by N-priority (${pc.N} > ${ac.N})`, 'good')
-    } else if(ac.N > pc.N) {
-      aiWins++
-      addLog(`  Tied output — ${ac.name} wins by N-priority (${ac.N} > ${pc.N})`, 'warn')
-    } else {
-      addLog(`  Lane drawn.`, 'info')
-    }
+    // Apothecary: restore one shattered ally (prefer workers to preserve solidarity)
+    handleApothecary(lane, i)
 
-    if(!pc.shattered && pc.id==='knight') {
-      ac.currentP = Math.max(1, ac.currentP - 6)
-      addLog(`  Knight counter-strike: ${ac.name} -6P → ${ac.currentP}P`, 'good')
-    }
-
-    checkAscension(pc, pResult)
-    checkAscension(ac, aResult)
+    checkAscension(pc,pResult)
+    checkAscension(ac,aResult)
     render()
-
-    // brief pause between lanes so each result is readable
-    await new Promise(r => setTimeout(r, 220))
+    await new Promise(r=>setTimeout(r,220))
   }
 
   render()
-  addLog(`══ ROUND RESULT: Player +${playerWins} / AI +${aiWins} ══`, 'info')
-
-  let resultMsg = ''
-  if(playerWins > aiWins) {
-    gs.playerScore++
-    addLog('ROUND VICTORY — The manifold held for you.', 'good')
-    resultMsg = `VICTORY — you won the round ${playerWins} to ${aiWins}.`
-  } else if(aiWins > playerWins) {
-    gs.aiScore++
-    addLog('ROUND DEFEAT — AI shattered your formation.', 'hit')
-    resultMsg = `DEFEAT — AI won the round ${aiWins} to ${playerWins}.`
-  } else {
-    addLog('ROUND DRAWN — Manifold in equilibrium.', 'info')
-    resultMsg = `DRAWN — ${playerWins} to ${aiWins}.`
+  addLog(`══ ROUND RESULT: Player +${playerWins} / AI +${aiWins} ══`,'info')
+  let resultMsg=''
+  if(playerWins>aiWins){
+    gs.playerScore++;addLog('ROUND VICTORY — The manifold held.','good');resultMsg=`VICTORY — ${playerWins} to ${aiWins}.`
+  }else if(aiWins>playerWins){
+    gs.aiScore++;addLog('ROUND DEFEAT — AI shattered your formation.','hit');resultMsg=`DEFEAT — AI won ${aiWins} to ${playerWins}.`
+  }else{
+    // Lanes tied — decide by total Identity Mass of unshattered cards across the whole field.
+    // This is where a surviving Apothecary earns its keep: every card it kept alive
+    // (its own included) still counts toward this total.
+    const massSide = side => gs.lanes.reduce((sum,l)=>{
+      const c=l[side]
+      if(c && !c.shattered) return sum + c.currentP + c.N + c.currentB + c.A
+      return sum
+    },0)
+    const pMass=massSide('player'), aMass=massSide('ai')
+    addLog(`Lanes tied ${playerWins}-${aiWins}. Identity Mass tiebreak: You=${pMass} / AI=${aMass}`,'info')
+    if(pMass>aMass){
+      gs.playerScore++;addLog('ROUND VICTORY by Identity Mass — your surviving formation outweighed theirs.','good');resultMsg=`VICTORY (Identity Mass) — ${pMass} to ${aMass}.`
+    }else if(aMass>pMass){
+      gs.aiScore++;addLog('ROUND DEFEAT by Identity Mass — AI\'s surviving formation outweighed yours.','hit');resultMsg=`DEFEAT (Identity Mass) — AI ${aMass} to ${pMass}.`
+    }else{
+      addLog('ROUND DRAWN — Identity Mass also tied.','info');resultMsg=`DRAWN — Identity Mass tied at ${pMass}.`
+    }
   }
 
-  gs.phase = 'roundEnd'
+  gs.phase='roundEnd'
   render()
-  setStatus('ROUND OVER', `${resultMsg} Review the log above, then deal again when ready.`, 'ROUND COMPLETE')
-  document.getElementById('btnDealAgain').style.display = 'inline-block'
+  setStatus('ROUND OVER',`${resultMsg} Review the log, then deal again.`,'ROUND COMPLETE')
+  document.getElementById('btnDealAgain').style.display='inline-block'
 }
 
-function rollDice(card, bonus, isAI) {
-  if(card.shattered) return { finalP: card.currentP+bonus, finalB: card.currentB+bonus, rolls: 0, deltaP: 0, deltaB: 0 }
-
-  let totalDeltaP = 0, totalDeltaB = 0, rolls = 0, maxRolls = 10
-  const maxChain = Math.floor(card.A / 3) + 1
-  let chainCount = 0
-
-  do {
-    const dP = Math.ceil(Math.random()*10)
-    const dB = Math.ceil(Math.random()*10)
-    totalDeltaP += dP; totalDeltaB += dB; rolls++
-    if(dP === dB && !card.shattered && chainCount < maxChain) {
-      addLog(`    💥 Doubles! (${dP},${dB}) — chain continues`, rolls > 1 ? 'warn' : 'info')
-      chainCount++
-    } else { break }
-  } while(rolls < maxRolls)
-
-  card.doublesCount = (card.doublesCount||0) + chainCount
-
-  return {
-    finalP: card.currentP + totalDeltaP + bonus,
-    finalB: card.currentB + totalDeltaB + bonus,
-    rolls, deltaP: totalDeltaP, deltaB: totalDeltaB
+// Apothecary: if the Apothecary is on the field and un-shattered,
+// restore the most recently shattered ally. Prioritises workers to keep solidarity alive.
+function handleApothecary(lane, laneIdx) {
+  // Player apothecary
+  const pApo = gs.lanes.find(l => l.player && l.player.id==='apothecary' && !l.player.shattered)
+  if(pApo) {
+    // Find a shattered player card (prefer workers)
+    const candidates = gs.lanes
+      .map((l,i) => ({card:l.player, idx:i}))
+      .filter(x => x.card && x.card.shattered)
+      .sort((a,b) => (b.card.cls===CLASSES.WORKING?1:0)-(a.card.cls===CLASSES.WORKING?1:0))
+    if(candidates.length) {
+      const target = candidates[0].card
+      const lIdx = candidates[0].idx
+      target.shattered = false
+      const ld = LANE_DEFS[lIdx]
+      target.currentP = target.P + ld.mod.P
+      target.currentB = target.B + ld.mod.B
+      target.solidarityBonus = 0
+      target.farmerBonus = 0
+      target.kingBonus = 0
+      target.queenBonus = 0
+      addLog(`  ✦ Apothecary restores ${target.name} — bonuses recalculated.`, 'good')
+      recomputeSide(gs.lanes, 'player')
+    }
+  }
+  // AI apothecary (same logic)
+  const aApo = gs.lanes.find(l => l.ai && l.ai.id==='apothecary' && !l.ai.shattered)
+  if(aApo) {
+    const candidates = gs.lanes
+      .map((l,i) => ({card:l.ai, idx:i}))
+      .filter(x => x.card && x.card.shattered)
+      .sort((a,b) => (b.card.cls===CLASSES.WORKING?1:0)-(a.card.cls===CLASSES.WORKING?1:0))
+    if(candidates.length) {
+      const target = candidates[0].card
+      const lIdx = candidates[0].idx
+      target.shattered = false
+      const ld = LANE_DEFS[lIdx]
+      target.currentP = target.P + ld.mod.P
+      target.currentB = target.B + ld.mod.B
+      target.solidarityBonus = 0
+      target.farmerBonus = 0
+      target.kingBonus = 0
+      target.queenBonus = 0
+      addLog(`  AI Apothecary restores ${target.name}.`, 'warn')
+      recomputeSide(gs.lanes, 'ai')
+    }
   }
 }
 
-function checkAscension(card, result) {
-  if(card.cls !== CLASSES.WORKING || card.doublesCount === 0) return
-  const dc = card.doublesCount
-  if(dc >= 3 && !card.ascended) {
-    const prev = card.name
-    card.name='King'; card.currentP=6; card.N=10; card.currentB=20; card.A=2
-    card.cls=CLASSES.ROYALTY; card.ascended=true; card.doublesCount=0
-    addLog(`★ SOVEREIGN ASCENSION! ${prev} → KING`, 'good')
-    showModal('SOVEREIGN ASCENSION', `${prev} ascended to KING through triple doubles. The Manifold is Holding.`)
-  } else if(dc >= 2 && !card.ascended2) {
-    const prev = card.name
-    card.name='Knight'; card.currentP=10; card.N=4; card.currentB=12; card.A=6
-    card.cls=CLASSES.MILITARY; card.ascended2=true
-    addLog(`⬆ ${prev} ascended to KNIGHT (2nd double)`, 'good')
+function rollDice(card,bonus){
+  if(card.shattered)return{finalP:card.currentP+bonus,finalB:card.currentB+bonus,rolls:0,deltaP:0,deltaB:0}
+  let totalDeltaP=0,totalDeltaB=0,rolls=0
+  const maxChain=Math.floor(card.A/3)+1; let chainCount=0
+  do{
+    const dP=Math.ceil(Math.random()*10),dB=Math.ceil(Math.random()*10)
+    totalDeltaP+=dP;totalDeltaB+=dB;rolls++
+    if(dP===dB&&chainCount<maxChain){addLog(`    💥 Doubles! (${dP},${dB}) — chain`,'info');chainCount++}
+    else break
+  }while(rolls<10)
+  card.doublesCount=(card.doublesCount||0)+chainCount
+  return{finalP:card.currentP+totalDeltaP+bonus,finalB:card.currentB+totalDeltaB+bonus,rolls,deltaP:totalDeltaP,deltaB:totalDeltaB}
+}
+
+function checkAscension(card,result){
+  if(card.cls!==CLASSES.WORKING||!card.doublesCount)return
+  const dc=card.doublesCount
+  if(dc>=3&&!card.ascended){
+    const prev=card.name
+    card.name='King';card.currentP=6;card.N=10;card.currentB=20;card.A=2
+    card.P=8;card.currentP=8;card.currentB=22;card.B=22;card.N=10;card.A=6
+    card.cls=CLASSES.ROYALTY;card.id='king';card.ascended=true;card.doublesCount=0
+    addLog(`★ SOVEREIGN ASCENSION! ${prev} → KING`,'good')
+    showModal('SOVEREIGN ASCENSION',`${prev} ascended to KING. The Manifold is Holding.`)
+  }else if(dc>=2&&!card.ascended2){
+    const prev=card.name
+    card.name='Prince';card.currentP=5;card.N=8;card.currentB=15;card.A=5
+    card.cls=CLASSES.ROYALTY;card.id='prince';card.ascended2=true
+    addLog(`⬆ ${prev} ascended to PRINCE (Heir's Mandate unlocked)`,'good')
   }
 }
 
 // ============================================================
-// UI HELPERS
+// UI
 // ============================================================
 
-function updateButtons() {
-  const hasPlayerCards = gs.lanes.some(l=>l.player)
-  document.getElementById('btnClash').disabled = gs.phase !== 'deploy' || !hasPlayerCards || !gs.lanes.some(l=>l.ai)
-  document.getElementById('btnEndTurn').disabled = gs.phase !== 'deploy' || !hasPlayerCards
+function updateButtons(){
+  const has=gs.lanes.some(l=>l.player)
+  document.getElementById('btnClash').disabled=gs.phase!=='deploy'||!has||!gs.lanes.some(l=>l.ai)
+  document.getElementById('btnEndTurn').disabled=gs.phase!=='deploy'||!has
 }
-
-function setStatus(phase, msg, turn) {
-  document.getElementById('phaseLabel').textContent = phase
-  document.getElementById('statusMsg').textContent = msg
-  document.getElementById('turnLabel').textContent = turn
+function setStatus(p,m,t){document.getElementById('phaseLabel').textContent=p;document.getElementById('statusMsg').textContent=m;document.getElementById('turnLabel').textContent=t}
+function setMsg(m){document.getElementById('statusMsg').textContent=m}
+function addLog(msg,type=''){
+  const el=document.getElementById('combatLog'),div=document.createElement('div')
+  div.className='log-entry '+type;div.textContent=msg;el.appendChild(div);el.scrollTop=el.scrollHeight
+  gs.log.push({msg,type})
 }
-function setMsg(msg) { document.getElementById('statusMsg').textContent = msg }
-
-function addLog(msg, type='') {
-  const el = document.getElementById('combatLog')
-  const div = document.createElement('div')
-  div.className = 'log-entry ' + type
-  div.textContent = msg
-  el.appendChild(div)
-  el.scrollTop = el.scrollHeight
-  gs.log.push({msg, type})
-}
-
-function clearLog() {
-  document.getElementById('combatLog').innerHTML = ''
-  document.getElementById('diceDisplay').innerHTML = ''
-}
-
-function showModal(title, body) {
-  document.getElementById('modalTitle').textContent = title
-  document.getElementById('modalBody').textContent = body
-  document.getElementById('modal').style.display = 'flex'
-}
-
-function closeModal() {
-  document.getElementById('modal').style.display = 'none'
-}
-
-function dealAgain() {
+function clearLog(){document.getElementById('combatLog').innerHTML='';document.getElementById('diceDisplay').innerHTML=''}
+function showModal(t,b){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').textContent=b;document.getElementById('modal').style.display='flex'}
+function closeModal(){document.getElementById('modal').style.display='none'}
+function dealAgain(){
   gs.round++
-  const prevPS = gs.playerScore, prevAS = gs.aiScore, prevR = gs.round
-  newGame()
-  gs.playerScore = prevPS; gs.aiScore = prevAS; gs.round = prevR
-  document.getElementById('playerScore').textContent = prevPS
-  document.getElementById('aiScore').textContent = prevAS
-  document.getElementById('roundNum').textContent = prevR
+  const ps=gs.playerScore,as=gs.aiScore,r=gs.round
+  newGame();gs.playerScore=ps;gs.aiScore=as;gs.round=r
+  document.getElementById('playerScore').textContent=ps
+  document.getElementById('aiScore').textContent=as
+  document.getElementById('roundNum').textContent=r
 }
 
 newGame()
