@@ -52,7 +52,7 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .status-phase { color: var(--anchor); letter-spacing: .1em; }
 .status-msg { color: var(--text-d); font-size: 9px; letter-spacing: .06em; max-width: 500px; text-align: center; }
 .status-turn { color: var(--warn); letter-spacing: .1em; }
-.game-layout { display: grid; grid-template-columns: 1fr 200px 1fr; gap: 12px; }
+.game-layout { display: grid; grid-template-columns: 1fr 260px 1fr; gap: 12px; }
 .hand-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .panel-head { padding: 8px 12px; border-bottom: 1px solid var(--border);
   font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .15em; color: var(--text-m);
@@ -95,19 +95,21 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .field-lanes { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
 .lane {
   background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
-  padding: 8px; display: grid; grid-template-columns: 24px 1fr 24px 1fr; gap: 6px; align-items: center;
+  padding: 8px; display: flex; gap: 6px; align-items: stretch;
   min-height: 60px; transition: border-color .15s;
 }
 .lane.active-lane { border-color: var(--anchor); box-shadow: 0 0 8px rgba(0,212,170,0.15); }
-.lane-label { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 900; text-align: center; letter-spacing: .05em; }
+.lane-label { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 900; letter-spacing: .05em;
+  width: 22px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .lane-p { color: var(--p-col); } .lane-n { color: var(--n-col); } .lane-b { color: var(--b-col); } .lane-a { color: var(--a-col); }
+.lane-cards { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .lane-slot { background: var(--border); border-radius: 6px; min-height: 44px; display: flex;
   align-items: center; justify-content: center; font-family: 'Share Tech Mono', monospace;
   font-size: 8px; color: var(--text-m); letter-spacing: .08em; cursor: pointer; transition: all .15s; }
 .lane-slot:hover { background: var(--border2); }
 .lane-slot.has-card { background: transparent; padding: 0; cursor: default; }
 .lane-slot.has-card:hover { background: transparent; }
-.lane-vs { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; color: var(--text-m); text-align: center; }
+.lane-vs { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; color: var(--text-m); text-align: center; line-height: 1; }
 .controls { grid-column: 1/-1; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
 .btn { padding: 10px 20px; border-radius: 6px; font-family: 'Share Tech Mono', monospace;
   font-size: 10px; letter-spacing: .12em; cursor: pointer; border: 1px solid; transition: all .15s; }
@@ -145,7 +147,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .modal p { color: var(--text-d); font-size: 13px; line-height: 1.6; margin-bottom: 16px; }
 @media (max-width: 700px) {
   .game-layout { grid-template-columns: 1fr; }
-  .lane { grid-template-columns: 20px 1fr 20px 1fr; }
 }
 </style>
 </head>
@@ -421,9 +422,11 @@ function renderField() {
     const div = document.createElement('div')
     div.className = 'lane' + (gs.selectedCard && !lane.player ? ' active-lane' : '')
     div.innerHTML = `<div class="lane-label lane-${ld.axis.toLowerCase()}">${ld.axis}</div>
-      <div class="lane-slot ${lane.player?'has-card':''}" onclick="placeLane(${i})">${lane.player ? miniCard(lane.player,false) : 'EMPTY'}</div>
-      <div class="lane-vs">VS</div>
-      <div class="lane-slot ${lane.ai?'has-card':''}">${lane.ai ? miniCard(lane.ai,true) : 'EMPTY'}</div>`
+      <div class="lane-cards">
+        <div class="lane-slot ${lane.player?'has-card':''}" onclick="placeLane(${i})">${lane.player ? miniCard(lane.player,false) : 'EMPTY'}</div>
+        <div class="lane-vs">VS</div>
+        <div class="lane-slot ${lane.ai?'has-card':''}">${lane.ai ? miniCard(lane.ai,true) : 'EMPTY'}</div>
+      </div>`
     el.appendChild(div)
   })
 }
