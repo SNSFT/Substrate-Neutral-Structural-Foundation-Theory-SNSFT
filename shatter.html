@@ -44,7 +44,6 @@ body::before {
 
 .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 16px; }
 
-/* HEADER */
 .hdr { text-align: center; padding: 20px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
 .hdr-tag { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .22em; color: var(--text-m); margin-bottom: 8px; }
 h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px); font-weight: 900;
@@ -52,7 +51,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
   text-shadow: 0 0 40px rgba(255,58,74,0.3); }
 .hdr-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-d); letter-spacing: .08em; }
 
-/* STATUS BAR */
 .status-bar { display: flex; align-items: center; justify-content: space-between;
   background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
   padding: 10px 16px; margin-bottom: 14px; font-family: 'Share Tech Mono', monospace; font-size: 10px; }
@@ -60,10 +58,8 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .status-msg { color: var(--text-d); font-size: 9px; letter-spacing: .06em; max-width: 500px; text-align: center; }
 .status-turn { color: var(--warn); letter-spacing: .1em; }
 
-/* MAIN LAYOUT */
 .game-layout { display: grid; grid-template-columns: 1fr 200px 1fr; gap: 12px; }
 
-/* HAND */
 .hand-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .panel-head { padding: 8px 12px; border-bottom: 1px solid var(--border);
   font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .15em; color: var(--text-m);
@@ -71,7 +67,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .panel-count { color: var(--anchor); }
 .hand-cards { padding: 10px; display: flex; flex-direction: column; gap: 6px; min-height: 120px; }
 
-/* CARD */
 .card {
   background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px;
   padding: 8px 10px; cursor: pointer; transition: all .15s; position: relative; overflow: hidden;
@@ -115,7 +110,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .assassin-card { color: var(--assassin); }
 .working-card  { color: var(--working); }
 
-/* FIELD */
 .field-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .field-lanes { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
 
@@ -140,7 +134,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .lane-vs { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
   color: var(--text-m); text-align: center; }
 
-/* CONTROLS */
 .controls { grid-column: 1/-1; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
 .btn {
   padding: 10px 20px; border-radius: 6px; font-family: 'Share Tech Mono', monospace;
@@ -154,7 +147,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .btn-neutral:hover { border-color: var(--text-d); color: var(--text); }
 .btn:disabled { opacity: .3; cursor: not-allowed; }
 
-/* COMBAT LOG */
 .log-panel { grid-column: 1/-1; background: var(--surface); border: 1px solid var(--border);
   border-radius: 10px; overflow: hidden; }
 .log-body { padding: 10px 14px; max-height: 120px; overflow-y: auto; display: flex;
@@ -166,17 +158,18 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .log-entry.warn { color: var(--warn); }
 .log-entry.info { color: var(--noble); }
 
-/* DICE DISPLAY */
 .dice-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .die { width: 32px; height: 32px; background: var(--surface2); border: 1px solid var(--border2);
   border-radius: 6px; display: flex; align-items: center; justify-content: center;
-  font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; }
+  font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700;
+  transition: all .08s; }
 .die.p-die { color: var(--p-col); border-color: rgba(176,96,240,0.3); }
 .die.b-die { color: var(--b-col); border-color: rgba(240,144,48,0.3); }
 .die.explode { color: var(--shatter); border-color: var(--shatter); animation: flash .3s ease; }
+.die.rolling { color: var(--warn); border-color: rgba(240,144,48,0.6); animation: spin .1s linear infinite; }
 @keyframes flash { 0%,100%{opacity:1} 50%{opacity:.3} }
+@keyframes spin  { 0%{transform:scale(1)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
 
-/* SCORE */
 .score-row { display: flex; gap: 12px; justify-content: center; }
 .score-box { text-align: center; padding: 6px 16px; background: var(--surface2);
   border: 1px solid var(--border); border-radius: 6px; }
@@ -186,7 +179,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 .score-player { color: var(--anchor); }
 .score-ai { color: var(--shatter); }
 
-/* MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(3,6,10,0.85); z-index: 100;
   display: flex; align-items: center; justify-content: center; }
 .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px;
@@ -224,7 +216,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 
 <div class="game-layout">
 
-  <!-- PLAYER HAND -->
   <div class="hand-panel">
     <div class="panel-head">
       <span>YOUR HAND</span>
@@ -233,13 +224,11 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
     <div class="hand-cards" id="playerHand"></div>
   </div>
 
-  <!-- FIELD -->
   <div class="field-panel">
     <div class="panel-head"><span>FIELD · 4-AXIS MATRIX</span></div>
     <div class="field-lanes" id="fieldLanes"></div>
   </div>
 
-  <!-- AI HAND -->
   <div class="hand-panel">
     <div class="panel-head">
       <span>AI HAND</span>
@@ -248,14 +237,13 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
     <div class="hand-cards" id="aiHand"></div>
   </div>
 
-  <!-- CONTROLS -->
   <div class="controls">
     <button class="btn btn-primary" id="btnClash" onclick="declareClash()" disabled>⚔ CLASH ALL LANES</button>
     <button class="btn btn-secondary" id="btnEndTurn" onclick="endPlayerTurn()" disabled>→ END TURN</button>
+    <button class="btn btn-secondary" id="btnDealAgain" onclick="dealAgain()" style="display:none">↻ DEAL AGAIN</button>
     <button class="btn btn-neutral" onclick="newGame()">↺ NEW GAME</button>
   </div>
 
-  <!-- LOG -->
   <div class="log-panel">
     <div class="panel-head"><span>COMBAT LOG</span><div class="dice-row" id="diceDisplay"></div></div>
     <div class="log-body" id="combatLog"></div>
@@ -264,7 +252,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 </div>
 </div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal" style="display:none">
   <div class="modal">
     <h2 id="modalTitle">SHATTERED</h2>
@@ -278,14 +265,14 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 // SHATTER — IDENTITY PHYSICS CARD SYSTEM
 // Coordinate: [9,0,4,1] · SNSFT Foundation
 // Architect: HIGHTISTIC | Ω₀ = 1.36899099984016
+// v2 — animated dice rolling per lane
 // ============================================================
 
 const CLASSES = { ROYALTY:'royalty', MILITARY:'military', ASSASSIN:'assassin', WORKING:'working' }
 const CLASS_ADV = { royalty:'military', military:'assassin', assassin:'working', working:'royalty' }
 const MATRIX_BONUS = 5
-const SHATTER_RATIO = 2  // B >= 2*P = shatter
+const SHATTER_RATIO = 2
 
-// Card registry from whitepaper
 const CARD_REGISTRY = [
   { id:'king',       name:'King',        qty:1, P:6,  N:10, B:20, A:2,  cls:CLASSES.ROYALTY,  trait:'Adjacent allies +2P' },
   { id:'queen',      name:'Queen',       qty:1, P:7,  N:9,  B:16, A:4,  cls:CLASSES.ROYALTY,  trait:'Swap lane positions pre-clash' },
@@ -304,7 +291,6 @@ const LANE_DEFS = [
   { axis:'A', label:'A', bonus:'A-chain', mod:{P:0,B:0}, title:'Ability Domain' },
 ]
 
-// Game state
 let gs = {}
 
 function buildDeck() {
@@ -325,7 +311,9 @@ function buildDeck() {
 }
 
 function shuffle(arr) {
-  const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}; return a
+  const a=[...arr]
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+  return a
 }
 
 function newGame() {
@@ -340,7 +328,7 @@ function newGame() {
       {player:null, ai:null},
       {player:null, ai:null},
     ],
-    phase: 'deploy',   // deploy | clash | aiTurn | roundEnd
+    phase: 'deploy',
     selectedCard: null,
     selectedLane: null,
     playerScore: parseInt(document.getElementById('playerScore').textContent)||0,
@@ -351,6 +339,7 @@ function newGame() {
     apothecaryUsed: false,
   }
   clearLog()
+  document.getElementById('btnDealAgain').style.display = 'none'
   addLog('New game started. Deploy your cards — place wisely.', 'info')
   render()
   setStatus('DEPLOY', 'Select a card from your hand, then click a lane slot to place it.', 'YOUR TURN')
@@ -375,11 +364,16 @@ function render() {
 function renderHand(containerId, cards, isAI) {
   const el = document.getElementById(containerId)
   el.innerHTML = ''
-  if(!cards.length) { el.innerHTML = '<div style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--text-m);padding:10px;text-align:center">NO CARDS</div>'; return }
+  if(!cards.length) {
+    el.innerHTML = '<div style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--text-m);padding:10px;text-align:center">NO CARDS</div>'
+    return
+  }
   cards.forEach(card => {
     const div = document.createElement('div')
-    div.className = 'card ' + card.cls + '-card' + (card.shattered?' shattered':'')
-      + (isAI?' ai-card':'') + (card.faceDown?' face-down':'')
+    div.className = 'card ' + card.cls + '-card'
+      + (card.shattered?' shattered':'')
+      + (isAI?' ai-card':'')
+      + (card.faceDown?' face-down':'')
       + (gs.selectedCard && gs.selectedCard.uid===card.uid?' selected':'')
     if(!isAI) div.onclick = () => selectCard(card)
     const tau = card.currentP > 0 ? (card.currentB/card.currentP).toFixed(3) : '∞'
@@ -456,7 +450,6 @@ function placeLane(laneIdx) {
   if(gs.lanes[laneIdx].player) { setMsg('That lane already has your card.'); return }
 
   const card = gs.selectedCard
-  // Apply lane modifiers
   const ld = LANE_DEFS[laneIdx]
   card.currentP = card.P + ld.mod.P
   card.currentB = card.B + ld.mod.B
@@ -465,9 +458,7 @@ function placeLane(laneIdx) {
   gs.playerHand = gs.playerHand.filter(c => c.uid !== card.uid)
   gs.selectedCard = null
 
-  // King adjacency bonus
   applyKingBonus()
-  // Blacksmith bonus
   if(card.id === 'blacksmith') card.shatterBonus = 2
 
   addLog(`You deployed ${card.name} (${card.cls}) to ${ld.axis}-Axis lane. IM=${card.P+card.N+card.B+card.A}`, 'good')
@@ -476,7 +467,6 @@ function placeLane(laneIdx) {
 }
 
 function applyKingBonus() {
-  // King gives adjacent lane allies +2P
   gs.lanes.forEach((lane, i) => {
     if(lane.player && lane.player.id === 'king') {
       [-1,1].forEach(d => {
@@ -499,11 +489,10 @@ function endPlayerTurn() {
 }
 
 // ============================================================
-// AI — STRATEGIC MINIMAX DEPLOYMENT
+// AI
 // ============================================================
 
 function aiTurn() {
-  // AI evaluates all possible placements and picks best
   const availableLanes = gs.lanes.map((l,i)=>i).filter(i=>!gs.lanes[i].ai)
   const availableCards = [...gs.aiHand]
 
@@ -514,13 +503,11 @@ function aiTurn() {
     return
   }
 
-  // Score every card-lane combination
   let bestScore = -Infinity, bestCard = null, bestLane = -1, faceDown = false
 
   availableCards.forEach(card => {
     availableLanes.forEach(laneIdx => {
       const score = evaluatePlacement(card, laneIdx, true)
-      // Assassin waveform: face-down for matrix bonus
       const fdScore = card.id === 'assassin' ? evaluatePlacement(card, laneIdx, true, true) + 8 : -Infinity
       if(score > bestScore) { bestScore=score; bestCard=card; bestLane=laneIdx; faceDown=false }
       if(fdScore > bestScore) { bestScore=fdScore; bestCard=card; bestLane=laneIdx; faceDown=true }
@@ -529,7 +516,6 @@ function aiTurn() {
 
   if(!bestCard) { gs.phase='clash'; setTimeout(resolveClash,400); return }
 
-  // Place AI card
   const ld = LANE_DEFS[bestLane]
   bestCard.currentP = bestCard.P + ld.mod.P
   bestCard.currentB = bestCard.B + ld.mod.B
@@ -539,9 +525,8 @@ function aiTurn() {
   gs.aiHand = gs.aiHand.filter(c => c.uid !== bestCard.uid)
   applyKingBonus()
 
-  addLog(`AI deployed ${faceDown?'a face-down card':''+bestCard.name} to ${ld.axis}-Axis lane.`, 'warn')
+  addLog(`AI deployed ${faceDown?'a face-down card':bestCard.name} to ${ld.axis}-Axis lane.`, 'warn')
 
-  // AI may deploy multiple cards — check if should deploy more
   const aiDeployed = gs.lanes.filter(l=>l.ai).length
   const playerDeployed = gs.lanes.filter(l=>l.player).length
 
@@ -561,7 +546,6 @@ function aiRevealFaceDown() {
   gs.lanes.forEach(lane => {
     if(lane.ai && lane.ai.faceDown && lane.ai.waveformReveal) {
       lane.ai.faceDown = false
-      // Assassin gets matrix bonus only from face-down reveal
       if(lane.ai.id === 'assassin') {
         const playerCard = lane.player
         if(playerCard && CLASS_ADV[lane.ai.cls] === playerCard.cls) {
@@ -579,50 +563,87 @@ function evaluatePlacement(card, laneIdx, isAI, faceDown=false) {
   const ld = LANE_DEFS[laneIdx]
   const playerCard = gs.lanes[laneIdx].player
 
-  // Base: card IM
   score += card.P + card.N + card.B + card.A
 
-  // Lane axis fit — high B cards prefer B-lane, high A prefer A-lane
   if(ld.axis==='P' && card.P >= 8) score += 12
   if(ld.axis==='B' && card.B >= 12) score += 12
   if(ld.axis==='A' && card.A >= 8) score += 10
   if(ld.axis==='N' && card.N >= 8) score += 8
 
   if(playerCard) {
-    // Matrix advantage
     if(CLASS_ADV[card.cls] === playerCard.cls) score += 20
-    // Evaluate clash outcome
     const myP = card.currentP || (card.P + ld.mod.P)
     const myB = card.currentB || (card.B + ld.mod.B)
     const oppP = playerCard.currentP
     const oppB = playerCard.currentB
-    // AI wins if opponent shattered
     const shatterThreshold = playerCard.id === 'blacksmith' ? SHATTER_RATIO + 2/oppP : SHATTER_RATIO
     if(myB >= shatterThreshold * oppP) score += 30
-    // AI avoids being shattered
     if(oppB >= SHATTER_RATIO * myP) score -= 25
-    // N priority — higher N goes first (advantage)
     if(card.N > playerCard.N) score += 10
-    // Avoid deploying if τ already critical
     const tau = myB / Math.max(myP, 1)
     if(tau >= SHATTER_RATIO) score -= 40
-    // Prefer finishing off already-shattered opponents
     if(playerCard.shattered) score += 15
   } else {
-    // No opponent: prefer high-IM cards in open lanes for future threat
     score += 5
   }
 
-  // Working-class ascension potential — high A cards in A-lane are dangerous
   if(card.cls === CLASSES.WORKING && card.A >= 10 && ld.axis === 'A') score += 15
-  // King: prefers center-adjacent lanes for aura
   if(card.id === 'king') score += laneIdx === 1 || laneIdx === 2 ? 8 : 0
 
   return score
 }
 
 // ============================================================
-// CLASH RESOLUTION
+// DICE — animated roll then land on real value
+// ============================================================
+
+function showDice(dP, dB, exploded) {
+  const el = document.getElementById('diceDisplay')
+  el.innerHTML = `
+    <div class="die p-die${exploded?' explode':''}" id="die-p">${dP}</div>
+    <div class="die b-die${exploded?' explode':''}" id="die-b">${dB}</div>
+    ${exploded ? '<span style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--shatter)">CHAIN</span>' : ''}`
+}
+
+// Animates dice tumbling through random values before landing.
+// Returns a Promise so resolveClash can await each lane.
+function animateDice(finalP, finalB, exploded, duration=400) {
+  return new Promise(resolve => {
+    const el = document.getElementById('diceDisplay')
+    el.innerHTML = `
+      <div class="die p-die rolling" id="die-p">?</div>
+      <div class="die b-die rolling" id="die-b">?</div>
+      ${exploded ? '<span style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--shatter)">CHAIN</span>' : ''}`
+
+    const pEl = document.getElementById('die-p')
+    const bEl = document.getElementById('die-b')
+    const interval = 60
+    const steps = Math.floor(duration / interval)
+    let count = 0
+
+    const timer = setInterval(() => {
+      count++
+      pEl.textContent = Math.ceil(Math.random() * 10)
+      bEl.textContent = Math.ceil(Math.random() * 10)
+
+      if(count >= steps) {
+        clearInterval(timer)
+        pEl.textContent = finalP
+        bEl.textContent = finalB
+        pEl.classList.remove('rolling')
+        bEl.classList.remove('rolling')
+        if(exploded) {
+          pEl.classList.add('explode')
+          bEl.classList.add('explode')
+        }
+        resolve()
+      }
+    }, interval)
+  })
+}
+
+// ============================================================
+// CLASH RESOLUTION — async so animateDice can await per lane
 // ============================================================
 
 function declareClash() {
@@ -632,122 +653,131 @@ function declareClash() {
   setTimeout(resolveClash, 400)
 }
 
-function resolveClash() {
+async function resolveClash() {
   addLog('══ CLASH PHASE ══', 'info')
   let playerWins = 0, aiWins = 0
 
-  // Sort lanes by N (higher N goes first within each lane)
   const laneOrder = [0,1,2,3].filter(i => gs.lanes[i].player || gs.lanes[i].ai)
 
-  laneOrder.forEach(i => {
+  for(const i of laneOrder) {
     const lane = gs.lanes[i]
     const ld = LANE_DEFS[i]
-    if(!lane.player && !lane.ai) return
+    if(!lane.player && !lane.ai) continue
 
     if(!lane.player || !lane.ai) {
       addLog(`${ld.axis}-Axis: uncontested.`, 'info')
       if(!lane.player && lane.ai) aiWins++
       if(lane.player && !lane.ai) playerWins++
-      return
+      continue
     }
 
     const pc = lane.player, ac = lane.ai
     addLog(`${ld.axis}-Axis: ${pc.name} (τ=${(pc.currentB/pc.currentP).toFixed(2)}) vs ${ac.name} (τ=${(ac.currentB/ac.currentP).toFixed(2)})`, 'info')
 
-    // Apply matrix bonus pre-clash (non-assassin cards)
     let pBonus=0, aBonus=0
     if(pc.id !== 'assassin' && CLASS_ADV[pc.cls]===ac.cls) { pBonus=MATRIX_BONUS; addLog(`  ${pc.name} has class advantage +${MATRIX_BONUS}`, 'good') }
     if(ac.id !== 'assassin' && CLASS_ADV[ac.cls]===pc.cls) { aBonus=MATRIX_BONUS; addLog(`  ${ac.name} has class advantage +${MATRIX_BONUS}`, 'warn') }
 
-    // Resolve dice
     const pResult = rollDice(pc, pBonus, false)
     const aResult = rollDice(ac, aBonus, false)
 
-    // Jack re-roll (player gets to force AI re-roll once if jack in hand or on field)
+    // Animate dice — player sees them roll before results log
+    const chainHappened = pResult.rolls > 1 || aResult.rolls > 1
+    await animateDice(pResult.deltaP, aResult.deltaB, chainHappened, chainHappened ? 550 : 380)
+    await new Promise(r => setTimeout(r, 280))
+
     addLog(`  ${pc.name} → P=${pResult.finalP} B=${pResult.finalB} (${pResult.rolls} roll${pResult.rolls>1?'s':''})`, 'good')
     addLog(`  ${ac.name} → P=${aResult.finalP} B=${aResult.finalB} (${aResult.rolls} roll${aResult.rolls>1?'s':''})`, 'warn')
 
-    // Check shatter
     const pShatterLimit = pc.shatterBonus ? SHATTER_RATIO * pc.currentP + pc.shatterBonus : SHATTER_RATIO * pc.currentP
     const aShatterLimit = ac.shatterBonus ? SHATTER_RATIO * ac.currentP + ac.shatterBonus : SHATTER_RATIO * ac.currentP
 
     const pShattered = aResult.finalB >= pShatterLimit
     const aShattered = pResult.finalB >= aShatterLimit
 
+    // Shattering disables a card's special ability going forward — it does NOT
+    // by itself decide who wins the lane. That's determined below by comparing
+    // actual stat output.
     if(pShattered) {
       pc.shattered = true
-      addLog(`  ⚠ ${pc.name} SHATTERED (took ${aResult.finalB} ≥ ${pShatterLimit})`, 'hit')
-      aiWins++
+      addLog(`  ⚠ ${pc.name} SHATTERED (took ${aResult.finalB} ≥ ${pShatterLimit}) — ability disabled`, 'hit')
     }
     if(aShattered) {
       ac.shattered = true
-      addLog(`  ✦ ${ac.name} SHATTERED (took ${pResult.finalB} ≥ ${aShatterLimit})`, 'good')
-      playerWins++
-    }
-    if(!pShattered && !aShattered) {
-      // N priority breaks tie — higher N declared winner
-      if(pc.N > ac.N) { playerWins++; addLog(`  ${pc.name} wins by N-priority (${pc.N} > ${ac.N})`, 'good') }
-      else if(ac.N > pc.N) { aiWins++; addLog(`  ${ac.name} wins by N-priority (${ac.N} > ${pc.N})`, 'warn') }
-      else { addLog(`  Lane drawn.`, 'info') }
+      addLog(`  ⚠ ${ac.name} SHATTERED (took ${pResult.finalB} ≥ ${aShatterLimit}) — ability disabled`, 'hit')
     }
 
-    // Knight counter-strike
-    if(!pc.shattered && pc.id==='knight' && pShattered===false) {
+    // Lane winner: whoever dealt more B-damage wins the lane. Tie → N-priority. Still tied → draw.
+    if(pResult.finalB > aResult.finalB) {
+      playerWins++
+      addLog(`  ${pc.name} wins the lane — higher B output (${pResult.finalB} > ${aResult.finalB})`, 'good')
+    } else if(aResult.finalB > pResult.finalB) {
+      aiWins++
+      addLog(`  ${ac.name} wins the lane — higher B output (${aResult.finalB} > ${pResult.finalB})`, 'warn')
+    } else if(pc.N > ac.N) {
+      playerWins++
+      addLog(`  Tied output — ${pc.name} wins by N-priority (${pc.N} > ${ac.N})`, 'good')
+    } else if(ac.N > pc.N) {
+      aiWins++
+      addLog(`  Tied output — ${ac.name} wins by N-priority (${ac.N} > ${pc.N})`, 'warn')
+    } else {
+      addLog(`  Lane drawn.`, 'info')
+    }
+
+    if(!pc.shattered && pc.id==='knight') {
       ac.currentP = Math.max(1, ac.currentP - 6)
       addLog(`  Knight counter-strike: ${ac.name} -6P → ${ac.currentP}P`, 'good')
     }
 
-    // Check Working-Class ascension
     checkAscension(pc, pResult)
     checkAscension(ac, aResult)
-  })
+    render()
+
+    // brief pause between lanes so each result is readable
+    await new Promise(r => setTimeout(r, 220))
+  }
 
   render()
   addLog(`══ ROUND RESULT: Player +${playerWins} / AI +${aiWins} ══`, 'info')
 
-  // Determine round winner
+  let resultMsg = ''
   if(playerWins > aiWins) {
     gs.playerScore++
     addLog('ROUND VICTORY — The manifold held for you.', 'good')
-    showModal('VICTORY', `You won the round ${playerWins} to ${aiWins}. The manifold held.`)
+    resultMsg = `VICTORY — you won the round ${playerWins} to ${aiWins}.`
   } else if(aiWins > playerWins) {
     gs.aiScore++
     addLog('ROUND DEFEAT — AI shattered your formation.', 'hit')
-    showModal('SHATTERED', `AI won the round ${aiWins} to ${playerWins}. Recalibrate.`)
+    resultMsg = `DEFEAT — AI won the round ${aiWins} to ${playerWins}.`
   } else {
     addLog('ROUND DRAWN — Manifold in equilibrium.', 'info')
-    showModal('EQUILIBRIUM', `Round drawn ${playerWins}-${aiWins}. The manifold is stable.`)
+    resultMsg = `DRAWN — ${playerWins} to ${aiWins}.`
   }
 
-  gs.round++
+  gs.phase = 'roundEnd'
   render()
+  setStatus('ROUND OVER', `${resultMsg} Review the log above, then deal again when ready.`, 'ROUND COMPLETE')
+  document.getElementById('btnDealAgain').style.display = 'inline-block'
 }
 
 function rollDice(card, bonus, isAI) {
-  if(card.shattered) return { finalP: card.currentP+bonus, finalB: card.currentB+bonus, rolls: 0 }
+  if(card.shattered) return { finalP: card.currentP+bonus, finalB: card.currentB+bonus, rolls: 0, deltaP: 0, deltaB: 0 }
 
   let totalDeltaP = 0, totalDeltaB = 0, rolls = 0, maxRolls = 10
-
-  // A-axis in A-lane increases chain stability (max chain rolls proportional to A)
   const maxChain = Math.floor(card.A / 3) + 1
-
   let chainCount = 0
+
   do {
     const dP = Math.ceil(Math.random()*10)
     const dB = Math.ceil(Math.random()*10)
     totalDeltaP += dP; totalDeltaB += dB; rolls++
     if(dP === dB && !card.shattered && chainCount < maxChain) {
-      // Exploding doubles
       addLog(`    💥 Doubles! (${dP},${dB}) — chain continues`, rolls > 1 ? 'warn' : 'info')
       chainCount++
     } else { break }
   } while(rolls < maxRolls)
 
-  showDice(totalDeltaP, totalDeltaB, chainCount > 0)
-
-  // Ascension doubles tracking
-  if(!isAI) card.doublesCount = (card.doublesCount||0) + chainCount
-  else card.doublesCount = (card.doublesCount||0) + chainCount
+  card.doublesCount = (card.doublesCount||0) + chainCount
 
   return {
     finalP: card.currentP + totalDeltaP + bonus,
@@ -760,7 +790,6 @@ function checkAscension(card, result) {
   if(card.cls !== CLASSES.WORKING || card.doublesCount === 0) return
   const dc = card.doublesCount
   if(dc >= 3 && !card.ascended) {
-    // Sovereign Ascension → King
     const prev = card.name
     card.name='King'; card.currentP=6; card.N=10; card.currentB=20; card.A=2
     card.cls=CLASSES.ROYALTY; card.ascended=true; card.doublesCount=0
@@ -777,14 +806,6 @@ function checkAscension(card, result) {
 // ============================================================
 // UI HELPERS
 // ============================================================
-
-function showDice(dP, dB, exploded) {
-  const el = document.getElementById('diceDisplay')
-  el.innerHTML = `
-    <div class="die p-die${exploded?' explode':''}">${dP}</div>
-    <div class="die b-die${exploded?' explode':''}">${dB}</div>
-    ${exploded?'<span style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--shatter)">CHAIN</span>':''}`
-}
 
 function updateButtons() {
   const hasPlayerCards = gs.lanes.some(l=>l.player)
@@ -819,9 +840,13 @@ function showModal(title, body) {
   document.getElementById('modalBody').textContent = body
   document.getElementById('modal').style.display = 'flex'
 }
+
 function closeModal() {
   document.getElementById('modal').style.display = 'none'
-  // Start new round
+}
+
+function dealAgain() {
+  gs.round++
   const prevPS = gs.playerScore, prevAS = gs.aiScore, prevR = gs.round
   newGame()
   gs.playerScore = prevPS; gs.aiScore = prevAS; gs.round = prevR
@@ -830,7 +855,6 @@ function closeModal() {
   document.getElementById('roundNum').textContent = prevR
 }
 
-// Start
 newGame()
 </script>
 </body>
