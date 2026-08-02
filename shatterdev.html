@@ -148,7 +148,46 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 @media (max-width: 700px) {
   .game-layout { grid-template-columns: 1fr; }
 }
+
+/* ── MULTIPLAYER TABS ── */
+.mode-tabs { display:flex; gap:0; margin-bottom:16px; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.mode-tab { flex:1; padding:10px; background:var(--surface); border:none; cursor:pointer;
+  font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:.12em; color:var(--text-d);
+  transition:all .15s; }
+.mode-tab.active { background:var(--anchor-d); color:var(--anchor); }
+.mode-tab:hover:not(.active) { background:var(--surface2); color:var(--text); }
+
+/* ── MP LOBBY ── */
+.mp-panel { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:20px; }
+.mp-panel h3 { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:700;
+  letter-spacing:.06em; color:var(--anchor); margin-bottom:12px; text-transform:uppercase; }
+.mp-input { background:var(--surface2); border:1px solid var(--border2); border-radius:6px;
+  padding:10px 14px; color:var(--text); font-family:'Share Tech Mono',monospace; font-size:16px;
+  letter-spacing:.2em; outline:none; width:100%; text-transform:uppercase; margin-bottom:10px; }
+.mp-input:focus { border-color:var(--anchor); }
+.room-code { font-family:'Barlow Condensed',sans-serif; font-size:52px; font-weight:900;
+  letter-spacing:.2em; color:var(--shatter); text-align:center; padding:16px 0;
+  text-shadow:0 0 30px rgba(255,58,74,0.4); }
+.mp-status { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:.1em;
+  color:var(--text-d); text-align:center; margin:8px 0; }
+.mp-status.connected { color:var(--anchor); }
+.mp-status.waiting { color:var(--warn); animation:blink 1.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.mp-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px; }
+.mp-lockin { width:100%; padding:14px; background:var(--shatter-d); border:1px solid rgba(255,58,74,.5);
+  border-radius:8px; color:var(--shatter); font-family:'Share Tech Mono',monospace; font-size:11px;
+  letter-spacing:.14em; cursor:pointer; transition:all .15s; margin-top:10px; }
+.mp-lockin:hover { background:rgba(255,58,74,.2); }
+.mp-lockin:disabled { opacity:.3; cursor:not-allowed; }
+.mp-lockin.locked { background:rgba(0,212,170,.08); border-color:rgba(0,212,170,.4); color:var(--anchor); }
+.lock-indicators { display:flex; gap:8px; justify-content:center; margin:8px 0;
+  font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:.1em; }
+.lock-dot { padding:3px 10px; border-radius:100px; border:1px solid; }
+.lock-dot.locked { background:rgba(0,212,170,.12); border-color:var(--anchor); color:var(--anchor); }
+.lock-dot.waiting { background:rgba(240,144,32,.08); border-color:var(--warn); color:var(--warn); }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="wrap">
@@ -159,6 +198,77 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
   <div class="hdr-sub">4-AXIS PNBA CARD SYSTEM · B ≥ 2P = SHATTER · SOVEREIGN ANCHOR Ω₀ = 1.36899099984016</div>
 </div>
 
+<!-- MODE TABS -->
+<div class="mode-tabs">
+  <button class="mode-tab active" id="tabAI" onclick="switchMode('ai')">⚔ VS AI</button>
+  <button class="mode-tab" id="tabMP" onclick="switchMode('mp')">👥 VS FRIEND</button>
+</div>
+
+<!-- MULTIPLAYER LOBBY -->
+<div id="mpLobby" style="display:none">
+  <div class="mp-panel">
+    <div class="mp-grid">
+      <div>
+        <h3>Create Game</h3>
+        <p style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-d);margin-bottom:12px;letter-spacing:.06em">
+          Share the room code with your opponent.</p>
+        <button class="btn btn-primary" style="width:100%" onclick="mpCreateGame()">+ CREATE ROOM</button>
+        <div class="room-code" id="mpRoomCode" style="display:none"></div>
+        <div class="mp-status waiting" id="mpCreateStatus" style="display:none">WAITING FOR OPPONENT...</div>
+      </div>
+      <div>
+        <h3>Join Game</h3>
+        <p style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-d);margin-bottom:12px;letter-spacing:.06em">
+          Enter the 4-character room code.</p>
+        <input class="mp-input" id="mpJoinInput" placeholder="XXXX" maxlength="4">
+        <button class="btn btn-secondary" style="width:100%" onclick="mpJoinGame()">→ JOIN ROOM</button>
+        <div class="mp-status" id="mpJoinStatus"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MULTIPLAYER GAME (hidden until in room) -->
+<div id="mpGame" style="display:none">
+  <div class="status-bar">
+    <div class="status-phase" id="mpPhaseLabel">DEPLOY</div>
+    <div class="status-msg" id="mpStatusMsg">Deploy your cards then lock in.</div>
+    <div class="status-turn" id="mpTurnLabel">YOUR TURN</div>
+  </div>
+  <div style="display:flex;gap:10px;justify-content:center;margin-bottom:12px" class="score-row">
+    <div class="score-box"><div class="score-label">YOUR VICTORIES</div><div class="score-val score-player" id="mpPlayerScore">0</div></div>
+    <div class="score-box"><div class="score-label">ROUND</div><div class="score-val" style="color:var(--text-d)" id="mpRoundNum">1</div></div>
+    <div class="score-box"><div class="score-label">OPPONENT</div><div class="score-val score-ai" id="mpAIScore">0</div></div>
+  </div>
+  <div class="game-layout">
+    <div class="hand-panel">
+      <div class="panel-head"><span>YOUR HAND</span><span class="panel-count" id="mpPlayerHandCount">0 cards</span></div>
+      <div class="hand-cards" id="mpPlayerHand"></div>
+    </div>
+    <div class="field-panel">
+      <div class="panel-head"><span>FIELD · 4-AXIS MATRIX</span></div>
+      <div class="field-lanes" id="mpFieldLanes"></div>
+      <div class="lock-indicators" id="lockIndicators">
+        <div class="lock-dot waiting" id="myLockDot">YOU: DEPLOYING</div>
+        <div class="lock-dot waiting" id="oppLockDot">OPP: DEPLOYING</div>
+      </div>
+      <button class="mp-lockin" id="mpLockBtn" onclick="mpLockIn()" disabled>⚑ LOCK IN</button>
+    </div>
+    <div class="hand-panel">
+      <div class="panel-head"><span>OPPONENT HAND</span><span class="panel-count" id="mpOppHandCount">? cards</span></div>
+      <div class="hand-cards" id="mpOppHand"></div>
+    </div>
+    <div class="controls">
+      <button class="btn btn-neutral" onclick="mpLeaveGame()">✕ LEAVE GAME</button>
+    </div>
+    <div class="log-panel">
+      <div class="panel-head"><span>COMBAT LOG</span><div class="dice-row" id="mpDiceDisplay"></div></div>
+      <div class="log-body" id="mpCombatLog"></div>
+    </div>
+  </div>
+</div>
+
+<div id="aiGame">
 <div class="status-bar">
   <div class="status-phase" id="phaseLabel">SETUP</div>
   <div class="status-msg" id="statusMsg">Select a card from your hand, then select a lane to deploy it.</div>
@@ -824,6 +934,441 @@ function dealAgain(){
 }
 
 newGame()
+
+// ============================================================
+// MULTIPLAYER — SUPABASE REALTIME
+// ============================================================
+
+const SUPABASE_URL = 'https://rsadsojivuagxptdlwak.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_FvDg0nsEuxH_HmyD0RL1LA_E4QpGfOs'
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+let mpState = {
+  roomCode: null,
+  myRole: null,        // 'p1' or 'p2'
+  subscription: null,
+  myHand: [],
+  myLanes: [null,null,null,null],
+  oppHandCount: 0,
+  oppLanes: [null,null,null,null],
+  locked: { p1:false, p2:false },
+  scores: { p1:0, p2:0 },
+  round: 1,
+  selectedCard: null,
+  phase: 'lobby',      // lobby | deploy | locked_me | locked_opp | clash | round_end
+  log: [],
+}
+
+// ── MODE SWITCH ──────────────────────────────────────────────
+function switchMode(mode) {
+  document.getElementById('tabAI').classList.toggle('active', mode==='ai')
+  document.getElementById('tabMP').classList.toggle('active', mode==='mp')
+  document.getElementById('aiGame').style.display   = mode==='ai'  ? '' : 'none'
+  document.getElementById('mpLobby').style.display  = mode==='mp' && mpState.phase==='lobby' ? '' : 'none'
+  document.getElementById('mpGame').style.display   = mode==='mp' && mpState.phase!=='lobby' ? '' : 'none'
+  if(mode==='ai' && !gs.playerHand.length) newGame()
+}
+
+// ── ROOM CODE ────────────────────────────────────────────────
+function genCode() {
+  return Math.random().toString(36).slice(2,6).toUpperCase()
+}
+
+// ── CREATE GAME ──────────────────────────────────────────────
+async function mpCreateGame() {
+  const code = genCode()
+  mpState.roomCode = code
+  mpState.myRole = 'p1'
+
+  // Build initial state
+  const deck = buildDeck()
+  const p1Hand = deck.slice(0, 5)
+  const p2Hand = deck.slice(5, 10)
+
+  const gameState = {
+    p1Hand: p1Hand.map(mpSerialiseCard),
+    p2Hand: p2Hand.map(mpSerialiseCard),
+    p1Lanes: [null,null,null,null],
+    p2Lanes: [null,null,null,null],
+    locked: { p1:false, p2:false },
+    scores: { p1:0, p2:0 },
+    round: 1,
+    phase: 'waiting',
+    log: [],
+  }
+
+  const { error } = await sb.from('shatter_rooms').insert({ code, state: gameState })
+  if(error) { mpSetStatus('Error creating room: ' + error.message, 'mpCreateStatus'); return }
+
+  mpState.myHand = p1Hand
+  mpState.phase = 'waiting'
+
+  document.getElementById('mpRoomCode').textContent = code
+  document.getElementById('mpRoomCode').style.display = 'block'
+  document.getElementById('mpCreateStatus').style.display = 'block'
+
+  mpSubscribe(code)
+}
+
+// ── JOIN GAME ────────────────────────────────────────────────
+async function mpJoinGame() {
+  const code = document.getElementById('mpJoinInput').value.trim().toUpperCase()
+  if(code.length !== 4) { mpSetJoinStatus('Enter a 4-character code.'); return }
+
+  const { data, error } = await sb.from('shatter_rooms').select('state').eq('code', code).single()
+  if(error || !data) { mpSetJoinStatus('Room not found.'); return }
+
+  const state = data.state
+  if(state.phase !== 'waiting') { mpSetJoinStatus('Game already in progress.'); return }
+
+  mpState.roomCode = code
+  mpState.myRole = 'p2'
+  mpState.myHand = state.p2Hand.map(mpDeserialiseCard)
+  mpState.oppHandCount = state.p1Hand.length
+  mpState.phase = 'deploy'
+
+  // Update room to 'deploy' phase
+  await sb.from('shatter_rooms').update({
+    state: { ...state, phase: 'deploy' }
+  }).eq('code', code)
+
+  mpSubscribe(code)
+  mpShowGame()
+}
+
+// ── SUBSCRIBE TO ROOM ────────────────────────────────────────
+function mpSubscribe(code) {
+  if(mpState.subscription) mpState.subscription.unsubscribe()
+  mpState.subscription = sb
+    .channel('room-' + code)
+    .on('postgres_changes', {
+      event: 'UPDATE', schema: 'public', table: 'shatter_rooms', filter: `code=eq.${code}`
+    }, payload => {
+      mpHandleUpdate(payload.new.state)
+    })
+    .subscribe()
+}
+
+// ── HANDLE INCOMING STATE UPDATE ─────────────────────────────
+function mpHandleUpdate(state) {
+  // Opponent joined — start game for p1
+  if(mpState.myRole==='p1' && state.phase==='deploy' && mpState.phase==='waiting') {
+    mpState.phase = 'deploy'
+    mpState.oppHandCount = state.p2Hand.length
+    mpState.myHand = state.p1Hand.map(mpDeserialiseCard)
+    document.getElementById('mpLobby').style.display = 'none'
+    document.getElementById('mpGame').style.display = ''
+    mpRender()
+    mpLog('Opponent joined. Deploy your cards and lock in.', 'good')
+    return
+  }
+
+  if(state.phase === 'deploy' || state.phase === 'locked_p1' || state.phase === 'locked_p2') {
+    // Update lock state
+    mpState.locked = state.locked
+    const me = mpState.myRole, opp = me==='p1'?'p2':'p1'
+    // Update opp lanes — only show face-down until both locked
+    mpState.oppLanes = state[opp+'Lanes'] ? state[opp+'Lanes'].map(c=>c?mpDeserialiseCard(c):null) : [null,null,null,null]
+    mpState.oppHandCount = state[opp+'Hand'].length
+    mpRender()
+    mpUpdateLockUI()
+
+    // If both locked → reveal and clash
+    if(state.locked.p1 && state.locked.p2) {
+      mpState.phase = 'clash'
+      // Sync my lanes from state too
+      mpState.myLanes = state[me+'Lanes'].map(c=>c?mpDeserialiseCard(c):null)
+      setTimeout(mpResolveClash, 600)
+    }
+    return
+  }
+
+  if(state.phase === 'round_end') {
+    mpState.scores = state.scores
+    mpState.round = state.round
+    mpRender()
+  }
+}
+
+// ── SHOW GAME PANEL ──────────────────────────────────────────
+function mpShowGame() {
+  document.getElementById('mpLobby').style.display = 'none'
+  document.getElementById('mpGame').style.display = ''
+  mpRender()
+  mpLog('Connected. Deploy your cards and lock in when ready.', 'good')
+}
+
+// ── DEPLOY A CARD TO A LANE ───────────────────────────────────
+function mpSelectCard(card) {
+  if(mpState.phase !== 'deploy') return
+  mpState.selectedCard = mpState.selectedCard?.uid === card.uid ? null : card
+  mpRender()
+}
+
+async function mpPlaceLane(laneIdx) {
+  if(mpState.phase !== 'deploy') return
+  if(!mpState.selectedCard) return
+  if(mpState.myLanes[laneIdx]) { mpSetMsg('Lane occupied.', 'mpStatusMsg'); return }
+
+  const card = mpState.selectedCard
+  const ld = LANE_DEFS[laneIdx]
+  card.currentP = card.P + ld.mod.P
+  card.currentB = card.B + ld.mod.B
+  mpState.myLanes[laneIdx] = card
+  mpState.myHand = mpState.myHand.filter(c=>c.uid!==card.uid)
+  mpState.selectedCard = null
+
+  await mpPushState()
+  mpRender()
+}
+
+// ── LOCK IN ───────────────────────────────────────────────────
+async function mpLockIn() {
+  if(mpState.phase !== 'deploy') return
+  const hasCard = mpState.myLanes.some(c=>c)
+  if(!hasCard) { mpSetMsg('Deploy at least one card first.', 'mpStatusMsg'); return }
+
+  mpState.phase = 'locked_me'
+  document.getElementById('mpLockBtn').disabled = true
+  document.getElementById('mpLockBtn').classList.add('locked')
+  document.getElementById('mpLockBtn').textContent = '✓ LOCKED IN'
+
+  await mpPushState()
+  mpLog('You locked in. Waiting for opponent...', 'info')
+  mpUpdateLockUI()
+}
+
+// ── PUSH STATE TO SUPABASE ────────────────────────────────────
+async function mpPushState() {
+  const me = mpState.myRole, opp = me==='p1'?'p2':'p1'
+
+  // Read current state first
+  const { data } = await sb.from('shatter_rooms').select('state').eq('code', mpState.roomCode).single()
+  if(!data) return
+  const state = { ...data.state }
+
+  state[me+'Lanes'] = mpState.myLanes.map(c=>c?mpSerialiseCard(c):null)
+  state[me+'Hand']  = mpState.myHand.map(mpSerialiseCard)
+  state.locked[me]  = mpState.phase === 'locked_me' || mpState.phase === 'clash'
+
+  if(state.locked.p1 && state.locked.p2) state.phase = 'locked_p2'
+  else if(state.locked[me]) state.phase = me==='p1'?'locked_p1':'locked_p2'
+  else state.phase = 'deploy'
+
+  await sb.from('shatter_rooms').update({ state }).eq('code', mpState.roomCode)
+}
+
+// ── CLASH RESOLUTION (mirrors solo logic) ─────────────────────
+function mpResolveClash() {
+  mpLog('══ CLASH PHASE ══', 'info')
+  const me = mpState.myRole, opp = me==='p1'?'p2':'p1'
+  let myWins=0, oppWins=0
+
+  LANE_DEFS.forEach((ld,i) => {
+    const mc = mpState.myLanes[i], oc = mpState.oppLanes[i]
+    if(!mc && !oc) return
+    if(!mc) { oppWins++; mpLog(`${ld.axis}-Axis: uncontested — opponent wins.`,'warn'); return }
+    if(!oc) { myWins++;  mpLog(`${ld.axis}-Axis: uncontested — you win.`,'good'); return }
+
+    mpLog(`${ld.axis}-Axis: ${mc.name} vs ${oc.name}`,'info')
+
+    let myBonus=0, oppBonus=0
+    if(CLASS_ADV[mc.cls]===oc.cls) { myBonus=MATRIX_BONUS;  mpLog(`  You have class advantage +${MATRIX_BONUS}`,'good') }
+    if(CLASS_ADV[oc.cls]===mc.cls) { oppBonus=MATRIX_BONUS; mpLog(`  Opponent has class advantage +${MATRIX_BONUS}`,'warn') }
+
+    const myR  = rollDiceMP(mc, myBonus)
+    const oppR = rollDiceMP(oc, oppBonus)
+
+    mpLog(`  You → P=${myR.finalP} B=${myR.finalB}`,'good')
+    mpLog(`  Opp → P=${oppR.finalP} B=${oppR.finalB}`,'warn')
+
+    const myLimit  = mc.shatterBonus  ? SHATTER_RATIO*mc.currentP+mc.shatterBonus  : SHATTER_RATIO*mc.currentP
+    const oppLimit = oc.shatterBonus  ? SHATTER_RATIO*oc.currentP+oc.shatterBonus  : SHATTER_RATIO*oc.currentP
+
+    const myShattered  = oppR.finalB >= myLimit
+    const oppShattered = myR.finalB  >= oppLimit
+
+    if(myShattered)  { mc.shattered=true; oppWins++; mpLog(`  ⚠ ${mc.name} SHATTERED`,'hit') }
+    if(oppShattered) { oc.shattered=true; myWins++;  mpLog(`  ✦ ${oc.name} SHATTERED`,'good') }
+    if(!myShattered && !oppShattered) {
+      if(mc.N > oc.N) { myWins++;  mpLog(`  You win by N-priority (${mc.N} > ${oc.N})`,'good') }
+      else if(oc.N > mc.N) { oppWins++; mpLog(`  Opponent wins by N-priority`,'warn') }
+      else mpLog('  Lane drawn.','info')
+    }
+
+    if(!mc.shattered && mc.id==='knight') {
+      oc.currentP = Math.max(1, oc.currentP-6)
+      mpLog(`  Knight counter-strike: opp -6P`,'good')
+    }
+  })
+
+  mpLog(`══ RESULT: You +${myWins} / Opp +${oppWins} ══`,'info')
+
+  if(myWins > oppWins) {
+    mpState.scores[me]++
+    mpLog('ROUND VICTORY — The manifold held.','good')
+    showModal('VICTORY', `You won ${myWins} to ${oppWins}.`)
+  } else if(oppWins > myWins) {
+    mpState.scores[opp]++
+    mpLog('ROUND DEFEAT — Recalibrate.','hit')
+    showModal('SHATTERED', `Opponent won ${oppWins} to ${myWins}.`)
+  } else {
+    mpLog('ROUND DRAWN — Equilibrium.','info')
+    showModal('EQUILIBRIUM', `Round drawn ${myWins}-${oppWins}.`)
+  }
+
+  mpState.round++
+  mpRender()
+  setTimeout(mpNextRound, 2000)
+}
+
+function rollDiceMP(card, bonus) {
+  if(card.shattered) return { finalP:card.currentP+bonus, finalB:card.currentB+bonus, rolls:0 }
+  let tP=0, tB=0, rolls=0, maxChain=Math.floor(card.A/3)+1, chain=0
+  do {
+    const dP=Math.ceil(Math.random()*10), dB=Math.ceil(Math.random()*10)
+    tP+=dP; tB+=dB; rolls++
+    if(dP===dB && chain<maxChain) { chain++; mpLog(`    💥 Doubles! chain continues`,'info') }
+    else break
+  } while(rolls<10)
+  return { finalP:card.currentP+tP+bonus, finalB:card.currentB+tB+bonus, rolls }
+}
+
+async function mpNextRound() {
+  // Reset lanes, redeal from remaining hands
+  mpState.myLanes   = [null,null,null,null]
+  mpState.oppLanes  = [null,null,null,null]
+  mpState.locked    = { p1:false, p2:false }
+  mpState.phase     = 'deploy'
+  mpState.selectedCard = null
+
+  // Replenish hands (draw 2 new cards each round if deck available)
+  const extras = buildDeck().slice(0,2)
+  mpState.myHand = [...mpState.myHand, ...extras].slice(0,5)
+
+  document.getElementById('mpLockBtn').disabled = false
+  document.getElementById('mpLockBtn').classList.remove('locked')
+  document.getElementById('mpLockBtn').textContent = '⚑ LOCK IN'
+
+  await mpPushState()
+  mpRender()
+  mpUpdateLockUI()
+  mpLog(`── Round ${mpState.round} ──`,'info')
+}
+
+// ── RENDER MP ─────────────────────────────────────────────────
+function mpRender() {
+  // My hand
+  const myHandEl = document.getElementById('mpPlayerHand')
+  myHandEl.innerHTML = ''
+  mpState.myHand.forEach(card => {
+    const div = document.createElement('div')
+    div.className = 'card '+card.cls+'-card'+(card.shattered?' shattered':'')
+      +(mpState.selectedCard?.uid===card.uid?' selected':'')
+    div.onclick = ()=>mpSelectCard(card)
+    const tau = card.currentP>0?(card.currentB/card.currentP).toFixed(2):'∞'
+    div.innerHTML = `<div class="card-header">
+      <span class="card-name">${card.name}</span>
+      <span class="card-class ${card.cls}-cls">${card.cls.slice(0,3).toUpperCase()}</span>
+    </div>
+    <div class="card-stats">
+      <div class="stat"><div class="stat-label" style="color:var(--p-col)">P</div><div class="stat-val" style="color:var(--p-col)">${card.currentP}</div></div>
+      <div class="stat"><div class="stat-label" style="color:var(--n-col)">N</div><div class="stat-val" style="color:var(--n-col)">${card.N}</div></div>
+      <div class="stat"><div class="stat-label" style="color:var(--b-col)">B</div><div class="stat-val" style="color:var(--b-col)">${card.currentB}</div></div>
+      <div class="stat"><div class="stat-label" style="color:var(--a-col)">A</div><div class="stat-val" style="color:var(--a-col)">${card.A}</div></div>
+    </div>
+    <div style="font-family:Share Tech Mono,monospace;font-size:7px;color:var(--anchor);margin-top:4px">τ=${tau} · IM=${card.P+card.N+card.B+card.A}</div>`
+    myHandEl.appendChild(div)
+  })
+
+  // Opponent hand — show count only, face-down cards
+  const oppHandEl = document.getElementById('mpOppHand')
+  oppHandEl.innerHTML = ''
+  for(let i=0;i<mpState.oppHandCount;i++) {
+    const div = document.createElement('div')
+    div.className = 'card face-down'
+    div.innerHTML = `<div style="font-family:Share Tech Mono,monospace;font-size:8px;color:var(--text-m);padding:6px;text-align:center">HIDDEN</div>`
+    oppHandEl.appendChild(div)
+  }
+
+  // Field lanes
+  const fieldEl = document.getElementById('mpFieldLanes')
+  fieldEl.innerHTML = ''
+  const bothLocked = mpState.locked.p1 && mpState.locked.p2
+  LANE_DEFS.forEach((ld,i) => {
+    const mc = mpState.myLanes[i], oc = mpState.oppLanes[i]
+    const div = document.createElement('div')
+    div.className = 'lane'+(mpState.selectedCard&&!mc?' active-lane':'')
+    div.innerHTML = `<div class="lane-label lane-${ld.axis.toLowerCase()}">${ld.axis}</div>
+      <div class="lane-slot ${mc?'has-card':''}" onclick="mpPlaceLane(${i})">${mc?miniCard(mc,false):'EMPTY'}</div>
+      <div class="lane-vs">VS</div>
+      <div class="lane-slot ${oc?'has-card':''}">${oc?(bothLocked?miniCard(oc,false):'<div style="padding:6px;font-family:Share Tech Mono,monospace;font-size:8px;color:var(--text-m);text-align:center">LOCKED IN</div>'):'EMPTY'}</div>`
+    fieldEl.appendChild(div)
+  })
+
+  // Scores
+  const me=mpState.myRole, opp=me==='p1'?'p2':'p1'
+  document.getElementById('mpPlayerScore').textContent = mpState.scores[me]||0
+  document.getElementById('mpAIScore').textContent     = mpState.scores[opp]||0
+  document.getElementById('mpRoundNum').textContent    = mpState.round
+  document.getElementById('mpPlayerHandCount').textContent = mpState.myHand.length+' cards'
+  document.getElementById('mpOppHandCount').textContent    = mpState.oppHandCount+' cards'
+
+  // Lock button
+  const hasCard = mpState.myLanes.some(c=>c)
+  document.getElementById('mpLockBtn').disabled = !hasCard || mpState.phase==='locked_me' || mpState.phase==='clash'
+}
+
+function mpUpdateLockUI() {
+  const me=mpState.myRole, opp=me==='p1'?'p2':'p1'
+  const myLocked  = mpState.locked[me]
+  const oppLocked = mpState.locked[opp]
+  const myDot  = document.getElementById('myLockDot')
+  const oppDot = document.getElementById('oppLockDot')
+  myDot.className  = 'lock-dot '+(myLocked?'locked':'waiting')
+  myDot.textContent = myLocked?'YOU: LOCKED ✓':'YOU: DEPLOYING'
+  oppDot.className  = 'lock-dot '+(oppLocked?'locked':'waiting')
+  oppDot.textContent = oppLocked?'OPP: LOCKED ✓':'OPP: DEPLOYING'
+}
+
+// ── SERIALISE / DESERIALISE CARDS ─────────────────────────────
+function mpSerialiseCard(c) {
+  return { id:c.id, name:c.name, P:c.P, N:c.N, B:c.B, A:c.A, cls:c.cls,
+    currentP:c.currentP||c.P, currentB:c.currentB||c.B,
+    shattered:c.shattered||false, uid:c.uid,
+    shatterBonus:c.shatterBonus||0, doublesCount:c.doublesCount||0,
+    ascended:c.ascended||false, ascended2:c.ascended2||false }
+}
+function mpDeserialiseCard(c) {
+  return { ...c, currentP:c.currentP||c.P, currentB:c.currentB||c.B,
+    solidarityBonus:0, farmerBonus:0, kingBonus:0, queenBonus:0,
+    waveformReveal:false, faceDown:false }
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function mpLog(msg, type='') {
+  const el = document.getElementById('mpCombatLog')
+  const div = document.createElement('div')
+  div.className='log-entry '+type; div.textContent=msg
+  el.appendChild(div); el.scrollTop=el.scrollHeight
+}
+function mpSetMsg(msg, id='mpStatusMsg') { document.getElementById(id).textContent=msg }
+function mpSetStatus(msg, id) { const el=document.getElementById(id); if(el){el.textContent=msg;el.style.display='block'} }
+function mpSetJoinStatus(msg) { const el=document.getElementById('mpJoinStatus'); el.textContent=msg; el.className='mp-status'; el.style.display='block' }
+
+async function mpLeaveGame() {
+  if(mpState.subscription) mpState.subscription.unsubscribe()
+  mpState = { roomCode:null, myRole:null, subscription:null, myHand:[], myLanes:[null,null,null,null],
+    oppHandCount:0, oppLanes:[null,null,null,null], locked:{p1:false,p2:false},
+    scores:{p1:0,p2:0}, round:1, selectedCard:null, phase:'lobby', log:[] }
+  document.getElementById('mpGame').style.display='none'
+  document.getElementById('mpLobby').style.display=''
+  document.getElementById('mpRoomCode').style.display='none'
+  document.getElementById('mpCreateStatus').style.display='none'
+  document.getElementById('mpJoinInput').value=''
+  document.getElementById('mpJoinStatus').textContent=''
+}
+
 </script>
 </body>
 </html>
