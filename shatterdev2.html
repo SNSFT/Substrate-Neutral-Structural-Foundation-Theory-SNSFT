@@ -1214,101 +1214,153 @@ async function mpPushState() {
   await sb.from('shatter_rooms').update({ state }).eq('code', mpState.roomCode)
 }
 
-// ── CLASH RESOLUTION (mirrors solo logic) ─────────────────────
-function mpResolveClash() {
-  mpLog('══ CLASH PHASE ══', 'info')
+// ── CLASH RESOLUTION — exact copy of solo resolveClash, P1 only, result pushed to Supabase ──
+async function mpResolveClash() {
   const me = mpState.myRole, opp = me==='p1'?'p2':'p1'
+
+  // Build a lanes structure mirroring solo gs.lanes so recomputeSide works unchanged
+  const mpLanes = mpState.myLanes.map((mc, i) => ({
+    [me]:  mc  || null,
+    [opp]: mpState.oppLanes[i] || null
+  }))
+
+  const pInfo = recomputeMPSide(mpLanes, me)
+  const aInfo = recomputeMPSide(mpLanes, opp)
+
+  if(pInfo.workerCount>1) mpLog(`  ★ Your solidarity: ${pInfo.workerCount} workers · +${pInfo.solidarityBonus}P/B each${pInfo.hasPrince?' (Prince +1)':''}`, 'solidarity')
+  if(aInfo.workerCount>1) mpLog(`  ★ Opp solidarity: ${aInfo.workerCount} workers · +${aInfo.solidarityBonus}P/B each${aInfo.hasPrince?' (Prince +1)':''}`, 'solidarity')
+  if(pInfo.hasFarmer)  mpLog(`  ☀ Your Farmer's Yield: +${pInfo.farmerYield}P to every unshattered card`, 'solidarity')
+  if(aInfo.hasFarmer)  mpLog(`  ☀ Opp Farmer's Yield: +${aInfo.farmerYield}P to every unshattered card`, 'solidarity')
+  if(pInfo.hasKing)    mpLog(`  ♚ Your Royal Decree: +2P to every other unshattered card`, 'solidarity')
+  if(aInfo.hasKing)    mpLog(`  ♚ Opp Royal Decree: +2P to every other unshattered card`, 'solidarity')
+  if(pInfo.hasQueen)   mpLog(`  ♛ Your Queen's Grace: ${pInfo.royalCount} royal(s) · +${pInfo.queenAuraP}P to all friendly cards`, 'solidarity')
+  if(aInfo.hasQueen)   mpLog(`  ♛ Opp Queen's Grace: ${aInfo.royalCount} royal(s) · +${aInfo.queenAuraP}P to all friendly cards`, 'solidarity')
+
+  mpLog('══ CLASH PHASE ══','info')
   let myWins=0, oppWins=0
 
-  LANE_DEFS.forEach((ld,i) => {
+  for(const i of [0,1,2,3]) {
     const mc = mpState.myLanes[i], oc = mpState.oppLanes[i]
-    if(!mc && !oc) return
-    if(!mc) { oppWins++; mpLog(`${ld.axis}-Axis: uncontested — opponent wins.`,'warn'); return }
-    if(!oc) { myWins++;  mpLog(`${ld.axis}-Axis: uncontested — you win.`,'good'); return }
+    const ld = LANE_DEFS[i]
+    if(!mc && !oc) continue
+    if(!mc) { oppWins++; mpLog(`${ld.axis}-Axis: uncontested — opponent wins.`,'warn'); continue }
+    if(!oc) { myWins++;  mpLog(`${ld.axis}-Axis: uncontested — you win.`,'good'); continue }
 
-    mpLog(`${ld.axis}-Axis: ${mc.name} vs ${oc.name}`,'info')
+    mpLog(`${ld.axis}-Axis: ${mc.name} (τ=${(mc.currentB/mc.currentP).toFixed(2)}) vs ${oc.name} (τ=${(oc.currentB/oc.currentP).toFixed(2)})`,'info')
 
     let myBonus=0, oppBonus=0
-    if(CLASS_ADV[mc.cls]===oc.cls) { myBonus=MATRIX_BONUS;  mpLog(`  You have class advantage +${MATRIX_BONUS}`,'good') }
-    if(CLASS_ADV[oc.cls]===mc.cls) { oppBonus=MATRIX_BONUS; mpLog(`  Opponent has class advantage +${MATRIX_BONUS}`,'warn') }
+    if(mc.id!=='assassin' && CLASS_ADV[mc.cls]===oc.cls) { myBonus=MATRIX_BONUS;  mpLog(`  ${mc.name} class advantage +${MATRIX_BONUS}`,'good') }
+    if(oc.id!=='assassin' && CLASS_ADV[oc.cls]===mc.cls) { oppBonus=MATRIX_BONUS; mpLog(`  ${oc.name} class advantage +${MATRIX_BONUS}`,'warn') }
+
+    // Assassin waveform: ambush only vs non-Knight, only if highest N
+    if(mc.id==='assassin' && CLASS_ADV[mc.cls]===oc.cls && oc.id!=='knight' && (mc.currentN||mc.N) >= (oc.currentN||oc.N)) {
+      myBonus=MATRIX_BONUS; mpLog(`  Assassin waveform ambush +${MATRIX_BONUS}`,'good')
+    } else if(mc.id==='assassin' && oc.id==='knight') { mpLog(`  Assassin waveform blocked by Knight`,'info') }
+    if(oc.id==='assassin' && CLASS_ADV[oc.cls]===mc.cls && mc.id!=='knight' && (oc.currentN||oc.N) >= (mc.currentN||mc.N)) {
+      oppBonus=MATRIX_BONUS; mpLog(`  Opp Assassin waveform ambush +${MATRIX_BONUS}`,'warn')
+    } else if(oc.id==='assassin' && mc.id==='knight') { mpLog(`  Opp Assassin waveform blocked by Knight`,'info') }
 
     const myR  = rollDiceMP(mc, myBonus)
     const oppR = rollDiceMP(oc, oppBonus)
 
-    mpLog(`  You → P=${myR.finalP} B=${myR.finalB}`,'good')
-    mpLog(`  Opp → P=${oppR.finalP} B=${oppR.finalB}`,'warn')
+    mpLog(`  ${mc.name} → P=${myR.finalP} B=${myR.finalB} (${myR.rolls} roll${myR.rolls>1?'s':''})`,'good')
+    mpLog(`  ${oc.name} → P=${oppR.finalP} B=${oppR.finalB} (${oppR.rolls} roll${oppR.rolls>1?'s':''})`,'warn')
 
-    const myLimit  = mc.shatterBonus  ? SHATTER_RATIO*mc.currentP+mc.shatterBonus  : SHATTER_RATIO*mc.currentP
-    const oppLimit = oc.shatterBonus  ? SHATTER_RATIO*oc.currentP+oc.shatterBonus  : SHATTER_RATIO*oc.currentP
+    // Shatter check
+    const myLimit  = mc.shatterBonus ? SHATTER_RATIO*mc.currentP+mc.shatterBonus : SHATTER_RATIO*mc.currentP
+    const oppLimit = oc.shatterBonus ? SHATTER_RATIO*oc.currentP+oc.shatterBonus : SHATTER_RATIO*oc.currentP
+    if(oppR.finalB >= myLimit) { mc.shattered=true; mpLog(`  ⚠ ${mc.name} SHATTERED`,'hit') }
+    if(myR.finalB  >= oppLimit) { oc.shattered=true; mpLog(`  ⚠ ${oc.name} SHATTERED`,'hit') }
 
-    const myShattered  = oppR.finalB >= myLimit
-    const oppShattered = myR.finalB  >= oppLimit
+    // Re-sync bonuses after shatter
+    recomputeMPSide(mpLanes, me)
+    recomputeMPSide(mpLanes, opp)
 
-    if(myShattered)  { mc.shattered=true; oppWins++; mpLog(`  ⚠ ${mc.name} SHATTERED`,'hit') }
-    if(oppShattered) { oc.shattered=true; myWins++;  mpLog(`  ✦ ${oc.name} SHATTERED`,'good') }
-    if(!myShattered && !oppShattered) {
-      if(mc.N > oc.N) { myWins++;  mpLog(`  You win by N-priority (${mc.N} > ${oc.N})`,'good') }
-      else if(oc.N > mc.N) { oppWins++; mpLog(`  Opponent wins by N-priority`,'warn') }
-      else mpLog('  Lane drawn.','info')
-    }
+    // Lane winner by B output then N-priority — same as solo
+    if(myR.finalB > oppR.finalB)       { myWins++;  mpLog(`  ${mc.name} wins lane — B ${myR.finalB} > ${oppR.finalB}`,'good') }
+    else if(oppR.finalB > myR.finalB)  { oppWins++; mpLog(`  ${oc.name} wins lane — B ${oppR.finalB} > ${myR.finalB}`,'warn') }
+    else if(mc.N > oc.N)               { myWins++;  mpLog(`  Tied B — ${mc.name} wins by N-priority (${mc.N}>${oc.N})`,'good') }
+    else if(oc.N > mc.N)               { oppWins++; mpLog(`  Tied B — ${oc.name} wins by N-priority (${oc.N}>${mc.N})`,'warn') }
+    else                               { mpLog(`  Lane drawn.`,'info') }
 
-    if(!mc.shattered && mc.id==='knight') {
-      oc.currentP = Math.max(1, oc.currentP-6)
-      mpLog(`  Knight counter-strike: opp -6P`,'good')
-    }
-  })
+    // Knight counter-strike
+    if(!mc.shattered && mc.id==='knight') { oc.currentP=Math.max(1,oc.currentP-6); mpLog(`  Knight counter-strike: ${oc.name} -6P → ${oc.currentP}P`,'good') }
 
-  mpLog(`══ RESULT: You +${myWins} / Opp +${oppWins} ══`,'info')
+    // Ascension
+    checkAscension(mc, myR)
+    checkAscension(oc, oppR)
 
-  // From P1's perspective: me=p1, opp=p2
-  // Scores: p1wins = myWins, p2wins = oppWins
-  const p1wins = me==='p1' ? myWins : oppWins
-  const p2wins = me==='p1' ? oppWins : myWins
+    await new Promise(r=>setTimeout(r,220))
+  }
 
+  mpLog(`══ ROUND RESULT: You +${myWins} / Opp +${oppWins} ══`,'info')
+
+  // Scores and modal — same logic as solo
+  let resultTitle='', resultBody=''
   if(myWins > oppWins) {
     mpState.scores[me]++
     mpLog('ROUND VICTORY — The manifold held.','good')
-    showModal('VICTORY', `You won ${myWins} to ${oppWins}.`)
+    resultTitle='VICTORY'; resultBody=`You won ${myWins} to ${oppWins}.`
   } else if(oppWins > myWins) {
     mpState.scores[opp]++
     mpLog('ROUND DEFEAT — Recalibrate.','hit')
-    showModal('SHATTERED', `Opponent won ${oppWins} to ${myWins}.`)
+    resultTitle='SHATTERED'; resultBody=`Opponent won ${oppWins} to ${myWins}.`
   } else {
-    // Lanes tied — Identity Mass tiebreaker, same as solo mode
-    const myMass  = mpState.myLanes.reduce((sum,c)=>c&&!c.shattered?sum+c.currentP+c.N+c.currentB+c.A:sum, 0)
-    const oppMass = mpState.oppLanes.reduce((sum,c)=>c&&!c.shattered?sum+c.currentP+c.N+c.currentB+c.A:sum, 0)
-    mpLog(`Lanes tied ${myWins}-${oppWins}. Identity Mass tiebreak: You=${myMass} / Opp=${oppMass}`,'info')
-    if(myMass > oppMass) {
-      mpState.scores[me]++
-      mpLog('ROUND VICTORY by Identity Mass — your surviving formation outweighed theirs.','good')
-      showModal('VICTORY (Identity Mass)', `Your formation: ${myMass} vs ${oppMass}.`)
-    } else if(oppMass > myMass) {
-      mpState.scores[opp]++
-      mpLog('ROUND DEFEAT by Identity Mass — opponent formation outweighed yours.','hit')
-      showModal('DEFEAT (Identity Mass)', `Opponent: ${oppMass} vs your ${myMass}.`)
-    } else {
-      mpLog('ROUND DRAWN — Identity Mass also tied. True equilibrium.','info')
-      showModal('EQUILIBRIUM', `Identity Mass tied at ${myMass}. True draw.`)
-    }
+    const myMass  = mpState.myLanes.reduce((sum,c)=>c&&!c.shattered?sum+c.currentP+(c.currentN||c.N)+c.currentB+(c.currentA||c.A):sum, 0)
+    const oppMass = mpState.oppLanes.reduce((sum,c)=>c&&!c.shattered?sum+c.currentP+(c.currentN||c.N)+c.currentB+(c.currentA||c.A):sum, 0)
+    mpLog(`Lanes tied. Identity Mass tiebreak: You=${myMass} / Opp=${oppMass}`,'info')
+    if(myMass > oppMass)       { mpState.scores[me]++;  mpLog('ROUND VICTORY by Identity Mass.','good'); resultTitle='VICTORY (IM)'; resultBody=`Your IM ${myMass} > ${oppMass}.` }
+    else if(oppMass > myMass)  { mpState.scores[opp]++; mpLog('ROUND DEFEAT by Identity Mass.','hit');   resultTitle='DEFEAT (IM)'; resultBody=`Opp IM ${oppMass} > ${myMass}.` }
+    else                       { mpLog('True draw — Identity Mass tied.','info'); resultTitle='EQUILIBRIUM'; resultBody=`IM tied at ${myMass}.` }
   }
 
   mpState.round++
 
-  // Push result to Supabase so P2 gets the same outcome
-  sb.from('shatter_rooms').select('state').eq('code', mpState.roomCode).single().then(({data}) => {
-    if(!data) return
-    const newState = { ...data.state,
-      phase: 'round_end',
-      scores: mpState.scores,
-      round: mpState.round,
+  // P1 pushes full result to Supabase — P2 reads from subscription
+  const p1wins = me==='p1' ? myWins  : oppWins
+  const p2wins = me==='p1' ? oppWins : myWins
+  const { data } = await sb.from('shatter_rooms').select('state').eq('code', mpState.roomCode).single()
+  if(data) {
+    await sb.from('shatter_rooms').update({ state: {
+      ...data.state,
+      phase:       'round_end',
+      scores:      mpState.scores,
+      round:       mpState.round,
       roundResult: { p1: p1wins, p2: p2wins },
-      clashLog: mpState.log.filter(e=>e&&e.msg).slice(-30)
-    }
-    sb.from('shatter_rooms').update({ state: newState }).eq('code', mpState.roomCode)
-  })
+      resultTitle,
+      resultBody,
+      clashLog:    mpState.log.filter(e=>e&&e.msg).slice(-40)
+    }}).eq('code', mpState.roomCode)
+  }
 
   mpRender()
-  // Next round starts when player clicks Continue on modal
+  showModal(resultTitle, resultBody)
+}
+
+// recomputeMPSide: same as recomputeSide but works on mpLanes format
+function recomputeMPSide(mpLanes, side) {
+  const workers = mpLanes.map(l=>l[side]).filter(c=>c&&c.cls===CLASSES.WORKING&&!c.shattered)
+  const hasPrince = mpLanes.some(l=>l[side]&&l[side].id==='prince'&&!l[side].shattered)
+  const hasFarmer = workers.some(c=>c.id==='farmer')
+  const workerCount = workers.length
+  const bonusPerWorker = workerCount<=1?0:SOLIDARITY_PER+(hasPrince?1:0)
+  const solidarityBonus = bonusPerWorker*(workerCount-1)
+  const farmerYield = hasFarmer?1:0
+  const royals = mpLanes.map(l=>l[side]).filter(c=>c&&c.cls===CLASSES.ROYALTY&&!c.shattered)
+  const hasQueen = royals.some(c=>c.id==='queen')
+  const queenAuraP = hasQueen?royals.length*2:0
+  const hasKing = mpLanes.some(l=>l[side]&&l[side].id==='king'&&!l[side].shattered)
+  mpLanes.forEach((l,i)=>{
+    const c=l[side]; if(!c)return
+    const ld=LANE_DEFS[i]
+    let p=c.P+(ld.mod.P||0), b=c.B+(ld.mod.B||0)
+    if(c.cls===CLASSES.WORKING&&!c.shattered){p+=solidarityBonus;b+=solidarityBonus}
+    if(!c.shattered&&farmerYield>0)p+=farmerYield
+    if(hasKing&&!c.shattered&&c.id!=='king')p+=2
+    if(queenAuraP>0&&!c.shattered)p+=queenAuraP
+    c.currentP=p; c.currentB=b
+  })
+  return{solidarityBonus,workerCount,hasPrince,hasFarmer,farmerYield,hasKing,queenAuraP,royalCount:royals.length,hasQueen}
 }
 
 function rollDiceMP(card, bonus) {
