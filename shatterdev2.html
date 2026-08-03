@@ -297,7 +297,7 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
   <div class="controls">
     <button class="btn btn-primary" id="btnClash" onclick="declareClash()" disabled>⚔ CLASH ALL LANES</button>
     <button class="btn btn-secondary" id="btnEndTurn" onclick="endPlayerTurn()" disabled>→ END TURN</button>
-    <button class="btn btn-secondary" id="btnDealAgain" onclick="dealAgain()" style="display:none">↻ DEAL AGAIN</button>
+
     <button class="btn btn-neutral" onclick="newGame()">↺ NEW GAME</button>
   </div>
   <div class="log-panel">
@@ -349,10 +349,10 @@ const CARD_REGISTRY = [
 ]
 
 const LANE_DEFS = [
-  { axis:'P', mod:{P:2,B:0} },
-  { axis:'N', mod:{P:0,B:0} },
-  { axis:'B', mod:{P:0,B:2} },
-  { axis:'A', mod:{P:0,B:0} },
+  { axis:'P', mod:{P:5,N:0,B:0,A:0} },
+  { axis:'N', mod:{P:0,N:5,B:0,A:0} },
+  { axis:'B', mod:{P:0,N:0,B:5,A:0} },
+  { axis:'A', mod:{P:0,N:0,B:0,A:5} },
 ]
 
 let gs = {}
@@ -389,7 +389,6 @@ function newGame() {
     log: [],
   }
   clearLog()
-  document.getElementById('btnDealAgain').style.display = 'none'
   addLog('New game started. Deploy your cards — place wisely.', 'info')
   render()
   setStatus('DEPLOY', 'Select a card from your hand, then click a lane slot to place it.', 'YOUR TURN')
@@ -419,7 +418,7 @@ function recomputeSide(lanes, side) {
   // applied to ALL friendly cards, only while Queen herself is unshattered.
   const royals = lanes.map(l => l[side]).filter(c => c && c.cls === CLASSES.ROYALTY && !c.shattered)
   const hasQueen = royals.some(c => c.id === 'queen')
-  const queenAuraB = hasQueen ? royals.length : 0
+  const queenAuraP = hasQueen ? royals.length * 2 : 0  // +2P per Royal on field
 
   // King's Royal Decree: flat +2P to every OTHER unshattered friendly card,
   // only while King himself is unshattered. No longer limited to adjacent lanes.
@@ -429,8 +428,10 @@ function recomputeSide(lanes, side) {
     const c = l[side]
     if (!c) return
     const ld = LANE_DEFS[i]
-    let p = c.P + ld.mod.P
-    let b = c.B + ld.mod.B
+    let p = c.P + (ld.mod.P||0)
+    let n = c.N + (ld.mod.N||0)
+    let b = c.B + (ld.mod.B||0)
+    let a = c.A + (ld.mod.A||0)
 
     let sol = 0
     if (c.cls === CLASSES.WORKING && !c.shattered) {
@@ -450,20 +451,22 @@ function recomputeSide(lanes, side) {
     p += king
 
     let queen = 0
-    if (queenAuraB > 0 && !c.shattered) {
-      queen = queenAuraB
-      b += queen
+    if (queenAuraP > 0 && !c.shattered) {
+      queen = queenAuraP
+      p += queen
     }
 
     c.currentP = p
+    c.currentN = n
     c.currentB = b
+    c.currentA = a
     c.solidarityBonus = sol
     c.farmerBonus = yieldP
     c.kingBonus = king
     c.queenBonus = queen
   })
 
-  return { solidarityBonus, workerCount, hasPrince, hasFarmer, farmerYield, hasKing, queenAuraB, royalCount: royals.length, hasQueen }
+  return { solidarityBonus, workerCount, hasPrince, hasFarmer, farmerYield, hasKing, queenAuraP, royalCount: royals.length, hasQueen }
 }
 
 // ============================================================
@@ -595,7 +598,7 @@ function placeLane(laneIdx) {
   if(sideInfo.workerCount > 1) addLog(`  ★ Solidarity active: ${sideInfo.workerCount} workers · +${sideInfo.solidarityBonus}P/+${sideInfo.solidarityBonus}B each${sideInfo.hasPrince ? ' (Prince +1)' : ''}`, 'solidarity')
   if(sideInfo.hasFarmer) addLog(`  ☀ Farmer's Yield active: +${sideInfo.farmerYield}P to every unshattered card`, 'solidarity')
   if(sideInfo.hasKing) addLog(`  ♚ Royal Decree active: +2P to every other unshattered card`, 'solidarity')
-  if(sideInfo.hasQueen) addLog(`  ♛ Queen's Grace active: ${sideInfo.royalCount} royal(s) · +${sideInfo.queenAuraB}B to all friendly cards`, 'solidarity')
+  if(sideInfo.hasQueen) addLog(`  ♛ Queen's Grace active: ${sideInfo.royalCount} royal(s) · +${sideInfo.queenAuraP}P to all friendly cards`, 'solidarity')
   addLog(`You deployed ${card.name} to ${ld.axis}-Lane.`, 'good')
   render()
   setStatus('DEPLOY', 'Card placed. Deploy more or end your turn.', 'YOUR TURN')
@@ -649,7 +652,12 @@ function aiRevealFaceDown() {
       lane.ai.faceDown=false
       if(lane.ai.id==='assassin'){
         const pc=lane.player
-        if(pc&&CLASS_ADV[lane.ai.cls]===pc.cls){lane.ai.currentP+=MATRIX_BONUS;lane.ai.currentB+=MATRIX_BONUS;addLog(`Assassin revealed — matrix bonus +${MATRIX_BONUS}!`,'warn')}
+        const aiN = lane.ai.currentN||lane.ai.N
+      const pcN = pc?(pc.currentN||pc.N):0
+      const hasNarrative = aiN >= pcN
+      if(pc&&CLASS_ADV[lane.ai.cls]===pc.cls&&pc.id!=='knight'&&hasNarrative){lane.ai.currentP+=MATRIX_BONUS;lane.ai.currentB+=MATRIX_BONUS;addLog(`Assassin revealed — highest N + matrix bonus +${MATRIX_BONUS}!`,'warn')}
+      else if(pc&&pc.id==='knight'){addLog(`Assassin waveform vs Knight — ambush blocked`,'info')}
+      else if(pc&&!hasNarrative){addLog(`Assassin revealed — insufficient N for ambush (${aiN} < ${pcN})`,'info')}
       }
     }
   })
@@ -728,8 +736,8 @@ async function resolveClash(){
   if(aInfo.hasFarmer) addLog(`  ☀ AI Farmer's Yield: +${aInfo.farmerYield}P to every unshattered card`, 'solidarity')
   if(pInfo.hasKing) addLog(`  ♚ Player Royal Decree: +2P to every other unshattered card`, 'solidarity')
   if(aInfo.hasKing) addLog(`  ♚ AI Royal Decree: +2P to every other unshattered card`, 'solidarity')
-  if(pInfo.hasQueen) addLog(`  ♛ Player Queen's Grace: ${pInfo.royalCount} royal(s) · +${pInfo.queenAuraB}B to all friendly cards`, 'solidarity')
-  if(aInfo.hasQueen) addLog(`  ♛ AI Queen's Grace: ${aInfo.royalCount} royal(s) · +${aInfo.queenAuraB}B to all friendly cards`, 'solidarity')
+  if(pInfo.hasQueen) addLog(`  ♛ Player Queen's Grace: ${pInfo.royalCount} royal(s) · +${pInfo.queenAuraP}P to all friendly cards`, 'solidarity')
+  if(aInfo.hasQueen) addLog(`  ♛ AI Queen's Grace: ${aInfo.royalCount} royal(s) · +${aInfo.queenAuraP}P to all friendly cards`, 'solidarity')
 
   addLog('══ CLASH PHASE ══','info')
   let playerWins=0,aiWins=0
@@ -820,7 +828,6 @@ async function resolveClash(){
   gs.phase='roundEnd'
   render()
   setStatus('ROUND OVER',`${resultMsg} Review the log, then deal again.`,'ROUND COMPLETE')
-  document.getElementById('btnDealAgain').style.display='inline-block'
 }
 
 // Apothecary: if the Apothecary is on the field and un-shattered,
@@ -924,14 +931,6 @@ function addLog(msg,type=''){
 function clearLog(){document.getElementById('combatLog').innerHTML='';document.getElementById('diceDisplay').innerHTML=''}
 function showModal(t,b){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').textContent=b;document.getElementById('modal').style.display='flex'}
 function closeModal(){document.getElementById('modal').style.display='none'}
-function dealAgain(){
-  gs.round++
-  const ps=gs.playerScore,as=gs.aiScore,r=gs.round
-  newGame();gs.playerScore=ps;gs.aiScore=as;gs.round=r
-  document.getElementById('playerScore').textContent=ps
-  document.getElementById('aiScore').textContent=as
-  document.getElementById('roundNum').textContent=r
-}
 
 newGame()
 
