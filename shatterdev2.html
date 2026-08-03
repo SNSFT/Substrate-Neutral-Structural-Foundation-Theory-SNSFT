@@ -295,7 +295,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
     <div class="hand-cards" id="aiHand"></div>
   </div>
   <div class="controls">
-    <button class="btn btn-primary" id="btnClash" onclick="declareClash()" disabled>⚔ CLASH ALL LANES</button>
     <button class="btn btn-secondary" id="btnEndTurn" onclick="endPlayerTurn()" disabled>→ END TURN</button>
 
     <button class="btn btn-neutral" onclick="newGame()">↺ NEW GAME</button>
@@ -311,7 +310,7 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
   <div class="modal">
     <h2 id="modalTitle">SHATTERED</h2>
     <p id="modalBody">The manifold held.</p>
-    <button class="btn btn-secondary" onclick="closeModal()">CONTINUE</button>
+    <button class="btn btn-secondary" id="modalContinueBtn" onclick="modalContinue()">CONTINUE</button>
   </div>
 </div>
 
@@ -918,7 +917,6 @@ function checkAscension(card,result){
 
 function updateButtons(){
   const has=gs.lanes.some(l=>l.player)
-  document.getElementById('btnClash').disabled=gs.phase!=='deploy'||!has||!gs.lanes.some(l=>l.ai)
   document.getElementById('btnEndTurn').disabled=gs.phase!=='deploy'||!has
 }
 function setStatus(p,m,t){document.getElementById('phaseLabel').textContent=p;document.getElementById('statusMsg').textContent=m;document.getElementById('turnLabel').textContent=t}
@@ -930,7 +928,21 @@ function addLog(msg,type=''){
 }
 function clearLog(){document.getElementById('combatLog').innerHTML='';document.getElementById('diceDisplay').innerHTML=''}
 function showModal(t,b){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').textContent=b;document.getElementById('modal').style.display='flex'}
-function closeModal(){document.getElementById('modal').style.display='none'}
+function modalContinue(){
+  document.getElementById('modal').style.display='none'
+  // Check if we're in MP mode and in a round_end state
+  const mpActive = document.getElementById('mpGame').style.display !== 'none'
+  if(mpActive) {
+    mpNextRound()
+  }
+  // Solo mode: modal just closes, player uses New Game button
+}
+
+function closeModal(){
+  document.getElementById('modal').style.display='none'
+  // In MP mode the modal is just informational — next round auto-starts via setTimeout
+  // In solo mode, close does nothing extra (new game button is separate)
+}
 
 newGame()
 
@@ -1127,7 +1139,7 @@ function mpHandleUpdate(state) {
       }
     }
     mpRender()
-    setTimeout(mpNextRound, 2000)
+    // mpNextRound called from modal Continue button
   }
 }
 
@@ -1278,7 +1290,8 @@ function mpResolveClash() {
 
   mpState.round++
   mpRender()
-  setTimeout(mpNextRound, 2000)
+  // Next round starts when player clicks Continue on modal
+  // mpNextRound called from modal close in MP mode
 }
 
 function rollDiceMP(card, bonus) {
