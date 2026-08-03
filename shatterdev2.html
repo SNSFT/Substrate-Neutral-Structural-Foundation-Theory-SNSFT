@@ -1271,8 +1271,22 @@ function mpResolveClash() {
     mpLog('ROUND DEFEAT — Recalibrate.','hit')
     showModal('SHATTERED', `Opponent won ${oppWins} to ${myWins}.`)
   } else {
-    mpLog('ROUND DRAWN — Equilibrium.','info')
-    showModal('EQUILIBRIUM', `Round drawn ${myWins}-${oppWins}.`)
+    // Lanes tied — Identity Mass tiebreaker, same as solo mode
+    const myMass  = mpState.myLanes.reduce((sum,c)=>c&&!c.shattered?sum+c.currentP+c.N+c.currentB+c.A:sum, 0)
+    const oppMass = mpState.oppLanes.reduce((sum,c)=>c&&!c.shattered?sum+c.currentP+c.N+c.currentB+c.A:sum, 0)
+    mpLog(`Lanes tied ${myWins}-${oppWins}. Identity Mass tiebreak: You=${myMass} / Opp=${oppMass}`,'info')
+    if(myMass > oppMass) {
+      mpState.scores[me]++
+      mpLog('ROUND VICTORY by Identity Mass — your surviving formation outweighed theirs.','good')
+      showModal('VICTORY (Identity Mass)', `Your formation: ${myMass} vs ${oppMass}.`)
+    } else if(oppMass > myMass) {
+      mpState.scores[opp]++
+      mpLog('ROUND DEFEAT by Identity Mass — opponent formation outweighed yours.','hit')
+      showModal('DEFEAT (Identity Mass)', `Opponent: ${oppMass} vs your ${myMass}.`)
+    } else {
+      mpLog('ROUND DRAWN — Identity Mass also tied. True equilibrium.','info')
+      showModal('EQUILIBRIUM', `Identity Mass tied at ${myMass}. True draw.`)
+    }
   }
 
   // Push result to Supabase so P2 gets the same outcome
