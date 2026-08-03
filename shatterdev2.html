@@ -1122,24 +1122,27 @@ function mpHandleUpdate(state) {
   }
 
   if(state.phase === 'round_end') {
-    mpState.scores = state.scores
-    mpState.round  = state.round
-    // P2 reads clash log and result from state
-    if(mpState.myRole === 'p2' && state.clashLog) {
-      state.clashLog.forEach(entry => mpLog(entry.msg, entry.type))
-      const me = mpState.myRole, opp = 'p1'
-      const myWins  = state.roundResult[me]
-      const oppWins = state.roundResult[opp]
+    if(mpState.myRole === 'p2') {
+      mpState.scores = state.scores
+      mpState.round  = state.round
+      // Show clash log
+      if(state.clashLog) {
+        state.clashLog.forEach(entry => {
+          if(entry && entry.msg) mpLog(entry.msg, entry.type||'')
+        })
+      }
+      // Show result from P2's perspective
+      const myWins  = state.roundResult ? state.roundResult['p2'] : 0
+      const oppWins = state.roundResult ? state.roundResult['p1'] : 0
       if(myWins > oppWins) {
         showModal('VICTORY', `You won ${myWins} to ${oppWins}.`)
       } else if(oppWins > myWins) {
         showModal('SHATTERED', `Opponent won ${oppWins} to ${myWins}.`)
       } else {
-        showModal('EQUILIBRIUM', `Round drawn ${myWins}-${oppWins}.`)
+        showModal('EQUILIBRIUM', `Identity Mass tiebreak — check the log.`)
       }
+      mpRender()
     }
-    mpRender()
-    // mpNextRound called from modal Continue button
   }
 }
 
@@ -1289,23 +1292,23 @@ function mpResolveClash() {
     }
   }
 
+  mpState.round++
+
   // Push result to Supabase so P2 gets the same outcome
   sb.from('shatter_rooms').select('state').eq('code', mpState.roomCode).single().then(({data}) => {
     if(!data) return
     const newState = { ...data.state,
       phase: 'round_end',
       scores: mpState.scores,
-      round: mpState.round + 1,
+      round: mpState.round,
       roundResult: { p1: p1wins, p2: p2wins },
-      clashLog: mpState.log.slice(-30).map(e => ({msg:e.msg||e, type:e.type||''}))
+      clashLog: mpState.log.filter(e=>e&&e.msg).slice(-30)
     }
     sb.from('shatter_rooms').update({ state: newState }).eq('code', mpState.roomCode)
   })
 
-  mpState.round++
   mpRender()
   // Next round starts when player clicks Continue on modal
-  // mpNextRound called from modal close in MP mode
 }
 
 function rollDiceMP(card, bonus) {
@@ -1321,25 +1324,58 @@ function rollDiceMP(card, bonus) {
 }
 
 async function mpNextRound() {
-  // Reset lanes, redeal from remaining hands
-  mpState.myLanes   = [null,null,null,null]
-  mpState.oppLanes  = [null,null,null,null]
-  mpState.locked    = { p1:false, p2:false }
-  mpState.phase     = 'deploy'
+  mpState.myLanes      = [null,null,null,null]
+  mpState.oppLanes     = [null,null,null,null]
+  mpState.locked       = { p1:false, p2:false }
+  mpState.phase        = 'deploy'
   mpState.selectedCard = null
-
-  // Replenish hands (draw 2 new cards each round if deck available)
-  const extras = buildDeck().slice(0,2)
-  mpState.myHand = [...mpState.myHand, ...extras].slice(0,5)
 
   document.getElementById('mpLockBtn').disabled = false
   document.getElementById('mpLockBtn').classList.remove('locked')
   document.getElementById('mpLockBtn').textContent = '⚑ LOCK IN'
 
-  await mpPushState()
+  if(mpState.myRole === 'p1') {
+    // P1 deals new hands and pushes the fresh round state for both players
+    const deck = buildDeck()
+    mpState.myHand  = deck.slice(0, 5)
+    const p2NewHand = deck.slice(5, 10)
+
+    const { data } = await sb.from('shatter_rooms').select('state').eq('code', mpState.roomCode).single()
+    if(!data) return
+    const newState = {
+      ...data.state,
+      phase:   'deploy',
+      p1Hand:  mpState.myHand.map(mpSerialiseCard),
+      p2Hand:  p2NewHand.map(mpSerialiseCard),
+      p1Lanes: [null,null,null,null],
+      p2Lanes: [null,null,null,null],
+      locked:  { p1:false, p2:false },
+    }
+    await sb.from('shatter_rooms').update({ state: newState }).eq('code', mpState.roomCode)
+    mpState.oppHand = p2NewHand  // P1 can see P2's new hand
+    mpState.oppHandCount = p2NewHand.length
+  } else {
+    // P2 resets locally and polls for P1's new deal
+    mpState.myHand = []
+    mpLog('Waiting for next round deal...', 'info')
+    const poll = setInterval(async () => {
+      const { data } = await sb.from('shatter_rooms').select('state').eq('code', mpState.roomCode).single()
+      if(!data) return
+      if(data.state.phase === 'deploy' && data.state.p2Hand && data.state.p2Hand.length) {
+        clearInterval(poll)
+        mpState.myHand   = data.state.p2Hand.map(mpDeserialiseCard)
+        mpState.oppHand  = data.state.p1Hand.map(mpDeserialiseCard)
+        mpState.oppHandCount = data.state.p1Hand.length
+        mpRender()
+        mpUpdateLockUI()
+        mpLog(`── Round ${mpState.round} ──`, 'info')
+      }
+    }, 1500)
+  }
+
   mpRender()
   mpUpdateLockUI()
-  mpLog(`── Round ${mpState.round} ──`,'info')
+  mpLog(`── Round ${mpState.round} ──`, 'info')
 }
 
 // ── RENDER MP ─────────────────────────────────────────────────
