@@ -948,6 +948,7 @@ let mpState = {
   subscription: null,
   myHand: [],
   myLanes: [null,null,null,null],
+  oppHand: [],
   oppHandCount: 0,
   oppLanes: [null,null,null,null],
   locked: { p1:false, p2:false },
@@ -1033,6 +1034,7 @@ async function mpJoinGame() {
   mpState.roomCode = code
   mpState.myRole = 'p2'
   mpState.myHand = state.p2Hand.map(mpDeserialiseCard)
+  mpState.oppHand = state.p1Hand.map(mpDeserialiseCard)
   mpState.oppHandCount = state.p1Hand.length
   mpState.phase = 'deploy'
 
@@ -1068,6 +1070,7 @@ function mpHandleUpdate(state) {
   // Opponent joined — start game for p1
   if(mpState.myRole==='p1' && state.phase==='deploy' && mpState.phase==='waiting') {
     mpState.phase = 'deploy'
+    mpState.oppHand = state.p2Hand.map(mpDeserialiseCard)
     mpState.oppHandCount = state.p2Hand.length
     mpState.myHand = state.p1Hand.map(mpDeserialiseCard)
     // Hide all lobby elements, show game
@@ -1093,17 +1096,38 @@ function mpHandleUpdate(state) {
     // If both locked → reveal and clash
     if(state.locked.p1 && state.locked.p2) {
       mpState.phase = 'clash'
-      // Sync my lanes from state too
-      mpState.myLanes = state[me+'Lanes'].map(c=>c?mpDeserialiseCard(c):null)
-      setTimeout(mpResolveClash, 600)
+      // Always sync both sides from Supabase so both players use same card data
+      mpState.myLanes  = state[me+'Lanes'].map(c=>c?mpDeserialiseCard(c):null)
+      mpState.oppLanes = state[opp+'Lanes'].map(c=>c?mpDeserialiseCard(c):null)
+      // Only P1 rolls dice and pushes result — P2 reads from state update
+      if(mpState.myRole === 'p1') {
+        setTimeout(mpResolveClash, 600)
+      } else {
+        mpLog('Waiting for clash result...', 'info')
+      }
     }
     return
   }
 
   if(state.phase === 'round_end') {
     mpState.scores = state.scores
-    mpState.round = state.round
+    mpState.round  = state.round
+    // P2 reads clash log and result from state
+    if(mpState.myRole === 'p2' && state.clashLog) {
+      state.clashLog.forEach(entry => mpLog(entry.msg, entry.type))
+      const me = mpState.myRole, opp = 'p1'
+      const myWins  = state.roundResult[me]
+      const oppWins = state.roundResult[opp]
+      if(myWins > oppWins) {
+        showModal('VICTORY', `You won ${myWins} to ${oppWins}.`)
+      } else if(oppWins > myWins) {
+        showModal('SHATTERED', `Opponent won ${oppWins} to ${myWins}.`)
+      } else {
+        showModal('EQUILIBRIUM', `Round drawn ${myWins}-${oppWins}.`)
+      }
+    }
     mpRender()
+    setTimeout(mpNextRound, 2000)
   }
 }
 
@@ -1221,6 +1245,11 @@ function mpResolveClash() {
 
   mpLog(`══ RESULT: You +${myWins} / Opp +${oppWins} ══`,'info')
 
+  // From P1's perspective: me=p1, opp=p2
+  // Scores: p1wins = myWins, p2wins = oppWins
+  const p1wins = me==='p1' ? myWins : oppWins
+  const p2wins = me==='p1' ? oppWins : myWins
+
   if(myWins > oppWins) {
     mpState.scores[me]++
     mpLog('ROUND VICTORY — The manifold held.','good')
@@ -1233,6 +1262,19 @@ function mpResolveClash() {
     mpLog('ROUND DRAWN — Equilibrium.','info')
     showModal('EQUILIBRIUM', `Round drawn ${myWins}-${oppWins}.`)
   }
+
+  // Push result to Supabase so P2 gets the same outcome
+  sb.from('shatter_rooms').select('state').eq('code', mpState.roomCode).single().then(({data}) => {
+    if(!data) return
+    const newState = { ...data.state,
+      phase: 'round_end',
+      scores: mpState.scores,
+      round: mpState.round + 1,
+      roundResult: { p1: p1wins, p2: p2wins },
+      clashLog: mpState.log.slice(-30).map(e => ({msg:e.msg||e, type:e.type||''}))
+    }
+    sb.from('shatter_rooms').update({ state: newState }).eq('code', mpState.roomCode)
+  })
 
   mpState.round++
   mpRender()
@@ -1298,14 +1340,35 @@ function mpRender() {
     myHandEl.appendChild(div)
   })
 
-  // Opponent hand — show count only, face-down cards
+  // Opponent hand — show real cards (you can see their options)
+  // but lane placements stay hidden until both lock
   const oppHandEl = document.getElementById('mpOppHand')
   oppHandEl.innerHTML = ''
-  for(let i=0;i<mpState.oppHandCount;i++) {
-    const div = document.createElement('div')
-    div.className = 'card face-down'
-    div.innerHTML = `<div style="font-family:Share Tech Mono,monospace;font-size:8px;color:var(--text-m);padding:6px;text-align:center">HIDDEN</div>`
-    oppHandEl.appendChild(div)
+  if(mpState.oppHand && mpState.oppHand.length) {
+    mpState.oppHand.forEach(card => {
+      const div = document.createElement('div')
+      div.className = 'card ' + card.cls + '-card'
+      const tau = card.currentP > 0 ? (card.currentB/card.currentP).toFixed(2) : '∞'
+      div.innerHTML = `<div class="card-header">
+        <span class="card-name">${card.name}</span>
+        <span class="card-class ${card.cls}-cls">${card.cls.slice(0,3).toUpperCase()}</span>
+      </div>
+      <div class="card-stats">
+        <div class="stat"><div class="stat-label" style="color:var(--p-col)">P</div><div class="stat-val" style="color:var(--p-col)">${card.P}</div></div>
+        <div class="stat"><div class="stat-label" style="color:var(--n-col)">N</div><div class="stat-val" style="color:var(--n-col)">${card.N}</div></div>
+        <div class="stat"><div class="stat-label" style="color:var(--b-col)">B</div><div class="stat-val" style="color:var(--b-col)">${card.B}</div></div>
+        <div class="stat"><div class="stat-label" style="color:var(--a-col)">A</div><div class="stat-val" style="color:var(--a-col)">${card.A}</div></div>
+      </div>
+      <div style="font-family:Share Tech Mono,monospace;font-size:7px;color:var(--text-d);margin-top:4px">IM=${card.P+card.N+card.B+card.A}</div>`
+      oppHandEl.appendChild(div)
+    })
+  } else {
+    for(let i=0;i<mpState.oppHandCount;i++) {
+      const div = document.createElement('div')
+      div.className = 'card'
+      div.innerHTML = `<div style="font-family:Share Tech Mono,monospace;font-size:8px;color:var(--text-m);padding:6px;text-align:center">? CARD</div>`
+      oppHandEl.appendChild(div)
+    }
   }
 
   // Field lanes
