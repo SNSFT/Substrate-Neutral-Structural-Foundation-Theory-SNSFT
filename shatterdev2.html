@@ -323,15 +323,6 @@ h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(28px,6vw,52px
 // ============================================================
 
 const CLASSES = { ROYALTY:'royalty', MILITARY:'military', ASSASSIN:'assassin', WORKING:'working' }
-
-// Seeded RNG — both MP players use same seed so dice are identical
-let _seed = 0
-function seedRNG(s) { _seed = s >>> 0 }
-function seededRand() {
-  _seed ^= _seed << 13; _seed ^= _seed >> 17; _seed ^= _seed << 5
-  return ((_seed >>> 0) / 4294967296)
-}
-function seededD10() { return Math.floor(seededRand() * 10) + 1 }
 const CLASS_ADV = { royalty:'military', military:'assassin', assassin:'working', working:'royalty' }
 const MATRIX_BONUS   = 5
 const SHATTER_RATIO  = 2
@@ -341,11 +332,11 @@ const CARD_REGISTRY = [
   { id:'king',       name:'King',        qty:1, P:6,  N:10, B:20, A:2,  cls:CLASSES.ROYALTY,
     trait:"Royal Decree: while unshattered, every other unshattered friendly card gains +2P." },
   { id:'queen',      name:'Queen',       qty:1, P:7,  N:9,  B:16, A:4,  cls:CLASSES.ROYALTY,
-    trait:"Queen's Grace: while unshattered, all friendly cards gain +1B per Royal on the field (herself included)." },
+    trait:"Queen's Grace: while unshattered, all friendly cards gain +2P per Royal on the field (herself included)." },
   { id:'prince',     name:'Prince',      qty:1, P:5,  N:8,  B:15, A:5,  cls:CLASSES.ROYALTY,
     trait:"Heir's Mandate: Working Class solidarity bonus +1P/+1B per worker while Prince is on field." },
   { id:'knight',     name:'Knight',      qty:2, P:10, N:4,  B:12, A:6,  cls:CLASSES.MILITARY,
-    trait:'Counter-strike: deals 6P damage to attacker if Un-Shattered after clash.' },
+    trait:'Battlefield Aura: +3B to all other unshattered friendly cards per Knight on field (max +6B). Counter-strike: opponent -6P if Knight survives.' },
   { id:'assassin',   name:'Assassin',    qty:2, P:4,  N:12, B:10, A:4,  cls:CLASSES.ASSASSIN,
     trait:'Waveform Ambush: Matrix bonus applies ONLY if revealed from Face-Down.' },
   { id:'farmer',     name:'Farmer',      qty:1, P:6,  N:5,  B:5,  A:10, cls:CLASSES.WORKING,
@@ -431,6 +422,8 @@ function recomputeSide(lanes, side) {
   // King's Royal Decree: flat +2P to every OTHER unshattered friendly card,
   // only while King himself is unshattered. No longer limited to adjacent lanes.
   const hasKing = lanes.some(l => l[side] && l[side].id === 'king' && !l[side].shattered)
+  const knightCount = lanes.filter(l => l[side] && l[side].id === 'knight' && !l[side].shattered).length
+  const knightAuraB = knightCount * 3
 
   lanes.forEach((l, i) => {
     const c = l[side]
@@ -463,6 +456,9 @@ function recomputeSide(lanes, side) {
       queen = queenAuraP
       p += queen
     }
+    if (knightAuraB > 0 && !c.shattered && c.id !== 'knight') {
+      b += knightAuraB
+    }
 
     c.currentP = p
     c.currentN = n
@@ -474,7 +470,7 @@ function recomputeSide(lanes, side) {
     c.queenBonus = queen
   })
 
-  return { solidarityBonus, workerCount, hasPrince, hasFarmer, farmerYield, hasKing, queenAuraP, royalCount: royals.length, hasQueen }
+  return { solidarityBonus, workerCount, hasPrince, hasFarmer, farmerYield, hasKing, queenAuraP, royalCount: royals.length, hasQueen, knightAuraB, knightCount }
 }
 
 // ============================================================
@@ -606,6 +602,7 @@ function placeLane(laneIdx) {
   if(sideInfo.workerCount > 1) addLog(`  ★ Solidarity active: ${sideInfo.workerCount} workers · +${sideInfo.solidarityBonus}P/+${sideInfo.solidarityBonus}B each${sideInfo.hasPrince ? ' (Prince +1)' : ''}`, 'solidarity')
   if(sideInfo.hasFarmer) addLog(`  ☀ Farmer's Yield active: +${sideInfo.farmerYield}P to every unshattered card`, 'solidarity')
   if(sideInfo.hasKing) addLog(`  ♚ Royal Decree active: +2P to every other unshattered card`, 'solidarity')
+  if(sideInfo.knightCount > 0) addLog(`  ⚔ Battlefield Aura: ${sideInfo.knightCount} Knight(s) · +${sideInfo.knightAuraB}B to all other unshattered cards`, 'solidarity')
   if(sideInfo.hasQueen) addLog(`  ♛ Queen's Grace active: ${sideInfo.royalCount} royal(s) · +${sideInfo.queenAuraP}P to all friendly cards`, 'solidarity')
   addLog(`You deployed ${card.name} to ${ld.axis}-Lane.`, 'good')
   render()
@@ -744,6 +741,7 @@ async function resolveClash(){
   if(aInfo.hasFarmer) addLog(`  ☀ AI Farmer's Yield: +${aInfo.farmerYield}P to every unshattered card`, 'solidarity')
   if(pInfo.hasKing) addLog(`  ♚ Player Royal Decree: +2P to every other unshattered card`, 'solidarity')
   if(aInfo.hasKing) addLog(`  ♚ AI Royal Decree: +2P to every other unshattered card`, 'solidarity')
+  if(aInfo.knightCount > 0) addLog(`  ⚔ AI Battlefield Aura: ${aInfo.knightCount} Knight(s) · +${aInfo.knightAuraB}B to all other cards`, 'solidarity')
   if(pInfo.hasQueen) addLog(`  ♛ Player Queen's Grace: ${pInfo.royalCount} royal(s) · +${pInfo.queenAuraP}P to all friendly cards`, 'solidarity')
   if(aInfo.hasQueen) addLog(`  ♛ AI Queen's Grace: ${aInfo.royalCount} royal(s) · +${aInfo.queenAuraP}P to all friendly cards`, 'solidarity')
 
@@ -1115,31 +1113,43 @@ function mpHandleUpdate(state) {
     mpUpdateLockUI()
 
     // If both locked → reveal and clash
-    if(state.locked.p1 && state.locked.p2 && state.phase !== 'clash' && state.phase !== 'round_end') {
-      // P1 pushes a clash phase with a shared seed — both sides trigger independently
-      if(mpState.myRole === 'p1') {
-        const clashSeed = Math.floor(Math.random() * 2147483647)
-        sb.from('shatter_rooms').update({ state: { ...state, phase:'clash', clashSeed } }).eq('code', mpState.roomCode)
-      }
-    }
-    if(state.phase === 'clash' && mpState.phase !== 'clash' && mpState.phase !== 'round_end') {
+    if(state.locked.p1 && state.locked.p2) {
       mpState.phase = 'clash'
-      // Both sides sync lanes from server then run identical clash with shared seed
+      // Always sync both sides from Supabase so both players use same card data
       mpState.myLanes  = state[me+'Lanes'].map(c=>c?mpDeserialiseCard(c):null)
       mpState.oppLanes = state[opp+'Lanes'].map(c=>c?mpDeserialiseCard(c):null)
-      seedRNG(state.clashSeed)
-      mpLog('Clash initiated — calculating...', 'info')
-      setTimeout(mpResolveClash, 600)
+      // Only P1 rolls dice and pushes result — P2 reads from state update
+      if(mpState.myRole === 'p1') {
+        setTimeout(mpResolveClash, 600)
+      } else {
+        mpLog('Waiting for clash result...', 'info')
+      }
     }
     return
   }
 
   if(state.phase === 'round_end') {
-    // Both sides already showed their own modal from local clash calculation
-    // Just sync scores in case of any drift
-    if(mpState.phase === 'round_end' || mpState.phase === 'clash') {
+    if(mpState.myRole === 'p2') {
       mpState.scores = state.scores
       mpState.round  = state.round
+      // Show clash log
+      if(state.clashLog) {
+        state.clashLog.forEach(entry => {
+          if(entry && entry.msg) mpLog(entry.msg, entry.type||'')
+        })
+      }
+      // Show result from P2's perspective
+      const myWins  = state.roundResult ? state.roundResult['p2'] : 0
+      const oppWins = state.roundResult ? state.roundResult['p1'] : 0
+      if(myWins > oppWins) {
+        showModal('VICTORY', `You won ${myWins} to ${oppWins}.`)
+      } else if(oppWins > myWins) {
+        showModal('SHATTERED', `Opponent won ${oppWins} to ${myWins}.`)
+      } else if(state.p2Result) {
+        showModal(state.p2Result.title, state.p2Result.body)
+      } else {
+        showModal('EQUILIBRIUM', `Identity Mass tiebreak — check the log.`)
+      }
       mpRender()
     }
   }
@@ -1315,17 +1325,20 @@ async function mpResolveClash() {
 
   mpState.round++
 
-  // Both sides push their scores (last write wins — both compute same result so no conflict)
+  // P1 pushes full result to Supabase — P2 reads from subscription
   const p1wins = me==='p1' ? myWins  : oppWins
   const p2wins = me==='p1' ? oppWins : myWins
-  const { data: rd } = await sb.from('shatter_rooms').select('state').eq('code', mpState.roomCode).single()
-  if(rd) {
-    sb.from('shatter_rooms').update({ state: {
-      ...rd.state,
-      phase:  'round_end',
-      scores: mpState.scores,
-      round:  mpState.round,
-      roundResult: { p1: p1wins, p2: p2wins }
+  const { data } = await sb.from('shatter_rooms').select('state').eq('code', mpState.roomCode).single()
+  if(data) {
+    await sb.from('shatter_rooms').update({ state: {
+      ...data.state,
+      phase:       'round_end',
+      scores:      mpState.scores,
+      round:       mpState.round,
+      roundResult: { p1: p1wins, p2: p2wins },
+      resultTitle,
+      resultBody,
+      clashLog:    mpState.log.filter(e=>e&&e.msg).slice(-40)
     }}).eq('code', mpState.roomCode)
   }
 
@@ -1360,16 +1373,15 @@ function recomputeMPSide(mpLanes, side) {
 }
 
 function rollDiceMP(card, bonus) {
-  if(card.shattered) return { finalP:card.currentP+bonus, finalB:card.currentB+bonus, rolls:0, deltaP:0, deltaB:0 }
+  if(card.shattered) return { finalP:card.currentP+bonus, finalB:card.currentB+bonus, rolls:0 }
   let tP=0, tB=0, rolls=0, maxChain=Math.floor(card.A/3)+1, chain=0
   do {
-    const dP=seededD10(), dB=seededD10()
+    const dP=Math.ceil(Math.random()*10), dB=Math.ceil(Math.random()*10)
     tP+=dP; tB+=dB; rolls++
-    if(dP===dB && chain<maxChain) { chain++; mpLog(`    💥 Doubles! (${dP},${dB}) — chain`,'info') }
+    if(dP===dB && chain<maxChain) { chain++; mpLog(`    💥 Doubles! chain continues`,'info') }
     else break
   } while(rolls<10)
-  card.doublesCount=(card.doublesCount||0)+chain
-  return { finalP:card.currentP+tP+bonus, finalB:card.currentB+tB+bonus, rolls, deltaP:tP, deltaB:tB }
+  return { finalP:card.currentP+tP+bonus, finalB:card.currentB+tB+bonus, rolls }
 }
 
 async function mpNextRound() {
