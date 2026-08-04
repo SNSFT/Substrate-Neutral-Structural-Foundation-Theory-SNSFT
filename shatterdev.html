@@ -598,7 +598,9 @@ function placeLane(laneIdx) {
   gs.playerHand = gs.playerHand.filter(c => c.uid !== card.uid)
   gs.selectedCard = null
   if(card.id === 'blacksmith') card.shatterBonus = 2
-  const sideInfo = recomputeSide(gs.lanes, 'player')
+  recomputeSide(gs.lanes, 'player')  // first pass — apply auras to all placed cards
+  recomputeSide(gs.lanes, 'ai')      // keep AI side consistent
+  const sideInfo = recomputeSide(gs.lanes, 'player')  // second pass — read final values for log
   if(sideInfo.workerCount > 1) addLog(`  ★ Solidarity active: ${sideInfo.workerCount} workers · +${sideInfo.solidarityBonus}P/+${sideInfo.solidarityBonus}B each${sideInfo.hasPrince ? ' (Prince +1)' : ''}`, 'solidarity')
   if(sideInfo.hasFarmer) addLog(`  ☀ Farmer's Yield active: +${sideInfo.farmerYield}P to every unshattered card`, 'solidarity')
   if(sideInfo.hasKing) addLog(`  ♚ Royal Decree active: +2P to every other unshattered card`, 'solidarity')
@@ -1145,6 +1147,8 @@ function mpHandleUpdate(state) {
         showModal('VICTORY', `You won ${myWins} to ${oppWins}.`)
       } else if(oppWins > myWins) {
         showModal('SHATTERED', `Opponent won ${oppWins} to ${myWins}.`)
+      } else if(state.p2Result) {
+        showModal(state.p2Result.title, state.p2Result.body)
       } else {
         showModal('EQUILIBRIUM', `Identity Mass tiebreak — check the log.`)
       }
