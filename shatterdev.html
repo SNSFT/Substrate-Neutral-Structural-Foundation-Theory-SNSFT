@@ -1238,8 +1238,8 @@ async function mpResolveClash() {
     [opp]: mpState.oppLanes[i] || null
   }))
 
-  const pInfo = recomputeMPSide(mpLanes, me)
-  const aInfo = recomputeMPSide(mpLanes, opp)
+  const pInfo = recomputeSide(mpLanes, me)
+  const aInfo = recomputeSide(mpLanes, opp)
 
   if(pInfo.workerCount>1) mpLog(`  ★ Your solidarity: ${pInfo.workerCount} workers · +${pInfo.solidarityBonus}P/B each${pInfo.hasPrince?' (Prince +1)':''}`, 'solidarity')
   if(aInfo.workerCount>1) mpLog(`  ★ Opp solidarity: ${aInfo.workerCount} workers · +${aInfo.solidarityBonus}P/B each${aInfo.hasPrince?' (Prince +1)':''}`, 'solidarity')
@@ -1287,8 +1287,8 @@ async function mpResolveClash() {
     if(myR.finalB  >= oppLimit) { oc.shattered=true; mpLog(`  ⚠ ${oc.name} SHATTERED`,'hit') }
 
     // Re-sync bonuses after shatter
-    recomputeMPSide(mpLanes, me)
-    recomputeMPSide(mpLanes, opp)
+    recomputeSide(mpLanes, me)
+    recomputeSide(mpLanes, opp)
 
     // Lane winner by B output then N-priority — same as solo
     if(myR.finalB > oppR.finalB)       { myWins++;  mpLog(`  ${mc.name} wins lane — B ${myR.finalB} > ${oppR.finalB}`,'good') }
@@ -1355,34 +1355,6 @@ async function mpResolveClash() {
   showModal(resultTitle, resultBody)
 }
 
-// recomputeMPSide: same as recomputeSide but works on mpLanes format
-function recomputeMPSide(mpLanes, side) {
-  const workers = mpLanes.map(l=>l[side]).filter(c=>c&&c.cls===CLASSES.WORKING&&!c.shattered)
-  const hasPrince = mpLanes.some(l=>l[side]&&l[side].id==='prince'&&!l[side].shattered)
-  const hasFarmer = workers.some(c=>c.id==='farmer')
-  const workerCount = workers.length
-  const bonusPerWorker = workerCount<=1?0:SOLIDARITY_PER+(hasPrince?1:0)
-  const solidarityBonus = bonusPerWorker*(workerCount-1)
-  const farmerYield = hasFarmer?1:0
-  const royals = mpLanes.map(l=>l[side]).filter(c=>c&&c.cls===CLASSES.ROYALTY&&!c.shattered)
-  const hasQueen = royals.some(c=>c.id==='queen')
-  const queenAuraP = hasQueen?royals.length*2:0
-  const hasKing = mpLanes.some(l=>l[side]&&l[side].id==='king'&&!l[side].shattered)
-  const knightCount = mpLanes.filter(l=>l[side]&&l[side].id==='knight'&&!l[side].shattered).length
-  const knightAuraB = knightCount * 3
-  mpLanes.forEach((l,i)=>{
-    const c=l[side]; if(!c)return
-    const ld=LANE_DEFS[i]
-    let p=c.P+(ld.mod.P||0), b=c.B+(ld.mod.B||0)
-    if(c.cls===CLASSES.WORKING&&!c.shattered){p+=solidarityBonus;b+=solidarityBonus}
-    if(!c.shattered&&farmerYield>0)p+=farmerYield
-    if(hasKing&&!c.shattered&&c.id!=='king')p+=2
-    if(queenAuraP>0&&!c.shattered)p+=queenAuraP
-    if(knightAuraB>0&&!c.shattered&&c.id!=='knight')b+=knightAuraB
-    c.currentP=p; c.currentB=b
-  })
-  return{solidarityBonus,workerCount,hasPrince,hasFarmer,farmerYield,hasKing,queenAuraP,royalCount:royals.length,hasQueen,knightAuraB,knightCount}
-}
 
 function rollDiceMP(card, bonus) {
   if(card.shattered) return { finalP:card.currentP+bonus, finalB:card.currentB+bonus, rolls:0 }
