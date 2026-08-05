@@ -532,6 +532,9 @@ function renderHand(containerId, cards, isAI) {
 }
 
 function renderField() {
+  // Always recompute before drawing so auras show on field cards during deploy
+  recomputeSide(gs.lanes, 'player')
+  recomputeSide(gs.lanes, 'ai')
   const el = document.getElementById('fieldLanes')
   el.innerHTML = ''
   LANE_DEFS.forEach((ld, i) => {
@@ -1150,7 +1153,7 @@ function mpHandleUpdate(state) {
       } else if(state.p2Result) {
         showModal(state.p2Result.title, state.p2Result.body)
       } else {
-        showModal('EQUILIBRIUM', `Identity Mass tiebreak — check the log.`)
+        showModal('DEFEAT (IM)', `Identity Mass decided the round — check the log.`)
       }
       mpRender()
     }
@@ -1322,7 +1325,11 @@ async function mpResolveClash() {
     mpLog(`Lanes tied. Identity Mass tiebreak: You=${myMass} / Opp=${oppMass}`,'info')
     if(myMass > oppMass)       { mpState.scores[me]++;  mpLog('ROUND VICTORY by Identity Mass.','good'); resultTitle='VICTORY (IM)'; resultBody=`Your IM ${myMass} > ${oppMass}.` }
     else if(oppMass > myMass)  { mpState.scores[opp]++; mpLog('ROUND DEFEAT by Identity Mass.','hit');   resultTitle='DEFEAT (IM)'; resultBody=`Opp IM ${oppMass} > ${myMass}.` }
-    else                       { mpLog('True draw — Identity Mass tied.','info'); resultTitle='EQUILIBRIUM'; resultBody=`IM tied at ${myMass}.` }
+    else                       { mpLog('Identity Mass also tied — using N-total as final tiebreak.','info')
+      const myN = mpState.myLanes.reduce((s,c)=>c&&!c.shattered?s+c.N:s,0)
+      const oppN = mpState.oppLanes.reduce((s,c)=>c&&!c.shattered?s+c.N:s,0)
+      if(myN >= oppN) { mpState.scores[me]++; resultTitle='VICTORY (N-Total)'; resultBody=`N-Total tiebreak: You=${myN} / Opp=${oppN}.` }
+      else            { mpState.scores[opp]++; resultTitle='DEFEAT (N-Total)'; resultBody=`N-Total tiebreak: Opp=${oppN} / You=${myN}.` } }
   }
 
   mpState.round++
@@ -1361,6 +1368,8 @@ function recomputeMPSide(mpLanes, side) {
   const hasQueen = royals.some(c=>c.id==='queen')
   const queenAuraP = hasQueen?royals.length*2:0
   const hasKing = mpLanes.some(l=>l[side]&&l[side].id==='king'&&!l[side].shattered)
+  const knightCount = mpLanes.filter(l=>l[side]&&l[side].id==='knight'&&!l[side].shattered).length
+  const knightAuraB = knightCount * 3
   mpLanes.forEach((l,i)=>{
     const c=l[side]; if(!c)return
     const ld=LANE_DEFS[i]
@@ -1369,9 +1378,10 @@ function recomputeMPSide(mpLanes, side) {
     if(!c.shattered&&farmerYield>0)p+=farmerYield
     if(hasKing&&!c.shattered&&c.id!=='king')p+=2
     if(queenAuraP>0&&!c.shattered)p+=queenAuraP
+    if(knightAuraB>0&&!c.shattered&&c.id!=='knight')b+=knightAuraB
     c.currentP=p; c.currentB=b
   })
-  return{solidarityBonus,workerCount,hasPrince,hasFarmer,farmerYield,hasKing,queenAuraP,royalCount:royals.length,hasQueen}
+  return{solidarityBonus,workerCount,hasPrince,hasFarmer,farmerYield,hasKing,queenAuraP,royalCount:royals.length,hasQueen,knightAuraB,knightCount}
 }
 
 function rollDiceMP(card, bonus) {
