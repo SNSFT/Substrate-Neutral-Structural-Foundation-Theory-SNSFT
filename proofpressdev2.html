@@ -495,6 +495,16 @@ theorem anchor_zero : SOVEREIGN_ANCHOR = 1.369 := rfl
 end SNSFL_Example"
         oninput="onInputChange()"></textarea>
 
+      <div class="drop-zone" id="chainDropZone" style="display:none;margin-top:8px;"
+        ondragover="onChainDragOver(event)"
+        ondragleave="onChainDragLeave(event)"
+        ondrop="onChainDrop(event)"
+        onclick="document.getElementById('chainFileInput').click()">
+        ⬆ DROP THE IMPORTED .LEAN FILES HERE (optional) — matched by name before falling back to GitHub
+        <input type="file" id="chainFileInput" accept=".lean,.txt" multiple style="display:none" onchange="onChainFileSelect(event)">
+      </div>
+      <div id="chainFilesList" style="display:none;font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);margin-top:6px;line-height:1.8;"></div>
+
       <div class="controls">
         <button class="btn btn-primary" id="convertBtn" onclick="convert()">⟶ PRESS TO LATEX</button>
         <button class="btn btn-secondary" onclick="loadExample()">LOAD EXAMPLE</button>
@@ -996,6 +1006,9 @@ function setMode(mode) {
   document.getElementById('tab-ldp').classList.toggle('active', mode === 'ldp');
   document.getElementById('tab-md').classList.toggle('active', mode === 'md');
   document.getElementById('tab-chain').classList.toggle('active', mode === 'chain');
+  document.getElementById('chainDropZone').style.display = mode === 'chain' ? 'block' : 'none';
+  if (mode === 'chain' && localChainFiles.length > 0) renderChainFilesList();
+  if (mode !== 'chain') document.getElementById('chainFilesList').style.display = 'none';
 
   const desc = document.getElementById('modeDesc');
   const convertBtn = document.getElementById('convertBtn');
@@ -1008,8 +1021,8 @@ function setMode(mode) {
     document.querySelector('.panel-sub').textContent = 'paste .md file · any markdown paper draft';
     convertBtn.textContent = '⟶ PRESS TO LATEX';
   } else {
-    desc.innerHTML = '<b>CHAIN mode</b> — paste a master/root file (e.g. your SNSFT_Master). ProofPress reads its <code>import</code> lines, pulls each local module straight from GitHub using the PAT + repo below, and assembles one combined LaTeX paper — one subsection per chained file. Mathlib/Std imports are skipped automatically.';
-    document.querySelector('.panel-sub').textContent = 'paste master file · imports resolved via GitHub · configure PAT + repo below';
+    desc.innerHTML = '<b>CHAIN mode</b> — paste a master/root file. ProofPress reads its <code>import</code> lines and resolves each one <b>local files first</b> (drop them below, matched by filename), then falls back to a GitHub pull only for whatever wasn\'t dropped in — GitHub PAT/repo below are optional unless you need that fallback. Nothing is pushed anywhere; PUSH TO GITHUB stays a separate button for after you\'ve reviewed the output.';
+    document.querySelector('.panel-sub').textContent = 'paste master file · drop its imports below · GitHub only used as fallback';
     convertBtn.textContent = '⛓ PULL CHAIN & PRESS';
   }
 
@@ -1440,6 +1453,64 @@ function convertLDP(src) {
 // from GitHub (reuses the PAT + repo from the GITHUB PUSH/PULL panel),
 // and assembles one combined LaTeX paper — one subsection per file.
 
+// ── CHAIN MODE ─────────────────────────────────────────────────
+// Reads import lines from a master file, resolves each one against
+// local files dropped in first, and only falls back to a GitHub pull
+// for whatever wasn't found locally. Nothing is ever pushed here —
+// pushing stays the separate GITHUB PUSH / PULL button below.
+
+let localChainFiles = []; // { name, content }
+
+function onChainDragOver(e) {
+  e.preventDefault();
+  document.getElementById('chainDropZone').classList.add('dragover');
+}
+function onChainDragLeave(e) {
+  document.getElementById('chainDropZone').classList.remove('dragover');
+}
+function onChainDrop(e) {
+  e.preventDefault();
+  document.getElementById('chainDropZone').classList.remove('dragover');
+  loadChainFiles(e.dataTransfer.files);
+}
+function onChainFileSelect(e) {
+  loadChainFiles(e.target.files);
+}
+
+function loadChainFiles(fileList) {
+  Array.from(fileList).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      localChainFiles.push({ name: file.name, content: e.target.result });
+      renderChainFilesList();
+    };
+    reader.readAsText(file);
+  });
+}
+
+function renderChainFilesList() {
+  const list = document.getElementById('chainFilesList');
+  if (localChainFiles.length === 0) { list.style.display = 'none'; list.innerHTML = ''; return; }
+  list.style.display = 'block';
+  list.innerHTML = `${localChainFiles.length} local file(s) loaded — matched by name before any GitHub fallback:<br>` +
+    localChainFiles.map(f => `· ${f.name}`).join('<br>') +
+    ` &nbsp; <span style="cursor:pointer;color:var(--anchor);" onclick="clearChainFiles()">[clear]</span>`;
+}
+
+function clearChainFiles() {
+  localChainFiles = [];
+  document.getElementById('chainFileInput').value = '';
+  renderChainFilesList();
+}
+
+// Matches an import like SNSFT.STReduction against dropped filenames
+// by its last dotted segment (STReduction) — forgiving of your
+// dated/versioned filenames, since exact path matching isn't realistic there.
+function findLocalMatches(mod) {
+  const seg = mod.split('.').pop().toLowerCase();
+  return localChainFiles.filter(f => f.name.toLowerCase().includes(seg));
+}
+
 function b64ToUtf8(b64) {
   const binary = atob(b64.replace(/\n/g, ''));
   const bytes = new Uint8Array(binary.length);
@@ -1460,13 +1531,11 @@ async function convertChain(src) {
   const pat  = document.getElementById('gh-pat').value.trim();
   const repo = document.getElementById('gh-repo').value.trim();
   const base = document.getElementById('gh-importbase').value.trim().replace(/\/$/, '');
-
-  if (!pat)  { setStatus('inputStatus', 'error', 'PAT required in the panel below — chain mode fetches from GitHub'); return; }
-  if (!repo) { setStatus('inputStatus', 'error', 'repo required in the panel below — e.g. SNSFT/your-repo'); return; }
+  const canFetchRemote = !!(pat && repo);
 
   const masterMeta = parseLean(src);
 
-  // Local imports only — skip Mathlib/Std/Batteries, those aren't in your repo.
+  // Local imports only — skip Mathlib/Std/Batteries/Init, those aren't yours to resolve.
   const importMatches = [...src.matchAll(/^import\s+(\S+)/gm)].map(m => m[1]);
   const localImports = importMatches.filter(m =>
     !m.startsWith('Mathlib') && !m.startsWith('Std') && !m.startsWith('Batteries') && !m.startsWith('Init'));
@@ -1476,19 +1545,38 @@ async function convertChain(src) {
     return;
   }
 
-  setStatus('inputStatus', 'warn', `resolving ${localImports.length} import(s) from ${repo}...`);
+  setStatus('inputStatus', 'warn', `resolving ${localImports.length} import(s)...`);
 
-  const fetched = [];
-  const failed  = [];
+  const fetched   = [];
+  const failed    = [];
+  const ambiguous = [];
 
   for (const mod of localImports) {
-    const path = (base ? base + '/' : '') + mod.replace(/\./g, '/') + '.lean';
-    try {
-      const content = await ghGet(pat, repo, path);
-      fetched.push({ mod, path, content });
-      setStatus('inputStatus', 'warn', `fetched ${fetched.length}/${localImports.length} · ${mod}`);
-    } catch (e) {
-      failed.push({ mod, path, reason: e.message });
+    const matches = findLocalMatches(mod);
+
+    if (matches.length === 1) {
+      fetched.push({ mod, path: matches[0].name, content: matches[0].content, source: 'local' });
+      setStatus('inputStatus', 'warn', `resolved ${fetched.length}/${localImports.length} · ${mod} (local)`);
+      continue;
+    }
+    if (matches.length > 1) {
+      fetched.push({ mod, path: matches[0].name, content: matches[0].content, source: 'local · ambiguous, first match used' });
+      ambiguous.push({ mod, candidates: matches.map(m => m.name) });
+      continue;
+    }
+
+    // No local match — fall back to GitHub only if PAT + repo are set.
+    if (canFetchRemote) {
+      const path = (base ? base + '/' : '') + mod.replace(/\./g, '/') + '.lean';
+      try {
+        const content = await ghGet(pat, repo, path);
+        fetched.push({ mod, path, content, source: 'github' });
+        setStatus('inputStatus', 'warn', `resolved ${fetched.length}/${localImports.length} · ${mod} (github)`);
+      } catch (e) {
+        failed.push({ mod, path, reason: e.message });
+      }
+    } else {
+      failed.push({ mod, path: '(not dropped locally · GitHub not configured)', reason: 'no local match, no PAT/repo set' });
     }
   }
 
@@ -1502,22 +1590,31 @@ async function convertChain(src) {
   let tex = buildPreamble(masterMeta) + '\n\n\\begin{document}\n\n\\maketitle\n\n';
   if (opts.frontmatter) tex += buildFrontMatter(masterMeta) + '\n\n';
 
-  tex += `\n\\section*{Chained Modules}\n\nThis paper aggregates ${fetched.length} imported module(s), resolved from \\texttt{${repo}}${base ? ' at root \\texttt{' + base + '}' : ''}.\n\n`;
+  tex += `\n\\section*{Chained Modules}\n\nThis paper aggregates ${fetched.length} imported module(s). `;
+  const localCount  = fetched.filter(f => f.source.startsWith('local')).length;
+  const remoteCount = fetched.filter(f => f.source === 'github').length;
+  tex += `${localCount} resolved from local files, ${remoteCount} pulled from \\texttt{${repo || '—'}}.\n\n`;
 
   let totalTheorems = 0;
   for (const f of fetched) {
     const meta = parseLean(f.content);
     totalTheorems += parseInt(meta['Theorems'] || '0');
     tex += `\n\\subsection*{${f.mod.replace(/_/g, '\\_')}}\n`;
-    tex += `\\textit{Path: \\texttt{${f.path}}}\n\n`;
+    tex += `\\textit{Source: ${f.source} — \\texttt{${f.path.replace(/_/g, '\\_')}}}\n\n`;
     if (opts.ldp && meta['_ldpSteps'].length > 0) tex += buildLDPSection(meta) + '\n';
     if (opts.theorems) tex += buildTheoremSection(meta, f.content) + '\n';
     if (opts.code) tex += buildLeanListing(meta, f.content) + '\n';
   }
 
+  if (ambiguous.length > 0) {
+    tex += `\n\\subsection*{Ambiguous Local Matches}\n\\begin{itemize}\n`;
+    for (const a of ambiguous) tex += `  \\item \\texttt{${a.mod.replace(/_/g, '\\_')}} matched: ${a.candidates.map(c => '\\texttt{' + c.replace(/_/g, '\\_') + '}').join(', ')} — first one used\n`;
+    tex += `\\end{itemize}\n`;
+  }
+
   if (failed.length > 0) {
     tex += `\n\\subsection*{Unresolved Imports}\n\\begin{itemize}\n`;
-    for (const f of failed) tex += `  \\item \\texttt{${f.mod.replace(/_/g, '\\_')}} — expected at \\texttt{${f.path}} (${f.reason})\n`;
+    for (const f of failed) tex += `  \\item \\texttt{${f.mod.replace(/_/g, '\\_')}} — ${f.reason} (looked at \\texttt{${f.path.replace(/_/g, '\\_')}})\n`;
     tex += `\\end{itemize}\n`;
   }
 
@@ -1527,11 +1624,15 @@ async function convertChain(src) {
   showMeta(masterMeta);
 
   setStatus('outputStatus', 'ok',
-    `✓ chained ${fetched.length}/${localImports.length} modules · ${totalTheorems} theorems total · ${tex.split('\n').length} lines LaTeX`);
-  setStatus('inputStatus', failed.length ? 'warn' : 'ok',
-    failed.length
-      ? `${fetched.length} resolved · ${failed.length} not found — see Unresolved Imports section`
-      : `all ${fetched.length} import(s) resolved and chained`);
+    `✓ chained ${fetched.length}/${localImports.length} modules (${localCount} local, ${remoteCount} github) · ${totalTheorems} theorems total · ${tex.split('\n').length} lines LaTeX`);
+
+  if (failed.length > 0) {
+    setStatus('inputStatus', 'warn', `${fetched.length} resolved · ${failed.length} unresolved — see Unresolved Imports section`);
+  } else if (ambiguous.length > 0) {
+    setStatus('inputStatus', 'warn', `all resolved · ${ambiguous.length} had ambiguous local matches — see that section`);
+  } else {
+    setStatus('inputStatus', 'ok', `all ${fetched.length} import(s) resolved and chained`);
+  }
 }
 
 function showMeta(meta) {
