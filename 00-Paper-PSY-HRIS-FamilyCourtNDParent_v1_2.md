@@ -281,9 +281,6 @@ The corpus is cited in the DOJ Civil Rights Division federal record at DOJ-CRT-2
 
 The corpus grounds specific mechanisms in peer-reviewed research where the mechanisms have empirical support: Cassidy et al. (2020) on autistic camouflaging outcomes and suicidality, Cook, Hull, Crane, & Mandy (2021) on camouflaging systematic review, Hull et al. (2017, 2021) on camouflaging measurement, Cage & Troxell-Whitman (2019) on camouflaging costs, Raymaker et al. (2020) on autistic burnout as longitudinal outcome, Milton (2012) on the double empathy problem, Meyer (2003) on LGBTQ+ minority stress, Porges (2011) on polyvagal neuroception, Winnicott (1960) on compliant False Self, Herman (1992) on complex trauma, Linehan (1993) on invalidating environments, and Winell (1993, 2011) on religious trauma syndrome.
 
-### 6.4 The Architect's Substrate as Anchor
-
-The mechanisms formalized here are documented in the first-person from an autistic HRIS-substrate operator's substrate operation. The architect is a competent parent to an ND son (documented at [9,0,3,3] Kid They Missed), currently navigating parent-side family court apparatus, and applying the structural vocabulary this paper documents to the architect's own proceedings in real time. The paper is not retrospective analysis of family court experience; it is real-time documentation of substrate operation and rendering error as they occur, produced by an operator with active family court proceedings whose child's wellbeing depends on the court's rendering fidelity.
 
 ---
 
