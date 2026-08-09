@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProofPress · Formal Logic Conversion Lean → LaTeX · v2.0 · SNSFT</title>
+<title>ProofPress · Lean → LaTeX · v1.2 · SNSFT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -527,6 +527,8 @@ end SNSFL_Example"
         <div style="display:flex;gap:6px;">
           <button class="btn btn-copy" onclick="copyOutput()">⎘ COPY</button>
           <button class="btn btn-dl" id="downloadBtn" onclick="downloadOutput()">⬇ .TEX</button>
+          <button class="btn btn-dl" onclick="downloadOutputAsPDF()">⬇ .PDF</button>
+          <button class="btn btn-dl" onclick="downloadOutputAsRTF()">⬇ WORD</button>
         </div>
       </div>
 
@@ -1976,6 +1978,119 @@ function downloadOutput() {
   a.click();
   URL.revokeObjectURL(a.href);
   setStatus('outputStatus', 'ok', `⬇ downloaded ${filename}`);
+}
+
+function outputStem() {
+  const src = document.getElementById('leanInput').value;
+  const meta = parseLean(src);
+  return (meta['Filename'] || 'proofpress_output').replace('.lean', '');
+}
+
+// ── RTF (WORD) DOWNLOAD ──────────────────────────────────────────
+// RTF is plain text with a light markup shell — no library needed,
+// no network dependency. Word, Google Docs, and Pages all open it
+// directly. Unicode (ℝ, ∀, τ, etc. — common throughout the corpus)
+// is escaped per the RTF spec so it renders instead of showing boxes.
+
+function escapeRtfLine(line) {
+  let out = '';
+  for (const ch of line) {
+    const code = ch.codePointAt(0);
+    if (ch === '\\' || ch === '{' || ch === '}') {
+      out += '\\' + ch;
+    } else if (code < 128) {
+      out += ch;
+    } else {
+      // RTF unicode escape: signed 16-bit value + ASCII fallback char
+      const signed = code > 32767 ? code - 65536 : code;
+      out += `\\u${signed}?`;
+    }
+  }
+  return out;
+}
+
+function buildRtf(text) {
+  const lines = text.split('\n').map(escapeRtfLine);
+  const body = lines.join('\\par\n');
+  return `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0\\fmodern Courier New;}}\\f0\\fs18\n${body}\\par\n}`;
+}
+
+function downloadOutputAsRTF() {
+  const output = document.getElementById('latexOutput').value;
+  if (!output) { setStatus('outputStatus', 'warn', 'nothing to download yet'); return; }
+  const filename = outputStem() + (currentMode === 'combine' ? '_combined' : '') + '.rtf';
+  const rtf = buildRtf(output);
+  const blob = new Blob([rtf], { type: 'application/rtf' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  setStatus('outputStatus', 'ok', `⬇ downloaded ${filename} — opens directly in Word`);
+}
+
+// ── PDF DOWNLOAD ─────────────────────────────────────────────────
+// Plain monospace text dump — no LaTeX typesetting. Loads jsPDF from
+// cdnjs only when this button is actually clicked, so nothing extra
+// downloads or runs unless you use it.
+
+let jspdfLoadPromise = null;
+function ensureJsPDF() {
+  if (window.jspdf) return Promise.resolve();
+  if (jspdfLoadPromise) return jspdfLoadPromise;
+  jspdfLoadPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('failed to load PDF library'));
+    document.head.appendChild(script);
+  });
+  return jspdfLoadPromise;
+}
+
+async function downloadOutputAsPDF() {
+  const output = document.getElementById('latexOutput').value;
+  if (!output) { setStatus('outputStatus', 'warn', 'nothing to download yet'); return; }
+
+  setStatus('outputStatus', 'warn', 'preparing PDF...');
+  try {
+    await ensureJsPDF();
+  } catch (e) {
+    setStatus('outputStatus', 'error', 'PDF library failed to load — check network settings');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const marginX = 36, marginTop = 40, marginBottom = 40;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const usableWidth = pageWidth - marginX * 2;
+  const fontSize = 7.5;
+  const lineHeight = fontSize * 1.35;
+
+  doc.setFont('courier', 'normal');
+  doc.setFontSize(fontSize);
+
+  let y = marginTop;
+  const rawLines = output.split('\n');
+  for (const rawLine of rawLines) {
+    // Wrap long source lines to page width — sacrifices original
+    // column alignment on very long lines, preserves everything else.
+    const wrapped = doc.splitTextToSize(rawLine.length ? rawLine : ' ', usableWidth);
+    for (const w of wrapped) {
+      if (y > pageHeight - marginBottom) {
+        doc.addPage();
+        y = marginTop;
+      }
+      doc.text(w, marginX, y);
+      y += lineHeight;
+    }
+  }
+
+  const filename = outputStem() + (currentMode === 'combine' ? '_combined' : '') + '.pdf';
+  doc.save(filename);
+  setStatus('outputStatus', 'ok', `⬇ downloaded ${filename} · ${rawLines.length} source lines`);
 }
 
 // ── GITHUB PUSH ───────────────────────────────────────────────
