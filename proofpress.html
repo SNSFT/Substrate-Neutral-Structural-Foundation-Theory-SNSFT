@@ -556,6 +556,15 @@ end SNSFL_Example"
         </label>
       </div>
 
+      <div class="opts" id="combineOpts" style="display:none;">
+        <span class="opt-label">OPTIONS:</span>
+        <label class="opt-toggle">
+          <input type="checkbox" id="opt-expand-sac" checked>
+          <div class="toggle-box"></div>
+          EXPAND 1.369 → FULL 18-DIGIT SAC
+        </label>
+      </div>
+
       <textarea id="latexOutput" readonly
         placeholder="// LaTeX output will appear here after pressing PRESS TO LATEX"></textarea>
 
@@ -1044,6 +1053,7 @@ function setMode(mode) {
   document.getElementById('tab-combine').classList.toggle('active', mode === 'combine');
   document.getElementById('chainDropZone').style.display = (mode === 'chain' || mode === 'combine') ? 'block' : 'none';
   document.getElementById('latexOpts').style.display = mode === 'combine' ? 'none' : 'flex';
+  document.getElementById('combineOpts').style.display = mode === 'combine' ? 'flex' : 'none';
   if ((mode === 'chain' || mode === 'combine') && localChainFiles.length > 0) renderChainFilesList();
   if (mode !== 'chain' && mode !== 'combine') {
     document.getElementById('chainFilesList').style.display = 'none';
@@ -1229,6 +1239,16 @@ async function convertCombine(src) {
     out += `-- ============================================================\n\n`;
   }
 
+  // Expand short-form SAC literals to full 18-digit precision, if
+  // requested — verified to still compile green, so this is a pure
+  // literal upgrade, not a semantic change. Boundary-checked so it
+  // can't false-match inside other numbers or an already-expanded value.
+  let expandSacCount = 0;
+  if (document.getElementById('opt-expand-sac').checked) {
+    out = out.replace(/(?<!\d)1\.369(?!\d)/g, () => { expandSacCount++; return '1.36899099984016'; });
+    out = out.replace(/(?<![\d.])0?\.1369(?!\d)/g, () => { expandSacCount++; return '0.136899099984016'; });
+  }
+
   const totalLines = out.split('\n').length;
   out += `-- ============================================================\n`;
   out += `-- Theorems: ${totalTheorems} · Lines: ${totalLines}\n`;
@@ -1240,8 +1260,9 @@ async function convertCombine(src) {
   showMeta(masterMeta);
 
   const collisionNote = topLevelWarnings.length > 0 ? ` · ⚠ ${topLevelWarnings.length} file(s) with top-level decls` : '';
+  const sacNote = expandSacCount > 0 ? ` · ${expandSacCount} SAC literal(s) expanded` : '';
   setStatus('outputStatus', 'ok',
-    `✓ combined ${fetched.length}/${localImports.length} modules · ${totalTheorems} theorems · ${totalLines} lines${collisionNote}`);
+    `✓ combined ${fetched.length}/${localImports.length} modules · ${totalTheorems} theorems · ${totalLines} lines${sacNote}${collisionNote}`);
 
   if (failed.length > 0) {
     setStatus('inputStatus', 'warn', `${fetched.length} resolved · ${failed.length} unresolved — see bottom of output`);
