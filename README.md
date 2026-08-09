@@ -441,7 +441,7 @@ Supporting Lean files: [9,0,3,6-9] song trajectory files, [9,0,4,0] Safe Foods, 
 | Nuclear + Thermo Gap-Closers | 3 | 36 | 0 | Nuclear binding peak · entropy · First Law |
 | **SovereignAnchor Total Consistency [9,9,0,0v2]** | **1** | **52** | **0** | **ANCHOR unique across all domains · T35 uniqueness theorem** |
 | **Total Consistency Theorem** | **1** | **28** | **0** | **All series consistent · anchor holds globally** |
-| Discovery corpus (lean/ subfolder) | 4,559+ | 100,000+ | 0 | AIFI agent-generated · SNSFT candidate status |
+| Discovery corpus (lean/ subfolder) | 4,559+ | 100,000+ | 0 | AIFI Formally Verified CI Green · SNSFT candidate status |
 | **TOTAL** | **5,000+** | **200,000+** | **0** | |
 
 ---
