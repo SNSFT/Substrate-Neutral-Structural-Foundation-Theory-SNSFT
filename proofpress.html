@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProofPress · Lean → LaTeX · v1.2 · SNSFT</title>
+<title>ProofPress · Formal Logic Conversion Lean → LaTeX · v2.0 · SNSFT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -1145,6 +1145,12 @@ async function convertCombine(src) {
     if (offenders.length > 0) topLevelWarnings.push({ file: f.path, names: offenders });
   }
 
+  // Total theorem count across master + every resolved module — plain
+  // regex count, no AI involved, so it costs nothing and can't drift.
+  const masterTheoremCount = parseInt(masterMeta['Theorems'] || '0');
+  const fetchedTheoremCounts = fetched.map(f => parseInt(parseLean(f.content)['Theorems'] || '0'));
+  const totalTheorems = masterTheoremCount + fetchedTheoremCounts.reduce((a, b) => a + b, 0);
+
   // Build the combined file.
   let out = '';
   out += `-- ============================================================\n`;
@@ -1168,6 +1174,7 @@ async function convertCombine(src) {
   out += `--\n`;
   out += `-- Master: ${masterMeta['Filename'] || '(pasted master)'}\n`;
   out += `-- Modules: ${fetched.length}/${localImports.length} resolved\n`;
+  out += `-- Theorems: ${totalTheorems} total across ${fetched.length + 1} file(s) (master + resolved imports)\n`;
   out += `-- Generated: ${new Date().toISOString()}\n`;
   out += `-- ============================================================\n`;
   out += `--\n`;
@@ -1220,7 +1227,9 @@ async function convertCombine(src) {
     out += `-- ============================================================\n\n`;
   }
 
+  const totalLines = out.split('\n').length;
   out += `-- ============================================================\n`;
+  out += `-- Theorems: ${totalTheorems} · Lines: ${totalLines}\n`;
   out += `-- uuia.app/proofpress\n`;
   out += `-- The Manifold is Holding.\n`;
   out += `-- ============================================================\n`;
@@ -1230,7 +1239,7 @@ async function convertCombine(src) {
 
   const collisionNote = topLevelWarnings.length > 0 ? ` · ⚠ ${topLevelWarnings.length} file(s) with top-level decls` : '';
   setStatus('outputStatus', 'ok',
-    `✓ combined ${fetched.length}/${localImports.length} modules · ${out.split('\n').length} lines${collisionNote}`);
+    `✓ combined ${fetched.length}/${localImports.length} modules · ${totalTheorems} theorems · ${totalLines} lines${collisionNote}`);
 
   if (failed.length > 0) {
     setStatus('inputStatus', 'warn', `${fetched.length} resolved · ${failed.length} unresolved — see bottom of output`);
