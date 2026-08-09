@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProofPress · Lean → LaTeX · v1.2 · SNSFT</title>
+<title>ProofPress · Applied Identity Physics · Lean → LaTeX → Markdown · v2.3 · SNSFTFoundation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -2060,37 +2060,78 @@ async function downloadOutputAsPDF() {
     return;
   }
 
+  // jsPDF's built-in fonts (courier/helvetica/times) only support the old
+  // WinAnsi character set — not real Unicode. The corpus is full of Greek
+  // letters, math operators, and arrows (τ, Ω, ℝ, →, ⟨⟩...), which jsPDF's
+  // built-in fonts silently mis-map to the wrong glyph instead of failing
+  // loudly. To render these correctly, each page is drawn on an offscreen
+  // canvas using the browser's own font engine (real Unicode support,
+  // same as any web page), then dropped into the PDF as an image — jsPDF
+  // only assembles pages here, it never touches character encoding.
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'pt', format: 'letter' });
-  const marginX = 36, marginTop = 40, marginBottom = 40;
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const usableWidth = pageWidth - marginX * 2;
-  const fontSize = 7.5;
-  const lineHeight = fontSize * 1.35;
+  const pageWidthPt = doc.internal.pageSize.getWidth();   // 612
+  const pageHeightPt = doc.internal.pageSize.getHeight(); // 792
 
-  doc.setFont('courier', 'normal');
-  doc.setFontSize(fontSize);
+  const SCALE = 2; // canvas px per pt — sharper output
+  const marginPt = 36;
+  const fontPt = 7.5;
+  const lineHeightPt = fontPt * 1.35;
 
-  let y = marginTop;
+  const canvas = document.createElement('canvas');
+  canvas.width = pageWidthPt * SCALE;
+  canvas.height = pageHeightPt * SCALE;
+  const ctx = canvas.getContext('2d');
+  const fontPx = fontPt * SCALE;
+  ctx.font = `${fontPx}px "Courier New", Consolas, "DejaVu Sans Mono", monospace`;
+  ctx.fillStyle = '#000000';
+  ctx.textBaseline = 'top';
+
+  // Courier New is monospace — one measurement gives exact char width.
+  const charWidthPx = ctx.measureText('M').width;
+  const usableWidthPx = (pageWidthPt - marginPt * 2) * SCALE;
+  const charsPerLine = Math.max(10, Math.floor(usableWidthPx / charWidthPx));
+  const usableHeightPt = pageHeightPt - marginPt * 2;
+  const linesPerPage = Math.floor(usableHeightPt / lineHeightPt);
+
+  function newPageCanvas() {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000000';
+    ctx.font = `${fontPx}px "Courier New", Consolas, "DejaVu Sans Mono", monospace`;
+    ctx.textBaseline = 'top';
+  }
+
+  // Wrap each source line into fixed-width chunks (safe since the
+  // font is monospace) rather than relying on jsPDF's own wrapper.
   const rawLines = output.split('\n');
-  for (const rawLine of rawLines) {
-    // Wrap long source lines to page width — sacrifices original
-    // column alignment on very long lines, preserves everything else.
-    const wrapped = doc.splitTextToSize(rawLine.length ? rawLine : ' ', usableWidth);
-    for (const w of wrapped) {
-      if (y > pageHeight - marginBottom) {
-        doc.addPage();
-        y = marginTop;
-      }
-      doc.text(w, marginX, y);
-      y += lineHeight;
+  const visualLines = [];
+  for (const line of rawLines) {
+    if (line.length === 0) { visualLines.push(''); continue; }
+    for (let i = 0; i < line.length; i += charsPerLine) {
+      visualLines.push(line.slice(i, i + charsPerLine));
     }
+  }
+
+  let pageCount = 0;
+  for (let start = 0; start < visualLines.length; start += linesPerPage) {
+    const pageLines = visualLines.slice(start, start + linesPerPage);
+    newPageCanvas();
+    let yPx = marginPt * SCALE;
+    for (const vline of pageLines) {
+      ctx.fillText(vline, marginPt * SCALE, yPx);
+      yPx += lineHeightPt * SCALE;
+    }
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+    if (pageCount > 0) doc.addPage();
+    doc.addImage(imgData, 'JPEG', 0, 0, pageWidthPt, pageHeightPt);
+    pageCount++;
   }
 
   const filename = outputStem() + (currentMode === 'combine' ? '_combined' : '') + '.pdf';
   doc.save(filename);
-  setStatus('outputStatus', 'ok', `⬇ downloaded ${filename} · ${rawLines.length} source lines`);
+  setStatus('outputStatus', 'ok', `⬇ downloaded ${filename} · ${rawLines.length} source lines · ${pageCount} pages`);
 }
 
 // ── GITHUB PUSH ───────────────────────────────────────────────
