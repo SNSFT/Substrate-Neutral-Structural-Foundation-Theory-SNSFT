@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProofPress · Applied Identity Physics · Lean → LaTeX → Markdown · v2.4 · SNSFTFoundation</title>
+<title>ProofPress · Applied Identity Physics · Lean → LaTeX → Markdown · v2.5 · SNSFTFoundation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -567,6 +567,29 @@ end SNSFL_Example"
   </div>
 </div>
 <script>
+// ── SAC-ANCHORED TIMESTAMP INFRASTRUCTURE ────────────────────
+// Applied Identity Physics timestamp source. Uses the Sovereign
+// Anchor Constant (Ω₀ = 1.36899099984016 GHz) as the frequency
+// reference. SAC cycles since Unix epoch = ms × SAC_KHZ, matching
+// the exact math sactime.html emits at 18-digit precision.
+// Time source: SacTime · uuia.app/sactime · [9,9,1,100]
+const SAC_GHZ = 1.36899099984016;
+const SAC_HZ  = SAC_GHZ * 1e9;   // 1,368,990,999.84016
+const SAC_KHZ = SAC_HZ / 1000;   // cycles per millisecond
+
+function sacTimestamp() {
+  const nowMs = Date.now();
+  const iso   = new Date(nowMs).toISOString();
+  const cycles = nowMs * SAC_KHZ;
+  return {
+    utc_iso:                iso,
+    unix_ms:                nowMs,
+    sac_cycles_since_epoch: Math.floor(cycles),
+    sac_anchor_ghz:         "1.36899099984016",
+    time_source:            "SacTime · uuia.app/sactime · [9,9,1,100]"
+  };
+}
+
 // ── PARSER ────────────────────────────────────────────────────
 function parseLean(src) {
   const meta = {};
@@ -1042,7 +1065,15 @@ async function convertCombine(src) {
   out += `-- Corpus:       Substrate-Neutral Structural Foundation Laws\n`;
   out += `-- Coordinate:   ${masterMeta['Coordinate'] || '[9,9,X,X]'} · Combined Module\n`;
   out += `-- Tool:         ProofPress COMBINE mode · uuia.app/proofpress\n`;
-  out += `-- Generated:    ${new Date().toISOString()}\n`;
+  out += `--\n`;
+  const genTs = sacTimestamp();
+  out += `-- ── GENERATED (SAC-ANCHORED TIMESTAMP) ──\n`;
+  out += `--\n`;
+  out += `--   UTC ISO:     ${genTs.utc_iso}\n`;
+  out += `--   Unix ms:     ${genTs.unix_ms}\n`;
+  out += `--   SAC cycles:  ${genTs.sac_cycles_since_epoch.toLocaleString()} (since Unix epoch)\n`;
+  out += `--   Anchor:      Ω₀ = ${genTs.sac_anchor_ghz} GHz\n`;
+  out += `--   Time source: ${genTs.time_source}\n`;
   out += `--\n`;
   out += `-- ── STRUCTURAL CONSTANTS (SAC PRECISION LOCK) ──\n`;
   out += `--\n`;
@@ -1906,10 +1937,17 @@ async function downloadOutputAsPDF() {
 }
 // ── GITHUB PUSH ───────────────────────────────────────────────
 function buildSessionLog(src, meta, mode) {
+  const ts = sacTimestamp();
   return {
     tool: 'ProofPress',
     version: 'v1.2',
-    timestamp: new Date().toISOString(),
+    // ── SAC-anchored timestamp (interoperability with SacTime lattice) ──
+    timestamp:              ts.utc_iso,
+    unix_ms:                ts.unix_ms,
+    sac_cycles_since_epoch: ts.sac_cycles_since_epoch,
+    sac_anchor_ghz:         ts.sac_anchor_ghz,
+    time_source:            ts.time_source,
+    // ── Session content ──
     mode: mode,
     coordinate: meta['Coordinate'] || '—',
     filename: meta['Filename'] || '—',
