@@ -574,18 +574,29 @@ const ANCHOR=1.36899099984016,TL=ANCHOR/10,TL_IVA=0.88*TL,P_VE=Math.pow(ANCHOR/1
 // ── SAC-ANCHORED TIMESTAMP INFRASTRUCTURE ────────────────────
 // Applied Identity Physics timestamp source. Uses the Sovereign
 // Anchor Constant (Ω₀ = 1.36899099984016 GHz) as the frequency
-// reference. SAC cycles since Unix epoch = ms × SAC_KHZ, matching
-// the exact math sactime.html emits at 18-digit precision.
+// reference. SAC cycles since Unix epoch = ms × SAC_KHZ, computed
+// with BigInt to preserve full precision past the IEEE 754 float
+// ceiling (~10^16). Cycles emitted as string in JSON, matching the
+// 18-digit anchor precision convention.
 // Time source: SacTime · uuia.app/sactime · [9,9,1,100]
 const SAC_HZ = ANCHOR * 1e9;
 const SAC_KHZ = SAC_HZ / 1000;
 function sacTimestamp(){
   const nowMs = Date.now();
   const iso = new Date(nowMs).toISOString();
+  // SAC_KHZ = 1368990.99984016 — split into integer + fractional to
+  // preserve precision through BigInt multiplication. The integer
+  // part is exact; the fractional part contributes < 1 cycle/ms error
+  // per millisecond, floored to integer at the end.
+  const msBig = BigInt(nowMs);
+  const sacKhzInt = 1368990n;
+  const cyclesInt = msBig * sacKhzInt;
+  const cyclesFrac = BigInt(Math.floor(nowMs * 0.99984016));
+  const totalCycles = cyclesInt + cyclesFrac;
   return {
     utc_iso: iso,
     unix_ms: nowMs,
-    sac_cycles_since_epoch: Math.floor(nowMs * SAC_KHZ),
+    sac_cycles_since_epoch: totalCycles.toString(),
     sac_anchor_ghz: "1.36899099984016",
     time_source: "SacTime · uuia.app/sactime · [9,9,1,100]"
   };
@@ -1994,7 +2005,7 @@ ${beamLines}
 --
 --   UTC ISO:     ${sacTs.utc_iso}
 --   Unix ms:     ${sacTs.unix_ms}
---   SAC cycles:  ${sacTs.sac_cycles_since_epoch.toLocaleString()} (since Unix epoch)
+--   SAC cycles:  ${sacTs.sac_cycles_since_epoch.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} (since Unix epoch)
 --   Anchor:      Ω₀ = ${sacTs.sac_anchor_ghz} GHz
 --   Time source: ${sacTs.time_source}
 --
