@@ -89,6 +89,7 @@
 | **Book 1 — Identity: A Universal Architecture** · The pre-framework HRIS reduction that started everything. Substrate-neutral by design, written from direct internal simulation before the formal vocabulary existed. | Paperback · Ebook | [![Amazon](https://img.shields.io/badge/Amazon-KDP-orange)](https://www.amazon.com/dp/B0GFMPW73Z) |
 | **Book 2 — The Long Division Protocol and the Sub-Lemma Process** · Formal reduction of $17,815,000 in prize bounties. 200,000+ theorems · 0 sorry · 0 free parameters · CI Green · Lean 4 + Coq/Rocq 8.18. | Paperback · Ebook | [![Amazon](https://img.shields.io/badge/Amazon-KDP-orange)](https://www.amazon.com/dp/B0H4C4KKNQ) |
 | **Book 3 — Applied Identity Physics: The Universal Torsion Limit TL = 0.136899099984016** · as a Substrate-Neutral Phase Boundary and the Identity Physics Corpus as a Formally Verified Phase Map. | Paperback · Ebook | [![Amazon](https://img.shields.io/badge/Amazon-KDP-orange)](https://www.amazon.com/dp/B0HFWRCKRB) |
+| **Book 4 — Applied Identity Physics: APPA (Adaptive Predictive Pattern Analysis) — Sovereignty Engine CI Kernel** · Substrate-Neutral Justice and the Physics of Non-Harm Existence. | Paperback · Ebook | [![Amazon](https://img.shields.io/badge/Amazon-KDP-orange)](https://www.amazon.com/dp/B0HFYJNDMK) |
 
 
 ---
