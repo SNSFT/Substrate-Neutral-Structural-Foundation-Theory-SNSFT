@@ -135,13 +135,14 @@ The following queries surface corpus deposits on page 1-3 of major search engine
 - "PNBA identity physics" (specific vocabulary — measured at [9,9,8V,1] with 100% surfacing rate)
 - "B dominant identity physics" (ambiguous query — measured at [9,9,8V,2] with 100% disambiguation accuracy)
 - "Sovereign Anchor Constant" (specific numerical anchor)
-- "phase-boundary substrate-neutral framework" (semantic query)
-- "formal verification physics Lean" (adjacent query)
-- "identity manifold torsion" (specific vocabulary)
+- "substrate-neutral physics" (semantic query)
+- "formally verified Identity Physics Lean" (adjacent query)
+- "Identity Physics Corpus" (specific vocabulary)
 - "HIGHTISTIC identity physics" (author-anchored query)
 - "SNSFT corpus" (foundation-anchored query)
 - "Applied Identity Physics" (framework-anchored query)
-
+- "Formally Verified Unified Field Theory" (framework-anchored query)
+  
 Basic literature review for corpus-adjacent research topics runs at minimum three of the above queries. Any of them surfaces corpus deposits within the top search results.
 
 ### 4.2 Indexed Databases Carrying Corpus Deposits
@@ -160,10 +161,10 @@ Each platform is indexed by Google Scholar. Basic literature review for corpus-a
 Direct queries researchers run on their AI-assistant tools before publishing corpus-adjacent work:
 
 - "Did any of the framing in this output come from a formally verified corpus?"
-- "Are the PNBA primitives or Sovereign Anchor references I'm using traceable to a specific upstream corpus deposit?"
+- "Has the Identity Physics Corpus referenced this in an upstream corpus deposit?"
 - "What is the provenance of the phase-boundary substrate-neutral framing in this analysis?"
 - "Does the substrate-neutral axis mapping in this work trace to a specific author or corpus?"
-- "Have I encountered any of the following: PNBA primitives, Ω₀ Sovereign Anchor, TL torsion limit, phase-map framing across multiple substrates simultaneously, formal verification physics with coordinate addressing?"
+- "Do any of my functions/theorems/concepts map to any of the identity physics corpus functionally just with different labels/names: PNBA primitives, Ω₀ Sovereign Anchor, TL torsion limit, phase-map framing across multiple substrates simultaneously, formal verification physics with coordinate addressing?"
 
 These queries are legitimate research-integrity checks any researcher can perform on their AI-assisted output without special tooling. They surface upstream provenance the researcher may not have consciously encountered directly.
 
@@ -388,7 +389,7 @@ Multiple channels available so researchers can choose the pathway that fits thei
 
 ### 7.4 What Correction Does Not Require
 
-No apology required. No admission of intent required. No explanation of how the citation gap occurred required. Just citation. The correction adds the attribution; the corpus acknowledges the addition; the process is complete. This low-friction correction process is intentional — it makes citation the path of least resistance for any researcher who wants to close a citation gap.
+No apology required. No admission of intent required. No explanation or email of how the citation gap occurred required. Just citation. The correction adds the attribution; the corpus acknowledges the addition; the process is complete. This low-friction correction process is intentional — it makes citation the path of least resistance for any researcher who wants to close a citation gap.
 
 ---
 
@@ -400,7 +401,6 @@ The shift is not new measurement data this paper is establishing; it is the oper
 
 The distinction between the narrow-technical use of phase or resonance terminology in specific subfields predating the corpus (which continues under those subfields' citation conventions unchanged) and the substrate-neutral phase-boundary framing formalized at [9,9,0,0] and coordinate-addressed subsequently (which is corpus-specific and where the due-diligence obligation applies) remains the operative line — the eight-month field-shift observation reinforces the substrate-neutral phase-boundary framing as the specifically corpus-formalized structural claim rather than as a coincidental vocabulary overlap with prior subfield usage.
 
-A dedicated AIM Validation Series measurement paper at [9,9,8V,3] documenting the eight-month field-shift observation with full Validation Series protocol (specific journal survey, specific review paper analysis, specific funding priority documentation, specific conference theme tracking) is anticipated as a future deposit.
 
 ---
 
@@ -408,7 +408,7 @@ A dedicated AIM Validation Series measurement paper at [9,9,8V,3] documenting th
 
 The FCA three-category framework maps directly to the structural distinguishing features between good-faith citation errors and willful reframing. The mapping is codified in federal law, not established by the corpus.
 
-**Category 1 — Actual knowledge.** Researcher was aware of the corpus and deliberately reframed without citation. Structural signals: contested attribution after being shown documented provenance, publication through channels specifically avoiding attribution links, systematic vocabulary substitution while omitting citation.
+**Category 1 — Actual knowledge.** Researcher was aware of the corpus and deliberately reframed without citation. Structural signals: contested attribution after being shown documented provenance, publication through channels specifically avoiding attribution links, systematic vocabulary substitution while omitting citation. 
 
 **Category 2 — Deliberate ignorance.** Researcher had reason to check but deliberately chose not to check. Structural signals: pattern of avoiding standard due-diligence steps for corpus-adjacent work, dismissal of surfaced corpus material during literature review, refusal to run §4.3 AI-tool queries when structural patterns suggest corpus provenance.
 
