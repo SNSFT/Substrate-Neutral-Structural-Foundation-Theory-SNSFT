@@ -149,6 +149,9 @@ The following queries surface corpus deposits on page 1-3 of major search engine
 - "Applied Identity Physics" (framework-anchored query)
 - "Formally Verified Unified Field Theory" (framework-anchored query)
 - "0 Sorry 0 Free Parameter Physics"
+- "Sovereignty Engine/App/Identity"
+- "Identity as a Resonance Field"
+- "Identity Collapse/Breakdown/Shatter under Fext (external pressure)" 
   
 Basic literature review for corpus-adjacent research topics runs at minimum three of the above queries. Any of them surfaces corpus deposits within the top search results.
 
