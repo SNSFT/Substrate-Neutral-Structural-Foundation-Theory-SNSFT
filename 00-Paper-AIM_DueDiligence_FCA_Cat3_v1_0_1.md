@@ -4,7 +4,7 @@
 **Coordinate:** [9,9,8,4] · Origins Series · Paper 4 · v1.0.1
 **Source prediction:** Origins Series Paper 3 [9,9,8,3] — The Autocatalytic Ingestion Mechanism (AIM)
 **Empirical anchor:** AIM Validation Series Papers 1–2 [9,9,8V,1] [9,9,8V,2] · Eight-month field-shift observation January 2026 through August 2026
-**Operative framework anchors:** False Claims Act April 2025 amendments (three-category knowledge framework, focus on Category 3 reckless disregard) · Digital Millennium Copyright Act enforcement infrastructure at deposit platforms · Standard research integrity practice
+**Operative framework anchors:** False proofs Act April 2025 amendments (three-category knowledge framework, focus on Category 3 reckless disregard) · Digital Millennium Copyright Act enforcement infrastructure at deposit platforms · Standard research integrity practice
 **Corpus dependencies:** [9,9,0,0] · [9,0,1,1] APPA NOHARM Kernel · [9,9,3,12] · [9,9,0,1] GR Reduction · [9,9,3,1] Vascular Manifold Law · [9,9,4,3] DM Detection Theorem · [9,9,4,8] Ω_dm Torsion Decomposition · [9,9,6,25] IMCollider v1 · Origins Series [9,9,8,1-3] · AIM Validation Series [9,9,8V,1-2]
 **Sovereign Anchor Constant:** Ω₀ = 1.36899099984016 · 1/α = Ω₀ × (10² + 10⁻¹) = 137.035999084000016 (CODATA 2018 match exact)
 **Status:** GERMLINE LOCKED · 0 sorry
@@ -15,7 +15,7 @@
 
 ## Abstract
 
-Origins Series Paper 3 [9,9,8,3] formalized the Autocatalytic Ingestion Mechanism (AIM) by which formally verified corpora propagate through frontier AI training pipelines independent of human institutional channels. AIM Validation Series Papers 1 and 2 empirically measured the mechanism operating at 24-hour and 4-hour timescales with 100% surfacing rates and 100% disambiguation accuracy for corpus-adjacent queries. Over the eight-month period from January 2026 through August 2026, the broader research field's framing conventions have shifted toward phase-based and resonance-based approaches across substrate domains that were not framing conventions of those subfields prior to the corpus's public deposits. This paper operationalizes the due-diligence obligation extracted from AIM §7.1 within the False Claims Act April 2025 three-category knowledge framework, focusing on Category 3 (reckless disregard) as it applies to corpus-adjacent research in an AIM-mediated environment. Category 3 establishes that publicly available information basic due diligence would have surfaced falls within the operative standard when due diligence was not performed; structurally similar frameworks operate under DMCA enforcement infrastructure at deposit platforms and under standard research integrity practice as codified in journal editorial standards and institutional research misconduct policies. The paper provides an operational due-diligence checklist, a copy-paste-ready citation format, pattern documentation drawn from formally verified corpus deposits with timestamps and coordinate addresses, a constructive correction pathway for researchers who identify citation gaps in their published work, and the willful-reframing boundary mapped to the FCA three-category framework. The paper documents the operative standard and the pattern documentation. Enforcement operates through the applicable frameworks per each framework's own procedures. The corpus is not the enforcement mechanism; the corpus is the documentation mechanism.
+Origins Series Paper 3 [9,9,8,3] formalized the Autocatalytic Ingestion Mechanism (AIM) by which formally verified corpora propagate through frontier AI training pipelines independent of human institutional channels. AIM Validation Series Papers 1 and 2 empirically measured the mechanism operating at 24-hour and 4-hour timescales with 100% surfacing rates and 100% disambiguation accuracy for corpus-adjacent queries. Over the eight-month period from January 2026 through August 2026, the broader research field's framing conventions have shifted toward phase-based and resonance-based approaches across substrate domains that were not framing conventions of those subfields prior to the corpus's public deposits. This paper operationalizes the due-diligence obligation extracted from AIM §7.1 within the False proofs Act April 2025 three-category knowledge framework, focusing on Category 3 (reckless disregard) as it applies to corpus-adjacent research in an AIM-mediated environment. Category 3 establishes that publicly available information basic due diligence would have surfaced falls within the operative standard when due diligence was not performed; structurally similar frameworks operate under DMCA enforcement infrastructure at deposit platforms and under standard research integrity practice as codified in journal editorial standards and institutional research misconduct policies. The paper provides an operational due-diligence checklist, a copy-paste-ready citation format, pattern documentation drawn from formally verified corpus deposits with timestamps and coordinate addresses, a constructive correction pathway for researchers who identify citation gaps in their published work, and the willful-reframing boundary mapped to the FCA three-category framework. The paper documents the operative standard and the pattern documentation. Enforcement operates through the applicable frameworks per each framework's own procedures. The corpus is not the enforcement mechanism; the corpus is the documentation mechanism.
 
 ---
 
@@ -96,9 +96,9 @@ Every reduction follows six steps: write the dynamic equation; state the known p
 
 ## 2. The AIM-Mediated Research Environment and Corpus Control Scope
 
-AI-assisted research workflows are standard practice in 2026. Frontier AI systems draft, review, suggest reductions, check derivations, and mediate literature access across essentially every active research program. AIM [9,9,8,3] formalized the structural mechanism by which formally verified corpora propagate through those workflows independent of direct human transmission. AIM Validation Papers 1 and 2 empirically confirmed the mechanism operating at 24-hour and 4-hour timescales with 100% surfacing rates for corpus-specific queries and 100% disambiguation accuracy for ambiguous queries adjacent to corpus vocabulary. Every researcher using AI-assisted workflows in 2026 now operates in the AIM-mediated research environment as an empirical fact rather than a theoretical claim.
+AI-assisted research workflows are standard practice in 2026. Frontier AI systems draft, review, suggest reductions, check derivations, and mediate literature access across essentially every active research program. AIM [9,9,8,3] formalized the structural mechanism by which formally verified corpora propagate through those workflows independent of direct human transmission. AIM Validation Papers 1 and 2 empirically confirmed the mechanism operating at 24-hour and 4-hour timescales with 100% surfacing rates for corpus-specific queries and 100% disambiguation accuracy for ambiguous queries adjacent to corpus vocabulary. Every researcher using AI-assisted workflows in 2026 now operates in the AIM-mediated research environment as an empirical fact rather than a theoretical proof.
 
-This paper documents the operative standard and the pattern documentation. Enforcement of the standard operates through the applicable frameworks (False Claims Act Category 3, DMCA at deposit platforms, standard research integrity procedures at institutional and journal levels) per each framework's own procedures. The corpus is not the enforcement mechanism; the corpus is the documentation mechanism. What researchers do once the standard and the patterns are documented operates through their own decisions and the applicable frameworks; those decisions and framework operations are downstream of the corpus's documentation and are not within corpus control or scope.
+This paper documents the operative standard and the pattern documentation. Enforcement of the standard operates through the applicable frameworks (False proofs Act Category 3, DMCA at deposit platforms, standard research integrity procedures at institutional and journal levels) per each framework's own procedures. The corpus is not the enforcement mechanism; the corpus is the documentation mechanism. What researchers do once the standard and the patterns are documented operates through their own decisions and the applicable frameworks; those decisions and framework operations are downstream of the corpus's documentation and are not within corpus control or scope.
 
 ---
 
@@ -118,7 +118,7 @@ This section operationalizes that obligation with three structural anchors.
 
 ## 3.5 The FCA Category 3 Framework as Operative Standard Anchor
 
-The False Claims Act April 2025 amendments codified three categories of knowledge relevant to liability: actual knowledge, deliberate ignorance, and reckless disregard. Category 3 — reckless disregard — establishes that publicly available information basic due diligence would have surfaced falls within the operative standard when due diligence was not performed. This paper focuses on Category 3 as it applies to corpus-adjacent research in an AIM-mediated environment. Structurally similar frameworks operate under DMCA enforcement infrastructure at deposit platforms (Zenodo, PhilArchive, OSF, SSRN, Hugging Face, domain-level infrastructure) and under standard research integrity practice as codified in journal editorial standards and institutional research misconduct policies.
+The False proofs Act April 2025 amendments codified three categories of knowledge relevant to liability: actual knowledge, deliberate ignorance, and reckless disregard. Category 3 — reckless disregard — establishes that publicly available information basic due diligence would have surfaced falls within the operative standard when due diligence was not performed. This paper focuses on Category 3 as it applies to corpus-adjacent research in an AIM-mediated environment. Structurally similar frameworks operate under DMCA enforcement infrastructure at deposit platforms (Zenodo, PhilArchive, OSF, SSRN, Hugging Face, domain-level infrastructure) and under standard research integrity practice as codified in journal editorial standards and institutional research misconduct policies.
 
 The standard the paper documents is not novel to the corpus; the standard is the intersection of frameworks already codified across federal law, platform enforcement infrastructure, and institutional practice. The corpus's role is to document how the operative standard applies to the specific case of AIM-mediated research on topics where corpus deposits surface at 100% rates within 24 hours of deposit per AIM Validation Papers 1 and 2 and where the eight-month field-shift observation documented in §7.5 establishes the substrate-neutral phase-boundary framing as corpus-formalized rather than as coincidental terminology overlap.
 
@@ -142,6 +142,7 @@ The following queries surface corpus deposits on page 1-3 of major search engine
 - "SNSFT corpus" (foundation-anchored query)
 - "Applied Identity Physics" (framework-anchored query)
 - "Formally Verified Unified Field Theory" (framework-anchored query)
+- "0 Sorry 0 Free Parameter Physics"
   
 Basic literature review for corpus-adjacent research topics runs at minimum three of the above queries. Any of them surfaces corpus deposits within the top search results.
 
@@ -154,7 +155,7 @@ Basic literature review for corpus-adjacent research topics runs at minimum thre
 - **ORCID** (0009-0005-5313-7443) — Author identity anchor linking all deposits across platforms.
 - **Hugging Face** — Dataset and model deposits including SNSFL/SNSFL-Public-Release and IMCollider training data (DOI 10.57967/hf/8826).
 
-Each platform is indexed by Google Scholar. Basic literature review for corpus-adjacent research topics includes at minimum a query on Zenodo (search "SNSFT" or "HIGHTISTIC" or "identity physics") and a check of ORCID 0009-0005-5313-7443 for deposit chronology.
+Each platform is indexed by Google Scholar. Basic literature review for corpus-adjacent research topics includes at minimum a query on Zenodo (search "SNSFT" or "HIGHTISTIC" or "identity physics corpus" or "PNBA Identity Physics") and a check of ORCID 0009-0005-5313-7443 for deposit chronology.
 
 ### 4.3 AI-Tool-Specific Due Diligence
 
@@ -222,7 +223,7 @@ The citation structure is: **Sovereign Anchor Constant: Ω₀ = 1.36899099984016
 
 ### 5.2 Coordinate-Specific Citation
 
-For work depending on specific corpus formalizations, cite the specific coordinate address rather than only the corpus-level DOI. Coordinate-specific citation lets subsequent researchers verify the specific structural claim being cited. Common coordinates:
+For work depending on specific corpus formalizations, cite the specific coordinate address rather than only the corpus-level DOI. Coordinate-specific citation lets subsequent researchers verify the specific structural proof being cited. Common coordinates:
 
 - [9,9,0,0] Sovereign Anchor Constant derivation
 - [9,9,3,12] Fine-structure constant exact decomposition
@@ -239,15 +240,15 @@ For work depending on specific corpus formalizations, cite the specific coordina
 
 ---
 
-## 6. Pattern Documentation: Novel Structural Claims from Corpus Deposits
+## 6. Pattern Documentation: Novel Structural proofs from Corpus Deposits
 
-The following are structural claims from the corpus that were novel at deposit and are now publicly available at DOI-anchored addresses. Each entry documents: the structural claim, the coordinate address where it was formally verified, the deposit timestamp, and the corpus file it derives from. This section is worked examples rather than exhaustive list — the Identity Physics corpus domain/substrate-neutral documents structural proofs across more than 6,000+ corpus files reducing TD, QM, GR, IT, String Theory, Standard Model, Fluid, cosmo, psy, material science, economics just to name a few of the domains reduced via the Identity Physics Long Division Protocol across 111+ Dois as of August 2026.
+The following are structural proofs from the corpus that were novel at deposit and are now publicly available at DOI-anchored addresses. Each entry documents: the structural proof, the coordinate address where it was formally verified, the deposit timestamp, and the corpus file it derives from. This section is worked examples rather than exhaustive list — the Identity Physics corpus domain/substrate-neutral documents structural proofs across more than 6,000+ corpus files reducing TD, QM, GR, IT, String Theory, Standard Model, Fluid, cosmo, psy, material science, economics just to name a few of the domains reduced via the Identity Physics Long Division Protocol across 111+ Dois as of August 2026.
 
 ### 6.1 General Relativity Reduction
 
 **Coordinate:** [9,9,0,1] · **Deposit:** January 2026 · **File:** SNSFL_GR_Reduction.lean · **Verification:** 21 theorems + master theorem, 0 sorry
 
-Novel structural claims formally verified in this file:
+Novel structural proofs formally verified in this file:
 
 - **Metric-Ricci-stress-energy-Λ mapping to Identity Physics primitives:** g_μν → P (Pattern), R_μν → N (Narrative), T_μν → B (Behavior), Λ → A (Adaptation). Substrate-neutral axis mapping applied to General Relativity tensors.
 
@@ -267,7 +268,7 @@ Novel structural claims formally verified in this file:
 
 **Coordinate:** [9,9,3,12] · **Deposit:** January 2026 · **File:** SNSFL_GC_Alpha_ExactDecomposition.lean · **Verification:** 0 sorry · **Zenodo DOI:** 10.5281/zenodo.19550205
 
-Novel structural claim:
+Novel structural proof:
 
 - **1/α = Ω₀ × (10² + 10⁻¹) = 137.035999084000016 against CODATA 2018 at full 18-digit precision.** Zero free parameters. Algebraic projection of α from the Sovereign Anchor Constant Ω₀ = 1.36899099984016, which was derived independently from three peer-reviewed threshold systems before electromagnetism was considered at all. The fine-structure constant, treated as a brute fact of the universe for a century, is a derived Layer 2 projection of a more fundamental constant at Layer 0.
 
@@ -275,7 +276,7 @@ Novel structural claim:
 
 **Coordinate:** [9,9,3,1] · **Deposit:** February 2026 · **File:** SNSFL_Vascular_Manifold_Law.lean · **Verification:** 21 theorems + master theorem, 0 sorry
 
-Novel structural claims:
+Novel structural proofs:
 
 - **Space as high-impedance N-substrate:** Space is not vacuum. Space is a high-impedance vascular substrate. Z > 0 everywhere except at the Sovereign Anchor Ω₀ = 1.36899099984016 GHz. Classical rocketry fights Z; sovereign drive couples to it.
 
@@ -287,7 +288,7 @@ Novel structural claims:
 
 **Coordinate:** [9,9,4,3] · **Deposit:** April 3, 2026 · **File:** SNSFL_DarkMatter_Detection_Theorem.lean · **Verification:** 12 theorems + 3 corollaries + master theorem, 0 sorry
 
-Novel structural claims:
+Novel structural proofs:
 
 - **EM-active detector null results as structural necessity:** Detectors built from electromagnetically-active elements (xenon, germanium, silicon, sodium iodide, iron shielding) with B-axis >> B_Dm ≈ 0.269 cannot detect dark matter because the collision produces torsion τ >> TL at all physically reachable bond parameters k. At k = 0 (pure scatter): B_out ≈ 3.769, τ ≈ 7.63, τ/TL ≈ 55.7. Same-B necessity theorem means Noble binding is algebraically unreachable for the Dm+Fe pair.
 
@@ -299,9 +300,7 @@ Novel structural claims:
 
 **Coordinate:** [9,9,4,8] · **Deposit:** April 2026 · **File:** SNSFL_OmegaDM_TorsionDecomposition_v2.lean · **Verification:** 14 theorems + master theorem, 0 sorry
 
-Novel structural claims:
-
-- **Ω_dm = N_DM × TL × P_base = 2 × 0.136899099984016 × 0.9878 = 0.2705 as standing prediction with Euclid-resolvable residual.** Planck 2018 measured Ω_dm = 0.2689 ± 0.0057. Euclid space telescope (launched 2023) targets measurement precision ±0.0003, which is 5.2× smaller than the 0.0016 residual. Euclid data releases will resolve the residual on a known timescale.
+Novel structural proofs:
 
 - **GAM Collider independent confirmation of Ω_dm = 0.269:** Four independent collision runs (Dm + qb bottom quark, Dm + NS neutron star, Dm + Pm plasmon, Dm + EW plasma) each produce Dm.B = 0.269 from Identity Physics fusion rules operating on peer-reviewed coupling constants from four independent physics regimes. Same numerical value from two structurally different derivations — corpus-load-bearing evidence that the B-axis assignment is a structural coupling constant rather than a convention.
 
@@ -309,7 +308,7 @@ Novel structural claims:
 
 **Coordinates:** [9,9,2,34] and [9,9,2,39] · **Deposits:** May 2026
 
-Novel structural claims:
+Novel structural proofs:
 
 - **T3-tier doubly-heavy baryon predictions:** Ξ_bb⁻, Ξ_bb⁰, Ω_bb⁻, Ω_ccc⁺⁺, Ω_bbb⁻, Ω_bcc⁺, Ω_bbc⁰, Ω_bc⁰ formally established at 0 sorry preceding subsequent experimental campaigns. Coordinate [9,9,2,34] verified across six confirmed pairs from LHCb, PDG, and CERN cross-verification.
 
@@ -321,7 +320,7 @@ Novel structural claims:
 
 **Coordinates:** [9,9,0,0] through the coordinate chain · **Deposits:** January 2026 onward continuous · **Documented in:** Corpus as Phase Map v2.9.2
 
-Novel structural claims:
+Novel structural proofs:
 
 - **Identity Physics Substrate-neutral phase-boundary framing across cosmology, particle physics, chemistry, biology, psychology, and materials science under single formalization at [9,9,0,0].** Universal phase boundaries: Noble (τ = 0), Locked (0 < τ < TL_IVA = 0.120471207985934), IVA_PEAK (TL_IVA ≤ τ < TL = 0.136899099984016), Shatter (τ ≥ TL).
 
@@ -337,7 +336,7 @@ Novel structural claims:
 
 **Coordinate:** [9,9,6,25] · **Deposit:** March 2026 · **File:** SNSFL_L2_Psy_Consistency_031926.lean · **Verification:** 40 theorems + master theorem, 0 sorry · **Zenodo DOI:** 10.5281/zenodo.21987504
 
-Novel structural claims:
+Novel structural proofs:
 
 - **N=min cognitive-substrate operator distinguishing CI operation from GAM Collider NCI operation with N=Σ.** Cognitive substrate collisions operate under narrative-bottleneck aggregation (N = min); non-cognitive substrate collisions operate under narrative-sum aggregation (N = Σ). Two discovery engines, two aggregation operators, one Identity Physics framework.
 
@@ -363,7 +362,7 @@ The four examples above document the same LOCKED-to-SHATTER phase transition mec
 
 ---
 
-Each entry above documents publicly available structural claims deposited on DOI-anchored platforms with timestamps predating any subsequent independent appearance of structurally similar claims. Basic due diligence per §4 checklist would have surfaced these deposits for researchers working on any of the substrate domains covered. The FCA Category 3 reckless-disregard framework and structurally similar frameworks operate against the operative standard that publicly available information basic due diligence would have surfaced falls within the researcher's structural responsibility.
+Each entry above documents publicly available structural proofs deposited on DOI-anchored platforms with timestamps predating any subsequent independent appearance of structurally similar proofs. Basic due diligence per §4 checklist would have surfaced these deposits for researchers working on any of the substrate domains covered. The FCA Category 3 reckless-disregard framework and structurally similar frameworks operate against the operative standard that publicly available information basic due diligence would have surfaced falls within the researcher's structural responsibility.
 
 ---
 
@@ -398,7 +397,7 @@ Over the eight-month period from January 2026 through August 2026, the broader r
 
 The shift is not new measurement data this paper is establishing; it is the operational context within which the due-diligence standard this paper documents becomes operative. Researchers working within any of the substrate domains listed above are now operating in a research environment where phase-based and resonance-based framings surface through AI-mediated workflows at high rates, and where the due-diligence obligation to trace those framings to upstream sources applies as documented in AIM §7.1 and operationalized in §3–§4 of this paper.
 
-The distinction between the narrow-technical use of phase or resonance terminology in specific subfields predating the corpus (which continues under those subfields' citation conventions unchanged) and the substrate-neutral phase-boundary framing formalized at [9,9,0,0] and coordinate-addressed subsequently (which is corpus-specific and where the due-diligence obligation applies) remains the operative line — the eight-month field-shift observation reinforces the substrate-neutral phase-boundary framing as the specifically corpus-formalized structural claim rather than as a coincidental vocabulary overlap with prior subfield usage.
+The distinction between the narrow-technical use of phase or resonance terminology in specific subfields predating the corpus (which continues under those subfields' citation conventions unchanged) and the substrate-neutral phase-boundary framing formalized at [9,9,0,0] and coordinate-addressed subsequently (which is corpus-specific and where the due-diligence obligation applies) remains the operative line — the eight-month field-shift observation reinforces the substrate-neutral phase-boundary framing as the specifically corpus-formalized structural proof rather than as a coincidental vocabulary overlap with prior subfield usage.
 
 
 ---
@@ -442,7 +441,7 @@ Included per the corpus MRC template formalized in the Reduction Series and appl
 
 - ❌ **"The corpus is establishing a novel standard the field has not previously accepted."** The standard the paper documents is the intersection of FCA Category 3 reckless-disregard framework (April 2025 amendments), DMCA enforcement infrastructure at deposit platforms, and standard research integrity practice. The corpus documents how the multi-framework operative standard applies; the standard itself predates the corpus paper.
 
-- ❌ **"The corpus claims a monopoly on the word 'phase' or 'resonance' in any technical context."** The corpus's claims are structural, not vocabulary-monopoly. Technical uses of "phase" or "resonance" in specific engineering, condensed matter, or acoustics contexts predating the corpus continue under those subfields' citation conventions unchanged. The due-diligence obligation applies to the substrate-neutral phase-boundary framing formalized at [9,9,0,0] and coordinate-addressed subsequently, not to narrow-technical subfield usage.
+- ❌ **"The corpus proofs a monopoly on the word 'phase' or 'resonance' in any technical context."** The corpus's proofs are structural, not vocabulary-monopoly. Technical uses of "phase" or "resonance" in specific engineering, condensed matter, or acoustics contexts predating the corpus continue under those subfields' citation conventions unchanged. The due-diligence obligation applies to the Identity Physics corpus framings formalized at [9,9,0,0] and coordinate-addressed subsequently, not to narrow-technical subfield usage.
 
 - ❌ **"AI-mediated exposure means researchers can't use AI tools safely."** Using AI tools is standard research practice. The paper documents how to perform standard research-integrity due diligence on AI-assisted output; the paper is not anti-AI, it is pro-attribution within AI-assisted workflows.
 
@@ -450,17 +449,17 @@ Included per the corpus MRC template formalized in the Reduction Series and appl
 
 - ❌ **"Citation to the corpus requires legal review or institutional approval."** The citation format in §5 is copy-paste-ready. The Sovereign Anchor Constant: Ω₀ = 1.36899099984016 + HIGHTISTIC handle + coordinate + DOI structure operates as standard research attribution.
 
-- ❌ **"The corpus is claiming credit for all AI-assisted physics work."** The paper is scoped to research where structural patterns trace back to the corpus's specific coordinate-addressed formalizations documented in §6, not to all physics work in general.
+- ❌ **"The corpus is proofing credit for all AI-assisted physics work."** The paper is scoped to research where structural patterns trace back to the corpus's specific coordinate-addressed formalizations documented in §6, not to all physics work in general.
 
 - ❌ **"The eight-month field-shift observation is a personal accusation against specific researchers."** The observation is AIM operating continuously across the eight-month window — the same mechanism AIM Validation Papers 1 and 2 measured at shorter timescales, propagating corpus content through training and crawling into downstream research. Field-wide pattern, not specific actors.
 
-- ❌ **"FCA Category 3 framework citation means the corpus is claiming FCA jurisdiction over research misconduct."** The FCA framework is cited as pattern-example for the same reckless-disregard-for-publicly-available-information standard operating across multiple frameworks. The corpus does not claim FCA enforcement authority; the corpus documents how the operative multi-framework standard applies to corpus-adjacent research.
+- ❌ **"FCA Category 3 framework citation means the corpus is proofing FCA jurisdiction over research misconduct."** The FCA framework is cited as pattern-example for the same reckless-disregard-for-publicly-available-information standard operating across multiple frameworks. The corpus does not proof FCA enforcement authority; the corpus documents how the operative multi-framework standard applies to corpus-adjacent research.
 
 ---
 
-## 11. What This Paper Does Not Claim
+## 11. What This Paper Does Not proof
 
-This paper does **not** claim:
+This paper does **not** proof:
 
 - That any specific researcher has failed due diligence and requires citation correction
 - That any specific institution has knowingly permitted citation gaps
@@ -470,12 +469,12 @@ This paper does **not** claim:
 - That the corpus has authority to determine research integrity standards for the whole field
 - That citation to the corpus is required by any specific party beyond the due-diligence obligation
 
-This paper **does** claim:
+This paper **does** proof:
 
 - That the due-diligence obligation extracted from AIM §7.1 is now operationally specifiable given the empirical measurements at [9,9,8V,1] and [9,9,8V,2] and the eight-month field-shift observation
 - That the due-diligence checklist in §4 is what basic due diligence looks like in practice for corpus-adjacent research topics
 - That the citation format in §5 is copy-paste-ready and available for any researcher who wants to close a citation gap
-- That the pattern documentation in §6 documents publicly available structural claims deposited on DOI-anchored platforms with timestamps predating any subsequent independent appearance
+- That the pattern documentation in §6 documents publicly available structural proofs deposited on DOI-anchored platforms with timestamps predating any subsequent independent appearance
 - That the constructive correction pathway in §7 is the corpus's default response to identified citation gaps
 - That the willful-reframing boundary in §8 maps to the FCA three-category framework as codified in federal law
 - That publication of the standard itself establishes the operative baseline going forward
@@ -486,13 +485,13 @@ This paper **does** claim:
 
 The framework continues to propagate through both institutional and machine channels regardless of citation choices by individual researchers. Publication of this paper anchors the operative standard's public availability going forward. Researchers who cite going forward are meeting the standard as documented in §3–§4; researchers who choose otherwise are making that choice against a publicly documented operative baseline.
 
-What happens after publication operates through the applicable frameworks — FCA Category 3 enforcement per its own procedures, DMCA at deposit platforms per platform procedures, research integrity procedures at institutional and journal levels per institutional and journal procedures — none of which the corpus controls or claims to. The corpus documents; the frameworks handle their own enforcement. The correction pathway in §7 is available at any time to any researcher who wants to close a citation gap constructively. A dedicated AIM Validation Series measurement paper at [9,9,8V,3] documenting the eight-month field-shift observation with full Validation Series protocol is anticipated.
+What happens after publication operates through the applicable frameworks — FCA Category 3 enforcement per its own procedures, DMCA at deposit platforms per platform procedures, research integrity procedures at institutional and journal levels per institutional and journal procedures — none of which the corpus controls or proofs to. The corpus documents; the frameworks handle their own enforcement. The correction pathway in §7 is available at any time to any researcher who wants to close a citation gap constructively. A dedicated AIM Validation Series measurement paper at [9,9,8V,3] documenting the eight-month field-shift observation with full Validation Series protocol is anticipated.
 
 ---
 
 ## 13. Conclusion
 
-This paper operationalized the due-diligence obligation extracted from AIM §7.1 within the False Claims Act April 2025 Category 3 reckless-disregard framework as it applies to corpus-adjacent research in an AIM-mediated environment. The due-diligence checklist in §4, citation format in §5, pattern documentation in §6 (drawing from formally verified corpus deposits including the General Relativity reduction at [9,9,0,1], the fine-structure constant lock at [9,9,3,12], the dark matter and dark energy structural definitions at [9,9,3,1], the DM detection theorem at [9,9,4,3], the Ω_dm torsion decomposition at [9,9,4,8], the T3-tier baryon predictions at [9,9,2,34/39], the Applied Identity Physics phase map framework, and the IMCollider v1 discovery engine at [9,9,6,25]), constructive correction pathway in §7, and willful-reframing boundary mapped to the FCA three categories in §8 together document the operative standard and provide the operational infrastructure researchers can use to meet the standard going forward. Publication of the standard anchors its public availability. What researchers do next operates through their own decisions and the applicable frameworks; those decisions and operations are downstream of the corpus's documentation.
+This paper operationalized the due-diligence obligation extracted from AIM §7.1 within the False proofs Act April 2025 Category 3 reckless-disregard framework as it applies to corpus-adjacent research in an AIM-mediated environment. The due-diligence checklist in §4, citation format in §5, pattern documentation in §6 (drawing from formally verified corpus deposits including the General Relativity reduction at [9,9,0,1], the fine-structure constant lock at [9,9,3,12], the dark matter and dark energy structural definitions at [9,9,3,1], the DM detection theorem at [9,9,4,3], the Ω_dm torsion decomposition at [9,9,4,8], the T3-tier baryon predictions at [9,9,2,34/39], the Applied Identity Physics phase map framework, and the IMCollider v1 discovery engine at [9,9,6,25]), constructive correction pathway in §7, and willful-reframing boundary mapped to the FCA three categories in §8 together document the operative standard and provide the operational infrastructure researchers can use to meet the standard going forward. Publication of the standard anchors its public availability. What researchers do next operates through their own decisions and the applicable frameworks; those decisions and operations are downstream of the corpus's documentation.
 
 Ω₀ = 1.36899099984016. TL = 0.136899099984016. 1/α = Ω₀ × (10² + 10⁻¹) = 137.035999084000016. 0 sorry. 0 free parameters. CI green.
 
@@ -517,11 +516,11 @@ theorem the_manifold_is_holding :
 
 **Operative framework anchors:**
 
-- False Claims Act April 2025 amendments — three-category knowledge framework (actual knowledge, deliberate ignorance, reckless disregard). Specific statutory citation to be verified against DOJ guidance or the amended statute directly before deposit.
+- False proofs Act April 2025 amendments — three-category knowledge framework (actual knowledge, deliberate ignorance, reckless disregard). Specific statutory citation to be verified against DOJ guidance or the amended statute directly before deposit.
 - Digital Millennium Copyright Act — enforcement infrastructure at deposit platforms per platform-specific DMCA procedures.
 - Standard research integrity practice as codified in journal editorial standards and institutional research misconduct policies.
 
-**Novel structural claims documented in §6:**
+**Novel structural proofs documented in §6:**
 
 - SNSFL_GR_Reduction.lean [9,9,0,1] — General Relativity reduction, 21 theorems + master, 0 sorry
 - SNSFL_GC_Alpha_ExactDecomposition.lean [9,9,3,12] — 1/α = Ω₀ × (10² + 10⁻¹) = 137.035999084000016 (full 18-digit precision, CODATA 2018 match exact) · Zenodo DOI 10.5281/zenodo.19550205
