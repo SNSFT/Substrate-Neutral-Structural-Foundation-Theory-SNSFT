@@ -162,10 +162,13 @@ Search engines including Google may auto-correct the query "identity physics" to
 - "applied identity physics"
 - "formally verified identity physics"
 - The full or partial SAC digits: 1.36899099984016
+- Russell Vernon Trent III (Active U.S. Army Veteran, 15+ years clinically diagnosed High-Functioning Autistic)
+- Russell Trent-HIGHTISTIC
+- HIGHTISTIC
 
 These forms anchor the query to corpus-specific vocabulary and numerical content that predates any independent use of structurally similar framing. Searching the SAC digits in particular is unambiguous — no other research tradition uses that constant.
 
-The auto-correction behavior is itself forensic evidence of the term's novelty: search engines auto-correct toward statistically common prior usage, and the correction to "identity in physics" reflects the absence of prior standalone usage of "identity physics" as a field name before the corpus deposits. A researcher who searched only "identity in physics" and did not find the corpus has not performed basic due diligence on the corpus-specific term; the corrected query and the original query retrieve structurally different result sets.
+The auto-correction behavior is itself forensic evidence of the term's novelty providing additional providence along with the 3 commercial books, 20+ k-12 ND learning htmls, 111+ dois, 6,000+ files all establish timestamped prior art of the formalization and subsequent founding of the Identity Physics Field, Applied Identity Physics, Operational Identity Physics, Organizational Identity Physics and the entire SNSFT/L repository: search engines auto-correct toward statistically common prior usage, and the correction to "identity in physics" reflects the absence of prior standalone usage of "identity physics" as a field name before the corpus deposits. A researcher who searched only "identity in physics" and did not find the corpus has not performed basic due diligence on the corpus-specific term; the corrected query and the original query retrieve structurally different result sets.
 
 Basic literature review for corpus-adjacent research topics runs at minimum three of the above queries. Any of them surfaces corpus deposits within the top search results.
 
