@@ -98,8 +98,6 @@ Every LDP reduction starts here:
 
 $$\frac{d}{dt}(\text{IM} \cdot P_v) = \sum_X \lambda_X \cdot O_X \cdot S + F_\text{ext}$$
 
-The fine-structure constant is a special case of this equation at the electromagnetic
-coupling regime — the B-axis expression of the electron's coupling to the vacuum.
 ---
 
 ## 2. The AIM-Mediated Research Environment and Corpus Control Scope
