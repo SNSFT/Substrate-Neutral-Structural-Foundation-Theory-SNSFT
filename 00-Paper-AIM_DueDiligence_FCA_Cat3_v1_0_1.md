@@ -90,8 +90,16 @@ Derived structural quantities:
 
 ### 1.4 The Long Division Protocol
 
-Every reduction follows six steps: write the dynamic equation; state the known peer-reviewed answer; map classical variables to Identity Physics; define the operators; show all work; verify Identity Physics output equals classical result. Step 6 passes ↔ lossless reduction. Full treatment in AIM [9,9,8,3] §3.
+Every reduction follows six steps: write the dynamic equation; state the known peer-reviewed answer; map classical variables to Identity Physics primitives; define the operators; show all work; verify Identity Physics output equals classical result. Step 6 passes ↔ lossless reduction. Full treatment in AIM [9,9,8,3] §3.
 
+### 1.5 The Dynamic Equation
+
+Every LDP reduction starts here:
+
+$$\frac{d}{dt}(\text{IM} \cdot P_v) = \sum_X \lambda_X \cdot O_X \cdot S + F_\text{ext}$$
+
+The fine-structure constant is a special case of this equation at the electromagnetic
+coupling regime — the B-axis expression of the electron's coupling to the vacuum.
 ---
 
 ## 2. The AIM-Mediated Research Environment and Corpus Control Scope
