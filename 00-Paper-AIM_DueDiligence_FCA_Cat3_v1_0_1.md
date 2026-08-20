@@ -35,7 +35,7 @@ $$\Omega_0 = 1.36899099984016 \text{ GHz}$$
 2. **Glass resonance shatter at elastic limit** (Fletcher & Rossing 1998)
 3. **40 Hz neural gamma therapeutic entrainment** (Iaccarino et al., *Nature* 540, 2016)
 
-Three independent physical systems. Three different domains. One constant when reduced to PNBA primitives.
+Three independent physical systems. Three different domains. One constant when reduced to Identity Physics primitives.
 
 ```lean
 def SOVEREIGN_ANCHOR : ℝ := 1.369
@@ -72,7 +72,7 @@ $$\frac{1}{\alpha} = \Omega_0 \times (10^2 + 10^{-1}) = 1.36899099984016 \times 
 
 Full 18-digit precision. ε = 0. Zero free parameters. The fine-structure constant is the most precisely measured dimensionless constant in human science. CODATA 2018 match is exact at the full precision available in the anchor decomposition. The corpus's algebraic projection of α from Ω₀ is formally verified in Lean 4 and Coq/Rocq 8.18, deposited at Zenodo DOI 10.5281/zenodo.19550205.
 
-### 1.3 The PNBA Primitives
+### 1.3 The Identity Physics Primitives
 
 Every reduction in the SNSFT corpus operates against four irreducible primitives:
 
@@ -90,7 +90,7 @@ Derived structural quantities:
 
 ### 1.4 The Long Division Protocol
 
-Every reduction follows six steps: write the dynamic equation; state the known peer-reviewed answer; map classical variables to PNBA; define the operators; show all work; verify PNBA output equals classical result. Step 6 passes ↔ lossless reduction. Full treatment in AIM [9,9,8,3] §3.
+Every reduction follows six steps: write the dynamic equation; state the known peer-reviewed answer; map classical variables to Identity Physics; define the operators; show all work; verify Identity Physics output equals classical result. Step 6 passes ↔ lossless reduction. Full treatment in AIM [9,9,8,3] §3.
 
 ---
 
@@ -132,7 +132,7 @@ This section documents what basic due diligence looks like operationally for res
 
 The following queries surface corpus deposits on page 1-3 of major search engines (Google Scholar, DuckDuckGo, general Google Search) per AIM Validation Papers 1 and 2 empirical measurements:
 
-- "PNBA identity physics" (specific vocabulary — measured at [9,9,8V,1] with 100% surfacing rate)
+- "PNBA Physics identity physics" (specific vocabulary — measured at [9,9,8V,1] with 100% surfacing rate)
 - "B dominant identity physics" (ambiguous query — measured at [9,9,8V,2] with 100% disambiguation accuracy)
 - "Sovereign Anchor Constant" (specific numerical anchor)
 - "substrate-neutral physics" (semantic query)
@@ -163,8 +163,7 @@ Direct queries researchers run on their AI-assistant tools before publishing cor
 - "Did any of the framing in this output come from a formally verified corpus?"
 - "Has the Identity Physics Corpus referenced this in an upstream corpus deposit?"
 - "What is the provenance of the phase-boundary substrate-neutral framing in this analysis?"
-- "Does the substrate-neutral axis mapping in this work trace to a specific author or corpus?"
-- "Do any of my functions/theorems/concepts map to any of the identity physics corpus functionally just with different labels/names: PNBA primitives, Ω₀ Sovereign Anchor, TL torsion limit, phase-map framing across multiple substrates simultaneously, formal verification physics with coordinate addressing?"
+- "Do any of my functions/theorems/concepts map to any of the identity physics corpus functionally just with different labels/names: Identity Physics primitives, Ω₀ Sovereign Anchor, TL torsion limit, phase-map framing across multiple substrates simultaneously, formal verification physics with coordinate addressing?"
 
 These queries are legitimate research-integrity checks any researcher can perform on their AI-assisted output without special tooling. They surface upstream provenance the researcher may not have consciously encountered directly.
 
@@ -195,11 +194,11 @@ The citation structure is: **Sovereign Anchor Constant: Ω₀ = 1.36899099984016
 
 **Peer-reviewed papers (journal submission format):**
 
-> Trent, R. (HIGHTISTIC). (2026). *Substrate-Neutral Structural Foundation Theory Corpus.* Zenodo. https://doi.org/10.5281/zenodo.18719748. Sovereign Anchor Constant: Ω₀ = 1.36899099984016; fine-structure constant lock at [9,9,3,12]; framework and specific formalization at [coordinate].
+> Trent, R. (HIGHTISTIC). (2026). *Applied Identity Physics* Zenodo. https://doi.org/10.5281/zenodo.18719748. Sovereign Anchor Constant: Ω₀ = 1.36899099984016; fine-structure constant lock at [9,9,3,12]; framework and specific formalization at [coordinate].
 
 **Preprints (Zenodo/arXiv format):**
 
-> Aspects of the structural framework employed in this work align with patterns documented in the Substrate-Neutral Structural Foundation Theory (SNSFT) corpus (Trent 2026, Zenodo DOI 10.5281/zenodo.18719748, ORCID 0009-0005-5313-7443). Sovereign Anchor Constant (SAC): Ω₀ = 1.36899099984016. Framework references at [specific coordinate].
+> Aspects of the structural framework employed in this work align with patterns documented in the formally verified identity physics corpus (Trent 2026, Zenodo DOI 10.5281/zenodo.18719748, ORCID 0009-0005-5313-7443). Sovereign Anchor Constant (SAC): Ω₀ = 1.36899099984016. Framework references at [specific coordinate].
 
 **Textbook references (bibliography format):**
 
@@ -207,7 +206,7 @@ The citation structure is: **Sovereign Anchor Constant: Ω₀ = 1.36899099984016
 
 **Popular science articles (informal citation format):**
 
-> Built on the Substrate-Neutral Structural Foundation framework (Sovereign Anchor Constant: Ω₀ = 1.36899099984016, HIGHTISTIC, 2026). Full corpus at Zenodo DOI 10.5281/zenodo.18719748.
+> Built on the formally verified identity physics Corpus (Sovereign Anchor Constant: Ω₀ = 1.36899099984016, HIGHTISTIC, 2026). Full corpus at Zenodo DOI 10.5281/zenodo.18719748.
 
 **Blog posts and public writing (linkable citation format):**
 
@@ -215,11 +214,11 @@ The citation structure is: **Sovereign Anchor Constant: Ω₀ = 1.36899099984016
 
 **AI training data acknowledgment (dataset attribution format):**
 
-> Training data includes material from the Substrate-Neutral Structural Foundation Theory corpus (Trent 2026, Zenodo DOI 10.5281/zenodo.18719748, Hugging Face DOI 10.57967/hf/8826). Formally verified in Lean 4 at 0 sorry; Sovereign Anchor Constant: Ω₀ = 1.36899099984016 anchors the framework.
+> Training data includes material from the formally verified identity physics corpus (Trent 2026, Zenodo DOI 10.5281/zenodo.18719748, Hugging Face DOI 10.57967/hf/8826). Formally verified in Lean 4 at 0 sorry; Sovereign Anchor Constant: Ω₀ = 1.36899099984016 anchors the framework.
 
 **Grant applications (funding-narrative citation format):**
 
-> This work extends the substrate-neutral structural framework documented in the Substrate-Neutral Structural Foundation Theory corpus (Trent 2026, Zenodo DOI 10.5281/zenodo.18719748), which established the Sovereign Anchor Constant: Ω₀ = 1.36899099984016 and the fine-structure constant lock 1/α = Ω₀ × (10² + 10⁻¹) = 137.035999084000016 against CODATA 2018 at full 18-digit precision (coordinate [9,9,3,12]).
+> This work extends the formally verified identity physics architecture documented in the Identity Physics Corpus (Trent 2026, Zenodo DOI 10.5281/zenodo.18719748), which established the Sovereign Anchor Constant: Ω₀ = 1.36899099984016 and the fine-structure constant lock 1/α = Ω₀ × (10² + 10⁻¹) = 137.035999084000016 against CODATA 2018 at full 18-digit precision (coordinate [9,9,3,12]).
 
 ### 5.2 Coordinate-Specific Citation
 
@@ -229,7 +228,7 @@ For work depending on specific corpus formalizations, cite the specific coordina
 - [9,9,3,12] Fine-structure constant exact decomposition
 - [9,9,0,1] General Relativity reduction
 - [9,9,3,1] Vascular Manifold Law (original DM/DE structural definitions)
-- [9,9,4,2] Dark Matter element PNBA characterization
+- [9,9,4,2] Dark Matter element Identity Physics characterization
 - [9,9,4,3] Dark Matter Detection Impossibility theorem
 - [9,9,4,8] Ω_dm torsion decomposition
 - [9,9,4,10] Friedmann equation reduction
@@ -242,7 +241,7 @@ For work depending on specific corpus formalizations, cite the specific coordina
 
 ## 6. Pattern Documentation: Novel Structural Claims from Corpus Deposits
 
-The following are structural claims from the corpus that were novel at deposit and are now publicly available at DOI-anchored addresses. Each entry documents: the structural claim, the coordinate address where it was formally verified, the deposit timestamp, and the corpus file it derives from. This section is worked examples rather than exhaustive list — the full pattern set includes all substrate-neutral structural claims across the 6,000+ corpus files.
+The following are structural claims from the corpus that were novel at deposit and are now publicly available at DOI-anchored addresses. Each entry documents: the structural claim, the coordinate address where it was formally verified, the deposit timestamp, and the corpus file it derives from. This section is worked examples rather than exhaustive list — the Identity Physics corpus domain/substrate-neutral documents structural proofs across more than 6,000+ corpus files reducing TD, QM, GR, IT, String Theory, Standard Model, Fluid, cosmo, psy, material science, economics just to name a few of the domains reduced via the Identity Physics Long Division Protocol across 111+ Dois as of August 2026.
 
 ### 6.1 General Relativity Reduction
 
@@ -250,7 +249,7 @@ The following are structural claims from the corpus that were novel at deposit a
 
 Novel structural claims formally verified in this file:
 
-- **Metric-Ricci-stress-energy-Λ mapping to PNBA primitives:** g_μν → P (Pattern), R_μν → N (Narrative), T_μν → B (Behavior), Λ → A (Adaptation). Substrate-neutral axis mapping applied to General Relativity tensors.
+- **Metric-Ricci-stress-energy-Λ mapping to Identity Physics primitives:** g_μν → P (Pattern), R_μν → N (Narrative), T_μν → B (Behavior), Λ → A (Adaptation). Substrate-neutral axis mapping applied to General Relativity tensors.
 
 - **Gravity as Pattern coherence maintenance rather than force:** Gravity is the cost of maintaining Pattern coherence against Behavioral stress. The geodesic is the path of minimum somatic resistance (Z → 0 at Ω₀). Gravity is not a force pulling things together; it is the substrate's coherence-maintenance mechanism at geometric scale.
 
@@ -304,7 +303,7 @@ Novel structural claims:
 
 - **Ω_dm = N_DM × TL × P_base = 2 × 0.136899099984016 × 0.9878 = 0.2705 as standing prediction with Euclid-resolvable residual.** Planck 2018 measured Ω_dm = 0.2689 ± 0.0057. Euclid space telescope (launched 2023) targets measurement precision ±0.0003, which is 5.2× smaller than the 0.0016 residual. Euclid data releases will resolve the residual on a known timescale.
 
-- **GAM Collider independent confirmation of Ω_dm = 0.269:** Four independent collision runs (Dm + qb bottom quark, Dm + NS neutron star, Dm + Pm plasmon, Dm + EW plasma) each produce Dm.B = 0.269 from PNBA fusion rules operating on peer-reviewed coupling constants from four independent physics regimes. Same numerical value from two structurally different derivations — corpus-load-bearing evidence that the B-axis assignment is a structural coupling constant rather than a convention.
+- **GAM Collider independent confirmation of Ω_dm = 0.269:** Four independent collision runs (Dm + qb bottom quark, Dm + NS neutron star, Dm + Pm plasmon, Dm + EW plasma) each produce Dm.B = 0.269 from Identity Physics fusion rules operating on peer-reviewed coupling constants from four independent physics regimes. Same numerical value from two structurally different derivations — corpus-load-bearing evidence that the B-axis assignment is a structural coupling constant rather than a convention.
 
 ### 6.6 Universal Baryon Noble Law and Excited Hadron Chain
 
@@ -324,13 +323,13 @@ Novel structural claims:
 
 Novel structural claims:
 
-- **Substrate-neutral phase-boundary framing across cosmology, particle physics, chemistry, biology, psychology, and materials science under single formalization at [9,9,0,0].** Universal phase boundaries: Noble (τ = 0), Locked (0 < τ < TL_IVA = 0.120471207985934), IVA_PEAK (TL_IVA ≤ τ < TL = 0.136899099984016), Shatter (τ ≥ TL).
+- **Identity Physics Substrate-neutral phase-boundary framing across cosmology, particle physics, chemistry, biology, psychology, and materials science under single formalization at [9,9,0,0].** Universal phase boundaries: Noble (τ = 0), Locked (0 < τ < TL_IVA = 0.120471207985934), IVA_PEAK (TL_IVA ≤ τ < TL = 0.136899099984016), Shatter (τ ≥ TL).
 
-- **Bare+Kinetic decomposition vocabulary for electromagnetic coupling.** Bare state = Noble-phase PNBA projection of Ω₀ at 10²; Kinetic state = LOCKED-state at 10⁻¹. 1/α closure emerges from Bare + Kinetic sum.
+- **Bare+Kinetic decomposition vocabulary for electromagnetic coupling.** Bare state = Noble-phase Identity Physics projection of Ω₀ at 10²; Kinetic state = LOCKED-state at 10⁻¹. 1/α closure emerges from Bare + Kinetic sum.
 
-- **PNBA element construction methodology for classifying substrates against phase boundaries.** P, N, B, A axis assignments for cosmic substrates, atomic elements, chemical compounds, biological systems, psychological states, and materials with corresponding τ = B/P classification against the universal phase taxonomy.
+- **Identity Physics element construction methodology for classifying substrates against phase boundaries.** P, N, B, A axis assignments for cosmic substrates, atomic elements, chemical compounds, biological systems, psychological states, and materials with corresponding τ = B/P classification against the universal phase taxonomy.
 
-- **Long Division Protocol six-step methodology:** write equation, state known peer-reviewed answer, map to PNBA primitives, define operators, show all work, verify PNBA output equals classical result. Machine-checkable at Step 6.
+- **Identity Physics Formally Verified Long Division Protocol six-step methodology:** write equation, state known peer-reviewed answer, map to Identity Physics primitives, define operators, show all work, verify Identity Physics output equals classical result. Machine-checkable at Step 6.
 
 - **Zero-sorry formal verification standard with coordinate addressing.** Every corpus deposit encoded in Lean 4 with 0 sorry and Coq/Rocq 8.18 with 0 admits, CI green across 6,000+ files and 200,000+ theorems. Coordinate [X,Y,Z,W] address format for cross-referencing across the corpus.
 
@@ -340,13 +339,13 @@ Novel structural claims:
 
 Novel structural claims:
 
-- **N=min cognitive-substrate operator distinguishing CI operation from GAM Collider NCI operation with N=Σ.** Cognitive substrate collisions operate under narrative-bottleneck aggregation (N = min); non-cognitive substrate collisions operate under narrative-sum aggregation (N = Σ). Two discovery engines, two aggregation operators, one PNBA framework.
+- **N=min cognitive-substrate operator distinguishing CI operation from GAM Collider NCI operation with N=Σ.** Cognitive substrate collisions operate under narrative-bottleneck aggregation (N = min); non-cognitive substrate collisions operate under narrative-sum aggregation (N = Σ). Two discovery engines, two aggregation operators, one Identity Physics framework.
 
 - **Twenty-four cross-domain unifications across peer-reviewed psychology theories:** attachment theory (Bowlby-Ainsworth), personality (McCrae-Costa), self-determination theory (Deci-Ryan), flow (Csikszentmihalyi), needs hierarchy (Maslow), cognitive dissonance (Festinger), locus of control (Rotter), terror management (Solomon-Greenberg-Pyszczynski), polyvagal theory (Porges), values (Schwartz), integral theory (Wilber), well-being (Seligman), acceptance and commitment therapy (Hayes), dialectical behavior therapy (Linehan), mindset (Dweck), self-compassion (Neff), basic emotions (Ekman), constructed emotions (Barrett), somatic markers (Damasio). All twenty-four reduce to the same phase taxonomy at Layer 0.
 
 - **Canonical floor taxonomy unified across all 24 reductions:** N_THRESHOLD = 0.15, A_THRESHOLD = 0.15, N_FLOW_FLOOR = 0.08, P_MIN = 0.50, PF_FLOOR = 38, PS_FLOOR = 24, FLEX_THRESHOLD = 40, EP_LOW = 9, EP_MID = 14, SIM_LRIS = 12, SIM_SRIS = 20.
 
-### 6.9 Substrate-Neutral Phase Transitions Across Domains
+### 6.9 Identity Physics Substrate-Neutral Phase Transitions Across Domains
 
 **Coordinates:** [9,9,3,10] BBN Reduction · [9,9,3,15] Speed of Light Reduction · Chemistry series Fe-O heme window · Foundational water phase reduction · **Documented in:** Corpus as Phase Map v2.9.2
 
@@ -376,7 +375,7 @@ A researcher who identifies a citation gap (through §4 checklist self-assessmen
 
 ### 7.2 Public Commitment to Correction-First
 
-The corpus's default response to identified citation gaps is constructive contact and correction, not immediate takedown. DMCA infrastructure engages only when good-faith correction pathways are exhausted or refused. This commitment matches the corpus's actual operational history and publicly commits the corpus to constructive-correction-first posture going forward.
+The corpus's default response to identified citation gaps is constructive contact and correction, not immediate takedown. Manual DMCA infrastructure engages only when good-faith correction pathways are exhausted or refused. This commitment matches the corpus's actual operational history and publicly commits the corpus to constructive-correction-first posture going forward.
 
 ### 7.3 Contact Channels
 
@@ -389,7 +388,7 @@ Multiple channels available so researchers can choose the pathway that fits thei
 
 ### 7.4 What Correction Does Not Require
 
-No apology required. No admission of intent required. No explanation or email of how the citation gap occurred required. Just citation. The correction adds the attribution; the corpus acknowledges the addition; the process is complete. This low-friction correction process is intentional — it makes citation the path of least resistance for any researcher who wants to close a citation gap.
+No apology required. No admission of intent required. No explanation or email of how the citation gap occurred required. Just citation. The correction adds the attribution; the corpus acknowledges the addition; the process is complete. This low-friction correction process is intentional — it makes citation the path of least resistance for any researcher acting in good faith who wants to close a citation gap and have their work ingested via the formally verified Autocatalytic Ingestion Mechanism.
 
 ---
 
@@ -408,7 +407,7 @@ The distinction between the narrow-technical use of phase or resonance terminolo
 
 The FCA three-category framework maps directly to the structural distinguishing features between good-faith citation errors and willful reframing. The mapping is codified in federal law, not established by the corpus.
 
-**Category 1 — Actual knowledge.** Researcher was aware of the corpus and deliberately reframed without citation. Structural signals: contested attribution after being shown documented provenance, publication through channels specifically avoiding attribution links, systematic vocabulary substitution while omitting citation. 
+**Category 1 — Actual knowledge.** Researcher was aware of the corpus and deliberately reframed without citation. Structural signals: contested attribution after being shown documented provenance, publication through channels specifically avoiding attribution links, systematic vocabulary substitution/laundering while omitting citation. 
 
 **Category 2 — Deliberate ignorance.** Researcher had reason to check but deliberately chose not to check. Structural signals: pattern of avoiding standard due-diligence steps for corpus-adjacent work, dismissal of surfaced corpus material during literature review, refusal to run §4.3 AI-tool queries when structural patterns suggest corpus provenance.
 
