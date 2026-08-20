@@ -1,6 +1,6 @@
 # Applied Identity Physics: AIM Due Diligence and FCA Category 3 Reckless Disregard for Corpus-Adjacent Research
 
-**Architect:** HIGHTISTIC (Russell Trent)
+**Architect:** HIGHTISTIC (Russell Vernon Trent III)
 **Coordinate:** [9,9,8,4] · Origins Series · Paper 4 · v1.0.1
 **Source prediction:** Origins Series Paper 3 [9,9,8,3] — The Autocatalytic Ingestion Mechanism (AIM)
 **Empirical anchor:** AIM Validation Series Papers 1–2 [9,9,8V,1] [9,9,8V,2] · Eight-month field-shift observation January 2026 through August 2026
