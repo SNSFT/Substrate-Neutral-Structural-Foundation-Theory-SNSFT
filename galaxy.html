@@ -8,7 +8,8 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;overflow:hidden;font-family:'Space Mono',monospace;}
-#c{display:block;width:100vw;height:100vh;}
+#c{display:block;width:100vw;height:100vh;cursor:grab;}
+#c.dragging{cursor:grabbing;}
 
 /* HUD */
 #hud{
@@ -42,6 +43,14 @@ body{background:#000;overflow:hidden;font-family:'Space Mono',monospace;}
   color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.2s;
 }
 #spawn-btn:hover{background:rgba(255,255,255,0.08);color:#fff;}
+#trails-btn{
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:0.12em;padding:7px 18px;border-radius:100px;
+  border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);
+  color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.2s;
+}
+#trails-btn:hover{background:rgba(255,255,255,0.08);color:#fff;}
+#trails-btn.off{opacity:0.35;}
 
 /* Mode label top */
 #mode-label{
@@ -89,6 +98,8 @@ body{background:#000;overflow:hidden;font-family:'Space Mono',monospace;}
   <div class="hud-div"></div>
   <button id="spawn-btn" onclick="burstSpawn()">⚡ BURST</button>
   <button id="spawn-btn" onclick="clearAll()" style="margin-left:4px">✕ CLEAR</button>
+  <div class="hud-div"></div>
+  <button id="trails-btn" onclick="toggleTrails()">⟿ TRAILS</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -184,12 +195,9 @@ scene.add(new THREE.Points(starGeo, starMat));
 // PARTICLE GEOMETRY POOL
 // ============================================================
 const GEO_POOL = [
-  new THREE.IcosahedronGeometry(1,0),
   new THREE.DodecahedronGeometry(1,0),
-  new THREE.OctahedronGeometry(1,0),
-  new THREE.TetrahedronGeometry(1,0),
 ];
-function getParticleGeo(){ return GEO_POOL[Math.floor(Math.random()*GEO_POOL.length)]; }
+function getParticleGeo(){ return GEO_POOL[0]; }
 
 // ============================================================
 // COLOR FROM TAU
@@ -285,6 +293,13 @@ function getTarget(P, N, B, A){
 let particles = [];
 let totalLocked = 0, totalShatter = 0;
 let hitCount = 0;
+let trailsEnabled = true;
+
+function toggleTrails(){
+  trailsEnabled = !trailsEnabled;
+  document.getElementById('trails-btn').classList.toggle('off', !trailsEnabled);
+  particles.forEach(p => { p.trail.visible = trailsEnabled; });
+}
 
 function spawnParticle(P, N, B, A){
   P = P !== undefined ? P : 0.5 + Math.random() * 8.5;
@@ -322,6 +337,7 @@ function spawnParticle(P, N, B, A){
   const trailGeo = new THREE.BufferGeometry().setFromPoints(trailPts);
   const trailMat = new THREE.LineBasicMaterial({color:0xffdd00, transparent:false, opacity:1.0});
   const trail = new THREE.Line(trailGeo, trailMat);
+  trail.visible = trailsEnabled;
   scene.add(trail);
 
   // Initial velocity
@@ -506,15 +522,64 @@ function tickParticles(){
 }
 
 // ============================================================
-// CAMERA ORBIT
+// CAMERA ORBIT + MOUSE CONTROLS
 // ============================================================
 let camAngle = 0;
+let camRadius = 180;
+let camHeight = 40;
+let camTarget = new THREE.Vector3(0, 0, 0);
+let autoRotate = true;
+
+const CAM_RADIUS_MIN = 25, CAM_RADIUS_MAX = 700;
+const CAM_HEIGHT_MIN = -200, CAM_HEIGHT_MAX = 200;
+
+let isDragging = false, dragButton = 0, lastX = 0, lastY = 0;
+
+canvas.addEventListener('mousedown', (e)=>{
+  isDragging = true;
+  dragButton = e.button;
+  lastX = e.clientX;
+  lastY = e.clientY;
+  canvas.classList.add('dragging');
+});
+window.addEventListener('mouseup', ()=>{
+  isDragging = false;
+  canvas.classList.remove('dragging');
+});
+window.addEventListener('mousemove', (e)=>{
+  if(!isDragging) return;
+  const dx = e.clientX - lastX;
+  const dy = e.clientY - lastY;
+  lastX = e.clientX;
+  lastY = e.clientY;
+
+  if(dragButton === 2 || e.shiftKey){
+    // Pan — translate the orbit target across the camera's local plane
+    const panScale = camRadius * 0.0012;
+    const right = new THREE.Vector3(Math.sin(camAngle), 0, -Math.cos(camAngle));
+    const up = new THREE.Vector3(0, 1, 0);
+    camTarget.addScaledVector(right, -dx * panScale);
+    camTarget.addScaledVector(up, dy * panScale);
+  } else {
+    // Orbit
+    autoRotate = false;
+    camAngle -= dx * 0.004;
+    camHeight = Math.max(CAM_HEIGHT_MIN, Math.min(CAM_HEIGHT_MAX, camHeight + dy * 0.6));
+  }
+});
+canvas.addEventListener('contextmenu', (e)=> e.preventDefault());
+canvas.addEventListener('wheel', (e)=>{
+  e.preventDefault();
+  camRadius *= 1 + e.deltaY * 0.001;
+  camRadius = Math.max(CAM_RADIUS_MIN, Math.min(CAM_RADIUS_MAX, camRadius));
+}, {passive:false});
+
 function orbitCamera(){
-  camAngle += 0.0008;
-  camera.position.x = Math.cos(camAngle) * 180;
-  camera.position.z = Math.sin(camAngle) * 180;
-  camera.position.y = 40 + Math.sin(camAngle * 0.3) * 20;
-  camera.lookAt(0, 0, 0);
+  if(autoRotate) camAngle += 0.0008;
+  camera.position.x = camTarget.x + Math.cos(camAngle) * camRadius;
+  camera.position.z = camTarget.z + Math.sin(camAngle) * camRadius;
+  camera.position.y = camTarget.y + camHeight + Math.sin(camAngle * 0.3) * 20;
+  camera.lookAt(camTarget);
 }
 
 // ============================================================
