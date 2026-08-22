@@ -547,7 +547,7 @@ function draw2d() {
       if(cid==='SNSFL_Master_IMS'||!activeNodes.includes(cid)) return;
       const cp=nodePositions2d[cid]; if(!cp) return;
       ctx2d.beginPath();ctx2d.moveTo(pos.x,pos.y);ctx2d.lineTo(cp.x,cp.y);
-      ctx2d.strokeStyle='rgba(155,109,255,0.15)';ctx2d.lineWidth=0.5;ctx2d.stroke();
+      ctx2d.strokeStyle='rgba(240,192,96,0.5)';ctx2d.lineWidth=0.5;ctx2d.stroke();
     });
   });
   activeNodes.forEach(id => {
@@ -649,7 +649,7 @@ function init3d(){
   const starVerts=[];
   for(let i=0;i<2000;i++){starVerts.push((Math.random()-.5)*1200,(Math.random()-.5)*1200,(Math.random()-.5)*1200);}
   starGeo.setAttribute('position',new THREE.Float32BufferAttribute(starVerts,3));
-  const starMat=new THREE.PointsMaterial({color:0x334455,size:0.6,sizeAttenuation:true});
+  const starMat=new THREE.PointsMaterial({color:0xf0c060,size:0.6,sizeAttenuation:true});
   scene3d.add(new THREE.Points(starGeo,starMat));
   buildScene3d();
   draw3d();
@@ -718,12 +718,12 @@ function buildScene3d(){
     const node=CORPUS[id]; if(!node) return;
     const posA=nodePositions3d[id]; if(!posA) return;
     const masterPos=nodePositions3d['SNSFL_Master_IMS'];
-    const edgeToMaster=makeEdge3d(masterPos,posA,new THREE.Color(0x00ffc8),new THREE.Color(0x333366),1.2);
+    const edgeToMaster=makeEdge3d(masterPos,posA,new THREE.Color(0x00ffc8),new THREE.Color(0xf0c060),1.2);
     scene3d.add(edgeToMaster);edges3d.push(edgeToMaster);
     node.connects.forEach(cid=>{
       if(cid==='SNSFL_Master_IMS'||!activeNodes.includes(cid)) return;
       const posB=nodePositions3d[cid]; if(!posB) return;
-      const e=makeEdge3d(posA,posB,new THREE.Color(0x9b6dff),new THREE.Color(0x220044),0.5);
+      const e=makeEdge3d(posA,posB,new THREE.Color(0x9b6dff),new THREE.Color(0xf0c060),0.5);
       scene3d.add(e);edges3d.push(e);
     });
   });
@@ -734,7 +734,7 @@ function makeEdge3d(posA,posB,colA,colB,opacity){
   const geo=new THREE.BufferGeometry().setFromPoints(points);
   const colors=new Float32Array([colA.r,colA.g,colA.b,colB.r,colB.g,colB.b]);
   geo.setAttribute('color',new THREE.BufferAttribute(colors,3));
-  const mat=new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity});
+  const mat=new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:Math.max(opacity,0.6)});
   return new THREE.Line(geo,mat);
 }
 
@@ -803,13 +803,13 @@ function spawnHit(label,P,N,B,A,status,approved){
   const wireMat=new THREE.MeshBasicMaterial({color:col,wireframe:true,transparent:true,opacity:0.95});
   const wire=new THREE.Mesh(getParticleGeo(),wireMat);
   wire.scale.setScalar(probeScale*1.02);wire.position.copy(spawnPos);
-  const trailPoints=[new THREE.Vector3(0,0,0),spawnPos.clone()];
+  const trailPoints=[spawnPos.clone(),spawnPos.clone()];
   const trailGeo=new THREE.BufferGeometry().setFromPoints(trailPoints);
-  const trailMat=new THREE.LineBasicMaterial({color:col,transparent:true,opacity:0.35});
+  const trailMat=new THREE.LineBasicMaterial({color:0xffdd00,transparent:false,opacity:1.0,linewidth:3});
   const trail=new THREE.Line(trailGeo,trailMat);
   scene3d.add(mesh);scene3d.add(wire);scene3d.add(trail);
   hitCount++;
-  const hit={id:'hit_'+hitCount,label,P,N,B,A,tau,mesh,wire,trail,trailGeo,vel,target,age:0,maxAge:220+Math.floor(Math.random()*60),phase:'inflight',col,probeScale,lockAge:0};
+  const hit={id:'hit_'+hitCount,label,P,N,B,A,tau,mesh,wire,trail,trailGeo,vel,target,age:0,maxAge:220+Math.floor(Math.random()*60),phase:'inflight',col,probeScale,lockAge:0,spawnPos:spawnPos.clone()};
   sessionHits.push(hit);
   sessionRecord.push({label,P,N,B,A,status:status||null,approved:approved||false,timestamp:new Date().toISOString()});
   updateSessionLog();updateHitBadge();
@@ -830,8 +830,8 @@ function tickParticles(){
       vel.add(attraction);vel.add(repulsion.multiplyScalar(0.04));vel.multiplyScalar(hit.tau<TORSION_LIMIT?0.91:0.85);
       pos.add(vel);wire.position.copy(pos);
       const spinRate=0.04+hit.tau*0.3;mesh.rotation.x+=spinRate;mesh.rotation.y+=spinRate*0.7;wire.rotation.copy(mesh.rotation);
-      hit.trailGeo.setFromPoints([new THREE.Vector3(0,0,0),pos.clone()]);
-      trail.material.opacity=Math.max(0,0.35-hit.age*0.001);
+      hit.trailGeo.setFromPoints([hit.spawnPos.clone(),pos.clone()]);
+      trail.material.opacity=1.0;
       if(dist<8||hit.age>hit.maxAge){hit.phase='locking';hit.lockAge=0;}
     }
     if(hit.phase==='locking'){
