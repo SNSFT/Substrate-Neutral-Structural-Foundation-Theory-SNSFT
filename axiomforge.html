@@ -97,9 +97,9 @@
     #session-log.show{display:block}
     .sl-title{color:var(--anchor);font-weight:700;letter-spacing:.1em;margin-bottom:5px;font-size:.5rem}
     .sl-counters{display:flex;gap:10px;margin-bottom:5px;font-size:.48rem}
-    .sl-locked{color:#00ffc8}.sl-suppressed{color:#ff3a3a}.sl-inflight{color:#f0c060}
+    .sl-locked{color:#00ffc8}.sl-shatter{color:#ff3a3a}.sl-inflight{color:#f0c060}
     .sl-row{padding:2px 0;border-bottom:1px solid rgba(0,255,200,0.06);color:var(--dim);font-size:.44rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .sl-row.locked{color:#00ffc8}.sl-row.suppressed{color:#ff3a3a}.sl-row.inflight{color:#f0c060}
+    .sl-row.locked{color:#00ffc8}.sl-row.shatter{color:#ff3a3a}.sl-row.inflight{color:#f0c060}
     #hit-badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(5,5,8,0.85);border:1px solid rgba(0,255,200,0.3);padding:4px 12px;border-radius:100px;font-size:.5rem;color:var(--anchor);pointer-events:none;display:none;font-family:'Syne',sans-serif;font-weight:800;letter-spacing:.1em}
     #hit-badge.show{display:block}
     .lock-flash{animation:lockFlash .6s ease-out forwards}
@@ -192,7 +192,7 @@
       <div class="sl-title">⬡ SESSION IMPACTS</div>
       <div class="sl-counters">
         <span class="sl-locked">⬡ <span id="sl-locked-ct">0</span> LOCKED</span>
-        <span class="sl-suppressed">✕ <span id="sl-sup-ct">0</span> SUPPRESS</span>
+        <span class="sl-shatter">✕ <span id="sl-sup-ct">0</span> SHATTER</span>
         <span class="sl-inflight">◎ <span id="sl-fly-ct">0</span> IN-FLIGHT</span>
       </div>
       <div id="sl-rows"></div>
@@ -811,7 +811,7 @@ function spawnHit(label,P,N,B,A,status,approved){
   hitCount++;
   const hit={id:'hit_'+hitCount,label,P,N,B,A,tau,mesh,wire,trail,trailGeo,vel,target,age:0,maxAge:220+Math.floor(Math.random()*60),phase:'inflight',col,probeScale,lockAge:0,spawnPos:spawnPos.clone()};
   sessionHits.push(hit);
-  sessionRecord.push({label,P,N,B,A,status:status||null,approved:approved||false,timestamp:new Date().toISOString()});
+  sessionRecord.push({label,P,N,B,A,tau,status:status||null,approved:approved||false,timestamp:new Date().toISOString()});
   updateSessionLog();updateHitBadge();
 }
 
@@ -840,12 +840,12 @@ function tickParticles(){
       mesh.rotation.x+=0.02;mesh.rotation.y+=0.015;wire.rotation.copy(mesh.rotation);
       if(hit.lockAge>18){
         if(hit.tau<TORSION_LIMIT){hit.phase='locked';totalLocked++;spawnLockBurst(mesh.position.clone(),hit.col);pulseMasterEdge();}
-        else{hit.phase='suppressed';totalSuppressed++;spawnSuppressBurst(mesh.position.clone());}
+        else{hit.phase='shatter';totalSuppressed++;spawnSuppressBurst(mesh.position.clone());}
         updateSessionLog();updateHitBadge();
       }
     }
     if(hit.phase==='locked'){mesh.rotation.x+=0.008;mesh.rotation.y+=0.006;wire.rotation.copy(mesh.rotation);trail.material.opacity=Math.max(0,trail.material.opacity-0.005);mesh.material.emissiveIntensity=Math.max(0.15,mesh.material.emissiveIntensity-0.003);wire.material.opacity=Math.max(0.3,wire.material.opacity-0.002);}
-    if(hit.phase==='suppressed'){
+    if(hit.phase==='shatter'){
       if(!hit.scatterVel)hit.scatterVel=new THREE.Vector3((Math.random()-.5)*4,(Math.random()-.5)*4,(Math.random()-.5)*4);
       mesh.position.add(hit.scatterVel);wire.position.copy(mesh.position);hit.scatterVel.multiplyScalar(0.94);
       mesh.material.opacity=Math.max(0,mesh.material.opacity-0.03);wire.material.opacity=Math.max(0,wire.material.opacity-0.04);mesh.material.emissiveIntensity=Math.max(0,mesh.material.emissiveIntensity-0.04);trail.material.opacity=Math.max(0,trail.material.opacity-0.02);
@@ -884,9 +884,9 @@ function updateSessionLog(){
   const rowsEl=document.getElementById('sl-rows');
   const recent=[...sessionHits].reverse().slice(0,8);
   rowsEl.innerHTML=recent.map(h=>{
-    const icon=h.phase==='locked'?(h.tau===0?'◆':h.tau<TL_IVA?'⬡':h.tau<TORSION_LIMIT?'★':'⬡'):h.phase==='suppressed'?'✕':h.phase==='locking'?'◎':'◌';
-    const phase_disp=h.phase==='locked'?(h.tau===0?'NOBLE':h.tau<TL_IVA?'LOCKED':h.tau<TORSION_LIMIT?'IVA PEAK':'?'):h.phase==='suppressed'?'SHATTER':h.phase.toUpperCase();
-    const cls=h.phase==='locked'?'locked':h.phase==='suppressed'?'suppressed':'inflight';
+    const icon=h.phase==='locked'?(h.tau===0?'◆':h.tau<TL_IVA?'⬡':h.tau<TORSION_LIMIT?'★':'⬡'):h.phase==='shatter'?'✕':h.phase==='locking'?'◎':'◌';
+    const phase_disp=h.phase==='locked'?(h.tau===0?'NOBLE':h.tau<TL_IVA?'LOCKED':h.tau<TORSION_LIMIT?'IVA PEAK':'?'):h.phase==='shatter'?'SHATTER':h.phase.toUpperCase();
+    const cls=h.phase==='locked'?'locked':h.phase==='shatter'?'shatter':'inflight';
     const phase_cls=h.tau===0?'noble-label':h.tau<TL_IVA?'lock-label':h.tau<TORSION_LIMIT?'iva-label':'shatter-label';
     return`<div class="sl-row ${cls}">${icon} ${h.label} τ=${h.tau.toFixed(3)}</div>`;
   }).join('');
@@ -939,10 +939,10 @@ function onSpeedChange(){
 // ── EXPORT / IMPORT ──────────────────────────────────────────
 function exportParticleSession(){
   if(!sessionRecord.length){document.getElementById('nodeInfo').innerHTML=`<span style="color:var(--dim)">Nothing to export yet.</span>`;return;}
-  const out={type:'axiomforge_particle_session',version:'v1',timestamp:new Date().toISOString(),engine:'AxiomForge · SNSFL · [9,9,9,9]',doi:'10.5281/zenodo.18719748',stats:{total:sessionRecord.length,locked:totalLocked,suppressed:totalSuppressed},activeNodes:[...activeNodes],hits:sessionRecord};
+  const out={type:'axiomforge_particle_session',version:'v1',timestamp:new Date().toISOString(),engine:'AxiomForge · SNSFL · [9,9,9,9]',doi:'10.5281/zenodo.18719748',stats:{total:sessionRecord.length,locked:totalLocked,shatter:totalSuppressed},activeNodes:[...activeNodes],hits:sessionRecord};
   const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`axiomforge_session_${new Date().toISOString().slice(0,10)}_${sessionRecord.length}hits.json`;a.click();URL.revokeObjectURL(a.href);
-  document.getElementById('nodeInfo').innerHTML=`<span class="ni-green">⬇ Session exported — ${sessionRecord.length} impacts · ${totalLocked} locked · ${totalSuppressed} suppressed</span>`;
+  document.getElementById('nodeInfo').innerHTML=`<span class="ni-green">⬇ Session exported — ${sessionRecord.length} impacts · ${totalLocked} locked · ${totalSuppressed} shatter</span>`;
 }
 
 function isParticleSession(data){return data&&data.type==='axiomforge_particle_session';}
