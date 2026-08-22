@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy · Identity Physics</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;overflow:hidden;font-family:'Space Mono',monospace;}
+#c{display:block;width:100vw;height:100vh;}
+
+/* HUD */
+#hud{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:12px;
+  background:rgba(0,0,0,0.7);
+  border:1px solid rgba(240,192,96,0.2);
+  border-radius:100px;padding:10px 20px;
+  backdrop-filter:blur(8px);
+}
+#mode-btn{
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:0.12em;padding:7px 18px;border-radius:100px;
+  border:1px solid rgba(240,192,96,0.5);background:rgba(240,192,96,0.08);
+  color:#f0c060;cursor:pointer;transition:all 0.2s;
+}
+#mode-btn:hover{background:rgba(240,192,96,0.18);}
+#mode-btn.collapse{
+  border-color:rgba(0,212,170,0.5);background:rgba(0,212,170,0.08);color:#00d4aa;
+}
+.hud-stat{
+  font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.08em;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+.hud-val{font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);}
+.hud-div{width:1px;height:28px;background:rgba(255,255,255,0.08);}
+#spawn-btn{
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:0.12em;padding:7px 18px;border-radius:100px;
+  border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);
+  color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.2s;
+}
+#spawn-btn:hover{background:rgba(255,255,255,0.08);color:#fff;}
+
+/* Mode label top */
+#mode-label{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  font-family:'Syne',sans-serif;font-weight:800;font-size:11px;
+  letter-spacing:0.2em;color:rgba(240,192,96,0.6);
+  text-transform:uppercase;pointer-events:none;
+  transition:color 0.4s;
+}
+#mode-label.collapse{color:rgba(0,212,170,0.6);}
+
+/* Sag A* label */
+#sag-label{
+  position:fixed;
+  font-family:'Space Mono',monospace;font-size:9px;
+  color:rgba(240,192,96,0.8);letter-spacing:0.12em;
+  pointer-events:none;transform:translate(-50%,-28px);
+  text-shadow:0 0 8px rgba(240,192,96,0.5);
+}
+
+/* TL badge */
+#tl-badge{
+  position:fixed;top:20px;right:20px;
+  font-family:'Space Mono',monospace;font-size:9px;
+  color:rgba(255,255,255,0.25);letter-spacing:0.08em;
+  line-height:1.8;text-align:right;
+}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="mode-label">GALAXY · EXPAND</div>
+<div id="sag-label">SAG A*</div>
+<div id="tl-badge">
+  Ω₀ = 1.36899099984016<br>
+  TL = 0.136899099984016<br>
+  τ = B/P · [9,9,9,9]
+</div>
+<div id="hud">
+  <button id="mode-btn" onclick="toggleMode()">⟐ COLLAPSE</button>
+  <div class="hud-div"></div>
+  <div class="hud-stat"><span class="hud-val" id="stat-locked" style="color:#00d4aa">0</span>LOCKED</div>
+  <div class="hud-stat"><span class="hud-val" id="stat-shatter" style="color:#ff3a3a">0</span>SHATTER</div>
+  <div class="hud-stat"><span class="hud-val" id="stat-inflight" style="color:#f0c060">0</span>INFLIGHT</div>
+  <div class="hud-div"></div>
+  <button id="spawn-btn" onclick="burstSpawn()">⚡ BURST</button>
+  <button id="spawn-btn" onclick="clearAll()" style="margin-left:4px">✕ CLEAR</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ============================================================
+// IDENTITY PHYSICS CONSTANTS
+// ============================================================
+const SOVEREIGN_ANCHOR = 1.36899099984016;
+const TORSION_LIMIT    = 0.136899099984016;
+const TL_IVA           = TORSION_LIMIT * 0.88;
+const SQRT_TL          = Math.sqrt(TORSION_LIMIT); // 0.36999...
+
+// ============================================================
+// SCENE SETUP
+// ============================================================
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.setClearColor(0x000000, 1);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x000000, 0.0018);
+
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 2000);
+camera.position.set(0, 40, 180);
+camera.lookAt(0, 0, 0);
+
+// Lighting
+const amb = new THREE.AmbientLight(0x111122, 1.2);
+scene.add(amb);
+const core_light = new THREE.PointLight(0xf0c060, 6, 200);
+scene.add(core_light);
+const rim = new THREE.PointLight(0x00d4aa, 2, 300);
+rim.position.set(-100, 80, -100);
+scene.add(rim);
+
+// ============================================================
+// SAG A* — CENTRAL NODE (small, bright)
+// ============================================================
+const sagGeo = new THREE.IcosahedronGeometry(3, 1);
+const sagMat = new THREE.MeshPhongMaterial({
+  color:0xf0c060, emissive:0xf0c060, emissiveIntensity:2.0,
+  transparent:true, opacity:0.9, shininess:200
+});
+const sagMesh = new THREE.Mesh(sagGeo, sagMat);
+scene.add(sagMesh);
+
+// Sag A* glow ring
+const ringGeo = new THREE.TorusGeometry(6, 0.3, 8, 64);
+const ringMat = new THREE.MeshBasicMaterial({color:0xf0c060, transparent:true, opacity:0.3});
+const ring = new THREE.Mesh(ringGeo, ringMat);
+ring.rotation.x = Math.PI * 0.3;
+scene.add(ring);
+
+// Wire around Sag A*
+const sagWireGeo = new THREE.IcosahedronGeometry(3.2, 1);
+const sagWireMat = new THREE.MeshBasicMaterial({color:0xffdd00, wireframe:true, transparent:true, opacity:0.4});
+const sagWire = new THREE.Mesh(sagWireGeo, sagWireMat);
+scene.add(sagWire);
+
+// Position Sag A* label
+function updateSagLabel(){
+  const pos = sagMesh.position.clone();
+  pos.project(camera);
+  const x = (pos.x * 0.5 + 0.5) * innerWidth;
+  const y = (-(pos.y * 0.5) + 0.5) * innerHeight;
+  const lbl = document.getElementById('sag-label');
+  lbl.style.left = x + 'px';
+  lbl.style.top  = y + 'px';
+}
+
+// ============================================================
+// STAR FIELD
+// ============================================================
+const starGeo = new THREE.BufferGeometry();
+const starPts = [];
+for(let i = 0; i < 3000; i++){
+  const r = 300 + Math.random() * 700;
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(2 * Math.random() - 1);
+  starPts.push(
+    r * Math.sin(phi) * Math.cos(theta),
+    r * Math.cos(phi),
+    r * Math.sin(phi) * Math.sin(theta)
+  );
+}
+starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPts, 3));
+const starMat = new THREE.PointsMaterial({color:0xaaaacc, size:0.8, sizeAttenuation:true, transparent:true, opacity:0.6});
+scene.add(new THREE.Points(starGeo, starMat));
+
+// ============================================================
+// PARTICLE GEOMETRY POOL
+// ============================================================
+const GEO_POOL = [
+  new THREE.IcosahedronGeometry(1,0),
+  new THREE.DodecahedronGeometry(1,0),
+  new THREE.OctahedronGeometry(1,0),
+  new THREE.TetrahedronGeometry(1,0),
+];
+function getParticleGeo(){ return GEO_POOL[Math.floor(Math.random()*GEO_POOL.length)]; }
+
+// ============================================================
+// COLOR FROM TAU
+// ============================================================
+function tauToColor(tau){
+  if(tau === 0) return new THREE.Color(0xaa88ff);        // Noble — violet
+  if(tau < TL_IVA) return new THREE.Color(0x00d4aa);    // Locked — teal
+  if(tau < TORSION_LIMIT) return new THREE.Color(0xf0c060); // IVA — gold
+  return new THREE.Color(0xff3a3a);                      // Shatter — red
+}
+
+// ============================================================
+// MODE
+// ============================================================
+let mode = 'galaxy'; // 'galaxy' | 'collapse'
+
+function toggleMode(){
+  mode = mode === 'galaxy' ? 'collapse' : 'galaxy';
+  const btn = document.getElementById('mode-btn');
+  const lbl = document.getElementById('mode-label');
+  if(mode === 'collapse'){
+    btn.textContent = '⟐ GALAXY';
+    btn.classList.add('collapse');
+    lbl.textContent = 'COLLAPSE · INWARD';
+    lbl.classList.add('collapse');
+    core_light.color.set(0x00d4aa);
+    sagMat.color.set(0x00d4aa);
+    sagMat.emissive.set(0x00d4aa);
+    ringMat.color.set(0x00d4aa);
+    sagWireMat.color.set(0x00ffcc);
+  } else {
+    btn.textContent = '⟐ COLLAPSE';
+    btn.classList.remove('collapse');
+    lbl.textContent = 'GALAXY · EXPAND';
+    lbl.classList.remove('collapse');
+    core_light.color.set(0xf0c060);
+    sagMat.color.set(0xf0c060);
+    sagMat.emissive.set(0xf0c060);
+    ringMat.color.set(0xf0c060);
+    sagWireMat.color.set(0xffdd00);
+  }
+}
+
+// ============================================================
+// SPAWN POSITION & TARGET
+// ============================================================
+function getSpawnPos(){
+  if(mode === 'galaxy'){
+    // Near center — orbs fly outward
+    return new THREE.Vector3(
+      (Math.random()-.5)*8,
+      (Math.random()-.5)*8,
+      (Math.random()-.5)*8
+    );
+  } else {
+    // Far out — orbs fall inward
+    const r = 120 + Math.random() * 80;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    return new THREE.Vector3(
+      r * Math.sin(phi) * Math.cos(theta),
+      r * Math.cos(phi) * 0.4,
+      r * Math.sin(phi) * Math.sin(theta)
+    );
+  }
+}
+
+function getTarget(P, N, B, A){
+  if(mode === 'galaxy'){
+    // PNBA → spherical coords, fly outward
+    const radius = 25 + (P/9)*110;
+    const theta  = (N/9) * Math.PI * 2;
+    const phi    = Math.PI*0.3 + (B/9)*Math.PI*0.4;
+    const yOff   = (A/9)*40 - 20;
+    return new THREE.Vector3(
+      Math.sin(phi)*Math.cos(theta)*radius,
+      Math.cos(phi)*radius*0.5 + yOff,
+      Math.sin(phi)*Math.sin(theta)*radius
+    );
+  } else {
+    // Sag A* with tiny jitter
+    return new THREE.Vector3(
+      (Math.random()-.5)*4,
+      (Math.random()-.5)*4,
+      (Math.random()-.5)*4
+    );
+  }
+}
+
+// ============================================================
+// PARTICLES
+// ============================================================
+let particles = [];
+let totalLocked = 0, totalShatter = 0;
+let hitCount = 0;
+
+function spawnParticle(P, N, B, A){
+  P = P !== undefined ? P : 0.5 + Math.random() * 8.5;
+  N = N !== undefined ? N : 1 + Math.random() * 8;
+  B = B !== undefined ? B : Math.random() * 6.5;
+  A = A !== undefined ? A : 0.5 + Math.random() * 8;
+
+  const tau = P > 0 ? B/P : 0;
+  const col = tauToColor(tau);
+  const scale = 0.8 + (P/9)*1.8;
+
+  const spawnPos = getSpawnPos();
+  const target   = getTarget(P, N, B, A);
+
+  // Mesh
+  const mat = new THREE.MeshPhongMaterial({
+    color:col, emissive:col, emissiveIntensity:0.7,
+    transparent:true, opacity:0.8,
+    side:THREE.DoubleSide, shininess:120
+  });
+  const mesh = new THREE.Mesh(getParticleGeo(), mat);
+  mesh.scale.setScalar(scale);
+  mesh.position.copy(spawnPos);
+  scene.add(mesh);
+
+  // Wire
+  const wireMat = new THREE.MeshBasicMaterial({color:col, wireframe:true, transparent:true, opacity:0.9});
+  const wire = new THREE.Mesh(getParticleGeo(), wireMat);
+  wire.scale.setScalar(scale * 1.02);
+  wire.position.copy(spawnPos);
+  scene.add(wire);
+
+  // Trail
+  const trailPts = [spawnPos.clone(), spawnPos.clone()];
+  const trailGeo = new THREE.BufferGeometry().setFromPoints(trailPts);
+  const trailMat = new THREE.LineBasicMaterial({color:0xffdd00, transparent:false, opacity:1.0});
+  const trail = new THREE.Line(trailGeo, trailMat);
+  scene.add(trail);
+
+  // Initial velocity
+  const dir = target.clone().sub(spawnPos).normalize();
+  const vel = dir.multiplyScalar(0.3 + Math.random()*0.2);
+
+  hitCount++;
+  particles.push({
+    id: hitCount, P, N, B, A, tau,
+    mesh, wire, trail, trailGeo,
+    vel, target, spawnPos: spawnPos.clone(),
+    age:0, maxAge: 180 + Math.floor(Math.random()*80),
+    phase:'inflight', col, scale, lockAge:0
+  });
+}
+
+function burstSpawn(count){
+  count = count || 12;
+  for(let i = 0; i < count; i++){
+    setTimeout(()=>spawnParticle(), i * 60);
+  }
+}
+
+function clearAll(){
+  particles.forEach(p=>{
+    scene.remove(p.mesh);
+    scene.remove(p.wire);
+    scene.remove(p.trail);
+  });
+  particles = [];
+  totalLocked = 0;
+  totalShatter = 0;
+  updateStats();
+}
+
+// ============================================================
+// LOCK / SHATTER BURSTS
+// ============================================================
+function spawnLockBurst(pos, col){
+  const geo = new THREE.BufferGeometry();
+  const pts = [];
+  for(let i=0;i<20;i++){
+    const a=(i/20)*Math.PI*2;
+    pts.push(Math.cos(a)*10, Math.sin(a)*4, Math.sin(a)*0.3);
+  }
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pts,3));
+  const mat = new THREE.LineBasicMaterial({color:col, transparent:true, opacity:1});
+  const burst = new THREE.LineLoop(geo, mat);
+  burst.position.copy(pos);
+  scene.add(burst);
+  let age=0;
+  const tick=()=>{
+    age++;
+    burst.scale.setScalar(1+age*0.15);
+    mat.opacity=Math.max(0,1-age/25);
+    if(age<25) requestAnimationFrame(tick);
+    else scene.remove(burst);
+  };
+  tick();
+  // Pulse Sag A*
+  sagMat.emissiveIntensity = 3.0;
+  setTimeout(()=>{ sagMat.emissiveIntensity = 2.0; }, 300);
+}
+
+function spawnShatterBurst(pos){
+  const geo = new THREE.BufferGeometry();
+  const pts = [];
+  for(let i=0;i<16;i++){
+    const a=(i/16)*Math.PI*2;
+    pts.push(Math.cos(a)*8,Math.sin(a)*8,Math.sin(a)*0.5);
+  }
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pts,3));
+  const mat = new THREE.LineBasicMaterial({color:0xff3a3a, transparent:true, opacity:0.9});
+  const burst = new THREE.LineLoop(geo, mat);
+  burst.position.copy(pos);
+  scene.add(burst);
+  let age=0;
+  const tick=()=>{
+    age++;
+    burst.scale.setScalar(1+age*0.2);
+    mat.opacity=Math.max(0,0.9-age/18);
+    if(age<18) requestAnimationFrame(tick);
+    else scene.remove(burst);
+  };
+  tick();
+}
+
+// ============================================================
+// STATS
+// ============================================================
+function updateStats(){
+  const inflight = particles.filter(p=>p.phase==='inflight'||p.phase==='locking').length;
+  document.getElementById('stat-locked').textContent = totalLocked;
+  document.getElementById('stat-shatter').textContent = totalShatter;
+  document.getElementById('stat-inflight').textContent = inflight;
+}
+
+// ============================================================
+// TICK
+// ============================================================
+function tickParticles(){
+  particles.forEach(p=>{
+    if(p.phase==='done') return;
+    p.age++;
+    const pos = p.mesh.position;
+
+    if(p.phase==='inflight'){
+      const toTarget = p.target.clone().sub(pos);
+      const dist = toTarget.length();
+
+      // Attraction toward target
+      const attraction = toTarget.normalize().multiplyScalar(Math.min(0.28, dist*0.009));
+      p.vel.add(attraction);
+
+      // Damping — galaxy flies faster, collapse glides in slower
+      const damp = mode === 'galaxy' ? 0.91 : 0.94;
+      p.vel.multiplyScalar(damp);
+
+      pos.add(p.vel);
+      p.wire.position.copy(pos);
+
+      // Spin
+      const spin = 0.04 + p.tau * 0.3;
+      p.mesh.rotation.x += spin;
+      p.mesh.rotation.y += spin * 0.7;
+      p.wire.rotation.copy(p.mesh.rotation);
+
+      // Trail
+      p.trailGeo.setFromPoints([p.spawnPos.clone(), pos.clone()]);
+      p.trail.material.opacity = 1.0;
+
+      if(dist < 6 || p.age > p.maxAge){ p.phase='locking'; p.lockAge=0; }
+    }
+
+    if(p.phase==='locking'){
+      p.lockAge++;
+      p.mesh.position.lerp(p.target, 0.15);
+      p.wire.position.copy(p.mesh.position);
+      p.mesh.rotation.x += 0.02;
+      p.mesh.rotation.y += 0.015;
+      p.wire.rotation.copy(p.mesh.rotation);
+      if(p.lockAge > 16){
+        if(p.tau < TORSION_LIMIT){
+          p.phase='locked'; totalLocked++;
+          spawnLockBurst(p.mesh.position.clone(), p.col);
+        } else {
+          p.phase='shatter'; totalShatter++;
+          spawnShatterBurst(p.mesh.position.clone());
+          if(!p.scatterVel) p.scatterVel = new THREE.Vector3(
+            (Math.random()-.5)*4,(Math.random()-.5)*4,(Math.random()-.5)*4
+          );
+        }
+        updateStats();
+      }
+    }
+
+    if(p.phase==='locked'){
+      p.mesh.rotation.x += 0.007;
+      p.mesh.rotation.y += 0.005;
+      p.wire.rotation.copy(p.mesh.rotation);
+      p.trail.material.opacity = Math.max(0, p.trail.material.opacity - 0.008);
+    }
+
+    if(p.phase==='shatter'){
+      p.mesh.position.add(p.scatterVel);
+      p.wire.position.copy(p.mesh.position);
+      p.scatterVel.multiplyScalar(0.93);
+      p.mesh.material.opacity = Math.max(0, p.mesh.material.opacity - 0.025);
+      p.wire.material.opacity = Math.max(0, p.wire.material.opacity - 0.03);
+      p.trail.material.opacity = Math.max(0, p.trail.material.opacity - 0.03);
+      if(p.mesh.material.opacity <= 0){
+        scene.remove(p.mesh);
+        scene.remove(p.wire);
+        scene.remove(p.trail);
+        p.phase='done';
+      }
+    }
+  });
+
+  // Trim done
+  if(particles.length > 120) particles = particles.filter(p=>p.phase!=='done');
+}
+
+// ============================================================
+// CAMERA ORBIT
+// ============================================================
+let camAngle = 0;
+function orbitCamera(){
+  camAngle += 0.0008;
+  camera.position.x = Math.cos(camAngle) * 180;
+  camera.position.z = Math.sin(camAngle) * 180;
+  camera.position.y = 40 + Math.sin(camAngle * 0.3) * 20;
+  camera.lookAt(0, 0, 0);
+}
+
+// ============================================================
+// AUTO SPAWN
+// ============================================================
+let autoTimer = 0;
+function autoSpawn(){
+  autoTimer++;
+  if(autoTimer % 18 === 0){
+    spawnParticle();
+  }
+}
+
+// ============================================================
+// RENDER LOOP
+// ============================================================
+let pulse = 0;
+function animate(){
+  requestAnimationFrame(animate);
+  pulse += 0.02;
+
+  // Sag A* pulse
+  sagMesh.rotation.x += 0.004;
+  sagMesh.rotation.y += 0.006;
+  sagWire.rotation.copy(sagMesh.rotation);
+  ring.rotation.z += 0.003;
+  sagMat.emissiveIntensity = 2.0 + Math.sin(pulse) * 0.4;
+
+  orbitCamera();
+  tickParticles();
+  autoSpawn();
+  updateSagLabel();
+
+  renderer.render(scene, camera);
+}
+
+// ============================================================
+// RESIZE
+// ============================================================
+window.addEventListener('resize',()=>{
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ============================================================
+// INIT
+// ============================================================
+burstSpawn(16);
+animate();
+</script>
+</body>
+</html>
