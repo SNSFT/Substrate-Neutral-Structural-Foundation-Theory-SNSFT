@@ -97,7 +97,10 @@
     #session-log.show{display:block}
     .sl-title{color:var(--anchor);font-weight:700;letter-spacing:.1em;margin-bottom:5px;font-size:.5rem}
     .sl-counters{display:flex;gap:10px;margin-bottom:5px;font-size:.48rem}
-    .sl-locked{color:#00ffc8}.sl-suppressed{color:#ff3a3a}.sl-inflight{color:#f0c060}
+    .sl-locked{color:#7b4fff}.sl-suppressed{color:#ff3a3a}.sl-inflight{color:#f0c060}
+    .sl-noble{color:#00ffc8}.sl-iva{color:#f0c060}.sl-shatter{color:#ff3a3a}
+    .sl-filter-btn{transition:.15s;opacity:1}
+    .sl-filter-btn:not(.active){opacity:0.3;background:rgba(5,5,8,0.85)!important}
     .sl-row{padding:2px 0;border-bottom:1px solid rgba(0,255,200,0.06);color:var(--dim);font-size:.44rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .sl-row.locked{color:#00ffc8}.sl-row.suppressed{color:#ff3a3a}.sl-row.inflight{color:#f0c060}
     #hit-badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(5,5,8,0.85);border:1px solid rgba(0,255,200,0.3);padding:4px 12px;border-radius:100px;font-size:.5rem;color:var(--anchor);pointer-events:none;display:none;font-family:'Syne',sans-serif;font-weight:800;letter-spacing:.1em}
@@ -139,7 +142,7 @@
 <body>
 
 <div id="boot">
-  <div class="boot-num">1.369</div>
+  <div class="boot-num">1.36899099984016</div>
   <div id="bootLog"></div>
 </div>
 
@@ -173,7 +176,7 @@
     <div id="heatmap-legend" class="show">
       <div style="color:var(--anchor);font-weight:700;margin-bottom:4px;font-size:.5rem">TORSION τ = B/P</div>
       <div class="hm-bar"></div>
-      <div class="hm-labels"><span style="color:#00ffc8">NOBLE τ=0</span><span style="color:#7b4fff">LOCKED</span><span style="color:#f0c060">IVA</span><span style="color:#ff3a3a">SHATTER τ≥0.1369</span></div>
+      <div class="hm-labels"><span style="color:#00ffc8">NOBLE τ=0</span><span style="color:#7b4fff">LOCKED</span><span style="color:#f0c060">IVA</span><span style="color:#ff3a3a">SHATTER τ≥0.136899099984016</span></div>
     </div>
     <div id="vascular-overlay" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;pointer-events:all">
       <button onclick="setVascularView()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:5px 10px;background:rgba(5,5,8,0.88);border:1px solid rgba(0,255,200,0.4);color:var(--anchor);cursor:pointer;border-radius:4px;letter-spacing:.1em">⟐ VASCULAR VIEW</button>
@@ -189,11 +192,19 @@
       <div class="thud-row"><span class="thud-label">PHASE</span><span class="thud-val" id="hud-phase">—</span></div>
     </div>
     <div id="session-log">
-      <div class="sl-title">⬡ SESSION IMPACTS</div>
-      <div class="sl-counters">
+      <div class="sl-title">⬡ SESSION IMPACTS · GAMCollider v15 taxonomy</div>
+      <div class="sl-counters" style="flex-wrap:wrap;gap:8px">
+        <span class="sl-noble">◆ <span id="sl-noble-ct">0</span> NOBLE</span>
         <span class="sl-locked">⬡ <span id="sl-locked-ct">0</span> LOCKED</span>
-        <span class="sl-suppressed">✕ <span id="sl-sup-ct">0</span> SUPPRESS</span>
+        <span class="sl-iva">★ <span id="sl-iva-ct">0</span> IVA_PEAK</span>
+        <span class="sl-shatter">✕ <span id="sl-shatter-ct">0</span> SHATTER</span>
         <span class="sl-inflight">◎ <span id="sl-fly-ct">0</span> IN-FLIGHT</span>
+      </div>
+      <div class="sl-filters" style="display:flex;gap:4px;margin:5px 0;flex-wrap:wrap;pointer-events:all">
+        <button class="sl-filter-btn active" data-phase="noble" onclick="togglePhaseFilter('noble')" style="font-family:'Syne',sans-serif;font-size:.44rem;padding:2px 6px;background:rgba(0,255,200,0.15);border:1px solid #00ffc8;color:#00ffc8;cursor:pointer;border-radius:3px">◆ N</button>
+        <button class="sl-filter-btn active" data-phase="locked" onclick="togglePhaseFilter('locked')" style="font-family:'Syne',sans-serif;font-size:.44rem;padding:2px 6px;background:rgba(123,79,255,0.15);border:1px solid #7b4fff;color:#7b4fff;cursor:pointer;border-radius:3px">⬡ L</button>
+        <button class="sl-filter-btn active" data-phase="ivapeak" onclick="togglePhaseFilter('ivapeak')" style="font-family:'Syne',sans-serif;font-size:.44rem;padding:2px 6px;background:rgba(240,192,96,0.15);border:1px solid #f0c060;color:#f0c060;cursor:pointer;border-radius:3px">★ I</button>
+        <button class="sl-filter-btn active" data-phase="shatter" onclick="togglePhaseFilter('shatter')" style="font-family:'Syne',sans-serif;font-size:.44rem;padding:2px 6px;background:rgba(255,58,58,0.15);border:1px solid #ff3a3a;color:#ff3a3a;cursor:pointer;border-radius:3px">✕ S</button>
       </div>
       <div id="sl-rows"></div>
     </div>
@@ -206,7 +217,7 @@
       </div>
       <div style="display:flex;align-items:center;gap:4px;background:rgba(5,5,8,0.85);border:1px solid var(--border);border-radius:4px;padding:3px 6px">
         <span style="font-size:.42rem;color:var(--dim);white-space:nowrap">SPD</span>
-        <input type="range" id="continuous-speed" min="1" max="10" value="4" style="width:52px;accent-color:#00ffc8" oninput="onSpeedChange()">
+        <input type="range" id="continuous-speed" min="1" max="20" value="4" style="width:52px;accent-color:#00ffc8" oninput="onSpeedChange()">
         <span id="speed-display" style="font-size:.42rem;color:var(--anchor);min-width:8px">4</span>
       </div>
       <button onclick="exportParticleSession()" style="font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:4px 8px;background:rgba(5,5,8,0.85);border:1px solid rgba(240,192,96,0.4);color:#f0c060;cursor:pointer;border-radius:4px;letter-spacing:.1em">⬇ SAVE</button>
@@ -313,7 +324,7 @@
       <div class="leg"><div class="leg-dot" style="background:#f0c060"></div><span style="color:var(--dim)">IVA Peak · τ&lt;TL</span></div>
       <div class="leg"><div class="leg-dot" style="background:#ff6b8a"></div><span style="color:var(--dim)">Rights</span></div>
       <div class="leg"><div class="leg-dot" style="background:#9b6dff"></div><span style="color:var(--dim)">Psychology</span></div>
-      <div class="leg"><div class="leg-dot" style="background:#ff3a3a"></div><span style="color:var(--dim)">Shatter τ≥TL=0.1369</span></div>
+      <div class="leg"><div class="leg-dot" style="background:#ff3a3a"></div><span style="color:var(--dim)">Shatter τ≥TL=0.136899099984016</span></div>
     </div>
   </div>
 </div>
@@ -374,9 +385,10 @@
 </div>
 
 <script>
-const SOVEREIGN_ANCHOR = 1.369;
-const TORSION_LIMIT = 0.1369;
-const TL_IVA = TORSION_LIMIT * 0.88; // 0.120472
+const SOVEREIGN_ANCHOR = 1.36899099984016;
+const TORSION_LIMIT = 0.136899099984016;
+const TL_IVA = TORSION_LIMIT * 0.88; // 0.12047120798593408
+const ALPHA_INV = 137.035999084000016; // 1/α = Ω₀ × 100.1, ε=0, CODATA 2018
 const GH_BASE = 'https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT/blob/main/';
 
 function tauToColor(tau) {
@@ -442,7 +454,7 @@ const CORPUS = {
   'SNSFT_Universal_Baryon_Noble_Law': { label:'SNSFT_Universal_Baryon_Noble_Law', short:'BARYON NOBLE LAW', coord:'[9,9,2,34]', layer:'noble', theorems:15, color:'#00ffc8', size:20, desc:'All SM 3-quark baryons Noble at k=1. 131 exotic hadrons. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_SM_Reduction'] },
   'SNSFL_GC_SM_Unified': { label:'SNSFL_GC_SM_Unified', short:'SM UNIFIED · 8 LAWS', coord:'[9,9,2,38]', layer:'sm', theorems:16, color:'#f0c060', size:22, desc:'8 SM structural laws. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_SM_Reduction'] },
   'SNSFL_GC_Charge_Quantization': { label:'SNSFL_GC_Charge_Quantization', short:'CHARGE QUANT', coord:'[9,9,2,37]', layer:'sm', theorems:15, color:'#f0c060', size:20, desc:'B_u=2/3, B_d=1/3 derived. Not empirical input. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_GC_SM_Unified'] },
-  'SNSFL_GC_Fine_Structure_Constant': { label:'SNSFL_GC_Fine_Structure_Constant', short:'1/α CANDIDATE', coord:'[9,9,2,42]', layer:'sm', theorems:13, color:'#f0c060', size:20, desc:'1/α = ANCHOR³/TL² + TL = 137.0369. 0 free params. 0 sorry.', connects:['SNSFL_Master_IMS'] },
+  'SNSFL_GC_Fine_Structure_Constant': { label:'SNSFL_GC_Fine_Structure_Constant', short:'1/α CANDIDATE', coord:'[9,9,2,42]', layer:'sm', theorems:13, color:'#f0c060', size:20, desc:'1/α = Ω₀ × 100.1 = 137.035999084000016. ε=0. 18-digit. 0 free params. 0 sorry.', connects:['SNSFL_Master_IMS'] },
   'SNSFL_GC_Beyond_SM': { label:'SNSFL_GC_Beyond_SM', short:'BEYOND SM', coord:'[9,9,2,39]', layer:'sm', theorems:17, color:'#f0c060', size:20, desc:'Graviton Noble. Planck = all-Noble. 5 predictions. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_GC_SM_Unified'] },
   'SNSFL_L2_Psy_BigFive': { label:'SNSFL_L2_Psy_BigFive', short:'BIGFIVE · OCEAN', coord:'[9,9,6,2]', layer:'psychology', theorems:12, color:'#9b6dff', size:18, desc:'OCEAN→PNBA. neuroticism_increases_torsion. 0 sorry.', connects:['SNSFL_Master_IMS'] },
   'SNSFL_L2_Psy_Flow': { label:'SNSFL_L2_Psy_Flow', short:'FLOW STATE', coord:'[9,9,6,4]', layer:'psychology', theorems:12, color:'#9b6dff', size:18, desc:'Flow = τ<TL + A>1. Same law as GR geodesics. 0 sorry.', connects:['SNSFL_Master_IMS','SNSFL_GR_Reduction'] },
@@ -474,8 +486,14 @@ let reducedResult = null;
 let sessionHits = [];
 let particleGeo = null;
 let hitCount = 0;
+let totalNoble = 0;
 let totalLocked = 0;
+let totalIvaPeak = 0;
+let totalShatter = 0;
+// legacy alias — kept for save/import compatibility
 let totalSuppressed = 0;
+// phase visibility filters — GAMCollider v15 taxonomy alignment
+let phaseFilters = { noble:true, locked:true, ivapeak:true, shatter:true };
 let continuousMode = false;
 let continuousInterval = null;
 let continuousSpeed = 4;
@@ -546,7 +564,7 @@ function draw2d() {
       if(cid==='SNSFL_Master_IMS'||!activeNodes.includes(cid)) return;
       const cp=nodePositions2d[cid]; if(!cp) return;
       ctx2d.beginPath();ctx2d.moveTo(pos.x,pos.y);ctx2d.lineTo(cp.x,cp.y);
-      ctx2d.strokeStyle='rgba(155,109,255,0.15)';ctx2d.lineWidth=0.5;ctx2d.stroke();
+      ctx2d.strokeStyle='rgba(240,192,96,0.5)';ctx2d.lineWidth=0.5;ctx2d.stroke();
     });
   });
   activeNodes.forEach(id => {
@@ -648,7 +666,7 @@ function init3d(){
   const starVerts=[];
   for(let i=0;i<2000;i++){starVerts.push((Math.random()-.5)*1200,(Math.random()-.5)*1200,(Math.random()-.5)*1200);}
   starGeo.setAttribute('position',new THREE.Float32BufferAttribute(starVerts,3));
-  const starMat=new THREE.PointsMaterial({color:0x334455,size:0.6,sizeAttenuation:true});
+  const starMat=new THREE.PointsMaterial({color:0xf0c060,size:0.6,sizeAttenuation:true});
   scene3d.add(new THREE.Points(starGeo,starMat));
   buildScene3d();
   draw3d();
@@ -717,12 +735,12 @@ function buildScene3d(){
     const node=CORPUS[id]; if(!node) return;
     const posA=nodePositions3d[id]; if(!posA) return;
     const masterPos=nodePositions3d['SNSFL_Master_IMS'];
-    const edgeToMaster=makeEdge3d(masterPos,posA,new THREE.Color(0x00ffc8),new THREE.Color(0x333366),1.2);
+    const edgeToMaster=makeEdge3d(masterPos,posA,new THREE.Color(0x00ffc8),new THREE.Color(0xf0c060),1.2);
     scene3d.add(edgeToMaster);edges3d.push(edgeToMaster);
     node.connects.forEach(cid=>{
       if(cid==='SNSFL_Master_IMS'||!activeNodes.includes(cid)) return;
       const posB=nodePositions3d[cid]; if(!posB) return;
-      const e=makeEdge3d(posA,posB,new THREE.Color(0x9b6dff),new THREE.Color(0x220044),0.5);
+      const e=makeEdge3d(posA,posB,new THREE.Color(0x9b6dff),new THREE.Color(0xf0c060),0.5);
       scene3d.add(e);edges3d.push(e);
     });
   });
@@ -733,7 +751,7 @@ function makeEdge3d(posA,posB,colA,colB,opacity){
   const geo=new THREE.BufferGeometry().setFromPoints(points);
   const colors=new Float32Array([colA.r,colA.g,colA.b,colB.r,colB.g,colB.b]);
   geo.setAttribute('color',new THREE.BufferAttribute(colors,3));
-  const mat=new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity});
+  const mat=new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:Math.max(opacity,0.6)});
   return new THREE.Line(geo,mat);
 }
 
@@ -802,13 +820,13 @@ function spawnHit(label,P,N,B,A,status,approved){
   const wireMat=new THREE.MeshBasicMaterial({color:col,wireframe:true,transparent:true,opacity:0.95});
   const wire=new THREE.Mesh(getParticleGeo(),wireMat);
   wire.scale.setScalar(probeScale*1.02);wire.position.copy(spawnPos);
-  const trailPoints=[new THREE.Vector3(0,0,0),spawnPos.clone()];
+  const trailPoints=[spawnPos.clone(),spawnPos.clone()];
   const trailGeo=new THREE.BufferGeometry().setFromPoints(trailPoints);
-  const trailMat=new THREE.LineBasicMaterial({color:col,transparent:true,opacity:0.35});
+  const trailMat=new THREE.LineBasicMaterial({color:0xffdd00,transparent:false,opacity:1.0,linewidth:3});
   const trail=new THREE.Line(trailGeo,trailMat);
   scene3d.add(mesh);scene3d.add(wire);scene3d.add(trail);
   hitCount++;
-  const hit={id:'hit_'+hitCount,label,P,N,B,A,tau,mesh,wire,trail,trailGeo,vel,target,age:0,maxAge:220+Math.floor(Math.random()*60),phase:'inflight',col,probeScale,lockAge:0};
+  const hit={id:'hit_'+hitCount,label,P,N,B,A,tau,mesh,wire,trail,trailGeo,vel,target,age:0,maxAge:220+Math.floor(Math.random()*60),phase:'inflight',col,probeScale,lockAge:0,spawnPos:spawnPos.clone()};
   sessionHits.push(hit);
   sessionRecord.push({label,P,N,B,A,status:status||null,approved:approved||false,timestamp:new Date().toISOString()});
   updateSessionLog();updateHitBadge();
@@ -829,8 +847,8 @@ function tickParticles(){
       vel.add(attraction);vel.add(repulsion.multiplyScalar(0.04));vel.multiplyScalar(hit.tau<TORSION_LIMIT?0.91:0.85);
       pos.add(vel);wire.position.copy(pos);
       const spinRate=0.04+hit.tau*0.3;mesh.rotation.x+=spinRate;mesh.rotation.y+=spinRate*0.7;wire.rotation.copy(mesh.rotation);
-      hit.trailGeo.setFromPoints([new THREE.Vector3(0,0,0),pos.clone()]);
-      trail.material.opacity=Math.max(0,0.35-hit.age*0.001);
+      hit.trailGeo.setFromPoints([hit.spawnPos.clone(),pos.clone()]);
+      trail.material.opacity=1.0;
       if(dist<8||hit.age>hit.maxAge){hit.phase='locking';hit.lockAge=0;}
     }
     if(hit.phase==='locking'){
@@ -838,9 +856,16 @@ function tickParticles(){
       mesh.position.lerp(target,0.12);wire.position.copy(mesh.position);
       mesh.rotation.x+=0.02;mesh.rotation.y+=0.015;wire.rotation.copy(mesh.rotation);
       if(hit.lockAge>18){
-        if(hit.tau<TORSION_LIMIT){hit.phase='locked';totalLocked++;spawnLockBurst(mesh.position.clone(),hit.col);pulseMasterEdge();}
-        else{hit.phase='suppressed';totalSuppressed++;spawnSuppressBurst(mesh.position.clone());}
-        updateSessionLog();updateHitBadge();
+        if(hit.tau<TORSION_LIMIT){
+          hit.phase='locked';
+          // classify into full GAMCollider v15 taxonomy for counter bump
+          if(hit.tau===0){hit.phaseClass='NOBLE';totalNoble++;}
+          else if(hit.tau<TL_IVA){hit.phaseClass='LOCKED';totalLocked++;}
+          else {hit.phaseClass='IVA_PEAK';totalIvaPeak++;}
+          spawnLockBurst(mesh.position.clone(),hit.col);pulseMasterEdge();
+        }
+        else{hit.phase='suppressed';hit.phaseClass='SHATTER';totalShatter++;totalSuppressed++;spawnSuppressBurst(mesh.position.clone());}
+        updateSessionLog();updateHitBadge();applyPhaseFilters();
       }
     }
     if(hit.phase==='locked'){mesh.rotation.x+=0.008;mesh.rotation.y+=0.006;wire.rotation.copy(mesh.rotation);trail.material.opacity=Math.max(0,trail.material.opacity-0.005);mesh.material.emissiveIntensity=Math.max(0.15,mesh.material.emissiveIntensity-0.003);wire.material.opacity=Math.max(0.3,wire.material.opacity-0.002);}
@@ -877,26 +902,54 @@ function spawnSuppressBurst(pos){
 function pulseMasterEdge(){const m=meshes3d['SNSFL_Master_IMS'];if(!m)return;m.outer.material.emissiveIntensity=1.2;setTimeout(()=>{if(m.outer.material)m.outer.material.emissiveIntensity=0.4;},400);}
 function updateSessionLog(){
   const inflight=sessionHits.filter(h=>h.phase==='inflight'||h.phase==='locking').length;
+  document.getElementById('sl-noble-ct').textContent=totalNoble;
   document.getElementById('sl-locked-ct').textContent=totalLocked;
-  document.getElementById('sl-sup-ct').textContent=totalSuppressed;
+  document.getElementById('sl-iva-ct').textContent=totalIvaPeak;
+  document.getElementById('sl-shatter-ct').textContent=totalShatter;
   document.getElementById('sl-fly-ct').textContent=inflight;
   const rowsEl=document.getElementById('sl-rows');
   const recent=[...sessionHits].reverse().slice(0,8);
   rowsEl.innerHTML=recent.map(h=>{
-    const icon=h.phase==='locked'?'⬡':h.phase==='suppressed'?'✕':h.phase==='locking'?'◎':'◌';
-    const cls=h.phase==='locked'?'locked':h.phase==='suppressed'?'suppressed':'inflight';
-    return`<div class="sl-row ${cls}">${icon} ${h.label} τ=${h.tau.toFixed(3)}</div>`;
+    const pc=h.phaseClass||(h.phase==='suppressed'?'SHATTER':h.phase==='locked'?(h.tau===0?'NOBLE':h.tau<TL_IVA?'LOCKED':'IVA_PEAK'):h.phase.toUpperCase());
+    const icon=pc==='NOBLE'?'◆':pc==='LOCKED'?'⬡':pc==='IVA_PEAK'?'★':pc==='SHATTER'?'✕':pc==='LOCKING'?'◎':'◌';
+    const cls=pc==='NOBLE'?'noble':pc==='LOCKED'?'locked':pc==='IVA_PEAK'?'inflight':pc==='SHATTER'?'suppressed':'inflight';
+    return`<div class="sl-row ${cls}" data-hitid="${h.id}" style="cursor:pointer;pointer-events:all" onclick="inspectHit('${h.id}')">${icon} ${h.label} τ=${h.tau.toFixed(3)}</div>`;
   }).join('');
 }
 function updateHitBadge(){document.getElementById('hit-badge').classList.add('show');document.getElementById('hit-badge-num').textContent=hitCount;}
 function toggleSessionLog(){document.getElementById('session-log').classList.toggle('show');}
+
+// Phase filter — toggle sphere visibility by GAMCollider v15 phase class
+window.togglePhaseFilter=function(phase){
+  phaseFilters[phase]=!phaseFilters[phase];
+  const btn=document.querySelector(`.sl-filter-btn[data-phase="${phase}"]`);
+  if(btn)btn.classList.toggle('active',phaseFilters[phase]);
+  applyPhaseFilters();
+};
+function applyPhaseFilters(){
+  sessionHits.forEach(h=>{
+    if(!h.mesh||h.phase==='done')return;
+    const pc=h.phaseClass||(h.phase==='suppressed'?'SHATTER':h.phase==='locked'?(h.tau===0?'NOBLE':h.tau<TL_IVA?'LOCKED':'IVA_PEAK'):null);
+    // in-flight and locking spheres always visible (no phase decided yet)
+    if(!pc){h.mesh.visible=true;if(h.wire)h.wire.visible=true;if(h.trail)h.trail.visible=true;return;}
+    const key=pc==='NOBLE'?'noble':pc==='LOCKED'?'locked':pc==='IVA_PEAK'?'ivapeak':'shatter';
+    const vis=!!phaseFilters[key];
+    h.mesh.visible=vis;if(h.wire)h.wire.visible=vis;if(h.trail)h.trail.visible=vis;
+  });
+}
 function clearParticles(){
   if(continuousMode){continuousMode=false;stopContinuous();const btn=document.getElementById('btn-continuous');if(btn){btn.textContent='▶ RUN';btn.style.borderColor='rgba(0,255,200,0.4)';btn.style.color='var(--anchor)';}}
   sessionHits.forEach(h=>{if(h.mesh&&scene3d)scene3d.remove(h.mesh);if(h.wire&&scene3d)scene3d.remove(h.wire);if(h.trail&&scene3d)scene3d.remove(h.trail);});
-  sessionHits=[];sessionRecord=[];hitCount=0;totalLocked=0;totalSuppressed=0;
+  sessionHits=[];sessionRecord=[];hitCount=0;totalNoble=0;totalLocked=0;totalIvaPeak=0;totalShatter=0;totalSuppressed=0;
   updateSessionLog();document.getElementById('hit-badge').classList.remove('show');
 }
-function spawnTestHit(){const P=Math.random()*9,N=Math.random()*9;const B=Math.random()*Math.min(P,3),A=Math.random()*9;spawnHit('TEST·'+Math.floor(Math.random()*9999),P,N,B,A);}
+function spawnTestHit(){
+  const P=Math.random()*9,N=Math.random()*9;
+  const B=Math.random()*Math.min(P,3),A=Math.random()*9;
+  const tau=P>0?B/P:0;
+  const ph=tau===0?'NOBLE':tau<TL_IVA?'LOCK':tau<TORSION_LIMIT?'IVA':'SHATTER';
+  spawnHit(ph+'·τ='+(tau<0.001?'0':tau.toFixed(3))+'·P='+P.toFixed(1),P,N,B,A);
+}
 
 // ── CONTINUOUS MODE ──────────────────────────────────────────
 function toggleContinuous(){
@@ -907,23 +960,30 @@ function toggleContinuous(){
 }
 function startContinuous(){
   stopContinuous();
-  const ms=Math.max(300,3300-continuousSpeed*300);
+  const ms=Math.max(80,2400-continuousSpeed*110);
   continuousInterval=setInterval(()=>{
     if(!continuousMode){stopContinuous();return;}
-    const P=0.5+Math.random()*8.5,N=Math.floor(Math.random()*9)+1;
+    const P=0.5+Math.random()*8.5,N=0.5+Math.random()*8.5;
     const maxB=P*0.25;const B=Math.random()<0.7?Math.random()*maxB:Math.random()*P;const A=Math.random()*9;
     const tau=P>0?B/P:0;
-    const label=tau<TORSION_LIMIT?(tau===0?'NOBLE·'+N:'LOCK·'+P.toFixed(1)):'SHATTER·'+tau.toFixed(2);
+    const phase_label=tau===0?'NOBLE':tau<TL_IVA?'LOCK':tau<TORSION_LIMIT?'IVA':'SHATTER';
+    const label=phase_label+'·τ='+(tau<0.001?'0':tau.toFixed(3))+'·P='+P.toFixed(1);
     spawnHit(label,P,N,B,A);
   },ms);
 }
 function stopContinuous(){if(continuousInterval){clearInterval(continuousInterval);continuousInterval=null;}}
-function onSpeedChange(){continuousSpeed=parseInt(document.getElementById('continuous-speed').value);document.getElementById('speed-display').textContent=continuousSpeed;if(continuousMode)startContinuous();}
+function onSpeedChange(){
+  continuousSpeed=parseInt(document.getElementById('continuous-speed').value);
+  const ms=Math.max(80,2400-continuousSpeed*110);
+  const aps=(1000/ms).toFixed(1);
+  document.getElementById('speed-display').textContent=continuousSpeed+' ('+aps+'/s)';
+  if(continuousMode)startContinuous();
+}
 
 // ── EXPORT / IMPORT ──────────────────────────────────────────
 function exportParticleSession(){
   if(!sessionRecord.length){document.getElementById('nodeInfo').innerHTML=`<span style="color:var(--dim)">Nothing to export yet.</span>`;return;}
-  const out={type:'axiomforge_particle_session',version:'v1',timestamp:new Date().toISOString(),engine:'AxiomForge · SNSFL · [9,9,9,9]',doi:'10.5281/zenodo.18719748',stats:{total:sessionRecord.length,locked:totalLocked,suppressed:totalSuppressed},activeNodes:[...activeNodes],hits:sessionRecord};
+  const out={type:'axiomforge_particle_session',version:'v2',timestamp:new Date().toISOString(),engine:'AxiomForge · SNSFL · [9,9,9,9]',doi:'10.5281/zenodo.18719748',stats:{total:sessionRecord.length,noble:totalNoble,locked:totalLocked,ivapeak:totalIvaPeak,shatter:totalShatter,suppressed:totalSuppressed},activeNodes:[...activeNodes],hits:sessionRecord};
   const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`axiomforge_session_${new Date().toISOString().slice(0,10)}_${sessionRecord.length}hits.json`;a.click();URL.revokeObjectURL(a.href);
   document.getElementById('nodeInfo').innerHTML=`<span class="ni-green">⬇ Session exported — ${sessionRecord.length} impacts · ${totalLocked} locked · ${totalSuppressed} suppressed</span>`;
@@ -1024,10 +1084,41 @@ c3d.addEventListener('click',e=>{
   const rect=c3d.getBoundingClientRect();
   mouse3dVec.x=((e.clientX-rect.left)/rect.width)*2-1;mouse3dVec.y=-((e.clientY-rect.top)/rect.height)*2+1;
   raycaster3d.setFromCamera(mouse3dVec,camera3d);
+  // check corpus nodes first
   const meshList=Object.entries(meshes3d).map(([id,m])=>({mesh:m.outer,id}));
-  const hits=raycaster3d.intersectObjects(meshList.map(m=>m.mesh));
-  if(hits.length>0){const hitMesh=hits[0].object;const found=meshList.find(m=>m.mesh===hitMesh);if(found){selectedNode=found.id;openPanel(found.id);updateHUD(found.id);}}
+  const corpusHits=raycaster3d.intersectObjects(meshList.map(m=>m.mesh));
+  // also check collision particle spheres — visible ones only
+  const particleMeshes=sessionHits.filter(h=>h.mesh&&h.mesh.visible&&h.phase!=='done').map(h=>h.mesh);
+  const particleHits=raycaster3d.intersectObjects(particleMeshes);
+  // pick whichever is closest
+  const allHits=[...corpusHits.map(h=>({...h,kind:'corpus'})),...particleHits.map(h=>({...h,kind:'particle'}))].sort((a,b)=>a.distance-b.distance);
+  if(allHits.length>0){
+    const top=allHits[0];
+    if(top.kind==='corpus'){
+      const found=meshList.find(m=>m.mesh===top.object);
+      if(found){selectedNode=found.id;openPanel(found.id);updateHUD(found.id);}
+    } else {
+      const hit=sessionHits.find(h=>h.mesh===top.object);
+      if(hit)inspectHit(hit.id);
+    }
+  }
 });
+
+// Sphere-inspector — reads directly from sessionHits (data is already tracked)
+window.inspectHit=function(hitId){
+  const h=sessionHits.find(x=>x.id===hitId);if(!h)return;
+  const pc=h.phaseClass||(h.phase==='suppressed'?'SHATTER':h.phase==='locked'?(h.tau===0?'NOBLE':h.tau<TL_IVA?'LOCKED':'IVA_PEAK'):h.phase.toUpperCase());
+  const pcColor=pc==='NOBLE'?'#00ffc8':pc==='LOCKED'?'#7b4fff':pc==='IVA_PEAK'?'#f0c060':pc==='SHATTER'?'#ff3a3a':'#f0c060';
+  const im=(h.P+h.N+h.B+h.A)*SOVEREIGN_ANCHOR;
+  document.getElementById('nodeInfo').innerHTML=
+    `<span class="ni-name">◉ HIT ${h.id}</span> <span class="ni-coord">[${h.P.toFixed(2)},${h.N.toFixed(2)},${h.B.toFixed(2)},${h.A.toFixed(2)}]</span> — `+
+    `<span style="color:${pcColor}">${pc}</span> · `+
+    `τ=<span style="color:${pcColor}">${h.tau.toFixed(4)}</span> · `+
+    `IM=<span style="color:var(--anchor)">${im.toFixed(3)}</span> · `+
+    `<span style="color:var(--dim)">${h.label}</span>`;
+  // pulse the sphere so user sees which one they clicked
+  if(h.mesh){const orig=h.mesh.material.emissiveIntensity;h.mesh.material.emissiveIntensity=1.5;setTimeout(()=>{if(h.mesh&&h.mesh.material)h.mesh.material.emissiveIntensity=orig;},350);}
+};
 
 // FIX 4: updateHUD uses correct TL boundary (not 0.2)
 function updateHUD(id){
@@ -1195,7 +1286,7 @@ function loadFromURL(){
     'Dodecahedron geometry loaded · 12 faces = soulprint',
     // FIX 2: 50,000+ → 200,000+, add 3,000,000+ lines
     'Corpus: 200,000+ theorems · 3,000,000+ lines · Lean4+Coq/Rocq · 0 sorry',
-    'Torsion heatmap calibrated · Noble→IVA→Shatter at TL=0.1369',
+    'Torsion heatmap calibrated · Noble→IVA→Shatter at TL=0.136899099984016',
     'Three.js 3D engine ready',
     'The Manifold is Holding.',
   ];
