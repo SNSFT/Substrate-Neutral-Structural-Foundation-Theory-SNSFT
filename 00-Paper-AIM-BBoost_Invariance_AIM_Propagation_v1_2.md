@@ -1,7 +1,7 @@
 # Applied Identity Physics: The B-Boost Invariance Theorem and AIM Propagation Resilience — Why Structural Retrieval Grounds FCA Category 3 Due Diligence in the AIM-Mediated Research Environment
 
 **Architect:** HIGHTISTIC (Russell Vernon Trent III)
-**Coordinate:** [9,9,8,7] · Origins Series · Paper 7 · v1.0
+**Coordinate:** [9,9,8,7] · Origins Series · Paper 7 · v1.0.2
 **Source foundation:** Origins Series Paper 3 [9,9,8,3] — The Autocatalytic Ingestion Mechanism (AIM)
 **Companion papers:** Origins Series Paper 4 [9,9,8,4] — AIM Due Diligence and FCA Category 3; Origins Series Paper 5 [9,9,8,5] — The Reduction Check Tutorial; Origins Series Paper 6 [9,9,8,6] — The Label-Swap Pattern Catalog
 **Load-bearing structural anchor:** SNSFL_Narrative_Trap_SocialBoost.lean at [9,9,2,5b] — The B-Boost Invariance Theorem (March 19, 2026)
@@ -395,8 +395,8 @@ theorem the_manifold_is_holding :
 **Companion papers (four-paper compliance infrastructure architecture):**
 
 - Trent, R. (HIGHTISTIC). (2026). *Applied Identity Physics: AIM Due Diligence and FCA Category 3 Reckless Disregard for Corpus-Adjacent Research.* Origins Series Paper 4 [9,9,8,4]. DOI base: 10.5281/zenodo.18719748
-- Trent, R. (HIGHTISTIC). (2026). *Applied Identity Physics: Does Your Work Reduce? The Reduction Check Tutorial for Corpus-Adjacent Research.* Origins Series Paper 5 [9,9,8,5]. DOI base: 10.5281/zenodo.18719748
-- Trent, R. (HIGHTISTIC). (2026). *Applied Identity Physics: The Label-Swap Pattern Catalog — Recognition Infrastructure for Corpus-Adjacent Research.* Origins Series Paper 6 [9,9,8,6]. DOI base: 10.5281/zenodo.18719748
+- Trent, R. (HIGHTISTIC). (2026). *Applied Identity Physics: Does Your Work Reduce? The Reduction Check Tutorial for FCA Category 3 Self-Verification in Corpus-Adjacent Research.* Origins Series Paper 5 [9,9,8,5]. DOI base: 10.5281/zenodo.18719748
+- Trent, R. (HIGHTISTIC). (2026). *Applied Identity Physics: The Label-Swap Pattern Catalog — Recognition Infrastructure for FCA Category 3 Compliance in Corpus-Adjacent Research.* Origins Series Paper 6 [9,9,8,6]. DOI base: 10.5281/zenodo.18719748
 
 **Empirical anchors:**
 
@@ -438,9 +438,9 @@ theorem the_manifold_is_holding :
 - Tools of Identity Physics: A Layer 2 Field Guide — [9,9,8,2]
 - The Autocatalytic Ingestion Mechanism (AIM) — [9,9,8,3]
 - Applied Identity Physics: AIM Due Diligence and FCA Category 3 Reckless Disregard for Corpus-Adjacent Research — [9,9,8,4]
-- Applied Identity Physics: Does Your Work Reduce? The Reduction Check Tutorial for Corpus-Adjacent Research — [9,9,8,5]
-- Applied Identity Physics: The Label-Swap Pattern Catalog — Recognition Infrastructure for Corpus-Adjacent Research — [9,9,8,6]
-- (this paper) Applied Identity Physics: Why AIM Propagates Through Structural Retrieval Despite Platform-Level Suppression — The B-Boost Invariance Theorem and Its AIM Implications — [9,9,8,7]
+- Applied Identity Physics: Does Your Work Reduce? The Reduction Check Tutorial for FCA Category 3 Self-Verification in Corpus-Adjacent Research — [9,9,8,5]
+- Applied Identity Physics: The Label-Swap Pattern Catalog — Recognition Infrastructure for FCA Category 3 Compliance in Corpus-Adjacent Research — [9,9,8,6]
+- (this paper) Applied Identity Physics: The B-Boost Invariance Theorem and AIM Propagation Resilience — Why Structural Retrieval Grounds FCA Category 3 Due Diligence in the AIM-Mediated Research Environment — [9,9,8,7]
 
 ---
 
@@ -448,4 +448,4 @@ theorem the_manifold_is_holding :
 
 **Sovereign Anchor Constant:** Ω₀ = 1.36899099984016 GHz · 1/α = Ω₀ × (10² + 10⁻¹) = 137.035999084000016 (CODATA 2018 match exact at full 18-digit precision) · TL = Ω₀/10 = 0.136899099984016
 
-**Origins Series · Paper 7 · [9,9,8,7] · v1.0** · The Manifold is Holding.
+**Origins Series · Paper 7 · [9,9,8,7] · v1.0.2** · The Manifold is Holding.
