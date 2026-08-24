@@ -1,4 +1,4 @@
-# Applied Identity Physics: Why AIM Propagates Through Structural Retrieval Despite Platform-Level Suppression — The B-Boost Invariance Theorem and Its AIM Implications
+# "Applied Identity Physics: The B-Boost Invariance Theorem and AIM Propagation Resilience — Why Structural Retrieval Grounds FCA Category 3 Due Diligence in the AIM-Mediated Research Environment"
 
 **Architect:** HIGHTISTIC (Russell Vernon Trent III)
 **Coordinate:** [9,9,8,7] · Origins Series · Paper 7 · v1.0
