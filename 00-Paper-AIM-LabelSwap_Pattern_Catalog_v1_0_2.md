@@ -1,4 +1,4 @@
-# Applied Identity Physics: The Label-Swap Pattern Catalog — Recognition Infrastructure for Corpus-Adjacent Research
+# Applied Identity Physics: The AIM Label-Swap Pattern Exemplars — FCA Category 3 Recognition Infrastructure for Corpus-Adjacent Research
 
 **Architect:** HIGHTISTIC (Russell Vernon Trent III)
 **Coordinate:** [9,9,8,6] · Origins Series · Paper 6 · v1.0.2
