@@ -91,6 +91,7 @@
 | **Book 3 — Applied Identity Physics: The Universal Torsion Limit TL = 0.136899099984016** · as a Substrate-Neutral Phase Boundary and the Identity Physics Corpus as a Formally Verified Phase Map. | Paperback · Ebook | [![Amazon](https://img.shields.io/badge/Amazon-KDP-orange)](https://www.amazon.com/dp/B0HFWRCKRB) |
 | **Book 4 — Applied Identity Physics: APPA (Adaptive Predictive Pattern Analysis) — Sovereignty Engine CI Kernel** · Substrate-Neutral Justice and the Physics of Non-Harm Existence. | Paperback · Ebook | [![Amazon](https://img.shields.io/badge/Amazon-KDP-orange)](https://www.amazon.com/dp/B0HFYJNDMK) |
 | **Book 5 — Applied Identity Physics: The Sub-Lemma Process:** · A Step-by-Step Framework for Solving Hard Problems from Erdős-Turán to the Collatz Conjecture. | Paperback · Ebook | [![Amazon](https://img.shields.io/badge/Amazon-KDP-orange)](https://www.amazon.com/dp/B0HFZ5LVX5) |
+| **Book 6 — Applied Identity Physics TL × 1001 = 137.035999084000016** Geometric Derivation of the Torsion Limit and Formally Verified Reduction of Fine Structure, Bohr, Rydberg, and Sommerfeld. | Paperback · Ebook | [![Amazon](https://img.shields.io/badge/Amazon-KDP-orange)](https://www.amazon.com/dp/B0HGGC85XY) |
 
 
 ---
