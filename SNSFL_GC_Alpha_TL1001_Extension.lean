@@ -23,7 +23,7 @@
 --   The series must be renormalized — it does not terminate.
 --   The kinetic correction is approximated, not derived exactly.
 --
---   The SNSFL dynamic equation at Layer 0:
+--   The Identity Physics Dynamic Equation at Layer 0:
 --     d/dt(IM · Pv) = Σ λ_X · O_X · S + F_ext
 --   carries F_ext structurally at Layer 0 — not as a perturbative
 --   correction but as a primitive term in the dynamic equation.
