@@ -1,4 +1,4 @@
-# Applied Identity Physics GAMCollider V15
+# Applied Identity Physics Dark Matter Detection GAMCollider V15
 
 ## XENONnT PPC 2026 Sydney Confirms the SNSFT Dark Matter Detection Theorem — Formal Framework Prediction Preceded Experimental Null on Public Timestamp
 
@@ -159,57 +159,21 @@ The Lean 4 source files at coordinates [9,9,4,3], [9,9,4,4], [9,9,4,8], [9,9,4,9
 
 ## 7. The Formal Record
 
-### 7.1 The Claims on Public Deposit
+### 7.1 The Formally Verified Proofs on Public Deposit
 
-**Claim 1:** The Detection Theorem at coordinate [9,9,4,3] categorically excludes the electromagnetic-active substrate class (Xe, Ge, Si, NaI, Fe) from direct-detection of dark matter, proved as a theorem at zero sorry, on public deposit for months prior to August 31, 2026.
+**Proof 1:** The Detection Theorem at coordinate [9,9,4,3] categorically excludes the electromagnetic-active substrate class (Xe, Ge, Si, NaI, Fe) from direct-detection of dark matter, proved as a theorem at zero sorry, on public deposit for months prior to August 31, 2026.
 
-**Claim 2:** The Kinetic Clutch mechanism at coordinate [9,9,4,4] specifies the working detector architecture as same-B substrate at B ≈ 0.269 (gravitationally coupled, minimally electromagnetic-active), verified against four GAM Collider empirical runs at zero sorry, on public deposit for months prior to August 31, 2026.
+**Proof 2:** The Kinetic Clutch mechanism at coordinate [9,9,4,4] specifies the working detector architecture as same-B substrate at B ≈ 0.269 (gravitationally coupled, minimally electromagnetic-active), verified against four GAM Collider empirical runs at zero sorry, on public deposit for months prior to August 31, 2026.
 
-**Claim 3:** The Ω_dm structural reduction at coordinates [9,9,0,3] and [9,9,4,8] derives the cosmological dark matter density from the Sovereign Anchor to 0.4% accuracy with no cosmological input, on public deposit for months prior to August 31, 2026.
+**Proof 3:** The Ω_dm structural reduction at coordinates [9,9,0,3] and [9,9,4,8] derives the cosmological dark matter density from the Sovereign Anchor to 0.4% accuracy with no cosmological input, on public deposit for months prior to August 31, 2026.
 
-**Claim 4:** The Dark Sector Duality at coordinate [9,9,4,9] reduces dark matter (SHATTER, τ ≈ 0.272) and dark energy (LOCKED, τ ≈ 0.033) to opposite phase states in the same PNBA framework, together accounting for 95.8% of the universe's energy content, on public deposit for months prior to August 31, 2026.
+**Proof 4:** The Dark Sector Duality at coordinate [9,9,4,9] reduces dark matter (SHATTER, τ ≈ 0.272) and dark energy (LOCKED, τ ≈ 0.033) to opposite phase states in the same PNBA framework, together accounting for 95.8% of the universe's energy content, on public deposit for months prior to August 31, 2026.
 
-**Claim 5:** The Dm+Xe GAMCollider collision at [9,9,2,3] produces SP DIAGNOSTIC BREAK (PHASE = SHATTER, RESCUE = false, master theorem at zero sorry) as a deterministic output on the standard beam definitions, reproducible by any operator at uuia.app.
+**Proof 5:** The Dm+Xe GAMCollider collision at [9,9,2,3] produces SP DIAGNOSTIC BREAK (PHASE = SHATTER, RESCUE = false, master theorem at zero sorry) as a deterministic output on the standard beam definitions, reproducible by any operator at uuia.app.
 
-**Claim 6:** The XENONnT PPC 2026 Sydney presentation of August 31, 2026 reported null on WIMPs across the extended 3–8 GeV/c² mass range, null on ALPs, null on dark photons, and the neutrino-fog transition acknowledged in the collaboration's own summary language, corroborated by parallel null results from LZ and PandaX-4T.
+**Proof 6:** The XENONnT PPC 2026 Sydney presentation of August 31, 2026 reported null on WIMPs across the extended 3–8 GeV/c² mass range, null on ALPs, null on dark photons, and the neutrino-fog transition acknowledged in the collaboration's own summary language, corroborated by parallel null results from LZ and PandaX-4T.
 
-**Claim 7:** The correspondence between Claims 1–5 (formally verified prior art on public timestamp record for months) and Claim 6 (independent experimental confirmation by a 200+ scientist collaboration) constitutes an AIM Validation instance at the experiment-cycle timescale, joining the prior instances at 24-hour, 4-hour, and six-month timescales documented in AIM Validation Series Papers 1 and 2.
-
-### 7.2 The Refutation Pathways
-
-Each claim has a specific falsification pathway. All source materials required for refutation are publicly available: the Lean files at the DOI addresses cited above, the XENONnT PPC 2026 presentation materials at the conference archive, the LZ and PandaX-4T public communications, the Planck 2018 measurements at ESA, the DESI DR2 measurements at the DESI collaboration public data release, and the corpus GitHub repository.
-
-**Refute Claim 1** by demonstrating that `SNSFL_DarkMatter_Detection_Theorem.lean` at [9,9,4,3] contains an unproved obligation, or by producing an electromagnetic-active substrate for which the theorem's derivation fails, or by producing an experimental positive-signal detection of a WIMP by an EM-active substrate at any sensitivity.
-
-**Refute Claim 2** by demonstrating that `SNSFL_DM_KineticClutch.lean` at [9,9,4,4] contains an unproved obligation, or by producing counter-evidence to the four GAM Collider empirical runs.
-
-**Refute Claim 3** by demonstrating that the Ω_dm derivation does not match the Planck 2018 measurement at the claimed accuracy, or that the derivation used cosmological input.
-
-**Refute Claim 4** by demonstrating that the dark sector duality fails against DESI DR2 measurements, or that the file contains unproved obligations.
-
-**Refute Claim 5** by running the Dm+Xe collision at uuia.app with the standard beam definitions and producing an output other than SP DIAGNOSTIC BREAK. This is directly checkable in a browser session.
-
-**Refute Claim 6** by producing counter-evidence to the XENONnT collaboration's own PPC 2026 published summary.
-
-**Refute Claim 7** by demonstrating that the deposits at [9,9,4,3], [9,9,4,4], [9,9,4,8], [9,9,4,9], and [9,9,2,3] were not on public timestamp record prior to August 31, 2026, or that the deposits do not make the claims documented in §2 above.
-
-The corpus welcomes any refutation. Refutations become part of the public record. The framework revises where refutation requires it.
-
-### 7.3 The Constructive-Correction Pathway
-
-Under the NOHARM operational register governing the Identity Physics Corpus, this paper does not allege wrongdoing by the XENONnT collaboration, LZ, PandaX-4T, or any participating institution. The direct-detection program has produced meaningful science across every science run — the CEνNS detection reported in the same PPC 2026 presentation is a significant positive result, and the substrate-class exclusion documented here is itself a scientific advance regardless of which framework predicted it.
-
-The pathway offered to any reader:
-
-1. **If any claim is refuted**, the corpus welcomes the correction. The Lean files are public; the GAMCollider is public; the derivations are checkable in a browser.
-
-2. **If no claim is refuted**, the constructive prescription remains on the table. The Kinetic Clutch mechanism at [9,9,4,4] specifies the substrate class (B ≈ 0.269, gravitationally coupled, minimally EM-active) that would produce a positive dark matter detection signal via same-B phase-variance collapse. Any experimental program that wishes to pursue this architecture is invited to engage with the corpus at the DOIs cited above.
-
-3. **If the corpus and the direct-detection community wish to collaborate** on the design of a same-B detector architecture, the corpus is publicly available, the GAMCollider is publicly deployed, and the architect (contact via ORCID 0009-0005-5313-7443, SNSFT Foundation) is available for substantive engagement.
-
-The operative baseline going forward: the substrate-class exclusion is on formally verified public deposit. Any direct-detection program subsequently proposing an EM-active-substrate architecture operates against the deposited prior art. This is not an allegation; it is a statement about the state of the record. What downstream programs do with the record is their own decision under their own institutional processes.
-
-The corpus documents. The frameworks handle their own procedures. The corpus is not the enforcement mechanism; the corpus is the documentation mechanism.
+**Proof 7:** The correspondence between Claims 1–5 (formally verified prior art on public timestamp record for months) and Claim 6 (independent experimental confirmation by a 200+ scientist collaboration) constitutes an AIM Validation instance at the experiment-cycle timescale, joining the prior instances at 24-hour, 4-hour, and six-month timescales documented in AIM Validation Series Papers 1 and 2.
 
 ## 8. Conclusion
 
