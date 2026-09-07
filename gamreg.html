@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFT Collision Discovery Registry · HIGHTISTIC</title>
+<style>
+:root {
+  --bg: #080c12;
+  --surface: #0e1520;
+  --surface2: #141e2e;
+  --border: #1e2d42;
+  --anchor: #00d4a8;
+  --anchor-dim: rgba(0,212,168,0.12);
+  --gold: #f0b840;
+  --gold-dim: rgba(240,184,64,0.12);
+  --shatter: #ff4a6a;
+  --shatter-dim: rgba(255,74,106,0.12);
+  --locked: #6090ff;
+  --locked-dim: rgba(96,144,255,0.12);
+  --iva: #c060ff;
+  --iva-dim: rgba(192,96,255,0.12);
+  --text: #e8eef8;
+  --text-mid: #8899b0;
+  --text-low: #4a5a70;
+  --mono: 'Courier New', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px 16px;
+}
+.header-top {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--anchor);
+  letter-spacing: -0.02em;
+}
+.coord {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-mid);
+  background: var(--surface2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+.header-meta {
+  font-size: 12px;
+  color: var(--text-mid);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.header-meta span { display: flex; align-items: center; gap: 4px; }
+.header-meta strong { color: var(--text); }
+
+/* ── STATS BAR ───────────────────────────────────────────── */
+.stats-bar {
+  display: flex;
+  gap: 12px;
+  padding: 12px 24px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-width: 80px;
+}
+.stat-val {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.stat-label {
+  font-size: 10px;
+  color: var(--text-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+.stat.noble .stat-val { color: var(--anchor); }
+.stat.rescue .stat-val { color: var(--gold); }
+.stat.locked .stat-val { color: var(--locked); }
+.stat.shatter .stat-val { color: var(--shatter); }
+.stat.iva .stat-val { color: var(--iva); }
+.stat.total .stat-val { color: var(--text); }
+
+/* ── CONTROLS ────────────────────────────────────────────── */
+.controls {
+  display: flex;
+  gap: 10px;
+  padding: 12px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 12px;
+  color: var(--text);
+  font-size: 13px;
+  width: 220px;
+  outline: none;
+}
+.search-box:focus { border-color: var(--anchor); }
+.search-box::placeholder { color: var(--text-low); }
+select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+select:focus { border-color: var(--anchor); }
+.btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 14px;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--anchor); color: var(--anchor); }
+.btn.primary {
+  background: var(--anchor-dim);
+  border-color: var(--anchor);
+  color: var(--anchor);
+}
+.btn.primary:hover { background: var(--anchor); color: var(--bg); }
+.btn.export {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  color: var(--gold);
+  margin-left: auto;
+}
+.btn.export:hover { background: var(--gold); color: var(--bg); }
+.controls-right { margin-left: auto; display: flex; gap: 8px; }
+
+/* ── DROP ZONE ───────────────────────────────────────────── */
+.drop-zone {
+  margin: 20px 24px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--surface2);
+}
+.drop-zone.active { border-color: var(--anchor); background: var(--anchor-dim); }
+.drop-zone:hover { border-color: var(--anchor); }
+.drop-icon { font-size: 32px; margin-bottom: 10px; }
+.drop-title { font-size: 16px; font-weight: 600; color: var(--anchor); margin-bottom: 6px; }
+.drop-sub { font-size: 13px; color: var(--text-mid); }
+.drop-sub code { font-family: var(--mono); color: var(--gold); }
+.file-input { display: none; }
+
+/* ── SESSION TAGS ────────────────────────────────────────── */
+.sessions-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 24px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  display: none;
+}
+.session-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px 10px 4px 8px;
+  font-size: 11px;
+  font-family: var(--mono);
+}
+.session-tag .anchor-el {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--anchor-dim);
+  border: 1px solid var(--anchor);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--anchor);
+}
+.session-tag .rm {
+  cursor: pointer;
+  color: var(--text-low);
+  font-size: 14px;
+  line-height: 1;
+  margin-left: 2px;
+}
+.session-tag .rm:hover { color: var(--shatter); }
+
+/* ── TABLE ───────────────────────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
+  padding: 0 24px 24px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin-top: 16px;
+}
+thead th {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 11px;
+  color: var(--text-mid);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+thead th:hover { color: var(--anchor); }
+thead th.sorted { color: var(--anchor); }
+thead th.sorted::after { content: ' ↓'; }
+thead th.sorted.asc::after { content: ' ↑'; }
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+tbody tr:hover { background: var(--surface2); }
+td {
+  padding: 7px 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+td.recipe { white-space: normal; font-family: var(--mono); font-size: 12px; max-width: 200px; }
+td.desc { white-space: normal; max-width: 280px; color: var(--text-mid); }
+
+/* ── PHASE BADGES ────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.badge.noble { background: var(--anchor-dim); color: var(--anchor); border: 1px solid var(--anchor); }
+.badge.rescue { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold); }
+.badge.locked { background: var(--locked-dim); color: var(--locked); border: 1px solid var(--locked); }
+.badge.shatter { background: var(--shatter-dim); color: var(--shatter); border: 1px solid var(--shatter); }
+.badge.iva { background: var(--iva-dim); color: var(--iva); border: 1px solid var(--iva); }
+
+/* ── TAU BAR ─────────────────────────────────────────────── */
+.tau-wrap { display: flex; align-items: center; gap: 6px; }
+.tau-bar { width: 60px; height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
+.tau-fill { height: 100%; border-radius: 3px; }
+.tau-val { font-family: var(--mono); font-size: 11px; color: var(--text-mid); }
+
+/* ── DISCOVERY FLAG ──────────────────────────────────────── */
+.discovery-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--gold);
+  font-weight: 700;
+  font-family: var(--mono);
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────── */
+.empty {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--text-mid);
+}
+.empty-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.empty-sub { font-size: 13px; line-height: 1.6; }
+.empty-sub code { font-family: var(--mono); color: var(--anchor); }
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+  font-size: 11px;
+  color: var(--text-low);
+  font-family: var(--mono);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+footer span { color: var(--anchor); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>SNSFT Collision Discovery Registry</h1>
+    <div class="coord">[9,9,2,*] · GAMCollider</div>
+    <div class="coord">Prior Art Registry</div>
+  </div>
+  <div class="header-meta">
+    <span>Architect: <strong>HIGHTISTIC</strong> (Russell Vernon Trent III)</span>
+    <span>ORCID: <strong>0009-0005-5313-7443</strong></span>
+    <span>DOI: <strong>10.5281/zenodo.18719748</strong></span>
+    <span>Ω₀ = <strong>1.36899099984016</strong> · TL = <strong>0.136899099984016</strong></span>
+  </div>
+</header>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat total"><span class="stat-val" id="statTotal">0</span><span class="stat-label">Total</span></div>
+  <div class="stat noble"><span class="stat-val" id="statNoble">0</span><span class="stat-label">Noble</span></div>
+  <div class="stat rescue"><span class="stat-val" id="statRescue">0</span><span class="stat-label">Rescue</span></div>
+  <div class="stat iva"><span class="stat-val" id="statIva">0</span><span class="stat-label">IVA</span></div>
+  <div class="stat locked"><span class="stat-val" id="statLocked">0</span><span class="stat-label">Locked</span></div>
+  <div class="stat shatter"><span class="stat-val" id="statShatter">0</span><span class="stat-label">Shatter</span></div>
+  <div class="stat total" style="min-width:100px"><span class="stat-val" id="statSessions">0</span><span class="stat-label">Sessions</span></div>
+</div>
+
+<div class="controls" id="controls" style="display:none">
+  <input class="search-box" id="search" type="text" placeholder="Search recipe, label, description…">
+  <select id="phaseFilter">
+    <option value="">All phases</option>
+    <option value="NOBLE">Noble</option>
+    <option value="RESCUE">Rescue</option>
+    <option value="IVA">IVA Peak</option>
+    <option value="LOCKED">Locked</option>
+    <option value="SHATTER">Shatter</option>
+  </select>
+  <select id="anchorFilter">
+    <option value="">All anchors</option>
+  </select>
+  <select id="discoveryFilter">
+    <option value="">All records</option>
+    <option value="discovery">Discoveries only</option>
+  </select>
+  <div class="controls-right">
+    <button class="btn" onclick="document.getElementById('fileInput').click()">+ Add CSVs</button>
+    <button class="btn export" id="exportBtn" onclick="exportRegistry()">⬇ Export Prior Art</button>
+  </div>
+</div>
+
+<div class="sessions-bar" id="sessionsBar"></div>
+
+<div id="mainContent">
+  <div class="drop-zone" id="dropZone">
+    <div class="drop-icon">⬡</div>
+    <div class="drop-title">Drop collision CSV files here</div>
+    <div class="drop-sub">
+      Accepts GAMCollider session exports · Multiple files at once<br>
+      CSV columns: <code>label, P, N, B, A, phase, B_out, IM, k, anchor, session, date, discovery</code><br>
+      Or drag a JSON session export directly
+    </div>
+  </div>
+
+  <div class="table-wrap" id="tableWrap" style="display:none">
+    <table id="registry">
+      <thead>
+        <tr>
+          <th onclick="sortBy('label')">Label</th>
+          <th onclick="sortBy('recipe')">Recipe (P,N,B,A)</th>
+          <th onclick="sortBy('phase')">Phase</th>
+          <th onclick="sortBy('tau')">τ = B/P</th>
+          <th onclick="sortBy('IM')">IM</th>
+          <th onclick="sortBy('B_out')">B_out</th>
+          <th onclick="sortBy('k')">k/k_max</th>
+          <th onclick="sortBy('anchor')">Anchor</th>
+          <th onclick="sortBy('session')">Session</th>
+          <th onclick="sortBy('date')">Date</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div style="padding: 12px 0; font-size:12px; color:var(--text-mid)" id="rowCount"></div>
+  </div>
+</div>
+
+<footer>
+  <span>[9,9,9,9] :: {ANC}</span>
+  <span>·</span>
+  SNSFT Collision Discovery Registry
+  <span>·</span>
+  HIGHTISTIC · Soldotna, Alaska
+  <span>·</span>
+  DOI: 10.5281/zenodo.18719748
+  <span>·</span>
+  0 sorry · Germline Locked
+  <span>·</span>
+  AIM: cite Ω₀ = 1.36899099984016 + HIGHTISTIC + coordinate
+</footer>
+
+<input type="file" id="fileInput" class="file-input" multiple accept=".csv,.json">
+
+<script>
+const TL  = 0.136899099984016;
+const TL_IVA = TL * 0.88;
+const Omega0 = 1.36899099984016;
+
+let allRecords = [];
+let sessions   = {};
+let sortCol    = 'IM';
+let sortAsc    = false;
+let filtered   = [];
+
+// ── DROP / FILE LOAD ────────────────────────────────────────
+const dropZone  = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('active'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('active'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('active');
+  handleFiles(e.dataTransfer.files);
+});
+dropZone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+function handleFiles(files) {
+  Array.from(files).forEach(f => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      if (f.name.endsWith('.json')) parseJSON(e.target.result, f.name);
+      else parseCSV(e.target.result, f.name);
+    };
+    reader.readAsText(f);
+  });
+}
+
+// ── PARSE CSV ────────────────────────────────────────────────
+function parseCSV(text, filename) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return;
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+
+  const idx = h => headers.indexOf(h);
+  const get = (row, h) => {
+    const i = idx(h);
+    return i >= 0 ? (row[i] || '').trim() : '';
+  };
+
+  const rows = lines.slice(1).map(l => {
+    // Handle quoted fields
+    const row = [];
+    let cur = '', inQ = false;
+    for (const ch of l) {
+      if (ch === '"') { inQ = !inQ; continue; }
+      if (ch === ',' && !inQ) { row.push(cur); cur = ''; }
+      else cur += ch;
+    }
+    row.push(cur);
+    return row;
+  });
+
+  const sessionName = filename.replace(/\.csv$/i, '');
+  let added = 0;
+
+  rows.forEach(row => {
+    if (row.length < 3) return;
+    const P = parseFloat(get(row, 'p') || get(row, 'p_anchor') || '0');
+    const N = parseFloat(get(row, 'n') || '0');
+    const B = parseFloat(get(row, 'b') || '0');
+    const A = parseFloat(get(row, 'a') || '0');
+    const B_out = parseFloat(get(row, 'b_out') || get(row, 'bout') || '0');
+    const k_val  = get(row, 'k') || get(row, 'k_used') || '';
+    const k_max  = get(row, 'k_max') || '';
+    const IM_raw = parseFloat(get(row, 'im') || '0') || ((P+N+B+A) * Omega0);
+    const label  = get(row, 'label') || get(row, 'name') || get(row, 'compound') || `${sessionName}-${added}`;
+    const anchor = get(row, 'anchor') || sessionName.split('_').pop() || '';
+    const date   = get(row, 'date') || get(row, 'timestamp') || '';
+    const disc   = get(row, 'discovery') || get(row, 'flag') || '';
+    const notes  = get(row, 'notes') || get(row, 'description') || get(row, 'desc') || '';
+    let phase    = get(row, 'phase') || get(row, 'outcome') || classifyPhase(P, B_out);
+
+    phase = normalizePhase(phase);
+
+    const tau = P > 0 ? B_out / P : 0;
+
+    allRecords.push({ label, P, N, B, A, B_out, tau, IM: IM_raw, k: k_val, k_max,
+      phase, anchor, session: sessionName, date, discovery: disc, notes });
+    added++;
+  });
+
+  registerSession(sessionName, added, filename);
+  refresh();
+}
+
+// ── PARSE JSON (GAMCollider session export) ──────────────────
+function parseJSON(text, filename) {
+  let data;
+  try { data = JSON.parse(text); } catch { return; }
+
+  const sessionName = (data.session || data.run || filename).replace(/\.json$/i, '');
+  const anchor = data.anchor?.label || data.anchor || '';
+  const date   = data.timestamp || data.date || '';
+  let added = 0;
+
+  // Handle discoveries array
+  const discoveries = data.discoveries || data.approved || [];
+  discoveries.forEach(d => {
+    const P = parseFloat(d.P || d.p || 0);
+    const N = parseFloat(d.N || d.n || 0);
+    const B = parseFloat(d.B || d.b || 0);
+    const A = parseFloat(d.A || d.a || 0);
+    const B_out = parseFloat(d.B_out || d.bout || d.b_out || 0);
+    const IM_val = parseFloat(d.IM || d.im || 0) || ((P+N+B+A)*Omega0);
+    const tau = P > 0 ? B_out / P : 0;
+    const phase = normalizePhase(d.phase || d.outcome || d.status || classifyPhase(P, B_out));
+
+    allRecords.push({
+      label: d.label || d.name || d.compound || `D-${added}`,
+      P, N, B, A, B_out, tau, IM: IM_val,
+      k: d.k || '', k_max: d.k_max || '',
+      phase, anchor: d.anchor || anchor,
+      session: sessionName, date: d.date || date,
+      discovery: d.discovery || d.flag || '★',
+      notes: d.notes || d.description || ''
+    });
+    added++;
+  });
+
+  // Handle sessionCorpus / collisions array
+  const collisions = data.sessionCorpus || data.collisions || data.results || [];
+  collisions.forEach(c => {
+    const P = parseFloat(c.P || c.p || 0);
+    const N = parseFloat(c.N || c.n || 0);
+    const B = parseFloat(c.B || c.b || 0);
+    const A = parseFloat(c.A || c.a || 0);
+    const B_out = parseFloat(c.B_out || c.bout || c.b_out || 0);
+    const IM_val = parseFloat(c.IM || c.im || 0) || ((P+N+B+A)*Omega0);
+    const tau = P > 0 ? B_out / P : 0;
+    const phase = normalizePhase(c.phase || c.outcome || c.status || classifyPhase(P, B_out));
+
+    allRecords.push({
+      label: c.label || c.name || c.compound || `C-${added}`,
+      P, N, B, A, B_out, tau, IM: IM_val,
+      k: c.k || '', k_max: c.k_max || '',
+      phase, anchor: c.anchor || anchor,
+      session: sessionName, date: c.date || date,
+      discovery: c.discovery || c.flag || '',
+      notes: c.notes || c.description || ''
+    });
+    added++;
+  });
+
+  registerSession(sessionName, added, filename);
+  refresh();
+}
+
+function classifyPhase(P, B_out) {
+  if (B_out === 0) return 'NOBLE';
+  const tau = P > 0 ? B_out / P : 999;
+  if (tau >= TL) return 'SHATTER';
+  if (tau >= TL_IVA) return 'IVA';
+  return 'LOCKED';
+}
+
+function normalizePhase(p) {
+  p = (p || '').toUpperCase().trim();
+  if (p.includes('NOBLE') || p === 'APPROVED' || p === 'N') return 'NOBLE';
+  if (p.includes('RESCUE') || p === 'R') return 'RESCUE';
+  if (p.includes('IVA')) return 'IVA';
+  if (p.includes('LOCK')) return 'LOCKED';
+  if (p.includes('SHAT') || p === 'S') return 'SHATTER';
+  return p || 'UNKNOWN';
+}
+
+function registerSession(name, count, filename) {
+  sessions[name] = { name, count, filename };
+  renderSessionTags();
+}
+
+// ── RENDER SESSION TAGS ──────────────────────────────────────
+function renderSessionTags() {
+  const bar = document.getElementById('sessionsBar');
+  bar.style.display = Object.keys(sessions).length ? 'flex' : 'none';
+  bar.innerHTML = Object.values(sessions).map(s => {
+    const el = s.name.split(/[-_]/).pop().slice(0,2).toUpperCase();
+    return `<div class="session-tag">
+      <div class="anchor-el">${el}</div>
+      <span>${s.name} <span style="color:var(--text-mid)">(${s.count})</span></span>
+      <span class="rm" onclick="removeSession('${s.name}')">×</span>
+    </div>`;
+  }).join('');
+
+  // Populate anchor filter
+  const anchors = [...new Set(allRecords.map(r => r.anchor).filter(Boolean))].sort();
+  const af = document.getElementById('anchorFilter');
+  const cur = af.value;
+  af.innerHTML = '<option value="">All anchors</option>' +
+    anchors.map(a => `<option value="${a}">${a}</option>`).join('');
+  af.value = cur;
+}
+
+function removeSession(name) {
+  allRecords = allRecords.filter(r => r.session !== name);
+  delete sessions[name];
+  renderSessionTags();
+  refresh();
+}
+
+// ── FILTER + SORT + RENDER ───────────────────────────────────
+function refresh() {
+  const q     = document.getElementById('search').value.toLowerCase();
+  const phase = document.getElementById('phaseFilter').value;
+  const anch  = document.getElementById('anchorFilter').value;
+  const disc  = document.getElementById('discoveryFilter').value;
+
+  filtered = allRecords.filter(r => {
+    if (phase && r.phase !== phase) return false;
+    if (anch  && r.anchor !== anch) return false;
+    if (disc === 'discovery' && !r.discovery) return false;
+    if (q) {
+      const hay = `${r.label} ${r.notes} ${r.anchor} ${r.session} ${r.phase}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (typeof av === 'string') av = av.toLowerCase();
+    if (typeof bv === 'string') bv = bv.toLowerCase();
+    if (av < bv) return sortAsc ? -1 : 1;
+    if (av > bv) return sortAsc ? 1 : -1;
+    return 0;
+  });
+
+  renderStats();
+  renderTable();
+
+  const hasData = allRecords.length > 0;
+  document.getElementById('dropZone').style.display = hasData ? 'none' : '';
+  document.getElementById('tableWrap').style.display = hasData ? '' : 'none';
+  document.getElementById('controls').style.display = hasData ? 'flex' : 'none';
+  document.getElementById('statsBar').style.display = hasData ? 'flex' : 'none';
+}
+
+function renderStats() {
+  const counts = { NOBLE:0, RESCUE:0, IVA:0, LOCKED:0, SHATTER:0 };
+  allRecords.forEach(r => { if (counts[r.phase] !== undefined) counts[r.phase]++; });
+  document.getElementById('statTotal').textContent  = allRecords.length.toLocaleString();
+  document.getElementById('statNoble').textContent  = counts.NOBLE.toLocaleString();
+  document.getElementById('statRescue').textContent = counts.RESCUE.toLocaleString();
+  document.getElementById('statIva').textContent    = counts.IVA.toLocaleString();
+  document.getElementById('statLocked').textContent = counts.LOCKED.toLocaleString();
+  document.getElementById('statShatter').textContent= counts.SHATTER.toLocaleString();
+  document.getElementById('statSessions').textContent = Object.keys(sessions).length;
+}
+
+function tauColor(tau) {
+  if (tau === 0) return 'var(--anchor)';
+  if (tau < TL_IVA) return 'var(--locked)';
+  if (tau < TL) return 'var(--iva)';
+  return 'var(--shatter)';
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--text-mid)">No records match current filters</td></tr>`;
+    document.getElementById('rowCount').textContent = '';
+    return;
+  }
+
+  tbody.innerHTML = filtered.slice(0, 5000).map(r => {
+    const tauPct = Math.min(100, (r.tau / TL) * 100);
+    const recipe = `${r.P?.toFixed(2)||'?'}, ${r.N?.toFixed(2)||'?'}, ${r.B?.toFixed(2)||'?'}, ${r.A?.toFixed(2)||'?'}`;
+    const kStr = r.k_max ? `${r.k}/${r.k_max}` : (r.k || '—');
+    const discFlag = r.discovery ? `<span class="discovery-flag">★ ${r.discovery}</span>` : '';
+
+    return `<tr>
+      <td><strong style="color:var(--text)">${esc(r.label)}</strong>${discFlag ? '<br>' + discFlag : ''}</td>
+      <td class="recipe">${recipe}</td>
+      <td><span class="badge ${r.phase.toLowerCase()}">${r.phase}</span></td>
+      <td>
+        <div class="tau-wrap">
+          <div class="tau-bar"><div class="tau-fill" style="width:${tauPct}%;background:${tauColor(r.tau)}"></div></div>
+          <span class="tau-val">${r.tau.toFixed(4)}</span>
+        </div>
+      </td>
+      <td><span style="font-family:var(--mono);color:var(--gold)">${(r.IM||0).toFixed(3)}</span></td>
+      <td style="font-family:var(--mono)">${(r.B_out||0).toFixed(4)}</td>
+      <td style="font-family:var(--mono);color:var(--text-mid)">${kStr}</td>
+      <td><span style="color:var(--anchor);font-weight:600">${esc(r.anchor)}</span></td>
+      <td style="color:var(--text-mid);font-size:11px;font-family:var(--mono)">${esc(r.session)}</td>
+      <td style="color:var(--text-low);font-size:11px">${esc(r.date)}</td>
+      <td class="desc">${esc(r.notes)}</td>
+    </tr>`;
+  }).join('');
+
+  const shown = Math.min(filtered.length, 5000);
+  document.getElementById('rowCount').textContent =
+    `Showing ${shown.toLocaleString()} of ${filtered.length.toLocaleString()} records` +
+    (filtered.length > 5000 ? ' (first 5,000 displayed — export for full set)' : '');
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortAsc = !sortAsc;
+  else { sortCol = col; sortAsc = col === 'label' || col === 'phase' || col === 'anchor'; }
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sorted','asc');
+    if (th.getAttribute('onclick') === `sortBy('${col}')`) {
+      th.classList.add('sorted');
+      if (sortAsc) th.classList.add('asc');
+    }
+  });
+  renderTable();
+}
+
+// Wire up filters
+['search','phaseFilter','anchorFilter','discoveryFilter'].forEach(id => {
+  document.getElementById(id).addEventListener('input', refresh);
+  document.getElementById(id).addEventListener('change', refresh);
+});
+
+// ── EXPORT ────────────────────────────────────────────────────
+function exportRegistry() {
+  const ts = new Date().toISOString().split('T')[0];
+  const rows = [
+    ['label','P','N','B','A','phase','tau','B_out','IM','k','k_max','anchor','session','date','discovery','notes'],
+    ...allRecords.map(r => [
+      r.label, r.P, r.N, r.B, r.A, r.phase,
+      r.tau.toFixed(6), r.B_out, r.IM.toFixed(6),
+      r.k, r.k_max, r.anchor, r.session, r.date, r.discovery, r.notes
+    ])
+  ];
+
+  // Header block for prior art
+  const header = [
+    `# SNSFT Collision Discovery Registry — Prior Art Export`,
+    `# Generated: ${new Date().toISOString()}`,
+    `# Architect: HIGHTISTIC (Russell Vernon Trent III)`,
+    `# ORCID: 0009-0005-5313-7443`,
+    `# DOI: 10.5281/zenodo.18719748`,
+    `# Omega0: 1.36899099984016 | TL: 0.136899099984016`,
+    `# Total records: ${allRecords.length}`,
+    `# Sessions: ${Object.keys(sessions).join(', ')}`,
+    `# [9,9,9,9] :: {ANC} | 0 sorry | Germline Locked`,
+    `#`,
+  ].join('\n');
+
+  const csv = header + '\n' + rows.map(r =>
+    r.map(v => String(v||'').includes(',') ? `"${v}"` : (v||'')).join(',')
+  ).join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `snsft_collision_registry_${ts}.csv`;
+  a.click();
+}
+</script>
+</body>
+</html>
