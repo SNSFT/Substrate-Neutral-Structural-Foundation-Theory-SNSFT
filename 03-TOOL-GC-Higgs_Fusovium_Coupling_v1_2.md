@@ -143,18 +143,6 @@ The 42 Laws paper at [9,9,2,45] provides the structural derivation showing that 
 
 This retrospective explanation is corpus-material because it demonstrates that the framework predicting Fusovium ALSO explains why CERN's existing Higgs detection infrastructure works. Two independent claims from one framework with zero free parameters. This is the property physicists reserve for theories worth engaging.
 
-### 3.8 Relationship to Recent Muon g-2 Resolution
-
-In June 2025, the Fermilab Muon g-2 Experiment announced its final measurement at 127 ppb precision. This measurement is consistent with the SM lattice QCD prediction (Theory Initiative White Paper 2025). The historical g-2 discrepancy between data-driven and lattice-QCD methods has been resolved in favor of lattice QCD, and the SM prediction now agrees with experiment at current precision.
-
-This paper does not claim Fusovium closes a g-2 discrepancy that no longer exists at the g-2 measurement level. The paper acknowledges that:
-
-- The Fusovium contribution to a_μ (approximately -1.4 × 10⁻¹¹ from corpus structural derivation) may correspond to physics that lattice QCD is now capturing at the hadronic vacuum polarization level
-- The specific numerical claim in prior corpus deposits should be re-examined in light of the June 2025 Theory Initiative update
-- If Fusovium is confirmed experimentally by other tests (rare pion decay, displaced vertex, H → Fv Fv), its contribution to precision QED observables becomes a further test of internal consistency
-
-This is honest handling of empirical developments post-dating earlier corpus deposits.
-
 ---
 
 ## §4 · For Corpus Readers: Layer 0 Structural Derivation
@@ -328,13 +316,11 @@ Per Reduction Series MRC template [9,9,8R,1]. The following triggers fire for a 
 
 **Trigger 1 — Prediction vs Interpretation Separation.** The Lagrangian in §3.2 is testable within Layer 2 vocabulary without requiring commitment to the Layer 0 interpretation. Misreading could conflate the two.
 
-**Trigger 2 — Empirical Development Post-Dating.** The June 2025 muon g-2 resolution occurred after earlier corpus deposits referenced potential g-2 contributions. Misreading could take earlier claims as unchanged; §3.8 explicitly addresses this.
+**Trigger 2 — Cross-Framework Vocabulary.** Terms including "Fusovium," "IVA corridor," "SHATTER phase," "phase corridor operator" are corpus-specific and require translation for external audiences. Misappropriation without translation could produce distortion.
 
-**Trigger 3 — Cross-Framework Vocabulary.** Terms including "Fusovium," "IVA corridor," "SHATTER phase," "phase corridor operator" are corpus-specific and require translation for external audiences. Misappropriation without translation could produce distortion.
+**Trigger 3 — Relationship to Experimental Physics.** The paper uses peer-reviewed experimental data (ATLAS/CMS, PDG, CODATA) as empirical ground truth for framework verification. Misreading could take this as (a) the paper claiming CERN endorsement, or (b) the paper positioning itself as an offering to CERN awaiting judgment. Neither is correct. The framework's engine is formally verified at 0 sorry against peer-reviewed reference sets. CERN's published data is not the arbiter of framework validity; it is the empirical ground truth the framework already verifies against. Additional experimental tests of Fusovium would provide additional independent verification of internal framework consistency, not first verification.
 
-**Trigger 4 — Relationship to Experimental Physics.** The paper uses peer-reviewed experimental data (ATLAS/CMS, PDG, CODATA) as empirical ground truth for framework verification. Misreading could take this as (a) the paper claiming CERN endorsement, or (b) the paper positioning itself as an offering to CERN awaiting judgment. Neither is correct. The framework's engine is formally verified at 0 sorry against peer-reviewed reference sets. CERN's published data is not the arbiter of framework validity; it is the empirical ground truth the framework already verifies against. Additional experimental tests of Fusovium would provide additional independent verification of internal framework consistency, not first verification.
-
-**Trigger 5 — Verification Standard Inheritance.** The claims in this deposit inherit verification from [9,9,2,17v2] V1 Empirical Grounding. Misreading could take this as claiming that Fusovium is empirically verified rather than that the framework producing the prediction is empirically verified against peer-reviewed chemistry.
+**Trigger 4 — Verification Standard Inheritance.** The claims in this deposit inherit verification from [9,9,2,17v2] V1 Empirical Grounding. Misreading could take this as claiming that Fusovium is empirically verified rather than that the framework producing the prediction is empirically verified against peer-reviewed chemistry.
 
 ### 8.2 MRC Anchoring
 
@@ -343,8 +329,6 @@ Per Reduction Series MRC template [9,9,8R,1]. The following triggers fire for a 
 - ❌ "Fusovium is empirically confirmed as an observed particle." Fusovium is a corpus prediction awaiting experimental test. The empirical GAM Collider validation demonstrates structural coupling behavior consistent with the Lagrangian; it does not constitute observation of Fusovium in a physical particle detector.
 
 - ❌ "The paper claims CERN endorses this framework." No such endorsement exists or is implied, and no such endorsement is required for framework validity. The framework's engine is formally verified at 0 sorry against the V1 peer-reviewed chemistry reference set at 100% coverage ([9,9,2,17v2]) and inherits that verification standard to all downstream claims. Experimental confirmation of Fusovium at CERN facilities would be additional independent verification of internal framework consistency, not first verification of the framework's mathematical structure.
-
-- ❌ "Muon g-2 discrepancy is closed by Fusovium." The June 2025 muon g-2 resolution occurred within lattice QCD and does not require Fusovium contribution. Earlier corpus claims about g-2 need re-examination in light of the updated Theory Initiative prediction.
 
 - ❌ "The paper proves particles don't exist and are only phase transitions." The Layer 0 interpretation is a corpus framework claim about how substrate-neutral reduction reads Layer 2 observations. It is not asserted as universal truth outside the corpus framework. Layer 2 measurements remain empirically accurate. The interpretation is separate from the prediction, and testing the prediction does not require accepting the interpretation.
 
