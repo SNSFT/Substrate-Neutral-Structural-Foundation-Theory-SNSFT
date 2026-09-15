@@ -254,23 +254,7 @@ Both predictions validated by independent experimental results in 2026.
 
 ---
 
-## 8. What Comes Next — Falsifiable Predictions Still Outstanding
-
-The following predictions follow from [9,9,4,9] and are falsifiable by upcoming observations:
-
-**P1 — Euclid consistency:** Euclid dark energy measurements will show w₀ > -1 (τ_DE > 0, Locked) but will not confirm w < -1 (phantom crossing). Falsifiable by Euclid DR1.
-
-**P2 — Crossing redshift:** The CPL-fit phantom crossing (in legacy parameterization, not physical) occurs near z ≈ 0.40. Full-shape analyses will push this crossing to lower confidence. Falsifiable by DESI Year 5.
-
-**P3 — Noble approach:** As measurement precision increases, w₀ converges toward -1 from above (τ_DE → 0 from above). It will not converge from below. Falsifiable if any next-generation survey finds w₀ < -1 with > 3σ significance from a full-shape analysis.
-
-**P4 — Dark sector duality:** τ_DM ≈ 0.269 (from Ω_dm, proved [9,9,4,8]) and τ_DE ≈ 0.024–0.033 (from DESI data) are both derivable from the same PNBA framework without free parameters. Future precision on Ω_dm and w₀ should tighten both values consistently with the framework.
-
-None of these predictions require free parameters. The only inputs are peer-reviewed observational measurements (Ω_dm, w₀, wₐ from DESI, Planck). The structural framework produces the predictions.
-
----
-
-## 9. Formal Verification Summary
+## 8. Formal Verification Summary
 
 From `SNSFL_DarkEnergy_DESI_Reduction.lean` [9,9,4,9]:
 
