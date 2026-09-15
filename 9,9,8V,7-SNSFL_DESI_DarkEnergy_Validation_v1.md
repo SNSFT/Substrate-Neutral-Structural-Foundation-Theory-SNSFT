@@ -227,7 +227,7 @@ This is exactly the predicted direction. The structural prediction was that more
 | ΛCDM is definitively restored | Not yet — tension remains at ~2σ level across some dataset combinations |
 | Dark energy is definitively Noble (w = -1 exactly) | Not yet — more data required |
 
-The prediction was directional: more precision → less phantom. That direction was confirmed. The final verdict on w = -1 requires Euclid, next-generation DESI, and Roman Space Telescope data. The structural prediction of Noble approach remains in force.
+The prediction was directional: more precision → less phantom. That direction was confirmed.
 
 **The key asymmetry:** The Identity Physics reduction used DESI's own data and derived the structural prediction from it. The only way the prediction fails is if the data is wrong. The July 2026 result using more of the same collaboration's data moved in the predicted direction. The data is not wrong.
 
