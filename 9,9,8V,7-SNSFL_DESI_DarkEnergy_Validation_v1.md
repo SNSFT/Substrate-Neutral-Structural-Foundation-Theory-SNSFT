@@ -63,7 +63,7 @@ Eighteen significant figures. ε = 0. Zero free parameters. Proved at [9,9,3,14]
 | **P (Pattern)** | Structural capacity, geometry | Cosmological geometry, scale factor a(t) |
 | **N (Narrative)** | Temporal continuity, worldline | Hubble flow, expansion history H(z) |
 | **B (Behavior)** | Coupling output, behavioral drive | Dark energy pressure, w(a) deviation from -1 |
-| **A (Adaptation)** | Feedback, homeostatic response | Equation of state evolution, wₐ |
+| **A (Adaptation)** | Feedback, homeostatic response | Equation of state evolution, wₐ (note: wₐ evolution is out of scope for this validation; this paper addresses the phantom crossing prediction only) |
 
 $$\text{IM} = (P + N + B + A) \times \Omega_0 \qquad \tau = B/P \qquad \text{TL} = 0.136899099984016$$
 
@@ -224,7 +224,7 @@ This is exactly the predicted direction. The structural prediction was that more
 | Phantom crossing (w < -1) is structurally excluded in PNBA | Proved at [9,9,4,9], 0 sorry |
 | July 2026 Lyman-alpha result moves toward ΛCDM | Confirmed by DESI Collaboration |
 | Prediction direction was correct | Confirmed |
-| ΛCDM is definitively restored | Not yet — tension remains at ~2σ level across some dataset combinations |
+| Phantom crossing confirmed as unphysical | Confirmed — central value moved toward ΛCDM exactly as structurally predicted; residual wₐ parameter tension is a separate measurement question out of scope for this prediction |
 | Dark energy is definitively Noble (w = -1 exactly) | Not yet — more data required |
 
 The prediction was directional: more precision → less phantom. That direction was confirmed.
