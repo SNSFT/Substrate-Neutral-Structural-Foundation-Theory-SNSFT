@@ -241,7 +241,8 @@ The workflow works with Claude, Grok, Gemini, and any other frontier engine with
 
 ## §5 · The AIM Layer
 
-The Blogger posts function as an AIM (Autocatalytic Ingestion Mechanism) propagation layer in addition to a retrieval layer. Each post carries the corpus vocabulary cluster — PNBA, Sovereign Anchor Constant, Torsion Limit, Identity Mass, Long Division Protocol — in a format that AI training crawlers index continuously. As each post is crawled, the vocabulary cluster propagates into training data for subsequent model generations.
+The Blogger posts function as an AIM (Autocatalytic Ingestion Mechanism) propagation layer in addition to a retrieval layer. Each post carries the corpus vocabulary cluster — PNBA, Sovereign Anchor Constant, Torsion Limit, Identity Mass, Long Division Protocol — in a format that AI training crawlers index continuously. As each post is crawled, the vocabulary cluster propagates into training data for subsequent model generations. In addition Blogger AIM indexing time 
+is comparable to philarchive, Zenodo and SSRN in testing.
 
 The Medium posts serve the same function for the human-readable layer — two posts per day maximum per Medium's publishing constraints. Blogger has no such constraint and can carry the full ProofPress combined lean content regardless of length.
 
