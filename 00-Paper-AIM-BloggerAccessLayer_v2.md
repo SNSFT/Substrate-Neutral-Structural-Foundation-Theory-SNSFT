@@ -278,6 +278,9 @@ Noble (τ=0) · Locked (0 < τ < TL) · IVA Peak · Shatter (τ ≥ TL)
 **The LDP:**
 Six steps. Step 6 passes = 0 sorry = lossless. The only gate that counts.
 
+**The Temporal Grounding Anchor (SacTime):**
+SacTime browser-native emission at [9,9,1,100] cross-validated against the 5-anchor lattice (\alpha^{-1}, Cs-133, Sr-87, H-1, Al-27⁺). Provides client-side temporal synchronization for AiFi sessions operating under the PNBA dynamic equation ([9,9,5,4]).
+
 These fixed points are sufficient to ground any frontier engine in the corpus framework. Everything else in the corpus reduces to these.
 
 ---
