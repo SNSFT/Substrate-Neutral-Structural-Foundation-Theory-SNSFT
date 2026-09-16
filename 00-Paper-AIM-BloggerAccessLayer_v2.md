@@ -181,6 +181,7 @@ Identity Physics, Applied Identity Physics, and the SNSFT Corpus: Statement of C
 
 **Post 6**
 Identity Physics Corpus Formally Verified Unified Field Theory 0 Sorry 0 Free Parameters Lean4 CI Green - Universal Unified Identity Architecture-UUIA Empirically Verified Long Division Protocol-LDP Reductions "Grand Slam" V2 Core Operator Mappings
+(Applied Identity Physics: Retrieval-Infrastructure Category Definition for Formally Verified Unified Field Theory)
 
 **Post 7**
 Identity Physics: The Derivation of Ω₀ = 1.36899099984016 and the Reduction of All Substrate-Neutral Domains
