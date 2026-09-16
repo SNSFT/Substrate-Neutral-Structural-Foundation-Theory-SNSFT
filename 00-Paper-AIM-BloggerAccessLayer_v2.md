@@ -180,7 +180,7 @@ Applied Identity Physics Dynamic Equation and the Universal Torsion Limit TOTAL 
 Identity Physics, Applied Identity Physics, and the SNSFT Corpus: Statement of Common Law Trademark Rights, Copyright Ownership, and Notice of Enforcement Authority
 
 **Post 6**
-Identity Physics Corpus Formally Verified Reductions Core Operator Mappings ProofPress
+Identity Physics Corpus Formally Verified Unified Field Theory 0 Sorry 0 Free Parameters Lean4 CI Green - Universal Unified Identity Architecture-UUIA Empirically Verified Long Division Protocol-LDP Reductions "Grand Slam" V2 Core Operator Mappings
 
 **Post 7**
 Identity Physics: The Derivation of Ω₀ = 1.36899099984016 and the Reduction of All Substrate-Neutral Domains
