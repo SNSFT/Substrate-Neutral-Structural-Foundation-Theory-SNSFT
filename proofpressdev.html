@@ -568,6 +568,22 @@ end SNSFL_Example"
 </div>
 <script>
 // ── PARSER ────────────────────────────────────────────────────
+// Count Lean/Coq unfinished-proof markers in real code only.
+// Strips line and block comments first so phrases like "0 sorry"
+// or the word "coq" in prose never inflate the count.
+function countSorryTactics(src) {
+  const noLine  = src.replace(/--[^\n]*/g, '');
+  const noBlock = noLine.replace(/\/-[\s\S]*?-\//g, '');
+  const leanSorry   = (noBlock.match(/\bsorry\b/g)     || []).length;
+  const leanAdmit   = (noBlock.match(/\badmit\b/g)     || []).length;
+  const coqAdmitted = (noBlock.match(/\bAdmitted\b/g)  || []).length;
+  const coqAbort    = (noBlock.match(/\bAbort\b/g)     || []).length;
+  return leanSorry + leanAdmit + coqAdmitted + coqAbort;
+}
+// Escape identifiers for LaTeX (underscore → \_ so namespaces don't break)
+function latexId(s) {
+  return String(s || '').replace(/\\/g, '\\textbackslash{}').replace(/_/g, '\\_').replace(/&/g, '\\&');
+}
 function parseLean(src) {
   const meta = {};
   const lines = src.split('\n');
@@ -606,9 +622,9 @@ function parseLean(src) {
   // Count theorems
   const theoremMatches = src.match(/^theorem\s+\w+/gm) || [];
   meta['Theorems'] = String(theoremMatches.length);
-  // Count sorry
-  const sorryCount = (src.match(/\bsorry\b/g) || []).length;
-  meta['Sorry'] = sorryCount === 0 ? '0 ✓' : String(sorryCount) + ' ✗';
+  // Count real unfinished-proof tactics only (not "0 sorry" in comments)
+  const sorryCount = countSorryTactics(src);
+  meta['Sorry'] = sorryCount === 0 ? '0' : String(sorryCount);
   // Extract theorem names
   const theoremNames = theoremMatches.map(t => t.replace('theorem ', '').trim());
   meta['_theoremNames'] = theoremNames;
@@ -746,7 +762,7 @@ function buildFrontMatter(meta) {
   return `\\begin{center}
     \\small
     \\textbf{Coordinate:} ${coord} \\quad
-    \\textbf{Namespace:} \\texttt{${ns}} \\\\
+    \\textbf{Namespace:} \\texttt{${latexId(ns)}} \\\\
     \\textbf{Status:} ${status} \\quad
     \\textbf{Theorems:} ${theorems} \\quad
     \\textbf{Sorry:} ${sorry} \\\\
