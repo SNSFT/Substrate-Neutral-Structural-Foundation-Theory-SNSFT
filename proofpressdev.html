@@ -1593,23 +1593,25 @@ function copyMasterStub() {
   });
 }
 // Exact stem match for manual-upload COMBINE / CHAIN.
-// Strips .lean/.txt and trailing "(n)" version suffixes from both the
-// import and the dropped filename, then requires an exact equality.
+// Strips .lean/.txt (repeatedly, so .lean.txt works) and trailing
+// "(n)" version suffixes from both the import and the dropped
+// filename, then requires an exact equality.
 // Import order is therefore body order — no fuzzy guessing.
+function normalizeStem(name) {
+  let s = name.trim();
+  // peel off .lean / .txt as many times as they appear at the end
+  let prev;
+  do {
+    prev = s;
+    s = s.replace(/\.(lean|txt)$/i, '');
+  } while (s !== prev);
+  // strip trailing " (1)" / "(2)" style version suffixes
+  s = s.replace(/\s*\(\d+\)\s*$/, '').trim();
+  return s.toLowerCase();
+}
 function findLocalMatches(mod) {
-  const want = mod
-    .replace(/\.(lean|txt)$/i, '')
-    .replace(/\s*\(\d+\)\s*$/, '')
-    .trim()
-    .toLowerCase();
-  return localChainFiles.filter(f => {
-    const stem = f.name
-      .replace(/\.(lean|txt)$/i, '')
-      .replace(/\s*\(\d+\)\s*$/, '')
-      .trim()
-      .toLowerCase();
-    return stem === want;
-  });
+  const want = normalizeStem(mod);
+  return localChainFiles.filter(f => normalizeStem(f.name) === want);
 }
 function b64ToUtf8(b64) {
   const binary = atob(b64.replace(/\n/g, ''));
