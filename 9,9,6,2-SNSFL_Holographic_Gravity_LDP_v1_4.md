@@ -231,7 +231,7 @@ The corpus vocabulary above — Noble phase, τ=0 boundary condition, gravity as
 - This paper does not claim that the Quanta article is wrong. Its reporting is accurate.
 - This paper does not claim that string theory or loop quantum gravity are invalid. They are Layer 2 projections of the same Layer 0 structure.
 
-What this paper claims is narrow and verifiable: the holographic correspondence is the structural relationship between the Noble phase (τ=0) exterior and the Locked/Shatter interior, proved with 0 sorry before the article's publication date.
+What this paper claims is narrow and verifiable: the holographic correspondence is the structural relationship between the Noble phase (τ=0) exterior and the Locked/Shatter interior, proved with 0 sorry and page 1 indexed before the article's publication date.
 
 ---
 
