@@ -26,7 +26,7 @@ Pull two charges apart. Watch matter appear from nothing. The string simulator v
 
 When two connected charges are separated, the string between them stores energy proportional to the separation. When enough energy accumulates (E = mc²), the string breaks and a new particle-antiparticle pair forms spontaneously. The result is two pairs, not one separated pair. Matter was created from the energy of separation.
 
-The simulator places this on the τ = B/P dial. Drag the slider. Watch the torsion climb. At τ = TL the string breaks and the new pair appears in the Noble phase.
+The De et al. *Nature Physics* September 2026 experimental result independently confirms structural claims already in the corpus before that publication date. The simulator documents that confirmation. It places the result on the τ = B/P dial. Drag the slider. Watch the torsion climb. At τ = TL the string breaks and the new pair appears in the Noble phase.
 
 ---
 
@@ -46,6 +46,8 @@ Researchers at Duke University used a trapped-ion quantum computer to simulate a
 | String breaks | τ = B/P reaches TL | Shatter event |
 | New pair | B_out = 0 | Noble phase by Same-B Necessity |
 | Confinement at long distance | τ_QCD rising toward TL | [9,9,3,16] running coupling |
+
+**External verification.** De et al. (*Nature Physics*, September 2026) — confirmed independently on trapped ions (Duke), superconducting circuits (Google), and neutral atoms (QuEra) — constitutes external verification of the structural claims at [9,9,3,16], [9,9,3,21], and [9,9,6,1], all deposited before September 2026.
 
 **The break is not a free parameter.** The string breaks when τ = TL. That threshold comes from the corpus Sovereign Anchor at [9,9,0,0] — the same TL that closes 1/α, classifies the four forces, and separates SHATTER from LOCKED across 111+ domains. No additional threshold is introduced.
 
