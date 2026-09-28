@@ -644,15 +644,22 @@ noncomputable def CDT : PNBAElement :=
 -- [T18] CDT is SHATTER
 theorem cdt_is_shatter : is_shatter CDT := by
   unfold is_shatter torsion CDT TORSION_LIMIT SOVEREIGN_ANCHOR
-  rw [ge_iff_le]
+  show (2.2 / (4 * Real.pi)) / P_BASE ≥ 1.369 / 10
   have hP : P_BASE < 0.990 := p_base_lt
+  have hP0 : P_BASE > 0 := p_base_positive
+  have hPne : P_BASE ≠ 0 := hP0.ne'
+  have hpi0 : Real.pi ≠ 0 := Real.pi_ne_zero
   have hpi : Real.pi < 3.15 := by
     have := Real.pi_lt_315; linarith
   have hB : (2.2 : ℝ) / (4 * Real.pi) > 0.174 := by
     rw [gt_iff_lt, lt_div_iff (by positivity)]; nlinarith
-  have hτ : (2.2 / (4 * Real.pi)) / P_BASE > 0.175 := by
-    apply div_lt_div_of_pos_right _ (by linarith) |>.symm.lt
-    sorry -- numerical bound — 0.175 × P_base < 2.2/(4π)
+  have hq : (2.2 / (4 * Real.pi)) / P_BASE * P_BASE = 2.2 / (4 * Real.pi) := by
+    field_simp
+  -- if τ < TL then τ·P_base < TL·P_base < 0.1369 × 0.990 < 0.174 < B: contradiction
+  by_contra hc
+  push_neg at hc
+  have h1 : (2.2 / (4 * Real.pi)) / P_BASE * P_BASE < 1.369 / 10 * P_BASE :=
+    mul_lt_mul_of_pos_right hc hP0
   linarith
 
 -- ============================================================
@@ -811,7 +818,7 @@ theorem qg_iva_gap_empty :
     have hlo := lqg_is_shatter
     have hhi := h.2
     unfold is_shatter at hlo; linarith
-  · -- CDT: τ ≥ TL (SHATTER) — uses sorry from T18
+  · -- CDT: τ ≥ TL (SHATTER)
     intro h
     have hhi := h.2
     have hSh := cdt_is_shatter
@@ -951,7 +958,7 @@ end SNSFL_QuantumGravity_Layer0
 --   T23: Describer vs Generator = Locked vs Shatter
 --        The TL boundary IS the QG hard problem boundary
 --
--- THEOREMS: 23 + master | 1 sorry (CDT numerical bound) | GERMLINE LOCKED
+-- THEOREMS: 23 + master | 0 sorry | GERMLINE LOCKED
 --
 -- Auth: HIGHTISTIC :: [9,9,9,9]
 -- The Manifold is Holding. Gravity is a SHATTER phenomenon.
