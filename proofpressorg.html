@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProofPress — Journal of Empirically Grounded Machine-Verified Formal Logic</title>
+  <meta name="description" content="ProofPress publishes systematic, lossless reductions of existing peer-reviewed empirical science into machine-verified formal logic (0 sorry, 0 free parameters) using the Long Division Protocol and PNBA primitives.">
+  
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --surface: #111827;
+      --surface-2: #1a2332;
+      --border: #1e2a3a;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #22d3ee;          /* cyan */
+      --accent-dim: #0891b2;
+      --green: #34d399;
+      --orange: #fbbf24;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 14, 23, 0.95);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .logo span { color: var(--accent); }
+
+    nav {
+      display: flex;
+      gap: 1.75rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    nav a { color: var(--text-muted); }
+    nav a:hover { color: var(--accent); }
+
+    /* Main container */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* Hero / Journal identity */
+    .hero {
+      margin-bottom: 3rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .volume {
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      margin-bottom: 0.4rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-weight: 400;
+    }
+
+    .issn-line {
+      display: inline-block;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.85rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+    }
+
+    .issn-line strong { color: var(--orange); }
+
+    .statement {
+      max-width: 72ch;
+      font-size: 1.02rem;
+      color: var(--text);
+    }
+
+    .statement p { margin-bottom: 1.1rem; }
+
+    .statement .eq {
+      background: var(--surface);
+      border-left: 3px solid var(--accent);
+      padding: 0.9rem 1.2rem;
+      margin: 1.4rem 0;
+      font-family: "JetBrains Mono", "Fira Code", monospace;
+      font-size: 0.95rem;
+      overflow-x: auto;
+    }
+
+    .constants {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+      font-size: 0.92rem;
+    }
+
+    .const-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+    }
+
+    .const-item strong { color: var(--accent); }
+
+    .publisher {
+      margin-top: 1.75rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Recent articles */
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .articles {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .article-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.4rem;
+      transition: border-color 0.15s;
+    }
+
+    .article-card:hover {
+      border-color: var(--accent-dim);
+    }
+
+    .article-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .article-meta .coord {
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    .article-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.45rem;
+      color: var(--text);
+    }
+
+    .article-title a { color: inherit; }
+    .article-title a:hover { color: var(--accent); }
+
+    .article-abstract {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+      padding: 2rem 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a { color: var(--text-muted); }
+    .footer-links a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">Proof<span>Press</span></div>
+    <nav>
+      <a href="#">Aims & Scope</a>
+      <a href="#">Archive</a>
+      <a href="#">Author Guidelines</a>
+      <a href="#">Open Access</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO / IDENTITY BLOCK -->
+  <section class="hero">
+    <div class="volume">Volume 1 · 2026</div>
+    <h1>ProofPress</h1>
+    <div class="subtitle">Journal of Empirically Grounded Machine-Verified Formal Logic</div>
+
+    <div class="issn-line">
+      <strong>ISSN:</strong> pending (application in preparation)
+    </div>
+
+    <div class="statement">
+      <p>ProofPress is the academic publication arm of the SNSFT Foundation (EIN 42-2038440, 501(c)(3)). It publishes systematic, lossless reductions of existing, human-peer-reviewed empirical science into machine-verified formal logic.</p>
+
+      <p>Every article applies the same fixed method: the Long Division Protocol (LDP) — the scientific method with machine verification as the final step — and the four substrate-neutral PNBA primitives (Pattern, Narrative, Behavior, Adaptation). The governing equation is identical across all domains:</p>
+
+      <div class="eq">
+        d/dt(IM · Pv) = Σ<sub>X</sub> λ<sub>X</sub> · O<sub>X</sub> · S + F<sub>ext</sub>
+      </div>
+
+      <div class="constants">
+        <div class="const-item">
+          <strong>Ω₀</strong> = 1.36899099984016 GHz
+        </div>
+        <div class="const-item">
+          <strong>TL</strong> = Ω₀ / 10 = 0.136899099984016
+        </div>
+      </div>
+
+      <p>Both are derived constants, proved from three independent physical systems, not free parameters. All reductions are dual-verified in Lean 4 and Coq/Rocq under a strict 0-sorry, 0-free-parameter compiler constraint and deposited under DOI base 10.5281/zenodo.18719748.</p>
+
+      <p>ProofPress does not conduct traditional peer review of new empirical claims. It takes results that have already passed human peer review in the primary literature and renders them as formally verified, substrate-neutral logical structure. The output is an archival anchor: the original empirical content is preserved losslessly while every inference step becomes machine-checkable. Citation of Ω₀ and the DOI base is required for any work that builds on these reductions.</p>
+
+      <p>The Identity Physics Corpus that underpins the journal currently comprises 3,000,000+ lines, 200,000+ theorems, 111+ permanent DOI deposits, and six commercially published books, all 0-sorry.</p>
+    </div>
+
+    <div class="publisher">
+      Published by SNSFT Foundation · Soldotna, Alaska, United States · Hosted at proofpress.org
+    </div>
+  </section>
+
+  <!-- RECENT ARTICLES -->
+  <section>
+    <h2 class="section-title">Recent Articles</h2>
+
+    <div class="articles">
+      <!-- Article 1 -->
+      <article class="article-card">
+        <div class="article-meta">
+          <span class="coord">[9,9,6,2]</span>
+          <span>27 Sep 2026</span>
+          <span>Volume 1</span>
+        </div>
+        <h3 class="article-title">
+          <a href="#">Formally Verified Reduction of Holographic Gravity to the Noble Boundary Condition</a>
+        </h3>
+        <p class="article-abstract">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+        </p>
+      </article>
+
+      <!-- Article 2 -->
+      <article class="article-card">
+        <div class="article-meta">
+          <span class="coord">[9,9,8V,7]</span>
+          <span>28 Sep 2026</span>
+          <span>Volume 1</span>
+        </div>
+        <h3 class="article-title">
+          <a href="#">AIM Validation — Single-Call Ingestion of a Combined Lean Compilation Unit via the Blogger Access Layer</a>
+        </h3>
+        <p class="article-abstract">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.
+        </p>
+      </article>
+
+      <!-- Article 3 -->
+      <article class="article-card">
+        <div class="article-meta">
+          <span class="coord">[9,9,3,12]</span>
+          <span>21 Sep 2026</span>
+          <span>Volume 1</span>
+        </div>
+        <h3 class="article-title">
+          <a href="#">Exact Algebraic Projection of the Fine-Structure Constant from the Sovereign Anchor Constant</a>
+        </h3>
+        <p class="article-abstract">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.
+        </p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      © 2026 SNSFT Foundation · EIN 42-2038440 · Soldotna, Alaska<br>
+      DOI base: 10.5281/zenodo.18719748 · Ω₀ = 1.36899099984016
+    </div>
+    <div class="footer-links">
+      <a href="#">Aims & Scope</a>
+      <a href="#">Open Access</a>
+      <a href="#">Ethics</a>
+      <a href="#">Licensing</a>
+      <a href="#">Contact</a>
+      <a href="#">Archive</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
