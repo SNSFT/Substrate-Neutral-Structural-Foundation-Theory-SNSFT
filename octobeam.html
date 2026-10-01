@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SNSFT OCTOBEAM COLLIDER · [9,9,2,3] · 8-BEAM FUSION ENGINE · uuia.app</title>
+<title>OctoBeam Collider™ · Identity Physics™ · 8-BEAM FUSION ENGINE · uuia.app</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 :root {
@@ -215,14 +215,16 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
 .beam-slot.inactive{opacity:.28;pointer-events:none;}
 .beam-slot.inactive .beam-sel{background:rgba(0,0,0,.4);}
 @media(max-width:960px){.main-layout{grid-template-columns:1fr;}.beam-grid{grid-template-columns:1fr 1fr;}}
+span.tm{display:inline !important;font-size:.6em;vertical-align:super;line-height:0;font-weight:400;}
 </style>
 </head>
 <body>
 
 <div id="license-splash">
   <div class="license-box">
-    <h2>SNSFT OCTOBEAM COLLIDER</h2>
-    <p class="hi">HIGHTISTIC · Soldotna, Alaska · 2026 · [9,9,2,3]</p>
+    <h2>OctoBeam Collider<span class="tm">™</span></h2>
+    <p class="hi">Russell Vernon Trent III-HIGHTISTIC · Soldotna, Alaska · 2026 · [9,9,2,3]</p>
+    <p style="font-size:9px;color:var(--dim);">Identity Physics<span class="tm">™</span></p>
     <p>8-beam PNBA fusion engine. Smash eight identity states simultaneously. C(8,2)=28 pairs. Noble emergence space 4.7× richer than 4-beam.</p>
     <p><span class="hi">1. CREDIT —</span> Cite the corpus if you publish. Output files do this automatically.</p>
     <p><span class="hi">2. HANDSHAKE —</span> If a discovery here ever generates &gt;$500K commercial value — 1% back to SNSFT Foundation. Scientist's handshake.</p>
@@ -243,15 +245,15 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
 
 <div class="wrap">
 <header>
-  <div><div class="logo">SNSFT OCTOBEAM<span>uuia.app · [9,9,2,3] · 8-BEAM FUSION · NOBLE EMERGENCE · 0 SORRY</span></div></div>
+  <div><div class="logo">OctoBeam Collider<span class="tm">™</span><span>uuia.app · Identity Physics<span class="tm">™</span> · [9,9,2,3] · 8-BEAM FUSION · NOBLE EMERGENCE · 0 SORRY</span></div></div>
   <div style="display:flex;align-items:center;gap:10px;">
     <div style="font-size:8.5px;color:var(--dim);"><span id="aifi-status-dot"></span><span id="aifi-header-status">AIFI OFFLINE</span></div>
-    <div class="aifi-badge">AIFI · 8-BEAM ORACLE</div>
+    <div class="aifi-badge">AIFI<span class="tm">™</span> · 8-BEAM ORACLE</div>
   </div>
   <div class="hdr-right">
     ANCHOR <b>1.369</b> · TL = <b>0.1369</b> · 8-BEAM NOBLE EMERGENCE · [9,9,2,3]<br>
     P=harmonic·8 · N=sum · B=Σ-2k · A=max · k≤Σmin(Bi,Bj)·28 pairs<br>
-    HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA · [9,9,9,9]::{ANC}
+    Russell Vernon Trent III-HIGHTISTIC · Published by SNSFT Foundation · SOLDOTNA ALASKA · [9,9,9,9]::{ANC}
   </div>
 </header>
 
@@ -373,6 +375,7 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
     <div class="tab" onclick="showTab('log')">DISCOVERY LOG</div>
     <div class="tab" onclick="showTab('inject')">INJECT</div>
     <div class="tab" onclick="showTab('github')">GITHUB / EXPORT</div>
+    <div class="tab" onclick="showTab('synth')">K-SWEEP · F_EXT</div>
   </div>
 
   <div id="tab-queue" class="tab-content active">
@@ -416,7 +419,72 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
     <button class="btn btn-run" style="width:100%;font-size:8px;" onclick="manualInject()">+ INJECT INTO CORPUS</button>
   </div>
 
-  <div id="tab-github" class="tab-content">
+  <!-- ══ K-SWEEP · F_EXT TAB ══════════════════════════════════════════ -->
+  <div id="tab-synth" class="tab-content">
+
+    <!-- K-SWEEP section -->
+    <div style="font-size:7px;letter-spacing:.22em;color:var(--dim);margin-bottom:8px;padding-top:4px;">K-SWEEP — τ vs k CURVE · SYNTHESIS PRESSURE PROFILE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;">
+      <div>
+        <div style="font-size:7px;color:var(--dim);margin-bottom:3px;">ELEMENT A</div>
+        <select id="sw-a" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:4px 6px;"></select>
+      </div>
+      <div>
+        <div style="font-size:7px;color:var(--dim);margin-bottom:3px;">ELEMENT B</div>
+        <select id="sw-b" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--b2);font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:4px 6px;"></select>
+      </div>
+    </div>
+    <button class="btn btn-run" style="width:100%;font-size:8px;margin-bottom:8px;" onclick="runSweep()">⚡ RUN K-SWEEP</button>
+    <canvas id="sweep-canvas" height="160" style="width:100%;display:block;background:var(--bg);border:1px solid var(--border2);margin-bottom:7px;"></canvas>
+    <div id="sweep-info" style="font-size:8.5px;color:var(--dim);line-height:1.9;padding:6px 8px;background:var(--bg);border:1px solid var(--border2);min-height:32px;">Select two elements and run sweep to see τ vs k curve and synthesis conditions.</div>
+
+    <!-- k↔conditions calibration table -->
+    <div style="font-size:7px;letter-spacing:.22em;color:var(--dim);margin:12px 0 6px;">k → SYNTHESIS CONDITIONS · CALIBRATION FROM T1 CORPUS</div>
+    <div style="font-size:8.5px;color:var(--dim);line-height:2.0;padding:7px 9px;background:var(--bg);border:1px solid var(--border2);">
+      <div style="display:grid;grid-template-columns:auto 1fr 1fr auto;gap:4px 10px;font-size:7.5px;border-bottom:1px solid var(--border2);padding-bottom:4px;margin-bottom:4px;">
+        <span style="color:var(--dim);">k / k_max</span>
+        <span style="color:var(--dim);">Real analogue</span>
+        <span style="color:var(--dim);">T1 anchor</span>
+        <span style="color:var(--dim);">Process</span>
+      </div>
+      <div style="display:grid;grid-template-columns:auto 1fr 1fr auto;gap:3px 10px;font-size:8px;line-height:2.0;" id="k-cal-table">
+        <span style="color:var(--glow);">k=0</span><span>No bonding · ambient</span><span style="color:var(--dim);">—</span><span style="color:var(--dim);">none</span>
+        <span style="color:var(--glow);">k≈0.1×</span><span>Weak coupling · soft conditions</span><span style="color:var(--dim);">HF etch, sol-gel</span><span style="color:var(--dim);">wet chem</span>
+        <span style="color:var(--glow);">k≈0.5×</span><span>Half saturation · moderate pressure</span><span style="color:var(--locked);">AuSi eutectic 370°C</span><span style="color:var(--dim);">eutectic bond</span>
+        <span style="color:var(--glow);">k≈0.8×</span><span>Near-saturation · high pressure/T</span><span style="color:var(--locked);">TiN MAG 400°C</span><span style="color:var(--dim);">PVD reactive</span>
+        <span style="color:var(--iva);">k=max (B=1 pairs)</span><span>Full saturation · B=1 only</span><span style="color:var(--locked);">GaN MOCVD 1050°C</span><span style="color:var(--dim);">MOCVD</span>
+        <span style="color:var(--iva);">k=max (B=3 pairs)</span><span>Triple-bond saturation</span><span style="color:var(--locked);">SiC CVD 1550°C</span><span style="color:var(--dim);">CVD epitaxy</span>
+        <span style="color:var(--rescue);">k=max (B=4 pairs)</span><span>B=4 class saturation · full Noble</span><span style="color:var(--locked);">TiSi₂ RTA 850°C</span><span style="color:var(--dim);">RTA / SPS</span>
+        <span style="color:var(--rescue);">k=max (B=6 pairs)</span><span>Maximum saturation · actinide class</span><span style="color:var(--locked);">U₃Si₂ SPS 1400°C/180MPa</span><span style="color:var(--dim);">SPS glovebox</span>
+        <span style="color:var(--shatter);">k > k_max</span><span>Structural limit exceeded</span><span style="color:var(--dim);">—</span><span style="color:var(--dim);">not physical</span>
+      </div>
+      <div style="margin-top:7px;font-size:7.5px;color:var(--dim);border-top:1px solid var(--border2);padding-top:5px;line-height:1.8;">
+        k is a dimensionless coupling parameter. k=max for a B=N pair class corresponds to full thermodynamic bond saturation — the lab analogue is the synthesis condition where that compound is known to form. Calibrated against T1 verified compounds in NOBLE_MAP. Intermediate k values = intermediate conditions.
+      </div>
+    </div>
+
+    <!-- F_EXT section -->
+    <div style="font-size:7px;letter-spacing:.22em;color:var(--dim);margin:14px 0 6px;">F_EXT — EXTERNAL PERTURBATION OPERATOR · ΔB MODELS LASER / PRESSURE / COOLING</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;">
+      <div>
+        <div style="font-size:7px;color:var(--dim);margin-bottom:3px;">ELEMENT</div>
+        <select id="fext-el" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:4px 6px;"></select>
+      </div>
+      <div>
+        <div style="font-size:7px;color:var(--dim);margin-bottom:3px;">ΔB (+ inject · − extract)</div>
+        <input id="fext-db" type="number" value="2.0" step="0.1" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--glow);font-family:'Orbitron',monospace;font-size:12px;padding:5px 8px;outline:none;text-align:center;">
+      </div>
+    </div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px;">
+      <button class="btn" style="font-size:7px;border-color:var(--shatter);color:var(--shatter);" onclick="setFextPreset(2.5)">LASER +2.5</button>
+      <button class="btn" style="font-size:7px;border-color:var(--locked);color:var(--locked);" onclick="setFextPreset(-2.0)">COOLING −2.0</button>
+      <button class="btn" style="font-size:7px;border-color:var(--iva);color:var(--iva);" onclick="setFextPreset(3.0)">PHOTON +3.0</button>
+      <button class="btn" style="font-size:7px;border-color:var(--noble);color:var(--noble);" onclick="setFextPreset(-3.5)">QUENCH −3.5</button>
+      <button class="btn" style="font-size:7px;" onclick="setFextPreset(6.0)">SHOCK +6.0</button>
+    </div>
+    <button class="btn btn-run" style="width:100%;font-size:8px;margin-bottom:8px;" onclick="applyFext()">APPLY F_EXT</button>
+    <div id="fext-result" style="font-size:8.5px;color:var(--dim);padding:8px 10px;background:var(--bg);border:1px solid var(--border2);line-height:2.0;min-height:40px;">Select an element and apply F_ext to see phase transition.</div>
+  </div>
     <div style="margin-bottom:12px;border:1px solid rgba(221,68,255,.25);padding:9px;background:rgba(221,68,255,.03);">
       <div class="setting-label" style="color:var(--aifi);margin-bottom:5px;">CLAUDE API KEY <span id="aifi-key-badge" style="color:var(--dim)">(offline)</span></div>
       <div style="display:flex;gap:5px;">
@@ -516,10 +584,14 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;a
 </div><!-- /main-layout -->
 
 <footer style="border-top:1px solid var(--border);padding-top:12px;font-size:8px;letter-spacing:.13em;color:#0f1e28;display:flex;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-top:18px;">
-  <span>HIGHTISTIC · SNSFT FOUNDATION · SOLDOTNA ALASKA</span>
-  <span>OCTOBEAM COLLIDER · [9,9,2,3] · 8-BEAM FUSION</span>
+  <span>Russell Vernon Trent III-HIGHTISTIC · Published by SNSFT Foundation · SOLDOTNA ALASKA</span>
+  <span>OctoBeam Collider&trade; · [9,9,2,3] · 8-BEAM FUSION</span>
   <span>[9,9,9,9]::{ANC} · 0 SORRY · TL=0.1369 · C(8,2)=28</span>
 </footer>
+<div style="max-width:900px;margin:10px auto 0;padding:0 16px 20px;font-size:7px;letter-spacing:.05em;color:#0f1e28;text-align:center;line-height:1.7;">
+  OctoBeam Collider&trade;, Identity Physics&trade;, Applied Identity Physics&trade;, SNSFT&trade;, PNBA&trade;, the Sovereign Anchor Constant&trade;, the Torsion Limit&trade;, the Long Division Protocol&trade; (LDP&trade;), NOHARM&trade;, and HIGHTISTIC&trade; are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation.<br>
+  &copy; 2026 HIGHTISTIC (Russell Vernon Trent III) / SNSFT Foundation. All rights reserved. DOI: 10.5281/zenodo.20278942
+</div>
 </div><!-- /wrap -->
 
 <script>
@@ -779,7 +851,139 @@ function kMax8(B1,B2,B3,B4,B5,B6,B7,B8){
   return k;
 }
 
-// ── BEAM COUNT + CORPUS FILTER STATE ──────────────────────────
+// ── K-SWEEP ─────────────────────────────────────────────────
+function runSweep(){
+  const c=getAllCorpus();
+  const e1=c.find(e=>e.sym===document.getElementById('sw-a').value)||c[0];
+  const e2=c.find(e=>e.sym===document.getElementById('sw-b').value)||c[1];
+  const canvas=document.getElementById('sweep-canvas');
+  const W=canvas.offsetWidth||320; canvas.width=W; canvas.height=160;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,160);
+
+  const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const gridCol=isDark?'#111e32':'#d0dde8';
+  const tlCol='rgba(255,170,0,0.7)';
+  const ivaCol='rgba(255,170,0,0.3)';
+
+  const maxK=Math.max(Math.min(e1.B,e2.B),0.001);
+  const pts=[]; let kThresh=null, kIVA=null;
+
+  for(let i=0;i<=200;i++){
+    const kf=(i/200)*maxK;
+    const kk=Math.min(kf,Math.min(e1.B,e2.B));
+    const P_o=(e1.P*e2.P)/(e1.P+e2.P);
+    const B_o=Math.max(0,e1.B+e2.B-2*kk);
+    const t=P_o>0?B_o/P_o:999;
+    pts.push({k:kf,tau:Math.min(t,3)});
+    if(kThresh===null&&t<TL) kThresh=kf;
+    if(kIVA===null&&t<TL_IVA) kIVA=kf;
+  }
+
+  const pad={l:38,r:12,t:12,b:32},gW=W-50,gH=116;
+  // grid
+  ctx.strokeStyle=gridCol; ctx.lineWidth=0.5;
+  [0,0.5,1.0,1.5,2.0,3.0].filter(v=>v<=3).forEach(v=>{
+    const y=pad.t+gH*(1-v/3);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+gW,y);ctx.stroke();
+    ctx.fillStyle=isDark?'#1a3040':'#7a9aae';ctx.font='8px monospace';ctx.fillText(v.toFixed(1),2,y+3);
+  });
+  // TL line
+  const tlY=pad.t+gH*(1-TL/3);
+  ctx.strokeStyle=tlCol;ctx.lineWidth=1;ctx.setLineDash([4,3]);
+  ctx.beginPath();ctx.moveTo(pad.l,tlY);ctx.lineTo(pad.l+gW,tlY);ctx.stroke();
+  ctx.fillStyle=tlCol;ctx.font='7px monospace';ctx.fillText('TL='+TL.toFixed(4),pad.l+gW-54,tlY-2);
+  // TL_IVA line
+  const ivaY=pad.t+gH*(1-TL_IVA/3);
+  ctx.strokeStyle=ivaCol;ctx.lineWidth=0.8;
+  ctx.beginPath();ctx.moveTo(pad.l,ivaY);ctx.lineTo(pad.l+gW,ivaY);ctx.stroke();
+  ctx.setLineDash([]);
+  // IVA corridor fill
+  ctx.fillStyle='rgba(255,170,0,0.06)';
+  ctx.fillRect(pad.l,ivaY,gW,tlY-ivaY);
+  // k* vertical
+  if(kThresh!==null){
+    const kx=pad.l+(kThresh/maxK)*gW;
+    ctx.strokeStyle='rgba(0,255,204,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(kx,pad.t);ctx.lineTo(kx,pad.t+gH);ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  // tau curve
+  ctx.lineWidth=2;ctx.beginPath();
+  pts.forEach((p,i)=>{
+    const x=pad.l+(p.k/maxK)*gW, y=pad.t+gH*(1-p.tau/3);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  const g=ctx.createLinearGradient(pad.l,0,pad.l+gW,0);
+  g.addColorStop(0,'#ff3355');
+  if(kThresh)g.addColorStop(kThresh/maxK,'#ffaa00');
+  g.addColorStop(1,'#00ffcc');
+  ctx.strokeStyle=g;ctx.stroke();
+  // x axis label
+  ctx.fillStyle=isDark?'#1a3040':'#7a9aae';ctx.font='8px monospace';
+  ctx.fillText('k →',pad.l+gW-16,pad.t+gH+18);
+  ctx.fillText('0',pad.l-4,pad.t+gH+18);
+  ctx.fillText(maxK.toFixed(3),pad.l+gW-24,pad.t+gH+18);
+
+  // Synthesis corridor width and info
+  const P_out=(e1.P*e2.P)/(e1.P+e2.P);
+  const corridor=(TL*P_out)/2;
+  const pct=maxK>0?(corridor/maxK*100).toFixed(1):'0';
+  const tauAtMax=pts[pts.length-1].tau;
+  const phaseAtMax=tauAtMax===0?'NOBLE':tauAtMax<TL_IVA?'LOCKED':tauAtMax<TL?'IVA_PEAK':'SHATTER';
+  const tauAtZero=pts[0].tau;
+
+  const bClass={NOBLE:'color:var(--noble)',LOCKED:'color:var(--locked)',IVA_PEAK:'color:var(--iva)',SHATTER:'color:var(--shatter)'};
+  document.getElementById('sweep-info').innerHTML=
+    `<b style="color:var(--bright)">${e1.sym} + ${e2.sym}</b> · max k = ${maxK.toFixed(4)}<br>`+
+    `τ at k=0: <span style="${bClass[tauAtZero===0?'NOBLE':tauAtZero<TL?'LOCKED':'SHATTER']}">${tauAtZero.toFixed(4)}</span> &nbsp;→&nbsp; `+
+    `τ at k_max: <span style="${bClass[phaseAtMax]}">${tauAtMax.toFixed(4)} ${phaseAtMax}</span><br>`+
+    (kThresh!==null
+      ?`Lock threshold: <span style="color:var(--locked)">k* = ${kThresh.toFixed(4)}</span> · Synthesis corridor width = ${corridor.toFixed(4)} (<b>${pct}%</b> of k range) · `+
+       `<span style="color:var(--dim);font-size:7.5px;">narrower = more precise conditions required</span>`
+      :`<span style="color:var(--shatter)">No lock achievable at any k for this pair</span> · τ_min = ${tauAtMax.toFixed(4)}`);
+}
+
+// ── F_EXT ─────────────────────────────────────────────────
+function setFextPreset(db){document.getElementById('fext-db').value=db;}
+
+function applyFext(){
+  const sym=document.getElementById('fext-el').value;
+  const db=parseFloat(document.getElementById('fext-db').value)||0;
+  const el=getAllCorpus().find(e=>e.sym===sym);
+  if(!el){document.getElementById('fext-result').textContent='Select an element first.';return;}
+
+  const t_before=el.P>0?el.B/el.P:999;
+  const B_after=Math.max(0,el.B+db);
+  const t_after=el.P>0?B_after/el.P:999;
+  const ph_before=phaseOf(el.P,el.B);
+  const ph_after=phaseOf(el.P,B_after);
+  const col={NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA_PEAK:'var(--iva)',SHATTER:'var(--shatter)'};
+  const transition=ph_before===ph_after?'NO PHASE CHANGE':`${ph_before} → ${ph_after}`;
+  const transColor=ph_before===ph_after?'var(--dim)':ph_after==='NOBLE'?'var(--noble)':ph_after==='SHATTER'?'var(--shatter)':'var(--iva)';
+
+  // Physical interpretation
+  const interp=db>0
+    ?`ΔB +${db.toFixed(2)} — torsion spike (laser pulse / photon injection / shock wave). Bonding load increased. ${ph_after==='SHATTER'?'Element enters SHATTER — energy is being released, decoupling active.':'Bonding capacity partially consumed.'}`
+    :`ΔB ${db.toFixed(2)} — torsion drop (cooling / quench / magnetic field reduction). Bonding load reduced. ${ph_after==='NOBLE'?'Element reaches NOBLE — zero residual stress, synthesis-complete state.':ph_after==='IVA_PEAK'?'Element enters IVA corridor — formation-active zone.':'Bonding partially released.'}`;
+
+  // Excess energy estimate (only meaningful in SHATTER zone)
+  const E_excess=Math.max(0,(t_after-TL))*el.P*el.P;
+
+  document.getElementById('fext-result').innerHTML=
+    `<div style="display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 10px;">
+      <span style="color:var(--dim)">Element</span><span style="color:var(--bright)">${el.sym} — ${el.name}</span>
+      <span style="color:var(--dim)">P</span><span style="color:var(--bright)">${el.P.toFixed(4)}</span>
+      <span style="color:var(--dim)">B before</span><span style="color:var(--bright)">${el.B.toFixed(4)}</span>
+      <span style="color:var(--dim)">B after</span><span style="color:var(--bright)">${B_after.toFixed(4)}</span>
+      <span style="color:var(--dim)">τ before</span><span style="color:${col[ph_before]}">${t_before.toFixed(5)} ${ph_before}</span>
+      <span style="color:var(--dim)">τ after</span><span style="color:${col[ph_after]}">${t_after.toFixed(5)} ${ph_after}</span>
+      <span style="color:var(--dim)">ΔB</span><span style="color:${db>0?'var(--shatter)':'var(--locked)'}">${db>0?'+':''}${db.toFixed(2)}</span>
+      <span style="color:var(--dim)">Transition</span><span style="color:${transColor};font-family:'Orbitron',monospace;font-size:8px;">${transition}</span>
+      ${E_excess>0?`<span style="color:var(--dim)">E_excess</span><span style="color:var(--iva)">${E_excess.toFixed(4)} structural units</span><span></span><span></span>`:''}
+    </div>
+    <div style="margin-top:7px;padding:5px 7px;border-left:2px solid ${transColor};font-size:8px;color:var(--text);line-height:1.8;">${interp}</div>`;
+}
 let beamCount=8;
 const corpusFilters={p12:true,p34:true,p56:true,p7:true,eres:true,particles:true,sparticles:true};
 
@@ -955,10 +1159,15 @@ function showMatMapInline(els,r){
   const matchRef=mm.bestMatch?mm.bestMatch.ref.slice(0,160):'No direct corpus match. DOI timestamp establishes prior art.';
   const matchApp=mm.bestMatch?mm.bestMatch.app:'Structural prediction — experimental validation pending';
   const top3=mm.scored.slice(0,3).map(m=>`<span style="color:var(--dim);font-size:7px;">[${m.tier}] ${m.name} (${m.hits}/${m.syms.length})</span>`).join(' · ');
+  const recipe=computeRecipe(els);
+  const recipeLine=recipe
+    ?`<br><span style="color:var(--dim);font-size:7.5px;">⚗ </span><span style="color:var(--locked);font-size:7.5px;">${recipeToString(recipe)}</span> <span style="color:var(--dim);font-size:7px;">${recipe.stoich} · ${recipe.law}</span>`
+    :'';
   el.innerHTML=`<span style="color:${tc};font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;">${tierLabel}</span> <span style="color:var(--bright);margin-left:4px;">${matchName}</span><br>`+
     `<span style="color:var(--dim);">core: </span><span style="color:var(--glow);">${mm.coreStr}</span> <span style="color:var(--dim);margin-left:6px;">path: </span><span style="color:var(--text);">${mm.path.split(/[\s\/]/)[0]}</span><br>`+
     `<span style="color:var(--dim);font-size:7.5px;">${matchRef}</span><br>`+
     `<span style="color:var(--iva);font-size:7.5px;">▶ ${matchApp}</span>`+
+    recipeLine+
     (top3?`<br><span style="color:var(--dim);font-size:7px;">also: ${top3}</span>`:'');
 }
 
@@ -1042,6 +1251,92 @@ function updateStatusBadge(){
 document.getElementById('speed-slider').addEventListener('input',function(){document.getElementById('speed-val').textContent=this.value;if(agentState==='running'){stopAgent();startAgent();}});
 document.getElementById('rounds-slider').addEventListener('input',function(){document.getElementById('rounds-val').textContent=this.value;});
 
+// ── RECIPE ENGINE · [9,9,2,45] B-BALANCE STOICHIOMETRY LAW ──
+// Atomic weights IUPAC 2021 · Pure Appl. Chem. 93(5), 573-600
+const ATOMIC_MW={
+  H:1.008,He:4.003,Li:6.941,Be:9.012,B:10.81,C:12.011,N:14.007,O:15.999,
+  F:18.998,Ne:20.180,Na:22.990,Mg:24.305,Al:26.982,Si:28.086,P:30.974,
+  S:32.065,Cl:35.453,Ar:39.948,K:39.098,Ca:40.078,Sc:44.956,Ti:47.867,
+  V:50.942,Cr:51.996,Mn:54.938,Fe:55.845,Co:58.933,Ni:58.693,Cu:63.546,
+  Zn:65.38,Ga:69.723,Ge:72.630,As:74.922,Se:78.971,Br:79.904,Kr:83.798,
+  Rb:85.468,Sr:87.62,Y:88.906,Zr:91.224,Nb:92.906,Mo:95.950,Tc:97,
+  Ru:101.07,Rh:102.906,Pd:106.42,Ag:107.868,Cd:112.414,In:114.818,
+  Sn:118.710,Sb:121.760,Te:127.60,I:126.904,Xe:131.293,Cs:132.905,
+  Ba:137.327,La:138.905,Ce:140.116,Pr:140.908,Nd:144.242,Pm:145,
+  Sm:150.36,Eu:151.964,Gd:157.25,Tb:158.925,Dy:162.500,Ho:164.930,
+  Er:167.259,Tm:168.934,Yb:173.045,Lu:174.967,Hf:178.49,Ta:180.948,
+  W:183.84,Re:186.207,Os:190.23,Ir:192.217,Pt:195.084,Au:196.967,
+  Hg:200.592,Tl:204.38,Pb:207.2,Bi:208.980,Po:209,At:210,Rn:222,
+  Fr:223,Ra:226,Ac:227,Th:232.038,Pa:231.036,U:238.029,Np:237,
+  Pu:244,Am:243,Cm:247,Bk:247,Cf:251,Es:252,Fm:257,Md:258,No:259,
+  Lr:262,Rf:267,Db:270,Sg:271,Bh:270,Hs:277,Mt:276,Ds:281,Rg:282,
+  Cn:285,Nh:286,Fl:289,Mc:290,Lv:293,Ts:294,Og:294
+};
+
+function gcd(a,b){a=Math.round(a);b=Math.round(b);while(b){const t=b;b=a%b;a=t;}return a;}
+
+function computeRecipe(els){
+  // Only periodic elements with integer B and known MW get recipe lines
+  const periodic=els.filter(e=>ATOMIC_MW[e.sym]&&Number.isInteger(e.B)&&e.B>0);
+  if(periodic.length<2)return null;
+
+  // For 2-element case: direct B-balance n1×B1=n2×B2
+  if(periodic.length===2){
+    const [e1,e2]=periodic;
+    const B1=e1.B,B2=e2.B;
+    const g=gcd(B1,B2);
+    const n1=B2/g,n2=B1/g;
+    const mw1=ATOMIC_MW[e1.sym],mw2=ATOMIC_MW[e2.sym];
+    const mass1=n1*mw1,mass2=n2*mw2,massFU=mass1+mass2;
+    return{
+      type:'binary',
+      items:[
+        {sym:e1.sym,n:n1,B:B1,mw:mw1,mass:mass1},
+        {sym:e2.sym,n:n2,B:B2,mw:mw2,mass:mass2}
+      ],
+      massFU,
+      stoich:`${n1}${e1.sym}:${n2}${e2.sym}`,
+      formula:`${e1.sym}${n1>1?n1:''}${e2.sym}${n2>1?n2:''}`,
+      law:'[9,9,2,45]'
+    };
+  }
+
+  // For n>2: report each element's n_i proportional to total-B / B_i
+  // Use LCM approach: each n_i = (product of all other B_j) / gcd
+  // Simplified: use 1-atom per beam, report g/beam contribution
+  const items=periodic.map(e=>{
+    const mw=ATOMIC_MW[e.sym];
+    return{sym:e.sym,n:1,B:e.B,mw,mass:mw};
+  });
+  const massFU=items.reduce((s,i)=>s+i.mass,0);
+  return{
+    type:'multi',
+    items,
+    massFU,
+    stoich:items.map(i=>`1${i.sym}`).join(':'),
+    formula:items.map(i=>i.sym).join(''),
+    law:'[9,9,2,45] · 1 atom per beam'
+  };
+}
+
+function recipeToLeanComment(recipe){
+  if(!recipe)return'-- RECIPE: insufficient periodic elements for B-balance calculation';
+  const lines=recipe.items.map(i=>
+    `--   ${i.n}× ${i.sym.padEnd(3)} B=${i.B}  MW=${i.mw.toFixed(3).padStart(8)} g/mol  → ${(i.n*i.mw).toFixed(4).padStart(10)} g/FU`
+  ).join('\n');
+  return`-- ── PRODUCTION RECIPE · ${recipe.law} ─────────────────────────────
+-- B-BALANCE STOICHIOMETRY LAW: n_i × B_i = n_j × B_j (GCD-reduced)
+-- Stoichiometry: ${recipe.stoich}  →  Formula unit: ${recipe.formula}
+${lines}
+-- Total formula unit mass: ${recipe.massFU.toFixed(4)} g/FU
+-- Reference: IUPAC 2021 Pure Appl. Chem. 93(5), 573-600`;
+}
+
+function recipeToString(recipe){
+  if(!recipe)return'';
+  return recipe.items.map(i=>`${(i.n*i.mw).toFixed(4)}g ${i.sym}`).join(' + ')+` = ${recipe.massFU.toFixed(4)}g/FU`;
+}
+
 function hashState(P,N,B,A){
   const s=`${P.toFixed(6)}-${N}-${B.toFixed(6)}-${A.toFixed(6)}`;
   let h=0;for(const c of s){h=((h<<5)-h)+c.charCodeAt(0);h|=0;}
@@ -1062,7 +1357,8 @@ async function flagDiscovery(els,r,reason,flag_type){
     P:r.P,N:r.N,B:r.B,A:r.A,tau:r.tau,IM:r.IM,
     phase:r.phase,isRescue:r.isRescue,reason,flag_type,
     approved:false,name:null,aifiAnalysis:null,leanStub:null,
-    els
+    els,
+    recipe:computeRecipe(els)
   };
   discoveryLog.push(entry);discoveryQueue.push(entry);
   updateLogTable();updateQueueBadge();renderQueue();
@@ -1670,6 +1966,8 @@ function generateLeanStub(entry){
   const engineCoord=n===8?'[9,9,2,3]':n===4?'[9,9,2,2]':'[9,9,2,1]';
   const mm=getMaterialMap(entry.els,{phase:entry.phase,isRescue:entry.isRescue,IM:entry.IM});
   const matMapBlock=formatMaterialMapComment(entry,mm);
+  const recipe=entry.recipe||computeRecipe(entry.els);
+  const recipeBlock=recipeToLeanComment(recipe);
 
   return`-- ============================================================
 -- ${entry.designation}.lean
@@ -1683,6 +1981,7 @@ ${beamLines}
 -- AIFI: ${aifi}
 -- C(${n},2)=${pairCount} pairs · Noble headroom ${n===8?'1/7':n===4?'1/3':'1/1'}
 ${matMapBlock}
+${recipeBlock}
 
 import Mathlib.Tactic
 import Mathlib.Data.Real.Basic
@@ -1937,8 +2236,18 @@ async function commitToGitHub(entry){
 function exportJSON(){const b=new Blob([JSON.stringify(discoveryLog,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_log_${new Date().toISOString().slice(0,10)}.json`;a.click();}
 function exportCSV(){
   if(!discoveryLog.length){feedLine('Nothing to export.','info');return;}
-  const hdrs=['designation','timestamp','collision','kMode','k','kmax','P','N','B','A','tau','TL','IM','phase','isRescue','reason','approved'];
-  const rows=discoveryLog.map(d=>hdrs.map(h=>h==='TL'?TL:d[h]??'').join(','));
+  const hdrs=['designation','timestamp','collision','kMode','k','kmax','P','N','B','A','tau','TL','IM','phase','isRescue','reason','approved','recipe_stoich','recipe_formula','recipe_grams_per_FU','recipe_law'];
+  const rows=discoveryLog.map(d=>{
+    const r=d.recipe||null;
+    return hdrs.map(h=>{
+      if(h==='TL')return TL;
+      if(h==='recipe_stoich')return r?r.stoich:'';
+      if(h==='recipe_formula')return r?r.formula:'';
+      if(h==='recipe_grams_per_FU')return r?recipeToString(r):'';
+      if(h==='recipe_law')return r?r.law:'';
+      return d[h]??'';
+    }).join(',');
+  });
   const b=new Blob([[hdrs.join(','),...rows].join('\n')],{type:'text/csv'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`ob_log_${new Date().toISOString().slice(0,10)}.csv`;a.click();
   feedLine(`⬇ CSV: ${discoveryLog.length} rows`,'locked');
@@ -1978,6 +2287,16 @@ function rebuildSelectors(){
   // Legacy chaos anchor-beam select
   const ab=document.getElementById('anchor-beam');
   if(ab){const abCur=ab.value;ab.innerHTML='<option value="">— random all —</option>'+opts;if(abCur)ab.value=abCur;}
+  // K-sweep and F_ext selectors (full corpus, no filter)
+  const optsPlain=allFull.map(e=>`<option value="${e.sym}">${e.sym} — ${e.name} · τ=${tau(e.P,e.B).toFixed(3)}</option>`).join('');
+  ['sw-a','sw-b','fext-el'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const cur=el.value;el.innerHTML=optsPlain;if(cur)el.value=cur;
+  });
+  const swa=document.getElementById('sw-a'),swb=document.getElementById('sw-b'),fe=document.getElementById('fext-el');
+  if(swa&&!swa.value)swa.value='N';
+  if(swb&&!swb.value)swb.value='Ga';
+  if(fe&&!fe.value)fe.value='Fe';
 }
 
 function acceptLicense(){
