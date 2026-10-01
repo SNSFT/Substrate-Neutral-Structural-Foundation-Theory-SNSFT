@@ -1,4 +1,4 @@
-# Substrate-Neutral Structural Foundation Theory (SNSFT)
+# Identity Physics™ Corpus-Applied Identity Physics™ released by SNSFT Foundation (42-2038440)
 <!-- README version: 080626 — Updated August 6, 2026 -->
 
 | Resource | Status | DOI |
