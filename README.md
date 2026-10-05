@@ -1,8 +1,19 @@
 # Identity Physics™ Corpus-Applied Identity Physics™ released by SNSFT Foundation (42-2038440)
-<!-- README version: 080626 — Updated August 6, 2026 -->
+<!-- README version: 100526 — Updated October 5, 2026 -->
+
+> ### ✅ Standardized, CI-verified branch: [SNSFT/identityphysics](https://github.com/SNSFT/identityphysics)
+>
+> This repository is the full archive of the Identity Physics Corpus: proofs, tools, discovery engines, datasets, collision records, papers and books, as they were produced across many toolchain versions.
+>
+> The **standardized branch** holds the corpus files aligned to one pinned toolchain — Lean 4 v4.31.0 with Mathlib v4.31.0 — where every file compiles together on every push with **0 sorry** and **0 custom axioms**. It currently holds **105 files, 3,531 theorems and 83,326 lines**, all CI green, and grows one file at a time.
+>
+> **Start there** if you want to check the formal results yourself; the build is reproducible with two commands.
+>
+> Repository paper: *Applied Identity Physics & Identity Physics Corpus Initial Standardization of 105 Files, 3,531 Theorems and 83,326 Lines to Lean 4 (v4.31.0) and Mathlib v4.31.0 0 Sorry CI Green on GitHub (SNSFT/identityphysics)* — DOI [10.5281/zenodo.23158658](https://doi.org/10.5281/zenodo.23158658) · [PhilArchive TREAIP-36](https://philarchive.org/rec/TREAIP-36)
 
 | Resource | Status | DOI |
 | :--- | :--- | :--- |
+| **Standardized Branch — 105 files, Lean 4 v4.31.0, CI green ([SNSFT/identityphysics](https://github.com/SNSFT/identityphysics))** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23158658.svg)](https://doi.org/10.5281/zenodo.23158658) |
 | **Core Manuscript** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18726079.svg)](https://doi.org/10.5281/zenodo.18726079) |
 | **Lean 4 Corpus** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18719748.svg)](https://doi.org/10.5281/zenodo.18719748) |
 | **IVA Element Set Paper** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19016221.svg)](https://doi.org/10.5281/zenodo.19016221) |
