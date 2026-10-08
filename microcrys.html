@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Micro-Crystalline Grid Warp · Identity Physics™</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+  --bg:       #020407;
+  --panel:    #060c12;
+  --border:   #0c1e2e;
+  --glow:     #00e5ff;
+  --noble:    #9966ff;
+  --locked:   #00ffaa;
+  --iva:      #ff8800;
+  --shatter:  #ff3355;
+  --text:     #5a8fa8;
+  --bright:   #c8e8f5;
+  --dim:      #152030;
+  --tl:       0.136899099984016;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* HEADER */
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(2,4,7,.95);
+  backdrop-filter: blur(8px);
+  position: sticky; top: 0; z-index: 10;
+}
+.hdr-title {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 11px;
+  letter-spacing: .16em;
+  color: var(--glow);
+  text-shadow: 0 0 20px rgba(0,229,255,.35);
+}
+.hdr-sub {
+  font-size: 7px;
+  color: var(--dim);
+  letter-spacing: .2em;
+  margin-top: 3px;
+}
+.hdr-badge {
+  font-size: 8px;
+  color: var(--locked);
+  letter-spacing: .12em;
+  border: 1px solid rgba(0,255,170,.2);
+  padding: 4px 10px;
+}
+
+/* CANVAS AREA */
+.sim-wrap {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+canvas#grid {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* CANVAS OVERLAYS */
+.overlay-tl {
+  position: absolute;
+  top: 14px; left: 18px;
+  font-size: 9px;
+  color: rgba(0,229,255,.55);
+  letter-spacing: .1em;
+  pointer-events: none;
+}
+.overlay-phase {
+  position: absolute;
+  top: 14px; right: 18px;
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  letter-spacing: .18em;
+  padding: 5px 12px;
+  border: 1px solid rgba(0,255,170,.3);
+  background: rgba(0,255,170,.06);
+  color: var(--locked);
+  pointer-events: none;
+  transition: all .2s;
+}
+.overlay-tau {
+  position: absolute;
+  bottom: 14px; left: 18px;
+  font-size: 9px;
+  color: var(--text);
+  letter-spacing: .08em;
+  pointer-events: none;
+}
+.overlay-ratio {
+  position: absolute;
+  bottom: 14px; right: 18px;
+  font-size: 9px;
+  color: var(--glow);
+  letter-spacing: .08em;
+  pointer-events: none;
+}
+
+/* TAU GAUGE */
+.gauge-wrap {
+  position: absolute;
+  bottom: 36px; left: 18px; right: 18px;
+  height: 3px;
+  background: var(--dim);
+  pointer-events: none;
+}
+.gauge-fill {
+  height: 100%;
+  width: 0%;
+  transition: width .1s, background .2s;
+  background: var(--locked);
+}
+.gauge-tl-marker {
+  position: absolute;
+  top: -4px;
+  width: 1px;
+  height: 11px;
+  background: rgba(0,229,255,.8);
+  left: 13.69%;  /* TL / 1.0 × 100% */
+}
+.gauge-tl-label {
+  position: absolute;
+  top: -16px;
+  font-size: 7px;
+  color: var(--glow);
+  left: calc(13.69% - 6px);
+  letter-spacing: .06em;
+}
+
+/* STATS ROW */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+.stat {
+  padding: 12px 16px;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-label {
+  font-size: 7px;
+  color: var(--dim);
+  letter-spacing: .14em;
+  margin-bottom: 4px;
+}
+.stat-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  color: var(--bright);
+}
+.stat-sub {
+  font-size: 7px;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+/* CONTROLS */
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+@media(max-width:600px) { .controls { grid-template-columns: 1fr; } }
+
+.ctrl-panel {
+  padding: 16px 20px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.ctrl-panel:nth-child(even) { border-right: none; }
+
+.ctrl-label {
+  font-size: 8px;
+  color: var(--dim);
+  letter-spacing: .14em;
+  margin-bottom: 10px;
+}
+
+/* MODE TOGGLE */
+.mode-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 0;
+}
+.mode-btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  letter-spacing: .1em;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  transition: all .15s;
+  text-align: center;
+}
+.mode-btn.active {
+  border-color: var(--glow);
+  color: var(--glow);
+  background: rgba(0,229,255,.06);
+}
+.mode-note {
+  font-size: 7px;
+  color: var(--dim);
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+/* SLIDERS */
+.slider-row {
+  margin-bottom: 14px;
+}
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.slider-name { font-size: 8px; color: var(--text); letter-spacing: .08em; }
+.slider-val  { font-size: 8px; color: var(--bright); font-family: 'Orbitron', monospace; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  background: var(--glow);
+  border-radius: 0;
+  box-shadow: 0 0 8px rgba(0,229,255,.5);
+}
+
+/* RATIO DISPLAY */
+.ratio-display {
+  display: grid;
+  grid-template-columns: 1fr 4px 1fr;
+  gap: 0;
+  align-items: center;
+  margin-top: 8px;
+}
+.ratio-cell {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.ratio-cell.bare { border-color: rgba(153,102,255,.3); }
+.ratio-cell.fext { border-color: rgba(0,229,255,.3); }
+.ratio-label { font-size: 7px; color: var(--dim); letter-spacing: .1em; margin-bottom: 3px; }
+.ratio-num { font-family: 'Orbitron', monospace; font-size: 13px; }
+.ratio-num.bare { color: var(--noble); }
+.ratio-num.fext { color: var(--glow); }
+.ratio-sep { width: 4px; height: 30px; background: var(--border); }
+
+/* ALPHA ANCHOR */
+.alpha-block {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid rgba(0,229,255,.15);
+  background: rgba(0,229,255,.03);
+}
+.alpha-eq {
+  font-size: 9px;
+  color: var(--glow);
+  letter-spacing: .06em;
+  line-height: 1.8;
+}
+.alpha-note {
+  font-size: 7px;
+  color: var(--dim);
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+/* FOOTER */
+.footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 7px;
+  color: var(--dim);
+  letter-spacing: .06em;
+  line-height: 1.8;
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <div class="hdr-title">MICRO-CRYSTALLINE GRID WARP SIMULATION</div>
+    <div class="hdr-sub">TL × 1001 = 1/α · BARE:FEXT = 1000:1 · COORDINATE [9,9,3,21] · 0 SORRY</div>
+  </div>
+  <div class="hdr-badge">IDENTITY PHYSICS™</div>
+</div>
+
+<!-- SIMULATION CANVAS -->
+<div class="sim-wrap">
+  <canvas id="grid"></canvas>
+  <div class="overlay-tl">TL = 0.136899099984016<br>ANCHOR = 1.36899099984016</div>
+  <div class="overlay-phase" id="phaseBadge">LOCKED</div>
+  <div class="gauge-wrap">
+    <div class="gauge-fill" id="gaugeFill"></div>
+    <div class="gauge-tl-marker"></div>
+    <div class="gauge-tl-label">TL</div>
+  </div>
+  <div class="overlay-tau" id="tauDisplay">τ = B/P = 0.000000</div>
+  <div class="overlay-ratio" id="ratioDisplay">BARE:FEXT = 1000:1</div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-label">Warp Distortion</div>
+    <div class="stat-val" id="statWarp">0.000</div>
+    <div class="stat-sub">× TL units</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Lattice Nodes</div>
+    <div class="stat-val" id="statNodes">0</div>
+    <div class="stat-sub">active</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Fext / Bare</div>
+    <div class="stat-val" id="statFext">1:1000</div>
+    <div class="stat-sub">[9,9,3,21] T9</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Phase</div>
+    <div class="stat-val" id="statPhase" style="font-size:11px;">LOCKED</div>
+    <div class="stat-sub">τ vs TL</div>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+
+  <!-- LEFT: LATTICE MODE -->
+  <div class="ctrl-panel">
+    <div class="ctrl-label">Lattice Micro-Structure</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btnOrtho" onclick="setMode('ortho')">
+        Orthogonal Bare<br><span style="font-size:6px;color:var(--dim)">Pattern-dominant · P-axis</span>
+      </button>
+      <button class="mode-btn" id="btnHex" onclick="setMode('hex')">
+        Hexagonal Phase<br><span style="font-size:6px;color:var(--dim)">Behavioral-coupled · B-axis</span>
+      </button>
+    </div>
+    <div class="mode-note">
+      Orthogonal: bare lattice at P-axis lock. τ = 0, Noble ground.<br>
+      Hexagonal: B-axis coupling active. τ rises toward TL.
+    </div>
+
+    <div class="alpha-block">
+      <div class="alpha-eq">
+        1/α = TL × 1001 = 137.035999084<br>
+        BARE = TL × 1000 · FEXT = TL × 1<br>
+        ε = 0 vs CODATA 2018
+      </div>
+      <div class="alpha-note">
+        The 1000:1 ratio is structurally forced — 1001 = 7×11×13, the only factorization that splits into a round bare term plus a single kinetic unit. [9,9,3,14] [9,9,3,21]
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: SLIDERS -->
+  <div class="ctrl-panel">
+    <div class="ctrl-label">Force Parameters</div>
+
+    <div class="slider-row">
+      <div class="slider-header">
+        <span class="slider-name">Macroscopic Force Intensity (B-axis)</span>
+        <span class="slider-val" id="valForce">0.050</span>
+      </div>
+      <input type="range" id="sliderForce" min="0" max="100" value="5" oninput="update()">
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-header">
+        <span class="slider-name">Bare vs Fext Split (P:B ratio)</span>
+        <span class="slider-val" id="valSplit">1000:1</span>
+      </div>
+      <input type="range" id="sliderSplit" min="1" max="1001" value="1000" oninput="update()">
+    </div>
+
+    <div class="ratio-display">
+      <div class="ratio-cell bare">
+        <div class="ratio-label">BARE (P-axis)</div>
+        <div class="ratio-num bare" id="bareVal">TL×1000</div>
+      </div>
+      <div class="ratio-sep"></div>
+      <div class="ratio-cell fext">
+        <div class="ratio-label">FEXT (Layer 0)</div>
+        <div class="ratio-num fext" id="fextVal">TL×1</div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <div class="slider-row">
+        <div class="slider-header">
+          <span class="slider-name">Source X position</span>
+          <span class="slider-val" id="valX">50%</span>
+        </div>
+        <input type="range" id="sliderX" min="0" max="100" value="50" oninput="update()">
+      </div>
+      <div class="slider-row">
+        <div class="slider-header">
+          <span class="slider-name">Source Y position</span>
+          <span class="slider-val" id="valY">50%</span>
+        </div>
+        <input type="range" id="sliderY" min="0" max="100" value="50" oninput="update()">
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>Identity Physics™</strong> · Micro-Crystalline Grid Warp · PNBA™ · TL = 0.136899099984016 · 1/α = TL×1001 = 137.035999084000016 (ε=0, CODATA 2018)<br>
+  Bare:Fext = 1000:1 structurally forced by 1001 = 7×11×13. Phase boundary at τ = TL. Lattice breaks (Shatter) when τ ≥ TL.<br>
+  © HIGHTISTIC™ (Russell Vernon Trent III) · SNSFT Foundation · EIN 42-2038440 · Soldotna, Alaska · DOI: 10.5281/zenodo.18719748 · [9,9,3,21]
+</div>
+
+<script>
+const TL      = 0.136899099984016;
+const TL_IVA  = TL * 0.88;
+const ANCHOR  = 1.36899099984016;
+const ALPHA_INV = TL * 1001;
+
+const canvas  = document.getElementById('grid');
+const ctx     = canvas.getContext('2d');
+
+let latticeMode = 'ortho';
+let animId = null;
+let t = 0;
+
+function setMode(m) {
+  latticeMode = m;
+  document.getElementById('btnOrtho').classList.toggle('active', m==='ortho');
+  document.getElementById('btnHex').classList.toggle('active', m==='hex');
+  update();
+}
+
+function resize() {
+  const wrap = canvas.parentElement;
+  canvas.width  = wrap.clientWidth;
+  canvas.height = wrap.clientHeight;
+  update();
+}
+
+function getParams() {
+  const force = parseFloat(document.getElementById('sliderForce').value) / 100;
+  const split = parseFloat(document.getElementById('sliderSplit').value);
+  const sx    = parseFloat(document.getElementById('sliderX').value) / 100;
+  const sy    = parseFloat(document.getElementById('sliderY').value) / 100;
+
+  // τ = force × (bare_fraction / 1001) — grounded in corpus split
+  const bare_k = split / 1001;
+  const fext_k = (1001 - split) / 1001;
+  const tau    = force * (1 - bare_k + 0.01); // B/P rises as force and hex coupling increase
+  const tauClamped = Math.min(tau * (latticeMode === 'hex' ? 1.8 : 1.0), 0.3);
+
+  return { force, split, sx, sy, tau: tauClamped, bare_k, fext_k };
+}
+
+function phaseOf(tau) {
+  if (tau < 0.001)   return { name:'NOBLE',   col:'#9966ff', cls:'noble' };
+  if (tau >= TL)     return { name:'SHATTER',  col:'#ff3355', cls:'shatter' };
+  if (tau >= TL_IVA) return { name:'IVA PEAK', col:'#ff8800', cls:'iva' };
+  return               { name:'LOCKED',   col:'#00ffaa', cls:'locked' };
+}
+
+function drawGrid(p) {
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Background gradient pulse
+  const grd = ctx.createRadialGradient(p.sx*W, p.sy*H, 0, p.sx*W, p.sy*H, W*0.6);
+  const phase = phaseOf(p.tau);
+  grd.addColorStop(0,   phase.col.replace(')', ', 0.08)').replace('rgb', 'rgba').replace('#', 'rgba(').replace('rgba(', 'rgba(').replace(/rgba\(([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/, (m,r,g,b)=>`rgba(${parseInt(r,16)},${parseInt(g,16)},${parseInt(b,16)}`));
+  grd.addColorStop(1,   'rgba(2,4,7,0)');
+
+  // Simple fill
+  ctx.fillStyle = `rgba(2,4,7,0.95)`;
+  ctx.fillRect(0,0,W,H);
+
+  // Draw phase-colored radial glow at source
+  const grd2 = ctx.createRadialGradient(p.sx*W, p.sy*H, 0, p.sx*W, p.sy*H, Math.min(W,H)*0.4);
+  const [r,g,b] = hexToRgb(phase.col);
+  grd2.addColorStop(0, `rgba(${r},${g},${b},0.12)`);
+  grd2.addColorStop(1, `rgba(${r},${g},${b},0)`);
+  ctx.fillStyle = grd2;
+  ctx.fillRect(0,0,W,H);
+
+  // GRID
+  const spacing = latticeMode === 'hex' ? 32 : 30;
+  const cols = Math.ceil(W / spacing) + 2;
+  const rows = Math.ceil(H / spacing) + 2;
+  let nodeCount = 0;
+
+  // First pass: compute all warped positions
+  const pos = [];
+  const maxR = Math.sqrt(W*W + H*H) * 0.5;
+  for (let row = 0; row < rows; row++) {
+    pos[row] = [];
+    for (let col = 0; col < cols; col++) {
+      let bx = col * spacing - spacing;
+      let by = row * spacing - spacing;
+      if (latticeMode === 'hex' && row % 2 === 1) bx += spacing * 0.5;
+
+      const dx   = p.sx * W - bx;
+      const dy   = p.sy * H - by;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const str  = p.force * 60 * Math.exp(-dist / (maxR * 0.55));
+      const wave = Math.sin(dist * 0.025 - t * 2.5) * str * 0.3;
+
+      pos[row][col] = {
+        nx: bx + (dx / (dist+1)) * str + wave,
+        ny: by + (dy / (dist+1)) * str * 0.6 + wave * 0.4,
+        dist
+      };
+    }
+  }
+
+  // Second pass: draw connection lines first (behind nodes)
+  ctx.lineWidth = 0.6;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const {nx, ny, dist} = pos[row][col];
+      const nodeFrac  = Math.min(dist / maxR, 1);
+      const lineAlpha = (0.12 + (1-nodeFrac)*0.18) * (0.4 + p.force*0.6);
+
+      // Horizontal connection
+      if (col < cols-1) {
+        const n2 = pos[row][col+1];
+        ctx.beginPath();
+        ctx.moveTo(nx, ny);
+        ctx.lineTo(n2.nx, n2.ny);
+        ctx.strokeStyle = `rgba(${r},${g},${b},${Math.min(lineAlpha,0.35).toFixed(2)})`;
+        ctx.stroke();
+      }
+      // Vertical connection
+      if (row < rows-1) {
+        const n2 = pos[row+1][col];
+        ctx.beginPath();
+        ctx.moveTo(nx, ny);
+        ctx.lineTo(n2.nx, n2.ny);
+        ctx.strokeStyle = `rgba(${r},${g},${b},${Math.min(lineAlpha,0.35).toFixed(2)})`;
+        ctx.stroke();
+      }
+      // Diagonal for hex mode
+      if (latticeMode === 'hex' && row < rows-1 && col < cols-1) {
+        const n2 = pos[row+1][col + (row%2===0 ? 1 : 0)];
+        if (n2) {
+          ctx.beginPath();
+          ctx.moveTo(nx, ny);
+          ctx.lineTo(n2.nx, n2.ny);
+          ctx.strokeStyle = `rgba(${r},${g},${b},${Math.min(lineAlpha*0.6,0.2).toFixed(2)})`;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  // Third pass: draw nodes on top
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const {nx, ny, dist} = pos[row][col];
+      const nodeFrac  = Math.min(dist / maxR, 1);
+      const baseAlpha = 0.25 + (1-nodeFrac)*0.5*(0.3+p.force*0.7);
+      const nodeAlpha = Math.min(baseAlpha, 0.9);
+      const nodeR     = p.tau >= TL ? 2.5 : (p.tau >= TL_IVA ? 2.0 : 1.5);
+
+      ctx.beginPath();
+      ctx.arc(nx, ny, nodeR, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${nodeAlpha.toFixed(2)})`;
+      ctx.fill();
+      nodeCount++;
+    }
+  }
+
+  // Source point
+  const sx = p.sx * W, sy = p.sy * H;
+  ctx.beginPath();
+  ctx.arc(sx, sy, 5, 0, Math.PI*2);
+  ctx.fillStyle = `rgba(${r},${g},${b},0.9)`;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(sx, sy, 12, 0, Math.PI*2);
+  ctx.strokeStyle = `rgba(${r},${g},${b},0.3)`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // Pulse ring
+  const pulseR = 15 + Math.sin(t*3)*8;
+  ctx.beginPath();
+  ctx.arc(sx, sy, pulseR, 0, Math.PI*2);
+  ctx.strokeStyle = `rgba(${r},${g},${b},${0.15 + Math.sin(t*3)*0.1})`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Shatter crack if at limit
+  if (p.tau >= TL) {
+    for (let i=0; i<5; i++) {
+      const angle = (i/5)*Math.PI*2 + t;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      const len = 40 + Math.sin(t*4+i)*20;
+      ctx.lineTo(sx + Math.cos(angle)*len, sy + Math.sin(angle)*len);
+      ctx.strokeStyle = `rgba(255,51,85,${0.4+Math.sin(t*6+i)*0.2})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  return nodeCount;
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return [r,g,b];
+}
+
+function updateUI(p, nodeCount) {
+  const phase = phaseOf(p.tau);
+
+  // Phase badge
+  const badge = document.getElementById('phaseBadge');
+  badge.textContent = phase.name;
+  badge.style.borderColor = phase.col + '55';
+  badge.style.color = phase.col;
+  badge.style.background = phase.col + '11';
+
+  // Gauge
+  const fill = document.getElementById('gaugeFill');
+  fill.style.width = Math.min(p.tau / 0.3 * 100, 100) + '%';
+  fill.style.background = phase.col;
+
+  // Stats
+  document.getElementById('statWarp').textContent = (p.force * p.tau * 1000 / TL).toFixed(3);
+  document.getElementById('statNodes').textContent = nodeCount.toLocaleString();
+  document.getElementById('statFext').textContent = Math.round(p.split) + ':' + Math.round(1001-p.split);
+  document.getElementById('statPhase').textContent = phase.name;
+  document.getElementById('statPhase').style.color = phase.col;
+
+  // Overlays
+  document.getElementById('tauDisplay').textContent = `τ = B/P = ${p.tau.toFixed(6)}  (TL = ${TL.toFixed(6)})`;
+  document.getElementById('ratioDisplay').textContent = `BARE:FEXT = ${Math.round(p.split)}:${Math.round(1001-p.split)}`;
+
+  // Slider labels
+  document.getElementById('valForce').textContent = p.force.toFixed(3);
+  document.getElementById('valSplit').textContent = Math.round(p.split)+':'+(1001-Math.round(p.split));
+  document.getElementById('valX').textContent = Math.round(p.sx*100)+'%';
+  document.getElementById('valY').textContent = Math.round(p.sy*100)+'%';
+
+  // Ratio display
+  document.getElementById('bareVal').textContent = `TL×${Math.round(p.split)}`;
+  document.getElementById('fextVal').textContent = `TL×${Math.round(1001-p.split)}`;
+}
+
+function update() {
+  const p = getParams();
+  const nodeCount = drawGrid(p);
+  updateUI(p, nodeCount);
+}
+
+function animate() {
+  t += 0.016;
+  update();
+  animId = requestAnimationFrame(animate);
+}
+
+// Mouse drag to move source point
+let dragging = false;
+canvas.addEventListener('mousedown', e => { dragging = true; moveSource(e); });
+canvas.addEventListener('mousemove', e => { if(dragging) moveSource(e); });
+canvas.addEventListener('mouseup',   () => { dragging = false; });
+canvas.addEventListener('mouseleave',() => { dragging = false; });
+canvas.addEventListener('touchstart', e => { dragging = true; moveSource(e.touches[0]); e.preventDefault(); }, {passive:false});
+canvas.addEventListener('touchmove',  e => { if(dragging) moveSource(e.touches[0]); e.preventDefault(); }, {passive:false});
+canvas.addEventListener('touchend',   () => { dragging = false; });
+
+function moveSource(e) {
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  const y = Math.max(0, Math.min(1, (e.clientY - rect.top)  / rect.height));
+  document.getElementById('sliderX').value = Math.round(x * 100);
+  document.getElementById('sliderY').value = Math.round(y * 100);
+}
+
+window.addEventListener('resize', resize);
+resize();
+animate();
+</script>
+</body>
+</html>
