@@ -1620,6 +1620,8 @@ const ppArchive = [
 ];
 const ppTagNames = {CORE:"Foundations",PHYS:"Physics",PART:"Particle physics",GRAV:"Gravity",COSM:"Cosmology",CHEM:"Chemistry and materials",ENGR:"Engineering",BIOL:"Life sciences",PSYC:"Psychology",MATH:"Mathematics",COMP:"Computation and AI",ECON:"Economics",METH:"Method"};
 const ppRepo = "https://github.com/SNSFT/identityphysics/blob/main/SNSFL/";
+const ppSite = "https://uuia.app/";
+function ppHref(a){ return a.url ? (/^https?:/.test(a.url) ? a.url : ppSite + a.url) : (ppRepo + a.file); }
 
 (function(){
   const sel = document.getElementById('ppTag');
@@ -1642,7 +1644,7 @@ function ppRenderArchive(list) {
     html += '<table><tr><th>Coordinate</th><th>Entry</th><th>Theorems</th></tr>';
     html += rows.map(a =>
       `<tr><td style="white-space:nowrap">${ppEsc(a.coord)}<br><span style="color:var(--text-muted); font-size:0.8rem;">${a.tag}</span></td>` +
-      `<td><a href="${a.url || (ppRepo + a.file)}" style="color:inherit"><strong>${ppEsc(a.title)}</strong></a><br><span style="color:var(--text-muted); font-size:0.88rem;">${ppEsc(a.contents)}</span></td>` +
+      `<td><a href="${ppHref(a)}" style="color:inherit"><strong>${ppEsc(a.title)}</strong></a><br><span style="color:var(--text-muted); font-size:0.88rem;">${ppEsc(a.contents)}</span></td>` +
       `<td style="white-space:nowrap">${a.thm}<br><span style="color:var(--text-muted); font-size:0.8rem;">${a.lines} lines</span></td></tr>`
     ).join('');
     html += '</table>';
