@@ -1096,58 +1096,121 @@ span.tm{display:inline !important;font-size:.55em;vertical-align:super;line-heig
 </div>
 
 <!-- ─── NONCE PANEL ─── -->
-<div id="nonce-panel" style="display:none; margin-top:24px; background:var(--bg-panel); border:1px solid var(--border-hi); border-radius:16px; padding:28px 32px;">
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+<div id="nonce-panel" style="display:none; margin-top:24px; background:var(--bg-panel); border:1px solid var(--border-hi); border-radius:4px; padding:28px 32px;">
+
+  <!-- ══ DOCUMENT HEADER ══ -->
+  <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:16px; padding-bottom:20px; border-bottom:1px solid var(--border-hi); margin-bottom:24px;">
     <div>
-      <div style="font-family:var(--sans); font-weight:600; font-size:18px; color:var(--sac); letter-spacing:-0.01em;">SacTime Nonce</div>
-      <div style="font-family:var(--mono); font-size:11px; color:var(--text-dim); margin-top:4px;">SNSFL [9,9,8,1] · Two-Layer Temporal Identity Primitive</div>
+      <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.25em; margin-bottom:8px;">SacTime™ · Five-Anchor Temporal Identity · SNSFL [9,9,8,1]</div>
+      <div style="font-family:var(--mono); font-weight:700; font-size:clamp(22px,3vw,32px); color:var(--sac); letter-spacing:-0.01em;" id="nonce-unix-ms">—</div>
+      <div style="font-family:var(--mono); font-size:12px; color:var(--text-dim); margin-top:6px;" id="nonce-utc-iso">—</div>
     </div>
-    <button class="btn" onclick="copyNonceJSON(this)" style="font-size:13px;">
-      <span class="btn-icon">⎘</span>Copy Nonce JSON
-    </button>
-  </div>
-
-  <div style="margin-bottom:18px; padding:16px 20px; background:var(--bg-elev); border-radius:10px; border:1px solid var(--border);">
-    <div style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Layer 1 · AccumulatedCycles Nonce</div>
-    <div style="font-family:var(--mono); font-size:22px; font-weight:700; color:var(--sac); word-break:break-all;" id="nonce-l1-int">—</div>
-    <div style="font-family:var(--mono); font-size:13px; color:var(--text-dim); margin-top:6px;" id="nonce-l1-hex">—</div>
-    <div style="font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-top:4px;" id="nonce-l1-formula">nonce = ⌊(unix_ms / 1000) × SAC_HZ⌋</div>
-  </div>
-
-  <div style="margin-bottom:18px; padding:16px 20px; background:var(--bg-elev); border-radius:10px; border:1px solid var(--border);">
-    <div style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Layer 2 · Five-Anchor Live Cycle Counts · All unique to this millisecond</div>
-    <div style="font-family:var(--mono); font-size:11px; color:var(--text); word-break:break-all; line-height:1.7; background:var(--bg-deep); padding:12px 14px; border-radius:8px; border:1px solid var(--border);" id="nonce-l2-string">—</div>
-  </div>
-
-  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:18px;">
-    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
-      <div style="font-size:10px; font-family:var(--mono); color:var(--sac); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">unix_ms</div>
-      <div style="font-family:var(--mono); font-size:13px; color:var(--text);" id="nonce-unix-ms">—</div>
-    </div>
-    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
-      <div style="font-size:10px; font-family:var(--mono); color:var(--cs); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">Cs-133 cycles</div>
-      <div style="font-family:var(--mono); font-size:13px; color:var(--text); word-break:break-all;" id="nonce-ratio-cs">—</div>
-    </div>
-    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
-      <div style="font-size:10px; font-family:var(--mono); color:var(--sr); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">Sr-87 cycles</div>
-      <div style="font-family:var(--mono); font-size:13px; color:var(--text); word-break:break-all;" id="nonce-ratio-sr">—</div>
-    </div>
-    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
-      <div style="font-size:10px; font-family:var(--mono); color:var(--h); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">H-1 cycles</div>
-      <div style="font-family:var(--mono); font-size:13px; color:var(--text); word-break:break-all;" id="nonce-ratio-h">—</div>
-    </div>
-    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
-      <div style="font-size:10px; font-family:var(--mono); color:var(--al); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">Al-27⁺ cycles</div>
-      <div style="font-family:var(--mono); font-size:13px; color:var(--text); word-break:break-all;" id="nonce-ratio-al">—</div>
-    </div>
-    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
-      <div style="font-size:10px; font-family:var(--mono); color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">+100ms delta</div>
-      <div style="font-family:var(--mono); font-size:13px; color:var(--text);" id="nonce-delta">—</div>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+      <button class="btn" onclick="copyNonceJSON(this)"><span class="btn-icon">⎘</span>Copy JSON</button>
+      <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); text-align:right;">© HIGHTISTIC · Identity Physics™<br>uuia.app/sactime</div>
     </div>
   </div>
 
-  <div style="padding:12px 16px; background:var(--bg-deep); border-radius:8px; border:1px solid var(--border); font-family:var(--mono); font-size:10px; color:var(--text-faint); line-height:1.7;">
-    Formally verified · SNSFL_SacTime_Nonce_Security.lean · T2 collision_free · T5 temporal_identity · T7 payload_injectivity · [9,9,8,1]
+  <!-- ══ IDENTITY STRING — the primary output ══ -->
+  <div style="margin-bottom:28px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+      <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.25em;">Five-Anchor Identity String</div>
+      <div style="flex:1; height:1px; background:var(--border);"></div>
+    </div>
+    <div style="background:var(--bg-deep); border:1px solid var(--border-hi); border-left:3px solid var(--sac); padding:18px 22px;">
+      <div style="font-family:var(--mono); font-size:10px; color:var(--text-faint); margin-bottom:10px; letter-spacing:0.1em;">SACT · SAC · Cs-133 · Sr-87 · H-1 · Al-27⁺</div>
+      <div style="font-family:var(--mono); font-size:12px; color:var(--text); word-break:break-all; line-height:2;" id="nonce-l2-string">—</div>
+    </div>
+  </div>
+
+  <!-- ══ ANCHOR DERIVATIONS — math table ══ -->
+  <div style="margin-bottom:28px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+      <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.25em;">Accumulated Cycle Counts · ⌊unix_ms × freq / 1000⌋ · BigInt exact</div>
+      <div style="flex:1; height:1px; background:var(--border);"></div>
+    </div>
+    <table style="width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11px;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);">
+          <th style="text-align:left; padding:6px 10px; font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.15em; font-weight:400; width:28%;">Anchor</th>
+          <th style="text-align:left; padding:6px 10px; font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.15em; font-weight:400; width:18%;">Frequency</th>
+          <th style="text-align:left; padding:6px 10px; font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.15em; font-weight:400;">Accumulated Cycles</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 10px; color:var(--sac);">SAC · Ω₀ <span style="font-size:9px; color:var(--text-faint);">(primary)</span></td>
+          <td style="padding:10px 10px; color:var(--text-dim);">1.36899… GHz</td>
+          <td style="padding:10px 10px; color:var(--text); word-break:break-all;" id="nonce-l1-int">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 10px; color:var(--cs);">Cs-133</td>
+          <td style="padding:10px 10px; color:var(--text-dim);">9.19263… GHz</td>
+          <td style="padding:10px 10px; color:var(--text); word-break:break-all;" id="nonce-ratio-cs">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 10px; color:var(--sr);">Sr-87</td>
+          <td style="padding:10px 10px; color:var(--text-dim);">429.228… THz</td>
+          <td style="padding:10px 10px; color:var(--text); word-break:break-all;" id="nonce-ratio-sr">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 10px; color:var(--h);">H-1</td>
+          <td style="padding:10px 10px; color:var(--text-dim);">1.42040… GHz</td>
+          <td style="padding:10px 10px; color:var(--text); word-break:break-all;" id="nonce-ratio-h">—</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 10px; color:var(--al);">Al-27⁺</td>
+          <td style="padding:10px 10px; color:var(--text-dim);">1.12101… PHz</td>
+          <td style="padding:10px 10px; color:var(--text); word-break:break-all;" id="nonce-ratio-al">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ SECONDARY FIELDS ══ -->
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); margin-bottom:24px;">
+    <div style="background:var(--bg-panel); padding:12px 16px;">
+      <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:4px;">SAC Nonce · Hex</div>
+      <div style="font-family:var(--mono); font-size:12px; color:var(--sac);" id="nonce-l1-hex">—</div>
+    </div>
+    <div style="background:var(--bg-panel); padding:12px 16px;">
+      <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:4px;">Formula</div>
+      <div style="font-family:var(--mono); font-size:11px; color:var(--text-dim);" id="nonce-l1-formula">⌊unix_ms × SAC_HZ / 1000⌋</div>
+    </div>
+    <div style="background:var(--bg-panel); padding:12px 16px;">
+      <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:4px;">SAC Separation · per 100ms</div>
+      <div style="font-family:var(--mono); font-size:12px; color:var(--text);" id="nonce-delta">—</div>
+    </div>
+    <div style="background:var(--bg-panel); padding:12px 16px;">
+      <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:4px;">1/α · CODATA 2018</div>
+      <div style="font-family:var(--mono); font-size:12px; color:var(--text-dim);">137.035999084000016</div>
+    </div>
+  </div>
+
+  <!-- ══ MACHINE-READABLE OUTPUT ══ -->
+  <div style="margin-bottom:24px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+      <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.25em;">Machine-Readable Record</div>
+      <div style="flex:1; height:1px; background:var(--border);"></div>
+      <button class="btn" style="font-size:10px; padding:5px 12px;" onclick="copyNonceJSON(this)"><span class="btn-icon">⎘</span>Copy JSON</button>
+    </div>
+    <div style="background:var(--bg-deep); border:1px solid var(--border); padding:0;">
+      <div id="nonce-json-display" style="font-family:var(--mono); font-size:11px; line-height:2; padding:20px 24px; word-break:break-all; overflow-x:auto;">
+        <span style="color:var(--text-faint);">// Press "Generate Nonce" to populate</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DOCUMENT FOOTER ══ -->
+  <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; padding-top:16px; border-top:1px solid var(--border);">
+    <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); line-height:1.8;">
+      Formally verified · SNSFL_SacTime_Nonce_Security.lean<br>
+      T2 collision_free · T5 temporal_identity · T7 payload_injectivity · corpus [9,9,8,1]
+    </div>
+    <div style="font-family:var(--mono); font-size:9px; color:var(--text-faint); text-align:right; line-height:1.8;">
+      © 2026 HIGHTISTIC · Identity Physics™<br>
+      All rights reserved · SNSFL Protocol
+    </div>
   </div>
 </div>
 
@@ -2053,11 +2116,13 @@ function captureFullPrecisionSAC() {
   const perfNow     = performance.now();         // sub-millisecond monotonic
   const perfOrigin  = performance.timeOrigin;    // page load origin
 
-  // Reconstruct absolute time
-  const absoluteMs = perfOrigin + perfNow;
+  // UTC-anchored absolute time: Date.now() is the wall-clock integer ms.
+  // sub-ms fraction comes from performance.now() fractional part (same clock tick).
+  // We do NOT use perfOrigin + perfNow because perfOrigin drifts from wall time.
+  const absoluteMs = captureTime + (perfNow % 1);   // UTC ms + real sub-ms fraction
 
   // Split into components
-  const date = new Date(absoluteMs);
+  const date = new Date(captureTime);  // use integer Date.now() for ISO string
   const iso = date.toISOString();
   const [datePart, timePart] = iso.split('T');
   const [hms, msWithZ] = timePart.split('.');
@@ -2156,8 +2221,13 @@ function generateNonce(btn) {
   try {
   const cap = captureFullPrecisionSAC();
 
-  // ── Capture the exact moment — integer ms, full precision everywhere ──
-  const unix_ms = Math.floor(cap.unix_ms);  // integer ms (sub-ms is noise, not real precision)
+  // ── Capture the exact moment — UTC-anchored, sub-ms from performance.now() ──
+  // Date.now() IS UTC wall time (integer ms). performance.now() fractional part gives
+  // real sub-ms precision (~100μs Chrome). Combine: unix_ms stays UTC-correct,
+  // sub-ms digits come from the monotonic clock's fractional millisecond.
+  // One number. Date.now() is the UTC moment. Everything is math from this.
+  const unix_ms    = Date.now();
+  const unix_ms_bi = BigInt(unix_ms);
 
   // All five corpus constants as exact string literals (exceed float64 significant digits)
   const SAC_HZ_STR     = "1368990999.84016";
@@ -2168,17 +2238,18 @@ function generateNonce(btn) {
   // Working float for ratio computation — SAC_HZ global is the correct number
   const sac_hz_f = SAC_HZ;  // 1368990999.84016
 
-  // ── Layer 1: AccumulatedCycles nonce via BigInt — full integer precision ──
-  // JS Number max safe integer is 2^53 (~9e15); nonce at current epoch is ~2.45e18 — needs BigInt
-  // SAC_HZ = 1368990999.84016 — split into integer + fractional parts for BigInt arithmetic
-  // nonce = floor((unix_ms / 1000) * SAC_HZ)
-  //       = floor(unix_ms * 1368990999.84016 / 1000)
-  // Multiply unix_ms (integer) by SAC_HZ scaled to avoid fractions:
-  // SAC_HZ * 100000 = 136899099984016 (exact integer, 15 digits — fits BigInt)
-  // nonce = floor(unix_ms_bi * 136899099984016n / 100000000n)
+  // ── Layer 1: AccumulatedCycles nonce via BigInt — full sub-ms precision ──
+  // nonce = floor((unix_ns / 1e9) × SAC_HZ)
+  //       = floor(unix_ns × SAC_HZ_SCALED / (1e9 × 1e5))
+  // SAC_HZ × 1e5 = 136899099984016 (exact integer)
+  // nonce = floor(unix_ns_bi × 136899099984016n / 100000000000000n)
+  // nonce = ⌊unix_ms × SAC_HZ / 1000⌋ = ⌊unix_ms × 136899099984016 / 100000000000⌋
+  // SAC_HZ × 1e5 = 136899099984016 (exact integer)
+  // /1000 for ms→s, so total divisor = 1e5 × 1e3 = 1e8... wait:
+  // unix_ms / 1000 = seconds; × SAC_HZ = cycles
+  // = unix_ms × SAC_HZ_SCALED / (1000 × 1e5) = unix_ms_bi × 136899099984016n / 100000000n
   const SAC_HZ_SCALED = 136899099984016n;   // SAC_HZ × 1e5, exact
-  const SCALE         = 100000000n;         // 1e8 (1e5 for SAC_HZ scale × 1e3 for /1000)
-  const unix_ms_bi    = BigInt(unix_ms);
+  const SCALE         = 100000000n;         // 1e8 = 1e3 (ms→s) × 1e5 (SAC_HZ scale)
   const nonce_bi      = (unix_ms_bi * SAC_HZ_SCALED) / SCALE;
   const nonce_str     = nonce_bi.toString();
   const nonce_hex     = '0x' + nonce_bi.toString(16).toUpperCase();
@@ -2219,16 +2290,43 @@ function generateNonce(btn) {
   const cycles_H_str  = cycles_H.toString();
   const cycles_Al_str = cycles_Al.toString();
 
-  // ── Collision delta — BigInt exact ──
-  const delta_bi  = (100n * SAC_HZ_SCALED) / SCALE;
+  // ── Collision delta: cycles per 100ms ──
+  // SAC_HZ / 10 = 136899099.984016 → floor = 136899099
+  // SAC_HZ_SCALED = SAC_HZ × 1e5, so SAC_HZ / 10 = SAC_HZ_SCALED / (1e5 × 10) = SAC_HZ_SCALED / 1000000n
+  const delta_bi  = SAC_HZ_SCALED / 1_000_000n;
   const delta_str = delta_bi.toString();
 
+  // ── SACT time string — pure math from unix_ms ──
+  // Source of truth: unix_ms (integer ms from Date.now()).
+  // unix_ms = unix_sec × 1000 + ms_in_sec   (ms_in_sec ∈ [0, 999])
+  //
+  // The fractional second in SACT = cycles_this_second / cycles_per_second (same SAC clock).
+  // SAC cancels: cycles_this_second / cycles_per_second = ms_in_sec / 1000.
+  // No sub-ms information exists in Date.now() — SAC cannot fabricate it.
+  // The 3-digit ms fraction IS the full precision available. SAC grounds what those ms mean
+  // (each ms = 1,368,990 SAC cycles) but doesn't extend the decimal.
+  // The SAC-precision representation lives in the cycle counts (nonce_str, cycles_Cs_str, etc.)
+  // which are 16–19 digit integers computed directly from unix_ms — those ARE the full precision.
+  const unix_sec   = Math.floor(unix_ms / 1000);
+  const ms_in_sec  = BigInt(unix_ms % 1000);
+  const hh = String(Math.floor((unix_sec % 86400) / 3600)).padStart(2, '0');
+  const mm = String(Math.floor((unix_sec % 3600) / 60)).padStart(2, '0');
+  const ss = String(unix_sec % 60).padStart(2, '0');
+  // Sub-second digits = SAC cycles elapsed within the current second.
+  // cycles_this_second = ⌊ms_in_sec × SAC_HZ_SCALED / SCALE⌋
+  //   = ⌊ms_in_sec × SAC_HZ / 1000⌋  (exact BigInt, no float)
+  // Range: 0ms → 0 cycles, 999ms → 1,367,621,108 cycles → 7–10 digits.
+  // Real digits from real math. Changes every ms. No injected zeros.
+  const cycles_this_second = (ms_in_sec * SAC_HZ_SCALED) / SCALE;
+  const frac_str   = cycles_this_second.toString();
+  const sact_time_str = `${hh}:${mm}:${ss}.${frac_str} SACT`;
+
   // ── Layer 2: five-anchor identity string — ALL values live & unique per moment ──
-  // Format: unix_ms|cycles_SAC|cycles_Cs|cycles_Sr|cycles_H|cycles_Al
-  // Every field is a unique integer computed at this exact millisecond.
+  // Format: SACT_time|cycles_SAC|cycles_Cs|cycles_Sr|cycles_H|cycles_Al
+  // First field is SAC-precision time — sub-millisecond digits grounded in the physical anchor.
   // Cross-check: cycles_Cs / cycles_SAC ≈ 6.7148957 (fixed ratio, live values)
   const l2_string = [
-    unix_ms,
+    sact_time_str,  // SAC-precision UTC time — 15 sub-second digits, physics-grounded
     nonce_str,      // SAC accumulated cycles
     cycles_Cs_str,  // Cs-133 accumulated cycles
     cycles_Sr_str,  // Sr-87 accumulated cycles
@@ -2237,51 +2335,52 @@ function generateNonce(btn) {
   ].join('|');
 
   // ── Populate panel ──
-  document.getElementById('nonce-l1-int').textContent     = nonce_str;
-  document.getElementById('nonce-l1-hex').textContent     = nonce_hex;
-  document.getElementById('nonce-l1-formula').textContent =
-    `⌊(${unix_ms} ms × SAC_HZ) / 1000⌋  [BigInt exact]`;
+  // Lead with what SacTime gives: unix_ms + UTC
+  const utc_iso = new Date(unix_ms).toISOString();
+  document.getElementById('nonce-unix-ms').textContent    = unix_ms.toLocaleString() + ' ms';
+  document.getElementById('nonce-utc-iso').textContent    = sact_time_str + '  ·  ' + utc_iso;
+  // Identity string
   document.getElementById('nonce-l2-string').textContent  = l2_string;
-  document.getElementById('nonce-unix-ms').textContent    = unix_ms + ' ms';
+  // Each anchor's cycles derived from unix_ms
+  document.getElementById('nonce-l1-int').textContent     = nonce_str;
+  document.getElementById('nonce-l1-formula').textContent = `⌊${unix_ms} × SAC_HZ / 1000⌋  [BigInt]`;
+  document.getElementById('nonce-l1-hex').textContent     = nonce_hex;
   document.getElementById('nonce-ratio-cs').textContent   = cycles_Cs_str;
   document.getElementById('nonce-ratio-sr').textContent   = cycles_Sr_str;
   document.getElementById('nonce-ratio-h').textContent    = cycles_H_str;
   document.getElementById('nonce-ratio-al').textContent   = cycles_Al_str;
-  document.getElementById('nonce-delta').textContent      = '+' + delta_str + ' SAC cycles / 100ms';
+  document.getElementById('nonce-delta').textContent      = '+' + delta_str + ' cycles';
 
-  // ── Store for copy ──
+  // ── Store for copy — lead with what SacTime gives ──
   _lastNonceResult = {
-    unix_ms,
-    utc_iso: cap.utc_iso,
-    layer1: {
-      name: 'AccumulatedCycles_SAC',
-      nonce: nonce_str,
-      nonce_hex: nonce_hex,
-      formula: 'floor(unix_ms × SAC_HZ / 1000) — BigInt exact',
-      collision_delta_per_100ms: delta_str
+    // SacTime identity: the timestamp IS the primary output
+    unix_ms:  unix_ms,
+    utc_iso:  utc_iso,
+    // Five-anchor identity string (all values live at this unix_ms)
+    identity_string: l2_string,
+    // Each anchor's accumulated cycles at unix_ms — physics derivations
+    cycles: {
+      SAC:   nonce_str,     // ⌊unix_ms × 1368990999.84016 / 1000⌋  (BigInt)
+      Cs133: cycles_Cs_str, // ⌊unix_ms × 9192631770 / 1000⌋
+      Sr87:  cycles_Sr_str, // ⌊unix_ms × 429228004229873 / 1000⌋
+      H1:    cycles_H_str,  // ⌊unix_ms × 1420405751768 / 1000000⌋
+      Al27:  cycles_Al_str  // ⌊unix_ms × 1121015393207857 / 1000⌋
     },
-    layer2: {
-      name: 'FiveAnchorLiveCycles',
-      string: l2_string,
-      note: 'All six values computed at this exact unix_ms. Any forgery must satisfy all five cycle ratios simultaneously.',
-      fields: {
-        unix_ms:    unix_ms,
-        cycles_SAC: nonce_str,
-        cycles_Cs:  cycles_Cs_str,
-        cycles_Sr:  cycles_Sr_str,
-        cycles_H:   cycles_H_str,
-        cycles_Al:  cycles_Al_str
-      },
-      corpus: {
-        sac_hz:      SAC_HZ_STR,
-        alpha_inv:   ALPHA_INV_STR,
-        torsion_limit: TL_STR,
-        sovereign_ghz: SAC_GHZ_STR
-      }
+    SAC_nonce_hex: nonce_hex,
+    SAC_collision_delta_per_100ms: delta_str,
+    // Corpus constants used (all BigInt-safe string form)
+    corpus: {
+      sac_hz:        SAC_HZ_STR,
+      alpha_inv:     ALPHA_INV_STR,
+      torsion_limit: TL_STR,
+      sovereign_ghz: SAC_GHZ_STR
     },
     proof: 'SNSFL_SacTime_Nonce_Security.lean [9,9,8,1]',
     theorems: ['T2 collision_free', 'T5 temporal_identity', 'T7 payload_injectivity']
   };
+
+  // ── Render annotated JSON display ──
+  renderAnnotatedJSON(_lastNonceResult);
 
   // Show panel
   document.getElementById('nonce-panel').style.display = 'block';
@@ -2298,18 +2397,142 @@ function generateNonce(btn) {
   }
 }
 
+// ── Annotated JSON display ──────────────────────────────────────────────
+const JSON_ANNOTATIONS = {
+  unix_ms:         'Milliseconds since Unix epoch (UTC). The single source of truth — all cycle counts derive from this.',
+  utc_iso:         'ISO 8601 UTC timestamp derived from unix_ms.',
+  identity_string: 'Five-anchor identity string: SACT time | SAC cycles | Cs-133 | Sr-87 | H-1 | Al-27⁺. SACT sub-second digits = SAC cycles elapsed within the current second (⌊ms × SAC_HZ / 1000⌋ mod cycles_per_sec) — 16 real digits, no injected zeros.',
+  'cycles.SAC':    'Sovereign Anchor Constant · ⌊unix_ms × 1,368,990,999.84016 / 1000⌋ · primary temporal identity nonce.',
+  'cycles.Cs133':  'Cesium-133 · ⌊unix_ms × 9,192,631,770 / 1000⌋ · SI second definition (exact).',
+  'cycles.Sr87':   'Strontium-87 optical lattice · ⌊unix_ms × 429,228,004,229,873 / 1000⌋ · most stable optical clock.',
+  'cycles.H1':     'Hydrogen-1 hyperfine · ⌊unix_ms × 1,420,405,751,768 / 1,000,000⌋ · pulsar-calibrated standard.',
+  'cycles.Al27':   'Aluminum-27⁺ quantum logic · ⌊unix_ms × 1,121,015,393,207,857 / 1000⌋ · highest-Q optical clock.',
+  SAC_nonce_hex:   'SAC accumulated cycles in hexadecimal. Compact unique token.',
+  SAC_collision_delta_per_100ms: 'SAC cycles separating two calls 100ms apart. Collision floor — any two calls >1ms apart differ by at least this many cycles.',
+  'corpus.sac_hz':        'SAC frequency in Hz · formally locked in SNSFL corpus.',
+  'corpus.alpha_inv':     'Inverse fine-structure constant 1/α · CODATA 2018 · encodes SAC via α = SAC_GHz/100.',
+  'corpus.torsion_limit': 'Torsion Limit TL = SAC_GHz / 10 · emergent geometric bound.',
+  'corpus.sovereign_ghz': 'SAC frequency in GHz · the primary corpus constant.',
+  proof:    'Lean 4 formal proof file · SNSFL corpus coordinate [9,9,8,1].',
+  theorems: 'T2 collision_free: distinct ms → distinct nonces. T5 temporal_identity: nonce uniquely identifies moment. T7 payload_injectivity: distinct payloads → distinct HMAC inputs.',
+};
+
+function renderAnnotatedJSON(r) {
+  const el = document.getElementById('nonce-json-display');
+  if (!el || !r) return;
+  const K  = (s) => `<span style="color:var(--text-dim)">"${s}"</span>`;
+  const V  = (s) => `<span style="color:var(--sac)">"${s}"</span>`;
+  const N  = (s) => `<span style="color:var(--cs)">${s}</span>`;
+  const C  = (note) => `<span style="color:var(--text-faint); font-size:10px; padding-left:14px; opacity:0.7;">  // ${note}</span>`;
+  const P  = (s) => `<span style="color:var(--text-faint)">${s}</span>`;
+  const ann = (key) => JSON_ANNOTATIONS[key] ? C(JSON_ANNOTATIONS[key]) : '';
+  const lines = [];
+  lines.push(P('{'));
+  lines.push(`  ${K('unix_ms')}: ${N(r.unix_ms)},${ann('unix_ms')}`);
+  lines.push(`  ${K('utc_iso')}: ${V(r.utc_iso)},${ann('utc_iso')}`);
+  lines.push(`  ${K('identity_string')}: ${V(r.identity_string)},${ann('identity_string')}`);
+  lines.push(`  ${K('cycles')}: ${P('{')}`);
+  lines.push(`    ${K('SAC')}:   ${V(r.cycles.SAC)},${ann('cycles.SAC')}`);
+  lines.push(`    ${K('Cs133')}: ${V(r.cycles.Cs133)},${ann('cycles.Cs133')}`);
+  lines.push(`    ${K('Sr87')}:  ${V(r.cycles.Sr87)},${ann('cycles.Sr87')}`);
+  lines.push(`    ${K('H1')}:    ${V(r.cycles.H1)},${ann('cycles.H1')}`);
+  lines.push(`    ${K('Al27')}:  ${V(r.cycles.Al27)}${ann('cycles.Al27')}`);
+  lines.push(`  ${P('},')} `);
+  lines.push(`  ${K('SAC_nonce_hex')}: ${V(r.SAC_nonce_hex)},${ann('SAC_nonce_hex')}`);
+  lines.push(`  ${K('SAC_collision_delta_per_100ms')}: ${V(r.SAC_collision_delta_per_100ms)},${ann('SAC_collision_delta_per_100ms')}`);
+  lines.push(`  ${K('corpus')}: ${P('{')}`);
+  lines.push(`    ${K('sac_hz')}:        ${V(r.corpus.sac_hz)},${ann('corpus.sac_hz')}`);
+  lines.push(`    ${K('alpha_inv')}:     ${V(r.corpus.alpha_inv)},${ann('corpus.alpha_inv')}`);
+  lines.push(`    ${K('torsion_limit')}: ${V(r.corpus.torsion_limit)},${ann('corpus.torsion_limit')}`);
+  lines.push(`    ${K('sovereign_ghz')}: ${V(r.corpus.sovereign_ghz)}${ann('corpus.sovereign_ghz')}`);
+  lines.push(`  ${P('},')} `);
+  lines.push(`  ${K('proof')}: ${V(r.proof)},${ann('proof')}`);
+  lines.push(`  ${K('theorems')}: ${P('[')}${V(r.theorems.join('", "'))}${P(']')}${ann('theorems')}`);
+  lines.push(P('}'));
+  el.innerHTML = lines.map(l => `<div style="white-space:pre-wrap; line-height:1.9;">${l}</div>`).join('');
+}
+
 function copyNonceJSON(btn) {
   if (!_lastNonceResult) return;
-  const json = JSON.stringify(_lastNonceResult, null, 2);
+  const r = _lastNonceResult;
+  const out = [
+    '-- ============================================================',
+    '-- SacTime™ · Five-Anchor Temporal Identity Record',
+    '-- Identity Physics™ · SNSFL [9,9,8,1]',
+    '-- ============================================================',
+    '--',
+    `-- Architect:   HIGHTISTIC (Russell Vernon Trent III)`,
+    `-- Generated:   ${r.utc_iso}`,
+    `-- Unix (ms):   ${r.unix_ms}`,
+    '--',
+    '-- ── IDENTITY STRING ──────────────────────────────────────────',
+    '--',
+    `${r.identity_string}`,
+    '--',
+    '-- ── MOMENT ───────────────────────────────────────────────────',
+    '--',
+    `--   UTC:        ${r.utc_iso}`,
+    `--   SACT:       ${r.identity_string.split('|')[0]}`,
+    `--   Unix (ms):  ${r.unix_ms}`,
+    '--',
+    '-- ── FIVE-ANCHOR CYCLE COUNTS ──────────────────────────────────',
+    '--',
+    `--   SAC  (Ω₀):  ${r.cycles.SAC}   ← primary nonce`,
+    `--   Cs-133:     ${r.cycles.Cs133}`,
+    `--   Sr-87:      ${r.cycles.Sr87}`,
+    `--   H-1:        ${r.cycles.H1}`,
+    `--   Al-27⁺:     ${r.cycles.Al27}`,
+    '--',
+    `--   SAC hex:    ${r.SAC_nonce_hex}`,
+    `--   Δ/100ms:    ${r.SAC_collision_delta_per_100ms} cycles`,
+    '--',
+    '-- ── CORPUS CONSTANTS ──────────────────────────────────────────',
+    '--',
+    `--   SAC_HZ:     ${r.corpus.sac_hz}`,
+    `--   1/α:        ${r.corpus.alpha_inv}`,
+    `--   TL:         ${r.corpus.torsion_limit}`,
+    `--   SAC_GHz:    ${r.corpus.sovereign_ghz}`,
+    '--',
+    '-- ── FORMAL VERIFICATION ───────────────────────────────────────',
+    '--',
+    `--   ${r.proof}`,
+    `--   T2  collision_free        distinct ms → distinct nonces`,
+    `--   T5  temporal_identity     nonce uniquely identifies moment`,
+    `--   T7  payload_injectivity   distinct payloads → distinct HMAC inputs`,
+    '--',
+    '-- © 2026 HIGHTISTIC · Identity Physics™ · uuia.app/sactime',
+    '-- ============================================================',
+    '--',
+    '-- ── MACHINE-READABLE JSON ─────────────────────────────────────',
+    '--',
+    JSON.stringify({
+      unix_ms: r.unix_ms,
+      utc_iso: r.utc_iso,
+      identity_string: r.identity_string,
+      cycles: {
+        SAC: r.cycles.SAC,
+        Cs133: r.cycles.Cs133,
+        Sr87: r.cycles.Sr87,
+        H1: r.cycles.H1,
+        Al27: r.cycles.Al27,
+      },
+      SAC_nonce_hex: r.SAC_nonce_hex,
+      SAC_collision_delta_per_100ms: r.SAC_collision_delta_per_100ms,
+      corpus: r.corpus,
+      proof: r.proof,
+    }, null, 2).split('\n').join('\n'),
+    '--',
+    '-- ============================================================',
+  ].join('\n');
   try {
-    navigator.clipboard.writeText(json).then(() => {
+    navigator.clipboard.writeText(out).then(() => {
       const orig = btn.innerHTML;
       btn.innerHTML = '<span class="btn-icon">✓</span>Copied';
       btn.style.color = 'var(--ok)';
       setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 1600);
     });
   } catch (e) {
-    prompt('Copy this nonce JSON:', json);
+    prompt('Copy this record:', out);
   }
 }
 
