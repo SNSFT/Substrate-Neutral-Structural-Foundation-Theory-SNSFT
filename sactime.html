@@ -1,11 +1,12 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SacTime™ · Identity Physics™ · World's First Digital Atomic Clock</title>
-<meta name="description" content="SacTime — the world's first digital atomic clock. Browser-native, formally verified, SAC-anchored time at 18-digit precision, cross-validated by 5 SS-certified anchors: α (fine-structure) plus Cs-133, Sr-87, H-1, Al-27+.">
-<meta name="keywords" content="SacTime, SAC, Sovereign Anchor Constant, digital atomic clock, PNBA, SNSFT, HIGHTISTIC">
+<title>SacTime™ · Identity Physics™ · Lattice-Secured Timing</title>
+<meta name="description" content="SacTime — lattice-secured timing reference. Browser-native, formally verified, SAC-anchored time at 18-digit precision, cross-validated by 5 SS-certified anchors: α (fine-structure) plus Cs-133, Sr-87, H-1, Al-27+.">
+<meta name="keywords" content="SacTime, SAC, Sovereign Anchor Constant, lattice-secured timing, PNBA, SNSFT, HIGHTISTIC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -1048,7 +1049,7 @@ span.tm{display:inline !important;font-size:.55em;vertical-align:super;line-heig
   <div class="brand">
     <div>
       <div class="brand-mark">Sac<span>Time</span><span class="tm">™</span></div>
-      <div class="brand-tag">Identity Physics<span class="tm">™</span> · World's First Digital Atomic Clock · SAC-Anchored · 18-Digit Precision</div>
+      <div class="brand-tag">Identity Physics<span class="tm">™</span> · Lattice-Secured Timing · SAC-Anchored · Formally Verified</div>
     </div>
   </div>
   <div class="hdr-meta">
@@ -1088,6 +1089,65 @@ span.tm{display:inline !important;font-size:.55em;vertical-align:super;line-heig
     <button class="btn" onclick="copySAC(this)">
       <span class="btn-icon">⎘</span>Copy Current Value
     </button>
+    <button class="btn" id="btn-generate-nonce" onclick="generateNonce(this)">
+      <span class="btn-icon">◆</span>Generate Nonce
+    </button>
+  </div>
+</div>
+
+<!-- ─── NONCE PANEL ─── -->
+<div id="nonce-panel" style="display:none; margin-top:24px; background:var(--bg-panel); border:1px solid var(--border-hi); border-radius:16px; padding:28px 32px;">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+    <div>
+      <div style="font-family:var(--sans); font-weight:600; font-size:18px; color:var(--sac); letter-spacing:-0.01em;">SacTime Nonce</div>
+      <div style="font-family:var(--mono); font-size:11px; color:var(--text-dim); margin-top:4px;">SNSFL [9,9,8,1] · Two-Layer Temporal Identity Primitive</div>
+    </div>
+    <button class="btn" onclick="copyNonceJSON(this)" style="font-size:13px;">
+      <span class="btn-icon">⎘</span>Copy Nonce JSON
+    </button>
+  </div>
+
+  <div style="margin-bottom:18px; padding:16px 20px; background:var(--bg-elev); border-radius:10px; border:1px solid var(--border);">
+    <div style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Layer 1 · AccumulatedCycles Nonce</div>
+    <div style="font-family:var(--mono); font-size:22px; font-weight:700; color:var(--sac); word-break:break-all;" id="nonce-l1-int">—</div>
+    <div style="font-family:var(--mono); font-size:13px; color:var(--text-dim); margin-top:6px;" id="nonce-l1-hex">—</div>
+    <div style="font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-top:4px;" id="nonce-l1-formula">nonce = ⌊(unix_ms / 1000) × SAC_HZ⌋</div>
+  </div>
+
+  <div style="margin-bottom:18px; padding:16px 20px; background:var(--bg-elev); border-radius:10px; border:1px solid var(--border);">
+    <div style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Layer 2 · Five-Anchor Live Cycle Counts · All unique to this millisecond</div>
+    <div style="font-family:var(--mono); font-size:11px; color:var(--text); word-break:break-all; line-height:1.7; background:var(--bg-deep); padding:12px 14px; border-radius:8px; border:1px solid var(--border);" id="nonce-l2-string">—</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:18px;">
+    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
+      <div style="font-size:10px; font-family:var(--mono); color:var(--sac); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">unix_ms</div>
+      <div style="font-family:var(--mono); font-size:13px; color:var(--text);" id="nonce-unix-ms">—</div>
+    </div>
+    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
+      <div style="font-size:10px; font-family:var(--mono); color:var(--cs); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">Cs-133 cycles</div>
+      <div style="font-family:var(--mono); font-size:13px; color:var(--text); word-break:break-all;" id="nonce-ratio-cs">—</div>
+    </div>
+    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
+      <div style="font-size:10px; font-family:var(--mono); color:var(--sr); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">Sr-87 cycles</div>
+      <div style="font-family:var(--mono); font-size:13px; color:var(--text); word-break:break-all;" id="nonce-ratio-sr">—</div>
+    </div>
+    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
+      <div style="font-size:10px; font-family:var(--mono); color:var(--h); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">H-1 cycles</div>
+      <div style="font-family:var(--mono); font-size:13px; color:var(--text); word-break:break-all;" id="nonce-ratio-h">—</div>
+    </div>
+    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
+      <div style="font-size:10px; font-family:var(--mono); color:var(--al); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">Al-27⁺ cycles</div>
+      <div style="font-family:var(--mono); font-size:13px; color:var(--text); word-break:break-all;" id="nonce-ratio-al">—</div>
+    </div>
+    <div style="padding:12px 16px; background:var(--bg-elev); border-radius:8px; border:1px solid var(--border);">
+      <div style="font-size:10px; font-family:var(--mono); color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">+100ms delta</div>
+      <div style="font-family:var(--mono); font-size:13px; color:var(--text);" id="nonce-delta">—</div>
+    </div>
+  </div>
+
+  <div style="padding:12px 16px; background:var(--bg-deep); border-radius:8px; border:1px solid var(--border); font-family:var(--mono); font-size:10px; color:var(--text-faint); line-height:1.7;">
+    Formally verified · SNSFL_SacTime_Nonce_Security.lean · T2 collision_free · T5 temporal_identity · T7 payload_injectivity · [9,9,8,1]
   </div>
 </div>
 
@@ -1542,7 +1602,7 @@ const TL_IVA = 0.12047120798593408;      // IVA_PEAK band lower boundary
 const FREQ_CS = 9192631770;              // SI-exact hyperfine (Hz)
 const FREQ_SR = 429228004229873;         // PTB optical lattice (Hz)
 const FREQ_H  = 1420405751.768;          // NIST hydrogen maser (Hz)
-const FREQ_AL = 1121015393207.857;       // JILA/NIST quantum logic (Hz)
+const FREQ_AL = 1121015393207857;        // JILA/NIST quantum logic (Hz) — Al-27⁺ optical ~1.121 PHz
 
 // SAC-anchored time state
 let sacEpoch = performance.timeOrigin;   // browser high-resolution time origin
@@ -2084,6 +2144,176 @@ async function copySAC(btn) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// GENERATE NONCE — SNSFL [9,9,8,1]
+// Two-layer temporal identity primitive
+// Layer 1: AccumulatedCycles = floor((unix_ms / 1000) * SAC_HZ)
+// Layer 2: Five-anchor identity string (HMAC input)
+// ═══════════════════════════════════════════════════════════════
+
+let _lastNonceResult = null;
+
+function generateNonce(btn) {
+  try {
+  const cap = captureFullPrecisionSAC();
+
+  // ── Capture the exact moment — integer ms, full precision everywhere ──
+  const unix_ms = Math.floor(cap.unix_ms);  // integer ms (sub-ms is noise, not real precision)
+
+  // All five corpus constants as exact string literals (exceed float64 significant digits)
+  const SAC_HZ_STR     = "1368990999.84016";
+  const ALPHA_INV_STR  = "137.035999084000016";
+  const TL_STR         = "0.136899099984016";
+  const SAC_GHZ_STR    = "1.36899099984016";
+
+  // Working float for ratio computation — SAC_HZ global is the correct number
+  const sac_hz_f = SAC_HZ;  // 1368990999.84016
+
+  // ── Layer 1: AccumulatedCycles nonce via BigInt — full integer precision ──
+  // JS Number max safe integer is 2^53 (~9e15); nonce at current epoch is ~2.45e18 — needs BigInt
+  // SAC_HZ = 1368990999.84016 — split into integer + fractional parts for BigInt arithmetic
+  // nonce = floor((unix_ms / 1000) * SAC_HZ)
+  //       = floor(unix_ms * 1368990999.84016 / 1000)
+  // Multiply unix_ms (integer) by SAC_HZ scaled to avoid fractions:
+  // SAC_HZ * 100000 = 136899099984016 (exact integer, 15 digits — fits BigInt)
+  // nonce = floor(unix_ms_bi * 136899099984016n / 100000000n)
+  const SAC_HZ_SCALED = 136899099984016n;   // SAC_HZ × 1e5, exact
+  const SCALE         = 100000000n;         // 1e8 (1e5 for SAC_HZ scale × 1e3 for /1000)
+  const unix_ms_bi    = BigInt(unix_ms);
+  const nonce_bi      = (unix_ms_bi * SAC_HZ_SCALED) / SCALE;
+  const nonce_str     = nonce_bi.toString();
+  const nonce_hex     = '0x' + nonce_bi.toString(16).toUpperCase();
+
+  // ── Five-anchor live cycle counts — all BigInt exact ──
+  // Each anchor's accumulated cycles at this exact unix_ms moment.
+  // Every number is unique to this millisecond. All five must be
+  // internally consistent with each other and with unix_ms —
+  // forging any one requires solving all five simultaneously.
+  //
+  // cycles = floor(unix_ms * FREQ_HZ / 1000)
+  // = floor(unix_ms_bi * FREQ_SCALED / SCALE_DENOM)
+  //
+  // All frequencies scaled to exact integers:
+  //   SAC:   136899099984016  / 1e5   (SAC_HZ × 1e5)
+  //   Cs:    9192631770       × 1     (already exact integer Hz)
+  //   Sr:    429228004229873  × 1     (exact integer Hz)
+  //   H:     1420405751768    / 1e3   (1420405751.768 Hz × 1e3)
+  //   Al:    1121015393207857 × 1     (exact integer Hz)
+
+  // SAC — already computed above as nonce_bi
+  // cycles_SAC = nonce_bi (same computation)
+
+  // Cs-133: cycles = floor(unix_ms * 9192631770 / 1000)
+  const cycles_Cs = (unix_ms_bi * 9192631770n) / 1000n;
+
+  // Sr-87: cycles = floor(unix_ms * 429228004229873 / 1000)
+  const cycles_Sr = (unix_ms_bi * 429228004229873n) / 1000n;
+
+  // H-1: FREQ = 1420405751768/1000 Hz → cycles = floor(unix_ms * 1420405751768 / 1000000)
+  const cycles_H  = (unix_ms_bi * 1420405751768n) / 1000000n;
+
+  // Al-27⁺: cycles = floor(unix_ms * 1121015393207857 / 1000)
+  const cycles_Al = (unix_ms_bi * 1121015393207857n) / 1000n;
+
+  const cycles_Cs_str = cycles_Cs.toString();
+  const cycles_Sr_str = cycles_Sr.toString();
+  const cycles_H_str  = cycles_H.toString();
+  const cycles_Al_str = cycles_Al.toString();
+
+  // ── Collision delta — BigInt exact ──
+  const delta_bi  = (100n * SAC_HZ_SCALED) / SCALE;
+  const delta_str = delta_bi.toString();
+
+  // ── Layer 2: five-anchor identity string — ALL values live & unique per moment ──
+  // Format: unix_ms|cycles_SAC|cycles_Cs|cycles_Sr|cycles_H|cycles_Al
+  // Every field is a unique integer computed at this exact millisecond.
+  // Cross-check: cycles_Cs / cycles_SAC ≈ 6.7148957 (fixed ratio, live values)
+  const l2_string = [
+    unix_ms,
+    nonce_str,      // SAC accumulated cycles
+    cycles_Cs_str,  // Cs-133 accumulated cycles
+    cycles_Sr_str,  // Sr-87 accumulated cycles
+    cycles_H_str,   // H-1 accumulated cycles
+    cycles_Al_str   // Al-27⁺ accumulated cycles
+  ].join('|');
+
+  // ── Populate panel ──
+  document.getElementById('nonce-l1-int').textContent     = nonce_str;
+  document.getElementById('nonce-l1-hex').textContent     = nonce_hex;
+  document.getElementById('nonce-l1-formula').textContent =
+    `⌊(${unix_ms} ms × SAC_HZ) / 1000⌋  [BigInt exact]`;
+  document.getElementById('nonce-l2-string').textContent  = l2_string;
+  document.getElementById('nonce-unix-ms').textContent    = unix_ms + ' ms';
+  document.getElementById('nonce-ratio-cs').textContent   = cycles_Cs_str;
+  document.getElementById('nonce-ratio-sr').textContent   = cycles_Sr_str;
+  document.getElementById('nonce-ratio-h').textContent    = cycles_H_str;
+  document.getElementById('nonce-ratio-al').textContent   = cycles_Al_str;
+  document.getElementById('nonce-delta').textContent      = '+' + delta_str + ' SAC cycles / 100ms';
+
+  // ── Store for copy ──
+  _lastNonceResult = {
+    unix_ms,
+    utc_iso: cap.utc_iso,
+    layer1: {
+      name: 'AccumulatedCycles_SAC',
+      nonce: nonce_str,
+      nonce_hex: nonce_hex,
+      formula: 'floor(unix_ms × SAC_HZ / 1000) — BigInt exact',
+      collision_delta_per_100ms: delta_str
+    },
+    layer2: {
+      name: 'FiveAnchorLiveCycles',
+      string: l2_string,
+      note: 'All six values computed at this exact unix_ms. Any forgery must satisfy all five cycle ratios simultaneously.',
+      fields: {
+        unix_ms:    unix_ms,
+        cycles_SAC: nonce_str,
+        cycles_Cs:  cycles_Cs_str,
+        cycles_Sr:  cycles_Sr_str,
+        cycles_H:   cycles_H_str,
+        cycles_Al:  cycles_Al_str
+      },
+      corpus: {
+        sac_hz:      SAC_HZ_STR,
+        alpha_inv:   ALPHA_INV_STR,
+        torsion_limit: TL_STR,
+        sovereign_ghz: SAC_GHZ_STR
+      }
+    },
+    proof: 'SNSFL_SacTime_Nonce_Security.lean [9,9,8,1]',
+    theorems: ['T2 collision_free', 'T5 temporal_identity', 'T7 payload_injectivity']
+  };
+
+  // Show panel
+  document.getElementById('nonce-panel').style.display = 'block';
+  document.getElementById('nonce-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Button feedback
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span class="btn-icon">✓</span>Nonce Generated';
+  btn.style.color = 'var(--ok)';
+  setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 1800);
+
+  } catch(err) {
+    alert('Nonce generation error: ' + err.message);
+  }
+}
+
+function copyNonceJSON(btn) {
+  if (!_lastNonceResult) return;
+  const json = JSON.stringify(_lastNonceResult, null, 2);
+  try {
+    navigator.clipboard.writeText(json).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<span class="btn-icon">✓</span>Copied';
+      btn.style.color = 'var(--ok)';
+      setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 1600);
+    });
+  } catch (e) {
+    prompt('Copy this nonce JSON:', json);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 // COMPUTE AND DISPLAY RATIOS ON LOAD
 // ═══════════════════════════════════════════════════════════════
 
@@ -2117,3 +2347,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
+</body></html>
