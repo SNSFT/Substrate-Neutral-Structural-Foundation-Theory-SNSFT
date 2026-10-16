@@ -339,9 +339,10 @@ span.tm { display: inline !important; font-size: 0.6em; vertical-align: super; l
       <div class="mode-summary" id="mode-summary">8-BEAM · C(8,2)=28 pairs</div>
       <div class="mode-sep"></div>
       <span class="mode-label">SVI</span>
-      <button class="svi-toggle active" id="svi-si" onclick="toggleSVI('internal')" title="SVI-Internal · P=0.60 N=0.07 B=0.12 A=0.15 · τ=0.200 SHATTER">SI</button>
-      <button class="svi-toggle active" id="svi-se" onclick="toggleSVI('external')" title="SVI-External · P=0.65 N=0.10 B=0.14 A=0.22 · τ=0.215 SHATTER">SE</button>
-      <button class="svi-toggle active" id="svi-su" onclick="toggleSVI('universe')" title="SVI-Universe · P=0.45 N=0.05 B=0.10 A=0.08 · τ=0.222 SHATTER">SU</button>
+      <button class="svi-toggle active" id="svi-si" onclick="toggleSVI('internal')" title="SVI-Internal · P=0.60 N=0.07 B=0.12 A=0.15 · τ=0.200 SHATTER · SVI 31.7 · SVI_TL 3.13">SI</button>
+      <button class="svi-toggle active" id="svi-se" onclick="toggleSVI('external')" title="SVI-External · P=0.65 N=0.10 B=0.14 A=0.22 · τ=0.215 SHATTER · SVI 15.1 · SVI_TL 2.36">SE</button>
+      <button class="svi-toggle active" id="svi-su" onclick="toggleSVI('universe')" title="SVI-Universe · P=0.45 N=0.05 B=0.10 A=0.08 · τ=0.222 SHATTER · SVI 123.5 · SVI_TL 4.87">SU</button>
+      <button class="svi-toggle" id="svi-ex" onclick="toggleSVIExemplars()" title="SVI exemplars · each shame vector at the midpoint of each phase zone · 24 states · default OFF">SVI·EX</button>
       <div class="mode-sep"></div>
       <span class="mode-label">SUBSTRATES</span>
       <button class="svi-toggle active" id="sub-master-btn" onclick="toggleAllSubstrates()" title="Toggle all substrate identities on/off · 17 profiles · default ON">SUB ✓</button>
@@ -763,7 +764,9 @@ function fuseN(states, km) {
   } else { allShatter = false; }
   const isRescue = allShatter && (phase === 'NOBLE' || phase === 'TRUE_LOCK' || phase === 'IVA_PEAK');
 
-  return { P:P_o, N:N_o, B:B_o, A:A_o, tau:t, IM, Pv, phase, k, kmax, isRescue, pairCount, n };
+  // RESCUE · NUMBING: load cancelled but N_out below floor — calm over a narrative void, not recovery
+  const rescueNumbing = isRescue && N_o < N_THRESHOLD;
+  return { P:P_o, N:N_o, B:B_o, A:A_o, tau:t, IM, Pv, phase, k, kmax, isRescue, rescueNumbing, pairCount, n };
 }
 
 // ── INTERESTING DETECTION ──────────────────────────────────────
@@ -771,7 +774,9 @@ function isInteresting(r, states) {
   const n = states.length, pc = r.pairCount;
 
   if (r.isRescue)
-    return { flag:true, reason:`${n}-BEAM RESCUE — all ${pc} pairwise pairs SHATTER, ${n}-beam → ${r.phase}` };
+    return { flag:true, reason: r.rescueNumbing
+      ? `${n}-BEAM RESCUE · NUMBING — all ${pc} pairwise pairs SHATTER, ${n}-beam → ${r.phase} with N=${r.N.toFixed(3)} < 0.15 (load cancelled, narrative void)`
+      : `${n}-BEAM RESCUE — all ${pc} pairwise pairs SHATTER, ${n}-beam → ${r.phase}` };
 
   if (r.phase === 'NOBLE' && !states.every(s => s.B === 0)) {
     const parentPhases = states.map(s => phaseOf(s.P, s.N, s.B, s.A));
@@ -837,8 +842,22 @@ function svi_of(P, N, B, A) {
   if (P <= 0 || N <= 0 || A <= 0) return null;
   return B / (P * P * N * A);
 }
+// SVI_TL — TL-ruler parallel (legacy SVI kept unchanged above)
+// SVI_TL = (τ / TL) × (N_THRESHOLD / N) — load on the ruler per unit of narrative floor
+// < 1: load carried by narrative · ≥ 1: diagnostic (τ ≥ TL with N < floor forces this)
+// ≥ LOUD_EDGE/TL (≈ 3.14): extreme · A not included (A is not in the phase physics)
+const SVI_TL_EXTREME = 0.43 / TL;
+function svi_tl_of(P, N, B) {
+  if (P <= 0 || N <= 0) return null;
+  return (B / P / TL) * (N_THRESHOLD / N);
+}
+function sviTlBand(v) {
+  if (v === null) return 'N/A';
+  return v >= SVI_TL_EXTREME ? 'EXTREME' : v >= 1 ? 'DIAGNOSTIC' : 'CARRIED';
+}
+function isSviState(s) { return !!(s && (s.domain === 'SVI' || (s.exemplar && s.exemplar.svi))); }
 function hasSVI(states) {
-  return (states || []).some(s => s && s.domain === 'SVI');
+  return (states || []).some(isSviState);
 }
 
 // ── FILTERED CORPUS ────────────────────────────────────────────
@@ -849,6 +868,8 @@ function getFilteredCorpus() {
     if (s.id === 'svi-external') return sviEnabled.external;
     if (s.id === 'svi-universe') return sviEnabled.universe;
     if (s.domain === 'SUBSTRATE') return substratesEnabled[s.id] !== false;
+    if (s.exemplar && s.exemplar.svi) return sviEnabled[s.exemplar.base.replace('svi-','')] !== false;
+    if (s.exemplar) return substratesEnabled[s.exemplar.base] !== false;
     return true;
   });
 }
@@ -866,6 +887,17 @@ function toggleAllSubstrates() {
   feedLine(`Substrates ${!anyOn?'ON':'OFF'} · ${Object.keys(substratesEnabled).length} profiles`, 'info');
 }
 
+// ── SVI EXEMPLAR TOGGLE (mirrors the EX·SVI domain chip) ──────
+function toggleSVIExemplars() {
+  const d = 'EX·SVI';
+  if (activeDomains.has(d)) activeDomains.delete(d); else activeDomains.add(d);
+  const on = activeDomains.has(d);
+  document.getElementById('svi-ex').classList.toggle('active', on);
+  document.querySelectorAll('.domain-btn').forEach(b => { if (b.dataset.domain === d) b.classList.toggle('active', on); });
+  renderCorpus();
+  feedLine(`SVI exemplars ${on?'ON':'OFF'} · ${SVI_EXEMPLARS.length} states`, 'info');
+}
+
 // ── SVI TOGGLE ─────────────────────────────────────────────────
 function toggleSVI(key) {
   sviEnabled[key] = !sviEnabled[key];
@@ -874,6 +906,58 @@ function toggleSVI(key) {
   renderCorpus();
   feedLine(`SVI-${key} ${sviEnabled[key]?'ON':'OFF'}`, 'info');
 }
+// ── SUBSTRATE PHASE EXEMPLARS ─────────────────────────────────
+// Every substrate under F_ext on B alone (Layer 0: F_ext acts on Behavior;
+// P, N and A are unchanged), solved backwards from the midpoint τ of each
+// PSY Taxonomy zone [9,9,2,55]:
+//   B_target = τ_mid × P        F_ext = B_target − B_baseline
+// Midpoints sit as far as possible from both zone edges, so boundary
+// crossings in a collision come from the collision, not the exemplar.
+// Loud Shatter is open-ended; its exemplar sits half a Hidden-Load width
+// above the 0.43 edge.
+const LOUD_EDGE = 0.43;
+const EXEMPLAR_ZONES = [
+  { key:'NOBLE',  label:'Noble',        tau: 0 },
+  { key:'DC',     label:'DC',           tau: 0.040 / 2 },
+  { key:'SAFE',   label:'Safety',       tau: (0.040 + 0.073) / 2 },
+  { key:'LOCKED', label:'Locked',       tau: TL_IVA / 2 },          // dead center of TRUE_LOCK (0, TL_IVA)
+  { key:'FL',     label:'FL corridor',  tau: (0.073 + TL_IVA) / 2 },
+  { key:'IVA',    label:'IVA',          tau: (TL_IVA + TL) / 2 },
+  { key:'HIDDEN', label:'Hidden Load',  tau: (TL + LOUD_EDGE) / 2 },
+  { key:'LOUD',   label:'Loud Shatter', tau: LOUD_EDGE + (LOUD_EDGE - TL) / 2 },
+];
+const SUBSTRATE_EXEMPLARS = [];
+PSY_CORPUS.filter(s => s.domain === 'SUBSTRATE' && s.P > 0).forEach(s => {
+  EXEMPLAR_ZONES.forEach(z => {
+    const B = z.tau * s.P;
+    SUBSTRATE_EXEMPLARS.push({
+      id: 'ex-' + z.key.toLowerCase() + '-' + s.id,
+      domain: 'EX·' + z.key,
+      name: s.name + ' · ' + z.label,
+      coord: s.coord,
+      P: s.P, N: s.N, B: B, A: s.A,
+      exemplar: { base: s.id, zone: z.label, tauTarget: z.tau, fext: B - s.B }
+    });
+  });
+});
+PSY_CORPUS.push(...SUBSTRATE_EXEMPLARS);
+// SVI exemplars — each shame vector placed at the midpoint of each phase zone (domain EX·SVI, off by default)
+const SVI_EXEMPLARS = [];
+PSY_CORPUS.filter(s => s.domain === 'SVI' && s.P > 0).forEach(s => {
+  EXEMPLAR_ZONES.forEach(z => {
+    const B = z.tau * s.P;
+    SVI_EXEMPLARS.push({
+      id: 'ex-' + z.key.toLowerCase() + '-' + s.id,
+      domain: 'EX·SVI',
+      name: s.name + ' · ' + z.label,
+      coord: s.coord,
+      P: s.P, N: s.N, B: B, A: s.A,
+      exemplar: { base: s.id, zone: z.label, tauTarget: z.tau, fext: B - s.B, svi: true }
+    });
+  });
+});
+PSY_CORPUS.push(...SVI_EXEMPLARS);
+
 const CORPUS = PSY_CORPUS.map(s => ({
   ...s,
   phase: phaseOf(s.P, s.N, s.B, s.A),
@@ -987,15 +1071,17 @@ function buildDomainFilters() {
     renderCorpus();
   };
   container.appendChild(all);
+  domains.forEach(d => { if (d.indexOf('EX·') === 0) activeDomains.delete(d); });
   domains.forEach(d => {
     const btn = document.createElement('button');
-    btn.className = 'domain-btn active';
+    btn.className = 'domain-btn' + (activeDomains.has(d) ? ' active' : '');
     btn.textContent = d;
     btn.dataset.domain = d;
     btn.onclick = () => {
       if (activeDomains.has(d)) activeDomains.delete(d);
       else activeDomains.add(d);
       btn.classList.toggle('active', activeDomains.has(d));
+      if (d === 'EX·SVI') { const sx = document.getElementById('svi-ex'); if (sx) sx.classList.toggle('active', activeDomains.has(d)); }
       renderCorpus();
     };
     container.appendChild(btn);
@@ -1034,6 +1120,7 @@ function renderCorpus() {
         <span style="color:#2a5060">τ=${s.tau.toFixed(3)}</span>
       </div>
       ${subFlagHTML}
+      ${s.exemplar ? `<div style="font-size:6.5px;color:#4a8090;margin-top:2px;letter-spacing:.06em;">F_ext ΔB ${(s.exemplar.fext >= 0 ? '+' : '') + s.exemplar.fext.toFixed(4)} · τ ${(s.tau / TL).toFixed(2)} TL</div>` : ''}
     </div>`;
   }).join('');
 
@@ -1106,7 +1193,7 @@ function updateBeamViz(states, r) {
     if (i < states.length - 1) html += `<div class="bvp-plus">+</div>`;
   });
   const pcol = r.isRescue ? 'var(--rescue)' : phaseColor(r.phase);
-  const plbl = r.isRescue ? `★RESCUE→${r.phase}` : r.phase;
+  const plbl = r.isRescue ? `★RESCUE${r.rescueNumbing?'·NUMBING':''}→${r.phase}` : r.phase;
   html += `<div class="bvp-arrow">→</div>
     <div class="bvp-out">
       <div class="bvp-out-phase" style="color:${pcol}">${plbl.replace('_',' ')}</div>
@@ -1160,7 +1247,7 @@ function displayResult(r, states) {
   const col    = r.isRescue ? 'var(--rescue)' : phaseColor(r.phase);
   const pcls   = r.isRescue ? 'result-rescue' : { NOBLE:'result-noble', IVA_PEAK:'result-iva',
     TRUE_LOCK:'result-locked', FALSE_LOCK:'result-false', SHATTER:'result-shatter' }[r.phase] || '';
-  const pLabel = r.isRescue ? `★ RESCUE → ${r.phase.replace('_',' ')}` : r.phase.replace('_',' ');
+  const pLabel = r.isRescue ? `★ RESCUE${r.rescueNumbing?' · NUMBING':''} → ${r.phase.replace('_',' ')}` : r.phase.replace('_',' ');
   const names  = states.map(s => s.name.split(' ')[0]).join(' ⊕ ');
   const subFlags = getSubFlags(r.P, r.N, r.B, r.A);
   const subFlagHTML = subFlags.map(f =>
@@ -1188,7 +1275,8 @@ function displayResult(r, states) {
     ${r.N < N_THRESHOLD ? `<div style="margin-top:6px;font-size:8px;color:var(--false-lock);">⚠ N_OUT=${r.N.toFixed(3)} &lt; N_THRESHOLD=0.15 → narrative starvation</div>` : ''}
     ${r.A < A_THRESHOLD ? `<div style="margin-top:4px;font-size:8px;color:var(--shatter);">⚠ A_OUT=${r.A.toFixed(3)} &lt; A_THRESHOLD=0.15 → adaptation dropout</div>` : ''}
     ${r.phase === 'IVA_PEAK' ? `<div style="margin-top:4px;font-size:8px;color:var(--iva);">★ IVA PEAK — τ at ${(r.tau/TL*100).toFixed(1)}% of TL · TL_IVA=${TL_IVA.toFixed(5)}</div>` : ''}
-    ${r.isRescue ? `<div style="margin-top:4px;font-size:8px;color:var(--rescue);">★ RESCUE — all ${r.pairCount} pairwise pairs SHATTER · ${r.n}-beam → ${r.phase.replace('_',' ')}</div>` : ''}
+    ${r.isRescue ? `<div style="margin-top:4px;font-size:8px;color:var(--rescue);">★ RESCUE${r.rescueNumbing?' · NUMBING':''} — all ${r.pairCount} pairwise pairs SHATTER · ${r.n}-beam → ${r.phase.replace('_',' ')}</div>` : ''}
+    ${r.rescueNumbing ? `<div style="margin-top:4px;font-size:8px;color:var(--false-lock);">⚠ RESCUE · NUMBING — load cancelled but N_OUT=${r.N.toFixed(3)} &lt; 0.15: calm over a narrative void, not recovery</div>` : ''}
   `;
 }
 
@@ -1212,7 +1300,7 @@ function doSmash(states) {
   const names = states.map(s => s.name.split(' ').slice(0,2).join(' ')).join(' ⊕ ');
   const subFlags = getSubFlags(r.P, r.N, r.B, r.A);
   const subFlagStr = subFlags.length ? ' · ' + subFlags.map(f => f.label).join(' · ') : '';
-  feedLine(`${names} → ${r.phase.replace('_',' ')}${subFlagStr}${r.isRescue?' ★RESCUE':''} τ=${r.tau.toFixed(4)}`, feedCls(r.phase, r.isRescue));
+  feedLine(`${names} → ${r.phase.replace('_',' ')}${subFlagStr}${r.isRescue?(r.rescueNumbing?' ★RESCUE·NUMBING':' ★RESCUE'):''} τ=${r.tau.toFixed(4)}`, feedCls(r.phase, r.isRescue));
 
   const check = isInteresting(r, states);
   if (check.flag) {
@@ -1434,19 +1522,27 @@ lemma a_ceiling : A_out = A${maxA_i+1} := by
       const sv = svi_of(s.P, s.N, s.B, s.A);
       const svStr = sv !== null ? sv.toFixed(3) : 'N/A';
       const nFlag = s.N < N_THRESHOLD ? '  ← N-collapsed' : '';
-      return `--   Beam ${i+1}: ${s.name.padEnd(24)} SVI=${svStr.padStart(8)}${nFlag}`;
+      const st = svi_tl_of(s.P, s.N, s.B);
+      const stStr = st !== null ? st.toFixed(3) : 'N/A';
+      return `--   Beam ${i+1}: ${s.name.padEnd(24)} SVI=${svStr.padStart(8)}  SVI_TL=${stStr.padStart(7)} ${sviTlBand(st)}${nFlag}`;
     }).join('\n');
     const sv_out = (entry.N > 0 && entry.A > 0) ? svi_of(entry.P, entry.N, entry.B, entry.A) : null;
     const svOutStr = isNoble ? '0 (Noble — B_out=0)' : sv_out !== null ? sv_out.toFixed(3) : 'N/A';
+    const st_out = isNoble ? 0 : svi_tl_of(entry.P, entry.N, entry.B);
+    const stOutStr = isNoble ? '0 (Noble — B_out=0) CARRIED' : st_out !== null ? st_out.toFixed(3) + ' ' + sviTlBand(st_out) : 'N/A';
     sviBlock = `
 -- ── SVI DIAGNOSTIC [9,9,6,29] ─────────────────────────────────
 -- SVI = B / (P² × N × A)  torsion density per identity capacity
 -- SVI > 10: diagnostic range  SVI > 100: extreme
--- Shame presents as SHATTER (τ≥TL) with N-floor collapse underneath
+-- SVI_TL = (τ/TL) × (N_THRESHOLD/N)  TL-ruler parallel · A not included
+-- SVI_TL ≥ 1: diagnostic  SVI_TL ≥ LOUD_EDGE/TL ≈ 3.14: extreme
+-- Fusion: SVI_TL_out = (τ_out/TL) × (N_THRESHOLD/N_min)
+-- Shame presents as SHATTER (τ≥TL) with N-floor collapse underneath → forces SVI_TL > 1
 --
 ${sviLines}
 --
 -- SVI_out:       ${svOutStr}
+-- SVI_TL_out:    ${stOutStr}
 -- N-floor source: Beam ${minN_i+1} (${nBot.name}, N=${nBot.N.toFixed(3)})`;
   }
 
@@ -1590,7 +1686,7 @@ async function flagDiscovery(states, r, reason) {
     k:           r.k, kmax: r.kmax,
     P: r.P, N: r.N, B: r.B, A: r.A,
     tau: r.tau, IM: r.IM, Pv: r.Pv,
-    phase: r.phase, isRescue: r.isRescue, n: r.n,
+    phase: r.phase, isRescue: r.isRescue, rescueNumbing: !!r.rescueNumbing, n: r.n,
     reason,
     states,
     approved: false, name: null, aifiAnalysis: null, leanStub: null,
@@ -1621,8 +1717,8 @@ Rescue=${entry.isRescue} · Reason: ${entry.reason}
 
 This is an identity-space collision (not particle physics). PSY rules: P=harmonic, N=min, B=ΣB-2k, A=max.
 ${hasSVI(entry.states) ? `SVI CONTEXT [9,9,6,29]: Shame vector(s) present in collision.
-SVI = B/(P²×N×A) — torsion density per identity capacity.
-${(entry.states||[]).filter(s=>s&&s.domain==='SVI').map(s=>{const sv=svi_of(s.P,s.N,s.B,s.A);return `${s.name}: SVI=${sv!==null?sv.toFixed(2):'N/A'} · N=${s.N.toFixed(3)} (${s.N<N_THRESHOLD?'BELOW N-floor':'above floor'}) · phase=${s.phase}`;}).join('\n')}
+SVI = B/(P²×N×A) — torsion density per identity capacity. SVI_TL = (τ/TL)×(0.15/N), TL-ruler parallel: ≥1 diagnostic, ≥3.14 extreme.
+${(entry.states||[]).filter(isSviState).map(s=>{const sv=svi_of(s.P,s.N,s.B,s.A);const st=svi_tl_of(s.P,s.N,s.B);return `${s.name}: SVI=${sv!==null?sv.toFixed(2):'N/A'} · SVI_TL=${st!==null?st.toFixed(2)+' '+sviTlBand(st):'N/A'} · N=${s.N.toFixed(3)} (${s.N<N_THRESHOLD?'BELOW N-floor':'above floor'}) · phase=${s.phase}`;}).join('\n')}
 Shame presents as SHATTER with N-floor collapse underneath (dual-state). Noble from shame = numbing, not peace — check IM < 2.0.
 ` : ''}1. What does this multi-identity fusion mean psychologically/structurally?
 2. Which cross-domain theorem (CD1–CD24) does this map to?
@@ -1704,7 +1800,7 @@ function renderQueue() {
       ${d.aifiAnalysis ? `<div style="font-size:8px;color:#2a5060;border-top:1px solid var(--border);padding-top:5px;margin-top:4px;max-height:70px;overflow-y:auto">${d.aifiAnalysis.slice(0,300)}...</div>` : ''}
       ${hasSVI(d.states) ? `<div style="font-size:8px;border-top:1px solid rgba(255,51,85,.2);padding-top:5px;margin-top:4px;">
         <span style="color:var(--shatter);font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.12em;">SVI [9,9,6,29]</span>
-        ${(d.states||[]).filter(s=>s).map(s=>{const sv=svi_of(s.P,s.N,s.B,s.A);const nf=s.N<N_THRESHOLD?'<span style="color:var(--false-lock)"> N-collapsed</span>':'';return sv!==null?`<div style="color:#2a5060;">${s.name.slice(0,20)}: <span style="color:var(--shatter)">${sv.toFixed(2)}</span>${nf}</div>`:''}).join('')}
+        ${(d.states||[]).filter(s=>s).map(s=>{const sv=svi_of(s.P,s.N,s.B,s.A);const nf=s.N<N_THRESHOLD?'<span style="color:var(--false-lock)"> N-collapsed</span>':'';const st=svi_tl_of(s.P,s.N,s.B);return sv!==null?`<div style="color:#2a5060;">${s.name.slice(0,20)}: <span style="color:var(--shatter)">${sv.toFixed(2)}</span> · TL <span style="color:var(--shatter)">${st!==null?st.toFixed(2):'N/A'}</span> ${st!==null?sviTlBand(st):''}${nf}</div>`:''}).join('')}
       </div>` : ''}
       <div class="disc-actions">
         <button class="btn btn-approve" onclick="approveDiscovery(${i})">✓ APPROVE</button>
@@ -1952,7 +2048,7 @@ function exportLogJSON() {
 }
 function exportLogCSV() {
   if (!discoveryLog.length) { feedLine('Nothing to export yet.', 'info'); return; }
-  const headers = ['designation','timestamp','collision','n','kMode','P','N','B','A','tau','TL','TL_IVA','IM','phase','isRescue','reason','approved'];
+  const headers = ['designation','timestamp','collision','n','kMode','P','N','B','A','tau','TL','TL_IVA','IM','phase','isRescue','rescueNumbing','reason','approved'];
   const rows = discoveryLog.map(d => headers.map(h => {
     if (h==='TL') return TL; if (h==='TL_IVA') return TL_IVA;
     const v = d[h]??''; return typeof v==='string'&&v.includes(',') ? `"${String(v).replace(/"/g,'""')}"` : v;
