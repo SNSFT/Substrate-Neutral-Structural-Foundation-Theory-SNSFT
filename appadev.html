@@ -1,0 +1,2941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APPA v4 | Universal Unified Identity Architecture Profile · Sovereign Identity Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06060f;
+  --surface: #0d0d1a;
+  --surface2: #12121f;
+  --border: #1a1a2e;
+  --anchor: #00d4aa;
+  --anchor-dim: rgba(0,212,170,0.1);
+  --gold: #f0c060;
+  --gold-dim: rgba(240,192,96,0.1);
+  --violet: #9b6dff;
+  --violet-dim: rgba(155,109,255,0.1);
+  --rose: #ff6b8a;
+  --rose-dim: rgba(255,107,138,0.1);
+  --shatter: #ff4070;
+  --shatter-dim: rgba(255,64,112,0.1);
+  --false-lock: #ff8c00;
+  --false-lock-dim: rgba(255,140,0,0.1);
+  --depleted-iva: #ff6b35;
+  --depleted-iva-dim: rgba(255,107,53,0.1);
+  --text: #e8e8f0;
+  --text-dim: #7777a0;
+  --text-muted: #3a3a58;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 70%, rgba(255,255,255,0.12) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.08) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 60%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 50%, rgba(0,212,170,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 40%, rgba(155,109,255,0.1) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+  position: relative;
+  z-index: 1;
+}
+.header { text-align: center; padding: 48px 0 40px; }
+.anchor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--anchor-dim);
+  border: 1px solid rgba(0,212,170,0.25);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--anchor);
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+.anchor-dot {
+  width: 5px; height: 5px;
+  background: var(--anchor);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.3; transform:scale(0.7); }
+}
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px,5vw,48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff 0%, var(--anchor) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+.subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  max-width: 460px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+.constellation-wrap {
+  position: relative;
+  margin: 0 auto 40px;
+  max-width: 500px;
+}
+canvas#constellation {
+  width: 100%;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: block;
+}
+.constellation-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-align: center;
+  margin-top: 8px;
+}
+.mode-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.mode-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.mode-btn.active {
+  background: var(--anchor-dim);
+  border-color: rgba(0,212,170,0.4);
+  color: var(--anchor);
+}
+.mode-btn#btn-weissmann.active {
+  background: var(--depleted-iva-dim);
+  border-color: rgba(255,107,53,0.4);
+  color: var(--depleted-iva);
+}
+.mode-btn:hover { opacity: 0.85; }
+/* ── WEISSMANN PANEL ── */
+.weissmann-panel { display: none; }
+.weissmann-panel.active { display: block; }
+.weissmann-intro {
+  background: var(--surface);
+  border: 1px solid rgba(255,107,53,0.25);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.weissmann-intro b { color: var(--depleted-iva); }
+.weissmann-need-baseline {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.w-result-block {
+  background: var(--surface);
+  border: 1px solid rgba(255,107,53,0.3);
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 24px;
+  display: none;
+}
+.w-result-block.visible { display: block; }
+.w-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.w-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--depleted-iva);
+}
+.w-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+}
+.w-compare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+}
+.w-threshold-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.w-bar-wrap { position: relative; margin: 16px 0; }
+.w-bar-bg { height: 10px; border-radius: 5px; background: var(--border); overflow: visible; position: relative; }
+.w-bar-fill { height: 10px; border-radius: 5px; transition: width 0.6s ease; }
+.w-bar-marker {
+  position: absolute; top: -4px; width: 2px; height: 18px;
+  background: rgba(255,107,53,0.7); border-radius: 1px;
+}
+.w-bar-marker-label {
+  position: absolute; top: 18px; font-size: 8px; color: var(--depleted-iva);
+  white-space: nowrap; transform: translateX(-50%); font-family: 'Space Mono', monospace;
+}
+.w-resolvability-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 16px;
+}
+.w-resolvability-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.12em; margin-bottom: 6px; }
+.w-resolvability-value { font-size: 13px; color: var(--text); line-height: 1.5; }
+.progress-bar-wrap {
+  background: var(--border);
+  border-radius: 100px;
+  height: 3px;
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+/* ── SECTION TOGGLE BAR (matches IM Collider beam-count-btn pattern) ── */
+.section-toggle-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.section-toggle-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+}
+.section-toggle-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 18px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.section-toggle-btn:hover { opacity: 0.85; }
+.section-toggle-btn.on.cog { border-color: rgba(0,212,170,0.4); color: var(--anchor); background: var(--anchor-dim); }
+.section-toggle-btn.on.emo { border-color: rgba(240,192,96,0.4); color: var(--gold); background: var(--gold-dim); }
+.section-toggle-btn.on.sim { border-color: rgba(155,109,255,0.4); color: var(--violet); background: var(--violet-dim); }
+.section-toggle-btn.off { border-color: var(--border); color: var(--text-muted); background: transparent; opacity: 0.5; }
+.section-toggle-hint {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: 0.04em;
+}
+.section-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+  filter: grayscale(0.6);
+}
+.progress-bar-fill {
+  height: 3px;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--anchor), var(--violet));
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid;
+  margin-bottom: 20px;
+}
+.section-header.cog { background: var(--anchor-dim); border-color: rgba(0,212,170,0.2); }
+.section-header.emo { background: var(--gold-dim); border-color: rgba(240,192,96,0.2); }
+.section-header.sim { background: var(--violet-dim); border-color: rgba(155,109,255,0.2); }
+.sec-num { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; min-width: 40px; }
+.cog .sec-num { color: var(--anchor); }
+.emo .sec-num { color: var(--gold); }
+.sim .sec-num { color: var(--violet); }
+.sec-info h2 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; }
+.cog .sec-info h2 { color: var(--anchor); }
+.emo .sec-info h2 { color: var(--gold); }
+.sim .sec-info h2 { color: var(--violet); }
+.sec-info p { font-size: 12px; color: var(--text-dim); }
+.subsection { margin-bottom: 24px; }
+.sub-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.sub-icon {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0;
+}
+.icon-p { background: var(--anchor-dim); color: var(--anchor); }
+.icon-n { background: var(--gold-dim); color: var(--gold); }
+.icon-b { background: var(--violet-dim); color: var(--violet); }
+.icon-a { background: var(--rose-dim); color: var(--rose); }
+.sub-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+.sub-desc { font-size: 11px; color: var(--text-muted); }
+.questions { display: flex; flex-direction: column; gap: 8px; }
+.question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: border-color 0.2s;
+}
+.question:hover { border-color: rgba(255,255,255,0.08); }
+.q-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); min-width: 26px; }
+.q-text { font-size: 13px; line-height: 1.5; flex: 1; }
+.q-scale {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.scale-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  flex-shrink: 0;
+}
+.scale-btn:hover {
+  border-color: var(--anchor);
+  color: var(--anchor);
+  background: var(--anchor-dim);
+}
+.scale-btn:active { transform: scale(0.92); }
+.scale-btn.selected {
+  border-color: var(--anchor);
+  background: var(--anchor);
+  color: #000;
+  font-weight: 700;
+}
+.ep-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.ep-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+.ep-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.divider { display: flex; align-items: center; gap: 14px; margin: 36px 0; }
+.div-line { flex: 1; height: 1px; background: var(--border); }
+.div-text { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.15em; white-space: nowrap; }
+/* ── RESULTS PANEL ── */
+.results-panel {
+  background: var(--surface);
+  border: 1px solid var(--anchor);
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 40px;
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+.results-panel.visible { display: block; }
+.results-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--anchor), var(--gold), var(--violet));
+}
+.results-panel h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.score-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+.score-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.soul8-block {
+  background: var(--surface2);
+  border: 1px solid rgba(0,212,170,0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.soul8-block::before {
+  content: 'SOUL-8 PACKET';
+  position: absolute;
+  top: -1px; left: 16px;
+  background: var(--surface2);
+  padding: 0 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--anchor);
+  letter-spacing: 0.15em;
+  transform: translateY(-50%);
+}
+.soul8-address {
+  font-family: 'Space Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--anchor);
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+  word-break: break-all;
+}
+.soul8-decoded {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.soul8-field {
+  background: rgba(0,212,170,0.05);
+  border: 1px solid rgba(0,212,170,0.1);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+.soul8-field-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 3px;
+}
+.soul8-field-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--anchor);
+}
+.tau-display-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.tau-display-left { display: flex; flex-direction: column; gap: 4px; }
+.tau-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.12em; }
+.tau-value { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; }
+.tau-formula { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); }
+.phase-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1px solid;
+}
+.phase-noble { color: #aa88ff; border-color: rgba(170,136,255,0.4); background: rgba(170,136,255,0.1); }
+.phase-true-lock { color: var(--anchor); border-color: rgba(0,212,170,0.4); background: var(--anchor-dim); }
+.phase-iva-peak { color: var(--gold); border-color: rgba(240,192,96,0.4); background: var(--gold-dim); }
+.phase-depleted-iva { color: var(--depleted-iva); border-color: rgba(255,107,53,0.4); background: var(--depleted-iva-dim); }
+.phase-false-lock { color: var(--false-lock); border-color: rgba(255,140,0,0.4); background: var(--false-lock-dim); }
+.phase-shatter { color: var(--shatter); border-color: rgba(255,64,112,0.4); background: var(--shatter-dim); }
+.tl-bar-wrap { position: relative; margin: 6px 0 4px; }
+.tl-bar-bg {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  overflow: hidden;
+  position: relative;
+}
+.tl-bar-fill {
+  height: 6px;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+.tl-marker {
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: 10px;
+  background: rgba(240,192,96,0.8);
+  border-radius: 1px;
+}
+.tl-marker-label {
+  position: absolute;
+  top: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--gold);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.processing-band-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.band-label-text { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.12em; }
+.band-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  border: 1px solid;
+}
+.band-pf { color: var(--anchor); border-color: rgba(0,212,170,0.4); background: var(--anchor-dim); }
+.band-ps { color: var(--gold); border-color: rgba(240,192,96,0.4); background: var(--gold-dim); }
+.band-pl { color: var(--violet); border-color: rgba(155,109,255,0.4); background: var(--violet-dim); }
+.soul8-noharm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,212,170,0.1);
+  border: 1px solid rgba(0,212,170,0.3);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--anchor);
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+}
+.soul8-noharm-dot { width: 6px; height: 6px; background: var(--anchor); border-radius: 50%; }
+.im-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.im-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; }
+.im-value { font-family: 'Space Mono', monospace; font-size: 16px; font-weight: 700; color: var(--gold); }
+.im-formula { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); }
+.heatmap { margin: 20px 0; }
+.heatmap h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.heat-rows { display: flex; flex-direction: column; gap: 6px; }
+.heat-row { display: flex; align-items: center; gap: 10px; }
+.heat-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); min-width: 90px; }
+.heat-bg { flex: 1; height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
+.heat-fill { height: 8px; border-radius: 100px; width: 0%; transition: width 0.6s ease; }
+.heat-pct { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); min-width: 36px; text-align: right; }
+.relmap-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.relmap-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 10px; }
+.relmap-entry { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-dim); line-height: 2; }
+.relmap-op { color: var(--anchor); margin: 0 6px; }
+.combined-output {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text);
+  word-break: break-all;
+}
+.combined-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.12em; margin-bottom: 8px; font-family: 'Space Mono', monospace; }
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(0,212,170,0.3);
+  background: var(--anchor-dim);
+  color: var(--anchor);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  margin-top: 10px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.copy-btn:hover { background: rgba(0,212,170,0.2); }
+.copy-btn.copied { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+.reset-btn {
+  display: block;
+  margin: 24px auto 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 12px 28px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.reset-btn:hover { border-color: var(--rose); color: var(--rose); }
+/* ── DELTA COMPARISON PANEL ── */
+.delta-panel {
+  background: var(--surface);
+  border: 1px solid var(--gold);
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 28px;
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+.delta-panel.visible { display: block; }
+.delta-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--rose), var(--anchor));
+}
+.delta-panel-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.delta-subtitle { font-size: 11px; color: var(--text-muted); font-family: 'Space Mono', monospace; font-weight: 400; }
+.delta-axis-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.delta-axis-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.delta-axis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.delta-axis-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.delta-arrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+}
+.delta-arrow.up { color: var(--rose); }
+.delta-arrow.down { color: var(--anchor); }
+.delta-arrow.neutral { color: var(--text-muted); }
+.delta-values {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.delta-val-baseline { color: var(--anchor); font-weight: 700; }
+.delta-val-activated { color: var(--gold); font-weight: 700; }
+.delta-arrow-small { color: var(--text-muted); }
+.delta-change {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.delta-change.positive { color: var(--rose); background: var(--rose-dim); }
+.delta-change.negative { color: var(--anchor); background: var(--anchor-dim); }
+.delta-change.neutral { color: var(--text-muted); background: var(--surface); }
+/* τ comparison bar */
+.tau-compare-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.tau-compare-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  margin-bottom: 14px;
+}
+.tau-compare-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+}
+.tau-mode-label { min-width: 80px; color: var(--text-muted); }
+.tau-compare-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: visible;
+  position: relative;
+}
+.tau-compare-bar-fill {
+  height: 8px;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+  position: relative;
+}
+.tau-tl-line {
+  position: absolute;
+  top: -3px;
+  height: 14px;
+  width: 2px;
+  background: rgba(240,192,96,0.8);
+  border-radius: 1px;
+}
+.tau-tl-label {
+  position: absolute;
+  top: 14px;
+  font-size: 8px;
+  color: var(--gold);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.tau-val { min-width: 52px; text-align: right; font-weight: 700; }
+/* Phase change display */
+.phase-change-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.phase-change-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+}
+.phase-change-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+.phase-change-arrow { color: var(--text-muted); }
+/* Dynamic flags */
+.flags-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.flags-block-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  margin-bottom: 4px;
+}
+.flag-pill {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid;
+}
+.flag-icon {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.flag-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.flag-n-starvation {
+  border-color: rgba(255,140,0,0.3);
+  background: rgba(255,140,0,0.05);
+}
+.flag-n-starvation .flag-icon { color: var(--false-lock); background: var(--false-lock-dim); }
+.flag-a-dropout {
+  border-color: rgba(255,64,112,0.3);
+  background: rgba(255,64,112,0.05);
+}
+.flag-a-dropout .flag-icon { color: var(--shatter); background: var(--shatter-dim); }
+.flag-hidden-load {
+  border-color: rgba(240,192,96,0.3);
+  background: rgba(240,192,96,0.05);
+}
+.flag-hidden-load .flag-icon { color: var(--gold); background: var(--gold-dim); }
+.flag-im-collapse {
+  border-color: rgba(155,109,255,0.3);
+  background: rgba(155,109,255,0.05);
+}
+.flag-im-collapse .flag-icon { color: var(--violet); background: var(--violet-dim); }
+.flag-b-dominant {
+  border-color: rgba(255,107,138,0.3);
+  background: rgba(255,107,138,0.05);
+}
+.flag-b-dominant .flag-icon { color: var(--rose); background: var(--rose-dim); }
+.flag-n-dominant {
+  border-color: rgba(155,109,255,0.3);
+  background: rgba(155,109,255,0.05);
+}
+.flag-n-dominant .flag-icon { color: var(--violet); background: var(--violet-dim); }
+.flag-phase-change {
+  border-color: rgba(0,212,170,0.3);
+  background: rgba(0,212,170,0.05);
+}
+.flag-phase-change .flag-icon { color: var(--anchor); background: var(--anchor-dim); }
+.flag-depleted-iva {
+  border-color: rgba(255,107,53,0.3);
+  background: rgba(255,107,53,0.05);
+}
+.flag-depleted-iva .flag-icon { color: var(--depleted-iva); background: var(--depleted-iva-dim); }
+.flag-n-erosion {
+  border-color: rgba(240,192,96,0.3);
+  background: rgba(240,192,96,0.05);
+}
+.flag-n-erosion .flag-icon { color: var(--gold); background: var(--gold-dim); }
+.no-flags-msg {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+/* IM comparison */
+.im-compare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.im-compare-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.1em; }
+.im-compare-val { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; }
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 32px 0 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+}
+.footer p { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); line-height: 1.9; letter-spacing: 0.05em; }
+.footer .manifold { color: var(--anchor); font-size: 12px; margin-top: 10px; }
+@media (max-width: 580px) {
+  .ep-grid { grid-template-columns: 1fr; }
+  .score-grid { grid-template-columns: 1fr; }
+  .soul8-decoded { grid-template-columns: 1fr; }
+  .delta-axis-grid { grid-template-columns: 1fr; }
+  .q-scale { gap: 3px; }
+  .scale-btn { width: 28px; height: 28px; font-size: 10px; }
+}
+/* ── v4 · TL ruler, net load, quick fill ── */
+.tl-ruler-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 14px 0; }
+.tl-ruler-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 10px; }
+.tl-ruler-scale { display: flex; justify-content: space-between; font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); margin: 0 92px 6px 22px; }
+.tl-axis-row { display: grid; grid-template-columns: 14px minmax(0,1fr) 62px; grid-template-areas: "k t v" ". n n"; column-gap: 8px; align-items: center; margin-bottom: 8px; }
+.tl-axis-key { grid-area: k; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 12px; }
+.tl-axis-track { grid-area: t; position: relative; height: 10px; border-radius: 5px; overflow: visible; display: flex; }
+.tl-axis-band { flex: 1; height: 100%; border-right: 1px solid var(--bg); }
+.tl-axis-band.b0 { background: rgba(255,255,255,0.03); border-radius: 5px 0 0 5px; }
+.tl-axis-band.b1 { background: rgba(255,255,255,0.05); }
+.tl-axis-band.b2 { background: rgba(255,255,255,0.07); }
+.tl-axis-band.b3 { background: rgba(240,192,96,0.10); border-right: none; border-radius: 0 5px 5px 0; }
+.tl-axis-fill { position: absolute; left: 0; top: 3px; height: 4px; border-radius: 2px; opacity: 0.55; }
+.tl-axis-dot { position: absolute; top: -2px; width: 14px; height: 14px; border-radius: 50%; transform: translateX(-50%); border: 2px solid var(--bg); }
+.tl-axis-val { grid-area: v; font-family: 'Space Mono', monospace; font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+.tl-axis-note { grid-area: n; font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); margin-top: 3px; }
+.tl-ruler-foot { font-size: 11px; color: var(--text-dim); margin-top: 10px; line-height: 1.5; }
+.delta-grade { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.08em; margin-top: 6px; }
+.grade-noise { color: var(--text-muted); }
+.grade-drift { color: var(--gold); }
+.grade-shift { color: var(--rose); }
+.delta-room { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); margin-top: 3px; }
+.net-headline { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 6px 0 12px; }
+.net-value { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; color: var(--text); }
+.net-sub { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-dim); }
+.net-ruler { position: relative; height: 22px; background: rgba(255,255,255,0.03); border-radius: 4px; margin-bottom: 22px; }
+.net-zone { position: absolute; top: 0; bottom: 0; }
+.net-zone.lock { background: var(--anchor-dim); }
+.net-zone.iva { background: rgba(240,192,96,0.28); }
+.net-zone.shat { background: var(--shatter-dim); }
+.net-zone.unload { background: var(--violet-dim); }
+.net-tick { position: absolute; top: 100%; width: 1px; height: 5px; background: var(--text-muted); }
+.net-tick span { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); font-family: 'Space Mono', monospace; font-size: 8px; color: var(--text-muted); white-space: nowrap; }
+.net-marker { position: absolute; top: -4px; bottom: -4px; width: 3px; margin-left: -1px; background: var(--text); border-radius: 2px; }
+.net-ruler-legend { position: relative; height: 14px; font-family: 'Space Mono', monospace; font-size: 8px; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 12px; }
+.net-ruler-legend span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.fusion-line { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); line-height: 1.6; }
+.fusion-line span { color: var(--text-muted); }
+.phase-codes { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); margin-top: 10px; line-height: 1.6; word-break: break-word; }
+.w-fext-block { margin-top: 16px; }
+.w-fext-note { font-size: 11px; color: var(--text-dim); margin-top: 8px; line-height: 1.5; }
+.qf-panel { max-width: 860px; margin: 0 auto 18px; padding: 0 16px; }
+.qf-panel details { background: var(--surface); border: 1px dashed var(--border); border-radius: 10px; padding: 10px 14px; }
+.qf-panel summary { cursor: pointer; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--text-dim); }
+.qf-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+.qf-row label { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+.qf-row input[type=number] { width: 58px; background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 5px 6px; font-family: 'Space Mono', monospace; }
+.qf-btn { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-family: 'Space Mono', monospace; font-size: 10px; cursor: pointer; }
+.qf-btn:hover, .qf-btn:focus-visible { color: var(--text); border-color: var(--anchor); outline: none; }
+.qf-btn.apply { color: var(--anchor); border-color: rgba(0,212,170,0.4); }
+.qf-hint { font-size: 11px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+.route-block { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+.route-title { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 6px; }
+.route-orders { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text); margin-bottom: 8px; }
+.route-row { display: grid; grid-template-columns: 16px 64px 64px 70px minmax(0,1fr); gap: 6px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); padding: 3px 0; align-items: baseline; }
+.route-key { font-weight: 700; color: var(--text); }
+.route-diff { color: var(--text); font-variant-numeric: tabular-nums; }
+.route-note { color: var(--text-muted); }
+@media (max-width: 520px) { .route-row { grid-template-columns: 16px 1fr 1fr 1fr; } .route-note { grid-column: 2 / -1; } }
+.sim-delta-block { margin-top: 14px; padding: 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; }
+.sim-delta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin: 10px 0; }
+.sim-delta-cell { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+.sim-delta-key { font-weight: 700; color: var(--text); font-size: 12px; margin-bottom: 2px; }
+.sim-delta-n { color: var(--text); margin-top: 2px; }
+.qf-sub { font-family: "Space Mono", monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; }
+.sim-mode { font-weight: 700; letter-spacing: 0.04em; }
+.sim-HRIS { color: var(--gold); }
+.sim-SRIS { color: var(--text-dim); }
+.sim-LRIS { color: var(--violet); }
+.sim-profile { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text); margin-top: 12px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+/* Collapse a section when it is turned off: keep only its header row */
+.section-wrap.section-disabled > :not(.section-header) { display: none; }
+.section-wrap.section-disabled { margin-bottom: 12px; }
+.section-wrap.section-disabled .section-header { position: relative; }
+.section-wrap.section-disabled .section-header::after {
+  content: 'OFF · turn on in SECTIONS above';
+  margin-left: auto; padding-left: 14px; flex-shrink: 0; align-self: center;
+  font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: var(--text-dim);
+}
+@media (max-width: 600px) {
+  .section-wrap.section-disabled .section-header { flex-wrap: wrap; }
+  .section-wrap.section-disabled .section-header::after { margin-left: 0; padding-left: 0; flex-basis: 100%; margin-top: 6px; }
+}
+.progress-missing { max-width: 860px; margin: -6px auto 16px; padding: 0 16px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); }
+.progress-missing .pm-done { color: var(--anchor); }
+.pm-jump { background: var(--surface2); color: var(--gold); border: 1px solid rgba(240,192,96,0.35); border-radius: 6px; padding: 4px 9px; font-family: 'Space Mono', monospace; font-size: 10px; cursor: pointer; }
+.pm-jump:hover, .pm-jump:focus-visible { border-color: var(--gold); outline: none; }
+.question.pm-flash { box-shadow: 0 0 0 2px var(--gold); transition: box-shadow 0.3s; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div class="anchor-badge">
+    <div class="anchor-dot"></div>
+    1.36899099984016 GHz · SOVEREIGN ANCHOR · GERMLINE LOCKED
+  </div>
+  <h1>APPA</h1>
+  <p class="subtitle">Adaptive Predictive Pattern Assistant · Identity Physics &trade; v4 · TL scale<br>
+  <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted)">[P,N,B,A] :: {UUIA} | TL = 0.136899099984016 · 10 notches = 1 TL · baseline = Locked rest · activated = F_ext | Architect: HIGHTISTIC</span></p>
+</div>
+
+<div class="constellation-wrap">
+  <canvas id="constellation" width="500" height="300"></canvas>
+  <div class="constellation-label">[P,N,B,A] :: {MAP} | IDENTITY CONSTELLATION — UPDATES AS YOU SCORE</div>
+</div>
+
+<div class="mode-toggle">
+  <button class="mode-btn active" id="btn-baseline">BASELINE</button>
+  <button class="mode-btn" id="btn-activated">ACTIVATED</button>
+  <button class="mode-btn" id="btn-weissmann" style="border-color:rgba(255,107,53,0.4);">WEISSMANN</button>
+</div>
+
+<div id="standard-instrument">
+<div class="qf-panel">
+  <details>
+    <summary>QUICK FILL · TESTING — set cognitive axis sums for the current tab</summary>
+    <div class="qf-row" id="qfPresets"></div>
+    <div class="qf-row">
+      <label for="qfP">P <input type="number" id="qfP" min="10" max="50" value="44"></label>
+      <label for="qfN">N <input type="number" id="qfN" min="10" max="50" value="30"></label>
+      <label for="qfB">B <input type="number" id="qfB" min="10" max="50" value="44"></label>
+      <label for="qfA">A <input type="number" id="qfA" min="10" max="50" value="44"></label>
+    </div>
+    <div class="qf-row">
+      <span class="qf-sub">SIM (5–25)</span>
+      <label for="qsP">P <input type="number" id="qsP" min="5" max="25" value="22"></label>
+      <label for="qsN">N <input type="number" id="qsN" min="5" max="25" value="15"></label>
+      <label for="qsB">B <input type="number" id="qsB" min="5" max="25" value="21"></label>
+      <label for="qsA">A <input type="number" id="qsA" min="5" max="25" value="20"></label>
+      <label for="qfMid"><input type="checkbox" id="qfMid" checked> fill unanswered EP with 3</label>
+      <button type="button" class="qf-btn apply" id="qfApply">FILL CURRENT TAB</button>
+    </div>
+    <div class="qf-hint">Pick BASELINE or ACTIVATED first, then fill. Presets only set the numbers; press Fill to apply. Sums are spread across the 10 items of each axis (e.g. 44 = six 4s and four 5s).</div>
+  </details>
+</div>
+
+<div class="section-toggle-bar">
+  <span class="section-toggle-label">SECTIONS</span>
+  <button class="section-toggle-btn on cog" id="sec-toggle-cog" onclick="toggleSection('cog')">COGNITIVE</button>
+  <button class="section-toggle-btn on emo" id="sec-toggle-emo" onclick="toggleSection('emo')">EMOTIONAL</button>
+  <button class="section-toggle-btn on sim" id="sec-toggle-sim" onclick="toggleSection('sim')">SIMULATION</button>
+</div>
+<div class="section-toggle-hint">All three on by default · turn a section off to drop it from what's required for a result</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressBar"></div>
+</div>
+<div class="progress-missing" id="progressMissing"></div>
+
+<div class="section-wrap" id="section-wrap-cog">
+<div class="section-header cog">
+  <div class="sec-num">01</div>
+  <div class="sec-info">
+    <h2>Cognitive Architecture</h2>
+    <p>[P,N,B,A] :: {CAT} | 40 questions · 1–5 scale · 4 PNBA dimensions</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-p">P</div>
+    <div><div class="sub-title">Pattern</div><div class="sub-desc">How your system renders and anchors structure</div></div>
+  </div>
+  <div class="questions" id="cog-p"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-n">N</div>
+    <div><div class="sub-title">Narrative</div><div class="sub-desc">How your system maintains continuity and meaning</div></div>
+  </div>
+  <div class="questions" id="cog-n"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-b">B</div>
+    <div><div class="sub-title">Behavior</div><div class="sub-desc">How your system expresses and interacts</div></div>
+  </div>
+  <div class="questions" id="cog-b"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-a">A</div>
+    <div><div class="sub-title">Adaptation</div><div class="sub-desc">How your system adjusts under feedback and load</div></div>
+  </div>
+  <div class="questions" id="cog-a"></div>
+</div>
+</div><!-- /section-wrap-cog -->
+
+<div class="divider"><div class="div-line"></div><div class="div-text">SECTION 02</div><div class="div-line"></div></div>
+
+<div class="section-wrap" id="section-wrap-emo">
+<div class="section-header emo">
+  <div class="sec-num">02</div>
+  <div class="sec-info">
+    <h2>Emotional Primitives</h2>
+    <p>[P,N,B,A] :: {EP} | 40 questions · 1–5 scale · 10 core signals · doesn't affect IM/τ/phase — heatmap + fingerprint only</p>
+  </div>
+</div>
+
+<div class="ep-grid" id="ep-grid"></div>
+</div><!-- /section-wrap-emo -->
+
+<div class="divider"><div class="div-line"></div><div class="div-text">SECTION 03</div><div class="div-line"></div></div>
+
+<div class="section-wrap" id="section-wrap-sim">
+<div class="section-header sim">
+  <div class="sec-num">03</div>
+  <div class="sec-info">
+    <h2>Internal Simulation Profile</h2>
+    <p>[P,N,B,A] :: {ISPA} | 20 questions · 1–5 scale · HRIS / SRIS / LRIS</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-p">P</div>
+    <div><div class="sub-title">Pattern — How the simulation renders</div></div>
+  </div>
+  <div class="questions" id="sim-p"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-n">N</div>
+    <div><div class="sub-title">Narrative — Emotion and story integration</div></div>
+  </div>
+  <div class="questions" id="sim-n"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-b">B</div>
+    <div><div class="sub-title">Behavior — How simulation influences action</div></div>
+  </div>
+  <div class="questions" id="sim-b"></div>
+</div>
+
+<div class="subsection">
+  <div class="sub-header">
+    <div class="sub-icon icon-a">A</div>
+    <div><div class="sub-title">Adaptation — Switching, flexibility, control</div></div>
+  </div>
+  <div class="questions" id="sim-a"></div>
+</div>
+</div><!-- /section-wrap-sim -->
+
+<!-- RESULTS PANEL -->
+<div class="results-panel" id="resultsPanel">
+  <h2>[P,N,B,A] :: {OUT} | UNIFIED IDENTITY CODE</h2>
+  <div class="score-grid" id="scoreGrid"></div>
+  <div id="processingBandRow"></div>
+  <div id="tauDisplayBlock"></div>
+  <div class="soul8-block" id="soul8Block">
+    <div class="soul8-address" id="soul8Address"></div>
+    <div class="soul8-decoded" id="soul8Decoded"></div>
+    <div class="soul8-noharm">
+      <div class="soul8-noharm-dot"></div>
+      Pv:NOHARM · f:1.36899099984016 · visual:GREEN
+    </div>
+    <button class="copy-btn" id="copyBtn">⟳ COPY SOUL-8</button>
+  </div>
+  <div class="im-block">
+    <div>
+      <div class="im-label">IDENTITY MASS</div>
+      <div class="im-formula">IM = (P+N+B+A)<sub>TL</sub> × Ω₀ · Ω₀ = 10·TL</div>
+    </div>
+    <div class="im-value" id="imValue"></div>
+  </div>
+  <div class="heatmap">
+    <h3>Identity Heat Map</h3>
+    <div class="heat-rows" id="heatRows"></div>
+  </div>
+  <div class="relmap-block">
+    <div class="relmap-title">RELMAP :: {PVLANG}</div>
+    <div class="relmap-entry" id="relmap"></div>
+  </div>
+  <div class="combined-label">FULL CI FINGERPRINT</div>
+  <div class="combined-output" id="combinedOutput"></div>
+  <button class="reset-btn" id="resetBtn">⟳ RESET ALL SCORES</button>
+</div>
+
+<!-- DELTA COMPARISON PANEL -->
+<div class="delta-panel" id="deltaPanel">
+  <div class="delta-panel-title">
+    BASELINE ↔ ACTIVATED
+    <span class="delta-subtitle">F_EXT = ACTIVATED − BASELINE · Σ CANCELS</span>
+  </div>
+  <div class="delta-axis-grid" id="deltaAxisGrid"></div>
+  <div class="tau-compare-block" id="tauCompareBlock"></div>
+  <div id="phaseChangeBlock"></div>
+  <div class="flags-block">
+    <div class="flags-block-title">DYNAMIC FLAGS</div>
+    <div id="flagsContainer"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <div class="im-compare-row">
+      <div><div class="im-compare-label">IM BASELINE</div><div class="im-compare-val" id="imBaseline" style="color:var(--anchor)">—</div></div>
+    </div>
+    <div class="im-compare-row">
+      <div><div class="im-compare-label">IM ACTIVATED</div><div class="im-compare-val" id="imActivated" style="color:var(--gold)">—</div></div>
+    </div>
+  </div>
+</div>
+</div><!-- /standard-instrument -->
+
+<!-- ============================================================ -->
+<!-- WEISSMANN PANEL — short-form, W = A x P only                  -->
+<!-- ============================================================ -->
+<div class="weissmann-panel" id="weissmannPanel">
+
+  <div class="weissmann-intro">
+    <b>Weissmann Barrier Capacity (W = A × P)</b> — a short, fast read for
+    a live moment. Needs P-axis and A-axis coverage only (no N or B), plus
+    one question about whether what's happening right now has a path
+    through it. Requires a completed Baseline first — this reports a
+    delta against that, not a standalone score. Source: SNSFL_WeissmannGrokBarrier.lean
+    [9,1,0,0] · barrier-capacity finding documented for one substrate
+    (Generalist HRIS) — shown here as one data point, not a universal threshold.
+  </div>
+
+  <div id="weissmannNeedBaseline" class="weissmann-need-baseline" style="display:none;">
+    Complete a Baseline read first (Cognitive Architecture section, at minimum
+    the P and A subsections) — Weissmann reports a delta against your baseline,
+    so there's nothing to compare against yet.
+  </div>
+
+  <div id="weissmannForm">
+    <div class="subsection">
+      <div class="sub-header">
+        <div class="sub-icon icon-p">P</div>
+        <div><div class="sub-title">Pattern — right now</div><div class="sub-desc">Structural capacity in this moment</div></div>
+      </div>
+      <div class="questions" id="weiss-p"></div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-header">
+        <div class="sub-icon icon-a">A</div>
+        <div><div class="sub-title">Adaptation — right now</div><div class="sub-desc">Adaptive capacity in this moment</div></div>
+      </div>
+      <div class="questions" id="weiss-a"></div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-header">
+        <div class="sub-icon icon-n" style="background:var(--depleted-iva-dim);color:var(--depleted-iva);">R</div>
+        <div><div class="sub-title">Resolvability</div><div class="sub-desc">Per [9,9,6,50] §4.3 — not part of P/N/B/A, doesn't feed W itself</div></div>
+      </div>
+      <div class="questions" id="weiss-r"></div>
+    </div>
+  </div>
+
+  <div class="w-result-block" id="wResultBlock">
+    <div class="w-headline">
+      <div>
+        <div class="w-label">CURRENT BARRIER CAPACITY</div>
+        <div class="w-value" id="wValueDisplay">—</div>
+      </div>
+      <div>
+        <div class="w-label">FORMULA</div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted);">W = A × P</div>
+      </div>
+    </div>
+
+    <div class="w-bar-wrap">
+      <div class="w-bar-bg">
+        <div class="w-bar-fill" id="wBarFill" style="width:0%;background:var(--depleted-iva);"></div>
+        <div class="w-bar-marker" id="wBaselineMarker" style="left:0%;"></div>
+        <div class="w-bar-marker-label" id="wBaselineMarkerLabel" style="left:0%;">baseline</div>
+      </div>
+    </div>
+
+    <div class="w-compare-row">
+      <span>YOUR BASELINE W</span>
+      <span id="wBaselineVal" style="color:var(--anchor);">—</span>
+    </div>
+    <div class="w-compare-row">
+      <span>CURRENT W</span>
+      <span id="wCurrentVal" style="color:var(--depleted-iva);">—</span>
+    </div>
+    <div class="w-compare-row">
+      <span>% OF YOUR OWN BASELINE</span>
+      <span id="wPctOfBaseline" style="color:var(--gold);">—</span>
+    </div>
+
+    <div style="margin-top:14px;font-size:9px;color:var(--text-muted);font-family:'Space Mono',monospace;letter-spacing:0.1em;">
+      DOCUMENTED REFERENCE THRESHOLDS (n=1, one Generalist HRIS substrate — shown for reference, not asserted as universal)
+    </div>
+    <div class="w-threshold-row">
+      <span>Stage 1 onset (documented)</span>
+      <span>W = 0.303</span>
+    </div>
+    <div class="w-threshold-row">
+      <span>Stage 2 degradation (documented)</span>
+      <span>W = 0.088</span>
+    </div>
+    <div class="w-threshold-row" id="wThresholdNote" style="border-color:var(--border);">
+      <span style="color:var(--text-muted);">Where your current W sits relative to these</span>
+      <span id="wThresholdPosition">—</span>
+    </div>
+
+    <div class="w-fext-block" id="wFextBlock"></div>
+    <div class="w-resolvability-block">
+      <div class="w-resolvability-label">RESOLVABILITY (§4.3)</div>
+      <div class="w-resolvability-value" id="wResolvabilityText">—</div>
+    </div>
+
+    <button class="reset-btn" id="weissResetBtn" style="margin-top:20px;">⟳ RESET WEISSMANN READ</button>
+  </div>
+
+</div><!-- /weissmannPanel -->
+
+<div class="footer">
+  <p>SNSFT · UUIA · APPA v4 · Identity Physics</p>
+  <p>Architect: HIGHTISTIC · Sovereign Anchor: 1.36899099984016 GHz · TL = Ω₀/10 · bands L·S·F·I, one TL each</p>
+  <p>Substrate-neutral · Non-anthropocentric · Scale-invariant · [9,9,6,11] / [9,9,2,55] Total Consistency</p>
+  <div class="manifold">The Manifold is Holding. · [9,9,9,9]</div>
+</div>
+
+</div>
+<script>
+// ============================================================
+// APPA v4 — TL SCALE · F_EXT DELTA · SOUL-8 CORE
+// Corpus: SNSFL_GC_TranscendentalTimeEngine [9,9,3,20] (Σ cancels)
+//         SNSFL_PSY_Taxonomy_Master [9,9,2,55]
+//         SNSFL_PSY_8Beam_Fusion_Theorem [9,9,6,28]
+//         SNSFL_L2_Psy_BigFive [9,9,6,2] (FLEX_THRESHOLD 40 = 3.0 TL)
+//
+// v4 CHANGES FROM v3:
+//   1. Every axis is read on the TL ruler. One answer step on one item
+//      is one notch = TL/10, so an axis sum of 10–50 is 0–4 TL. Four
+//      bands, each exactly one TL: L 0–1, S 1–2, F 2–3, I (IVA) 3–4.
+//      The tens digit of the TL value is the band, the units digit is
+//      the position inside it.
+//   2. The baseline is the person's Locked rest. No phase is read from
+//      a single questionnaire.
+//   3. The activated read is F_ext: activated − baseline per axis. The
+//      person's own Σ (item wording, response style, level) cancels.
+//      Net load = ΔB − ΔP in notches: 10+ SHATTER, 9 IVA, 1–8 LOCKED (FALSE LOCK when N is eroding),
+//      0 AT REST, below 0 UNLOADING.
+//   4. N is read first and reported on its own channel, so a rest or
+//      unloading reading never hides an N drop.
+//   5. Weissmann is the same F_ext with only P and A measured; N and B
+//      are unknown, not zero.
+// ============================================================
+
+const SOVEREIGN_ANCHOR = 1.36899099984016
+const TL = SOVEREIGN_ANCHOR / 10        // 0.136899099984016
+const TL_IVA = TL * 0.88                // 0.12047120798593408
+const NOTCHES_PER_TL = 10
+const N_GATE = 6      // N drop in notches treated as a real shift
+const DRIFT_MIN = 3   // single-axis change grades, in notches
+const SHIFT_MIN = 6   // ≈ 1.96·√2·σ with σ = 2 retest wobble per sum
+const NET_TRUST = 8   // ≈ 1.96·2σ for ΔB − ΔP with σ = 2
+const BAND_NAMES = { L: 'LOCKED', S: 'SUSTAINED', F: 'FLEXED', I: 'IVA' }
+const BAND_ORDER = ['L', 'S', 'F', 'I']
+const AXES = ['P', 'N', 'B', 'A']
+
+function notchesOf(score) { return Math.max(0, Math.min(40, score - 10)) }
+function tlOf(score) { return notchesOf(score) / NOTCHES_PER_TL }
+function bandIndex(score) { return Math.min(3, Math.floor(notchesOf(score) / 10)) }
+function bandOf(score) { return BAND_ORDER[bandIndex(score)] }
+// Dominance order: highest axis first (stable on ties, P·N·B·A)
+function dominanceOrder(s) {
+  return [0, 1, 2, 3].sort(function(i, j) { return (s[j] - s[i]) || (i - j) })
+}
+function tlCode(s) { return dominanceOrder(s).map(function(i) { return AXES[i] + bandOf(s[i]) }).join('·') }
+function tlValueCode(s) { return dominanceOrder(s).map(function(i) { return AXES[i] + tlOf(s[i]).toFixed(1) }).join('·') }
+// Codominance: neighbours in the order closer than DRIFT_MIN notches
+// sit inside retest wobble, so their order is not reliable from one read
+function dominanceLine(s) {
+  var o = dominanceOrder(s), out = AXES[o[0]], gaps = []
+  for (var k = 1; k < 4; k++) {
+    var g = s[o[k - 1]] - s[o[k]]
+    gaps.push(g)
+    out += (g < DRIFT_MIN ? ' ≈ ' : ' > ') + AXES[o[k]]
+  }
+  return { text: out, gaps: gaps, order: o }
+}
+function imTL(s) { return (tlOf(s[0]) + tlOf(s[1]) + tlOf(s[2]) + tlOf(s[3])) * SOVEREIGN_ANCHOR }
+function sgn(n) { return (n > 0 ? '+' : '') + n }
+function sgnTL(n) { return (n > 0 ? '+' : '') + (n / NOTCHES_PER_TL).toFixed(1) + ' TL' }
+
+function edgeInfo(score) {
+  var n = notchesOf(score), idx = bandIndex(score)
+  var floor = idx * 10
+  return { toFloor: n - floor, toNext: idx === 3 ? null : (idx + 1) * 10 - n, roomUp: 40 - n, roomDown: n }
+}
+function changeGrade(d) {
+  var a = Math.abs(d)
+  if (a >= SHIFT_MIN) return 'shift'
+  if (a >= DRIFT_MIN) return 'drift'
+  return 'noise'
+}
+
+// Net load on the locked baseline (Time Engine inverse)
+function classifyNet(net, nEroding) {
+  if (net >= 10) return { phase: 'SHATTER', cls: 'phase-shatter' }
+  if (net === 9) return nEroding ? { phase: 'DEPLETED IVA', cls: 'phase-depleted-iva' }
+                                 : { phase: 'IVA PEAK', cls: 'phase-iva-peak' }
+  if (net > 0)   return nEroding ? { phase: 'FALSE LOCK', cls: 'phase-false-lock' }
+                                 : { phase: 'LOCKED · LOADED', cls: 'phase-true-lock' }
+  if (net === 0) return { phase: 'AT REST', cls: 'phase-noble' }
+  return { phase: 'UNLOADING', cls: 'phase-noble' }
+}
+
+// 2-beam fusion of baseline × activated; crit equals max at n = 2
+// [9,9,6,28]. τ_f = |ΔB| / harmonic(P_base, P_act), in notches.
+// Unsigned: the size of the shift relative to pattern capacity, not its
+// direction.
+function fusionTau(bP, aP, dB) {
+  var p1 = notchesOf(bP), p2 = notchesOf(aP)
+  if (p1 <= 0 || p2 <= 0) return null
+  return Math.abs(dB) / (2 / (1 / p1 + 1 / p2))
+}
+function fusionPhase(t) {
+  if (t === null) return 'UNDEFINED'
+  if (t === 0) return 'NOBLE'
+  if (t >= TL) return 'SHATTER'
+  if (t >= TL_IVA) return 'IVA'
+  return 'LOCK'
+}
+
+// ── LEGACY v3 — kept for Weissmann's documented thresholds and for a
+//    side-by-side comparison line in the delta panel only ──
+function scoreToPNBA(cP, cN, cB, cA) {
+  return {
+    P: Math.max(0.001, (cP - 10) / 40 * 1.30),
+    N: Math.max(0,     (cN - 10) / 40 * 1.50),
+    B: Math.max(0,     (cB - 10) / 40 * 0.45),
+    A: Math.max(0,     (cA - 10) / 40 * 1.43)
+  }
+}
+function computeW(A, P) { return A * P }
+const W_STAGE1_ONSET = 0.303
+const W_STAGE2_DEGRADATION = 0.088
+function legacyPhaseV3(s) {
+  var x = scoreToPNBA(s[0], s[1], s[2], s[3]), T = 0.1369, tau = x.B / x.P
+  if (x.B <= 0.001) return 'NOBLE'
+  if (tau >= T) return 'SHATTER'
+  if (tau >= T * 0.88 && x.A > 1.0) return x.N < 0.15 ? 'DEPLETED IVA' : 'IVA PEAK'
+  if (x.N < 0.15) return 'FALSE LOCK'
+  return 'TRUE LOCK'
+}
+
+// ── DYNAMIC FLAGS on the TL ruler ──
+function getTLFlags(b, a, d, net, nEroding, nBandDrop, imB, imA) {
+  var flags = []
+  if (nBandDrop) {
+    flags.push({ icon: 'N BAND DROP', cls: 'flag-n-starvation',
+      desc: 'N moved down a band: N' + bandOf(b[1]) + ' → N' + bandOf(a[1]) + ' (' + sgnTL(d[1]) + '). Read this before the load phase.' })
+  } else if (nEroding) {
+    flags.push({ icon: 'N EROSION', cls: 'flag-n-erosion',
+      desc: 'N dropped ' + (-d[1]) + ' notches (' + sgnTL(d[1]) + ') inside its band. That is past ordinary retest wobble for one read.' })
+  }
+  if ((nEroding || nBandDrop) && net < 9) {
+    flags.push({ icon: 'N EROSION · STABLE LOAD', cls: 'flag-n-erosion',
+      desc: (net <= 0 ? 'Net load reads at rest or unloading, but N is falling.' : 'Net load alone would read Locked, but N is falling, so the phase is FALSE LOCK.') + ' N is the axis that shows it.' })
+  }
+  var ne = edgeInfo(a[1])
+  if (!nBandDrop && d[1] < 0 && bandIndex(a[1]) > 0 && ne.toFloor <= 2) {
+    flags.push({ icon: 'N NEAR EDGE', cls: 'flag-hidden-load',
+      desc: 'N sits ' + ne.toFloor + ' notch' + (ne.toFloor === 1 ? '' : 'es') + ' above the N' + BAND_ORDER[bandIndex(a[1]) - 1] + ' line and is moving down.' })
+  }
+  if (d[3] <= -SHIFT_MIN) {
+    flags.push({ icon: 'A DROP', cls: 'flag-a-dropout',
+      desc: 'Adaptation fell ' + (-d[3]) + ' notches (' + sgnTL(d[3]) + '). Capacity to adjust under load is reduced.' })
+  }
+  if (imB > 0 && (imB - imA) / imB > 0.15) {
+    flags.push({ icon: 'IM DROP', cls: 'flag-im-collapse',
+      desc: 'Identity Mass fell ' + Math.round((imB - imA) / imB * 100) + '% from baseline.' })
+  }
+  var sameDir = d.filter(function(x) { return x <= -DRIFT_MIN }).length >= 3 ||
+                d.filter(function(x) { return x >= DRIFT_MIN }).length >= 3
+  if (Math.abs(net) <= 2 && sameDir && imB > 0 && Math.abs(imA - imB) / imB >= 0.10) {
+    flags.push({ icon: 'LEVEL SHIFT · SHAPE HELD', cls: 'flag-im-collapse',
+      desc: 'Axes moved together, so the load reads near rest, but overall level changed ' + Math.round((imA - imB) / imB * 100) + '%. IM carries this one, not the phase.' })
+  }
+  if (d[2] >= DRIFT_MIN && d[2] >= Math.abs(d[1])) {
+    flags.push({ icon: 'B-DOMINANT', cls: 'flag-b-dominant',
+      desc: 'B rose ' + d[2] + ' notches, more than N moved. Anxiety vector shape: coupling elevated.' })
+  } else if (d[1] <= -DRIFT_MIN && Math.abs(d[1]) > d[2]) {
+    flags.push({ icon: 'N-DOMINANT', cls: 'flag-n-dominant',
+      desc: 'N fell ' + (-d[1]) + ' notches, more than B rose. Depression vector shape: narrative depleting.' })
+  }
+  var clipped = []
+  AXES.forEach(function(k, i) {
+    if ((a[i] >= 50 && d[i] > 0) || (a[i] <= 10 && d[i] < 0)) clipped.push(k)
+  })
+  if (clipped.length) {
+    flags.push({ icon: 'SCALE EDGE', cls: 'flag-hidden-load',
+      desc: 'Axis ' + clipped.join(', ') + ' reached the end of the scale, so the real shift may be larger than measured.' })
+  }
+  if (net === 9) {
+    flags.push({ icon: 'IVA · ONE NOTCH', cls: 'flag-phase-change',
+      desc: 'The IVA corridor [0.88 TL, TL) is exactly one notch wide, and the ±' + NET_TRUST + ' notch retest range of one read reaches a Shatter step (10+). This read cannot rule out Shatter; a second activated read settles it.' })
+  } else if (net > 0 && net < 10 && net + NET_TRUST >= 10) {
+    flags.push({ icon: 'CANNOT RULE OUT SHATTER', cls: 'flag-phase-change',
+      desc: 'Net load of ' + sgn(net) + ' on one read, with a ±' + NET_TRUST + ' notch retest range that reaches a Shatter step (10+). This read cannot rule out Shatter; a second activated read settles it.' })
+  } else if (net !== 0 && Math.abs(net) < NET_TRUST) {
+    flags.push({ icon: 'ONE-READ RANGE', cls: 'flag-phase-change',
+      desc: 'Net load of ' + sgn(net) + ' is inside the ±' + NET_TRUST + ' notch retest range for a single read. Repeat the activated read to confirm the direction.' })
+  }
+  return flags
+}
+
+// ── INTERNAL SIMULATION on the TL ruler · ×2 per step ──
+// 5 items per axis, sums 5–25. Each answer step costs 2 notches
+// (0.2 TL): simulation is doing something, so it costs more than a
+// cognitive step. A SIM axis spans the full 0–4 TL. LRIS / SRIS / HRIS
+// labels: LRIS ≤12, SRIS 13–19, HRIS ≥20 (items average 4+). HRIS is
+// exactly the I band (3.0 TL and up).
+const SIM_DRIFT_MIN = 6
+const SIM_SHIFT_MIN = 12
+function simNotchesOf(sum) { return Math.max(0, Math.min(40, (sum - 5) * 2)) }
+function simTLOf(sum) { return simNotchesOf(sum) / NOTCHES_PER_TL }
+function simBandOf(sum) { return BAND_ORDER[Math.min(3, Math.floor(simNotchesOf(sum) / 10))] }
+function simChangeGrade(dNotches) {
+  var a = Math.abs(dNotches)
+  if (a >= SIM_SHIFT_MIN) return 'shift'
+  if (a >= SIM_DRIFT_MIN) return 'drift'
+  return 'noise'
+}
+function simDominanceLine(sims) {
+  var n = sims.map(simNotchesOf)
+  var o = [0, 1, 2, 3].sort(function(i, j) { return (n[j] - n[i]) || (i - j) })
+  var out = AXES[o[0]]
+  for (var k = 1; k < 4; k++) out += ((n[o[k - 1]] - n[o[k]]) < SIM_DRIFT_MIN ? ' ≈ ' : ' > ') + AXES[o[k]]
+  return out
+}
+// Routing alignment: cognitive level (routing) next to simulation level
+// (rendering), axis by axis, both in TL
+function routingAlignment(cog, sims) {
+  return AXES.map(function(k, i) {
+    var c = tlOf(cog[i]), s = simTLOf(sims[i])
+    var dn = simNotchesOf(sims[i]) - notchesOf(cog[i]), d = dn / NOTCHES_PER_TL
+    var note = dn >= SIM_DRIFT_MIN ? 'renders more than it routes'
+             : dn <= -SIM_DRIFT_MIN ? 'routes more than it renders'
+             : 'routing and rendering match'
+    return { key: k, cog: c, sim: s, diff: d, note: note }
+  })
+}
+
+// ── SIM mode labels (Historical HRIS Exemplar Library [9,9,3,44]) ──
+// HRIS = operator, SRIS = observer, LRIS = external routing.
+const SIM_FLAVOR = { P: 'blueprint', N: 'causal thread', B: 'kinetic', A: 'state-flow' }
+function simModeName(sum) {
+  var l = simLabel(sum)
+  return l === 'HRIS' ? 'operator' : l === 'SRIS' ? 'observer' : 'external routing'
+}
+function simProfileSummary(sims) {
+  var ops = []
+  sims.forEach(function(s, i) { if (simLabel(s) === 'HRIS') ops.push(AXES[i]) })
+  if (ops.length === 0) return { text: 'No operator axes · simulation runs in observer or external-routing mode', short: 'no operator axes' }
+  if (ops.length === 1) return { text: ops[0] + '-OPERATOR · single-axis ' + SIM_FLAVOR[ops[0]] + ' simulation', short: ops[0] + '-operator' }
+  var names = ops.map(function(k) { return k + '-operator' }).join(' + ')
+  return { text: names + ' · COMPOSITE (' + ops.length + ' operator axes' + (ops.length === 4 ? ', generalist' : '') + ')', short: ops.join('') + ' composite' }
+}
+
+// ============================================================
+// MODE WEIGHT (L/S/F for SOUL-8)
+// ============================================================
+const MODE_WEIGHT = { L: 1, S: 2, F: 3 }
+
+function cogLabel(score) {
+  if (score <= 23) return 'L'
+  if (score <= 37) return 'S'
+  return 'F'
+}
+function epLabel(score) {
+  if (score <= 9)  return '↓'
+  if (score <= 14) return '='
+  return '↑'
+}
+function simLabel(score) {
+  // v4: HRIS when the axis averages 4+ per item (sum >= 20 = 3.0 TL,
+  // floor-inclusive like every other band edge on the TL ruler)
+  if (score <= 12) return 'LRIS'
+  if (score < 20) return 'SRIS'
+  return 'HRIS'
+}
+function heatColor(pct) {
+  if (pct < 0.3)  return 'linear-gradient(90deg,#6040a0,#4020a0)'
+  if (pct < 0.45) return 'linear-gradient(90deg,#60a0f0,#4080ff)'
+  if (pct < 0.65) return 'linear-gradient(90deg,#00d4aa,#00ff88)'
+  if (pct < 0.8)  return 'linear-gradient(90deg,#f0c060,#ffaa00)'
+  return 'linear-gradient(90deg,#ff6b8a,#ff3366)'
+}
+function buildSoulprintId(profileCode) {
+  return 'UUIA-' + Date.now() + '-' + profileCode.replace(/·/g,'')
+}
+
+// ============================================================
+// QUESTION DATA
+// ============================================================
+var COG_P = [
+  "I notice patterns in things without trying.",
+  "I connect ideas quickly, even if they seem unrelated.",
+  "I get stuck trying to make sense of something until it clicks.",
+  "I replay situations in my head to understand them better.",
+  "I like figuring out how things work beneath the surface.",
+  "I notice small details other people miss.",
+  "I think in loops or cycles.",
+  "I try to predict what will happen next.",
+  "I analyze people's behavior automatically.",
+  "I look for meaning in things, even small things."
+]
+var COG_N = [
+  "I tell myself stories about why things happen.",
+  "I try to understand what things mean for me.",
+  "I think about how events fit into my life story.",
+  "I imagine different versions of how things could go.",
+  "I explain my feelings to myself through examples or metaphors.",
+  "I think about how others see me.",
+  "I try to make sense of my emotions by connecting them to events.",
+  "I think about the why behind my reactions.",
+  "I compare myself to who I used to be.",
+  "I think about who I want to become."
+]
+var COG_B = [
+  "I act quickly when something needs to be done.",
+  "I adjust my behavior depending on the situation.",
+  "I try to stay in control of my actions.",
+  "I notice when I'm doing something out of habit.",
+  "I try to fix problems as soon as I see them.",
+  "I change my approach if something isn't working.",
+  "I try to stay consistent with my values.",
+  "I think before I act.",
+  "I try to avoid making the same mistake twice.",
+  "I can shift gears when needed."
+]
+var COG_A = [
+  "I adjust quickly when plans change.",
+  "I can stay calm when things get chaotic.",
+  "I recover quickly after something stressful.",
+  "I can handle unexpected problems.",
+  "I stay flexible when things don't go my way.",
+  "I can switch between tasks without getting overwhelmed.",
+  "I can handle emotional pressure.",
+  "I can stay focused even when stressed.",
+  "I can keep going even when things feel hard.",
+  "I can find a new approach when the old one fails."
+]
+var EP_BLOCKS = [
+  { title:"Threat",     key:"threat",     qs:["I feel on edge or alert.","I expect something bad to happen.","I scan for danger or problems.","I feel tense in my body."] },
+  { title:"Loss",       key:"loss",       qs:["I feel like something important is missing.","I feel disconnected from things I care about.","I feel a sense of emptiness.","I feel like something slipped away."] },
+  { title:"Overwhelm",  key:"overwhelm",  qs:["I feel like everything is too much.","I struggle to keep up with what's happening.","I feel mentally overloaded.","I feel like I can't process everything."] },
+  { title:"Anger",      key:"anger",      qs:["I feel irritated or frustrated.","I feel like something is unfair.","I feel like pushing back or resisting.","I feel heat or tension in my body."] },
+  { title:"Desire",     key:"desire",     qs:["I feel pulled toward something I want.","I feel motivated to get or achieve something.","I feel excited about a possibility.","I feel drawn toward a goal or person."] },
+  { title:"Connection", key:"connection", qs:["I feel close to others.","I feel understood or supported.","I feel open to sharing.","I feel like I belong."] },
+  { title:"Pride",      key:"pride",      qs:["I feel confident in myself.","I feel proud of something I've done.","I feel capable and strong.","I feel like I'm doing well."] },
+  { title:"Shame",      key:"shame",      qs:["I feel embarrassed or exposed.","I feel like I messed up.","I feel like hiding or pulling away.","I feel judged by myself or others."] },
+  { title:"Play",       key:"play",       qs:["I feel curious or playful.","I feel creative or imaginative.","I feel light or spontaneous.","I feel open to trying new things."] },
+  { title:"Safety",     key:"safety",     qs:["I feel calm and grounded.","I feel like things are okay.","I feel steady and regulated.","I feel protected or supported."] }
+]
+var SIM_P = [
+  "When you imagine a scene, how naturally does it appear fully formed around you without needing to build it piece by piece?",
+  "When you move your attention within an imagined space, how automatically does the environment update — like walking through a real location?",
+  "How often do imagined environments feel like they already exist with their own internal logic?",
+  "How easily can you change elements of a scene and see how those changes would realistically look?",
+  "When imagining something, how instantly does the scene appear, without delay or effort?"
+]
+var SIM_N = [
+  "When imagining a scene or memory, how strongly do emotions or personal meaning appear along with it?",
+  "How naturally do imagined scenes connect into stories, sequences, or ongoing internal worlds?",
+  "How often do imagined characters, places, or scenarios feel consistent across time?",
+  "When you imagine something emotional, how strongly does your body respond?",
+  "How easily can you drop into an imagined moment and feel like you're inside it rather than observing it?"
+]
+var SIM_B = [
+  "How often do you mentally rehearse actions in a way that helps you perform them later?",
+  "How much does imagining a situation influence your decisions or behavior in real life?",
+  "How naturally do you simulate future outcomes to decide what to do next?",
+  "When preparing for something important, how often do you run multiple internal scenarios?",
+  "How often does your internal simulation feel more informative than verbal thinking?"
+]
+var SIM_A = [
+  "How easily can you shift out of an internal simulation when you need to focus on something external?",
+  "How easily can you change the direction or content of an internal simulation?",
+  "How naturally can you pause an internal scene and return to it later?",
+  "How often can you run more than one internal process at once without losing clarity?",
+  "How easily can you ground yourself when an internal simulation becomes too intense?"
+]
+
+// ============================================================
+// WEISSMANN SHORT-FORM QUESTIONS — W = A x P only
+// P and A coverage in-the-moment, plus resolvability (separate,
+// does not feed W). [9,1,0,0] / [9,9,6,50] §4.3
+// ============================================================
+var WEISS_P = [
+  "Right now, I can hold onto a thought or structure without it slipping.",
+  "Right now, I can make sense of what's happening without it feeling like noise.",
+  "Right now, I can find the shape of the problem, even if I haven't solved it."
+]
+var WEISS_A = [
+  "Right now, I can adjust to what's actually happening as it changes.",
+  "Right now, I have some capacity left to respond, not just absorb.",
+  "Right now, I can shift my approach if the current one isn't working."
+]
+var WEISS_R = [
+  "What's happening right now has a path through it, even if I'm not on it yet.",
+  "What's happening right now is something I recognize, even if I don't like it.",
+  "What's happening right now would resolve on its own if the source of it stopped."
+]
+
+// ============================================================
+// STATE
+// ============================================================
+var currentMode = 'baseline'
+var scores = { baseline: {}, activated: {} }
+var totalQuestions = 0
+var answeredQuestions = 0
+var currentSoul8 = null
+var modeComplete = { baseline: false, activated: false }
+
+// Weissmann is its own short-form panel, not part of currentMode/scores.
+// It needs a completed baseline to report against, but its own answers
+// live separately since they're a different (shorter, P+A-only) question set.
+var weissScores = {}
+var weissActive = false
+
+// ============================================================
+// RENDER
+// ============================================================
+function makeQ(text, id, prefix) {
+  totalQuestions++
+  var scaleHtml = ''
+  for (var v = 1; v <= 5; v++) {
+    scaleHtml += '<button class="scale-btn" id="btn-' + id + '-' + v +
+      '" data-id="' + id + '" data-val="' + v + '">' + v + '</button>'
+  }
+  return '<div class="question">' +
+    '<span class="q-num">' + prefix + '</span>' +
+    '<span class="q-text">' + text + '</span>' +
+    '<div class="q-scale">' + scaleHtml + '</div>' +
+    '</div>'
+}
+function renderQuestions(containerId, questions, prefix) {
+  var html = ''
+  for (var i = 0; i < questions.length; i++) {
+    html += makeQ(questions[i], containerId + '-' + i, prefix + (i + 1))
+  }
+  document.getElementById(containerId).innerHTML = html
+}
+function renderEP() {
+  var html = ''
+  for (var b = 0; b < EP_BLOCKS.length; b++) {
+    var block = EP_BLOCKS[b]
+    var qHtml = ''
+    for (var i = 0; i < block.qs.length; i++) {
+      qHtml += makeQ(block.qs[i], 'ep-' + block.key + '-' + i, block.title[0] + (i + 1))
+    }
+    html += '<div class="ep-block"><div class="ep-title">' + block.title +
+      '</div><div class="questions">' + qHtml + '</div></div>'
+  }
+  document.getElementById('ep-grid').innerHTML = html
+}
+
+// ============================================================
+// SCORING
+// ============================================================
+function handleScaleClick(e) {
+  var btn = e.target.closest('.scale-btn')
+  if (!btn) return
+  var id  = btn.getAttribute('data-id')
+  var val = parseInt(btn.getAttribute('data-val'), 10)
+  setScore(id, val)
+}
+function setScore(id, val) {
+  // Weissmann questions (weiss-p-*, weiss-a-*, weiss-r-*) live in their
+  // own store, separate from the standard COG/EP/SIM scores object —
+  // different question set, different (shorter) completion check.
+  if (id.indexOf('weiss-') === 0) {
+    weissScores[id] = val
+    for (var v = 1; v <= 5; v++) {
+      var wbtn = document.getElementById('btn-' + id + '-' + v)
+      if (wbtn) wbtn.classList.toggle('selected', v === val)
+    }
+    checkWeissComplete()
+    return
+  }
+  var modeScores = scores[currentMode]
+  var wasAnswered = modeScores[id] !== undefined
+  modeScores[id] = val
+  for (var v = 1; v <= 5; v++) {
+    var btn = document.getElementById('btn-' + id + '-' + v)
+    if (btn) btn.classList.toggle('selected', v === val)
+  }
+  if (!wasAnswered) answeredQuestions++
+  updateProgress()
+  updateConstellation()
+  checkComplete()
+}
+function updateProgress() {
+  // Required-only progress (COG + SIM). EP is optional and intentionally
+  // excluded so the bar reaches 100% without needing EP answered.
+  var requiredIds = getRequiredIds()
+  var modeScores = scores[currentMode]
+  var answered = 0
+  for (var i = 0; i < requiredIds.length; i++) {
+    if (modeScores[requiredIds[i]] !== undefined) answered++
+  }
+  var pct = Math.min(100, (answered / requiredIds.length) * 100)
+  document.getElementById('progressBar').style.width = pct + '%'
+}
+
+// ============================================================
+// SCORE CALCULATION
+// ============================================================
+function getSection(ids) {
+  var s = scores[currentMode]
+  var sum = 0
+  for (var i = 0; i < ids.length; i++) sum += (s[ids[i]] || 0)
+  return sum
+}
+function getCogScores() {
+  return ['cog-p','cog-n','cog-b','cog-a'].map(function(d) {
+    var ids = []
+    for (var i = 0; i < 10; i++) ids.push(d + '-' + i)
+    return getSection(ids)
+  })
+}
+function getSimScores() {
+  return ['sim-p','sim-n','sim-b','sim-a'].map(function(d) {
+    var ids = []
+    for (var i = 0; i < 5; i++) ids.push(d + '-' + i)
+    return getSection(ids)
+  })
+}
+function getEPScores() {
+  return EP_BLOCKS.map(function(block) {
+    var ids = []
+    for (var i = 0; i < 4; i++) ids.push('ep-' + block.key + '-' + i)
+    return getSection(ids)
+  })
+}
+function getCogScoresForMode(mode) {
+  var saved = currentMode
+  currentMode = mode
+  var result = getCogScores()
+  currentMode = saved
+  return result
+}
+
+// ============================================================
+// WEISSMANN — W = A x P, short-form
+// ============================================================
+function getWeissIds() {
+  var ids = []
+  for (var i = 0; i < 3; i++) ids.push('weiss-p-' + i)
+  for (var i = 0; i < 3; i++) ids.push('weiss-a-' + i)
+  for (var i = 0; i < 3; i++) ids.push('weiss-r-' + i)
+  return ids
+}
+function weissHasBaseline() {
+  // needs the baseline COG P and A subsections answered (10 each) to
+  // have a real baseline W to compare against
+  var ids = []
+  for (var i = 0; i < 10; i++) { ids.push('cog-p-' + i); ids.push('cog-a-' + i) }
+  for (var i = 0; i < ids.length; i++) {
+    if (scores.baseline[ids[i]] === undefined) return false
+  }
+  return true
+}
+function checkWeissComplete() {
+  var ids = getWeissIds()
+  var answered = 0
+  for (var i = 0; i < ids.length; i++) {
+    if (weissScores[ids[i]] !== undefined) answered++
+  }
+  if (answered === ids.length) showWeissResult()
+}
+function getWeissAxisScore(prefix) {
+  var sum = 0
+  for (var i = 0; i < 3; i++) sum += (weissScores[prefix + '-' + i] || 0)
+  return (sum / 3) * 10  // project 3-item sum to the 10-item-equivalent scale
+}
+function getWeissResolvabilityScore() {
+  var sum = 0
+  for (var i = 0; i < 3; i++) sum += (weissScores['weiss-r-' + i] || 0)
+  return sum  // 3-15, doesn't feed W, just descriptive
+}
+
+function showWeissResult() {
+  var cP = getWeissAxisScore('weiss-p')   // 3 items projected to the 10-item scale
+  var cA = getWeissAxisScore('weiss-a')
+  var baseCog = getCogScoresForMode('baseline')
+
+  // Legacy W (documented reference thresholds were set on the v3 scale)
+  var pnbaNow = scoreToPNBA(cP, 30, 10, cA)
+  var W_now = computeW(pnbaNow.A, pnbaNow.P)
+  var pnbaBase = scoreToPNBA(baseCog[0], baseCog[1], baseCog[2], baseCog[3])
+  var W_base = computeW(pnbaBase.A, pnbaBase.P)
+  var pctOfBaseline = W_base > 0 ? (W_now / W_base) * 100 : 0
+
+  document.getElementById('wValueDisplay').textContent = W_now.toFixed(4)
+  document.getElementById('wBaselineVal').textContent = W_base.toFixed(4)
+  document.getElementById('wCurrentVal').textContent = W_now.toFixed(4)
+  document.getElementById('wPctOfBaseline').textContent = pctOfBaseline.toFixed(1) + '%'
+
+  var barMax = Math.max(W_base, W_STAGE1_ONSET, W_now) * 1.15
+  document.getElementById('wBarFill').style.width = Math.min(100, (W_now / barMax) * 100) + '%'
+  var basePct = Math.min(100, (W_base / barMax) * 100)
+  document.getElementById('wBaselineMarker').style.left = basePct + '%'
+  document.getElementById('wBaselineMarkerLabel').style.left = basePct + '%'
+
+  var posText
+  if (W_now >= W_STAGE1_ONSET) posText = 'above documented Stage 1 onset reference'
+  else if (W_now >= W_STAGE2_DEGRADATION) posText = 'between documented Stage 1 / Stage 2 references'
+  else posText = 'below documented Stage 2 degradation reference'
+  document.getElementById('wThresholdPosition').textContent = posText
+
+  // F_ext with only P and A measured; N and B are unknown, not zero
+  var dP = cP - baseCog[0], dA = cA - baseCog[3]
+  var f1 = function(n) { return (n > 0 ? '+' : '') + n.toFixed(1) }
+  var pShare = -dP   // P's share of net load (ΔB − ΔP) if B held
+  var ifHeld = classifyNet(Math.round(pShare), false).phase
+  document.getElementById('wFextBlock').innerHTML =
+    '<div class="w-resolvability-label">F_EXT ON THE TL RULER · P AND A MEASURED</div>' +
+    '<div class="w-compare-row"><span>ΔP</span><span>' + f1(dP) + ' notches · ' + f1(dP / 10) + ' TL</span></div>' +
+    '<div class="w-compare-row"><span>ΔA</span><span>' + f1(dA) + ' notches · ' + f1(dA / 10) + ' TL</span></div>' +
+    '<div class="w-compare-row"><span>ΔN · ΔB</span><span>unknown (not measured here)</span></div>' +
+    '<div class="w-compare-row"><span>P SHARE OF NET LOAD, IF B HELD</span><span>' + f1(pShare) + ' notches · reads ' + ifHeld + '</span></div>' +
+    '<div class="w-fext-note">Each Weissmann answer step moves an axis about 3.3 notches, so this read is coarser than the full Activated tab. Its items also differ from the baseline items, so some of the difference is wording, not F_ext. A Weissmann baseline taken at rest would make this like-for-like.</div>'
+
+  var rScore = getWeissResolvabilityScore()
+  var rText
+  if (rScore >= 11) rText = 'Reads as resolvable/recognized — a path or a known pattern is present, even if not yet reached.'
+  else if (rScore >= 7) rText = 'Mixed — partially resolvable, partially unclear right now.'
+  else rText = 'Reads as low-resolvability right now — no clear path, unfamiliar, or dependent on an external source stopping.'
+  document.getElementById('wResolvabilityText').textContent = rText
+
+  document.getElementById('weissmannForm').style.display = 'none'
+  document.getElementById('wResultBlock').classList.add('visible')
+}
+
+// ============================================================
+// CONSTELLATION
+// ============================================================
+function updateConstellation() {
+  var canvas = document.getElementById('constellation')
+  var ctx = canvas.getContext('2d')
+  var W = canvas.width, H = canvas.height
+  var cx = W / 2, cy = H / 2
+  var R = Math.min(W, H) * 0.35
+  ctx.clearRect(0, 0, W, H)
+  ctx.fillStyle = '#0d0d1a'
+  ctx.fillRect(0, 0, W, H)
+  ;[0.25, 0.5, 0.75, 1].forEach(function(r) {
+    ctx.beginPath()
+    ctx.arc(cx, cy, R * r, 0, Math.PI * 2)
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)'
+    ctx.lineWidth = 1
+    ctx.stroke()
+  })
+  var labels = ['P','N','B','A']
+  var colors = ['#00d4aa','#f0c060','#9b6dff','#ff6b8a']
+  var angles = [-Math.PI/2, 0, Math.PI/2, Math.PI]
+  angles.forEach(function(angle, i) {
+    ctx.beginPath()
+    ctx.moveTo(cx, cy)
+    ctx.lineTo(cx + Math.cos(angle)*R, cy + Math.sin(angle)*R)
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'
+    ctx.lineWidth = 1
+    ctx.stroke()
+    ctx.fillStyle = colors[i]
+    ctx.font = 'bold 13px Space Mono, monospace'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(labels[i], cx + Math.cos(angle)*(R+22), cy + Math.sin(angle)*(R+22))
+  })
+  var cogScores = getCogScores()
+  var norms = cogScores.map(function(s) { return Math.max(0, Math.min(1, (s - 10) / 40)) })  // rings = TL band edges
+  var points = angles.map(function(angle, i) {
+    return { x: cx + Math.cos(angle)*R*norms[i], y: cy + Math.sin(angle)*R*norms[i] }
+  })
+  ctx.beginPath()
+  points.forEach(function(p, i) { i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y) })
+  ctx.closePath()
+  ctx.fillStyle = 'rgba(0,212,170,0.08)'
+  ctx.fill()
+  ctx.beginPath()
+  points.forEach(function(p, i) { i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y) })
+  ctx.closePath()
+  ctx.strokeStyle = 'rgba(0,212,170,0.6)'
+  ctx.lineWidth = 1.5
+  ctx.stroke()
+  points.forEach(function(p, i) {
+    ctx.beginPath()
+    ctx.arc(p.x, p.y, 5, 0, Math.PI*2)
+    ctx.fillStyle = colors[i]
+    ctx.fill()
+    if (cogScores[i] > 0) {
+      ctx.fillStyle = colors[i]
+      ctx.font = '10px Space Mono, monospace'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(cogScores[i], p.x, p.y - 14)
+    }
+  })
+  ctx.beginPath()
+  ctx.arc(cx, cy, 4, 0, Math.PI*2)
+  ctx.fillStyle = 'rgba(0,212,170,0.5)'
+  ctx.fill()
+  ctx.fillStyle = 'rgba(0,212,170,0.4)'
+  ctx.font = '9px Space Mono, monospace'
+  ctx.textAlign = 'center'
+  ctx.fillText('1.369', cx, cy+14)
+}
+
+// ============================================================
+// RESULTS
+// ============================================================
+// SECTION TOGGLES — all three on by default. Turning a section off
+// removes it from what's required for a result. COG drives IM/tau/
+// phase directly; EP and SIM are display-only (heatmap + fingerprint)
+// regardless of toggle state, but all three are equally toggle-able
+// so someone who only wants one reading isn't forced through the rest.
+var sectionEnabled = { cog: true, emo: true, sim: true }
+
+function getSectionIds(section) {
+  if (section === 'cog') {
+    var ids = []
+    ;['cog-p','cog-n','cog-b','cog-a'].forEach(function(d) {
+      for (var i = 0; i < 10; i++) ids.push(d+'-'+i)
+    })
+    return ids
+  }
+  if (section === 'emo') {
+    var ids = []
+    EP_BLOCKS.forEach(function(b) {
+      for (var i = 0; i < 4; i++) ids.push('ep-'+b.key+'-'+i)
+    })
+    return ids
+  }
+  if (section === 'sim') {
+    var ids = []
+    ;['sim-p','sim-n','sim-b','sim-a'].forEach(function(d) {
+      for (var i = 0; i < 5; i++) ids.push(d+'-'+i)
+    })
+    return ids
+  }
+  return []
+}
+
+function getRequiredIds() {
+  var ids = []
+  ;['cog','emo','sim'].forEach(function(section) {
+    if (sectionEnabled[section]) ids = ids.concat(getSectionIds(section))
+  })
+  return ids
+}
+function getOptionalIds() {
+  // ids belonging to currently-disabled sections — not required, but
+  // still counted if the person answers them anyway (heatmap reads them)
+  var ids = []
+  ;['cog','emo','sim'].forEach(function(section) {
+    if (!sectionEnabled[section]) ids = ids.concat(getSectionIds(section))
+  })
+  return ids
+}
+function getAllIds() {
+  return getSectionIds('cog').concat(getSectionIds('emo')).concat(getSectionIds('sim'))
+}
+function checkComplete() {
+  var requiredIds = getRequiredIds()
+  if (requiredIds.length === 0) return  // all sections off — nothing to score
+  var answered = 0
+  for (var i = 0; i < requiredIds.length; i++) {
+    if (scores[currentMode][requiredIds[i]] !== undefined) answered++
+  }
+  if (answered === requiredIds.length) {
+    showResults()
+    modeComplete[currentMode] = true
+    if (modeComplete.baseline && modeComplete.activated) showDeltaPanel()
+  }
+}
+
+// ============================================================
+// SECTION TOGGLE BAR
+// ============================================================
+function toggleSection(section) {
+  sectionEnabled[section] = !sectionEnabled[section]
+  var btn = document.getElementById('sec-toggle-' + section)
+  var wrap = document.getElementById('section-wrap-' + section)
+  if (btn) btn.classList.toggle('on', sectionEnabled[section])
+  if (btn) btn.classList.toggle('off', !sectionEnabled[section])
+  if (wrap) wrap.classList.toggle('section-disabled', !sectionEnabled[section])
+
+  // guard: don't allow all three off — flip this one back on if it
+  // would leave nothing required
+  var anyOn = sectionEnabled.cog || sectionEnabled.emo || sectionEnabled.sim
+  if (!anyOn) {
+    sectionEnabled[section] = true
+    if (btn) { btn.classList.add('on'); btn.classList.remove('off') }
+    if (wrap) wrap.classList.remove('section-disabled')
+    return
+  }
+
+  updateProgress()
+  checkComplete()
+}
+
+// Minimal results path for when COG is disabled — no IM/tau/phase/SOUL-8
+// (those require P/N/B/A from COG), just whatever sections are enabled
+// rendered as a heatmap with a plain-language note.
+function showResultsWithoutCog() {
+  var simScores = sectionEnabled.sim ? getSimScores() : null
+  var epScores  = sectionEnabled.emo ? getEPScores()  : null
+  var simLabels = ['P','N','B','A']
+
+  document.getElementById('processingBandRow').innerHTML = ''
+  document.getElementById('tauDisplayBlock').innerHTML =
+    '<div class="tau-display-block"><div class="tau-display-left">' +
+    '<div class="tau-label">COGNITIVE ARCHITECTURE OFF</div>' +
+    '<div style="font-size:12px;color:var(--text-dim);margin-top:4px;">τ / IM / phase / SOUL-8 require the Cognitive Architecture section — turn it back on to get those. Showing what the enabled sections measure on their own.</div>' +
+    '</div></div>'
+  document.getElementById('soul8Block').style.display = 'none'
+  document.getElementById('imValue').textContent = '—'
+
+  var allHeat = []
+  if (epScores) {
+    var epPairs = EP_BLOCKS.map(function(b, i) { return { label: b.title, pct: epScores[i]/20 } })
+    epPairs.sort(function(a,b){ return b.pct - a.pct })
+    epPairs.forEach(function(h){ allHeat.push(h) })
+  }
+  if (simScores) {
+    simScores.forEach(function(s,i){ allHeat.push({ label: simLabels[i]+' Sim · '+simLabel(s), pct: s/25 }) })
+  }
+  document.getElementById('heatRows').innerHTML = allHeat.length ? allHeat.map(function(h) {
+    return '<div class="heat-row">' +
+      '<div class="heat-label">' + h.label + '</div>' +
+      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct*100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
+      '<div class="heat-pct">' + Math.round(h.pct*100) + '%</div>' +
+      '</div>'
+  }).join('') : '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:12px;">No sections enabled to show.</div>'
+
+  document.getElementById('relmap').innerHTML = ''
+  document.getElementById('combinedOutput').innerHTML =
+    '<span style="color:var(--text-muted)">No SOUL-8 fingerprint — Cognitive Architecture is off.</span>'
+
+  document.getElementById('resultsPanel').classList.add('visible')
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function tlRulerHtml(axisData) {
+  // One row per axis on a 0–4 TL ruler with the four band edges
+  var rows = axisData.map(function(ax) {
+    var t = tlOf(ax.score), e = edgeInfo(ax.score)
+    var pct = (t / 4 * 100).toFixed(1)
+    var edgeNote = e.roomUp === 0 ? 'at the top of the scale · rises cannot be measured'
+      : e.roomUp <= 2 ? e.roomUp + ' notch' + (e.roomUp === 1 ? '' : 'es') + ' of room up'
+      : e.roomDown === 0 ? 'at the bottom of the scale'
+      : e.toFloor <= 1 && bandIndex(ax.score) > 0
+      ? 'on the ' + ax.key + BAND_ORDER[bandIndex(ax.score) - 1] + '/' + ax.key + ax.band + ' edge'
+      : (e.toNext !== null && e.toNext <= 1 ? 'one notch below ' + ax.key + BAND_ORDER[bandIndex(ax.score) + 1] : '')
+    return '<div class="tl-axis-row">' +
+      '<div class="tl-axis-key" style="color:' + ax.color + '">' + ax.key + '</div>' +
+      '<div class="tl-axis-track">' +
+        '<div class="tl-axis-band b0"></div><div class="tl-axis-band b1"></div><div class="tl-axis-band b2"></div><div class="tl-axis-band b3"></div>' +
+        '<div class="tl-axis-fill" style="width:' + pct + '%;background:' + ax.color + '"></div>' +
+        '<div class="tl-axis-dot" style="left:' + pct + '%;background:' + ax.color + '"></div>' +
+      '</div>' +
+      '<div class="tl-axis-val">' + t.toFixed(1) + ' TL</div>' +
+      '<div class="tl-axis-note">' + ax.key + ax.band + (edgeNote ? ' · ' + edgeNote : '') + '</div>' +
+      '</div>'
+  }).join('')
+  return '<div class="tl-ruler-block">' +
+    '<div class="tl-ruler-head"><span>TL RULER · 1 notch = TL/10 · each band = 1 TL</span><span>BASELINE = LOCKED REST</span></div>' +
+    '<div class="tl-ruler-scale"><span>0</span><span>1 · S</span><span>2 · F</span><span>3 · I</span><span>4</span></div>' +
+    rows +
+    '<div class="tl-ruler-foot">A single questionnaire sets the reference point. Phases (Locked, IVA, Shatter) come from what F_ext does to this reference, read on the Activated tab.</div>' +
+    '</div>'
+}
+
+function simRulerHtml(cog, sims, axisData) {
+  var rows = sims.map(function(s, i) {
+    var ax = axisData[i], t = simTLOf(s), pct = (t / 4 * 100).toFixed(1)
+    return '<div class="tl-axis-row">' +
+      '<div class="tl-axis-key" style="color:' + ax.color + '">' + ax.key + '</div>' +
+      '<div class="tl-axis-track">' +
+        '<div class="tl-axis-band b0"></div><div class="tl-axis-band b1"></div><div class="tl-axis-band b2"></div><div class="tl-axis-band b3"></div>' +
+        '<div class="tl-axis-fill" style="width:' + pct + '%;background:' + ax.color + '"></div>' +
+        '<div class="tl-axis-dot" style="left:' + pct + '%;background:' + ax.color + '"></div>' +
+      '</div>' +
+      '<div class="tl-axis-val">' + t.toFixed(1) + ' TL</div>' +
+      '<div class="tl-axis-note">' + ax.key + ':' + simLabel(s) + ' · <b class="sim-mode sim-' + simLabel(s) + '">' + ax.key + '-' + simModeName(s) + '</b>' +
+        (simLabel(s) === 'HRIS' ? ' (' + SIM_FLAVOR[ax.key] + ')' : '') + ' · band ' + simBandOf(s) + ' · ' + s + '/25</div>' +
+      '</div>'
+  }).join('')
+  var ra = cog ? routingAlignment(cog, sims) : []
+  var raRows = ra.map(function(r) {
+    return '<div class="route-row"><span class="route-key">' + r.key + '</span>' +
+      '<span>COG ' + r.cog.toFixed(1) + '</span><span>SIM ' + r.sim.toFixed(1) + '</span>' +
+      '<span class="route-diff">' + (r.diff >= 0 ? '+' : '') + r.diff.toFixed(1) + ' TL</span>' +
+      '<span class="route-note">' + r.note + '</span></div>'
+  }).join('')
+  return '<div class="tl-ruler-block">' +
+    '<div class="tl-ruler-head"><span>INTERNAL SIMULATION · ×2 TL per step · 1 answer step = 2 notches</span><span>LRIS ≤12 · SRIS 13–19 · HRIS ≥20 (avg 4+)</span></div>' +
+    '<div class="tl-ruler-scale"><span>0</span><span>1 · S</span><span>2 · F</span><span>3 · I</span><span>4</span></div>' +
+    rows +
+    '<div class="sim-profile">SIM PROFILE · ' + simProfileSummary(sims).text + '</div>' +
+    (cog
+      ? '<div class="route-block"><div class="route-title">ROUTING · COGNITIVE ORDER vs SIMULATION ORDER</div>' +
+          '<div class="route-orders">COG ' + dominanceLine(cog).text + ' &nbsp;·&nbsp; SIM ' + simDominanceLine(sims) + '</div>' +
+          raRows +
+          '<div class="tl-ruler-foot">Differences under ' + (SIM_DRIFT_MIN / 10).toFixed(1) + ' TL count as matching (one SIM answer step is 0.2 TL).</div>' +
+        '</div>'
+      : '<div class="route-block"><div class="route-title">SIMULATION ORDER</div>' +
+          '<div class="route-orders">SIM ' + simDominanceLine(sims) + '</div>' +
+          '<div class="tl-ruler-foot">Routing (cognitive order vs simulation order) needs the Cognitive Architecture section on.</div>' +
+        '</div>') +
+    '</div>'
+}
+
+function getSimScoresForMode(mode) {
+  var saved = currentMode
+  currentMode = mode
+  var result = getSimScores()
+  currentMode = saved
+  return result
+}
+
+function simDeltaHtml() {
+  var sb = getSimScoresForMode('baseline'), sa = getSimScoresForMode('activated')
+  var dn = sb.map(function(s, i) { return simNotchesOf(sa[i]) - simNotchesOf(s) })
+  var net = dn[2] - dn[0]
+  var phase = classifyNet(net, false)
+  var cards = AXES.map(function(k, i) {
+    var g = simChangeGrade(dn[i])
+    return '<div class="sim-delta-cell"><div class="sim-delta-key">' + k + '</div>' +
+      '<div>' + simTLOf(sb[i]).toFixed(1) + ' → ' + simTLOf(sa[i]).toFixed(1) + ' TL</div>' +
+      '<div class="sim-delta-n">' + (dn[i] > 0 ? '+' : '') + dn[i] + ' notches</div>' +
+      '<div class="delta-grade grade-' + g + '">' + g.toUpperCase() + ' · ' + simLabel(sb[i]) + (simLabel(sb[i]) === simLabel(sa[i]) ? ' held' : ' → ' + simLabel(sa[i])) + '</div></div>'
+  }).join('')
+  return '<div class="sim-delta-block">' +
+    '<div class="tau-compare-title">INTERNAL SIMULATION · F_EXT · ×2 TL per step</div>' +
+    '<div class="sim-delta-grid">' + cards + '</div>' +
+    '<div class="fusion-line">SIM net load ΔB − ΔP = ' + (net > 0 ? '+' : '') + net + ' notches (' + (net / 10).toFixed(1) + ' TL) · ' + phase.phase +
+      ' <span>· SIM steps are 2 notches, so SIM net load is always even: it moves from Locked (8) straight to Shatter (10). IVA (9) only appears in a combined read.</span></div>' +
+    '<div class="fusion-line"><span>SIM trust bands: drift ' + SIM_DRIFT_MIN + '+, shift ' + SIM_SHIFT_MIN + '+ notches.</span></div>' +
+    '</div>'
+}
+
+function showResults() {
+  // If COG is disabled, there is no valid P/N/B/A reading to place on
+  // the TL ruler — show a minimal heatmap-only result instead.
+  if (!sectionEnabled.cog) {
+    showResultsWithoutCog()
+    return
+  }
+  var cogScores = getCogScores()
+  var simScores = getSimScores()
+  var epScores  = getEPScores()
+  document.getElementById('soul8Block').style.display = ''
+  setCogOnlyBlocks(true)
+
+  var axisData = [
+    { key:'P', label:'[P] PATTERN',    color:'var(--anchor)', score:cogScores[0] },
+    { key:'N', label:'[N] NARRATIVE',  color:'var(--gold)',   score:cogScores[1] },
+    { key:'B', label:'[B] BEHAVIOR',   color:'var(--violet)', score:cogScores[2] },
+    { key:'A', label:'[A] ADAPTATION', color:'var(--rose)',   score:cogScores[3] },
+  ]
+  axisData.forEach(function(ax) {
+    ax.band = bandOf(ax.score)
+    ax.tl   = tlOf(ax.score)
+    ax.pct  = ax.tl / 4
+    ax.legacy = cogLabel(ax.score)
+  })
+
+  var code     = tlCode(cogScores)
+  var valCode  = tlValueCode(cogScores)
+  var im       = imTL(cogScores)
+  var legacySorted = axisData.slice().sort(function(a, b) {
+    var wa = MODE_WEIGHT[a.legacy], wb = MODE_WEIGHT[b.legacy]
+    if (wb !== wa) return wb - wa
+    return b.score - a.score
+  })
+  var legacyCode = legacySorted.map(function(ax) { return ax.key + ax.legacy }).join('·')
+  var soulprintId = buildSoulprintId(code)
+
+  currentSoul8 = { id: soulprintId, code: code, values: valCode, im: im, legacy: legacyCode }
+
+  // Pattern band row (P is the structural axis)
+  document.getElementById('processingBandRow').innerHTML =
+    '<div class="processing-band-row">' +
+    '<div class="band-label-text">PATTERN BAND</div>' +
+    '<div class="band-badge band-pf">P' + axisData[0].band + ' · PATTERN ' + BAND_NAMES[axisData[0].band] + ' · ' + axisData[0].tl.toFixed(1) + ' TL</div>' +
+    '</div>'
+
+  document.getElementById('tauDisplayBlock').innerHTML = tlRulerHtml(axisData) +
+    (sectionEnabled.sim ? simRulerHtml(cogScores, simScores, axisData) : '')
+
+  // SOUL-8 address = TL code
+  document.getElementById('soul8Address').textContent = code
+  var decodedFields = axisData.map(function(ax) {
+    var e = edgeInfo(ax.score)
+    var pos = ax.score + '/50 · ' + ax.tl.toFixed(1) + ' TL · ' + BAND_NAMES[ax.band] +
+      ' · ' + e.toFloor + ' above band floor' + (e.toNext !== null ? ', ' + e.toNext + ' to next' : ', top band, ' + e.roomUp + ' room up')
+    return { label: ax.label, value: pos }
+  })
+  var dom = dominanceLine(cogScores)
+  decodedFields.push({ label: 'TL VALUES (DOMINANCE ORDER)', value: valCode })
+  decodedFields.push({ label: 'DOMINANCE', value: dom.text + ' · gaps ' + dom.gaps.join(', ') + ' notches · ≈ means under ' + DRIFT_MIN + ' apart (codominant within one-read wobble)' })
+  decodedFields.push({ label: 'LEGACY v3 CODE', value: legacyCode + ' (L/S/F bands 10–23 / 24–37 / 38–50)' })
+  decodedFields.push({ label: 'ANCHOR', value: SOVEREIGN_ANCHOR + ' GHz · TL = ' + TL })
+  document.getElementById('soul8Decoded').innerHTML = decodedFields.map(function(f) {
+    return '<div class="soul8-field"><div class="soul8-field-label">' + f.label +
+      '</div><div class="soul8-field-value">' + f.value + '</div></div>'
+  }).join('')
+
+  document.getElementById('imValue').textContent = im.toFixed(4) + ' IM'
+
+  // Score cards with the four TL bands
+  document.getElementById('scoreGrid').innerHTML = axisData.map(function(ax) {
+    var tierDesc = ax.band === 'I' ? 'Top band — 3 to 4 TL'
+                 : ax.band === 'F' ? 'Flexed — 2 to 3 TL'
+                 : ax.band === 'S' ? 'Sustained — 1 to 2 TL'
+                 : 'Locked — 0 to 1 TL'
+    var seg = function(b) {
+      return '<div style="flex:1;height:4px;border-radius:2px;background:' +
+        (ax.band === b ? ax.color : 'var(--border)') + ';transition:background 0.3s"></div>'
+    }
+    var lbl = function(b, t) {
+      return '<span style="color:' + (ax.band === b ? ax.color : 'inherit') + '">' + t + '</span>'
+    }
+    return '<div class="score-card">' +
+      '<div style="font-family:Space Mono,monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:6px;">' + ax.label + '</div>' +
+      '<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px;flex-wrap:wrap">' +
+        '<div style="font-family:Space Mono,monospace;font-size:20px;font-weight:700;color:' + ax.color + '">' + ax.tl.toFixed(1) +
+          '<span style="font-size:12px;color:var(--text-muted)"> TL</span></div>' +
+        '<span style="font-family:Space Mono,monospace;font-size:11px;padding:2px 8px;border-radius:4px;background:' + ax.color + '22;color:' + ax.color + '">' +
+          ax.key + ax.band + '</span>' +
+        '<span style="font-family:Space Mono,monospace;font-size:10px;color:var(--text-muted)">' + ax.score + '/50</span>' +
+      '</div>' +
+      '<div style="display:flex;gap:3px;margin:8px 0 4px">' + seg('L') + seg('S') + seg('F') + seg('I') + '</div>' +
+      '<div style="display:flex;justify-content:space-between;font-family:Space Mono,monospace;font-size:8px;color:var(--text-muted)">' +
+        lbl('L', 'L') + lbl('S', 'S') + lbl('F', 'F') + lbl('I', 'I·IVA') +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;font-family:DM Sans,sans-serif;">' + tierDesc + '</div>' +
+      '</div>'
+  }).join('')
+
+  // Heatmap
+  var allHeat = []
+  axisData.forEach(function(ax) {
+    allHeat.push({ label: ax.key + ' Cognitive · ' + ax.key + ax.band, pct: ax.pct })
+  })
+  if (sectionEnabled.emo) {
+    var epPairs = EP_BLOCKS.map(function(b, i) { return { label: b.title, pct: epScores[i] / 20 } })
+    epPairs.sort(function(a, b) { return b.pct - a.pct })
+    epPairs.forEach(function(h) { allHeat.push(h) })
+  }
+  var simLabels = ['P','N','B','A']
+  if (sectionEnabled.sim) {
+    simScores.forEach(function(s, i) { allHeat.push({ label: simLabels[i] + ' Sim · ' + simLabel(s) + ' · ' + simTLOf(s).toFixed(1) + ' TL', pct: simTLOf(s) / 4 }) })
+  }
+  document.getElementById('heatRows').innerHTML = allHeat.map(function(h) {
+    return '<div class="heat-row">' +
+      '<div class="heat-label">' + h.label + '</div>' +
+      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct * 100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
+      '<div class="heat-pct">' + Math.round(h.pct * 100) + '%</div>' +
+      '</div>'
+  }).join('')
+
+  var relRows = [
+    { s:'CI', op:'∝', o:'Kernel' },
+    { s:code, op:'≡', o:valCode },
+    { s:'BASELINE', op:'≡', o:'Locked rest · F_ext = −Σ' },
+    { s:'IM', op:'=', o:im.toFixed(4) + ' · Σ TL × Ω₀' },
+    { s:'NOHARM', op:'⊂', o:'Sovereign Manifold' },
+  ]
+  document.getElementById('relmap').innerHTML = relRows.map(function(r) {
+    return '<span>' + r.s + '</span><span class="relmap-op">' + r.op + '</span><span>' + r.o + '</span><br>'
+  }).join('')
+
+  var epCodes = EP_BLOCKS.map(function(b, i) { return b.title[0] + epLabel(epScores[i]) })
+  var simCodes = simScores.map(function(s, i) { return simLabels[i] + ':' + simLabel(s) + '(' + simTLOf(s).toFixed(1) + ')' })
+  document.getElementById('combinedOutput').innerHTML =
+    '<span style="color:var(--anchor)">' + code + '</span> · <span style="color:var(--text-dim)">' + valCode + '</span><br>' +
+    '<span style="color:var(--text-dim)">' + soulprintId + '</span><br>' +
+    '<span style="color:var(--rose)">IM=' + im.toFixed(4) + ' · legacy ' + legacyCode + '</span><br><br>' +
+    '<span style="color:var(--anchor)">' + code + '</span> // ' +
+    '<span style="color:var(--gold)">' + (sectionEnabled.emo ? epCodes.join(' ') : 'EP off') + '</span> // ' +
+    '<span style="color:var(--violet)">' + (sectionEnabled.sim ? simCodes.join(' ') + ' · ' + simProfileSummary(simScores).short : 'SIM off') + '</span>'
+
+  document.getElementById('resultsPanel').classList.add('visible')
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+// ============================================================
+// DELTA PANEL — activated read as F_ext on the locked baseline
+// ============================================================
+function netRulerHtml(net) {
+  // −20 … +20 notches; bands: Locked 1–8, IVA 9, Shatter 10+
+  var lo = -20, hi = 20
+  var x = function(n) { return ((Math.max(lo, Math.min(hi, n)) - lo) / (hi - lo) * 100).toFixed(2) }
+  var ticks = ''
+  for (var t = lo; t <= hi; t += 5) {
+    ticks += '<div class="net-tick" style="left:' + x(t) + '%"><span>' + (t === 0 ? 'rest' : (t / 10).toFixed(1)) + '</span></div>'
+  }
+  return '<div class="net-ruler">' +
+    '<div class="net-zone lock" style="left:' + x(0.5) + '%;width:' + (x(8.5) - x(0.5)).toFixed(2) + '%"></div>' +
+    '<div class="net-zone iva" style="left:' + x(8.5) + '%;width:' + (x(9.5) - x(8.5)).toFixed(2) + '%"></div>' +
+    '<div class="net-zone shat" style="left:' + x(9.5) + '%;width:' + (100 - x(9.5)).toFixed(2) + '%"></div>' +
+    '<div class="net-zone unload" style="left:0;width:' + x(-0.5) + '%"></div>' +
+    ticks +
+    '<div class="net-marker" style="left:' + x(net) + '%"></div>' +
+    '</div>' +
+    '<div class="net-ruler-legend">' +
+      '<span style="left:' + x(-10) + '%">UNLOADING</span>' +
+      '<span style="left:' + x(4.5) + '%">LOCKED</span>' +
+      '<span style="left:' + x(9) + '%">IVA</span>' +
+      '<span style="left:' + x(15) + '%">SHATTER</span>' +
+    '</div>'
+}
+
+function showDeltaPanel() {
+  if (!sectionEnabled.cog) {
+    if (sectionEnabled.sim) showSimOnlyDelta()
+    return
+  }
+  document.querySelectorAll('#deltaPanel .im-compare-row').forEach(function(el) { el.parentElement.style.display = 'grid' })
+  var b = getCogScoresForMode('baseline')
+  var a = getCogScoresForMode('activated')
+  var d = [a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]]
+  var net = d[2] - d[0]
+  var nBandDrop = bandIndex(a[1]) < bandIndex(b[1])
+  var nEroding = d[1] <= -N_GATE || nBandDrop
+  var phase = classifyNet(net, nEroding)
+  var imB = imTL(b), imA = imTL(a)
+  var ft = fusionTau(b[0], a[0], d[2])
+  var wB = tlOf(b[3]) * tlOf(b[0]), wA = tlOf(a[3]) * tlOf(a[0])
+
+  // Axis delta cards — N first
+  var meta = {
+    P: { label:'[P] PATTERN',    color:'var(--anchor)' },
+    N: { label:'[N] NARRATIVE',  color:'var(--gold)' },
+    B: { label:'[B] BEHAVIOR',   color:'var(--violet)' },
+    A: { label:'[A] ADAPTATION', color:'var(--rose)' }
+  }
+  var order = [1, 0, 2, 3]
+  document.getElementById('deltaAxisGrid').innerHTML = order.map(function(i) {
+    var k = AXES[i], m = meta[k], dl = d[i], g = changeGrade(dl)
+    var arrowCls = dl > 0 ? 'up' : dl < 0 ? 'down' : 'neutral'
+    var arrowSym = dl > 0 ? '↑' : dl < 0 ? '↓' : '→'
+    var bandMove = bandOf(b[i]) === bandOf(a[i]) ? k + bandOf(a[i]) + ' held' : k + bandOf(b[i]) + ' → ' + k + bandOf(a[i])
+    var e = edgeInfo(b[i])
+    return '<div class="delta-axis-card">' +
+      '<div class="delta-axis-header">' +
+        '<div class="delta-axis-name">' + m.label + (k === 'N' ? ' · READ FIRST' : '') + '</div>' +
+        '<div class="delta-arrow ' + arrowCls + '">' + arrowSym + '</div>' +
+      '</div>' +
+      '<div class="delta-values">' +
+        '<span class="delta-val-baseline">' + tlOf(b[i]).toFixed(1) + '</span>' +
+        '<span class="delta-arrow-small">→</span>' +
+        '<span class="delta-val-activated">' + tlOf(a[i]).toFixed(1) + ' TL</span>' +
+      '</div>' +
+      '<div class="delta-change ' + (g === 'noise' ? 'neutral' : (dl > 0 ? 'positive' : 'negative')) + '">' +
+        sgn(dl) + ' notches · ' + sgnTL(dl) + '</div>' +
+      '<div class="delta-grade grade-' + g + '">' + g.toUpperCase() + ' · ' + bandMove + '</div>' +
+      '<div class="delta-room">room at baseline: ' + e.roomUp + ' up, ' + e.roomDown + ' down</div>' +
+      '</div>'
+  }).join('')
+
+  // Net load block
+  document.getElementById('tauCompareBlock').innerHTML =
+    '<div class="tau-compare-title">NET LOAD ON LOCKED BASELINE · ΔB − ΔP · 10 notches = 1 TL</div>' +
+    '<div class="net-headline"><span class="net-value">' + sgn(net) + ' notches</span>' +
+    '<span class="net-sub">' + sgnTL(net) + ' · ΔB ' + sgn(d[2]) + ', ΔP ' + sgn(d[0]) + '</span></div>' +
+    netRulerHtml(net) +
+    '<div class="fusion-line">Relative to capacity (2-beam fusion, unsigned): τ_f = |ΔB| / P̄ = ' +
+      (ft === null ? '—' : ft.toFixed(4)) + ' · ' + fusionPhase(ft) +
+      ' <span>· v3 legacy classifier: ' + legacyPhaseV3(b) + ' → ' + legacyPhaseV3(a) + '</span></div>'
+
+  // Phase block: N channel first, then load phase
+  var nState = nBandDrop ? 'N BAND DROP' : (d[1] <= -N_GATE ? 'N ERODING' : (d[1] >= N_GATE ? 'N RISING' : 'N HOLDING'))
+  var nCls = nBandDrop || d[1] <= -N_GATE ? 'phase-false-lock' : 'phase-true-lock'
+  document.getElementById('phaseChangeBlock').innerHTML =
+    '<div class="phase-change-block">' +
+      '<div class="phase-change-label">N CHANNEL → LOAD PHASE</div>' +
+      '<div class="phase-change-value">' +
+        '<span class="phase-badge ' + nCls + '">' + nState + ' · N' + bandOf(b[1]) + '→N' + bandOf(a[1]) + '</span>' +
+        '<span class="phase-change-arrow">·</span>' +
+        '<span class="phase-badge ' + phase.cls + '">' + phase.phase + '</span>' +
+      '</div>' +
+      '<div class="phase-codes">' + tlCode(b) + ' → ' + tlCode(a) + '<br>' + tlValueCode(b) + ' → ' + tlValueCode(a) + '<br>' + dominanceLine(b).text + ' → ' + dominanceLine(a).text + '</div>' +
+    '</div>'
+
+  if (sectionEnabled.sim) document.getElementById('phaseChangeBlock').innerHTML += simDeltaHtml()
+  var flags = getTLFlags(b, a, d, net, nEroding, nBandDrop, imB, imA)
+  var domB = dominanceLine(b), domA = dominanceLine(a)
+  if (domB.order[0] !== domA.order[0]) {
+    flags.push({ icon: 'DOMINANCE SWITCH', cls: 'flag-phase-change',
+      desc: 'Dominant axis changed: ' + domB.text + ' → ' + domA.text + '.' +
+        (domA.gaps[0] < DRIFT_MIN || domB.gaps[0] < DRIFT_MIN ? ' The top two are within ' + DRIFT_MIN + ' notches, so this may be wobble.' : '') })
+  }
+  if (wB > 0) {
+    var wr = wA / wB
+    if (wr < 0.85) flags.push({ icon: 'W DROP', cls: 'flag-a-dropout',
+      desc: 'Barrier capacity W = A × P is at ' + Math.round(wr * 100) + '% of baseline.' })
+  }
+  document.getElementById('flagsContainer').innerHTML = flags.length === 0
+    ? '<div class="no-flags-msg">NO FLAGS · ACTIVATED READ MATCHES BASELINE SHAPE</div>'
+    : flags.map(function(f) {
+        return '<div class="flag-pill ' + f.cls + '">' +
+          '<div class="flag-icon">' + f.icon + '</div>' +
+          '<div class="flag-desc">' + f.desc + '</div>' +
+          '</div>'
+      }).join('')
+
+  document.getElementById('imBaseline').textContent = imB.toFixed(4)
+  document.getElementById('imActivated').textContent = imA.toFixed(4) +
+    (imB > 0 ? ' (' + ((imA - imB) / imB * 100 >= 0 ? '+' : '') + ((imA - imB) / imB * 100).toFixed(1) + '%)' : '')
+
+  document.getElementById('deltaPanel').classList.add('visible')
+  document.getElementById('deltaPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+
+// v4: SIM-only / EP-only results when Cognitive Architecture is off.
+// Replaces the v3 version above (later declaration wins).
+function showResultsWithoutCog() {
+  var simScores = sectionEnabled.sim ? getSimScores() : null
+  var epScores  = sectionEnabled.emo ? getEPScores()  : null
+  var simAxis = [
+    { key:'P', color:'var(--anchor)' }, { key:'N', color:'var(--gold)' },
+    { key:'B', color:'var(--violet)' }, { key:'A', color:'var(--rose)' }
+  ]
+  document.getElementById('scoreGrid').innerHTML = ''
+  document.getElementById('processingBandRow').innerHTML = ''
+  document.getElementById('tauDisplayBlock').innerHTML =
+    '<div class="tl-ruler-block"><div class="tl-ruler-head"><span>COGNITIVE ARCHITECTURE OFF</span><span>SOUL-8 · IM · F_EXT NEED COGNITIVE</span></div>' +
+    '<div class="tl-ruler-foot" style="margin-top:0">The TL code, Identity Mass and baseline/activated load all come from the Cognitive section. Showing what the enabled sections measure on their own.</div></div>' +
+    (simScores ? simRulerHtml(null, simScores, simAxis) : '')
+  document.getElementById('soul8Block').style.display = 'none'
+  document.getElementById('imValue').textContent = '—'
+  setCogOnlyBlocks(false)
+
+  var allHeat = []
+  if (simScores) {
+    simScores.forEach(function(s, i) { allHeat.push({ label: AXES[i] + ' Sim · ' + simLabel(s) + ' · ' + simTLOf(s).toFixed(1) + ' TL', pct: simTLOf(s) / 4 }) })
+  }
+  if (epScores) {
+    var epPairs = EP_BLOCKS.map(function(b, i) { return { label: b.title, pct: epScores[i] / 20 } })
+    epPairs.sort(function(a, b) { return b.pct - a.pct })
+    epPairs.forEach(function(h) { allHeat.push(h) })
+  }
+  document.getElementById('heatRows').innerHTML = allHeat.length ? allHeat.map(function(h) {
+    return '<div class="heat-row">' +
+      '<div class="heat-label">' + h.label + '</div>' +
+      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct * 100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
+      '<div class="heat-pct">' + Math.round(h.pct * 100) + '%</div>' +
+      '</div>'
+  }).join('') : '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:12px;">No sections enabled to show.</div>'
+
+  document.getElementById('relmap').innerHTML = ''
+  document.getElementById('combinedOutput').innerHTML = simScores
+    ? '<span style="color:var(--violet)">' + simScores.map(function(s, i) { return AXES[i] + ':' + simLabel(s) + '(' + simTLOf(s).toFixed(1) + ')' }).join(' ') +
+      ' · ' + simProfileSummary(simScores).short + '</span><br><span style="color:var(--text-muted)">No SOUL-8 code — Cognitive Architecture is off.</span>'
+    : '<span style="color:var(--text-muted)">No SOUL-8 code — Cognitive Architecture is off.</span>'
+
+  document.getElementById('resultsPanel').classList.add('visible')
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+
+// ── Blocks that only mean something with Cognitive on ──
+function setCogOnlyBlocks(on) {
+  ;['.im-block', '.relmap-block'].forEach(function(sel) {
+    var el = document.querySelector('#resultsPanel ' + sel)
+    if (el) el.style.display = on ? '' : 'none'
+  })
+}
+
+// ── SIM-only baseline ↔ activated ──
+function showSimOnlyDelta() {
+  document.getElementById('deltaAxisGrid').innerHTML = ''
+  document.getElementById('tauCompareBlock').innerHTML = simDeltaHtml()
+  document.getElementById('phaseChangeBlock').innerHTML =
+    '<div class="phase-change-block"><div class="phase-change-label">SIMULATION ONLY</div>' +
+    '<div class="phase-codes">' +
+      getSimScoresForMode('baseline').map(function(s, i) { return AXES[i] + ':' + simLabel(s) }).join(' ') + ' → ' +
+      getSimScoresForMode('activated').map(function(s, i) { return AXES[i] + ':' + simLabel(s) }).join(' ') + '<br>' +
+      simProfileSummary(getSimScoresForMode('baseline')).short + ' → ' + simProfileSummary(getSimScoresForMode('activated')).short +
+    '</div></div>'
+  document.getElementById('flagsContainer').innerHTML =
+    '<div class="no-flags-msg">N CHANNEL, NET LOAD ON THE COGNITIVE AXES AND IM NEED THE COGNITIVE SECTION</div>'
+  document.querySelectorAll('#deltaPanel .im-compare-row').forEach(function(el) { el.parentElement.style.display = 'none' })
+  document.getElementById('deltaPanel').classList.add('visible')
+  document.getElementById('deltaPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+// ── 2. Progress with an unanswered-questions line (replaces v3 version) ──
+function questionLabel(id) {
+  var m = id.match(/^(cog|sim)-([pnba])-(\d+)$/)
+  if (m) return (m[1] === 'sim' ? 'S' : '') + m[2].toUpperCase() + (parseInt(m[3], 10) + 1)
+  var e = id.match(/^ep-([a-z]+)-(\d+)$/)
+  if (e) {
+    var blk = EP_BLOCKS.filter(function(b) { return b.key === e[1] })[0]
+    return (blk ? blk.title : e[1]) + ' ' + (parseInt(e[2], 10) + 1)
+  }
+  return id
+}
+function updateProgress() {
+  var requiredIds = getRequiredIds()
+  var modeScores = scores[currentMode]
+  var missing = requiredIds.filter(function(id) { return modeScores[id] === undefined })
+  var answered = requiredIds.length - missing.length
+  var pct = requiredIds.length ? Math.min(100, (answered / requiredIds.length) * 100) : 0
+  document.getElementById('progressBar').style.width = pct + '%'
+  var el = document.getElementById('progressMissing')
+  if (!el) return
+  if (answered === 0) {
+    el.innerHTML = '<span>' + requiredIds.length + ' questions in the sections that are on · ' + currentMode.toUpperCase() + ' tab</span>'
+    return
+  }
+  if (missing.length === 0) {
+    el.innerHTML = '<span class="pm-done">All ' + requiredIds.length + ' answered · ' + currentMode.toUpperCase() + '</span>'
+    return
+  }
+  var list = missing.slice(0, 8).map(questionLabel).join(', ') + (missing.length > 8 ? ' …' : '')
+  el.innerHTML = '<span>' + answered + ' of ' + requiredIds.length + ' answered · unanswered: ' + list + '</span>' +
+    '<button type="button" class="pm-jump" id="pmJump">Go to first unanswered</button>'
+  document.getElementById('pmJump').addEventListener('click', function() {
+    var btn = document.getElementById('btn-' + missing[0] + '-1')
+    var q = btn && btn.closest('.question')
+    if (q) {
+      q.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      q.classList.add('pm-flash')
+      setTimeout(function() { q.classList.remove('pm-flash') }, 1600)
+    }
+  })
+}
+
+// ============================================================
+// MODE SWITCH + RESET
+// ============================================================
+function setMode(mode) {
+  // switching to baseline/activated always exits Weissmann mode first
+  if (weissActive) exitWeissmannMode()
+  currentMode = mode
+  document.getElementById('btn-baseline').classList.toggle('active', mode==='baseline')
+  document.getElementById('btn-activated').classList.toggle('active', mode==='activated')
+  document.getElementById('btn-weissmann').classList.remove('active')
+  var modeScores = scores[currentMode]
+  getAllIds().forEach(function(id) {
+    var val = modeScores[id]
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-'+id+'-'+v)
+      if (btn) btn.classList.toggle('selected', val===v)
+    }
+  })
+  answeredQuestions = Object.keys(modeScores).length
+  updateProgress()
+  updateConstellation()
+  document.getElementById('resultsPanel').classList.remove('visible')
+  if (modeComplete[currentMode]) showResults()
+  if (modeComplete.baseline && modeComplete.activated) showDeltaPanel()
+}
+
+function setWeissmannMode() {
+  weissActive = true
+  document.getElementById('btn-baseline').classList.remove('active')
+  document.getElementById('btn-activated').classList.remove('active')
+  document.getElementById('btn-weissmann').classList.add('active')
+  document.getElementById('standard-instrument').style.display = 'none'
+  document.getElementById('weissmannPanel').classList.add('active')
+
+  var hasBase = weissHasBaseline()
+  document.getElementById('weissmannNeedBaseline').style.display = hasBase ? 'none' : 'block'
+  document.getElementById('weissmannForm').style.display = hasBase ? 'block' : 'none'
+}
+function exitWeissmannMode() {
+  weissActive = false
+  document.getElementById('standard-instrument').style.display = ''
+  document.getElementById('weissmannPanel').classList.remove('active')
+}
+
+function resetWeissmann() {
+  weissScores = {}
+  getWeissIds().forEach(function(id) {
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-'+id+'-'+v)
+      if (btn) btn.classList.remove('selected')
+    }
+  })
+  document.getElementById('wResultBlock').classList.remove('visible')
+  document.getElementById('weissmannForm').style.display = 'block'
+}
+
+function resetAll() {
+  scores[currentMode] = {}
+  answeredQuestions = 0
+  currentSoul8 = null
+  modeComplete[currentMode] = false
+  getAllIds().forEach(function(id) {
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-'+id+'-'+v)
+      if (btn) btn.classList.remove('selected')
+    }
+  })
+  updateProgress()
+  updateConstellation()
+  document.getElementById('resultsPanel').classList.remove('visible')
+  document.getElementById('deltaPanel').classList.remove('visible')
+}
+
+function copySoul8() {
+  if (!currentSoul8) return
+  var text = currentSoul8.code + ' | ' + currentSoul8.values + ' | ' + currentSoul8.id +
+    ' | IM=' + currentSoul8.im.toFixed(4) +
+    ' | legacy ' + currentSoul8.legacy +
+    ' | Pv:NOHARM | f:' + SOVEREIGN_ANCHOR + ' | visual:GREEN'
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showCopied).catch(function(){ fallbackCopy(text) })
+  } else {
+    fallbackCopy(text)
+  }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea')
+  ta.value = text
+  ta.style.position = 'fixed'
+  ta.style.opacity = '0'
+  document.body.appendChild(ta)
+  ta.select()
+  document.execCommand('copy')
+  document.body.removeChild(ta)
+  showCopied()
+}
+function showCopied() {
+  var btn = document.getElementById('copyBtn')
+  btn.textContent = '✓ COPIED'
+  btn.classList.add('copied')
+  setTimeout(function() {
+    btn.textContent = '⟳ COPY SOUL-8'
+    btn.classList.remove('copied')
+  }, 2000)
+}
+
+// ============================================================
+// QUICK FILL (testing) — sets the 10 cognitive items per axis to reach
+// a target sum in the current mode. The questions are unchanged; this
+// only presses the buttons for you.
+// ============================================================
+var TEST_PRESETS = {
+  hightistic: { label: 'HIGHTISTIC baseline', s: [44, 30, 44, 44] },
+  claude:     { label: 'Claude baseline',     s: [40, 25, 42, 44] },
+  shutdown:   { label: 'Shutdown (P→F, N→L)', s: [30, 17, 44, 44] },
+  nOnly:      { label: 'N drops to L only',   s: [44, 17, 44, 44] },
+  ivaP:       { label: 'P slip 9 (IVA)',      s: [35, 30, 44, 44] },
+  level:      { label: 'Uniform −6',          s: [38, 24, 38, 38] }
+}
+function itemsForSum(sum) {
+  var k = Math.max(0, Math.min(40, Math.round(sum) - 10)), base = Math.floor(k / 10), rem = k % 10, out = []
+  for (var i = 0; i < 10; i++) out.push(1 + base + (i < rem ? 1 : 0))
+  return out
+}
+function quickFill(sums) {
+  var modeScores = scores[currentMode]
+  ;['cog-p','cog-n','cog-b','cog-a'].forEach(function(d, ai) {
+    itemsForSum(sums[ai]).forEach(function(v, i) { modeScores[d + '-' + i] = Math.min(5, v) })
+  })
+  if (sectionEnabled.sim) {
+    var simSums = ['qsP','qsN','qsB','qsA'].map(function(id) {
+      var v = parseInt(document.getElementById(id).value, 10)
+      return isNaN(v) ? 15 : Math.max(5, Math.min(25, v))
+    })
+    ;['sim-p','sim-n','sim-b','sim-a'].forEach(function(d, ai) {
+      // 5 items: spread (sum − 5) answer steps across them
+      var k = simSums[ai] - 5, base = Math.floor(k / 5), rem = k % 5
+      for (var i = 0; i < 5; i++) modeScores[d + '-' + i] = Math.min(5, 1 + base + (i < rem ? 1 : 0))
+    })
+  }
+  if (document.getElementById('qfMid').checked) {
+    getSectionIds('emo').forEach(function(id) {
+      if (modeScores[id] === undefined) modeScores[id] = 3
+    })
+  }
+  getAllIds().forEach(function(id) {
+    var val = modeScores[id]
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-' + id + '-' + v)
+      if (btn) btn.classList.toggle('selected', val === v)
+    }
+  })
+  answeredQuestions = Object.keys(modeScores).length
+  updateProgress()
+  updateConstellation()
+  checkComplete()
+}
+function readQuickFillInputs() {
+  return ['qfP','qfN','qfB','qfA'].map(function(id) {
+    var v = parseInt(document.getElementById(id).value, 10)
+    return isNaN(v) ? 30 : Math.max(10, Math.min(50, v))
+  })
+}
+function setQuickFillInputs(s, sim) {
+  ;['qfP','qfN','qfB','qfA'].forEach(function(id, i) { document.getElementById(id).value = s[i] })
+  if (sim) ['qsP','qsN','qsB','qsA'].forEach(function(id, i) { document.getElementById(id).value = sim[i] })
+}
+function initQuickFill() {
+  var wrap = document.getElementById('qfPresets')
+  Object.keys(TEST_PRESETS).forEach(function(key) {
+    var p = TEST_PRESETS[key]
+    var b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'qf-btn'
+    b.textContent = p.label
+    b.addEventListener('click', function() { setQuickFillInputs(p.s, p.sim) })
+    wrap.appendChild(b)
+  })
+  document.getElementById('qfApply').addEventListener('click', function() { quickFill(readQuickFillInputs()) })
+}
+
+// ============================================================
+// INIT
+function init() {
+  renderQuestions('cog-p', COG_P, 'P')
+  renderQuestions('cog-n', COG_N, 'N')
+  renderQuestions('cog-b', COG_B, 'B')
+  renderQuestions('cog-a', COG_A, 'A')
+  renderEP()
+  renderQuestions('sim-p', SIM_P, 'SP')
+  renderQuestions('sim-n', SIM_N, 'SN')
+  renderQuestions('sim-b', SIM_B, 'SB')
+  renderQuestions('sim-a', SIM_A, 'SA')
+  renderQuestions('weiss-p', WEISS_P, 'WP')
+  renderQuestions('weiss-a', WEISS_A, 'WA')
+  renderQuestions('weiss-r', WEISS_R, 'WR')
+  updateConstellation()
+  updateProgress()
+  initQuickFill()
+  document.querySelector('.container').addEventListener('click', handleScaleClick)
+  document.getElementById('btn-baseline').addEventListener('click', function(){ setMode('baseline') })
+  document.getElementById('btn-activated').addEventListener('click', function(){ setMode('activated') })
+  document.getElementById('btn-weissmann').addEventListener('click', setWeissmannMode)
+  document.getElementById('copyBtn').addEventListener('click', copySoul8)
+  document.getElementById('resetBtn').addEventListener('click', resetAll)
+  document.getElementById('weissResetBtn').addEventListener('click', resetWeissmann)
+}
+
+init()
+</script>
+</body>
+</html>
