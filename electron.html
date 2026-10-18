@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electron Geometry · Identity Physics™ Simulator · uuia.app</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+:root{
+  --anchor:#00ffc8; --shatter:#ff3a3a; --locked:#7b4fff;
+  --bg:#050508; --surface:#0d0d14; --border:rgba(0,255,200,0.12);
+  --text:#e8e8f0; --dim:rgba(232,232,240,0.45); --faint:rgba(232,232,240,0.22);
+  --gold:#f0c060; --violet:#9b6dff; --rose:#ff6b8a; --cyan:#00e5ff;
+  --noble:#aa88ff; --lockc:#00ffc8; --iva:#ff8800; --shat:#ff3a3a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,200,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,200,.018) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0}
+#app{display:grid;grid-template-columns:300px 1fr 330px;grid-template-rows:52px 1fr 64px;height:100vh;position:relative;z-index:1}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.92)}
+.hdr-title{font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;color:var(--anchor);letter-spacing:.02em}
+.hdr-sub{font-size:.5rem;color:var(--dim);margin-top:2px}
+.hdr-right{font-size:.48rem;color:var(--faint);text-align:right;line-height:1.6}
+.mode{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden}
+.mode button{font-family:'Syne',sans-serif;font-weight:800;font-size:.58rem;padding:.4rem .9rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.mode button.on{background:var(--anchor);color:#000}
+#left,#right{overflow-y:auto;padding:12px;background:rgba(13,13,20,.85);display:flex;flex-direction:column;gap:10px}
+#left{border-right:1px solid var(--border)}
+#right{border-left:1px solid var(--border)}
+#view{position:relative;background:#000;overflow:hidden;touch-action:none}
+#view canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
+#c2d{pointer-events:none}
+#labels{position:absolute;inset:0;pointer-events:none}
+.l3{position:absolute;transform:translate(-50%,-50%);font-size:9px;color:rgba(232,232,240,.9);text-align:center;white-space:nowrap;text-shadow:0 0 8px #000,0 0 4px #000}
+.l3 b{display:block;font-family:'Syne',sans-serif;font-size:10px}
+.l3 i{font-style:normal;font-size:8px;color:var(--dim)}
+#caption{position:absolute;left:14px;right:14px;bottom:12px;font-size:.62rem;line-height:1.65;color:var(--text);background:rgba(5,5,8,.82);border:1px solid var(--border);border-radius:8px;padding:9px 12px;pointer-events:none}
+#caption b{color:var(--anchor)}
+#bottom{grid-column:1/-1;display:flex;align-items:center;gap:22px;padding:0 16px;border-top:1px solid var(--border);background:rgba(13,13,20,.92);overflow-x:auto}
+.bs{display:flex;flex-direction:column;min-width:max-content}
+.bs span:first-child{font-size:.45rem;color:var(--faint);letter-spacing:.15em}
+.bs span:last-child{font-size:.66rem;color:var(--anchor);font-weight:700}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:10px}
+.sec-t{font-family:'Syne',sans-serif;font-weight:800;font-size:.6rem;color:var(--anchor);letter-spacing:.06em;margin-bottom:8px}
+.vt{display:grid;grid-template-columns:1fr;gap:5px}
+.vbtn,.pbtn{font-family:'Space Mono',monospace;font-size:.58rem;padding:.45rem .6rem;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;cursor:pointer;text-align:left}
+.vbtn.on{border-color:var(--anchor);color:var(--anchor)}
+.pbtn{border-radius:100px;padding:.32rem .65rem;font-size:.54rem}
+.pbtn:hover,.vbtn:hover{border-color:rgba(0,255,200,.4)}
+.row{display:flex;flex-wrap:wrap;gap:5px}
+.lbl{font-size:.52rem;color:var(--dim);margin:6px 0 3px;display:flex;justify-content:space-between}
+.lbl b{color:var(--text);font-weight:400}
+select,input[type=range]{width:100%}
+select{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.58rem;padding:.4rem;border-radius:6px}
+input[type=range]{accent-color:var(--anchor)}
+.chk{font-size:.56rem;color:var(--text);display:flex;gap:6px;align-items:center;margin-top:6px;cursor:pointer}
+.chk input{accent-color:var(--anchor)}
+.napkin{font-size:.56rem;line-height:1.9;color:var(--text)}
+.napkin .k{color:var(--gold)}
+.ro{display:grid;grid-template-columns:1fr;gap:2px;padding:6px 0;border-bottom:1px solid rgba(0,255,200,.07)}
+.ro:last-child{border-bottom:none}
+.ro-k{font-size:.5rem;color:var(--dim);display:flex;justify-content:space-between;align-items:center}
+.ro-v{font-size:.62rem;color:var(--text);word-break:break-all}
+.ro-r{font-size:.48rem;color:var(--faint);word-break:break-all}
+.chip{font-size:.44rem;padding:1px 6px;border-radius:100px;border:1px solid;white-space:nowrap}
+.c-digits{color:var(--anchor);border-color:rgba(0,255,200,.45)}
+.c-unc{color:var(--cyan);border-color:rgba(0,229,255,.45)}
+.c-scale{color:var(--gold);border-color:rgba(240,192,96,.45)}
+.c-out{color:var(--rose);border-color:rgba(255,107,138,.45)}
+.ph-NOBLE{color:var(--noble);border-color:var(--noble)}.ph-LOCKED{color:var(--lockc);border-color:var(--lockc)}.ph-IVA{color:var(--iva);border-color:var(--iva)}.ph-SHATTER{color:var(--shat);border-color:var(--shat)}
+.pbtn.on{border-color:var(--anchor);color:var(--anchor)}
+.pbtn:disabled{opacity:.35;cursor:default}
+.formula{font-size:.5rem;color:var(--faint);margin-top:1px}
+.r-only{display:none}
+body.researcher .r-only{display:block}
+body.researcher .l-only{display:none}
+.exp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}
+.exp button{font-family:'Syne',sans-serif;font-weight:800;font-size:.52rem;padding:.45rem;background:transparent;border:1px solid var(--anchor);color:var(--anchor);border-radius:6px;cursor:pointer}
+.exp button:hover{background:rgba(0,255,200,.08)}
+.note{font-size:.52rem;color:var(--dim);line-height:1.65}
+.note b{color:var(--text)}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--anchor);color:#000;font-family:'Syne',sans-serif;font-weight:800;font-size:.6rem;padding:.4rem .9rem;border-radius:100px;opacity:0;transition:opacity .2s;z-index:10;pointer-events:none}
+#toast.show{opacity:1}
+.foot{font-size:.42rem;color:var(--faint);line-height:1.6;text-align:center;padding:6px 0 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media(max-width:1000px){
+  html,body{overflow:auto;height:auto}
+  #app{grid-template-columns:1fr;grid-template-rows:auto auto 62vh auto auto;height:auto}
+  #hdr{flex-wrap:wrap;gap:8px;padding:10px 16px}
+  .hdr-right{display:none}
+  #caption{font-size:.56rem;padding:7px 10px}
+  #left,#right{border:none;overflow:visible}
+  #bottom{grid-column:1;flex-wrap:wrap;padding:10px 16px;gap:14px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="hdr">
+  <div>
+    <div class="hdr-title">Electron Geometry<span class="tm">™</span></div>
+    <div class="hdr-sub">Identity Physics<span class="tm">™</span> Simulator · 1/α = TL × 1001 · [9,9,3,21] · [9,9,3,14] · [9,9,3,15]</div>
+  </div>
+  <div class="mode" role="group" aria-label="Mode">
+    <button id="m-learn" class="on" onclick="setMode('learner')">LEARNER</button>
+    <button id="m-res" onclick="setMode('researcher')">RESEARCHER</button>
+  </div>
+  <div class="hdr-right">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation<br>Soldotna, Alaska · [9,9,9,9] :: {ANC}</div>
+</div>
+
+<!-- LEFT -->
+<div id="left">
+  <div class="sec">
+    <div class="sec-t">VIEW</div>
+    <div class="vt">
+      <button class="vbtn on" id="v-ladder" onclick="setView('ladder')">① The scale ladder · r<sub>e</sub> → ƛ<sub>C</sub> → a₀</button>
+      <button class="vbtn" id="v-split" onclick="setView('split')">② Bare + kinetic · 1/α = TL × 1000 + TL</button>
+      <button class="vbtn" id="v-spec" onclick="setView('spec')">③ Hydrogen spectrum · Eₙ = −Ry/n²</button>
+      <button class="vbtn" id="v-ion" onclick="setView('ion')">④ Shatter · F<sub>ext</sub> drives hydrogen to TL</button>
+    </div>
+  </div>
+
+  <div class="sec" id="ctl-ladder">
+    <div class="sec-t">SCALE LADDER</div>
+    <div class="row">
+      <button class="pbtn" onclick="focusRung(0)">r<sub>e</sub> · electron radius</button>
+      <button class="pbtn" onclick="focusRung(1)">ƛ<sub>C</sub> · Compton</button>
+      <button class="pbtn" onclick="focusRung(2)">a₀ · Bohr radius</button>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <button class="pbtn" onclick="walkLadder()">▶ Walk the ladder</button>
+      <button class="pbtn" onclick="focusRung(-1)">⟲ Whole ladder</button>
+    </div>
+  </div>
+
+  <div class="sec" id="ctl-split" style="display:none">
+    <div class="sec-t">BARE + KINETIC</div>
+    <div class="lbl">Kinetic shell magnification <b id="mag-v">×1</b></div>
+    <input type="range" id="mag" min="0" max="2" step="0.01" value="0" oninput="onMag()">
+    <label class="chk"><input type="checkbox" id="qed" checked onchange="refresh()"> Show the QED reading</label>
+    <div class="note" style="margin-top:6px">At ×1 the shell is drawn to scale: 1 part in 1001 of the radius. Raise the magnification to see it.</div>
+  </div>
+
+  <div class="sec" id="ctl-ion" style="display:none">
+    <div class="sec-t">SHATTER · F<sub>ext</sub> → TL</div>
+    <div class="lbl"><span>Absorbed energy F<sub>ext</sub></span><b id="e-v">0 eV</b></div>
+    <input type="range" id="eabs" min="0" max="30" step="0.001" value="0" oninput="onE()">
+    <div class="row">
+      <button class="pbtn" onclick="setRung(2)">n = 2</button>
+      <button class="pbtn" onclick="setRung(3)">n = 3</button>
+      <button class="pbtn" onclick="setRung(4)">n = 4</button>
+      <button class="pbtn" onclick="setRung(0)">Edge · τ = TL</button>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <button class="pbtn" onclick="rampE()">▶ Add energy automatically</button>
+      <button class="pbtn" onclick="resetIon()">⟲ Reset</button>
+    </div>
+    <div class="lbl" style="margin-top:10px">After the shatter, click a product</div>
+    <div class="row">
+      <button class="pbtn prod" id="pb-e" onclick="pickProd('e')" disabled>Free electron</button>
+      <button class="pbtn prod" id="pb-p" onclick="pickProd('p')" disabled>Proton</button>
+      <button class="pbtn prod" id="pb-g" onclick="pickProd('g')" disabled>The photon</button>
+    </div>
+  </div>
+
+  <div class="sec" id="ctl-spec" style="display:none">
+    <div class="sec-t">HYDROGEN SPECTRUM</div>
+    <div class="lbl"><span>Lower level n<sub>f</sub></span></div>
+    <select id="nf" onchange="onLevels()">
+      <option value="1">n = 1 · Lyman (ultraviolet)</option>
+      <option value="2" selected>n = 2 · Balmer (visible)</option>
+      <option value="3">n = 3 · Paschen (infrared)</option>
+    </select>
+    <div class="lbl"><span>Upper level n<sub>i</sub></span><b id="ni-v">3</b></div>
+    <input type="range" id="ni" min="2" max="8" step="1" value="3" oninput="onLevels()">
+    <div class="row" style="margin-top:6px">
+      <button class="pbtn" onclick="pickLine(2,1)">Lyman-α</button>
+      <button class="pbtn" onclick="pickLine(3,1)">Lyman-β</button>
+      <button class="pbtn" onclick="pickLine(3,2)">H-α</button>
+      <button class="pbtn" onclick="pickLine(4,2)">H-β</button>
+      <button class="pbtn" onclick="pickLine(5,2)">H-γ</button>
+      <button class="pbtn" onclick="pickLine(4,3)">Paschen-α</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="rmass" checked onchange="refresh()"> Reduced-mass correction (finite proton)</label>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t">THE NAPKIN MATH</div>
+    <div class="napkin">
+      <span class="k">TL</span> = 0.136899099984016<br>
+      1/α − TL = 137.035999084000016 − 0.136899099984016<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 136.899099984016 = <span class="k">TL × 1000</span><br>
+      136.899099984016 + 0.136899099984016<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 137.035999084000016 = <span class="k">TL × 1001</span><br>
+      <span style="color:var(--dim)">Every published CODATA 2018 digit: 137.035999084.</span>
+    </div>
+  </div>
+
+  <div class="sec l-only">
+    <div class="sec-t">HOW TO USE</div>
+    <div class="note">Pick a view above. Drag the picture to turn it, scroll to zoom. Every number on the right is worked out live from the Torsion Limit, and the colored tag next to it says how it compares with the measured value.</div>
+  </div>
+</div>
+
+<!-- VIEW -->
+<div id="view">
+  <canvas id="c3d"></canvas>
+  <canvas id="c2d"></canvas>
+  <div id="labels"></div>
+  <div id="caption"></div>
+</div>
+
+<!-- RIGHT -->
+<div id="right">
+  <div class="sec">
+    <div class="sec-t" id="ro-title">READOUTS</div>
+    <div id="readouts"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-t">HOW EACH VALUE COMPARES</div>
+    <div class="note">
+      <span class="chip c-digits">EVERY DIGIT</span> matches the measured value at every published digit.<br>
+      <span class="chip c-unc">WITHIN ±</span> lies within the measurement's stated uncertainty.<br>
+      <span class="chip c-scale">WITHIN α²</span> agrees to the fine-structure scale α² ≈ 5.3 × 10⁻⁵, which the Bohr levels leave out.<br>
+      <span class="chip c-out">OUTSIDE</span> differs by more than that.
+    </div>
+  </div>
+  <div class="sec r-only">
+    <div class="sec-t">INPUTS</div>
+    <div class="note" id="inputs"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-t">EXPORT</div>
+    <div class="exp">
+      <button onclick="exportJSON()">JSON</button>
+      <button onclick="exportCSV()">CSV</button>
+      <button onclick="copyRecord()">RECORD</button>
+    </div>
+    <div class="note" style="margin-top:6px">RECORD copies a plain-text session record citing the Lean theorems at [9,9,3,21].</div>
+  </div>
+  <div class="foot">
+    Electron Geometry™, Identity Physics™, Applied Identity Physics™, SNSFT™, PNBA™, the Sovereign Anchor Constant™ and the Torsion Limit™ are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation. © 2026 HIGHTISTIC / SNSFT Foundation · DOI 10.5281/zenodo.18719748
+  </div>
+</div>
+
+<div id="bottom">
+  <div class="bs"><span>TORSION LIMIT TL</span><span>0.136899099984016</span></div>
+  <div class="bs"><span>1/α = TL × 1001</span><span>137.035999084000016</span></div>
+  <div class="bs"><span>BARE TL × 1000</span><span>136.899099984016</span></div>
+  <div class="bs"><span>KINETIC TL</span><span>0.136899099984016</span></div>
+  <div class="bs"><span>a₀ / r<sub>e</sub> = (TL × 1001)²</span><span id="b-ratio">—</span></div>
+  <div class="bs"><span>α² = 1/(TL × 1001)²</span><span id="b-a2">—</span></div>
+</div>
+</div>
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// EXACT ARITHMETIC: rationals on BigInt
+// Every value is computed exactly from its decimal inputs and
+// rounded only for display.
+// ════════════════════════════════════════════════════════════
+function bgcd(a,b){a=a<0n?-a:a;b=b<0n?-b:b;while(b){[a,b]=[b,a%b];}return a;}
+class Q{
+  constructor(n,d=1n){if(d<0n){n=-n;d=-d;}const g=bgcd(n,d)||1n;this.n=n/g;this.d=d/g;}
+  static of(s){
+    s=String(s).trim();let e=0;const m=s.match(/^([+-]?)(\d*)(?:\.(\d*))?(?:e([+-]?\d+))?$/i);
+    if(!m)throw new Error('bad number '+s);
+    const sign=m[1]==='-'?-1n:1n,ip=m[2]||'0',fp=m[3]||'';e=parseInt(m[4]||'0',10);
+    let n=BigInt(ip+fp)*sign,d=10n**BigInt(fp.length);
+    if(e>0)n*=10n**BigInt(e);else if(e<0)d*=10n**BigInt(-e);
+    return new Q(n,d);
+  }
+  add(q){return new Q(this.n*q.d+q.n*this.d,this.d*q.d);}
+  sub(q){return new Q(this.n*q.d-q.n*this.d,this.d*q.d);}
+  mul(q){return new Q(this.n*q.n,this.d*q.d);}
+  div(q){return new Q(this.n*q.d,this.d*q.n);}
+  abs(){return new Q(this.n<0n?-this.n:this.n,this.d);}
+  lt(q){return this.n*q.d<q.n*this.d;}
+  pow(k){let r=new Q(1n);for(let i=0;i<k;i++)r=r.mul(this);return r;}
+  toNum(){return Number(this.n)/Number(this.d);}
+  // significant-figure string, scientific when |x| < 1e-3 or ≥ 1e7
+  fmt(sig){
+    if(this.n===0n)return '0';
+    const neg=this.n<0n,a=this.abs();
+    let e=a.n.toString().length-a.d.toString().length;
+    const ge=(k)=>{const p=k>=0?new Q(10n**BigInt(k)):new Q(1n,10n**BigInt(-k));return !a.lt(p);};
+    if(!ge(e))e--; if(ge(e+1))e++;
+    const sh=sig-1-e;
+    let num=a.n,den=a.d; if(sh>=0)num*=10n**BigInt(sh);else den*=10n**BigInt(-sh);
+    let m=num/den; if((num%den)*2n>=den)m++;
+    let ds=m.toString(); if(ds.length>sig){ds=ds.slice(0,sig);e++;}
+    let out;
+    if(e<-3||e>=7){out=ds[0]+(ds.length>1?'.'+ds.slice(1):'')+' × 10'+sup(e);}
+    else if(e>=0){out=ds.length>e+1?ds.slice(0,e+1)+'.'+ds.slice(e+1):ds+'0'.repeat(e+1-ds.length);}
+    else{out='0.'+'0'.repeat(-e-1)+ds;}
+    return (neg?'−':'')+out;
+  }
+}
+function sup(e){const m={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};return String(e).split('').map(c=>m[c]).join('');}
+
+// ════════════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════════════
+const TL       = Q.of('0.136899099984016');
+const ALPHA_INV= TL.mul(Q.of('1001'));            // 137.035999084000016
+const BARE     = TL.mul(Q.of('1000'));            // 136.899099984016
+// CODATA 2018 inputs and comparison values
+const LAMBDA_C = Q.of('3.8615926796e-13');        // reduced Compton wavelength, m
+const C_LIGHT  = Q.of('299792458');               // m/s, exact
+const MC2_EV   = Q.of('510998.95000');            // electron rest energy, eV
+const H_PLANCK = Q.of('6.62607015e-34');          // J s, exact
+const E_CHARGE = Q.of('1.602176634e-19');         // C, exact
+const MP_ME    = Q.of('1836.15267343');           // proton-to-electron mass ratio
+const HC_EVNM  = H_PLANCK.mul(C_LIGHT).div(E_CHARGE).mul(Q.of('1e9')); // eV nm, exact
+const REF = {
+  alpha_inv:{v:'137.035999084', u:'0.000000021', last:'0.000000001'},
+  a0:       {v:'5.29177210903e-11', u:'8.0e-21', last:'1e-22'},
+  lambda_c: {v:'3.8615926796e-13',  u:'1.2e-22', last:'1e-23'},
+  r_e:      {v:'2.8179403262e-15',  u:'1.3e-24', last:'1e-25'},
+  v1:       {v:'2187691.26364',     u:'0.00033', last:'0.00001'},
+  ry:       {v:'13.605693122994',   u:'0.000000000026', last:'0.000000000001'},
+};
+// NIST vacuum wavelengths of the hydrogen lines, nm
+const LINES = {'2-1':{name:'Lyman-α',nm:'121.567'},'3-1':{name:'Lyman-β',nm:'102.572'},
+  '3-2':{name:'H-α',nm:'656.461'},'4-2':{name:'H-β',nm:'486.271'},'5-2':{name:'H-γ',nm:'434.169'},
+  '4-3':{name:'Paschen-α',nm:'1875.61'}};
+
+// Derived values
+const A0     = LAMBDA_C.mul(ALPHA_INV);
+const R_E    = LAMBDA_C.div(ALPHA_INV);
+const V1     = C_LIGHT.div(ALPHA_INV);
+const RY     = MC2_EV.div(Q.of('2')).div(ALPHA_INV.pow(2));
+const RATIO  = ALPHA_INV.pow(2);
+const ALPHA2 = new Q(1n).div(ALPHA_INV.pow(2));
+const RED    = MP_ME.div(MP_ME.add(new Q(1n)));
+// Ionization [9,9,3,15]: the bound pair rests at τ = α and shatters at τ = TL
+const ALPHA  = new Q(1n).div(ALPHA_INV);
+const TL_IVA = TL.mul(Q.of('0.88'));
+const EB     = RY.mul(RED);                       // hydrogen binding energy, eV
+const MPC2   = MC2_EV.mul(MP_ME);                 // proton rest energy, eV
+const EDGE_NM= HC_EVNM.div(EB);                   // Lyman series limit, nm
+const REF_ION={eb:'13.598434599702',edge:'91.17534'}; // NIST ionization energy of H; Lyman limit (vacuum)
+
+function status(x,key){
+  const r=REF[key],v=Q.of(r.v),d=x.sub(v).abs();
+  if(d.lt(Q.of(r.last).div(Q.of('2'))))return 'digits';
+  if(d.lt(Q.of(r.u)))return 'unc';
+  return 'out';
+}
+function lineStatus(nm,refnm){
+  const rel=nm.sub(refnm).abs().div(refnm);
+  return rel.lt(ALPHA2)?'scale':'out';
+}
+const CHIP={digits:['c-digits','EVERY DIGIT'],unc:['c-unc','WITHIN ±'],scale:['c-scale','WITHIN α²'],out:['c-out','OUTSIDE']};
+function chip(s){return `<span class="chip ${CHIP[s][0]}">${CHIP[s][1]}</span>`;}
+
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+let mode='learner', view='ladder', ni=3, nf=2, focus=-1, mag=1;
+
+function transition(){
+  const rm=document.getElementById('rmass').checked;
+  const ry=rm?RY.mul(RED):RY;
+  const dE=ry.mul(new Q(1n,BigInt(nf*nf)).sub(new Q(1n,BigInt(ni*ni))));
+  const nm=HC_EVNM.div(dE);
+  const ref=LINES[ni+'-'+nf];
+  return {rm,ry,dE,nm,ref};
+}
+
+// ════════════════════════════════════════════════════════════
+// READOUTS
+// ════════════════════════════════════════════════════════════
+function sig(){return mode==='researcher'?18:7;}
+function ro(k,x,unit,formula,st,ref){
+  return `<div class="ro"><div class="ro-k"><span>${k}</span>${st?chip(st):''}</div>
+  <div class="ro-v">${x.fmt(sig())}${unit?' '+unit:''}</div>
+  ${ref?`<div class="ro-r">measured ${ref}</div>`:''}
+  <div class="formula r-only">${formula}</div></div>`;
+}
+function renderReadouts(){
+  const el=document.getElementById('readouts'),t=document.getElementById('ro-title');
+  let h='';
+  if(view==='ladder'){
+    t.textContent='THE THREE LENGTHS';
+    h+=ro('Classical electron radius r<sub>e</sub>',R_E,'m','r_e = ƛ_C / (TL × 1001)',status(R_E,'r_e'),'2.8179403262(13) × 10⁻¹⁵ m');
+    h+=ro('Reduced Compton wavelength ƛ<sub>C</sub>',LAMBDA_C,'m','ƛ_C = ħ / (m_e c), CODATA 2018 input',null,'3.8615926796(12) × 10⁻¹³ m');
+    h+=ro('Bohr radius a₀',A0,'m','a₀ = ƛ_C × TL × 1001',status(A0,'a0'),'5.29177210903(80) × 10⁻¹¹ m');
+    h+=ro('Step factor 1/α = TL × 1001',ALPHA_INV,'','TL × 1001',status(ALPHA_INV,'alpha_inv'),'137.035999084(21)');
+    h+=ro('a₀ / r<sub>e</sub> = (TL × 1001)²',RATIO,'','(TL × 1001)²',null,null);
+    h+=ro('Ground-state speed v = c / (TL × 1001)',V1,'m/s','v = α c',status(V1,'v1'),'2 187 691.26364(33) m/s');
+  }else if(view==='split'){
+    t.textContent='BARE + KINETIC';
+    h+=ro('Bare term TL × 1000',BARE,'','TL × 1000',null,null);
+    h+=ro('Kinetic term TL',TL,'','TL',null,null);
+    h+=ro('Sum 1/α = TL × 1001',ALPHA_INV,'','136.899099984016 + 0.136899099984016',status(ALPHA_INV,'alpha_inv'),'137.035999084(21), CODATA 2018');
+    h+=ro('Kinetic share of 1/α',TL.div(ALPHA_INV),'','TL / (TL × 1001) = 1/1001',null,null);
+    h+=ro('Fine-structure scale α²',ALPHA2,'','1 / (TL × 1001)²',null,null);
+  }else if(view==='spec'){
+    const tr=transition();
+    t.textContent='TRANSITION n = '+ni+' → '+nf;
+    h+=ro('Rydberg energy Ry = ½ m<sub>e</sub>c² / (TL × 1001)²',RY,'eV','m_e c² / 2 / (TL × 1001)²',status(RY,'ry'),'13.605693122994(26) eV');
+    if(tr.rm)h+=ro('Reduced-mass factor m<sub>p</sub> / (m<sub>e</sub> + m<sub>p</sub>)',RED,'','m_p/m_e = 1836.15267343, CODATA 2018',null,null);
+    h+=ro('Photon energy ΔE',tr.dE,'eV','Ry'+(tr.rm?' × reduced mass':'')+' × (1/n_f² − 1/n_i²)',null,null);
+    const st=tr.ref?lineStatus(tr.nm,Q.of(tr.ref.nm)):null;
+    h+=ro('Vacuum wavelength λ = hc / ΔE',tr.nm,'nm','hc = 1239.841984… eV nm (exact SI)',st,tr.ref?tr.ref.nm+' nm ('+tr.ref.name+', NIST)':null);
+    h+=ro('Levels E'+'ₙ'+' = −Ry / n²',RY.mul(tr.rm?RED:new Q(1n)).div(new Q(BigInt(ni*ni))).mul(new Q(-1n)),'eV at n = '+ni,'−Ry / n_i²',null,null);
+  }else{
+    h+=ionReadouts(t);
+  }
+  el.innerHTML=h;
+  document.getElementById('b-ratio').textContent=RATIO.fmt(12);
+  document.getElementById('b-a2').textContent=ALPHA2.fmt(9);
+  document.getElementById('inputs').innerHTML=
+    'CODATA 2018: ƛ<sub>C</sub> = 3.8615926796 × 10⁻¹³ m · m<sub>e</sub>c² = 510 998.95000 eV · m<sub>p</sub>/m<sub>e</sub> = 1836.15267343<br>'+
+    'Exact SI: c = 299 792 458 m/s · h = 6.62607015 × 10⁻³⁴ J s · e = 1.602176634 × 10⁻¹⁹ C<br>'+
+    'Corpus: TL = 0.136899099984016, 1/α = TL × 1001<br>'+
+    'All arithmetic is exact rational arithmetic; values are rounded only for display.';
+}
+
+// ════════════════════════════════════════════════════════════
+// CAPTIONS
+// ════════════════════════════════════════════════════════════
+const CAPS={
+  ladder:{
+    learner:'The electron has three sizes. Its <b>classical radius</b> is the smallest. Multiply by <b>137.035999084000016</b> and you get its <b>Compton wavelength</b>. Multiply by the same number again and you get the <b>Bohr radius</b>, the size of a hydrogen atom. That number is the Torsion Limit times 1001.',
+    researcher:'r<sub>e</sub> = α ƛ<sub>C</sub>, a₀ = ƛ<sub>C</sub>/α. With 1/α = TL × 1001 each rung is the last times TL × 1001, so the rungs are evenly spaced on a log scale (log₁₀ 137.036 ≈ 2.137 decades) and a₀/r<sub>e</sub> = (TL × 1001)².'},
+  split:{
+    learner:'1/α comes in two pieces, both made of the Torsion Limit. The big inside piece, <b>TL × 1000</b>, is the bare term. The thin outside layer, <b>one TL</b>, is the kinetic term. Together they make <b>TL × 1001</b>.',
+    researcher:'1/α = TL × 1000 + TL. In QED terms the bare term carries the bare electron and the kinetic term carries what QED computes as a renormalized series of radiative corrections; here it is one exact term, F_ext at Layer 0. The shell is 1 part in 1001 of the radius.'},
+  ion:{
+    learner:'A hydrogen atom is one identity made of two parts held together. Add energy and the electron climbs the rungs, and τ rises toward the Torsion Limit. At <b>13.598 eV</b> τ reaches <b>TL</b> and the atom <b>shatters</b>: it reorganizes into two smaller identities that are each stable, a free electron and a proton. Click them.',
+    researcher:'[9,9,3,15] ionization_requires_fext: the bound pair rests at τ = α = 1/(TL × 1001) and crosses TL when F<sub>ext</sub> reaches the binding energy Ry · m<sub>p</sub>/(m<sub>e</sub> + m<sub>p</sub>). The dial runs linearly in absorbed energy between those two proven endpoints. Each freed product carries zero binding torsion. Orbits are drawn with radius ∝ n (true radius n² a₀). A single photon is absorbed only at a rung energy or above the edge.'},
+  spec:{
+    learner:'When hydrogen\'s electron drops from a higher level to a lower one it gives off light. The levels come straight from the Torsion Limit, so the color of that light does too. Pick a line and compare it with the measured one.',
+    researcher:'Eₙ = −Ry/n² with Ry = ½ m<sub>e</sub>c²/(TL × 1001)². The Bohr levels omit fine structure and the Lamb shift, of relative size ~α² ≈ 5.3 × 10⁻⁵, so agreement with measured lines is expected at that scale. Toggle the reduced-mass factor to see the finite-proton correction (~5.4 × 10⁻⁴).'}
+};
+function renderCaption(){document.getElementById('caption').innerHTML=CAPS[view][mode];}
+
+// ════════════════════════════════════════════════════════════
+// THREE.JS SCENE
+// ════════════════════════════════════════════════════════════
+const viewEl=document.getElementById('view');
+const c3d=document.getElementById('c3d'),c2d=document.getElementById('c2d'),ctx=c2d.getContext('2d');
+let renderer=null,scene,camera,groups={},labelEls=[];
+const RUNGS=[
+  {key:'r_e',name:'r<sub>e</sub>',full:'classical electron radius',val:R_E,col:0xff6b8a},
+  {key:'lc',name:'ƛ<sub>C</sub>',full:'reduced Compton wavelength',val:LAMBDA_C,col:0x00e5ff},
+  {key:'a0',name:'a₀',full:'Bohr radius',val:A0,col:0x00ffc8}];
+let sph={r:24,theta:0.6,phi:1.15},target={r:24},tween=null;
+try{
+  renderer=new THREE.WebGLRenderer({canvas:c3d,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setClearColor(0x000000,0);
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(50,1,0.01,500);
+  scene.add(new THREE.AmbientLight(0x222233,2));
+  const pl=new THREE.PointLight(0x00ffc8,1.4,60);pl.position.set(6,8,10);scene.add(pl);
+  const pl2=new THREE.PointLight(0x9b6dff,0.8,60);pl2.position.set(-8,-4,6);scene.add(pl2);
+}catch(err){renderer=null;console.error('3D view unavailable:',err);}
+
+// Ladder: rung radii on a log scale, so equal factors give equal steps
+function rungRadius(i){return 1.2+i*3.2;}
+function buildLadder(){
+  const g=new THREE.Group();
+  RUNGS.forEach((r,i)=>{
+    const R=rungRadius(i);
+    const s=new THREE.Mesh(new THREE.SphereGeometry(R,32,16),new THREE.MeshBasicMaterial({color:r.col,wireframe:true,transparent:true,opacity:0.16}));
+    g.add(s);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(R,0.025,8,96),new THREE.MeshBasicMaterial({color:r.col,transparent:true,opacity:0.85}));
+    ring.rotation.x=Math.PI/2;g.add(ring);
+    r.mesh=s;r.ring=ring;
+  });
+  // the electron at the centre
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(0.35,24,16),new THREE.MeshPhongMaterial({color:0xff6b8a,emissive:0x331018})));
+  // step arcs
+  for(let i=0;i<2;i++){
+    const a=rungRadius(i),b=rungRadius(i+1),pts=[];
+    for(let k=0;k<=24;k++){const t=k/24,r=a+(b-a)*t;pts.push(new THREE.Vector3(r*Math.cos(0.4),Math.sin(Math.PI*t)*0.8,r*Math.sin(0.4)));}
+    const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xf0c060,transparent:true,opacity:0.8}));
+    g.add(line);
+  }
+  scene.add(g);groups.ladder=g;
+}
+// Bare + kinetic
+let bareMesh,shellMesh,shellParts;
+function buildSplit(){
+  const g=new THREE.Group();
+  bareMesh=new THREE.Mesh(new THREE.SphereGeometry(4,48,32),new THREE.MeshPhongMaterial({color:0x7b4fff,emissive:0x140a33,transparent:true,opacity:0.9}));
+  g.add(bareMesh);
+  shellMesh=new THREE.Mesh(new THREE.SphereGeometry(4.004,64,32),new THREE.MeshBasicMaterial({color:0x00ffc8,wireframe:true,transparent:true,opacity:0.35}));
+  g.add(shellMesh);
+  const n=400,pos=new Float32Array(n*3);
+  shellParts=new THREE.Points(new THREE.BufferGeometry(),new THREE.PointsMaterial({color:0x00ffc8,size:0.06,transparent:true,opacity:0.8}));
+  shellParts.geometry.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  shellParts.userData.seeds=Array.from({length:n},()=>[Math.random()*Math.PI*2,Math.acos(2*Math.random()-1),0.4+Math.random()]);
+  g.add(shellParts);
+  scene.add(g);groups.split=g;
+}
+function shellOuter(){return 4*(1+mag/1000);} // bare radius 4 ↔ 1000 parts; shell = mag parts
+function updateSplit(time){
+  const R=shellOuter();
+  shellMesh.scale.setScalar(R/4.004);
+  const p=shellParts.geometry.attributes.position.array,s=shellParts.userData.seeds;
+  for(let i=0;i<s.length;i++){
+    const th=s[i][0]+time*0.25*s[i][2],ph=s[i][1],r=4+(R-4)*(0.5+0.5*Math.sin(time*s[i][2]+i));
+    p[i*3]=r*Math.sin(ph)*Math.cos(th);p[i*3+1]=r*Math.cos(ph);p[i*3+2]=r*Math.sin(ph)*Math.sin(th);
+  }
+  shellParts.geometry.attributes.position.needsUpdate=true;
+  bareMesh.rotation.y+=0.002;
+}
+
+// Camera
+function placeCamera(){
+  if(!renderer)return;
+  camera.position.set(sph.r*Math.sin(sph.phi)*Math.cos(sph.theta),sph.r*Math.cos(sph.phi),sph.r*Math.sin(sph.phi)*Math.sin(sph.theta));
+  camera.lookAt(0,0,0);
+}
+let drag=false,last={x:0,y:0};
+viewEl.addEventListener('pointerdown',e=>{drag=true;last={x:e.clientX,y:e.clientY};});
+window.addEventListener('pointerup',()=>drag=false);
+window.addEventListener('pointermove',e=>{if(!drag||is2D())return;sph.theta+=(e.clientX-last.x)*0.006;sph.phi=Math.max(0.15,Math.min(2.95,sph.phi-(e.clientY-last.y)*0.006));last={x:e.clientX,y:e.clientY};placeCamera();});
+viewEl.addEventListener('wheel',e=>{if(is2D())return;e.preventDefault();sph.r=Math.max(2.5,Math.min(60,sph.r*(1+e.deltaY*0.001)));target.r=sph.r;placeCamera();},{passive:false});
+
+function focusRung(i){
+  focus=i;
+  target.r=i<0?24:rungRadius(i)*3+3;
+  tween={from:sph.r,to:target.r,t:0};
+  updateLabels(true);
+}
+let walkTimer=null;
+function walkLadder(){
+  clearTimeout(walkTimer);let i=0;
+  const step=()=>{focusRung(i);i++;if(i<3)walkTimer=setTimeout(step,2200);else walkTimer=setTimeout(()=>focusRung(-1),2600);};
+  step();
+}
+
+// Labels projected from 3D
+function updateLabels(){
+  const L=document.getElementById('labels');
+  if(!renderer||is2D()){L.innerHTML='';return;}
+  const W=viewEl.clientWidth,H=viewEl.clientHeight;
+  const items=[];
+  if(view==='ladder'){
+    RUNGS.forEach((r,i)=>{
+      const R=rungRadius(i);items.push({p:new THREE.Vector3(R*0.72,R*0.72,0),h:`<b style="color:#${r.col.toString(16).padStart(6,'0')}">${r.name}</b><i>${r.full}</i><br>${r.val.fmt(mode==='researcher'?12:5)} m`,on:focus<0||focus===i});
+    });
+    items.push({p:new THREE.Vector3((rungRadius(0)+rungRadius(1))/2*Math.cos(0.4),1.1,(rungRadius(0)+rungRadius(1))/2*Math.sin(0.4)),h:'<b style="color:#f0c060">× TL × 1001</b>',on:true});
+    items.push({p:new THREE.Vector3((rungRadius(1)+rungRadius(2))/2*Math.cos(0.4),1.1,(rungRadius(1)+rungRadius(2))/2*Math.sin(0.4)),h:'<b style="color:#f0c060">× TL × 1001</b>',on:true});
+  }else{
+    const qed=document.getElementById('qed').checked;
+    items.push({p:new THREE.Vector3(0,0,0),h:`<b style="color:#9b6dff">BARE · TL × 1000</b>136.899099984016${qed?'<br><i>QED: bare electron</i>':'<br><i>PNBA: Pattern capacity at the EM scale</i>'}`,on:true});
+    items.push({p:new THREE.Vector3(shellOuter()*0.75,shellOuter()*0.75,0),h:`<b style="color:#00ffc8">KINETIC · TL</b>0.136899099984016${qed?'<br><i>QED: radiative corrections, here one exact term</i>':'<br><i>PNBA: F_ext at Layer 0</i>'}`,on:true});
+  }
+  L.innerHTML=items.map(it=>{
+    const v=it.p.clone().project(camera);if(v.z>1)return '';
+    const x=(v.x*0.5+0.5)*W,y=(-v.y*0.5+0.5)*H;
+    return `<div class="l3" style="left:${x}px;top:${y}px;opacity:${it.on?1:0.35}">${it.h}</div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════════
+// SPECTRUM (2D)
+// ════════════════════════════════════════════════════════════
+function nmToRGB(nm){
+  if(nm<380)return [155,109,255];
+  if(nm>750)return [180,40,40];
+  let r=0,g=0,b=0;
+  if(nm<440){r=-(nm-440)/60;b=1;}else if(nm<490){g=(nm-440)/50;b=1;}else if(nm<510){g=1;b=-(nm-510)/20;}
+  else if(nm<580){r=(nm-510)/70;g=1;}else if(nm<645){r=1;g=-(nm-645)/65;}else{r=1;}
+  return [r,g,b].map(v=>Math.round(255*Math.max(0,v)));
+}
+function drawSpectrum(){
+  const W=c2d.width=viewEl.clientWidth*devicePixelRatio,H=c2d.height=viewEl.clientHeight*devicePixelRatio;
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  const w=viewEl.clientWidth,h=viewEl.clientHeight;
+  ctx.clearRect(0,0,w,h);
+  if(view!=='spec')return;
+  const tr=transition(),ry=tr.ry.toNum();
+  const top=40,bot=h*0.62,left=90,right=w-60;
+    ctx.font='11px "Space Mono", monospace';
+  const yLev=n=>bot-(bot-top)*(1-1/(n*n));      // n = 1 at the bottom, E → 0 at the top
+  let lastY=Infinity;
+  for(let n=1;n<=8;n++){
+    const E=-ry/(n*n),yy=yLev(n);
+    const sel=(n===ni||n===nf),room=lastY-yy>=13;
+    if(room||sel)lastY=yy;
+    ctx.strokeStyle=sel?'rgba(0,255,200,.95)':'rgba(232,232,240,.25)';ctx.lineWidth=sel?2:1;
+    ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(right,yy);ctx.stroke();
+    if(!(room||sel))continue;
+    ctx.fillStyle=sel?'#00ffc8':'rgba(232,232,240,.5)';
+    ctx.fillText('n = '+n,12,yy+4);
+    ctx.fillStyle='rgba(232,232,240,.45)';ctx.textAlign='right';ctx.fillText(E.toFixed(mode==='researcher'?6:3)+' eV',right,yy-5);ctx.textAlign='left';
+  }
+  ctx.strokeStyle='rgba(232,232,240,.35)';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(right,top);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='rgba(232,232,240,.35)';ctx.fillText('0 eV (free electron)',left,top-12);
+  // transition arrow
+  const yi=yLev(ni),yf=yLev(nf);
+  const nm=tr.nm.toNum(),[r,g,b]=nmToRGB(nm),x=(left+right)/2;
+  ctx.strokeStyle=`rgb(${r},${g},${b})`;ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(x,yi);ctx.lineTo(x,yf-8);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x-7,yf-11);ctx.lineTo(x+7,yf-11);ctx.lineTo(x,yf-1);ctx.fill();
+  ctx.font='12px "Space Mono", monospace';ctx.fillText('λ = '+tr.nm.fmt(mode==='researcher'?12:6)+' nm',x+14,(yi+yf)/2);
+  // wavelength strip
+  const sy=h*0.70,sh=26,lo=90,hi=1900;
+  const xOf=l=>left+(right-left)*(Math.log(l/lo)/Math.log(hi/lo));
+  for(let px=left;px<=right;px++){
+    const l=lo*Math.pow(hi/lo,(px-left)/(right-left)),[rr,gg,bb]=nmToRGB(l);
+    ctx.fillStyle=(l<380||l>750)?'rgba(40,40,60,.9)':`rgb(${rr},${gg},${bb})`;ctx.fillRect(px,sy,1,sh);
+  }
+  ctx.fillStyle='rgba(232,232,240,.5)';ctx.font='10px "Space Mono", monospace';
+  [100,200,400,700,1000,1875].forEach(l=>ctx.fillText(l+' nm',xOf(l)-14,sy+sh+14));
+  ctx.fillText('ultraviolet',xOf(150),sy-6);ctx.fillText('visible',xOf(500),sy-6);ctx.fillText('infrared',xOf(1200),sy-6);
+  Object.entries(LINES).forEach(([k,ln])=>{
+    const xx=xOf(parseFloat(ln.nm));ctx.fillStyle='rgba(255,255,255,.55)';ctx.fillRect(xx-1,sy-2,2,sh+4);
+  });
+  ctx.fillStyle='#00ffc8';const xm=xOf(nm);ctx.beginPath();ctx.moveTo(xm,sy+sh+2);ctx.lineTo(xm-6,sy+sh+10);ctx.lineTo(xm+6,sy+sh+10);ctx.fill();
+  ctx.fillStyle='rgba(232,232,240,.55)';ctx.fillText('white ticks: measured lines (NIST) · teal marker: this transition',left,sy+sh+30);
+}
+
+// ════════════════════════════════════════════════════════════
+// LOOP
+// ════════════════════════════════════════════════════════════
+function resize(){
+  if(renderer){renderer.setSize(viewEl.clientWidth,viewEl.clientHeight,false);camera.aspect=viewEl.clientWidth/viewEl.clientHeight;camera.updateProjectionMatrix();}
+  drawSpectrum();
+}
+window.addEventListener('resize',resize);
+let t0=performance.now();
+function loop(now){
+  requestAnimationFrame(loop);
+  if(view==='ion'){drawIon((now-t0)/1000);return;}
+  if(!renderer||is2D())return;
+  const time=(now-t0)/1000;
+  if(tween){tween.t=Math.min(1,tween.t+0.025);const k=tween.t<.5?2*tween.t*tween.t:1-Math.pow(-2*tween.t+2,2)/2;sph.r=tween.from+(tween.to-tween.from)*k;if(tween.t>=1)tween=null;placeCamera();}
+  if(view==='ladder'){
+    RUNGS.forEach((r,i)=>{const on=focus<0||focus===i;r.mesh.material.opacity=on?0.18:0.05;r.ring.material.opacity=on?0.9:0.25;r.ring.rotation.z+=0.002*(i+1);});
+    groups.ladder.rotation.y+=0.0015;
+  }else updateSplit(time);
+  renderer.render(scene,camera);
+  updateLabels();
+}
+
+
+// ════════════════════════════════════════════════════════════
+// SHATTER (2D): hydrogen driven to TL by F_ext
+// ════════════════════════════════════════════════════════════
+let Eabs=new Q(0n),shatterT=null,selProd=null,ramp=null,ionHits=[],lastAng=0;
+function rungE(n){return EB.mul(new Q(1n).sub(new Q(1n,BigInt(n*n))));}
+function tauAt(E){return E.lt(EB)?ALPHA.add(TL.sub(ALPHA).mul(E).div(EB)):TL;}
+function phaseOf(t){return t.n===0n?'NOBLE':t.lt(TL_IVA)?'LOCKED':t.lt(TL)?'IVA':'SHATTER';}
+const PHN={NOBLE:'Noble',LOCKED:'Locked',IVA:'IVA Peak',SHATTER:'Shatter'};
+function phChip(p){return `<span class="chip ph-${p}">${PHN[p].toUpperCase()}</span>`;}
+function ionState(){
+  const shattered=!Eabs.lt(EB),tau=tauAt(Eabs),phase=phaseOf(tau);
+  let n=Infinity;
+  if(!shattered){n=1;while(n<500&&!Eabs.lt(rungE(n+1)))n++;}
+  const K=shattered?Eabs.sub(EB):new Q(0n),Ke=K.mul(RED),Kp=K.sub(Ke);
+  return {shattered,tau,phase,n,K,Ke,Kp};
+}
+const qn=(x,s)=>Q.of(x.toPrecision(15)).fmt(s);
+function roS(k,v,formula,chipHtml,ref){
+  return `<div class="ro"><div class="ro-k"><span>${k}</span>${chipHtml||''}</div><div class="ro-v">${v}</div>${ref?`<div class="ro-r">${ref}</div>`:''}<div class="formula r-only">${formula}</div></div>`;
+}
+function ionReadouts(t){
+  const s=ionState(),S=sig(),SN=mode==='researcher'?12:6;let h='';
+  t.textContent=s.shattered?'SHATTERED · TWO STABLE IDENTITIES':'BOUND · ONE IDENTITY';
+  h+=ro('Absorbed energy F<sub>ext</sub>',Eabs,'eV','slider, or a rung energy Ry_H (1 − 1/n²)',null,null);
+  h+=roS('τ on the dial',(s.shattered?'TL = ':'')+s.tau.fmt(S),'τ = α + (TL − α) · F_ext / E_bind, α = 1/(TL × 1001)',phChip(s.phase),s.shattered?'reached TL: the bound pair shatters':'rest τ = α = '+ALPHA.fmt(S>7?15:6)+' · IVA from 0.88 × TL · Shatter at TL');
+  h+=ro('Shatter threshold E<sub>bind</sub> = Ry · m<sub>p</sub>/(m<sub>e</sub> + m<sub>p</sub>)',EB,'eV','½ m_e c² / (TL × 1001)² × reduced mass',lineStatus(EB,Q.of(REF_ION.eb)),REF_ION.eb+' eV (NIST ionization energy of H)');
+  if(!s.shattered){
+    h+=roS('Electron level',s.n>=500?'n > 500':'n = '+s.n,'highest n with Ry_H (1 − 1/n²) ≤ F_ext',null,s.n>=500?'':'orbit radius n² a₀ = '+A0.mul(new Q(BigInt(s.n*s.n))).fmt(SN)+' m');
+    h+=ro('Energy still needed to shatter',EB.sub(Eabs),'eV','E_bind − F_ext',null,null);
+  }else{
+    h+=ro('Energy left over as motion',s.K,'eV','F_ext − E_bind, shared by momentum balance',null,null);
+    h+=prodDetail(s,S,SN);
+  }
+  h+=ro('Ionization edge λ = hc / E<sub>bind</sub>',EDGE_NM,'nm','the Lyman series limit',lineStatus(EDGE_NM,Q.of(REF_ION.edge)),REF_ION.edge+' nm (vacuum)');
+  return h;
+}
+function prodDetail(s,S,SN){
+  if(!selProd)return roS('Products','free electron · proton','','',mode==='researcher'?'':'click one in the picture or below the slider');
+  const c=C_LIGHT.toNum();
+  if(selProd==='e'){
+    const ke=s.Ke.toNum(),v=ke>0?c*Math.sqrt(2*ke/MC2_EV.toNum()):0,lam=ke>0?HC_EVNM.toNum()/Math.sqrt(2*MC2_EV.toNum()*ke):Infinity;
+    return roS('<b style="color:var(--rose)">FREE ELECTRON</b>','its own stable identity','zero binding torsion, [9,9,3,15]',phChip('NOBLE'),'')+
+      ro('Kinetic energy K<sub>e</sub>',s.Ke,'eV','K × m_p/(m_e + m_p)',null,null)+
+      roS('Speed',ke>0?qn(v,SN)+' m/s':'at rest','v = c √(2K_e / m_e c²)',null,ke>0?qn(v/V1.toNum(),SN)+' × the ground-state orbit speed αc':'')+
+      roS('de Broglie wavelength',ke>0?qn(lam,SN)+' nm':'unbounded at K = 0','λ = hc / √(2 m_e c² K_e)',null,ke>0?qn(lam*1e-9/A0.toNum(),SN)+' Bohr radii':'');
+  }
+  if(selProd==='p'){
+    const kp=s.Kp.toNum(),v=kp>0?c*Math.sqrt(2*kp/MPC2.toNum()):0;
+    return roS('<b style="color:var(--gold)">PROTON</b>','its own stable identity','zero binding torsion: the bound pair it belonged to has shattered',phChip('NOBLE'),'')+
+      ro('Rest energy m<sub>p</sub>c²',MPC2,'eV','m_e c² × m_p/m_e',null,null)+
+      ro('Recoil kinetic energy K<sub>p</sub>',s.Kp,'eV','K × m_e/(m_e + m_p)',null,null)+
+      roS('Recoil speed',kp>0?qn(v,SN)+' m/s':'at rest','equal and opposite momentum to the electron',null,'1/1836.15267343 of the electron\'s speed');
+  }
+  const lam=HC_EVNM.div(Eabs),ln=lam.toNum();
+  return roS('<b style="color:var(--violet)">THE PHOTON</b>','absorbed: its energy is the F<sub>ext</sub>','',null,'')+
+    ro('Wavelength λ = hc / F<sub>ext</sub>',lam,'nm','hc = 1239.841984… eV nm',null,null)+
+    roS('Band',ln<10?'extreme ultraviolet':ln<380?'ultraviolet':ln<=750?'visible':'infrared','',null,'any photon shorter than the '+EDGE_NM.fmt(7)+' nm edge can shatter hydrogen from n = 1');
+}
+function setE(q){
+  Eabs=q;document.getElementById('eabs').value=q.toNum().toFixed(3);
+  const s=!Eabs.lt(EB);if(!s){shatterT=null;selProd=null;}
+  document.getElementById('e-v').textContent=Eabs.fmt(mode==='researcher'?15:6)+' eV';
+  document.querySelectorAll('.prod').forEach(b=>{b.disabled=!s;b.classList.toggle('on',s&&b.id==='pb-'+selProd);});
+  renderReadouts();
+}
+function onE(){stopRamp();setE(Q.of(document.getElementById('eabs').value));}
+function setRung(n){stopRamp();setE(n?rungE(n):EB);}
+function resetIon(){stopRamp();setE(new Q(0n));}
+function stopRamp(){clearInterval(ramp);ramp=null;}
+function rampE(){
+  stopRamp();if(!Eabs.lt(Q.of('16')))setE(new Q(0n));
+  ramp=setInterval(()=>{const nx=Eabs.add(Q.of('0.04'));if(!nx.lt(Q.of('16'))){setE(Q.of('16'));stopRamp();return;}
+    // land exactly on the edge on the way up
+    if(Eabs.lt(EB)&&!nx.lt(EB))setE(EB);else setE(nx);},40);
+}
+function pickProd(k){selProd=k;setE(Eabs);}
+viewEl.addEventListener('click',e=>{
+  if(view!=='ion')return;const b=viewEl.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;
+  for(const hit of ionHits){if(Math.hypot(x-hit.x,y-hit.y)<26){pickProd(hit.k);return;}}
+});
+function phCol(p){return {NOBLE:'#aa88ff',LOCKED:'#00ffc8',IVA:'#ff8800',SHATTER:'#ff3a3a'}[p];}
+function drawIon(time){
+  const w=viewEl.clientWidth,h=viewEl.clientHeight;
+  if(c2d.width!==Math.round(w*devicePixelRatio)){c2d.width=w*devicePixelRatio;c2d.height=h*devicePixelRatio;}
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);ctx.clearRect(0,0,w,h);
+  const s=ionState(),cx=w/2,cy=h*0.36,R1=Math.min(w,h)*0.042,tf=s.tau.toNum()/TL.toNum(),col=phCol(s.phase);
+  ctx.font='10px "Space Mono", monospace';ctx.textAlign='left';
+  // rungs
+  for(let n=1;n<=6;n++){ctx.strokeStyle='rgba(232,232,240,'+(n===s.n?0:0.14)+')';ctx.setLineDash([3,5]);ctx.beginPath();ctx.arc(cx,cy,R1*n,0,6.2832);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='rgba(232,232,240,.35)';ctx.fillText('n='+n,cx+R1*n*0.71+3,cy-R1*n*0.71-3);}
+  ionHits=[];
+  if(!s.shattered){
+    // the bound identity: halo grows and trembles as τ nears TL
+    const jit=Math.pow(tf,8)*4,jx=(Math.random()-.5)*jit,jy=(Math.random()-.5)*jit;
+    const rr=R1*Math.min(s.n,6.6),g=ctx.createRadialGradient(cx,cy,0,cx,cy,rr*1.35);
+    g.addColorStop(0,col+'33');g.addColorStop(1,col+'00');ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,rr*1.35,0,6.2832);ctx.fill();
+    ctx.strokeStyle=col;ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(cx+jx,cy+jy,rr,0,6.2832);ctx.stroke();ctx.lineWidth=1;
+    lastAng=time*2.2/Math.pow(Math.min(s.n,50),1.5);
+    dot(cx,cy,7,'#ffcf6b');
+    dot(cx+jx+rr*Math.cos(lastAng),cy+jy+rr*Math.sin(lastAng),5,'#ff6b8a');
+    ctx.fillStyle=col;ctx.font='12px "Space Mono", monospace';ctx.textAlign='center';
+    ctx.fillText('hydrogen · one bound identity · '+PHN[s.phase],cx,cy+R1*6.6+28);
+  }else{
+    if(shatterT===null)shatterT=time;
+    const dt=time-shatterT,ke=Math.max(s.Ke.toNum(),0);
+    if(dt<1.2){ctx.strokeStyle='rgba(255,58,58,'+(1-dt/1.2)+')';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(cx,cy,R1*(1+dt*7),0,6.2832);ctx.stroke();ctx.lineWidth=1;}
+    const maxD=Math.min(w*0.36,h-195-50-cy),dist=Math.min(maxD,(R1*1.2)+dt*(18+40*Math.sqrt(ke))),a=lastAng;
+    const ex=cx+dist*Math.cos(a),ey=cy+dist*Math.sin(a),pd=Math.min(dist/1836.15267343*40,3);
+    const px=cx-pd*Math.cos(a),py=cy-pd*Math.sin(a);
+    ctx.strokeStyle='rgba(255,107,138,.35)';ctx.setLineDash([2,4]);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(ex,ey);ctx.stroke();ctx.setLineDash([]);
+    halo(ex,ey,selProd==='e');halo(px,py,selProd==='p');
+    dot(px,py,7,'#ffcf6b');dot(ex,ey,5,'#ff6b8a');
+    ionHits.push({k:'e',x:ex,y:ey},{k:'p',x:px,y:py});
+    label(ex,ey,'free electron','Noble · '+(ke>0?'moving':'at rest'),'#ff6b8a');
+    label(px,py,'proton','Noble · recoil 1/1836','#ffcf6b');
+  }
+  // the photon that carries F_ext, entering from the left
+  if(Eabs.n>0n){
+    const ln=HC_EVNM.div(Eabs).toNum(),[r,gc,b]=nmToRGB(ln),gx=Math.max(70,cx-R1*6.6-90),gy=cy;
+    ctx.strokeStyle=`rgb(${r},${gc},${b})`;ctx.lineWidth=2;ctx.beginPath();
+    for(let k=0;k<=60;k++){const xx=gx-50+k*1.2,yy=gy+7*Math.sin(k*0.55-time*8);k?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy);}ctx.stroke();ctx.lineWidth=1;
+    if(selProd==='g')halo(gx+10,gy,true);
+    ionHits.push({k:'g',x:gx+10,y:gy});
+    label(gx-60,gy-30,'photon',qn(ln,5)+' nm','#9b6dff');
+  }
+  // the τ dial
+  const gy0=h-195,gl=60,gr=w-60,scale=1.25,X=v=>gl+(gr-gl)*Math.min(v,scale)/scale;
+  const xI=X(0.88),xT=X(1);
+  ctx.fillStyle='#00ffc8';ctx.fillRect(gl,gy0,xI-gl,8);ctx.fillStyle='#ff8800';ctx.fillRect(xI,gy0,xT-xI,8);ctx.fillStyle='#ff3a3a';ctx.fillRect(xT,gy0,gr-xT,8);
+  ctx.fillStyle='#aa88ff';ctx.fillRect(gl-2,gy0-3,3,14);
+  ctx.font='10px "Space Mono", monospace';ctx.textAlign='center';ctx.fillStyle='rgba(232,232,240,.55)';
+  ctx.fillText('Noble 0',gl,gy0+24);ctx.fillText('IVA 0.88 TL',xI,gy0+24);ctx.fillText('TL',xT,gy0+24);
+  const aF=ALPHA.div(TL).toNum();
+  [1,2,3,4,5].forEach(n=>{const f=aF+(1-aF)*(1-1/(n*n)),xx=X(f);ctx.fillStyle='rgba(255,255,255,.8)';ctx.fillRect(xx-0.5,gy0-5,1,18);if(n<=3){ctx.fillStyle='rgba(232,232,240,.5)';ctx.fillText('n='+n,xx,gy0-9);}});
+  const xm=X(tf);ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(xm,gy0-2);ctx.lineTo(xm-6,gy0-12);ctx.lineTo(xm+6,gy0-12);ctx.fill();
+  ctx.textAlign='left';ctx.fillStyle=col;ctx.font='11px "Space Mono", monospace';
+  ctx.fillText('τ = '+(s.shattered?'TL → shattered into two Noble identities':s.tau.fmt(mode==='researcher'?12:5)+' · '+PHN[s.phase]),gl,gy0+42);
+}
+function dot(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,6.2832);ctx.fill();}
+function halo(x,y,on){ctx.strokeStyle=on?'#00ffc8':'rgba(232,232,240,.25)';ctx.lineWidth=on?2:1;ctx.beginPath();ctx.arc(x,y,16,0,6.2832);ctx.stroke();ctx.lineWidth=1;}
+function label(x,y,a,b,c){ctx.textAlign='left';ctx.font='11px "Space Mono", monospace';ctx.fillStyle=c;ctx.fillText(a,x+20,y-3);ctx.fillStyle='rgba(232,232,240,.55)';ctx.font='9px "Space Mono", monospace';ctx.fillText(b,x+20,y+10);}
+
+// ════════════════════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════════════════════
+function setMode(m){
+  mode=m;document.body.classList.toggle('researcher',m==='researcher');
+  document.getElementById('m-learn').classList.toggle('on',m==='learner');
+  document.getElementById('m-res').classList.toggle('on',m==='researcher');
+  refresh();
+  if(view==='ion')setE(Eabs);
+}
+function setView(v){
+  view=v;
+  ['ladder','split','spec','ion'].forEach(k=>{document.getElementById('v-'+k).classList.toggle('on',k===v);document.getElementById('ctl-'+k).style.display=k===v?'block':'none';});
+  if(renderer){groups.ladder.visible=v==='ladder';groups.split.visible=v==='split';c3d.style.visibility=is2D()?'hidden':'visible';}
+  if(v==='ladder'){sph.r=24;focus=-1;}
+  if(v==='split'){sph.r=24;}
+  if(is2D())document.getElementById('labels').innerHTML='';
+  placeCamera();refresh();
+  if(v==='ion')setE(Eabs);
+}
+function onMag(){
+  const s=parseFloat(document.getElementById('mag').value);mag=Math.round(Math.pow(10,s*1.5));
+  document.getElementById('mag-v').textContent='×'+mag;
+}
+function onLevels(){
+  nf=parseInt(document.getElementById('nf').value,10);
+  const s=document.getElementById('ni');s.min=nf+1;if(parseInt(s.value,10)<=nf)s.value=nf+1;
+  ni=parseInt(s.value,10);document.getElementById('ni-v').textContent=ni;refresh();
+}
+function pickLine(i,f){document.getElementById('nf').value=f;const s=document.getElementById('ni');s.min=f+1;s.value=i;onLevels();}
+function refresh(){renderReadouts();renderCaption();drawSpectrum();if(!is2D())updateLabels();}
+function is2D(){return view==='spec'||view==='ion';}
+
+// ════════════════════════════════════════════════════════════
+// EXPORT
+// ════════════════════════════════════════════════════════════
+function rows(){
+  const tr=transition();
+  const r=[
+    ['TL','0.136899099984016','corpus'],
+    ['1/alpha = TL x 1001',ALPHA_INV.fmt(18),status(ALPHA_INV,'alpha_inv')],
+    ['bare TL x 1000',BARE.fmt(15),''],
+    ['r_e (m)',R_E.fmt(18),status(R_E,'r_e')],
+    ['lambda_C (m)',LAMBDA_C.fmt(11),'CODATA 2018 input'],
+    ['a0 (m)',A0.fmt(18),status(A0,'a0')],
+    ['a0 / r_e',RATIO.fmt(18),''],
+    ['v = c / (TL x 1001) (m/s)',V1.fmt(18),status(V1,'v1')],
+    ['Ry (eV)',RY.fmt(18),status(RY,'ry')],
+    ['alpha^2',ALPHA2.fmt(18),''],
+    [`transition ${ni}->${nf} dE (eV)${tr.rm?' reduced mass':''}`,tr.dE.fmt(18),''],
+    [`transition ${ni}->${nf} lambda (nm)`,tr.nm.fmt(18),tr.ref?lineStatus(tr.nm,Q.of(tr.ref.nm))+' vs '+tr.ref.nm+' nm '+tr.ref.name:'']];
+  const io=ionState();
+  r.push(['binding energy, shatter threshold (eV)',EB.fmt(18),lineStatus(EB,Q.of(REF_ION.eb))+' vs '+REF_ION.eb+' eV NIST'],
+    ['Lyman limit (nm)',EDGE_NM.fmt(18),lineStatus(EDGE_NM,Q.of(REF_ION.edge))+' vs '+REF_ION.edge+' nm'],
+    ['absorbed energy F_ext (eV)',Eabs.fmt(18),''],
+    ['tau',io.shattered?'TL reached, shattered':io.tau.fmt(18),io.phase]);
+  if(io.shattered)r.push(['free electron kinetic energy (eV)',io.Ke.fmt(18),'Noble'],['proton kinetic energy (eV)',io.Kp.fmt(18),'Noble']);
+  return r;
+}
+function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function exportJSON(){
+  const o={tool:'Electron Geometry',coordinate:'[9,9,3,21]',generated:new Date().toISOString(),values:rows().map(([k,v,s])=>({quantity:k,value:v,comparison:s}))};
+  download('electron_geometry.json',JSON.stringify(o,null,2),'application/json');toast('JSON saved');
+}
+function exportCSV(){download('electron_geometry.csv','quantity,value,comparison\n'+rows().map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\n'),'text/csv');toast('CSV saved');}
+function copyRecord(){
+  const r=rows();
+  const txt=['-- ============================================================',
+    '-- Electron Geometry · Identity Physics™ session record',
+    '-- Coordinate: [9,9,3,21](PART) · 1/α = TL × 1001 [9,9,3,14] · ionization [9,9,3,15]',
+    '-- Architect:  HIGHTISTIC (Russell Vernon Trent III)',
+    '-- Generated:  '+new Date().toISOString(),
+    '-- ============================================================',
+    ...r.map(([k,v,s])=>'--   '+k.padEnd(40)+v+(s?'   ['+s+']':'')),
+    '--',
+    '-- Lean theorems: split · ladder · ratio_of_extremes · bohr_radius_codata',
+    '--   electron_radius_codata · bohr_velocity_codata · rydberg_codata',
+    '--   lyman_alpha · fine_structure_scale · electron_master',
+    '-- [9,9,3,15]: ionization_requires_fext · rydberg_from_alpha_sq',
+    '-- DOI base 10.5281/zenodo.18719748',
+    '-- ============================================================'].join('\n');
+  const done=()=>toast('Record copied');
+  if(navigator.clipboard)navigator.clipboard.writeText(txt).then(done,()=>download('electron_geometry_record.txt',txt,'text/plain'));
+  else download('electron_geometry_record.txt',txt,'text/plain');
+}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1400);}
+
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
+if(renderer){try{buildLadder();buildSplit();}catch(err){renderer=null;console.error('3D view unavailable:',err);}}
+setTimeout(()=>{resize();setView('ladder');requestAnimationFrame(loop);},50);
+</script>
+</body>
+</html>
