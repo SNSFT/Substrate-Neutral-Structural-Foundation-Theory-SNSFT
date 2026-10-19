@@ -519,7 +519,7 @@ function renderHill(){
   const rows=sys==='solar'?embryoPairs:[...embryoPairs].sort((p,q)=>(q.p.m+q.q.m)-(p.p.m+p.q.m)).slice(0,8).sort((p,q)=>p.p.a-q.p.a);
   let h=`<tr><th>${sys==='solar'?'PAIR':'PAIR a (AU)'}</th><th>Δ (R<sub>H</sub>)</th><th>τ/TL</th><th>PHASE</th></tr>`;
   for(const r of rows){const t=TL*HILL_CRIT/r.D,ph=phaseOf(t);
-    const nm=sys==='solar'?`${r.p.name}–${r.q.name}`:`${r.p.a.toFixed(2)}–${r.q.a.toFixed(2)}`;
+    const nm=sys==='solar'&&r.p.name&&r.q.name?`${r.p.name}–${r.q.name}`:`${r.p.a.toFixed(2)}–${r.q.a.toFixed(2)}`;
     h+=`<tr><td>${nm}</td><td>${r.D.toFixed(1)}</td><td style="color:${phCol(ph)}">${(t/TL).toFixed(3)}</td><td style="color:${phCol(ph)}">${({n:'Noble',l:'Locked',i:'IVA Peak',s:'Shatter'})[ph]}</td></tr>`;}
   document.getElementById('hill-t').innerHTML=rows.length?h:'';
   const Ds=embryoPairs.map(p=>p.D).sort((a,b)=>a-b),med=Ds.length?Ds[Math.floor(Ds.length/2)]:null;
@@ -554,7 +554,7 @@ function renderMassOrbit(){
   if(!solar){x.strokeStyle='rgba(240,192,96,.6)';x.setLineDash([4,3]);x.beginPath();for(let a=a0;a<=a1;a+=0.02){const y=logY(Math.max(lo,isoMass(a)/ME),lo,hi,h,B,T);a===a0?x.moveTo(X(a),y):x.lineTo(X(a),y);}x.stroke();x.setLineDash([]);}
   for(const b of bodies){if(b.sun||!isFinite(b.a)||b.a<a0||b.a>a1)continue;const m=b.m/ME;if(m<lo||m>hi*1.01)continue;
     const r=Math.max(1.6,Math.min(6,1.4+2*Math.cbrt(m/(solar?1:isoMass(1)/ME))));x.fillStyle=tauColor(tauOf(b)).getStyle();x.beginPath();x.arc(X(b.a),logY(m,lo,hi,h,B,T),r,0,6.3);x.fill();
-    if(solar){x.fillStyle='rgba(232,232,240,.6)';x.fillText(b.name.slice(0,3),X(b.a)+4,logY(m,lo,hi,h,B,T)-4);}}
+    if(solar){x.fillStyle='rgba(232,232,240,.6)';x.fillText((b.name||'').slice(0,3),X(b.a)+4,logY(m,lo,hi,h,B,T)-4);}}
   document.getElementById('mc-note').innerHTML=solar
     ?'Measured planets, mass in M⊕ against semi-major axis in AU (both log). Colour is the Hill-spacing τ of each planet against its nearest neighbour. Blue dashed: snow line.'
     :'Each body, mass in M⊕ (log) against semi-major axis in AU. Gold dashed: isolation mass M<sub>iso</sub> = √(2/3)(2πa²b̃Σ)<sup>3/2</sup>/M☉<sup>1/2</sup>, b̃ = 10 (Kokubo &amp; Ida 2002), the mass an oligarch reaches once it has swept its feeding zone. Blue dashed: snow line.';
@@ -604,7 +604,8 @@ function caption(){
 const on=(ids,id)=>ids.forEach(i=>document.getElementById(i).classList.toggle('on',i===id));
 function setMode(m){mode=m;document.body.classList.toggle('res',m==='res');on(['m-l','m-r'],m==='res'?'m-r':'m-l');caption();}
 function setSys(s){sys=s;on(['s-disk','s-sol'],s==='disk'?'s-disk':'s-sol');document.body.classList.toggle('solar',s==='solar');
-  if(s==='solar'&&tauModel==='mix')setTau('hill');['t-hill','t-mix'].forEach(i=>document.getElementById(i).disabled=s==='solar');
+  if(s==='solar'&&tauModel==='mix'){tauModel='hill';on(['t-hill','t-mix'],'t-hill');document.getElementById('mix-wrap').style.display='none';}
+  ['t-hill','t-mix'].forEach(i=>document.getElementById(i).disabled=s==='solar');
   cam.r=s==='solar'?560:(region===4?(giant?330:270):(giant?320:200));rebuild();setTimeout(()=>{resize();renderAll();},0);}
 function setRegion(r){region=r;on(['rg-2','rg-4'],'rg-'+r);cam.r=r===4?270:200;if(giant)cam.r=320;rebuild();}
 function setJup(j){giant=j;on(['j-off','j-on'],j?'j-on':'j-off');cam.r=j?320:(region===4?270:200);rebuild();}
