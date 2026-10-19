@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accretion Simulator™ · Applied Identity Physics™ · uuia.app/accretion</title>
+<meta name="description" content="Accretion Simulator™: planetesimals on Kepler orbits in a Minimum Mass Solar Nebula collide, merge or hit and run, and grow into oligarchs. Torsion is read from Hill spacing, impact speed and the Roche limit against the Torsion Limit.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --anchor:#00ffc8; --locked:#7b4fff; --gold:#f0c060; --shatter:#ff3a3a; --rose:#ff6b8a; --ice:#88c8ff;
+  --bg:#050508; --surface:#0d0d14; --border:rgba(0,255,200,0.12);
+  --text:#e8e8f0; --dim:rgba(232,232,240,0.5); --faint:rgba(232,232,240,0.26);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden}
+#app{display:grid;grid-template-columns:290px 1fr 330px;grid-template-rows:54px 1fr;height:100vh}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.94);gap:12px}
+.h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--anchor)}
+.h-title i{font-style:normal;font-size:.62rem;color:var(--dim);font-weight:700}
+.h-sub{font-size:.5rem;color:var(--dim);margin-top:2px}
+.h-right{font-size:.46rem;color:var(--faint);text-align:right;line-height:1.6}
+.mode{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
+.mode button{font-family:'Syne',sans-serif;font-weight:800;font-size:.56rem;padding:.4rem .85rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.mode button.on{background:var(--anchor);color:#000}
+#left,#right{overflow-y:auto;padding:10px;background:rgba(13,13,20,.88);display:flex;flex-direction:column;gap:9px}
+#left{border-right:1px solid var(--border)} #right{border-left:1px solid var(--border)}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:9px}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.58rem;color:var(--anchor);letter-spacing:.08em;margin-bottom:7px}
+.seg{display:flex;gap:4px;margin-bottom:5px}
+.seg button,.btn{flex:1;font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:.42rem .3rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.seg button.on{border-color:var(--anchor);color:var(--anchor);background:rgba(0,255,200,.08)}
+.seg button:disabled{opacity:.3;cursor:default}
+.btn.run{border-color:rgba(0,255,200,.5);color:var(--anchor)}
+.btn.run.on{border-color:var(--shatter);color:var(--shatter)}
+.btn.warn{border-color:rgba(255,58,58,.4);color:var(--shatter)}
+.lbl{display:flex;justify-content:space-between;font-size:.5rem;color:var(--dim);margin:5px 0 2px}
+.lbl b{color:var(--anchor);font-weight:400}
+input[type=range]{width:100%;accent-color:#00ffc8}
+.mix{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center;font-size:.46rem}
+.mix input{width:100%;background:#0a0a12;border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.52rem;padding:3px;border-radius:3px;text-align:center}
+.note{font-size:.5rem;color:var(--dim);line-height:1.6}
+.note b{color:var(--text);font-weight:400}
+#view{position:relative;overflow:hidden;background:#000}
+#c3d{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+.tag{position:absolute;font-size:.46rem;letter-spacing:.1em;pointer-events:none;transform:translate(-50%,-22px);white-space:nowrap}
+#legend{position:absolute;top:10px;left:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:.46rem;pointer-events:none}
+#legend .bar{height:5px;border-radius:3px;margin:4px 0;background:linear-gradient(90deg,#00ffc8,#7b4fff 50%,#f0c060 88%,#ff3a3a 100%);width:190px}
+#legend .row{display:flex;justify-content:space-between;width:190px}
+#clock{position:absolute;top:10px;right:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:.6rem;color:var(--gold);pointer-events:none;text-align:right}
+#clock small{display:block;font-size:.44rem;color:var(--dim)}
+#caption{position:absolute;left:12px;right:12px;bottom:10px;font-size:.6rem;line-height:1.65;background:rgba(5,5,8,.86);border:1px solid var(--border);border-radius:8px;padding:8px 12px;pointer-events:none}
+#caption b{color:var(--anchor);font-weight:400}
+table{width:100%;border-collapse:collapse;font-size:.52rem}
+th{font-weight:400;color:var(--faint);font-size:.44rem;text-align:right;padding:2px}
+td{text-align:right;padding:3px 2px}
+th:first-child,td:first-child{text-align:left}
+canvas.chart{width:100%;height:120px;display:block}
+canvas.chart.short{height:96px}
+.kv{display:flex;justify-content:space-between;font-size:.52rem;padding:3px 0;border-bottom:1px solid rgba(0,255,200,.06)}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--dim)}
+.r-only{display:none} body.res .r-only{display:block} body.res .l-only{display:none}
+.foot{font-size:.42rem;color:var(--faint);line-height:1.6;text-align:center;padding:4px 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+.disk-only{} body.solar .disk-only{display:none} .solar-only{display:none} body.solar .solar-only{display:block}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media(max-width:1000px){
+  html,body{overflow:auto;height:auto}
+  #app{grid-template-columns:1fr;grid-template-rows:auto 64vh auto auto;height:auto}
+  #view{grid-row:2} #left{grid-row:3} #right{grid-row:4}
+  #left,#right{border:none;overflow:visible}
+  .h-right{display:none} #hdr{flex-wrap:wrap;padding:8px 16px}
+  #legend{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="hdr">
+  <div>
+    <div class="h-title">Accretion Simulator<span class="tm">™</span> <i>· Applied Identity Physics<span class="tm">™</span></i></div>
+    <div class="h-sub">τ = TL × (critical ÷ measured) · TL = 0.136899099984016 · TL_IVA = 0.88 × TL</div>
+  </div>
+  <div class="mode"><button id="m-l" class="on" onclick="setMode('learner')">LEARNER</button><button id="m-r" onclick="setMode('res')">RESEARCHER</button></div>
+  <div class="h-right">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation<br>uuia.app/accretion · [9,9,9,9]</div>
+</div>
+
+<!-- LEFT: controls -->
+<div id="left">
+  <div class="sec">
+    <div class="st">SYSTEM</div>
+    <div class="seg"><button id="s-disk" class="on" onclick="setSys('disk')">PLANETESIMAL DISK</button><button id="s-sol" onclick="setSys('solar')">SOLAR SYSTEM · MEASURED</button></div>
+    <div class="seg"><button class="btn run on" id="b-run" onclick="toggleRun()">■ PAUSE</button><button class="btn warn" onclick="rebuild()">⟲ NEW RUN</button></div>
+    <div class="lbl"><span>Speed (compute per frame)</span><b id="rate-v">10 ms</b></div>
+    <input type="range" id="rate" min="2" max="24" value="10" oninput="onRate()">
+  </div>
+
+  <div class="sec disk-only">
+    <div class="st">DISK · MINIMUM MASS SOLAR NEBULA</div>
+    <div class="seg"><button id="rg-2" class="on" onclick="setRegion(2)">0.5–2 AU · ROCKY</button><button id="rg-4" onclick="setRegion(4)">0.5–4 AU · ACROSS SNOW LINE</button></div>
+    <div class="lbl"><span>Planetesimals</span><b id="n-v">200</b></div>
+    <input type="range" id="nset" min="60" max="500" step="10" value="200" oninput="onN()">
+    <div class="lbl"><span>Radius enhancement f (resolution)</span><b id="f-v">×100</b></div>
+    <input type="range" id="fset" min="1" max="200" value="100" oninput="onF()">
+    <div class="mix" style="grid-template-columns:1fr 1fr;margin-top:6px">
+      <div>Σ₁ solids at 1 AU, g/cm²<input id="in-sig" type="number" step="0.1" value="7.1"></div>
+      <div>× beyond snow line (2.7 AU)<input id="in-snow" type="number" step="0.1" value="4.2"></div>
+    </div>
+    <div class="seg" style="margin-top:6px"><button id="j-off" class="on" onclick="setJup(false)">NO GIANT</button><button id="j-on" onclick="setJup(true)">JUPITER AT 5.2 AU</button></div>
+    <div class="note" style="margin-top:4px">Σ(r) = Σ₁ (r / 1 AU)<sup>−3/2</sup>, the Minimum Mass Solar Nebula (Weidenschilling 1977; Hayashi 1981). Equal-mass bodies, rock 3 g/cm³ inside the snow line, ice-rock 1.5 g/cm³ beyond. Disk settings apply on ⟲ NEW RUN.</div>
+    <div class="note r-only" style="margin-top:4px">f multiplies every collision radius, the standard way to fit accretion into a short run (Kokubo &amp; Ida 1996 used f = 5–6). Growth runs faster by roughly f, so read the clock as compressed by about that factor. Gravity, orbits and the collision physics are unchanged.</div>
+    <div class="note" style="margin-top:4px" id="disk-read"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">τ MODEL</div>
+    <div class="seg"><button id="t-hill" class="on" onclick="setTau('hill')">HILL SPACING</button><button id="t-mix" onclick="setTau('mix')">BAND MIX · GAM COLLIDER</button></div>
+    <div class="note" id="tau-note"></div>
+    <div id="mix-wrap" style="display:none;margin-top:6px">
+      <div class="lbl"><span>Band mix % at birth</span></div>
+      <div class="mix">
+        <div style="color:#00ffc8">Noble<input id="mx-n" type="number" min="0" value="25" oninput="onMix()"></div>
+        <div style="color:#9b7dff">Locked<input id="mx-l" type="number" min="0" value="45" oninput="onMix()"></div>
+        <div style="color:#f0c060">IVA<input id="mx-i" type="number" min="0" value="15" oninput="onMix()"></div>
+        <div style="color:#ff3a3a">Shatter<input id="mx-s" type="number" min="0" value="15" oninput="onMix()"></div>
+      </div>
+      <div class="note r-only" style="margin-top:4px">Merger product by the 2-beam rule of the GAM Collider v15 (Geometric Axiomatic Module Collider) [9,9,2,3.8]: P = P₁P₂/(P₁+P₂) · N = N₁+N₂ · B = |B₁−B₂| · A = max(A₁,A₂). A body with τ ≥ TL reorganizes: it splits into two halves with P doubled and N halved (each half carries τ/2), repeated until each piece sits below TL. Mass and momentum are conserved.</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="st">COLLISIONS</div>
+    <div class="note">Two bodies that touch merge if the impact is slow enough, otherwise they glance off each other (hit-and-run). The dividing speed v<sub>cr</sub> comes from the collision simulations of Kokubo &amp; Genda (2010) and depends on the mass ratio and the impact angle. Boundary identification: <b>τ<sub>c</sub> = TL × v<sub>imp</sub> / v<sub>cr</sub></b>, so a collision merges below TL and hits and runs at or above it.</div>
+    <div class="note r-only" style="margin-top:4px">v<sub>cr</sub>/v<sub>esc</sub> = 2.43Γ²Θ<sup>5/2</sup> − 0.0408Γ + 1.86Θ<sup>5/2</sup> + 1.08, Γ = (M₁−M₂)/(M₁+M₂), Θ = 1 − sin θ. v<sub>esc</sub> = √(2G(M₁+M₂)/(R₁+R₂)) with physical radii; v<sub>imp</sub> = √(v<sub>∞</sub>² + v<sub>esc</sub>²), v<sub>∞</sub> taken from the encounter at the enhanced contact distance.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">VIEW</div>
+    <div class="seg"><button id="v-top" onclick="setCam('top')">TOP</button><button id="v-orb" class="on" onclick="setCam('orbit')">ORBIT</button><button id="v-edge" onclick="setCam('edge')">EDGE-ON</button></div>
+    <div class="seg"><button id="b-orb" class="on" onclick="toggleOrbits()">ORBITS ON</button><button id="b-ar" onclick="toggleAuto()">AUTO-ROTATE</button></div>
+    <div class="note l-only">Drag to turn, scroll to zoom. Bright flashes are collisions: teal-to-gold flashes merged, red flashes hit and ran.</div>
+    <div class="note r-only">Disk view is linear, 40 scene units per AU, heights ×4. Solar System view compresses distance as 60√(r/AU) so Mercury and Neptune fit together. Body size grows as the cube root of mass.</div>
+  </div>
+</div>
+
+<!-- CENTER -->
+<div id="view">
+  <canvas id="c3d"></canvas>
+  <div class="tag" id="sun-tag" style="color:var(--gold)">SUN</div>
+  <div class="tag" id="snow-tag" style="color:var(--ice)">SNOW LINE 2.7 AU</div>
+  <div id="legend">
+    <div style="color:var(--anchor)" id="leg-title">TORSION τ = TL × 2√3 / Δ</div>
+    <div class="bar"></div>
+    <div class="row"><span style="color:#00ffc8">Noble 0</span><span style="color:#7b4fff">Locked</span><span style="color:#f0c060">IVA</span><span style="color:#ff3a3a">≥ TL</span></div>
+  </div>
+  <div id="clock"><span id="ck-t">0 yr</span><small id="ck-s">orbits at 1 AU</small></div>
+  <div id="caption"></div>
+</div>
+
+<!-- RIGHT: readouts -->
+<div id="right">
+  <div class="sec">
+    <div class="st">SYSTEM</div>
+    <div class="kv"><span>Bodies</span><span id="k-n">0</span></div>
+    <div class="kv"><span>Largest masses (M⊕)</span><span id="k-big">—</span></div>
+    <div class="kv disk-only"><span>Isolation mass at 1 AU</span><span id="k-iso">—</span></div>
+    <div class="kv"><span>Total mass in bodies</span><span id="k-mt">—</span></div>
+    <div class="kv"><span>Merged · hit-and-run</span><span id="k-c">0 · 0</span></div>
+    <div class="kv"><span>Fragments · lost to Sun · ejected</span><span id="k-l">0 · 0 · 0</span></div>
+  </div>
+  <div class="sec">
+    <div class="st">PHASE MIX</div>
+    <table id="mix-t"></table>
+  </div>
+  <div class="sec">
+    <div class="st">HILL SPACING · τ = TL × 2√3 / Δ</div>
+    <table id="hill-t"></table>
+    <div class="note" style="margin-top:4px" id="hill-note"></div>
+  </div>
+  <div class="sec disk-only">
+    <div class="st">GROWTH</div>
+    <canvas class="chart short" id="gc"></canvas>
+    <div class="note" style="margin-top:4px">White: number of bodies. Gold: largest mass in M⊕. Dashed: isolation mass at 1 AU. Both axes in log scale; time in years (compressed by about f).</div>
+  </div>
+  <div class="sec">
+    <div class="st">MASS AGAINST ORBIT</div>
+    <canvas class="chart" id="mc"></canvas>
+    <div class="note" style="margin-top:4px" id="mc-note"></div>
+  </div>
+  <div class="sec disk-only">
+    <div class="st">IMPACTS · τ<sub>c</sub> = TL × v<sub>imp</sub>/v<sub>cr</sub></div>
+    <canvas class="chart short" id="hc"></canvas>
+    <div class="note" style="margin-top:4px">Every collision so far, binned by τ<sub>c</sub>/TL. Left of the line merged; right of it hit and ran.</div>
+  </div>
+  <div class="sec solar-only">
+    <div class="st">SATURN · ROCHE LIMIT · τ = TL × d<sub>R</sub> / d</div>
+    <table id="roche-t"></table>
+    <div class="note" style="margin-top:4px" id="roche-note"></div>
+  </div>
+  <div class="sec">
+    <div class="st">EXPORT</div>
+    <div class="seg"><button class="btn" onclick="exportJSON()">JSON</button><button class="btn" onclick="exportCSV()">CSV · BODIES</button></div>
+  </div>
+  <div class="foot">Accretion Simulator™, Identity Physics™, Applied Identity Physics™, SNSFT™, PNBA™, the Sovereign Anchor Constant™ and the Torsion Limit™ are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation. © 2026 HIGHTISTIC / SNSFT Foundation · DOI 10.5281/zenodo.18719748 · uuia.app/accretion</div>
+</div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// CONSTANTS · units: AU, year, solar mass (G = 4π²)
+// ════════════════════════════════════════════════════════════
+const TL = 0.136899099984016;            // Torsion Limit
+const TL_IVA = 0.88 * TL;                // IVA corridor floor
+const OMEGA0 = TL * 10;                  // Sovereign Anchor Constant Ω₀ = 1.36899099984016
+const G = 4*Math.PI*Math.PI;
+const AU_CM = 1.495978707e13, MSUN_G = 1.98847e33, MEARTH_G = 5.9722e27;
+const ME = MEARTH_G/MSUN_G;              // Earth mass in solar masses
+const SIG_UNIT = AU_CM*AU_CM/MSUN_G;     // g/cm² → M☉/AU²
+const SNOW = 2.7, R_SUN_AU = 0.00465, HILL_CRIT = 2*Math.sqrt(3), B_ISO = 10;
+const BODY_CAP = 800, LOG_CAP = 3000;
+// Measured planets: mass (kg), semi-major axis (AU), eccentricity, inclination (deg)
+const PLANETS = [
+  ['Mercury',3.301e23,0.387,0.2056,7.00],['Venus',4.867e24,0.723,0.0068,3.39],['Earth',5.972e24,1.000,0.0167,0.00],['Mars',6.417e23,1.524,0.0934,1.85],
+  ['Jupiter',1.898e27,5.203,0.0484,1.30],['Saturn',5.683e26,9.537,0.0539,2.49],['Uranus',8.681e25,19.19,0.0473,0.77],['Neptune',1.024e26,30.07,0.0086,1.77]];
+const MSUN_KG = 1.98847e30;
+// Saturn: equatorial radius 60,268 km, mean density 0.687 g/cm³; water ice 0.92 g/cm³; fluid Roche coefficient 2.44
+const SAT_R = 60268, SAT_RHO = 0.687, ICE_RHO = 0.92, ROCHE_K = 2.44;
+const SATURN_RING = [['D ring, inner edge',66900],['C ring, inner edge',74658],['B ring, inner edge',92000],['B ring, outer edge',117580],['A ring, inner edge',122170],
+  ['Pan',133584],['Daphnis',136505],['A ring, outer edge',136775],['Atlas',137670],['Prometheus',139380],['F ring',140180],['Pandora',141720],
+  ['Epimetheus',151410],['Janus',151460],['Mimas',185539],['Enceladus',238042],['Titan',1221870]];
+
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+let mode='learner', sys='disk', region=2, Nset=200, fEnh=100, giant=false, tauModel='hill';
+let mix={n:25,l:45,i:15,s:15}, running=true, budget=10, orbitsOn=true, autoRot=false;
+let bodies=[], simT=0, dt=0.006, m0=0, sig1=7.1, snowF=4.2, nextId=1;
+let stats, collLog=[], growth=[], hcBins;
+function resetStats(){stats={merge:0,har:0,frag:0,sun:0,ej:0};collLog=[];growth=[];hcBins=new Array(20).fill(0).map(()=>({m:0,h:0}));}
+
+// ════════════════════════════════════════════════════════════
+// SCENE
+// ════════════════════════════════════════════════════════════
+const viewEl=document.getElementById('view'), cv=document.getElementById('c3d');
+const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setClearColor(0x000000,1);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,1,0.1,5000);
+scene.add(new THREE.AmbientLight(0x333344,1.5));
+const sunLight=new THREE.PointLight(0xfff0c8,2.2,0); scene.add(sunLight);
+const sunMat=new THREE.MeshBasicMaterial({color:0xf0c060});
+const sunMesh=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),sunMat); scene.add(sunMesh);
+const sunGlow=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),new THREE.MeshBasicMaterial({color:0xffdd88,transparent:true,opacity:.18})); scene.add(sunGlow);
+(function(){const g=new THREE.BufferGeometry(),p=[];for(let i=0;i<2500;i++){const r=1500+Math.random()*1500,t=Math.random()*6.2832,f=Math.acos(2*Math.random()-1);p.push(r*Math.sin(f)*Math.cos(t),r*Math.cos(f),r*Math.sin(f)*Math.sin(t));}
+g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xaaaacc,size:1.2,transparent:true,opacity:.5})));})();
+const SPH=new THREE.SphereGeometry(1,14,10);
+let guides=[], orbitLines=[], flashes=[];
+
+function tauColor(t){
+  if(t===0)return new THREE.Color(0x00ffc8);
+  if(t<TL*0.5)return new THREE.Color(0x00ffc8).lerp(new THREE.Color(0x7b4fff),t/(TL*0.5));
+  if(t<TL)return new THREE.Color(0x7b4fff).lerp(new THREE.Color(0xf0c060),(t-TL*0.5)/(TL*0.5));
+  return new THREE.Color(0xff3a3a);
+}
+function phaseOf(t){return t===0?'n':t<TL_IVA?'l':t<TL?'i':'s';}
+const PH=[['n','Noble','#00ffc8'],['l','Locked','#9b7dff'],['i','IVA Peak','#f0c060'],['s','Shatter','#ff3a3a']];
+const phCol=k=>PH.find(p=>p[0]===k)[2];
+
+// Display mapping: disk linear 40 units/AU, heights ×4; Solar System 60√r.
+function Dscale(r){return sys==='solar'?60/Math.sqrt(Math.max(r,1e-6)):40;}
+function Dr(r){return r*Dscale(r);}
+function circle(rDisp,col,op,dashed){
+  const pts=[];for(let k=0;k<=128;k++){const a=k/128*2*Math.PI;pts.push(new THREE.Vector3(rDisp*Math.cos(a),0,rDisp*Math.sin(a)));}
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  const m=dashed?new THREE.LineDashedMaterial({color:col,transparent:true,opacity:op,dashSize:3,gapSize:3}):new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op});
+  const l=new THREE.Line(g,m);if(dashed)l.computeLineDistances();return l;
+}
+function buildGuides(){
+  for(const g of guides)scene.remove(g);guides=[];
+  const add=(r,c,o,d)=>{const l=circle(Dr(r),c,o,d);scene.add(l);guides.push(l);};
+  if(sys==='disk'){add(0.5,0x00ffc8,.12,false);add(region,0x00ffc8,.12,false);add(SNOW,0x88c8ff,.45,true);add(1,0xf0c060,.18,true);}
+  else{add(SNOW,0x88c8ff,.45,true);}
+  const sr=sys==='solar'?5:3.2;sunMesh.scale.setScalar(sr);sunGlow.scale.setScalar(sr*1.9);
+}
+
+// ════════════════════════════════════════════════════════════
+// ORBITS
+// ════════════════════════════════════════════════════════════
+function rayleigh(s){return s*Math.sqrt(-2*Math.log(1-Math.random()));}
+function setKep(b,a,e,i,O,w,Mm){
+  let E=Mm;for(let k=0;k<30;k++)E=E-(E-e*Math.sin(E)-Mm)/(1-e*Math.cos(E));
+  const n=Math.sqrt(G*(1+b.m)/(a*a*a)),ce=1-e*Math.cos(E);
+  const xp=a*(Math.cos(E)-e),yp=a*Math.sqrt(1-e*e)*Math.sin(E),vxp=-a*n*Math.sin(E)/ce,vyp=a*n*Math.sqrt(1-e*e)*Math.cos(E)/ce;
+  const cO=Math.cos(O),sO=Math.sin(O),cw=Math.cos(w),sw=Math.sin(w),ci=Math.cos(i),si=Math.sin(i);
+  const r00=cO*cw-sO*sw*ci,r01=-cO*sw-sO*cw*ci,r10=sO*cw+cO*sw*ci,r11=-sO*sw+cO*cw*ci,r20=sw*si,r21=cw*si;
+  // physics frame: x, y in the disk plane, z up
+  b.x=r00*xp+r01*yp;b.y=r10*xp+r11*yp;b.z=r20*xp+r21*yp;
+  b.vx=r00*vxp+r01*vyp;b.vy=r10*vxp+r11*vyp;b.vz=r20*vxp+r21*vyp;
+}
+function elements(b){
+  const s=bodies[0],x=b.x-s.x,y=b.y-s.y,z=b.z-s.z,vx=b.vx-s.vx,vy=b.vy-s.vy,vz=b.vz-s.vz,mu=G*(s.m+b.m);
+  const r=Math.hypot(x,y,z),v2=vx*vx+vy*vy+vz*vz,inv=2/r-v2/mu,a=inv>0?1/inv:Infinity;
+  const hx=y*vz-z*vy,hy=z*vx-x*vz,hz=x*vy-y*vx,h2=hx*hx+hy*hy+hz*hz;
+  const e=isFinite(a)?Math.sqrt(Math.max(0,1-h2/(mu*a))):1;
+  return {a,e,i:Math.acos(Math.max(-1,Math.min(1,hz/Math.sqrt(h2)))),r};
+}
+
+// ════════════════════════════════════════════════════════════
+// IDENTITY · PNBA per body
+// ════════════════════════════════════════════════════════════
+function drawPNBA(){
+  const P=Math.pow(10,Math.random()),N=Math.floor(Math.random()*10)+1,A=1+Math.random()*9;
+  const tot=mix.n+mix.l+mix.i+mix.s||1;let u=Math.random()*tot,t;
+  if((u-=mix.n)<0)t=0;
+  else if((u-=mix.l)<0)t=TL_IVA*(0.02+0.97*Math.random());
+  else if((u-=mix.i)<0)t=TL_IVA+(TL-TL_IVA)*(0.01+0.98*Math.random());
+  else t=TL*(1.01+2*Math.random());
+  return {P,N,B:t*P,A};
+}
+function tauMix(b){return b.P>0?b.B/b.P:0;}
+function tauOf(b){return tauModel==='mix'?tauMix(b):b.tauH;}
+
+// ════════════════════════════════════════════════════════════
+// BUILD
+// ════════════════════════════════════════════════════════════
+function sigma(r){return sig1*SIG_UNIT*(r<SNOW?1:snowF)*Math.pow(r,-1.5);}       // M☉/AU²
+function isoMass(a){return Math.pow(2*Math.PI*a*a*B_ISO*sigma(a),1.5)*Math.sqrt(2/3);} // Kokubo & Ida 2002, b̃ = 10
+function physR(m,rho){return Math.cbrt(3*m*MSUN_G/(4*Math.PI*rho))/AU_CM;}
+function newBody(m,R,extra){
+  const b=Object.assign({id:nextId++,born:simT,m,R,x:0,y:0,z:0,vx:0,vy:0,vz:0,ax:0,ay:0,az:0,tauH:0,members:1},drawPNBA(),extra||{});
+  b.mat=new THREE.MeshPhongMaterial({color:0xffffff,emissive:0x000000,shininess:40});
+  b.mesh=new THREE.Mesh(SPH,b.mat);scene.add(b.mesh);return b;
+}
+function removeBody(b){if(b.mesh){scene.remove(b.mesh);b.mat.dispose();b.mesh=null;}}
+function rebuild(){
+  for(const b of bodies)removeBody(b);bodies=[];simT=0;nextId=1;resetStats();
+  sig1=Math.max(0.1,+document.getElementById('in-sig').value||7.1);snowF=Math.max(0.1,+document.getElementById('in-snow').value||4.2);
+  const sun={id:0,m:1,R:R_SUN_AU,x:0,y:0,z:0,vx:0,vy:0,vz:0,ax:0,ay:0,az:0,sun:true,P:1,N:1,B:0,A:1,tauH:0,members:1};
+  bodies.push(sun);
+  if(sys==='disk'){
+    const a0=0.5,a1=region;let M=0;const st=4000,da=(a1-a0)/st;for(let k=0;k<st;k++){const r=a0+(k+.5)*da;M+=2*Math.PI*r*da*sigma(r);}
+    m0=M/Nset;let fmax=0;for(let r=a0;r<=a1;r+=0.01)fmax=Math.max(fmax,r*sigma(r));
+    for(let k=0;k<Nset;k++){
+      let r;do{r=a0+(a1-a0)*Math.random();}while(Math.random()*fmax*1.01>r*sigma(r));
+      const b=newBody(m0,physR(m0,r<SNOW?3:1.5),{f:fEnh});
+      const h=Math.cbrt(2*m0/3);setKep(b,r,rayleigh(2*h/Math.SQRT2),rayleigh(h/Math.SQRT2),Math.random()*6.2832,Math.random()*6.2832,Math.random()*6.2832);
+      bodies.push(b);
+    }
+    if(giant){const J=PLANETS[4],b=newBody(J[1]/MSUN_KG,physR(J[1]/MSUN_KG,1.33),{f:1,name:'Jupiter',giant:true});setKep(b,J[2],J[3],J[4]*Math.PI/180,0,0,Math.random()*6.2832);bodies.push(b);}
+    dt=0.006;
+    if(tauModel==='mix'){const born=bodies.slice(1);for(const b of born)if(!b.giant)reorganize(b);}
+  }else{
+    m0=0;
+    for(const p of PLANETS){const m=p[1]/MSUN_KG,b=newBody(m,physR(m,p[0]==='Jupiter'||p[0]==='Saturn'?1:p[0]==='Uranus'||p[0]==='Neptune'?1.6:5),{f:1,name:p[0]});
+      setKep(b,p[2],p[3],p[4]*Math.PI/180,Math.random()*6.2832,Math.random()*6.2832,Math.random()*6.2832);bodies.push(b);}
+    dt=0.0024;
+  }
+  // barycentric start
+  let px=0,py=0,pz=0;for(const b of bodies){px+=b.m*b.vx;py+=b.m*b.vy;pz+=b.m*b.vz;}
+  sun.vx-=px;sun.vy-=py;sun.vz-=pz;
+  accel(false);computeHill();buildGuides();paintAll();sample();renderAll();caption();
+}
+
+// ════════════════════════════════════════════════════════════
+// GRAVITY · direct N-body, kick-drift-kick leapfrog
+// ════════════════════════════════════════════════════════════
+let hits=[];
+function accel(collide){
+  const n=bodies.length;hits=[];
+  for(let i=0;i<n;i++){const b=bodies[i];b.ax=0;b.ay=0;b.az=0;}
+  for(let i=0;i<n;i++){const a=bodies[i],ax=a.x,ay=a.y,az=a.z;let sx=0,sy=0,sz=0;
+    for(let j=i+1;j<n;j++){const b=bodies[j];
+      const dx=b.x-ax,dy=b.y-ay,dz=b.z-az,r2=dx*dx+dy*dy+dz*dz,ir=1/Math.sqrt(r2),f=G*ir*ir*ir;
+      sx+=f*b.m*dx;sy+=f*b.m*dy;sz+=f*b.m*dz;b.ax-=f*a.m*dx;b.ay-=f*a.m*dy;b.az-=f*a.m*dz;
+      if(collide&&!a.sun){const Rs=(a.R*a.f+b.R*b.f);const lim=Rs+0.01;if(r2<lim*lim){
+        const dvx=b.vx-a.vx,dvy=b.vy-a.vy,dvz=b.vz-a.vz,v2=dvx*dvx+dvy*dvy+dvz*dvz||1e-30;
+        const px=dx-dvx*dt,py=dy-dvy*dt,pz=dz-dvz*dt,tmin=(a.born>simT-1.5*dt||b.born>simT-1.5*dt)?dt:0;let t=-(px*dvx+py*dvy+pz*dvz)/v2;t=t<tmin?tmin:t>dt?dt:t;
+        const cx=px+dvx*t,cy=py+dvy*t,cz=pz+dvz*t;if(cx*cx+cy*cy+cz*cz<Rs*Rs)hits.push([a,b]);}}
+    }
+    a.ax+=sx;a.ay+=sy;a.az+=sz;}
+}
+function step(){
+  const h=dt/2;
+  for(const b of bodies){b.vx+=b.ax*h;b.vy+=b.ay*h;b.vz+=b.az*h;b.x+=b.vx*dt;b.y+=b.vy*dt;b.z+=b.vz*dt;}
+  accel(sys==='disk');
+  for(const b of bodies){b.vx+=b.ax*h;b.vy+=b.ay*h;b.vz+=b.az*h;}
+  simT+=dt;
+  if(hits.length){resolve();accel(false);}
+}
+// Kokubo & Genda (2010) critical impact velocity in units of the mutual escape speed
+function vcrit(m1,m2,sinT){const Gm=(m1-m2)/(m1+m2),Th=Math.pow(1-sinT,2.5);return 2.43*Gm*Gm*Th-0.0408*Gm+1.86*Th+1.08;}
+function resolve(){
+  const dead=new Set();
+  for(const [a,b] of hits){if(dead.has(a)||dead.has(b))continue;
+    const dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z,dvx=b.vx-a.vx,dvy=b.vy-a.vy,dvz=b.vz-a.vz;
+    const d=Math.hypot(dx,dy,dz),v2=dvx*dvx+dvy*dvy+dvz*dvz,M=a.m+b.m;
+    const Rs=a.R*a.f+b.R*b.f,dc=Math.max(d,Rs*0.5);
+    const vinf2=Math.max(0,v2-2*G*M/dc),vesc=Math.sqrt(2*G*M/(a.R+b.R)),vimp=Math.sqrt(vinf2+vesc*vesc);
+    const L=Math.hypot(dy*dvz-dz*dvy,dz*dvx-dx*dvz,dx*dvy-dy*dvx),sinT=Math.min(1,L/(Math.sqrt(v2)*d||1));
+    const big=a.m>=b.m?a:b,sm=big===a?b:a;
+    const vc=vcrit(big.m,sm.m,sinT)*vesc,tc=TL*vimp/vc,merged=tc<TL;
+    const bin=Math.min(19,Math.floor(tc/TL*10));hcBins[bin][merged?'m':'h']++;
+    const el=elements(big);
+    if(collLog.length<LOG_CAP)collLog.push({t_yr:+simT.toFixed(2),a_AU:+el.a.toFixed(4),m1_Mearth:+(big.m/ME).toFixed(5),m2_Mearth:+(sm.m/ME).toFixed(5),vimp_over_vesc:+(vimp/vesc).toFixed(4),sin_theta:+sinT.toFixed(4),vcr_over_vesc:+(vc/vesc).toFixed(4),tau_c:+tc.toFixed(6),outcome:merged?'merge':'hit-and-run'});
+    flash(big,merged?tauColor(Math.min(tc,TL*0.999)):new THREE.Color(0xff3a3a),Math.cbrt(M/ME));
+    if(!merged){stats.har++;continue;}
+    stats.merge++;
+    for(const k of ['x','y','z','vx','vy','vz'])big[k]=(a.m*a[k]+b.m*b[k])/M;
+    big.R=Math.cbrt(Math.pow(big.R,3)+Math.pow(sm.R,3));big.m=M;big.born=simT;big.members+=sm.members;
+    if(sm.giant){big.giant=true;big.name=sm.name;big.f=1;}
+    // GAM Collider v15 2-beam rule
+    const P=big.P*sm.P/(big.P+sm.P);big.N=big.N+sm.N;big.B=Math.abs(big.B-sm.B);big.A=Math.max(big.A,sm.A);big.P=P;
+    dead.add(sm);removeBody(sm);
+    if(tauModel==='mix'&&!big.giant)reorganize(big);
+  }
+  if(dead.size)bodies=bodies.filter(b=>!dead.has(b));
+}
+// τ ≥ TL reorganizes into smaller stable identities: halves with P doubled, N halved (τ halves), until below TL.
+function reorganize(b){
+  const queue=[b];
+  while(queue.length){const c=queue.pop();
+    if(tauMix(c)<TL||c.m<Math.max(m0,1e-12)*0.5||bodies.length>=BODY_CAP)continue;
+    const m=c.m/2,R=c.R/Math.cbrt(2);
+    // separation direction: in-plane, perpendicular to the velocity
+    let ux=-c.vy,uy=c.vx;const ul=Math.hypot(ux,uy)||1;ux/=ul;uy/=ul;
+    const s=1.3*(R*c.f),vsep=1.2*Math.sqrt(2*G*c.m/(2*s))/2;
+    const d=newBody(m,R,{f:c.f,P:c.P*2,N:c.N/2,B:c.B,A:c.A,members:Math.max(1,Math.floor(c.members/2))});
+    c.m=m;c.R=R;c.born=simT;c.P*=2;c.N/=2;c.members=Math.max(1,c.members-d.members);
+    d.x=c.x-ux*s;d.y=c.y-uy*s;d.z=c.z;d.vx=c.vx-ux*vsep;d.vy=c.vy-uy*vsep;d.vz=c.vz;
+    c.x+=ux*s;c.y+=uy*s;c.vx+=ux*vsep;c.vy+=uy*vsep;
+    bodies.push(d);stats.frag++;queue.push(c,d);
+  }
+}
+function prune(){
+  let ch=false;
+  bodies=bodies.filter(b=>{if(b.sun)return true;const el=elements(b);
+    if(el.r<0.1){stats.sun++;removeBody(b);ch=true;return false;}
+    if(el.r>(sys==='solar'?200:60)&&!isFinite(el.a)){stats.ej++;removeBody(b);ch=true;return false;}
+    if(el.r>200){stats.ej++;removeBody(b);ch=true;return false;}
+    return true;});
+  if(ch)accel(false);
+}
+
+// ════════════════════════════════════════════════════════════
+// HILL SPACING · τ = TL × 2√3 / Δ (Gladman 1993: two orbits stay apart for Δ > 2√3)
+// ════════════════════════════════════════════════════════════
+let hillPairs=[], embryoPairs=[];
+function mutualRH(p,q){return Math.cbrt((p.m+q.m)/(3*bodies[0].m))*(p.a+q.a)/2;}
+function computeHill(){
+  const list=bodies.filter(b=>!b.sun).map(b=>{const el=elements(b);b.a=el.a;b.e=el.e;b.inc=el.i;return b;}).filter(b=>isFinite(b.a)).sort((p,q)=>p.a-q.a);
+  hillPairs=[];
+  for(const b of list)b.dmin=Infinity;
+  for(let k=1;k<list.length;k++){const p=list[k-1],q=list[k],D=(q.a-p.a)/mutualRH(p,q);hillPairs.push({p,q,D});p.dmin=Math.min(p.dmin,D);q.dmin=Math.min(q.dmin,D);}
+  for(const b of list)b.tauH=isFinite(b.dmin)?TL*HILL_CRIT/Math.max(b.dmin,1e-3):0;
+  // embryos: bodies above 20% of the largest mass (planets in the Solar System view)
+  const mx=Math.max(0,...list.filter(b=>!b.giant).map(b=>b.m));
+  const emb=sys==='solar'?list:list.filter(b=>b.m>=0.2*mx&&!b.giant);
+  embryoPairs=[];for(let k=1;k<emb.length;k++){const p=emb[k-1],q=emb[k];embryoPairs.push({p,q,D:(q.a-p.a)/mutualRH(p,q)});}
+}
+
+// ════════════════════════════════════════════════════════════
+// DRAW
+// ════════════════════════════════════════════════════════════
+function sizeOf(b){const c=Math.cbrt(b.m/ME);return sys==='solar'?1.4+1.35*c:Math.min(7,0.6+3.2*c);}
+function paintAll(){
+  for(const b of bodies){if(b.sun||!b.mesh)continue;const t=tauOf(b),col=tauColor(t);b.mat.color.copy(col);b.mat.emissive.copy(col).multiplyScalar(.45);b.mesh.scale.setScalar(sizeOf(b));}
+}
+function place(){
+  const s0=bodies[0];
+  for(const b of bodies){const x=b.x-s0.x,y=b.y-s0.y,z=b.z-s0.z,r=Math.hypot(x,y),k=Dscale(Math.hypot(x,y,z));
+    if(b.mesh)b.mesh.position.set(x*k,z*k*(sys==='disk'?4:1),y*k);}
+}
+function flash(b,col,sz){
+  const s0=bodies[0],x=b.x-s0.x,y=b.y-s0.y,z=b.z-s0.z,k=Dscale(Math.hypot(x,y,z));
+  const m=new THREE.Mesh(SPH,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.9,depthWrite:false}));
+  m.position.set(x*k,z*k*4,y*k);m.userData={life:1,base:1.2+2.5*Math.min(1,sz)};scene.add(m);flashes.push(m);
+  if(flashes.length>30){const o=flashes.shift();scene.remove(o);o.material.dispose();}
+}
+function tickFlashes(){
+  flashes=flashes.filter(m=>{m.userData.life-=0.035;if(m.userData.life<=0){scene.remove(m);m.material.dispose();return false;}
+    m.scale.setScalar(m.userData.base*(2-m.userData.life));m.material.opacity=m.userData.life*.8;return true;});
+}
+function drawOrbits(){
+  for(const l of orbitLines){scene.remove(l);l.geometry.dispose();l.material.dispose();}orbitLines=[];
+  if(!orbitsOn)return;
+  const list=sys==='solar'?bodies.filter(b=>!b.sun):embryoPairs.length?[...new Set(embryoPairs.flatMap(p=>[p.p,p.q]))]:[];
+  const gi=bodies.filter(b=>b.giant);
+  for(const b of [...list.slice(0,40),...gi]){if(!isFinite(b.a))continue;const t=tauOf(b),l=circle(Dr(b.a),tauColor(t).getHex(),b.giant?.5:.32,false);scene.add(l);orbitLines.push(l);}
+}
+
+// ════════════════════════════════════════════════════════════
+// READOUTS
+// ════════════════════════════════════════════════════════════
+function sample(){if(sys!=='disk')return;const mx=Math.max(0,...bodies.filter(b=>!b.sun&&!b.giant).map(b=>b.m));growth.push([simT,bodies.length-1-(giant?1:0),mx/ME]);if(growth.length>800)growth=growth.filter((g,k)=>k%2===0||k===growth.length-1);}
+function sizeCanvas(c){const w=c.clientWidth,h=c.clientHeight;if(c.width!==w*devicePixelRatio){c.width=w*devicePixelRatio;c.height=h*devicePixelRatio;}const x=c.getContext('2d');x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);x.clearRect(0,0,w,h);return [x,w,h];}
+const fmtM=m=>m>=10?m.toFixed(0):m>=1?m.toFixed(2):m>=0.01?m.toFixed(3):m.toExponential(1);
+function renderSystem(){
+  const pl=bodies.filter(b=>!b.sun&&!b.giant).sort((p,q)=>q.m-p.m);
+  document.getElementById('k-n').textContent=sys==='solar'?pl.length:pl.length+(giant?' + Jupiter':'');
+  document.getElementById('k-big').textContent=pl.slice(0,4).map(b=>fmtM(b.m/ME)).join(' · ')||'—';
+  document.getElementById('k-iso').textContent=isoMass(1)/ME>0?fmtM(isoMass(1)/ME)+' M⊕ (b̃ = 10)':'—';
+  document.getElementById('k-mt').textContent=fmtM(pl.reduce((s,b)=>s+b.m,0)/ME)+' M⊕';
+  document.getElementById('k-c').textContent=`${stats.merge} · ${stats.har}`;
+  document.getElementById('k-l').textContent=`${stats.frag} · ${stats.sun} · ${stats.ej}`;
+  document.getElementById('ck-t').textContent=simT<1e4?simT.toFixed(simT<100?1:0)+' yr':(simT/1e3).toFixed(1)+' kyr';
+  document.getElementById('ck-s').textContent=sys==='disk'?`${simT.toFixed(0)} orbits at 1 AU · clock compressed ≈ ×${fEnh}`:`${(simT/11.862).toFixed(2)} Jupiter orbits`;
+  if(sys==='disk'){document.getElementById('disk-read').innerHTML=`This run: <b>${fmtM(m0*Nset/ME)} M⊕</b> of solids in ${Nset} bodies of <b>${fmtM(m0/ME)} M⊕</b> each (about ${Math.round(physR(m0,3)*AU_CM/1e5)} km across as rock). Time step ${dt} yr.`;}
+}
+function renderMix(){
+  const pl=bodies.filter(b=>!b.sun&&!b.giant),c={n:0,l:0,i:0,s:0},ms={n:0,l:0,i:0,s:0};let mt=0;
+  for(const b of pl){const p=phaseOf(tauOf(b));c[p]++;ms[p]+=b.m;mt+=b.m;}
+  let h='<tr><th>PHASE</th><th>BODIES</th><th>SHARE</th><th>MASS SHARE</th></tr>';
+  for(const [k,name,col] of PH)h+=`<tr><td style="color:${col}">${name}</td><td>${c[k]}</td><td>${pl.length?(100*c[k]/pl.length).toFixed(1)+'%':'—'}</td><td style="color:var(--text)">${mt?(100*ms[k]/mt).toFixed(1)+'%':'—'}</td></tr>`;
+  document.getElementById('mix-t').innerHTML=h;
+}
+function renderHill(){
+  const rows=sys==='solar'?embryoPairs:[...embryoPairs].sort((p,q)=>(q.p.m+q.q.m)-(p.p.m+p.q.m)).slice(0,8).sort((p,q)=>p.p.a-q.p.a);
+  let h=`<tr><th>${sys==='solar'?'PAIR':'PAIR a (AU)'}</th><th>Δ (R<sub>H</sub>)</th><th>τ/TL</th><th>PHASE</th></tr>`;
+  for(const r of rows){const t=TL*HILL_CRIT/r.D,ph=phaseOf(t);
+    const nm=sys==='solar'?`${r.p.name}–${r.q.name}`:`${r.p.a.toFixed(2)}–${r.q.a.toFixed(2)}`;
+    h+=`<tr><td>${nm}</td><td>${r.D.toFixed(1)}</td><td style="color:${phCol(ph)}">${(t/TL).toFixed(3)}</td><td style="color:${phCol(ph)}">${({n:'Noble',l:'Locked',i:'IVA Peak',s:'Shatter'})[ph]}</td></tr>`;}
+  document.getElementById('hill-t').innerHTML=rows.length?h:'';
+  const Ds=embryoPairs.map(p=>p.D).sort((a,b)=>a-b),med=Ds.length?Ds[Math.floor(Ds.length/2)]:null;
+  document.getElementById('hill-note').innerHTML=sys==='solar'
+    ?`Δ is the gap between neighbouring orbits in mutual Hill radii, R<sub>H</sub> = ((m₁+m₂)/3M☉)<sup>1/3</sup>(a₁+a₂)/2, from the live orbits. Gladman (1993): two planets can never cross orbits when Δ &gt; 2√3 ≈ 3.46, so Δ = 2√3 ↔ τ = TL. Every neighbouring pair sits well inside Locked; the tightest is Jupiter–Saturn, the pair near the 5:2 resonance behind the Great Inequality.`
+    :`Embryos are the bodies above 20% of the largest mass. Median embryo spacing <b>${med?med.toFixed(1):'—'} R<sub>H</sub></b> (τ/TL ${med?(HILL_CRIT/med).toFixed(2):'—'}) over ${embryoPairs.length} pairs. Kokubo &amp; Ida (1998, 2000) found oligarchs settle about 10 R<sub>H</sub> apart, τ/TL ≈ 0.35. Δ = 2√3 (Gladman 1993) ↔ τ = TL. The table lists the eight heaviest neighbouring pairs.`;
+}
+function logY(v,lo,hi,h,B,T){return h-B-(h-B-T)*(Math.log10(v)-Math.log10(lo))/(Math.log10(hi)-Math.log10(lo));}
+function renderGrowth(){
+  if(sys!=='disk')return;const [x,w,h]=sizeCanvas(document.getElementById('gc'));
+  if(growth.length<2)return;
+  const L=30,B=14,T=6,t0=Math.max(growth[0][0],1),t1=Math.max(growth[growth.length-1][0],t0*10);
+  const X=t=>L+(w-L-6)*(Math.log10(Math.max(t,t0))-Math.log10(t0))/(Math.log10(t1)-Math.log10(t0));
+  x.font='9px "Space Mono", monospace';x.fillStyle='rgba(232,232,240,.4)';
+  const lo=1e-3,hi=1e3;[1e-3,1,1e3].forEach(v=>{const y=logY(v,lo,hi,h,B,T);x.strokeStyle='rgba(232,232,240,.1)';x.beginPath();x.moveTo(L,y);x.lineTo(w-6,y);x.stroke();x.fillText(v>=1?String(v):'.001',0,y+3);});
+  x.fillText(t0.toFixed(0)+' yr',L,h-2);x.fillText((t1>=1e4?(t1/1e3).toFixed(0)+'k':t1.toFixed(0))+' yr',w-50,h-2);
+  const iso=isoMass(1)/ME,yi=logY(iso,lo,hi,h,B,T);x.strokeStyle='rgba(240,192,96,.55)';x.setLineDash([3,3]);x.beginPath();x.moveTo(L,yi);x.lineTo(w-6,yi);x.stroke();x.setLineDash([]);
+  const line=(k,col)=>{x.strokeStyle=col;x.lineWidth=2;x.beginPath();growth.forEach((g,i)=>{const px=X(Math.max(g[0],t0)),py=logY(Math.max(g[k],lo),lo,hi,h,B,T);i?x.lineTo(px,py):x.moveTo(px,py);});x.stroke();x.lineWidth=1;};
+  line(1,'#ffffff');line(2,'#f0c060');
+}
+function renderMassOrbit(){
+  const [x,w,h]=sizeCanvas(document.getElementById('mc'));
+  const solar=sys==='solar',L=30,B=16,T=6;
+  const a0=solar?0.3:0.4,a1=solar?40:(giant?6:region+0.3),lo=solar?0.01:Math.max(1e-4,m0/ME/3),hi=solar?1000:Math.max(1,isoMass(region)/ME*3);
+  const X=a=>solar?L+(w-L-6)*(Math.log10(a)-Math.log10(a0))/(Math.log10(a1)-Math.log10(a0)):L+(w-L-6)*(a-a0)/(a1-a0);
+  x.font='9px "Space Mono", monospace';x.fillStyle='rgba(232,232,240,.4)';
+  for(let e=Math.ceil(Math.log10(lo));e<=Math.log10(hi);e++){const y=logY(10**e,lo,hi,h,B,T);x.strokeStyle='rgba(232,232,240,.08)';x.beginPath();x.moveTo(L,y);x.lineTo(w-6,y);x.stroke();x.fillText(e>=0?String(10**e):'1e'+e,0,y+3);}
+  (solar?[0.5,1,5,10,30]:[0.5,1,2,3,4,5].filter(a=>a<=a1)).forEach(a=>x.fillText(a,X(a)-4,h-3));
+  // snow line
+  x.strokeStyle='rgba(136,200,255,.55)';x.setLineDash([3,3]);x.beginPath();x.moveTo(X(SNOW),T);x.lineTo(X(SNOW),h-B);x.stroke();x.setLineDash([]);
+  x.fillStyle='rgba(136,200,255,.75)';x.fillText('snow',X(SNOW)+2,T+8);
+  if(!solar){x.strokeStyle='rgba(240,192,96,.6)';x.setLineDash([4,3]);x.beginPath();for(let a=a0;a<=a1;a+=0.02){const y=logY(Math.max(lo,isoMass(a)/ME),lo,hi,h,B,T);a===a0?x.moveTo(X(a),y):x.lineTo(X(a),y);}x.stroke();x.setLineDash([]);}
+  for(const b of bodies){if(b.sun||!isFinite(b.a)||b.a<a0||b.a>a1)continue;const m=b.m/ME;if(m<lo||m>hi*1.01)continue;
+    const r=Math.max(1.6,Math.min(6,1.4+2*Math.cbrt(m/(solar?1:isoMass(1)/ME))));x.fillStyle=tauColor(tauOf(b)).getStyle();x.beginPath();x.arc(X(b.a),logY(m,lo,hi,h,B,T),r,0,6.3);x.fill();
+    if(solar){x.fillStyle='rgba(232,232,240,.6)';x.fillText(b.name.slice(0,3),X(b.a)+4,logY(m,lo,hi,h,B,T)-4);}}
+  document.getElementById('mc-note').innerHTML=solar
+    ?'Measured planets, mass in M⊕ against semi-major axis in AU (both log). Colour is the Hill-spacing τ of each planet against its nearest neighbour. Blue dashed: snow line.'
+    :'Each body, mass in M⊕ (log) against semi-major axis in AU. Gold dashed: isolation mass M<sub>iso</sub> = √(2/3)(2πa²b̃Σ)<sup>3/2</sup>/M☉<sup>1/2</sup>, b̃ = 10 (Kokubo &amp; Ida 2002), the mass an oligarch reaches once it has swept its feeding zone. Blue dashed: snow line.';
+}
+function renderImpacts(){
+  if(sys!=='disk')return;const [x,w,h]=sizeCanvas(document.getElementById('hc'));
+  const L=24,B=14,T=6,bw=(w-L-6)/20,mx=Math.max(1,...hcBins.map(b=>b.m+b.h));
+  x.font='9px "Space Mono", monospace';x.fillStyle='rgba(232,232,240,.4)';
+  hcBins.forEach((b,i)=>{const bx=L+i*bw,hm=(h-B-T)*b.m/mx,hh=(h-B-T)*b.h/mx;
+    x.fillStyle=tauColor(Math.min(TL*0.999,(i+.5)/10*TL)).getStyle();x.fillRect(bx+1,h-B-hm,bw-2,hm);
+    x.fillStyle='#ff3a3a';x.fillRect(bx+1,h-B-hm-hh,bw-2,hh);});
+  const xl=L+10*bw;x.strokeStyle='rgba(255,255,255,.7)';x.setLineDash([3,3]);x.beginPath();x.moveTo(xl,T);x.lineTo(xl,h-B);x.stroke();x.setLineDash([]);
+  x.fillStyle='rgba(232,232,240,.5)';x.fillText('0',L,h-2);x.fillText('TL',xl-6,h-2);x.fillText('2 TL',w-28,h-2);x.fillText(mx,0,T+6);
+}
+function renderRoche(){
+  const dR=ROCHE_K*SAT_R*Math.cbrt(SAT_RHO/ICE_RHO);
+  let h='<tr><th>OBJECT</th><th>d (km)</th><th>τ/TL</th><th>PHASE</th></tr>';
+  for(const [n,d] of SATURN_RING){const t=TL*dR/d,ph=phaseOf(t);h+=`<tr><td>${n}</td><td>${d.toLocaleString('en-US')}</td><td style="color:${phCol(ph)}">${(t/TL).toFixed(4)}</td><td style="color:${phCol(ph)}">${({n:'Noble',l:'Locked',i:'IVA Peak',s:'Shatter'})[ph]}</td></tr>`;}
+  document.getElementById('roche-t').innerHTML=h;
+  document.getElementById('roche-note').innerHTML=`Fluid Roche limit for water ice around Saturn, d<sub>R</sub> = 2.44 R<sub>S</sub>(ρ<sub>S</sub>/ρ<sub>ice</sub>)<sup>1/3</sup> = <b>${Math.round(dR).toLocaleString('en-US')} km</b> (R<sub>S</sub> = 60,268 km, ρ<sub>S</sub> = 0.687, ρ<sub>ice</sub> = 0.92 g/cm³). Inside it tides pull a loose body apart, so d<sub>R</sub>/d = 1 ↔ τ = TL. The main rings sit past TL (Shatter: material that never gathered into a moon), the outer A ring, the F ring and the small ring moons sit in the IVA corridor, and Mimas outward is Locked. Janus and Epimetheus land 0.1% above the IVA floor, so their placement moves with the ice density chosen.`;
+}
+function renderAll(){renderSystem();renderMix();renderHill();renderGrowth();renderMassOrbit();renderImpacts();if(sys==='solar')renderRoche();}
+
+// ════════════════════════════════════════════════════════════
+// CAPTIONS
+// ════════════════════════════════════════════════════════════
+function caption(){
+  const L={
+    disk:'A young star is ringed by a swarm of rocky bodies, each going around on its own orbit. They pull on each other and sometimes touch. A gentle touch <b>merges</b> them; a fast or glancing one makes them bounce apart. The crowded swarm starts past the <b>Torsion Limit</b> (red): it is too packed to stay as it is. Watch it reorganize into a few larger bodies with wide, safe gaps between them.',
+    solar:'The eight planets on their measured orbits. Their colour reads how close each one sits to its neighbour, measured against the spacing where two orbits could cross. Every gap is safely <b>Locked</b>; the tightest pair is Jupiter and Saturn. On the right, Saturn\'s rings show the other boundary: inside the <b>Roche limit</b> tides pull moons apart, which is where the rings are.'};
+  const R={
+    disk:`Direct N-body (G = 4π² in AU, yr, M☉), kick-drift-kick leapfrog, dt = ${dt} yr, Sun included as a body. Swept-sphere collision detection with radii ×${fEnh}. Collisions merge when v<sub>imp</sub> &lt; v<sub>cr</sub> (Kokubo &amp; Genda 2010), otherwise hit-and-run. Watch for runaway growth, then oligarchs near the isolation mass about 10 R<sub>H</sub> apart (Kokubo &amp; Ida 1998, 2000).`,
+    solar:'Eight measured planets, real masses, semi-major axes, eccentricities and inclinations, random orbital phases, barycentric start, dt = 0.0024 yr. τ per pair = TL × 2√3/Δ, Δ in mutual Hill radii (Gladman 1993). Saturn\'s ring system against the fluid Roche limit: τ = TL × d<sub>R</sub>/d.'};
+  let cap=(mode==='learner'?L:R)[sys];
+  if(sys==='disk'&&tauModel==='mix')cap+=mode==='learner'?' <b>Band mix is on:</b> each body carries its own identity (P, N, B, A). Merged bodies combine by the GAM Collider rule, and any body past the Torsion Limit splits into smaller pieces that sit below it.':' <b>Band mix on:</b> per-body PNBA from the generator; mergers by the GAM Collider 2-beam rule; τ ≥ TL bodies split into halves (P×2, N÷2) until below TL.';
+  if(sys==='disk'&&giant)cap+=mode==='learner'?' Jupiter is in place at 5.2 AU and stirs the outer swarm.':' Jupiter at 5.2 AU (measured mass, e, i).';
+  document.getElementById('caption').innerHTML=cap;
+  document.getElementById('tau-note').innerHTML=tauModel==='hill'
+    ?'Boundary identification: two orbits closer than <b>2√3 mutual Hill radii</b> can cross (Gladman 1993) ↔ τ = TL. Each body takes <b>τ = TL × 2√3 / Δ</b>, Δ the gap to its nearest orbital neighbour. A crowded swarm reads Shatter; well-spaced planets read Locked.'
+    :'Each body is born with P, N, B, A from the band mix (B = τ × P), as in AxiomForge and Galaxy. Colour shows τ = B/P. Mergers combine identities by the GAM Collider 2-beam rule. The mix applies on ⟲ NEW RUN.';
+  document.getElementById('leg-title').textContent=tauModel==='hill'||sys==='solar'?'TORSION τ = TL × 2√3 / Δ':'TORSION τ = B/P';
+}
+
+// ════════════════════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════════════════════
+const on=(ids,id)=>ids.forEach(i=>document.getElementById(i).classList.toggle('on',i===id));
+function setMode(m){mode=m;document.body.classList.toggle('res',m==='res');on(['m-l','m-r'],m==='res'?'m-r':'m-l');caption();}
+function setSys(s){sys=s;on(['s-disk','s-sol'],s==='disk'?'s-disk':'s-sol');document.body.classList.toggle('solar',s==='solar');
+  if(s==='solar'&&tauModel==='mix')setTau('hill');['t-hill','t-mix'].forEach(i=>document.getElementById(i).disabled=s==='solar');
+  cam.r=s==='solar'?560:(region===4?(giant?330:270):(giant?320:200));rebuild();setTimeout(()=>{resize();renderAll();},0);}
+function setRegion(r){region=r;on(['rg-2','rg-4'],'rg-'+r);cam.r=r===4?270:200;if(giant)cam.r=320;rebuild();}
+function setJup(j){giant=j;on(['j-off','j-on'],j?'j-on':'j-off');cam.r=j?320:(region===4?270:200);rebuild();}
+function onN(){Nset=+document.getElementById('nset').value;document.getElementById('n-v').textContent=Nset;}
+function onF(){fEnh=+document.getElementById('fset').value;document.getElementById('f-v').textContent='×'+fEnh;}
+function setTau(t){tauModel=t;on(['t-hill','t-mix'],'t-'+t);document.getElementById('mix-wrap').style.display=t==='mix'?'block':'none';
+  if(t==='mix'&&sys==='disk'){for(const b of bodies.slice(1))if(!b.sun&&!b.giant)reorganize(b);accel(false);}
+  paintAll();caption();renderAll();}
+function onMix(){mix={n:+document.getElementById('mx-n').value||0,l:+document.getElementById('mx-l').value||0,i:+document.getElementById('mx-i').value||0,s:+document.getElementById('mx-s').value||0};}
+function onRate(){budget=+document.getElementById('rate').value;document.getElementById('rate-v').textContent=budget+' ms';}
+function toggleRun(){running=!running;const b=document.getElementById('b-run');b.classList.toggle('on',running);b.textContent=running?'■ PAUSE':'▶ RUN';}
+function toggleOrbits(){orbitsOn=!orbitsOn;const b=document.getElementById('b-orb');b.classList.toggle('on',orbitsOn);b.textContent=orbitsOn?'ORBITS ON':'ORBITS OFF';drawOrbits();}
+function toggleAuto(){autoRot=!autoRot;document.getElementById('b-ar').classList.toggle('on',autoRot);}
+
+// ════════════════════════════════════════════════════════════
+// CAMERA
+// ════════════════════════════════════════════════════════════
+let cam={r:200,th:.6,ph:.95},tgtCam=null;
+function placeCam(){camera.position.set(cam.r*Math.sin(cam.ph)*Math.cos(cam.th),cam.r*Math.cos(cam.ph),cam.r*Math.sin(cam.ph)*Math.sin(cam.th));camera.lookAt(0,0,0);}
+function setCam(v){tgtCam=v==='top'?{ph:.04}:v==='edge'?{ph:1.53}:{ph:.95};['top','orb','edge'].forEach(k=>document.getElementById('v-'+k).classList.toggle('on',(k==='orb'?'orbit':k)===v));}
+let drag=false,lx=0,ly=0;
+cv.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointerup',()=>drag=false);
+cv.addEventListener('pointermove',e=>{if(!drag)return;tgtCam=null;cam.th+=(e.clientX-lx)*.005;cam.ph=Math.max(.03,Math.min(1.56,cam.ph-(e.clientY-ly)*.005));lx=e.clientX;ly=e.clientY;});
+cv.addEventListener('wheel',e=>{e.preventDefault();cam.r=Math.max(30,Math.min(1600,cam.r*(1+e.deltaY*.001)));},{passive:false});
+
+// ════════════════════════════════════════════════════════════
+// EXPORT
+// ════════════════════════════════════════════════════════════
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function bodyRec(b){const t=tauOf(b);return {id:b.id,name:b.name||null,a_AU:+b.a.toFixed(5),e:+b.e.toFixed(5),i_deg:+(b.inc*180/Math.PI).toFixed(4),m_Mearth:+(b.m/ME).toPrecision(6),members:b.members,
+  hill_delta_RH:isFinite(b.dmin)?+b.dmin.toFixed(3):null,tau_hill:+b.tauH.toFixed(6),P:+b.P.toFixed(6),N:+b.N.toFixed(4),B:+b.B.toFixed(6),A:+b.A.toFixed(4),tau_pnba:+tauMix(b).toFixed(6),tau_model:tauModel,phase:({n:'Noble',l:'Locked',i:'IVA Peak',s:'Shatter'})[phaseOf(t)]};}
+function exportJSON(){
+  computeHill();const pl=bodies.filter(b=>!b.sun&&isFinite(b.a));
+  dl('accretion_session.json',JSON.stringify({tool:'Accretion Simulator',generated:new Date().toISOString(),constants:{TL,TL_IVA,OMEGA0,hill_critical:HILL_CRIT},
+    settings:sys==='disk'?{system:'planetesimal disk',region_AU:[0.5,region],planetesimals:Nset,radius_enhancement:fEnh,sigma1_gcm2:sig1,snow_line_AU:SNOW,snow_factor:snowF,jupiter:giant,tauModel,bandMix:mix,dt_yr:dt,body_mass_Mearth:m0/ME,isolation_mass_1AU_Mearth:isoMass(1)/ME}:{system:'Solar System, measured',dt_yr:dt},
+    elapsed_yr:+simT.toFixed(2),stats,
+    hill_pairs:embryoPairs.map(p=>({inner:p.p.name||+p.p.a.toFixed(4),outer:p.q.name||+p.q.a.toFixed(4),delta_RH:+p.D.toFixed(3),tau_over_TL:+(HILL_CRIT/p.D).toFixed(4)})),
+    growth:growth.map(g=>({t_yr:+g[0].toFixed(1),bodies:g[1],largest_Mearth:+g[2].toPrecision(5)})),collisions:collLog,bodies:pl.map(bodyRec)},null,2),'application/json');
+}
+function exportCSV(){computeHill();const pl=bodies.filter(b=>!b.sun&&isFinite(b.a)).map(bodyRec),k=Object.keys(pl[0]||{});dl('accretion_bodies.csv',k.join(',')+'\n'+pl.map(r=>k.map(c=>r[c]).join(',')).join('\n'),'text/csv');}
+
+// ════════════════════════════════════════════════════════════
+// LOOP
+// ════════════════════════════════════════════════════════════
+function resize(){const w=viewEl.clientWidth,h=viewEl.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+window.addEventListener('resize',resize);
+let frame=0,stepsLast=0;
+function tag(id,v3){const v=v3.clone().project(camera),el=document.getElementById(id);el.style.display=v.z<1?'block':'none';el.style.left=((v.x*.5+.5)*viewEl.clientWidth)+'px';el.style.top=((-v.y*.5+.5)*viewEl.clientHeight)+'px';}
+function advance(){
+  if(!running)return;const t0=performance.now();let n=0;
+  const cap=sys==='solar'?400:100000;
+  while(performance.now()-t0<budget&&n<cap){step();n++;if(n%50===0)prune();}
+  stepsLast=n;
+}
+function loop(){
+  requestAnimationFrame(loop);frame++;
+  if(tgtCam){cam.ph+=(tgtCam.ph-cam.ph)*.08;if(Math.abs(tgtCam.ph-cam.ph)<.002)tgtCam=null;}
+  if(autoRot)cam.th+=.0015;
+  placeCam();advance();
+  if(frame%10===0){computeHill();paintAll();}
+  if(frame%20===0)sample();
+  if(frame%30===0)drawOrbits();
+  place();tickFlashes();
+  sunGlow.scale.setScalar((sys==='solar'?5:3.2)*(1.9+Math.sin(frame*.03)*.1));
+  renderer.render(scene,camera);
+  tag('sun-tag',new THREE.Vector3(0,0,0));tag('snow-tag',new THREE.Vector3(Dr(SNOW)*Math.cos(cam.th),0,Dr(SNOW)*Math.sin(cam.th)));
+  if(frame%15===0)renderAll();
+}
+resize();setMode('learner');rebuild();placeCam();loop();
+</script>
+</body>
+</html>
