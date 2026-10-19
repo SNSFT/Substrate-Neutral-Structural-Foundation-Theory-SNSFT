@@ -248,7 +248,7 @@ and merges (T20). In the default disk the swarm moves slowly relative to itself,
 
 **Setup:** 0.5–4 AU, JUPITER AT 5.2 AU, Hill-spacing τ.
 
-(Jupiter raises eccentricities and impact speeds in the outer disk, increasing the hit-and-run fraction and opening a partial gap. The outer oligarchs grow more slowly and the Hill spacing table shows wider separations near 5 AU.)
+Jupiter raises eccentricities and impact speeds in the outer disk. The hit-and-run fraction increases, a partial gap opens near 5 AU, and the outer oligarchs grow more slowly. The Hill Spacing table shows wider separations in the outer disk than in the default run without Jupiter.
 
 ## 5. The Solar System, measured
 
@@ -339,7 +339,7 @@ The Noble share of bodies grows through the run as sibling pairs remerge. Under 
 
 ### 7.3 Emergent long-period returns
 
-In long band-mix runs the merge/fragment cycle continually scatters a few bodies onto high-eccentricity orbits. Most remain in the disk or are removed; a sparse population survives on bound ellipses with aphelia of tens to thousands of AU. These objects spend most of their period far outside the normal view, appear as slow distant points, then return with a sharp perihelion speed spike. Periods reach tens of thousands of years (Kepler’s third law, P = a^{3/2}). From a short observational baseline they look unbound; the simulator shows the return. The effect is not scripted—it appears once the fragment cycle has run long enough to populate the high-e tail.
+In long band-mix runs the merge/fragment cycle continually scatters a few bodies onto high-eccentricity orbits. Most remain in the disk or are removed; a sparse population survives on bound ellipses with aphelia of tens to thousands of AU. These objects spend most of their period far outside the normal view, appear as slow distant points, then return with a sharp perihelion speed spike. Periods reach tens of thousands of years (Kepler's third law, P = a^{3/2}). From a short observational baseline they look unbound; the simulator shows the return. The effect is not scripted—it appears once the fragment cycle has run long enough to populate the high-e tail.
 
 One recorded session (N = 500, f = 200, band mix) reached 63,000 simulator years with ~201,000 merges and ~201,000 fragments still balanced, largest mass only 0.047 M⊕, and a handful of bodies with aphelia > 50 AU (one at ~2,087 AU, period ~34 kyr). A shorter N = 200, f = 100 run at 2,200 years already showed the largest body at the isolation mass while the fragment cycle remained active and eccentricities stayed low, indicating that the long-period population requires extended churn.
 
