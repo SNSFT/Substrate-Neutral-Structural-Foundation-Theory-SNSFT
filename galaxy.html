@@ -3,646 +3,758 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galaxy™ · Identity Physics™ · uuia.app</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;800&display=swap" rel="stylesheet">
+<title>Galaxy™ · Powered by AxiomForge™ · Applied Identity Physics™ · uuia.app/galaxy</title>
+<meta name="description" content="Galaxy™, powered by AxiomForge™: settle shots by torsion τ = B/P against the Torsion Limit, then switch on a measured flat rotation curve and watch spokes wind into spirals, or a density wave hold two arms.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
+:root{
+  --anchor:#00ffc8; --locked:#7b4fff; --gold:#f0c060; --shatter:#ff3a3a; --rose:#ff6b8a;
+  --bg:#050508; --surface:#0d0d14; --border:rgba(0,255,200,0.12);
+  --text:#e8e8f0; --dim:rgba(232,232,240,0.5); --faint:rgba(232,232,240,0.26);
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;overflow:hidden;font-family:'Space Mono',monospace;}
-#c{display:block;width:100vw;height:100vh;cursor:grab;}
-#c.dragging{cursor:grabbing;}
-
-/* HUD */
-#hud{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:12px;
-  background:rgba(0,0,0,0.7);
-  border:1px solid rgba(240,192,96,0.2);
-  border-radius:100px;padding:10px 20px;
-  backdrop-filter:blur(8px);
-}
-#mode-btn{
-  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
-  letter-spacing:0.12em;padding:7px 18px;border-radius:100px;
-  border:1px solid rgba(240,192,96,0.5);background:rgba(240,192,96,0.08);
-  color:#f0c060;cursor:pointer;transition:all 0.2s;
-}
-#mode-btn:hover{background:rgba(240,192,96,0.18);}
-#mode-btn.collapse{
-  border-color:rgba(0,212,170,0.5);background:rgba(0,212,170,0.08);color:#00d4aa;
-}
-.hud-stat{
-  font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.08em;
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-}
-.hud-val{font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);}
-.hud-div{width:1px;height:28px;background:rgba(255,255,255,0.08);}
-#spawn-btn{
-  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
-  letter-spacing:0.12em;padding:7px 18px;border-radius:100px;
-  border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);
-  color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.2s;
-}
-#spawn-btn:hover{background:rgba(255,255,255,0.08);color:#fff;}
-#trails-btn{
-  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
-  letter-spacing:0.12em;padding:7px 18px;border-radius:100px;
-  border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);
-  color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.2s;
-}
-#trails-btn:hover{background:rgba(255,255,255,0.08);color:#fff;}
-#trails-btn.off{opacity:0.35;}
-
-/* Mode label top */
-#mode-label{
-  position:fixed;top:20px;left:50%;transform:translateX(-50%);
-  font-family:'Syne',sans-serif;font-weight:800;font-size:11px;
-  letter-spacing:0.2em;color:rgba(240,192,96,0.6);
-  text-transform:uppercase;pointer-events:none;
-  transition:color 0.4s;
-}
-#mode-label.collapse{color:rgba(0,212,170,0.6);}
-
-/* Sag A* label */
-#sag-label{
-  position:fixed;
-  font-family:'Space Mono',monospace;font-size:9px;
-  color:rgba(240,192,96,0.8);letter-spacing:0.12em;
-  pointer-events:none;transform:translate(-50%,-28px);
-  text-shadow:0 0 8px rgba(240,192,96,0.5);
-}
-
-/* TL badge */
-#tl-badge{
-  position:fixed;top:20px;right:20px;
-  font-family:'Space Mono',monospace;font-size:9px;
-  color:rgba(255,255,255,0.25);letter-spacing:0.08em;
-  line-height:1.8;text-align:right;
-}
-span.tm{display:inline !important;font-size:.6em;vertical-align:super;line-height:0;font-weight:400;}
-#id-badge{
-  position:fixed;bottom:20px;left:20px;
-  font-family:'Space Mono',monospace;font-size:8px;
-  color:rgba(255,255,255,0.22);letter-spacing:0.06em;
-  line-height:1.7;text-align:left;max-width:260px;
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden}
+#app{display:grid;grid-template-columns:290px 1fr 320px;grid-template-rows:54px 1fr;height:100vh}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.94);gap:12px}
+.h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--anchor)}
+.h-title i{font-style:normal;font-size:.62rem;color:var(--dim);font-weight:700}
+.h-sub{font-size:.5rem;color:var(--dim);margin-top:2px}
+.h-right{font-size:.46rem;color:var(--faint);text-align:right;line-height:1.6}
+.mode{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
+.mode button{font-family:'Syne',sans-serif;font-weight:800;font-size:.56rem;padding:.4rem .85rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.mode button.on{background:var(--anchor);color:#000}
+#left,#right{overflow-y:auto;padding:10px;background:rgba(13,13,20,.88);display:flex;flex-direction:column;gap:9px}
+#left{border-right:1px solid var(--border)} #right{border-left:1px solid var(--border)}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:9px}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.58rem;color:var(--anchor);letter-spacing:.08em;margin-bottom:7px}
+.seg{display:flex;gap:4px;margin-bottom:5px}
+.seg button,.btn{flex:1;font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:.42rem .3rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.seg button.on{border-color:var(--anchor);color:var(--anchor);background:rgba(0,255,200,.08)}
+.seg button:disabled{opacity:.3;cursor:default}
+.btn.run{border-color:rgba(0,255,200,.5);color:var(--anchor)}
+.btn.run.on{border-color:var(--shatter);color:var(--shatter)}
+.btn.warn{border-color:rgba(255,58,58,.4);color:var(--shatter)}
+.lbl{display:flex;justify-content:space-between;font-size:.5rem;color:var(--dim);margin:5px 0 2px}
+.lbl b{color:var(--anchor);font-weight:400}
+input[type=range]{width:100%;accent-color:#00ffc8}
+.mix{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center;font-size:.46rem}
+.mix input{width:100%;background:#0a0a12;border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.52rem;padding:3px;border-radius:3px;text-align:center}
+.note{font-size:.5rem;color:var(--dim);line-height:1.6}
+.note b{color:var(--text);font-weight:400}
+#view{position:relative;overflow:hidden;background:#000}
+#c3d{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#sag{position:absolute;font-size:.5rem;color:var(--gold);letter-spacing:.12em;pointer-events:none;transform:translate(-50%,-30px);text-shadow:0 0 8px rgba(240,192,96,.6)}
+#legend{position:absolute;top:10px;left:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:.46rem;pointer-events:none}
+#legend .bar{height:5px;border-radius:3px;margin:4px 0;background:linear-gradient(90deg,#00ffc8,#7b4fff 50%,#f0c060 88%,#ff3a3a 100%);width:190px}
+#legend .row{display:flex;justify-content:space-between;width:190px}
+#caption{position:absolute;left:12px;right:12px;bottom:10px;font-size:.6rem;line-height:1.65;background:rgba(5,5,8,.86);border:1px solid var(--border);border-radius:8px;padding:8px 12px;pointer-events:none}
+#caption b{color:var(--anchor);font-weight:400}
+table{width:100%;border-collapse:collapse;font-size:.52rem}
+th{font-weight:400;color:var(--faint);font-size:.44rem;text-align:right;padding:2px}
+td{text-align:right;padding:3px 2px}
+th:first-child,td:first-child{text-align:left}
+.chip{font-size:.42rem;padding:1px 5px;border-radius:100px;border:1px solid}
+.ok{color:var(--anchor);border-color:rgba(0,255,200,.45)}
+.no{color:var(--rose);border-color:rgba(255,107,138,.45)}
+canvas.chart{width:100%;height:120px;display:block}
+.kv{display:flex;justify-content:space-between;font-size:.52rem;padding:3px 0;border-bottom:1px solid rgba(0,255,200,.06)}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--dim)}
+.r-only{display:none} body.res .r-only{display:block} body.res .l-only{display:none}
+.foot{font-size:.42rem;color:var(--faint);line-height:1.6;text-align:center;padding:4px 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media(max-width:1000px){
+  html,body{overflow:auto;height:auto}
+  #app{grid-template-columns:1fr;grid-template-rows:auto 64vh auto auto;height:auto}
+  #view{grid-row:2} #left{grid-row:3} #right{grid-row:4}
+  #left,#right{border:none;overflow:visible}
+  .h-right{display:none} #hdr{flex-wrap:wrap;padding:8px 16px}
+  #legend{display:none}
 }
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div id="mode-label">GALAXY<span class="tm">™</span> · EXPAND <span style="opacity:.45;font-weight:400;">· Powered by AxiomForge<span class="tm">™</span></span></div>
-<div id="sag-label">SAG A*</div>
-<div id="tl-badge">
-  Identity Physics<span class="tm">™</span><br>
-  Ω₀ = 1.36899099984016<br>
-  TL = 0.136899099984016<br>
-  τ = B/P · [9,9,9,9]
-</div>
-<div id="id-badge">
-  Galaxy&trade;, Identity Physics&trade;, Applied Identity Physics&trade;, SNSFT&trade;, PNBA&trade;, the Sovereign Anchor Constant&trade;, the Torsion Limit&trade;, NOHARM&trade;, and HIGHTISTIC&trade; are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation.<br>
-  &copy; 2026 Russell Vernon Trent III-HIGHTISTIC / Published by SNSFT Foundation. All rights reserved.<br>
-  DOI base: 10.5281/zenodo.18719748
-</div>
-<div id="hud">
-  <button id="mode-btn" onclick="toggleMode()">⟐ COLLAPSE</button>
-  <div class="hud-div"></div>
-  <div class="hud-stat"><span class="hud-val" id="stat-locked" style="color:#00d4aa">0</span>LOCKED</div>
-  <div class="hud-stat"><span class="hud-val" id="stat-shatter" style="color:#ff3a3a">0</span>SHATTER</div>
-  <div class="hud-stat"><span class="hud-val" id="stat-inflight" style="color:#f0c060">0</span>INFLIGHT</div>
-  <div class="hud-div"></div>
-  <button id="spawn-btn" onclick="burstSpawn()">⚡ BURST</button>
-  <button id="spawn-btn" onclick="clearAll()" style="margin-left:4px">✕ CLEAR</button>
-  <div class="hud-div"></div>
-  <button id="trails-btn" onclick="toggleTrails()">⟿ TRAILS</button>
+<div id="app">
+<div id="hdr">
+  <div>
+    <div class="h-title">Galaxy<span class="tm">™</span> <i>· Powered by AxiomForge<span class="tm">™</span></i></div>
+    <div class="h-sub">Applied Identity Physics<span class="tm">™</span> · τ = B/P · TL = 0.136899099984016 · TL_IVA = 0.88 × TL</div>
+  </div>
+  <div class="mode"><button id="m-l" class="on" onclick="setMode('learner')">LEARNER</button><button id="m-r" onclick="setMode('res')">RESEARCHER</button></div>
+  <div class="h-right">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation<br>uuia.app/galaxy · [9,9,9,9]</div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- LEFT: controls -->
+<div id="left">
+  <div class="sec">
+    <div class="st">SHOTS</div>
+    <div class="seg"><button class="btn run" id="b-run" onclick="toggleRun()">▶ RUN</button><button class="btn" onclick="burst(200)">⚡ BURST 200</button><button class="btn warn" onclick="clearAll()">✕ CLEAR</button></div>
+    <div class="lbl"><span>Rate</span><b id="spd-v">8 shots/s</b></div>
+    <input type="range" id="spd" min="1" max="40" value="8" oninput="onSpd()">
+    <div class="lbl"><span>Spawn</span></div>
+    <div class="seg"><button id="sp-out" class="on" onclick="setSpawn('out')">OUTFLOW · FROM CORE</button><button id="sp-in" onclick="setSpawn('in')">INFLOW · TO SAG A*</button></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">GENERATOR</div>
+    <div class="seg"><button id="g-tl" class="on" onclick="setGen('tl')">TL BANDS</button><button id="g-int" onclick="setGen('int')">INTEGER · N-BOTTLENECK</button></div>
+    <div id="mix-wrap">
+      <div class="lbl"><span>Band mix %</span></div>
+      <div class="mix">
+        <div style="color:#00ffc8">Noble<input id="mx-n" type="number" min="0" value="25" oninput="onMix()"></div>
+        <div style="color:#9b7dff">Locked<input id="mx-l" type="number" min="0" value="45" oninput="onMix()"></div>
+        <div style="color:#f0c060">IVA<input id="mx-i" type="number" min="0" value="15" oninput="onMix()"></div>
+        <div style="color:#ff3a3a">Shatter<input id="mx-s" type="number" min="0" value="15" oninput="onMix()"></div>
+      </div>
+    </div>
+    <div class="lbl"><span>Radius from</span></div>
+    <div class="seg"><button id="rs-p" class="on" onclick="setRS('p')">P · LOG SCALE</button><button id="rs-d" onclick="setRS('d')">EXPONENTIAL DISK</button></div>
+    <div class="note" style="margin-top:6px" id="gen-note"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">FIELD</div>
+    <div class="seg"><button id="f-st" class="on" onclick="setField('static')">STATIC · F_ext = 0</button><button id="f-rot" onclick="setField('rot')">ROTATING · F_ext ON</button></div>
+    <div class="seg"><button id="a-rot" class="on" onclick="setArms('rot')" disabled>ROTATION ONLY</button><button id="a-dw" onclick="setArms('dw')" disabled>DENSITY WAVE</button></div>
+    <div id="dw-ctl">
+      <div class="lbl"><span>Arms</span></div>
+      <div class="seg"><button id="m2" class="on" onclick="setM(2)">2 ARMS</button><button id="m4" onclick="setM(4)">4 ARMS</button></div>
+      <div class="lbl"><span>Pitch angle</span><b id="pitch-v">20°</b></div>
+      <input type="range" id="pitch" min="6" max="35" value="20" oninput="onPitch()">
+    </div>
+    <div class="lbl"><span>Time rate</span><b id="rate-v">×1</b></div>
+    <input type="range" id="rate" min="-2" max="3" step="0.1" value="0" oninput="onRate()">
+    <div class="seg" style="margin-top:6px"><button class="btn" onclick="resetSnapshot()">⟲ RESET SNAPSHOT</button></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">GRAVITY · SELF-PULL + FUSION</div>
+    <div class="seg"><button id="gr-off" class="on" onclick="setGrav(false)">OFF</button><button id="gr-on" onclick="setGrav(true)">ON</button></div>
+    <div class="note">Stars pull on each other (Newton's G, masses from the measured disk Σ(R)) and move freely. The rotation curve fixes the mean pull; self-gravity adds the local lumps. Two stars fuse by the GAMCollider 2-beam rule [9,9,2,3.8] only where they are close, bound, approaching, and their neighbourhood is gravitationally unstable (local Toomre Q &lt; 1, measured live from the stars in each 2 kpc cell), the standard sink-particle criteria.</div>
+    <div class="note r-only" style="margin-top:4px">Fusion: P = P₁P₂/(P₁+P₂) · N = N₁+N₂ · B = |B₁−B₂| · A = max(A₁,A₂). Mass and momentum are conserved. A product with τ ≥ TL shatters and is ejected.</div>
+    <div class="note" style="margin-top:4px" id="gr-res"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">τ MODEL</div>
+    <div class="seg"><button id="q-off" class="on" onclick="setQ(false)">BAND MIX</button><button id="q-on" onclick="setQ(true)">τ = TL / Q · TOOMRE</button></div>
+    <div class="note">Boundary identification: Toomre Q = 1 (disk breaks into clumps) ↔ τ = TL. Each settled star takes τ = TL/Q at its radius; B = τ × P.</div>
+    <div class="mix" style="grid-template-columns:1fr 1fr 1fr;margin-top:6px">
+      <div>Σ(R₀) M☉/pc²<input id="q-sig" type="number" step="1" value="46" oninput="onQin()"></div>
+      <div>σ<sub>R</sub>(R₀) km/s<input id="q-dis" type="number" step="1" value="35" oninput="onQin()"></div>
+      <div>R<sub>d</sub> kpc<input id="q-rd" type="number" step="0.1" value="2.6" oninput="onQin()"></div>
+    </div>
+    <div class="note" style="margin-top:6px" id="q-read"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">VIEW</div>
+    <div class="seg"><button id="v-top" onclick="setCam('top')">TOP</button><button id="v-orb" class="on" onclick="setCam('orbit')">ORBIT</button><button id="v-edge" onclick="setCam('edge')">EDGE-ON</button></div>
+    <div class="seg"><button id="b-tr" class="on" onclick="toggleTrails()">TRAILS ON</button><button id="b-ar" onclick="toggleAuto()">AUTO-ROTATE</button></div>
+    <div class="note l-only">Drag to turn, scroll to zoom. TOP is the best angle for spirals.</div>
+  </div>
+</div>
+
+<!-- CENTER -->
+<div id="view">
+  <canvas id="c3d"></canvas>
+  <div id="sag">SAG A*</div>
+  <div id="legend">
+    <div style="color:var(--anchor)">TORSION τ = B/P</div>
+    <div class="bar"></div>
+    <div class="row"><span style="color:#00ffc8">Noble 0</span><span style="color:#7b4fff">Locked</span><span style="color:#f0c060">IVA</span><span style="color:#ff3a3a">≥ TL</span></div>
+  </div>
+  <div id="caption"></div>
+</div>
+
+<!-- RIGHT: readouts -->
+<div id="right">
+  <div class="sec">
+    <div class="st">PHASE MIX</div>
+    <table id="mix-t"></table>
+    <div class="note r-only" style="margin-top:5px">± is two standard errors of a proportion, 2√(p(1−p)/n). The chip reads WITHIN when the observed share sits inside that band. Shots count when they settle; Shatter shots fly slower, so their share lags until a run has landed.</div>
+  </div>
+  <div class="sec" id="gr-live" style="display:none">
+    <div class="st">GRAVITY · CLUMPS</div>
+    <div class="kv"><span>Bodies</span><span id="gr-b">0</span></div>
+    <div class="kv"><span>Clumps (3+ stars)</span><span id="gr-c">0</span></div>
+    <div class="kv"><span>Live cells with Q<sub>loc</sub> &lt; 1</span><span id="gr-q">—</span></div>
+    <div class="kv"><span>Largest clump</span><span id="gr-big">—</span></div>
+    <div class="kv"><span>Fusions → Noble · Locked · IVA · Shatter</span><span id="gr-m">0 · 0 · 0 · 0</span></div>
+    <table id="gr-t" style="margin-top:6px"></table>
+    <div class="note" style="margin-top:4px">Largest clumps with their radius, member count, accumulated Narrative N, torsion τ/TL and the disk's local Toomre Q at that radius.</div>
+  </div>
+  <div class="sec" id="q-live" style="display:none">
+    <div class="st">LIVE PHASES · τ = TL/Q</div>
+    <table id="q-t"></table>
+    <canvas class="chart" id="qc" style="margin-top:6px"></canvas>
+    <div class="note" style="margin-top:4px">Q(R) = σ<sub>R</sub>κ / (3.36 G Σ) (Toomre 1964). κ from the rotation curve; Σ ∝ e<sup>−R/R<sub>d</sub></sup>; σ<sub>R</sub> ∝ e<sup>−R/2R<sub>d</sub></sup>. Dashed line: Q = 1, which is τ = TL.</div>
+  </div>
+  <div class="sec">
+    <div class="st">RADIAL PHASE PROFILE</div>
+    <canvas class="chart" id="prof"></canvas>
+    <div class="note" style="margin-top:4px" id="prof-note"></div>
+  </div>
+  <div class="sec">
+    <div class="st">ROTATION CURVE</div>
+    <canvas class="chart" id="rc"></canvas>
+    <div class="note" style="margin-top:4px">v(R) = v<sub>flat</sub> · R / √(R² + R<sub>c</sub>²): rising through the center, flat outside, the measured shape of disk-galaxy rotation curves. Speed in km/s against radius in kpc, scaled to v<sub>flat</sub> = Θ₀ = 238 km/s with the Sun at R₀ = 8.2 kpc (Bland-Hawthorn &amp; Gerhard 2016).</div>
+  </div>
+  <div class="sec">
+    <div class="st">CLOCK</div>
+    <div class="kv"><span>Elapsed</span><span id="k-t">0 Myr</span></div>
+    <div class="kv"><span>Orbits at R₀ = 8.2 kpc</span><span id="k-o8">0.00</span></div>
+    <div class="kv"><span>Orbit period at R₀</span><span id="k-p8">—</span></div>
+    <div class="kv"><span>Inner (4.3 kpc) laps on outer (16 kpc)</span><span id="k-lap">0.00</span></div>
+    <div class="kv"><span>Settled stars</span><span id="k-n">0</span></div>
+  </div>
+  <div class="sec">
+    <div class="st">EXPORT</div>
+    <div class="seg"><button class="btn" onclick="exportJSON()">JSON</button><button class="btn" onclick="exportCSV()">CSV</button></div>
+  </div>
+  <div class="foot">Galaxy™, AxiomForge™, Identity Physics™, Applied Identity Physics™, SNSFT™, PNBA™, the Sovereign Anchor Constant™ and the Torsion Limit™ are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation. © 2026 HIGHTISTIC / SNSFT Foundation · DOI 10.5281/zenodo.18719748 · uuia.app/galaxy</div>
+</div>
+</div>
+
 <script>
-// ============================================================
-// IDENTITY PHYSICS CONSTANTS
-// ============================================================
-const SOVEREIGN_ANCHOR = 1.36899099984016;
-const TORSION_LIMIT    = 0.136899099984016;
-const TL_IVA           = TORSION_LIMIT * 0.88;
-const SQRT_TL          = Math.sqrt(TORSION_LIMIT); // 0.36999...
+// ════════════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════════════
+const TL = 0.136899099984016;            // Torsion Limit
+const TL_IVA = 0.88 * TL;                // IVA corridor floor
+const OMEGA0 = TL * 10;                  // Sovereign Anchor Constant Ω₀ = 1.36899099984016
+// Scene scale: a shot with Pattern P settles at radius 25 + 11·P scene units (P = 1..10 → 36..135).
+// The outer edge maps to 16 kpc; the flat rotation speed maps to Θ₀ = 238 km/s (Bland-Hawthorn & Gerhard 2016).
+const KPC_PER_U = 16/135, KM_PER_KPC = 3.0857e16, S_PER_MYR = 3.15576e13;
+const V0 = 14, RC = 22;                  // scene units: v(r) = V0·r/√(r²+RC²)
+const VFLAT = 238;                       // km/s
+const R_SUN = 8.2;                       // kpc
+const MYR_PER_SIMSEC = V0*KPC_PER_U*KM_PER_KPC/VFLAT/S_PER_MYR;
+const TRAIL_CAP = 600, STAR_CAP = 3000;
+const INT_EXPECTED = {n:41.1, l:7.6, i:3.8, s:47.5};
 
-// ============================================================
-// SCENE SETUP
-// ============================================================
-const canvas = document.getElementById('c');
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setSize(innerWidth, innerHeight);
-renderer.setClearColor(0x000000, 1);
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+let radSrc='p', mode='learner', gen='tl', mix={n:25,l:45,i:15,s:15}, spawnDir='out';
+let field='static', arms='rot', M=2, pitch=20*Math.PI/180, rateMul=1, simT=0;
+let running=false, runTimer=null, shotsPerSec=8;
+let shots=[], stars=[], trails=[], records=[];
+let counts={n:0,l:0,i:0,s:0}, trailsOn=true, autoRot=false;
 
-const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x000000, 0.0018);
+// ════════════════════════════════════════════════════════════
+// SCENE
+// ════════════════════════════════════════════════════════════
+const viewEl=document.getElementById('view'), cv=document.getElementById('c3d');
+const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setClearColor(0x000000,1);
+const scene=new THREE.Scene(); scene.fog=new THREE.FogExp2(0x000000,0.0016);
+const camera=new THREE.PerspectiveCamera(55,1,0.1,3000);
+scene.add(new THREE.AmbientLight(0x222233,1.4));
+const coreLight=new THREE.PointLight(0xf0c060,4,260); scene.add(coreLight);
+const rim=new THREE.PointLight(0x00ffc8,1.4,500); rim.position.set(-160,120,-120); scene.add(rim);
+// Sag A*
+const sagMat=new THREE.MeshPhongMaterial({color:0xf0c060,emissive:0xf0c060,emissiveIntensity:1.8,transparent:true,opacity:.92,shininess:200});
+const sag=new THREE.Mesh(new THREE.IcosahedronGeometry(5,1),sagMat); scene.add(sag);
+const sagWire=new THREE.Mesh(new THREE.IcosahedronGeometry(5.3,1),new THREE.MeshBasicMaterial({color:0xffdd00,wireframe:true,transparent:true,opacity:.35})); scene.add(sagWire);
+const ring=new THREE.Mesh(new THREE.TorusGeometry(10,0.35,8,80),new THREE.MeshBasicMaterial({color:0xf0c060,transparent:true,opacity:.28})); ring.rotation.x=Math.PI/2; scene.add(ring);
+// background stars
+(function(){const g=new THREE.BufferGeometry(),p=[];for(let i=0;i<3000;i++){const r=500+Math.random()*900,t=Math.random()*6.2832,f=Math.acos(2*Math.random()-1);p.push(r*Math.sin(f)*Math.cos(t),r*Math.cos(f),r*Math.sin(f)*Math.sin(t));}
+g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xaaaacc,size:0.9,transparent:true,opacity:.55})));})();
+const GEO=new THREE.DodecahedronGeometry(1,0);
 
-const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 2000);
-camera.position.set(0, 40, 180);
-camera.lookAt(0, 0, 0);
+// Colors: the AxiomForge torsion scale
+function tauColor(t){
+  if(t===0)return new THREE.Color(0x00ffc8);
+  if(t<TL*0.5)return new THREE.Color(0x00ffc8).lerp(new THREE.Color(0x7b4fff),t/(TL*0.5));
+  if(t<TL)return new THREE.Color(0x7b4fff).lerp(new THREE.Color(0xf0c060),(t-TL*0.5)/(TL*0.5));
+  return new THREE.Color(0xff3a3a);
+}
+function phaseOf(t){return t===0?'n':t<TL_IVA?'l':t<TL?'i':'s';}
 
-// Lighting
-const amb = new THREE.AmbientLight(0x111122, 1.2);
-scene.add(amb);
-const core_light = new THREE.PointLight(0xf0c060, 6, 200);
-scene.add(core_light);
-const rim = new THREE.PointLight(0x00d4aa, 2, 300);
-rim.position.set(-100, 80, -100);
-scene.add(rim);
+// ════════════════════════════════════════════════════════════
+// GENERATOR
+// ════════════════════════════════════════════════════════════
+// Exponential disk: surface density Σ ∝ e^(−R/R_d), so the number of stars in a ring ∝ R·e^(−R/R_d).
+// R is drawn on 4.3–16 kpc by rejection, then P is set from R through the settle mapping r = 25 + 11P.
+function diskP(){
+  const lo=36*KPC_PER_U,hi=135*KPC_PER_U,rd=(typeof qIn!=='undefined'?qIn.rd:2.6),f=R=>R*Math.exp(-R/rd);
+  let fmax=0;for(let R=lo;R<=hi;R+=0.05)fmax=Math.max(fmax,f(R));
+  let R;do{R=lo+(hi-lo)*Math.random();}while(Math.random()*fmax>f(R));
+  return Math.min(10,Math.max(1,(R/KPC_PER_U-25)/11));
+}
+function drawShot(){
+  if(gen==='int'){
+    const P=Math.floor(Math.random()*10)+1,N=Math.floor(Math.random()*10)+1;
+    const B=Math.random()<0.7?Math.floor(Math.random()*2):Math.floor(Math.random()*(P+1));
+    return {P,N,B,A:Math.floor(Math.random()*10)+1};
+  }
+  const P=radSrc==='d'?diskP():Math.pow(10,Math.random()),N=Math.floor(Math.random()*10)+1,A=1+Math.random()*9;
+  const tot=mix.n+mix.l+mix.i+mix.s||1;let u=Math.random()*tot,t;
+  if((u-=mix.n)<0)t=0;
+  else if((u-=mix.l)<0)t=TL_IVA*(0.02+0.97*Math.random());
+  else if((u-=mix.i)<0)t=TL_IVA+(TL-TL_IVA)*(0.01+0.98*Math.random());
+  else t=TL*(1.01+2*Math.random());
+  return {P,N,B:t*P,A,t};
+}
+// Disk mapping: radius from Pattern, spoke from Narrative, height from Adaptation.
+function targetOf(P,N,B,A){
+  const r=25+(P/10)*110,th=(N/10)*Math.PI*2,y=(A-5.5)*4;
+  return new THREE.Vector3(r*Math.cos(th),y,r*Math.sin(th));
+}
+function fire(){
+  const s=drawShot(),tau=s.t!==undefined?s.t:(s.P>0?s.B/s.P:0),col=tauColor(tau);
+  let sp;
+  if(spawnDir==='out')sp=new THREE.Vector3((Math.random()-.5)*8,(Math.random()-.5)*8,(Math.random()-.5)*8);
+  else{const r=190+Math.random()*60,a=Math.random()*6.2832;sp=new THREE.Vector3(r*Math.cos(a),(Math.random()-.5)*60,r*Math.sin(a));}
+  const tg=targetOf(s.P,s.N,s.B,s.A),sc=2.2+tau*7;
+  const mat=new THREE.MeshPhongMaterial({color:col,emissive:col,emissiveIntensity:.6,transparent:true,opacity:.75,side:THREE.DoubleSide,shininess:120});
+  const mesh=new THREE.Mesh(GEO,mat);mesh.scale.setScalar(sc);mesh.position.copy(sp);
+  const wire=new THREE.Mesh(GEO,new THREE.MeshBasicMaterial({color:col,wireframe:true,transparent:true,opacity:.85}));wire.scale.setScalar(sc*1.02);wire.position.copy(sp);
+  const tgeo=new THREE.BufferGeometry();tgeo.setAttribute('position',new THREE.Float32BufferAttribute([sp.x,sp.y,sp.z,sp.x,sp.y,sp.z],3));
+  const trail=new THREE.Line(tgeo,new THREE.LineBasicMaterial({color:0xffdd00}));trail.visible=trailsOn;
+  scene.add(mesh,wire,trail);trails.push(trail);
+  while(trails.length>TRAIL_CAP){const o=trails.shift();scene.remove(o);o.userData.gone=true;}
+  shots.push({...s,tau,phase:phaseOf(tau),mesh,wire,trail,target:tg,vel:tg.clone().sub(sp).normalize().multiplyScalar(1.8+Math.random()*1.2),age:0,max:220+Math.random()*60,st:'fly',lockAge:0,sp:sp.clone()});
+}
+function burst(n){let k=0;const iv=setInterval(()=>{for(let i=0;i<10&&k<n;i++,k++)fire();if(k>=n)clearInterval(iv);},60);}
 
-// ============================================================
-// SAG A* — CENTRAL NODE (small, bright)
-// ============================================================
-const sagGeo = new THREE.IcosahedronGeometry(3, 1);
-const sagMat = new THREE.MeshPhongMaterial({
-  color:0xf0c060, emissive:0xf0c060, emissiveIntensity:2.0,
-  transparent:true, opacity:0.9, shininess:200
-});
-const sagMesh = new THREE.Mesh(sagGeo, sagMat);
-scene.add(sagMesh);
-
-// Sag A* glow ring
-const ringGeo = new THREE.TorusGeometry(6, 0.3, 8, 64);
-const ringMat = new THREE.MeshBasicMaterial({color:0xf0c060, transparent:true, opacity:0.3});
-const ring = new THREE.Mesh(ringGeo, ringMat);
-ring.rotation.x = Math.PI * 0.3;
-scene.add(ring);
-
-// Wire around Sag A*
-const sagWireGeo = new THREE.IcosahedronGeometry(3.2, 1);
-const sagWireMat = new THREE.MeshBasicMaterial({color:0xffdd00, wireframe:true, transparent:true, opacity:0.4});
-const sagWire = new THREE.Mesh(sagWireGeo, sagWireMat);
-scene.add(sagWire);
-
-// Position Sag A* label
-function updateSagLabel(){
-  const pos = sagMesh.position.clone();
-  pos.project(camera);
-  const x = (pos.x * 0.5 + 0.5) * innerWidth;
-  const y = (-(pos.y * 0.5) + 0.5) * innerHeight;
-  const lbl = document.getElementById('sag-label');
-  lbl.style.left = x + 'px';
-  lbl.style.top  = y + 'px';
+// ════════════════════════════════════════════════════════════
+// SHOT FLIGHT AND SETTLING
+// ════════════════════════════════════════════════════════════
+function setTrailEnd(t,x,y,z){if(t.userData.gone||!t.visible)return;const a=t.geometry.attributes.position;a.setXYZ(1,x,y,z);a.needsUpdate=true;}
+function tickShots(){
+  for(const h of shots){
+    if(h.st==='done')continue;
+    const p=h.mesh.position;h.age++;
+    if(h.st==='fly'){
+      const to=h.target.clone().sub(p),d=to.length();
+      h.vel.add(to.normalize().multiplyScalar(Math.min(.25,d*.008)));h.vel.multiplyScalar(h.tau<TL?.91:.85);p.add(h.vel);
+      const sp=.04+h.tau*.3;h.mesh.rotation.x+=sp;h.mesh.rotation.y+=sp*.7;
+      if(d<8||h.age>h.max){h.st='lock';h.lockAge=0;}
+    }else if(h.st==='lock'){
+      p.lerp(h.target,.12);h.mesh.rotation.x+=.02;h.mesh.rotation.y+=.015;
+      if(++h.lockAge>18)settle(h);
+    }else if(h.st==='shat'){
+      p.add(h.sv);h.sv.multiplyScalar(.95);
+      h.mesh.material.opacity=Math.max(0,h.mesh.material.opacity-.02);h.wire.material.opacity=Math.max(0,h.wire.material.opacity-.025);
+      if(h.mesh.material.opacity<=0){scene.remove(h.mesh,h.wire,h.trail);h.st='done';}
+    }
+    h.wire.position.copy(p);h.wire.rotation.copy(h.mesh.rotation);setTrailEnd(h.trail,p.x,p.y,p.z);
+  }
+  if(shots.length>200)shots=shots.filter(h=>h.st!=='done'&&h.st!=='star');
+}
+function settle(h){
+  const p=h.mesh.position,R=Math.hypot(p.x,p.z);
+  counts[h.phase]++;
+  records.push({R_kpc:+(R*KPC_PER_U).toFixed(3),P:+h.P.toFixed(4),N:h.N,B:+h.B.toFixed(5),A:+h.A.toFixed(3),tau:+h.tau.toFixed(6),phase:{n:'Noble',l:'Locked',i:'IVA Peak',s:'Shatter'}[h.phase]});
+  if(h.phase==='s'){h.st='shat';const out=new THREE.Vector3(p.x,0,p.z).normalize();h.sv=out.multiplyScalar(2+Math.random()*2).add(new THREE.Vector3(0,(Math.random()-.5)*2,0));return;}
+  h.st='star';h.r=Math.max(1,R);h.th=Math.atan2(p.z,p.x);h.th0=h.th;h.y0=p.y;h.y=p.y;
+  stars.push(h);
+  if(qOn&&!gravOn){h.tau0=h.tau;h.B0=h.B;h.ph0=h.phase;applyQ(h);}
+  if(gravOn&&h.st==='star'){h.r=Math.max(30,R);initBody(h,false);}
+  while(stars.length>STAR_CAP){const o=stars.shift();scene.remove(o.mesh,o.wire,o.trail);o.trail.userData.gone=true;o.st='done';}
 }
 
-// ============================================================
-// STAR FIELD
-// ============================================================
-const starGeo = new THREE.BufferGeometry();
-const starPts = [];
-for(let i = 0; i < 3000; i++){
-  const r = 300 + Math.random() * 700;
-  const theta = Math.random() * Math.PI * 2;
-  const phi = Math.acos(2 * Math.random() - 1);
-  starPts.push(
-    r * Math.sin(phi) * Math.cos(theta),
-    r * Math.cos(phi),
-    r * Math.sin(phi) * Math.sin(theta)
-  );
+// ════════════════════════════════════════════════════════════
+// FIELD: STATIC, ROTATION ONLY, DENSITY WAVE
+// ════════════════════════════════════════════════════════════
+const RC_CO=90, R0=30, EPS=0.6, FLAT=0.15;
+const omegaAt=r=>V0/Math.sqrt(r*r+RC*RC);
+let lastTick=performance.now();
+function placeStar(s){
+  const x=s.r*Math.cos(s.th),z=s.r*Math.sin(s.th);
+  s.mesh.position.set(x,s.y,z);s.wire.position.copy(s.mesh.position);setTrailEnd(s.trail,x,s.y,z);
 }
-starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPts, 3));
-const starMat = new THREE.PointsMaterial({color:0xaaaacc, size:0.8, sizeAttenuation:true, transparent:true, opacity:0.6});
-scene.add(new THREE.Points(starGeo, starMat));
-
-// ============================================================
-// PARTICLE GEOMETRY POOL
-// ============================================================
-const GEO_POOL = [
-  new THREE.DodecahedronGeometry(1,0),
-];
-function getParticleGeo(){ return GEO_POOL[0]; }
-
-// ============================================================
-// COLOR FROM TAU
-// ============================================================
-function tauToColor(tau){
-  if(tau === 0) return new THREE.Color(0xaa88ff);        // Noble — violet
-  if(tau < TL_IVA) return new THREE.Color(0x00d4aa);    // Locked — teal
-  if(tau < TORSION_LIMIT) return new THREE.Color(0xf0c060); // IVA — gold
-  return new THREE.Color(0xff3a3a);                      // Shatter — red
-}
-
-// ============================================================
-// MODE
-// ============================================================
-let mode = 'galaxy'; // 'galaxy' | 'collapse'
-
-function toggleMode(){
-  mode = mode === 'galaxy' ? 'collapse' : 'galaxy';
-  const btn = document.getElementById('mode-btn');
-  const lbl = document.getElementById('mode-label');
-  if(mode === 'collapse'){
-    btn.textContent = '⟐ GALAXY';
-    btn.classList.add('collapse');
-    lbl.textContent = 'COLLAPSE · INWARD';
-    lbl.classList.add('collapse');
-    core_light.color.set(0x00d4aa);
-    sagMat.color.set(0x00d4aa);
-    sagMat.emissive.set(0x00d4aa);
-    ringMat.color.set(0x00d4aa);
-    sagWireMat.color.set(0x00ffcc);
-  } else {
-    btn.textContent = '⟐ COLLAPSE';
-    btn.classList.remove('collapse');
-    lbl.textContent = 'GALAXY · EXPAND';
-    lbl.classList.remove('collapse');
-    core_light.color.set(0xf0c060);
-    sagMat.color.set(0xf0c060);
-    sagMat.emissive.set(0xf0c060);
-    ringMat.color.set(0xf0c060);
-    sagWireMat.color.set(0xffdd00);
+function tickField(){
+  const now=performance.now(),dt=Math.min(.05,(now-lastTick)/1000);lastTick=now;
+  if(gravOn){const d=dt*rateMul;simT+=d;tickGrav(d);return;}
+  if(field!=='rot')return;
+  const d=dt*rateMul;simT+=d;
+  const Op=omegaAt(RC_CO),k=1/Math.tan(pitch);
+  for(const s of stars){
+    const O=omegaAt(s.r);
+    if(arms==='dw'){
+      const c=Math.cos(M*(s.th-(Op*simT+k*Math.log(s.r/R0))));
+      s.th+=(Op+(O-Op)*(1-EPS*c))*d;
+      const g=Math.pow(Math.max(0,c),3);
+      s.mesh.material.emissiveIntensity=.05+.95*g;s.mesh.material.opacity=.06+.84*g;s.wire.material.opacity=.04+.86*g;
+    }else s.th+=O*d;
+    s.y+=(s.y0*FLAT-s.y)*Math.min(1,d*.6);
+    placeStar(s);
   }
 }
+function look(s){s.mesh.material.emissiveIntensity=.6;s.mesh.material.opacity=.75;s.wire.material.opacity=.85;}
+function resetSnapshot(){simT=0;for(const s of stars){s.th=s.th0;s.y=s.y0;look(s);placeStar(s);}}
 
-// ============================================================
-// SPAWN POSITION & TARGET
-// ============================================================
-function getSpawnPos(){
-  if(mode === 'galaxy'){
-    // Near center — orbs fly outward
-    return new THREE.Vector3(
-      (Math.random()-.5)*8,
-      (Math.random()-.5)*8,
-      (Math.random()-.5)*8
-    );
-  } else {
-    // Far out — orbs fall inward
-    const r = 120 + Math.random() * 80;
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    return new THREE.Vector3(
-      r * Math.sin(phi) * Math.cos(theta),
-      r * Math.cos(phi) * 0.4,
-      r * Math.sin(phi) * Math.sin(theta)
-    );
+
+// ════════════════════════════════════════════════════════════
+// τ MODEL: TOOMRE Q
+// Q(R) = σ_R κ / (3.36 G Σ). Boundary identification Q = 1 ↔ τ = TL, so τ(R) = TL / Q(R).
+// ════════════════════════════════════════════════════════════
+const G_PC = 4.30091e-3;                 // pc (km/s)² / M☉
+const RC_KPC = RC*KPC_PER_U;
+let qOn=false, qIn={sig:46,dis:35,rd:2.6}, ejected=0;
+function kappa(Rk){const r2=Rk*Rk,c2=RC_KPC*RC_KPC;return Math.sqrt(VFLAT*VFLAT*(2*r2+4*c2))/(r2+c2);} // km/s/kpc
+function Q(Rk){
+  const sig=qIn.sig*Math.exp(-(Rk-R_SUN)/qIn.rd), dis=qIn.dis*Math.exp(-(Rk-R_SUN)/(2*qIn.rd));
+  return dis*(kappa(Rk)/1000)/(3.36*G_PC*sig);
+}
+function paint(s,t){
+  const c=tauColor(t);s.mesh.material.color.copy(c);s.mesh.material.emissive.copy(c);s.wire.material.color.copy(c);
+}
+function applyQ(s){
+  const Rk=s.r*KPC_PER_U,t=TL/Q(Rk);
+  s.tau=t;s.B=t*s.P;s.phase=phaseOf(t);paint(s,t);
+  if(s.phase==='s')ejectStar(s);
+}
+function ejectStar(s){
+  const i=stars.indexOf(s);if(i>=0)stars.splice(i,1);
+  const p=s.mesh.position;s.st='shat';s.sv=new THREE.Vector3(p.x,0,p.z).normalize().multiplyScalar(2+Math.random()*2);
+  shots.push(s);ejected++;
+}
+function setQ(on){
+  qOn=on;document.getElementById('q-on').classList.toggle('on',on);document.getElementById('q-off').classList.toggle('on',!on);
+  document.getElementById('q-live').style.display=on?'block':'none';
+  if(on){for(const s of [...stars]){if(s.tau0===undefined){s.tau0=s.tau;s.B0=s.B;s.ph0=s.phase;}applyQ(s);}}
+  else{for(const s of stars){if(s.tau0!==undefined){s.tau=s.tau0;s.B=s.B0;s.phase=s.ph0;paint(s,s.tau);}}}
+  renderQ();renderProfile();caption();
+}
+function onQin(){
+  qIn={sig:Math.max(1,+document.getElementById('q-sig').value||46),dis:Math.max(1,+document.getElementById('q-dis').value||35),rd:Math.max(.5,+document.getElementById('q-rd').value||2.6)};
+  if(qOn&&!gravOn)for(const s of [...stars])applyQ(s);
+  renderQ();renderProfile();
+}
+function qStats(){
+  let qmin=1e9,rmin=0;for(let R=4.3;R<=16;R+=0.05){const q=Q(R);if(q<qmin){qmin=q;rmin=R;}}
+  return {q0:Q(R_SUN),qmin,rmin};
+}
+function renderQ(){
+  const st=qStats();
+  document.getElementById('q-read').innerHTML=`Q(R₀) = <b>${st.q0.toFixed(2)}</b> · minimum Q = <b>${st.qmin.toFixed(2)}</b> at ${st.rmin.toFixed(1)} kpc → τ = ${(TL/st.qmin).toFixed(4)} (${(100/st.qmin).toFixed(0)}% of TL).<br>Defaults: R₀, Θ₀ and R<sub>d</sub> from Bland-Hawthorn &amp; Gerhard (2016); Σ (stars + gas) and σ<sub>R</sub> are solar-neighbourhood values in the published range. All three inputs are editable.`;
+  if(!qOn)return;
+  const c={n:0,l:0,i:0,s:0};for(const s of stars)c[s.phase]++;
+  const n=stars.length+ejected;
+  let t='<tr><th>PHASE</th><th>LIVE</th><th>SHARE</th></tr>';
+  for(const [k,name,col] of PH){const v=k==='s'?ejected:c[k];t+=`<tr><td style="color:${col}">${name}${k==='s'?' (ejected)':''}</td><td>${v}</td><td>${n?(100*v/n).toFixed(1)+'%':'—'}</td></tr>`;}
+  document.getElementById('q-t').innerHTML=t;
+  // Q(R) chart
+  const [x,w,h]=sizeCanvas(document.getElementById('qc'));
+  const L=30,B=16,X=R=>L+(w-L-6)*(R-4)/12,qmax=Math.max(4,Math.ceil(Q(16))),Y=q=>h-B-(h-B-8)*Math.min(q,qmax)/qmax;
+  x.font='9px "Space Mono", monospace';x.fillStyle='rgba(232,232,240,.4)';
+  [0,1,2,3,4].filter(q=>q<=qmax).forEach(q=>x.fillText(q,8,Y(q)+3));[4,8,12,16].forEach(R=>x.fillText(R,X(R)-4,h-4));
+  x.strokeStyle='rgba(255,58,58,.7)';x.setLineDash([3,3]);x.beginPath();x.moveTo(L,Y(1));x.lineTo(w-6,Y(1));x.stroke();
+  x.strokeStyle='rgba(240,192,96,.6)';x.beginPath();x.moveTo(L,Y(1/0.88));x.lineTo(w-6,Y(1/0.88));x.stroke();x.setLineDash([]);
+  x.strokeStyle='#00ffc8';x.lineWidth=2;x.beginPath();for(let R=4;R<=16;R+=.1){const yy=Y(Q(R));R===4?x.moveTo(X(R),yy):x.lineTo(X(R),yy);}x.stroke();x.lineWidth=1;
+  x.fillStyle='rgba(232,232,240,.4)';x.fillText('Q',2,8);
+}
+
+
+// ════════════════════════════════════════════════════════════
+// GRAVITY: self-pull + GAMCollider 2-beam fusion
+// Newton's G with masses from the measured disk surface density Σ(R).
+// The measured rotation curve sets the mean (axisymmetric) pull; the
+// azimuthal mean of self-gravity is removed so only local lumps act.
+// ════════════════════════════════════════════════════════════
+const GRAV_CAP=1200, G_KPC=4.30091e-6;           // kpc (km/s)² / M☉
+const V_U=VFLAT/V0;                              // km/s per scene unit/s
+const G_SIM=G_KPC/(KPC_PER_U*V_U*V_U);           // scene units per M☉
+let gravN=0, gravOn=false, SOFT=3, massBins=null, grM={n:0,l:0,i:0,s:0};
+function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function SigmaKpc2(Rk){return qIn.sig*1e6*Math.exp(-(Rk-R_SUN)/qIn.rd);}       // M☉/kpc²
+function buildMass(){
+  const nb=24,lo=30,hi=140,cnt=new Array(nb).fill(0);
+  for(const s of stars){const b=Math.min(nb-1,Math.max(0,Math.floor((s.r-lo)/(hi-lo)*nb)));cnt[b]++;}
+  massBins=cnt.map((c,b)=>{const r1=lo+(hi-lo)*b/nb,r2=lo+(hi-lo)*(b+1)/nb,Rk=(r1+r2)/2*KPC_PER_U,A=Math.PI*((r2*KPC_PER_U)**2-(r1*KPC_PER_U)**2);return c?SigmaKpc2(Rk)*A/c:SigmaKpc2(Rk)*A/Math.max(1,stars.length/nb);});
+}
+function massAt(r){const nb=24,lo=30,hi=140,b=Math.min(nb-1,Math.max(0,Math.floor((r-lo)/(hi-lo)*nb)));return massBins[b];}
+function vcSim(r){return V0*r/Math.sqrt(r*r+RC*RC);}
+function initBody(s,randomAngle){
+  const r=Math.max(30,s.r||Math.hypot(s.mesh.position.x,s.mesh.position.z));
+  const th=randomAngle?Math.random()*2*Math.PI:Math.atan2(s.mesh.position.z,s.mesh.position.x);
+  const Rk=r*KPC_PER_U,sig=qIn.dis*Math.exp(-(Rk-R_SUN)/(2*qIn.rd))/V_U,vc=vcSim(r);
+  s.x=r*Math.cos(th);s.z=r*Math.sin(th);s.y=(s.y0||0)*FLAT;
+  const vr=gauss()*sig,vt=vc+gauss()*sig*0.7;
+  s.vx=vr*Math.cos(th)-vt*Math.sin(th);s.vz=vr*Math.sin(th)+vt*Math.cos(th);
+  s.m=massAt(r);s.members=s.members||1;s.ax=0;s.az=0;s.r=r;s.th=th;
+}
+function computeAcc(){
+  const n=stars.length,e2=SOFT*SOFT;
+  for(const s of stars){s.ax=0;s.az=0;}
+  for(let i=0;i<n;i++){const a=stars[i];
+    for(let j=i+1;j<n;j++){const b=stars[j],dx=b.x-a.x,dz=b.z-a.z,r2=dx*dx+dz*dz+e2,f=G_SIM/(r2*Math.sqrt(r2));
+      a.ax+=f*b.m*dx;a.az+=f*b.m*dz;b.ax-=f*a.m*dx;b.az-=f*a.m*dz;}}
+  // remove the azimuthal mean of the radial self-pull (the rotation curve already contains it)
+  const nb=24,lo=30,hi=140,sum=new Array(nb).fill(0),cnt=new Array(nb).fill(0);
+  for(const s of stars){const r=Math.hypot(s.x,s.z)||1,b=Math.min(nb-1,Math.max(0,Math.floor((r-lo)/(hi-lo)*nb)));s._b=b;s._r=r;sum[b]+=(s.ax*s.x+s.az*s.z)/r;cnt[b]++;}
+  for(const s of stars){const mr=cnt[s._b]?sum[s._b]/cnt[s._b]:0,v=vcSim(s._r),ar=-v*v/s._r-mr;s.ax+=ar*s.x/s._r;s.az+=ar*s.z/s._r;}
+}
+function fuse(a,b){
+  const m=a.m+b.m;
+  a.vx=(a.m*a.vx+b.m*b.vx)/m;a.vz=(a.m*a.vz+b.m*b.vz)/m;a.x=(a.m*a.x+b.m*b.x)/m;a.z=(a.m*a.z+b.m*b.z)/m;a.y=(a.m*a.y+b.m*b.y)/m;a.m=m;
+  const P=a.P*b.P/(a.P+b.P),B=Math.abs(a.B-b.B);
+  a.P=P;a.N=a.N+b.N;a.B=B;a.A=Math.max(a.A,b.A);a.members+=b.members;
+  a.tau=P>0?B/P:0;a.phase=phaseOf(a.tau);a.tau0=undefined;
+  grM[a.phase]++;
+  paint(a,a.tau);a.mesh.scale.setScalar((2.2+7*Math.min(a.tau,TL*3))*Math.min(3,Math.cbrt(a.members)));a.wire.scale.copy(a.mesh.scale).multiplyScalar(1.02);
+  scene.remove(b.mesh,b.wire,b.trail);b.trail.userData.gone=true;b.st='done';
+  if(a.phase==='s')a.st='eject';
+}
+// Local Toomre Q from the live particles in 2 kpc cells (8 or more stars): Q_loc = σ_R κ / (3.36 G Σ_loc), σ_R the radial velocity dispersion.
+const CELL=2/KPC_PER_U, CELL_MIN=8;
+function kappaSim(r){return V0*Math.sqrt(2*r*r+4*RC*RC)/(r*r+RC*RC);}
+let qLocStats={cells:0,unstable:0,median:null};
+function localQ(){
+  const cells=new Map(),key=(i,j)=>i*100003+j;
+  for(const s of stars){const k=key(Math.floor(s.x/CELL),Math.floor(s.z/CELL));let c=cells.get(k);if(!c){c={m:0,n:0,vr:0,list:[]};cells.set(k,c);}const r=Math.hypot(s.x,s.z)||1;s._vr=(s.x*s.vx+s.z*s.vz)/r;c.m+=s.m;c.n++;c.vr+=s._vr*s.m;c.list.push(s);}
+  const qs=[];
+  for(const c of cells.values()){
+    if(c.n<CELL_MIN){c.Q=Infinity;continue;}
+    const mr=c.vr/c.m;let v2=0,rs=0;
+    for(const s of c.list){v2+=s.m*(s._vr-mr)**2;rs+=Math.hypot(s.x,s.z);}
+    const sig=Math.sqrt(v2/c.m),r=rs/c.n,Sig=c.m/(CELL*CELL);
+    c.Q=sig*kappaSim(r)/(3.36*G_SIM*Sig);qs.push(c.Q);
   }
+  qs.sort((a,b)=>a-b);
+  qLocStats={cells:qs.length,unstable:qs.filter(q=>q<1).length,median:qs.length?qs[Math.floor(qs.length/2)]:null};
+  return (s)=>{const c=cells.get(key(Math.floor(s.x/CELL),Math.floor(s.z/CELL)));return c?c.Q:Infinity;};
 }
-
-function getTarget(P, N, B, A){
-  if(mode === 'galaxy'){
-    // PNBA → spherical coords, fly outward
-    const radius = 25 + (P/9)*110;
-    const theta  = (N/9) * Math.PI * 2;
-    const phi    = Math.PI*0.3 + (B/9)*Math.PI*0.4;
-    const yOff   = (A/9)*40 - 20;
-    return new THREE.Vector3(
-      Math.sin(phi)*Math.cos(theta)*radius,
-      Math.cos(phi)*radius*0.5 + yOff,
-      Math.sin(phi)*Math.sin(theta)*radius
-    );
-  } else {
-    // Sag A* with tiny jitter
-    return new THREE.Vector3(
-      (Math.random()-.5)*4,
-      (Math.random()-.5)*4,
-      (Math.random()-.5)*4
-    );
-  }
-}
-
-// ============================================================
-// PARTICLES
-// ============================================================
-let particles = [];
-let totalLocked = 0, totalShatter = 0;
-let hitCount = 0;
-let trailsEnabled = true;
-
-function toggleTrails(){
-  trailsEnabled = !trailsEnabled;
-  document.getElementById('trails-btn').classList.toggle('off', !trailsEnabled);
-  particles.forEach(p => { p.trail.visible = trailsEnabled; });
-}
-
-function spawnParticle(P, N, B, A){
-  P = P !== undefined ? P : 0.5 + Math.random() * 8.5;
-  N = N !== undefined ? N : 1 + Math.random() * 8;
-  B = B !== undefined ? B : Math.random() * 6.5;
-  A = A !== undefined ? A : 0.5 + Math.random() * 8;
-
-  const tau = P > 0 ? B/P : 0;
-  const col = tauToColor(tau);
-  const scale = 0.8 + (P/9)*1.8;
-
-  const spawnPos = getSpawnPos();
-  const target   = getTarget(P, N, B, A);
-
-  // Mesh
-  const mat = new THREE.MeshPhongMaterial({
-    color:col, emissive:col, emissiveIntensity:0.7,
-    transparent:true, opacity:0.8,
-    side:THREE.DoubleSide, shininess:120
+function mergePass(){
+  const qAt=localQ();
+  const cell=SOFT,grid=new Map(),key=(i,j)=>i*100003+j;
+  stars.forEach((s,k)=>{const gi=Math.floor(s.x/cell),gj=Math.floor(s.z/cell),kk=key(gi,gj);if(!grid.has(kk))grid.set(kk,[]);grid.get(kk).push(k);});
+  const dead=new Set();
+  stars.forEach((a,ia)=>{
+    if(dead.has(ia)||a.st!=='star')return;
+    const gi=Math.floor(a.x/cell),gj=Math.floor(a.z/cell);
+    for(let di=-1;di<=1;di++)for(let dj=-1;dj<=1;dj++){const l=grid.get(key(gi+di,gj+dj));if(!l)continue;
+      for(const ib of l){if(ib<=ia||dead.has(ib))continue;const b=stars[ib];if(a.st!=='star'||b.st!=='star')continue;
+        const dx=b.x-a.x,dz=b.z-a.z,d2=dx*dx+dz*dz;if(d2>SOFT*SOFT)continue;
+        const dvx=b.vx-a.vx,dvz=b.vz-a.vz,vesc2=2*G_SIM*(a.m+b.m)/SOFT;
+        // sink-particle criteria: close, bound, converging, and locally Toomre-unstable
+        if(dvx*dvx+dvz*dvz<vesc2&&dx*dvx+dz*dvz<0&&qAt(a)<1){fuse(a,b);dead.add(ib);}
+      }}
   });
-  const mesh = new THREE.Mesh(getParticleGeo(), mat);
-  mesh.scale.setScalar(scale);
-  mesh.position.copy(spawnPos);
-  scene.add(mesh);
-
-  // Wire
-  const wireMat = new THREE.MeshBasicMaterial({color:col, wireframe:true, transparent:true, opacity:0.9});
-  const wire = new THREE.Mesh(getParticleGeo(), wireMat);
-  wire.scale.setScalar(scale * 1.02);
-  wire.position.copy(spawnPos);
-  scene.add(wire);
-
-  // Trail
-  const trailPts = [spawnPos.clone(), spawnPos.clone()];
-  const trailGeo = new THREE.BufferGeometry().setFromPoints(trailPts);
-  const trailMat = new THREE.LineBasicMaterial({color:0xffdd00, transparent:false, opacity:1.0});
-  const trail = new THREE.Line(trailGeo, trailMat);
-  trail.visible = trailsEnabled;
-  scene.add(trail);
-
-  // Initial velocity
-  const dir = target.clone().sub(spawnPos).normalize();
-  const vel = dir.multiplyScalar(0.3 + Math.random()*0.2);
-
-  hitCount++;
-  particles.push({
-    id: hitCount, P, N, B, A, tau,
-    mesh, wire, trail, trailGeo,
-    vel, target, spawnPos: spawnPos.clone(),
-    age:0, maxAge: 180 + Math.floor(Math.random()*80),
-    phase:'inflight', col, scale, lockAge:0
-  });
-}
-
-function burstSpawn(count){
-  count = count || 12;
-  for(let i = 0; i < count; i++){
-    setTimeout(()=>spawnParticle(), i * 60);
+  if(dead.size){
+    for(const s of stars)if(s.st==='eject'){s.st='shat';s.sv=new THREE.Vector3(s.x,0,s.z).normalize().multiplyScalar(2+Math.random()*2);shots.push(s);ejected++;}
+    stars=stars.filter(s=>s.st==='star');
   }
 }
+function tickGrav(d){
+  if(!stars.length)return;
+  const n=Math.max(1,Math.ceil(d/0.08)),hh=d/n;
+  for(let k=0;k<n;k++){
+    for(const s of stars){s.vx+=s.ax*hh/2;s.vz+=s.az*hh/2;s.x+=s.vx*hh;s.z+=s.vz*hh;}
+    computeAcc();
+    for(const s of stars){s.vx+=s.ax*hh/2;s.vz+=s.az*hh/2;}
+  }
+  mergePass();
+  for(const s of stars){s.mesh.position.set(s.x,s.y,s.z);s.wire.position.copy(s.mesh.position);setTrailEnd(s.trail,s.x,s.y,s.z);}
+}
+function setGrav(on){
+  if(on===gravOn)return;
+  gravOn=on;
+  document.getElementById('gr-on').classList.toggle('on',on);document.getElementById('gr-off').classList.toggle('on',!on);
+  document.getElementById('gr-live').style.display=on?'block':'none';
+  ['f-st','f-rot','a-rot','a-dw','q-on','q-off'].forEach(i=>document.getElementById(i).disabled=on);
+  if(on){
+    while(stars.length>GRAV_CAP){const o=stars.shift();scene.remove(o.mesh,o.wire,o.trail);o.trail.userData.gone=true;o.st='done';}
+    for(const s of stars)if(!s.r)s.r=Math.hypot(s.mesh.position.x,s.mesh.position.z);
+    const area=Math.PI*((135*KPC_PER_U)**2-(36*KPC_PER_U)**2);
+    gravN=stars.length;SOFT=0.5*Math.sqrt(area/Math.max(1,gravN))/KPC_PER_U;
+    buildMass();
+    for(const s of stars)initBody(s,true);
+    computeAcc();
+  }else{
+    for(const s of stars){s.r=Math.max(1,Math.hypot(s.x,s.z));s.th=Math.atan2(s.z,s.x);s.th0=s.th;s.y0=s.y/FLAT;}
+    setField(field);
+  }
+  renderGrav();caption();
+}
+function renderGrav(){
+  const area=Math.PI*((135*KPC_PER_U)**2-(36*KPC_PER_U)**2);
+  document.getElementById('gr-res').innerHTML=gravOn
+    ?`Resolution: softening and fusion distance ε = <b>${(SOFT*KPC_PER_U).toFixed(2)} kpc</b>, half the mean spacing of the ${gravN} stars present at switch-on. Runs on up to ${GRAV_CAP} stars; gravity starts from a phase-mixed disk (each star keeps its radius and takes a random angle, as after many rotations).`
+    :`Resolution is set by the star count when gravity switches on: ε = half the mean star spacing. Gravity runs on up to ${GRAV_CAP} stars.`;
+  if(!gravOn)return;
+  const cl=stars.filter(s=>s.members>=3).sort((a,b)=>b.members-a.members);
+  const big=[...stars].sort((a,b)=>b.members-a.members)[0];
+  document.getElementById('gr-b').textContent=stars.length;
+  document.getElementById('gr-c').textContent=cl.length;
+  document.getElementById('gr-q').textContent=qLocStats.cells?`${qLocStats.unstable} of ${qLocStats.cells} · median Q = ${qLocStats.median.toFixed(2)}`:'—';
+  document.getElementById('gr-big').textContent=big&&big.members>1?`${big.members} stars · N = ${big.N.toFixed(1)} · ${({n:'Noble',l:'Locked',i:'IVA Peak',s:'Shatter'})[big.phase]}`:'—';
+  document.getElementById('gr-m').textContent=`${grM.n} · ${grM.l} · ${grM.i} · ${grM.s}`;
+  let t='<tr><th>R kpc</th><th>stars</th><th>N</th><th>τ/TL</th><th>Q(R)</th></tr>';
+  for(const s of cl.slice(0,5)){const Rk=Math.hypot(s.x,s.z)*KPC_PER_U;t+=`<tr><td>${Rk.toFixed(1)}</td><td>${s.members}</td><td>${s.N.toFixed(1)}</td><td style="color:${PH.find(p=>p[0]===s.phase)[2]}">${(s.tau/TL).toFixed(2)}</td><td>${Q(Rk).toFixed(2)}</td></tr>`;}
+  document.getElementById('gr-t').innerHTML=cl.length?t:'';
+}
 
+// ════════════════════════════════════════════════════════════
+// CAMERA
+// ════════════════════════════════════════════════════════════
+let cam={r:330,th:.6,ph:1.1},tgtCam=null;
+function placeCam(){camera.position.set(cam.r*Math.sin(cam.ph)*Math.cos(cam.th),cam.r*Math.cos(cam.ph),cam.r*Math.sin(cam.ph)*Math.sin(cam.th));camera.lookAt(0,0,0);}
+function setCam(v){
+  tgtCam=v==='top'?{ph:.04,r:320}:v==='edge'?{ph:1.53,r:330}:{ph:1.1,r:330};
+  ['top','orb','edge'].forEach(k=>document.getElementById('v-'+k).classList.toggle('on',(k==='orb'?'orbit':k)===v));
+}
+let drag=false,lx=0,ly=0;
+cv.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointerup',()=>drag=false);
+cv.addEventListener('pointermove',e=>{if(!drag)return;tgtCam=null;cam.th+=(e.clientX-lx)*.005;cam.ph=Math.max(.03,Math.min(1.56,cam.ph-(e.clientY-ly)*.005));lx=e.clientX;ly=e.clientY;});
+cv.addEventListener('wheel',e=>{e.preventDefault();tgtCam=null;cam.r=Math.max(60,Math.min(900,cam.r*(1+e.deltaY*.001)));},{passive:false});
+
+// ════════════════════════════════════════════════════════════
+// READOUTS
+// ════════════════════════════════════════════════════════════
+const PH=[['n','Noble','#00ffc8'],['l','Locked','#9b7dff'],['i','IVA Peak','#f0c060'],['s','Shatter','#ff3a3a']];
+function expected(){if(gen==='int')return INT_EXPECTED;const t=mix.n+mix.l+mix.i+mix.s||1;return {n:100*mix.n/t,l:100*mix.l/t,i:100*mix.i/t,s:100*mix.s/t};}
+function renderMix(){
+  const n=counts.n+counts.l+counts.i+counts.s,ex=expected();
+  let h='<tr><th>PHASE</th><th>EXPECTED</th><th>OBSERVED</th><th>±</th><th></th></tr>';
+  for(const [k,name,col] of PH){
+    const p=ex[k]/100,obs=n?100*counts[k]/n:null,band=n?200*Math.sqrt(p*(1-p)/n):null;
+    const ok=n?Math.abs(obs-ex[k])<=band:null;
+    h+=`<tr><td style="color:${col}">${name}</td><td>${ex[k].toFixed(1)}%</td><td style="color:var(--text)">${n?obs.toFixed(1)+'%':'—'}</td><td style="color:var(--faint)">${n?band.toFixed(1):'—'}</td><td>${n>=30?`<span class="chip ${ok?'ok':'no'}">${ok?'WITHIN':'OUTSIDE'}</span>`:''}</td></tr>`;
+  }
+  h+=`<tr><td style="color:var(--dim)">settled</td><td></td><td style="color:var(--text)">${n}</td><td></td><td></td></tr>`;
+  document.getElementById('mix-t').innerHTML=h;
+}
+function sizeCanvas(c){const w=c.clientWidth,h=c.clientHeight;if(c.width!==w*devicePixelRatio){c.width=w*devicePixelRatio;c.height=h*devicePixelRatio;}const x=c.getContext('2d');x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);x.clearRect(0,0,w,h);return [x,w,h];}
+function renderProfile(){
+  const [x,w,h]=sizeCanvas(document.getElementById('prof'));
+  const lo=4,hi=16,nb=6,bins=Array.from({length:nb},()=>({n:0,l:0,i:0,s:0,t:0}));
+  const tsum=new Array(nb).fill(0),tn=new Array(nb).fill(0);
+  const add=(Rk,k,t)=>{const b=Math.min(nb-1,Math.max(0,Math.floor((Rk-lo)/(hi-lo)*nb)));bins[b][k]++;bins[b].t++;if(t!==undefined){tsum[b]+=t/TL;tn[b]++;}};
+  document.getElementById('prof-note').textContent=(qOn?'Live share of each phase by distance from Sag A* (kpc), with τ = TL/Q(R). Rings where Q drops toward 1 move toward IVA; rings with Q below 1 shatter out.':'Share of each phase by distance from Sag A* (kpc). With τ drawn independently of radius, every ring holds the same mix.')+' White line: mean τ in each ring as a fraction of TL (dashed line = TL).';
+  if(gravOn){for(const s of stars)add(Math.hypot(s.x,s.z)*KPC_PER_U,s.phase,s.tau);}
+  else if(qOn){for(const s of stars)add(s.r*KPC_PER_U,s.phase,s.tau);}
+  else for(const r of records)add(r.R_kpc,{Noble:'n',Locked:'l','IVA Peak':'i',Shatter:'s'}[r.phase],r.tau);
+  const L=26,B=16,bw=(w-L-4)/nb;
+  x.font='9px "Space Mono", monospace';x.fillStyle='rgba(232,232,240,.4)';
+  x.fillText('100%',0,10);x.fillText('0',14,h-B);
+  bins.forEach((b,i)=>{
+    let y=h-B;const bx=L+i*bw+2;
+    if(b.t)for(const [k,,col] of PH){const hh=(h-B-6)*b[k]/b.t;x.fillStyle=col;x.globalAlpha=.85;x.fillRect(bx,y-hh,bw-4,hh);y-=hh;}
+    x.globalAlpha=1;x.fillStyle='rgba(232,232,240,.45)';x.fillText((lo+(hi-lo)*(i+.5)/nb).toFixed(0),bx+bw/2-6,h-4);
+  });
+  // mean τ/TL per ring (0 at the bottom, TL at the top)
+  const Yt=v=>h-B-(h-B-6)*Math.min(1.25,v)/1.25;
+  x.strokeStyle='rgba(255,255,255,.35)';x.setLineDash([2,3]);x.beginPath();x.moveTo(L,Yt(1));x.lineTo(w-4,Yt(1));x.stroke();x.setLineDash([]);
+  x.fillStyle='rgba(255,255,255,.6)';x.fillText('TL',w-16,Yt(1)-2);
+  x.strokeStyle='#ffffff';x.lineWidth=2;x.beginPath();let st=false;
+  for(let i=0;i<nb;i++){if(!tn[i])continue;const cx=L+i*bw+bw/2,cy=Yt(tsum[i]/tn[i]);st?x.lineTo(cx,cy):x.moveTo(cx,cy);st=true;}x.stroke();x.lineWidth=1;
+  x.fillStyle='#ffffff';for(let i=0;i<nb;i++){if(!tn[i])continue;const cx=L+i*bw+bw/2,cy=Yt(tsum[i]/tn[i]);x.beginPath();x.arc(cx,cy,2.5,0,6.3);x.fill();}
+  window._profMeans=tsum.map((s,i)=>tn[i]?+(s/tn[i]).toFixed(4):null);
+}
+function renderCurve(){
+  const [x,w,h]=sizeCanvas(document.getElementById('rc'));
+  const L=30,B=16,rmax=135,X=r=>L+(w-L-6)*r/rmax,Y=v=>h-B-(h-B-8)*v/260;
+  x.strokeStyle='rgba(232,232,240,.12)';x.font='9px "Space Mono", monospace';x.fillStyle='rgba(232,232,240,.4)';
+  [0,100,200].forEach(v=>{x.beginPath();x.moveTo(L,Y(v));x.lineTo(w-6,Y(v));x.stroke();x.fillText(v,2,Y(v)+3);});
+  [0,4,8,12,16].forEach(k=>x.fillText(k,X(k/KPC_PER_U)-(k>9?6:3),h-4));
+  x.strokeStyle='#00ffc8';x.lineWidth=2;x.beginPath();
+  for(let r=0;r<=rmax;r+=1){const v=VFLAT*r/Math.sqrt(r*r+RC*RC);r?x.lineTo(X(r),Y(v)):x.moveTo(X(r),Y(v));}x.stroke();
+  // solar circle and settled band
+  x.strokeStyle='rgba(240,192,96,.6)';x.lineWidth=1;x.setLineDash([3,3]);x.beginPath();x.moveTo(X(R_SUN/KPC_PER_U),Y(0));x.lineTo(X(R_SUN/KPC_PER_U),Y(240));x.stroke();x.setLineDash([]);
+  x.fillStyle='rgba(240,192,96,.75)';x.fillText('R₀',X(R_SUN/KPC_PER_U)+3,14);
+  if(arms==='dw'&&field==='rot'){x.fillStyle='rgba(155,125,255,.8)';const rr=RC_CO;x.beginPath();x.arc(X(rr),Y(VFLAT*rr/Math.sqrt(rr*rr+RC*RC)),3,0,6.3);x.fill();x.fillText('corotation',X(rr)-26,Y(VFLAT)+22);}
+  x.fillStyle='rgba(232,232,240,.4)';x.fillText('km/s',2,8);
+}
+function renderClock(){
+  const myr=simT*MYR_PER_SIMSEC,r8=R_SUN/KPC_PER_U,P8=2*Math.PI/omegaAt(r8)*MYR_PER_SIMSEC;
+  document.getElementById('k-t').textContent=myr.toFixed(0)+' Myr';
+  document.getElementById('k-o8').textContent=(myr/P8).toFixed(2);
+  document.getElementById('k-p8').textContent=P8.toFixed(0)+' Myr';
+  document.getElementById('k-lap').textContent=((omegaAt(36)-omegaAt(135))*simT/(2*Math.PI)).toFixed(2);
+  document.getElementById('k-n').textContent=stars.length;
+}
+
+// ════════════════════════════════════════════════════════════
+// CAPTIONS
+// ════════════════════════════════════════════════════════════
+function caption(){
+  const L={
+    static:'Each shot is an identity with torsion <b>τ = B/P</b>. It settles at a distance set by its Pattern and on a spoke set by its Narrative. Shots past the <b>Torsion Limit</b> shatter and fly off into the halo. With no outside force, the picture is a frozen snapshot.',
+    rot:'Now the disk spins the way real galaxies do: stars near the center go around faster than stars far out. Watch the straight spokes bend into <b>spiral arms</b>, then keep winding until they smear. Real galaxies keep their arms, so something else must hold them.',
+    dw:'A <b>density wave</b> holds the arms: a spiral pattern that turns as one piece while stars flow through it, slowing down as they cross it, like cars through a traffic jam. The arms stay; the stars keep moving.'};
+  const R={
+    static:'Static, F<sub>ext</sub> = 0. Settle radius r = 25 + 11P (scene units; outer edge 16 kpc), angle 2πN/10, height from A. τ is drawn per phase band and B = τP, so phase is independent of radius by construction. Shatter shots (τ ≥ TL) are ejected radially and fade.',
+    rot:'Rotation only. Ω(R) = v(R)/R with v = v<sub>flat</sub>R/√(R²+R<sub>c</sub>²). Differential rotation shears radial spokes into trailing spirals within about one outer orbit, then winds them ever tighter: the winding problem. The disk thins to 15% of its snapshot height (imposed).',
+    dw:`Density wave (Lin and Shu, 1964): an m = ${M}, ${Math.round(pitch*180/Math.PI)}° logarithmic spiral pattern rotates rigidly at the angular speed of the 10.7 kpc corotation radius. Stars move through it with angular speed Ω<sub>p</sub> + (Ω − Ω<sub>p</sub>)(1 − 0.6 cos mΔθ), so they linger near the crest and the arms persist. Brightness marks the crest.`};
+  const key=field==='static'?'static':arms==='dw'?'dw':'rot';
+  let cap=(mode==='learner'?L:R)[key];
+  if(gravOn)cap=mode==='learner'
+    ?'<b>Gravity is on.</b> Every star now pulls on every other star while the galaxy turns. Where the disk is close to breaking apart, stars gather into clumps; when two meet gently in a spot that is falling together, they <b>fuse</b> into one body. A fused body that crosses the <b>Torsion Limit</b> shatters and is thrown out.'
+    :'<b>Gravity on.</b> Leapfrog integration of softened Newtonian self-gravity (G, Σ(R)) on top of the measured rotation curve, with the azimuthal mean of the self-pull removed. Pairs fuse by the GAMCollider 2-beam rule under sink-particle criteria (within ε, bound, converging, local Q < 1 from the live particles); τ ≥ TL products are ejected. Compare clump radii with the local Q(R).';
+  else if(qOn)cap+=mode==='learner'
+    ?' <b>τ = TL/Q is on:</b> each star now takes its torsion from how close the disk is to breaking apart at its distance. Q = 1 is the breaking point, matched to the Torsion Limit.'
+    :' <b>τ = TL/Q on:</b> τ(R) = TL/Q(R), boundary identification Q = 1 ↔ TL. Q < 1/0.88 puts a ring in the IVA corridor; Q < 1 shatters it.';
+  document.getElementById('caption').innerHTML=cap;
+  document.getElementById('gen-note').innerHTML=gen==='tl'
+    ?(radSrc==='d'?'Radius is drawn from an exponential disk (Σ ∝ e<sup>−R/R<sub>d</sub></sup>, R<sub>d</sub> from the τ MODEL inputs), and P follows from radius. ':'P is drawn on a log scale from 1 to 10. ')+'τ is drawn from the band mix; B = τ × P. Every phase, including the IVA corridor, fills on purpose.'
+    :'Whole numbers 1 to 10, with B biased to 0 or 1. Only P ≥ 8 can carry B = 1 below TL (1/TL = 7.30), and the IVA corridor holds a single value, 1/8.';
+}
+
+// ════════════════════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════════════════════
+const on=(ids,id)=>ids.forEach(i=>document.getElementById(i).classList.toggle('on',i===id));
+function setMode(m){mode=m;document.body.classList.toggle('res',m==='res');on(['m-l','m-r'],m==='res'?'m-r':'m-l');caption();renderMix();}
+function setGen(g){gen=g;on(['g-tl','g-int'],'g-'+g);document.getElementById('mix-wrap').style.display=g==='tl'?'block':'none';caption();renderMix();}
+function onMix(){mix={n:+document.getElementById('mx-n').value||0,l:+document.getElementById('mx-l').value||0,i:+document.getElementById('mx-i').value||0,s:+document.getElementById('mx-s').value||0};renderMix();}
+function setRS(r){radSrc=r;on(['rs-p','rs-d'],'rs-'+r);caption();}
+function setSpawn(d){spawnDir=d;on(['sp-out','sp-in'],'sp-'+d);}
+function setField(f){field=f;on(['f-st','f-rot'],f==='static'?'f-st':'f-rot');['a-rot','a-dw'].forEach(i=>document.getElementById(i).disabled=f!=='rot');caption();}
+function setArms(a){arms=a;on(['a-rot','a-dw'],'a-'+a);if(a==='rot')stars.forEach(look);caption();}
+function setM(m){M=m;on(['m2','m4'],'m'+m);caption();}
+function onPitch(){const v=+document.getElementById('pitch').value;pitch=v*Math.PI/180;document.getElementById('pitch-v').textContent=v+'°';caption();}
+function onRate(){rateMul=Math.pow(2,+document.getElementById('rate').value);document.getElementById('rate-v').textContent='×'+(rateMul<1?rateMul.toFixed(2):rateMul.toFixed(1));}
+function onSpd(){shotsPerSec=+document.getElementById('spd').value;document.getElementById('spd-v').textContent=shotsPerSec+' shots/s';if(running){stopRun();startRun();}}
+function startRun(){runTimer=setInterval(fire,1000/shotsPerSec);}
+function stopRun(){clearInterval(runTimer);runTimer=null;}
+function toggleRun(){running=!running;const b=document.getElementById('b-run');b.classList.toggle('on',running);b.textContent=running?'■ STOP':'▶ RUN';running?startRun():stopRun();}
+function toggleTrails(){trailsOn=!trailsOn;trails.forEach(t=>t.visible=trailsOn);const b=document.getElementById('b-tr');b.classList.toggle('on',trailsOn);b.textContent=trailsOn?'TRAILS ON':'TRAILS OFF';}
+function toggleAuto(){autoRot=!autoRot;document.getElementById('b-ar').classList.toggle('on',autoRot);}
 function clearAll(){
-  particles.forEach(p=>{
-    scene.remove(p.mesh);
-    scene.remove(p.wire);
-    scene.remove(p.trail);
-  });
-  particles = [];
-  totalLocked = 0;
-  totalShatter = 0;
-  updateStats();
+  for(const h of shots)scene.remove(h.mesh,h.wire,h.trail);for(const s of stars)scene.remove(s.mesh,s.wire,s.trail);for(const t of trails)scene.remove(t);
+  shots=[];stars=[];trails=[];records=[];counts={n:0,l:0,i:0,s:0};simT=0;ejected=0;grM={n:0,l:0,i:0,s:0};renderMix();renderQ();renderGrav();
 }
 
-// ============================================================
-// LOCK / SHATTER BURSTS
-// ============================================================
-function spawnLockBurst(pos, col){
-  const geo = new THREE.BufferGeometry();
-  const pts = [];
-  for(let i=0;i<20;i++){
-    const a=(i/20)*Math.PI*2;
-    pts.push(Math.cos(a)*10, Math.sin(a)*4, Math.sin(a)*0.3);
-  }
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(pts,3));
-  const mat = new THREE.LineBasicMaterial({color:col, transparent:true, opacity:1});
-  const burst = new THREE.LineLoop(geo, mat);
-  burst.position.copy(pos);
-  scene.add(burst);
-  let age=0;
-  const tick=()=>{
-    age++;
-    burst.scale.setScalar(1+age*0.15);
-    mat.opacity=Math.max(0,1-age/25);
-    if(age<25) requestAnimationFrame(tick);
-    else scene.remove(burst);
-  };
-  tick();
-  // Pulse Sag A*
-  sagMat.emissiveIntensity = 3.0;
-  setTimeout(()=>{ sagMat.emissiveIntensity = 2.0; }, 300);
+// ════════════════════════════════════════════════════════════
+// EXPORT
+// ════════════════════════════════════════════════════════════
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function exportJSON(){
+  const n=counts.n+counts.l+counts.i+counts.s;
+  dl('galaxy_session.json',JSON.stringify({tool:'Galaxy · powered by AxiomForge',generated:new Date().toISOString(),
+    constants:{TL,TL_IVA,OMEGA0},settings:{radiusFrom:radSrc==='d'?'exponential disk':'P log scale',generator:gen,bandMix:mix,spawn:spawnDir,field,arms,armCount:M,pitchDeg:Math.round(pitch*180/Math.PI),timeRate:rateMul,vflat_kms:VFLAT,edge_kpc:16},
+    tauModel:qOn?{model:'tau = TL/Q (Toomre)',inputs:qIn,R0_kpc:R_SUN,Theta0_kms:VFLAT,Q_R0:+Q(R_SUN).toFixed(4)}:'band mix',ejected,gravity:gravOn?{on:true,softening_kpc:+(SOFT*KPC_PER_U).toFixed(3),fusions:grM,bodies:stars.length,clumps:stars.filter(s=>s.members>=3).map(s=>({R_kpc:+(Math.hypot(s.x,s.z)*KPC_PER_U).toFixed(2),stars:s.members,N:+s.N.toFixed(2),tau:+s.tau.toFixed(6)}))}:{on:false},elapsed_Myr:+(simT*MYR_PER_SIMSEC).toFixed(1),settled:n,counts,expectedPct:expected(),records},null,2),'application/json');
 }
+function exportCSV(){dl('galaxy_session.csv','R_kpc,P,N,B,A,tau,phase\n'+records.map(r=>[r.R_kpc,r.P,r.N,r.B,r.A,r.tau,r.phase].join(',')).join('\n'),'text/csv');}
 
-function spawnShatterBurst(pos){
-  const geo = new THREE.BufferGeometry();
-  const pts = [];
-  for(let i=0;i<16;i++){
-    const a=(i/16)*Math.PI*2;
-    pts.push(Math.cos(a)*8,Math.sin(a)*8,Math.sin(a)*0.5);
-  }
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(pts,3));
-  const mat = new THREE.LineBasicMaterial({color:0xff3a3a, transparent:true, opacity:0.9});
-  const burst = new THREE.LineLoop(geo, mat);
-  burst.position.copy(pos);
-  scene.add(burst);
-  let age=0;
-  const tick=()=>{
-    age++;
-    burst.scale.setScalar(1+age*0.2);
-    mat.opacity=Math.max(0,0.9-age/18);
-    if(age<18) requestAnimationFrame(tick);
-    else scene.remove(burst);
-  };
-  tick();
+// ════════════════════════════════════════════════════════════
+// LOOP
+// ════════════════════════════════════════════════════════════
+function resize(){const w=viewEl.clientWidth,h=viewEl.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+window.addEventListener('resize',resize);
+let frame=0;
+function loop(){
+  requestAnimationFrame(loop);frame++;
+  if(tgtCam){cam.ph+=(tgtCam.ph-cam.ph)*.08;cam.r+=(tgtCam.r-cam.r)*.08;if(Math.abs(tgtCam.ph-cam.ph)<.002)tgtCam=null;}
+  if(autoRot)cam.th+=.0015;
+  placeCam();
+  sag.rotation.y+=.006;sag.rotation.x+=.003;sagWire.rotation.copy(sag.rotation);sagMat.emissiveIntensity=1.8+Math.sin(frame*.03)*.35;
+  tickShots();tickField();
+  renderer.render(scene,camera);
+  const v=new THREE.Vector3(0,0,0).project(camera),el=document.getElementById('sag');
+  el.style.left=((v.x*.5+.5)*viewEl.clientWidth)+'px';el.style.top=((-v.y*.5+.5)*viewEl.clientHeight)+'px';
+  if(frame%15===0){renderMix();renderProfile();renderClock();if(qOn&&frame%30===0)renderQ();if(gravOn)renderGrav();}
+  if(frame%60===0)renderCurve();
 }
-
-// ============================================================
-// STATS
-// ============================================================
-function updateStats(){
-  const inflight = particles.filter(p=>p.phase==='inflight'||p.phase==='locking').length;
-  document.getElementById('stat-locked').textContent = totalLocked;
-  document.getElementById('stat-shatter').textContent = totalShatter;
-  document.getElementById('stat-inflight').textContent = inflight;
-}
-
-// ============================================================
-// TICK
-// ============================================================
-function tickParticles(){
-  particles.forEach(p=>{
-    if(p.phase==='done') return;
-    p.age++;
-    const pos = p.mesh.position;
-
-    if(p.phase==='inflight'){
-      const toTarget = p.target.clone().sub(pos);
-      const dist = toTarget.length();
-
-      // Attraction toward target
-      const attraction = toTarget.normalize().multiplyScalar(Math.min(0.28, dist*0.009));
-      p.vel.add(attraction);
-
-      // Damping — galaxy flies faster, collapse glides in slower
-      const damp = mode === 'galaxy' ? 0.91 : 0.94;
-      p.vel.multiplyScalar(damp);
-
-      pos.add(p.vel);
-      p.wire.position.copy(pos);
-
-      // Spin
-      const spin = 0.04 + p.tau * 0.3;
-      p.mesh.rotation.x += spin;
-      p.mesh.rotation.y += spin * 0.7;
-      p.wire.rotation.copy(p.mesh.rotation);
-
-      // Trail
-      p.trailGeo.setFromPoints([p.spawnPos.clone(), pos.clone()]);
-      p.trail.material.opacity = 1.0;
-
-      if(dist < 6 || p.age > p.maxAge){ p.phase='locking'; p.lockAge=0; }
-    }
-
-    if(p.phase==='locking'){
-      p.lockAge++;
-      p.mesh.position.lerp(p.target, 0.15);
-      p.wire.position.copy(p.mesh.position);
-      p.mesh.rotation.x += 0.02;
-      p.mesh.rotation.y += 0.015;
-      p.wire.rotation.copy(p.mesh.rotation);
-      if(p.lockAge > 16){
-        if(p.tau < TORSION_LIMIT){
-          p.phase='locked'; totalLocked++;
-          spawnLockBurst(p.mesh.position.clone(), p.col);
-        } else {
-          p.phase='shatter'; totalShatter++;
-          spawnShatterBurst(p.mesh.position.clone());
-          if(!p.scatterVel) p.scatterVel = new THREE.Vector3(
-            (Math.random()-.5)*4,(Math.random()-.5)*4,(Math.random()-.5)*4
-          );
-        }
-        updateStats();
-      }
-    }
-
-    if(p.phase==='locked'){
-      p.mesh.rotation.x += 0.007;
-      p.mesh.rotation.y += 0.005;
-      p.wire.rotation.copy(p.mesh.rotation);
-      p.trail.material.opacity = Math.max(0, p.trail.material.opacity - 0.008);
-    }
-
-    if(p.phase==='shatter'){
-      p.mesh.position.add(p.scatterVel);
-      p.wire.position.copy(p.mesh.position);
-      p.scatterVel.multiplyScalar(0.93);
-      p.mesh.material.opacity = Math.max(0, p.mesh.material.opacity - 0.025);
-      p.wire.material.opacity = Math.max(0, p.wire.material.opacity - 0.03);
-      p.trail.material.opacity = Math.max(0, p.trail.material.opacity - 0.03);
-      if(p.mesh.material.opacity <= 0){
-        scene.remove(p.mesh);
-        scene.remove(p.wire);
-        scene.remove(p.trail);
-        p.phase='done';
-      }
-    }
-  });
-
-  // Trim done
-  if(particles.length > 120) particles = particles.filter(p=>p.phase!=='done');
-}
-
-// ============================================================
-// CAMERA ORBIT + MOUSE CONTROLS
-// ============================================================
-let camAngle = 0;
-let camRadius = 180;
-let camHeight = 40;
-let camTarget = new THREE.Vector3(0, 0, 0);
-let autoRotate = true;
-
-const CAM_RADIUS_MIN = 25, CAM_RADIUS_MAX = 700;
-const CAM_HEIGHT_MIN = -200, CAM_HEIGHT_MAX = 200;
-
-let isDragging = false, dragButton = 0, lastX = 0, lastY = 0;
-
-canvas.addEventListener('mousedown', (e)=>{
-  isDragging = true;
-  dragButton = e.button;
-  lastX = e.clientX;
-  lastY = e.clientY;
-  canvas.classList.add('dragging');
-});
-window.addEventListener('mouseup', ()=>{
-  isDragging = false;
-  canvas.classList.remove('dragging');
-});
-window.addEventListener('mousemove', (e)=>{
-  if(!isDragging) return;
-  const dx = e.clientX - lastX;
-  const dy = e.clientY - lastY;
-  lastX = e.clientX;
-  lastY = e.clientY;
-
-  if(dragButton === 2 || e.shiftKey){
-    // Pan — translate the orbit target across the camera's local plane
-    const panScale = camRadius * 0.0012;
-    const right = new THREE.Vector3(Math.sin(camAngle), 0, -Math.cos(camAngle));
-    const up = new THREE.Vector3(0, 1, 0);
-    camTarget.addScaledVector(right, -dx * panScale);
-    camTarget.addScaledVector(up, dy * panScale);
-  } else {
-    // Orbit
-    autoRotate = false;
-    camAngle -= dx * 0.004;
-    camHeight = Math.max(CAM_HEIGHT_MIN, Math.min(CAM_HEIGHT_MAX, camHeight + dy * 0.6));
-  }
-});
-canvas.addEventListener('contextmenu', (e)=> e.preventDefault());
-canvas.addEventListener('wheel', (e)=>{
-  e.preventDefault();
-  camRadius *= 1 + e.deltaY * 0.001;
-  camRadius = Math.max(CAM_RADIUS_MIN, Math.min(CAM_RADIUS_MAX, camRadius));
-}, {passive:false});
-
-function orbitCamera(){
-  if(autoRotate) camAngle += 0.0008;
-  camera.position.x = camTarget.x + Math.cos(camAngle) * camRadius;
-  camera.position.z = camTarget.z + Math.sin(camAngle) * camRadius;
-  camera.position.y = camTarget.y + camHeight + Math.sin(camAngle * 0.3) * 20;
-  camera.lookAt(camTarget);
-}
-
-// ============================================================
-// AUTO SPAWN
-// ============================================================
-let autoTimer = 0;
-function autoSpawn(){
-  autoTimer++;
-  if(autoTimer % 18 === 0){
-    spawnParticle();
-  }
-}
-
-// ============================================================
-// RENDER LOOP
-// ============================================================
-let pulse = 0;
-function animate(){
-  requestAnimationFrame(animate);
-  pulse += 0.02;
-
-  // Sag A* pulse
-  sagMesh.rotation.x += 0.004;
-  sagMesh.rotation.y += 0.006;
-  sagWire.rotation.copy(sagMesh.rotation);
-  ring.rotation.z += 0.003;
-  sagMat.emissiveIntensity = 2.0 + Math.sin(pulse) * 0.4;
-
-  orbitCamera();
-  tickParticles();
-  autoSpawn();
-  updateSagLabel();
-
-  renderer.render(scene, camera);
-}
-
-// ============================================================
-// RESIZE
-// ============================================================
-window.addEventListener('resize',()=>{
-  camera.aspect = innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-});
-
-// ============================================================
-// INIT
-// ============================================================
-burstSpawn(16);
-animate();
+resize();setMode('learner');setGen('tl');renderCurve();renderQ();renderGrav();placeCam();loop();burst(120);
 </script>
 </body>
 </html>
