@@ -57,6 +57,8 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:
 #legend{position:absolute;top:10px;left:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:.48rem;pointer-events:none}
 #legend .lb{height:7px;border-radius:3px;margin:4px 0;width:220px}
 #legend .rw{display:flex;justify-content:space-between;width:220px}
+#lg-l div{display:flex;align-items:center;gap:6px;margin:3px 0;font-size:.52rem}
+#lg-l i{display:inline-block;width:14px;height:10px;border-radius:2px;border:1px solid rgba(255,255,255,.25)}
 #badge{position:absolute;top:10px;right:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 10px;text-align:right;pointer-events:none}
 #badge .ph{font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;color:var(--anchor)}
 #badge small{display:block;font-size:.48rem;color:var(--dim);margin-top:2px}
@@ -100,7 +102,7 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
   <div class="sec">
     <div class="st">TL-CELLS</div>
     <div class="lbl"><span>Cells across Earth</span><b id="n-v">96</b></div>
-    <input type="range" id="n" min="0" max="4" value="2">
+    <input type="range" id="n" min="0" max="5" value="2">
     <div class="note" id="n-note"></div>
   </div>
   <div class="sec">
@@ -112,7 +114,8 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
   </div>
   <div class="sec">
     <div class="st">VIEW</div>
-    <div class="seg" id="col"><button class="btn on" data-v="dens">DENSITY</button><button class="btn" data-v="layer">LAYERS</button></div>
+    <div class="seg" id="col"><button class="btn on" data-v="layer">LAYERS</button><button class="btn" data-v="dens">DENSITY</button></div>
+    <div class="seg" id="draw"><button class="btn on" data-v="exposed" title="Draw only cells that touch air, the way voxel games do">EXPOSED CELLS</button><button class="btn" data-v="all" title="Stress test: draw every cell, hidden ones included">ALL CELLS · STRESS TEST</button></div>
     <div class="seg"><button class="btn on" id="rot">AUTO-ROTATE</button><button class="btn" id="cam">RESET CAMERA</button></div>
     <div class="note">Drag to orbit, scroll or pinch to zoom. Hover or tap a cell to read it.</div>
   </div>
@@ -128,8 +131,8 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
 
 <div id="view">
   <canvas id="gl"></canvas>
-  <div id="legend"><div id="lg-t">density · g/cm³</div><div class="lb" id="lg-b"></div><div class="rw" id="lg-r"><span>1.0</span><span>13.1</span></div></div>
-  <div id="badge"><div class="ph" id="b-m">—</div><small id="b-s"></small></div>
+  <div id="legend"><div id="lg-t">layers</div><div class="lb" id="lg-b"></div><div class="rw" id="lg-r"></div><div id="lg-l"></div></div>
+  <div id="badge"><div class="ph" id="b-m">—</div><small id="b-s"></small><small id="fps" style="font-family:Syne,sans-serif;font-weight:800;font-size:.7rem">— fps</small></div>
   <div id="caption"></div>
   <div id="probe"></div>
   <div id="busy">COUNTING CELLS…</div>
@@ -189,8 +192,9 @@ const IMatterCore=(()=>{
   const SEG=[[0,1221.5,x=>13.0885-8.8381*x*x,0],[1221.5,3480,x=>12.5815-1.2638*x-3.6426*x*x-5.5281*x*x*x,1],
     [3480,5701,x=>7.9565-6.4761*x+5.5283*x*x-3.0807*x*x*x,2],[5701,5771,x=>5.3197-1.4836*x,3],[5771,5971,x=>11.2494-8.0298*x,3],
     [5971,6151,x=>7.1089-3.8045*x,3],[6151,6346.6,x=>2.6910+0.6924*x,4],[6346.6,6356,x=>2.9,5],[6356,6368,x=>2.6,5],[6368,6371.0001,x=>1.02,6]];
-  const LAYERS=[{name:'Inner core',r0:0,r1:1221.5,col:'#ffe9a8'},{name:'Outer core',r0:1221.5,r1:3480,col:'#f0c060'},{name:'Lower mantle',r0:3480,r1:5701,col:'#c8a0ff'},
-    {name:'Transition zone',r0:5701,r1:6151,col:'#7b4fff'},{name:'Upper mantle',r0:6151,r1:6346.6,col:'#5a3cc0'},{name:'Crust',r0:6346.6,r1:6368,col:'#2c2070'},{name:'Ocean',r0:6368,r1:6371,col:'#00ffc8'}];
+  // layer colors: Okabe–Ito colorblind-safe hues, with neighbors alternating light and dark so every boundary also reads by brightness
+  const LAYERS=[{name:'Inner core',r0:0,r1:1221.5,col:'#F0E442'},{name:'Outer core',r0:1221.5,r1:3480,col:'#D55E00'},{name:'Lower mantle',r0:3480,r1:5701,col:'#0072B2'},
+    {name:'Transition zone',r0:5701,r1:6151,col:'#56B4E9'},{name:'Upper mantle',r0:6151,r1:6346.6,col:'#009E73'},{name:'Crust',r0:6346.6,r1:6368,col:'#E8C8DC'},{name:'Ocean',r0:6368,r1:6371,col:'#1F3A93'}];
   function sample(rkm){for(const s of SEG)if(rkm>=s[0]&&rkm<s[1])return [s[2](rkm/R),s[3]];return [0,-1];}
   // fill an n×n×n grid spanning the sphere: each cell takes the density at its center
   function fill(n){
@@ -222,8 +226,8 @@ const IMatterCore=(()=>{
 // UI
 // ════════════════════════════════════════════════════════════
 const $=id=>document.getElementById(id),C=IMatterCore;
-const NS=[32,64,96,128,160];
-const S={ni:2,cut:'wedge',depth:0,col:'dens',rot:true};
+const NS=[32,64,96,128,160,168];
+const S={ni:2,cut:'wedge',depth:0,col:'layer',rot:true};
 let grid=null,stats=null;
 const hx=h=>[1,3,5].map(k=>parseInt(h.slice(k,k+2),16)/255);
 // density colors: luminance rises with density (dark violet → violet → gold → pale gold)
@@ -244,19 +248,21 @@ function buildCells(){
     const x=(i+0.5)*h-R,y=(j+0.5)*h-R,z=(k+0.5)*h-R;if(Math.sqrt(x*x+y*y+z*z)>rmax)return false;return !removed(x,y,z);};
   visIdx=[];
   for(let k=0;k<n;k++)for(let j=0;j<n;j++)for(let i=0;i<n;i++){if(!keep(i,j,k))continue;
-    if(!keep(i+1,j,k)||!keep(i-1,j,k)||!keep(i,j+1,k)||!keep(i,j-1,k)||!keep(i,j,k+1)||!keep(i,j,k-1))visIdx.push((k*n+j)*n+i);}
-  const s=1/R,box=new THREE.BoxGeometry(h*s*0.96,h*s*0.96,h*s*0.96),mat=new THREE.MeshStandardMaterial({roughness:0.75,metalness:0});
+    if(S.all||!keep(i+1,j,k)||!keep(i-1,j,k)||!keep(i,j+1,k)||!keep(i,j-1,k)||!keep(i,j,k+1)||!keep(i,j,k-1))visIdx.push((k*n+j)*n+i);}
+  const s=1/R,box=new THREE.BoxGeometry(h*s*0.96,h*s*0.96,h*s*0.96),mat=S.all?new THREE.MeshLambertMaterial():new THREE.MeshStandardMaterial({roughness:0.75,metalness:0});
   inst=new THREE.InstancedMesh(box,mat,visIdx.length);const m=new THREE.Matrix4(),c=new THREE.Color();
   visIdx.forEach((o,q)=>{const i=o%n,j=Math.floor(o/n)%n,k=Math.floor(o/(n*n));m.makeTranslation(((i+0.5)*h-R)*s,((j+0.5)*h-R)*s,((k+0.5)*h-R)*s);inst.setMatrixAt(q,m);
     const col=S.col==='dens'?densCol(dens[o]):hx(C.LAYERS[lay[o]].col);c.setRGB(col[0],col[1],col[2]);inst.setColorAt(q,c);});
   inst.instanceMatrix.needsUpdate=true;if(inst.instanceColor)inst.instanceColor.needsUpdate=true;scene.add(inst);
-  $('b-s').textContent=`${visIdx.length.toLocaleString()} exposed cells drawn`;
+  S.drawn=visIdx.length;$('b-s').textContent=`${visIdx.length.toLocaleString()} ${S.all?'cells drawn (all)':'exposed cells drawn'} · ${(visIdx.length*12/1e6).toFixed(1)} M triangles`;
 }
 function fitD(){return 3.1/Math.min(1,cam?cam.aspect:1);}
 function resize(){const v=$('view'),W=v.clientWidth,H=v.clientHeight;if(gl3d){R3.setSize(W,H,false);cam.aspect=W/Math.max(1,H);cam.updateProjectionMatrix();orbit.d=Math.max(orbit.d,fitD());}}
 addEventListener('resize',resize);
 let dragging=false;
-function loop(){if(gl3d){if(S.rot&&!dragging)orbit.th+=0.0025;const {th,ph,d}=orbit;cam.position.set(d*Math.sin(ph)*Math.cos(th),d*Math.sin(ph)*Math.sin(th),d*Math.cos(ph));cam.lookAt(0,0,0);R3.render(scene,cam);}requestAnimationFrame(loop);}
+let fpsN=0,fpsT=performance.now();
+function loop(){fpsN++;const nowT=performance.now();if(nowT-fpsT>=1000){S.fps=fpsN*1000/(nowT-fpsT);fpsN=0;fpsT=nowT;$('fps').textContent=S.fps.toFixed(0)+' fps';$('fps').style.color=S.fps>=50?'#00ffc8':S.fps>=25?'#f0c060':'#ff3a3a';}
+  if(gl3d){if(S.rot&&!dragging)orbit.th+=0.0025;const {th,ph,d}=orbit;cam.position.set(d*Math.sin(ph)*Math.cos(th),d*Math.sin(ph)*Math.sin(th),d*Math.cos(ph));cam.lookAt(0,0,0);R3.render(scene,cam);}requestAnimationFrame(loop);}
 // orbit, pinch, probe
 const ptr=new Map();let pinch=null,last=null;const RC=gl3d?new THREE.Raycaster():null;
 $('gl').addEventListener('pointerdown',e=>{$('gl').setPointerCapture(e.pointerId);ptr.set(e.pointerId,[e.clientX,e.clientY]);dragging=true;last=[e.clientX,e.clientY];
@@ -319,8 +325,12 @@ $('n').oninput=e=>{S.ni=+e.target.value;noteN();};$('n').onchange=rebuild;
 $('d').oninput=e=>{S.depth=+e.target.value;$('d-v').textContent=S.depth+' km';cancelAnimationFrame(S.raf);S.raf=requestAnimationFrame(buildCells);};
 function seg(id,key,fn){$(id).querySelectorAll('.btn').forEach(b=>b.onclick=()=>{S[key]=b.dataset.v;$(id).querySelectorAll('.btn').forEach(o=>o.classList.toggle('on',o===b));fn();});}
 seg('cut','cut',buildCells);
-seg('col','col',()=>{buildCells();const d=S.col==='dens';$('lg-t').textContent=d?'density · g/cm³':'layers';$('lg-b').style.background=d?'linear-gradient(90deg,'+STOPS.map(s=>`rgb(${s[1].map(v=>v*255|0)}) ${((s[0]-1)/12.1*100).toFixed(0)}%`).join(',')+')':'linear-gradient(90deg,'+[...C.LAYERS].reverse().map((L,i,a)=>`${L.col} ${i/a.length*100}% ${(i+1)/a.length*100}%`).join(',')+')';
-  $('lg-r').innerHTML=d?'<span>1.0</span><span>13.1</span>':'<span>ocean</span><span>inner core</span>';});
+seg('draw','draw',()=>{S.all=S.draw==='all';$('busy').textContent=S.all?'DRAWING EVERY CELL…':'COUNTING CELLS…';$('busy').style.display='block';setTimeout(()=>{buildCells();$('busy').style.display='none';},20);});
+function legend(){const d=S.col==='dens';$('lg-t').textContent=d?'density · g/cm³':'layers · center to surface';
+  $('lg-b').style.display=d?'block':'none';$('lg-r').style.display=d?'flex':'none';$('lg-l').style.display=d?'none':'block';
+  $('lg-b').style.background='linear-gradient(90deg,'+STOPS.map(q=>`rgb(${q[1].map(v=>v*255|0)}) ${((q[0]-1)/12.1*100).toFixed(0)}%`).join(',')+')';$('lg-r').innerHTML='<span>1.0</span><span>13.1</span>';
+  $('lg-l').innerHTML=C.LAYERS.map(L=>`<div><i style="background:${L.col}"></i>${L.name}</div>`).join('');}
+seg('col','col',()=>{buildCells();legend();});
 $('rot').onclick=()=>{S.rot=!S.rot;$('rot').classList.toggle('on',S.rot);};
 $('cam').onclick=()=>{orbit={th:-0.9,ph:1.2,d:fitD()};};
 $('m-l').onclick=()=>{document.body.classList.remove('res');$('m-l').classList.add('on');$('m-r').classList.remove('on');};
@@ -331,7 +341,7 @@ $('x-json').onclick=()=>{const s=stats;dl(new Blob([JSON.stringify({tool:'IMatte
   layers:C.LAYERS.map((L,k)=>({name:L.name,r0_km:L.r0,r1_km:L.r1,cells:s.L[k].cells,mass_kg:s.L[k].mass}))},null,2)],{type:'application/json'}),'imatter_earth.json');};
 $('x-csv').onclick=()=>{const s=stats;dl(new Blob(['layer,r0_km,r1_km,cells,mass_kg,mass_share\n'+C.LAYERS.map((L,k)=>`${L.name},${L.r0},${L.r1},${s.L[k].cells},${s.L[k].mass.toExponential(6)},${(s.L[k].mass/s.M).toFixed(6)}`).join('\n')],{type:'text/csv'}),'imatter_earth_layers.csv');};
 $('x-png').onclick=()=>{if(!gl3d)return;R3.render(scene,cam);$('gl').toBlob(b=>dl(b,'imatter_earth.png'));};
-noteN();resize();loop();rebuild();setTimeout(convergence,600);
+legend();noteN();resize();loop();rebuild();setTimeout(convergence,600);
 </script>
 </body>
 </html>
