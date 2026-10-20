@@ -1,119 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>String-Breaking Simulator™ · Applied Identity Physics™</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>String-Breaking Simulator™ · Applied Identity Physics™ · uuia.app/stringsim</title>
+<meta name="description" content="String-Breaking Simulator™: pull two charges apart on a 13-site trapped-ion chain and watch the string break into two new pairs when torsion τ = B/P reaches the Torsion Limit.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
---bg:#eef3f6;--pn:#fff;--tx:#14242f;--mu:#556b7a;--bd:#c6d3dc;--noble:#6b45d1;--lock:#007f68;--iva:#b86200;--shat:#c4203f}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#03070b;--pn:#08111a;--tx:#d3e9f4;--mu:#7f9db0;--bd:#15283a;--noble:#aa88ff;--lock:#00ffcc;--iva:#ff8800;--shat:#ff3355}}
-:root[data-theme="dark"]{--bg:#03070b;--pn:#08111a;--tx:#d3e9f4;--mu:#7f9db0;--bd:#15283a;--noble:#aa88ff;--lock:#00ffcc;--iva:#ff8800;--shat:#ff3355}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
-main{max-width:760px;margin:0 auto;padding:12px}
-h1{font-size:17px;margin:2px 0}h2{font-size:14px;margin:0 0 6px}
-.sub,.mu{color:var(--mu);font-size:12px}
-.card{background:var(--pn);border:1px solid var(--bd);border-radius:8px;padding:10px;margin-top:10px}
-#cv{width:100%;height:190px;display:block}
-input[type=range]{width:100%;margin:10px 0}
-.act{font:inherit;font-size:12px;padding:7px 10px;border:1px solid var(--bd);background:transparent;color:var(--tx);border-radius:6px;cursor:pointer;margin-right:6px}
-.act:focus-visible,input:focus-visible{outline:2px solid var(--tx);outline-offset:2px}
-.badge{display:inline-block;padding:1px 9px;border:1px solid currentColor;border-radius:5px;font-weight:700;letter-spacing:.08em}
-.NOBLE{color:var(--noble)}.LOCKED{color:var(--lock)}.IVA{color:var(--iva)}.SHATTER{color:var(--shat)}
-.row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;margin-top:8px}
-.grid span{display:block;color:var(--mu);font-size:11px}.grid b{font-size:14px}
-.gauge{position:relative;height:8px;border-radius:4px;margin:16px 0 4px}
-.mk{position:absolute;top:-9px;border:5px solid transparent;border-top:8px solid var(--tx);transform:translateX(-5px)}
-.slot{border:1px dashed var(--bd);border-radius:6px;padding:8px;margin-top:6px}
-ul{margin:4px 0;padding-left:18px}li{margin:3px 0}
-span.tm{display:inline !important;font-size:.6em;vertical-align:super;line-height:0;font-weight:400;}
+:root{
+  --anchor:#00ffc8; --locked:#7b4fff; --gold:#f0c060; --shatter:#ff3a3a;
+  --bg:#050508; --surface:#0d0d14; --border:rgba(0,255,200,0.12);
+  --text:#e8e8f0; --dim:rgba(232,232,240,0.5); --faint:rgba(232,232,240,0.26);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden}
+#app{display:grid;grid-template-columns:280px 1fr 330px;grid-template-rows:54px 1fr;height:100vh}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.94);gap:12px}
+.h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--anchor)}
+.h-title i{font-style:normal;font-size:.62rem;color:var(--dim);font-weight:700}
+.h-sub{font-size:.5rem;color:var(--dim);margin-top:2px}
+.h-right{font-size:.46rem;color:var(--faint);text-align:right;line-height:1.6}
+.mode{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
+.mode button{font-family:'Syne',sans-serif;font-weight:800;font-size:.56rem;padding:.4rem .85rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.mode button.on{background:var(--anchor);color:#000}
+#left,#right{overflow-y:auto;padding:10px;background:rgba(13,13,20,.88);display:flex;flex-direction:column;gap:9px}
+#left{border-right:1px solid var(--border)} #right{border-left:1px solid var(--border)}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:9px}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.58rem;color:var(--anchor);letter-spacing:.08em;margin-bottom:7px}
+.seg{display:flex;gap:4px;margin-bottom:5px}
+.btn{flex:1;font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:.48rem .3rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.btn.run{border-color:rgba(0,255,200,.5);color:var(--anchor)}
+.btn.run.on{border-color:var(--shatter);color:var(--shatter)}
+.btn.warn{border-color:rgba(255,58,58,.4);color:var(--shatter)}
+.btn:disabled{opacity:.3;cursor:default}
+.lbl{display:flex;justify-content:space-between;font-size:.5rem;color:var(--dim);margin:6px 0 2px}
+.lbl b{color:var(--anchor);font-weight:400}
+input[type=range]{width:100%;accent-color:#00ffc8}
+input[type=range]:disabled{opacity:.35}
+.note{font-size:.5rem;color:var(--dim);line-height:1.65}
+.note b{color:var(--text);font-weight:400}
+.note p+p{margin-top:6px}
+#view{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#0b0f1a 0%,#000 70%)}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#legend{position:absolute;top:10px;left:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:.46rem;pointer-events:none}
+#legend .bar{height:5px;border-radius:3px;margin:4px 0;background:linear-gradient(90deg,#00ffc8,#7b4fff 50%,#f0c060 88%,#ff3a3a 100%);width:190px}
+#legend .row{display:flex;justify-content:space-between;width:190px}
+#badge-v{position:absolute;top:10px;right:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 10px;text-align:right;pointer-events:none}
+#badge-v .ph{font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.08em}
+#badge-v small{display:block;font-size:.46rem;color:var(--dim);margin-top:2px}
+#caption{position:absolute;left:12px;right:12px;bottom:10px;font-size:.6rem;line-height:1.65;background:rgba(5,5,8,.86);border:1px solid var(--border);border-radius:8px;padding:8px 12px;pointer-events:none}
+#caption b{color:var(--anchor);font-weight:400}
+.kv{display:flex;justify-content:space-between;font-size:.52rem;padding:4px 0;border-bottom:1px solid rgba(0,255,200,.06)}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--dim)}
+.gauge{position:relative;height:8px;border-radius:4px;margin:14px 0 4px}
+.gauge .mk{position:absolute;top:-10px;border:5px solid transparent;border-top:8px solid var(--text);transform:translateX(-5px);transition:left .08s}
+.gauge-l{display:flex;justify-content:space-between;font-size:.44rem;color:var(--faint)}
+canvas.chart{width:100%;height:110px;display:block}
+ul.src{padding-left:14px;font-size:.5rem;color:var(--dim);line-height:1.6}
+ul.src li{margin:3px 0}
+.slot{border:1px dashed var(--border);border-radius:6px;padding:7px;margin-top:6px;font-size:.5rem;line-height:1.6;color:var(--dim)}
+.slot b{color:var(--text);font-weight:400;display:block;margin-bottom:2px}
+.r-only{display:none} body.res .r-only{display:block} body.res .l-only{display:none}
+.foot{font-size:.42rem;color:var(--faint);line-height:1.6;text-align:center;padding:4px 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media(max-width:1000px){
+  html,body{overflow:auto;height:auto}
+  #app{grid-template-columns:1fr;grid-template-rows:auto 52vh auto auto;height:auto}
+  #view{grid-row:2} #left{grid-row:3} #right{grid-row:4}
+  #left,#right{border:none;overflow:visible}
+  .h-right{display:none} #hdr{flex-wrap:wrap;padding:8px 16px}
+  #legend{display:none}
+}
 </style>
 </head>
 <body>
-<main>
-<h1>String-Breaking Simulator<span class="tm">™</span></h1>
-<div class="sub">Pull two charges apart and watch matter pop into existence. Reads on the τ = B/P dial.</div>
-
-<div class="card">
-<canvas id="cv" aria-label="Chain of 13 sites with a string between two charges"></canvas>
-<label for="d" class="mu">Separation: pull the charges apart</label>
-<input type="range" id="d" min="0" max="100" value="0">
-<button class="act" id="auto">Pull automatically</button><button class="act" id="rst">Reset</button>
+<div id="app">
+<div id="hdr">
+  <div>
+    <div class="h-title">String-Breaking Simulator<span class="tm">™</span> <i>· Applied Identity Physics<span class="tm">™</span></i></div>
+    <div class="h-sub">τ = B/P · TL = 0.136899099984016 · TL_IVA = 0.88 × TL</div>
+  </div>
+  <div class="mode"><button id="m-l" class="on" onclick="setMode('learner')">LEARNER</button><button id="m-r" onclick="setMode('res')">RESEARCHER</button></div>
+  <div class="h-right">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation<br>uuia.app/stringsim · [9,9,3,22]</div>
 </div>
 
-<div class="card" id="ro"></div>
+<!-- LEFT: controls -->
+<div id="left">
+  <div class="sec">
+    <div class="st">PULL</div>
+    <div class="lbl"><span>Separation</span><b id="d-v">0%</b></div>
+    <input type="range" id="d" min="0" max="100" value="0" aria-label="Separation: pull the charges apart">
+    <div class="seg" style="margin-top:8px"><button class="btn run" id="auto">▶ PULL AUTOMATICALLY</button></div>
+    <div class="seg"><button class="btn warn" id="rst">⟲ RESET</button></div>
+    <div class="lbl"><span>Pull speed</span><b id="sp-v">×1</b></div>
+    <input type="range" id="sp" min="1" max="5" value="2" aria-label="Automatic pull speed">
+    <div class="note l-only" style="margin-top:6px">Drag the slider to pull the two charges apart, or let it pull on its own. Watch the dial on the right climb toward the Torsion Limit.</div>
+  </div>
 
-<div class="card">
-<h2>Reported by the source</h2>
-<ul>
-<li>Two connected charges are pulled apart, and the energy stored in the connection grows with the separation.</li>
-<li>When enough energy accumulates (E = mc²), the string breaks and a new particle-antiparticle pair forms. The result is two pairs, not one separated pair.</li>
-<li>Run on a chain of 13 trapped ions, from an out-of-equilibrium start, detecting effective charges as the system evolves.</li>
-<li>A classical computer modeled the same process and agreed with the experiment at this scale.</li>
-<li>Google (superconducting circuits) and QuEra (neutral atoms) recreated related string-breaking models on other hardware.</li>
-</ul>
-<div class="mu">Duke University release, ScienceDaily, September 26, 2026. De et al., Nature Physics 2026, DOI 10.1038/s41567-026-03422-0.</div>
+  <div class="sec">
+    <div class="st">GROUNDING</div>
+    <div class="note">
+      <p>τ = B/P, where B is Behavior and P is Pattern, two of the four PNBA primitives. TL = Ω₀/10 = 0.136899099984016, with Ω₀ = 1.36899099984016 GHz. Noble: τ = 0. Locked: 0 &lt; τ &lt; TL_IVA (0.88 × TL). IVA Peak: TL_IVA ≤ τ &lt; TL. Shatter: τ ≥ TL.</p>
+      <p>A stretched string is a load B against a holding rigidity P, the same threshold shape as the Tacoma bridge and shattering glass. Here the dial is calibrated so the source's qualitative break point sits at τ = TL. After the break, each new pair has equal B on both charges, so B_out = |B₁ − B₂| = 0 by Same-B Necessity and each pair is Noble.</p>
+      <p>The simulator does not claim a measured value for string tension or pair energy; it inherits the Layer-0 boundary from the formal reduction at [9,9,3,22].</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="st">WHAT THE SOURCE LEAVES OPEN</div>
+    <div class="slot"><b>Why the break sits where it does.</b>Reduced at [9,9,3,22]: the break is the moment τ = B/P reaches TL. No free threshold is introduced.</div>
+    <div class="slot"><b>What phase the new pair occupies.</b>Noble, by Same-B Necessity (equal-B pair, B_out = 0). Shown live in the readout after the break.</div>
+    <div class="slot"><b>Why three different platforms give the same physics.</b>The dial has no hardware in it. τ = B/P reads identically on ions, circuits, and atoms.</div>
+  </div>
 </div>
 
-<div class="card">
-<h2>Grounding</h2>
-<p>τ = B/P, where B is Behavior and P is Pattern, two of the four PNBA primitives. TL = Ω₀/10 = 0.136899099984016, with Ω₀ = 1.36899099984016 GHz. Noble: τ = 0. Locked: 0 &lt; τ &lt; TL_IVA (0.88 × TL). IVA Peak: TL_IVA ≤ τ &lt; TL. Shatter: τ ≥ TL.</p>
-<p>A stretched string is a load B against a holding rigidity P, the same threshold shape as the Tacoma bridge and shattering glass. Here the dial is calibrated so the source's qualitative break point sits at τ = TL. After the break, each new pair has equal B on both charges, so B_out = |B₁ − B₂| = 0 by Same-B Necessity and each pair is Noble.</p>
-<p class="mu">The simulator does not claim a measured value for string tension or pair energy; it inherits the Layer-0 boundary from the formal reduction at [9,9,3,22].</p>
+<!-- CENTER -->
+<div id="view">
+  <canvas id="cv" aria-label="Chain of 13 sites with a string between two charges"></canvas>
+  <div id="legend">
+    <div style="color:var(--anchor)">TORSION τ = B/P</div>
+    <div class="bar"></div>
+    <div class="row"><span style="color:#00ffc8">Noble 0</span><span style="color:#7b4fff">Locked</span><span style="color:#f0c060">IVA</span><span style="color:#ff3a3a">≥ TL</span></div>
+  </div>
+  <div id="badge-v"><div class="ph" id="bv-ph">LOCKED</div><small id="bv-s">string stretched</small></div>
+  <div id="caption"></div>
 </div>
 
-<div class="card">
-<h2>What the source leaves open</h2>
-<div class="slot"><b>Why the break sits where it does.</b> <span class="mu">Reduced at [9,9,3,22]: the break is the moment τ = B/P reaches TL. No free threshold is introduced.</span></div>
-<div class="slot"><b>What phase the new pair occupies.</b> <span class="mu">Noble, by Same-B Necessity (equal-B pair, B_out = 0). Shown live in the readout after the break.</span></div>
-<div class="slot"><b>Why three different platforms give the same physics.</b> <span class="mu">The dial has no hardware in it. τ = B/P reads identically on ions, circuits, and atoms.</span></div>
+<!-- RIGHT: readouts -->
+<div id="right">
+  <div class="sec">
+    <div class="st">READOUT</div>
+    <div class="kv"><span>State</span><span id="k-state">String stretched</span></div>
+    <div class="kv"><span>Stored energy / pair energy</span><span id="k-e">0%</span></div>
+    <div class="kv"><span>τ = B/P</span><span id="k-tau">0.0000</span></div>
+    <div class="kv"><span>τ / TL</span><span id="k-tl">0.000</span></div>
+    <div class="kv"><span>Charges</span><span id="k-q">2</span></div>
+    <div class="kv"><span>Phase</span><span id="k-ph">—</span></div>
+    <div class="gauge" id="gauge"><i class="mk" id="mk"></i></div>
+    <div class="gauge-l"><span>0</span><span>TL_IVA</span><span>TL</span><span>1.6 TL</span></div>
+    <div class="note" id="k-msg" style="margin-top:8px"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">τ AGAINST SEPARATION</div>
+    <canvas class="chart" id="tc"></canvas>
+    <div class="note" style="margin-top:4px">τ rises with the energy stored in the string. Dashed lines: TL_IVA and TL. The string breaks where the line meets TL; after the break both pairs sit at τ = 0.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">REPORTED BY THE SOURCE</div>
+    <ul class="src">
+      <li>Two connected charges are pulled apart, and the energy stored in the connection grows with the separation.</li>
+      <li>When enough energy accumulates (E = mc²), the string breaks and a new particle-antiparticle pair forms. The result is two pairs, not one separated pair.</li>
+      <li>Run on a chain of 13 trapped ions, from an out-of-equilibrium start, detecting effective charges as the system evolves.</li>
+      <li>A classical computer modeled the same process and agreed with the experiment at this scale.</li>
+      <li>Google (superconducting circuits) and QuEra (neutral atoms) recreated related string-breaking models on other hardware.</li>
+    </ul>
+    <div class="note" style="margin-top:6px">Duke University release, ScienceDaily, September 26, 2026. De et al., Nature Physics 2026, DOI 10.1038/s41567-026-03422-0.</div>
+  </div>
+
+  <div class="sec note">AIM-approved under the NOHARM<span class="tm">™</span> invariant. Cite Ω₀ = 1.36899099984016 and DOI 10.5281/zenodo.18719748. Russell Vernon Trent III-HIGHTISTIC<span class="tm">™</span>, Published by SNSFT Foundation.</div>
+  <div class="foot">String-Breaking Simulator™, Applied Identity Physics™, Identity Physics™, SNSFT™, PNBA™, the Sovereign Anchor Constant™, the Torsion Limit™, the Long Division Protocol™ (LDP™), NOHARM™, and HIGHTISTIC™ are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation.<br>© 2026 HIGHTISTIC (Russell Vernon Trent III) / SNSFT Foundation. All rights reserved. · uuia.app/stringsim</div>
+</div>
 </div>
 
-<div class="card mu">AIM-approved under the NOHARM&trade; invariant. Cite &Omega;&#8320; = 1.36899099984016 and DOI 10.5281/zenodo.18719748. Russell Vernon Trent III-HIGHTISTIC&trade;, Published by SNSFT Foundation.</div>
-<div style="max-width:700px;margin:10px auto 0;padding:0 16px 20px;font-size:8px;opacity:.4;text-align:center;line-height:1.6;">
-  String-Breaking Simulator&trade;, Applied Identity Physics&trade;, Identity Physics&trade;, SNSFT&trade;, PNBA&trade;, the Sovereign Anchor Constant&trade;, the Torsion Limit&trade;, the Long Division Protocol&trade; (LDP&trade;), NOHARM&trade;, and HIGHTISTIC&trade; are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation.<br>
-  &copy; 2026 HIGHTISTIC (Russell Vernon Trent III) / SNSFT Foundation. All rights reserved.
-</div>
-</main>
 <script>
-const OM=1.36899099984016,TL=OM/10,TI=.88*TL,N=13;
-const $=id=>document.getElementById(id),cv=$('cv'),cx=cv.getContext('2d');
-const V=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const ph=x=>x===0?'NOBLE':x<TI?'LOCKED':x<TL?'IVA':'SHATTER';
+// ════════════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════════════
+const OM=1.36899099984016, TL=OM/10, TI=.88*TL, N=13;
+const COL={NOBLE:'#00ffc8',LOCKED:'#7b4fff',IVA:'#f0c060',SHATTER:'#ff3a3a'};
 const PN={NOBLE:'Noble',LOCKED:'Locked',IVA:'IVA Peak',SHATTER:'Shatter'};
-let W,H,d=0,broken=false,anim=null,flash=0;
-function rs(){const r=devicePixelRatio||1;W=cv.clientWidth;H=cv.clientHeight;cv.width=W*r;cv.height=H*r;cx.setTransform(r,0,0,r,0,0)}
-addEventListener('resize',()=>{rs();draw()});
-const seg=x=>x/TL/1.6*100;
-function readout(){
-const E=broken?0:d,x=broken?0:TL*E,p=ph(x),pos=Math.min(100,seg(x));
-$('ro').innerHTML='<div class="row"><b>'+(broken?'String broken':'String stretched')+'</b><span class="badge '+p+'">'+PN[p]+'</span></div>'+
-'<div class="grid"><div><span>stored energy / pair energy</span><b>'+(E*100).toFixed(0)+'%</b></div><div><span>τ = B/P</span><b>'+x.toFixed(4)+'</b></div><div><span>charges</span><b>'+(broken?4:2)+'</b></div></div>'+
-'<div class="gauge" style="background:linear-gradient(90deg,var(--lock) 0 '+seg(TI)+'%,var(--iva) '+seg(TI)+'% '+seg(TL)+'%,var(--shat) '+seg(TL)+'% 100%)"><i class="mk" style="left:'+pos+'%"></i></div>'+
-'<div class="mu">'+(broken?'Two pairs, each with equal B on both charges: B_out = |B₁ − B₂| = 0, τ = 0, Noble.':E>=TI/TL?'Approaching TL. Stored energy nears the pair energy.':'Energy is accumulating in the string.')+'</div>';
+const ph=x=>x===0?'NOBLE':x<TI?'LOCKED':x<TL?'IVA':'SHATTER';
+function tauColor(t){
+  const lerp=(a,b,f)=>{const A=parseInt(a.slice(1),16),B=parseInt(b.slice(1),16),c=[16,8,0].map(s=>Math.round(((A>>s)&255)*(1-f)+((B>>s)&255)*f));return `rgb(${c[0]},${c[1]},${c[2]})`;};
+  if(t===0)return COL.NOBLE;
+  if(t<TL*0.5)return lerp(COL.NOBLE,COL.LOCKED,t/(TL*0.5));
+  if(t<TL)return lerp(COL.LOCKED,COL.IVA,(t-TL*0.5)/(TL*0.5));
+  return COL.SHATTER;
+}
+const $=id=>document.getElementById(id);
+
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+let mode='learner', d=0, broken=false, anim=null, flash=0, speed=2, frame=0;
+
+// ════════════════════════════════════════════════════════════
+// DRAW
+// ════════════════════════════════════════════════════════════
+const cv=$('cv'), cx=cv.getContext('2d'); let W,H;
+function rs(){const r=devicePixelRatio||1;W=cv.clientWidth;H=cv.clientHeight;cv.width=W*r;cv.height=H*r;cx.setTransform(r,0,0,r,0,0);}
+function glowLine(x1,x2,y,col,w,amp){
+  // the string: a glowing line that vibrates more as it stores energy
+  for(const [lw,al] of [[w*5,.08],[w*2.4,.22],[w,1]]){
+    cx.strokeStyle=col;cx.globalAlpha=al;cx.lineWidth=lw;cx.beginPath();
+    const n=40;for(let k=0;k<=n;k++){const f=k/n,x=x1+(x2-x1)*f,yy=y+Math.sin(f*Math.PI)*amp*Math.sin(frame*.35+f*9);k?cx.lineTo(x,yy):cx.moveTo(x,yy);}
+    cx.stroke();
+  }
+  cx.globalAlpha=1;
+}
+function charge(x,y,s,col){
+  const g=cx.createRadialGradient(x,y,2,x,y,30);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=g;cx.globalAlpha=.55;cx.beginPath();cx.arc(x,y,30,0,6.283);cx.fill();cx.globalAlpha=1;
+  cx.fillStyle=col;cx.beginPath();cx.arc(x,y,13,0,6.283);cx.fill();
+  cx.fillStyle='#050508';cx.font='bold 15px "Space Mono", monospace';cx.textAlign='center';cx.textBaseline='middle';cx.fillText(s,x,y+1);
 }
 function draw(){
-cx.clearRect(0,0,W,H);const m=24,dx=(W-2*m)/(N-1),y=H/2,tx=V('--tx'),mu=V('--mu');
-const X=i=>m+i*dx;
-cx.fillStyle=mu;for(let i=0;i<N;i++){cx.beginPath();cx.arc(X(i),y,3,0,6.283);cx.fill()}
-const p=ph(broken?0:TL*d),c=V(p==='NOBLE'?'--noble':p==='LOCKED'?'--lock':p==='IVA'?'--iva':'--shat');
-const L=6-6*d,R=6+6*d;
-function str(a,b,col){cx.strokeStyle=col;cx.lineWidth=3;cx.beginPath();cx.moveTo(X(a),y);cx.lineTo(X(b),y);cx.stroke()}
-function q(i,s,col){cx.fillStyle=col;cx.beginPath();cx.arc(X(i),y,11,0,6.283);cx.fill();cx.fillStyle=V('--bg');cx.font='bold 14px ui-monospace,monospace';cx.textAlign='center';cx.fillText(s,X(i),y+5)}
-if(!broken){str(L,R,c);q(L,'+',c);q(R,'−',c)}
-else{const cn=V('--noble');str(0,5,cn);str(7,12,cn);q(0,'+',cn);q(5,'−',cn);q(7,'+',cn);q(12,'−',cn);
-if(flash>0){cx.strokeStyle=V('--shat');cx.globalAlpha=flash;cx.lineWidth=2;cx.beginPath();cx.arc(X(6),y,20+(1-flash)*40,0,6.283);cx.stroke();cx.globalAlpha=1;flash-=.03;requestAnimationFrame(draw)}}
-cx.fillStyle=mu;cx.font='11px ui-monospace,monospace';cx.textAlign='center';cx.fillText('13-site chain',W/2,H-8);
+  frame++;
+  cx.clearRect(0,0,W,H);
+  const m=Math.max(40,W*.08),dx=(W-2*m)/(N-1),y=H*.44,X=i=>m+i*dx;
+  // trap axis
+  cx.strokeStyle='rgba(0,255,200,.08)';cx.lineWidth=1;cx.setLineDash([3,5]);cx.beginPath();cx.moveTo(m-20,y);cx.lineTo(W-m+20,y);cx.stroke();cx.setLineDash([]);
+  // 13 ion sites
+  for(let i=0;i<N;i++){const g=cx.createRadialGradient(X(i),y,0,X(i),y,9);g.addColorStop(0,'rgba(170,190,220,.9)');g.addColorStop(1,'rgba(170,190,220,0)');cx.fillStyle=g;cx.beginPath();cx.arc(X(i),y,9,0,6.283);cx.fill();}
+  const tau=broken?0:TL*d,col=tauColor(tau);
+  if(!broken){
+    const L=6-6*d,R=6+6*d;
+    glowLine(X(L),X(R),y,col,3,d*d*9);
+    charge(X(L),y,'+',col);charge(X(R),y,'−',col);
+  }else{
+    const cn=COL.NOBLE;
+    glowLine(X(0),X(5),y,cn,3,0);glowLine(X(7),X(12),y,cn,3,0);
+    charge(X(0),y,'+',cn);charge(X(5),y,'−',cn);charge(X(7),y,'+',cn);charge(X(12),y,'−',cn);
+    if(flash>0){cx.strokeStyle=COL.SHATTER;cx.globalAlpha=flash;cx.lineWidth=2;
+      for(const k of [0,1]){cx.beginPath();cx.arc(X(6),y,20+(1-flash)*(60+k*40),0,6.283);cx.stroke();}
+      cx.globalAlpha=1;flash-=.02;}
+  }
+  cx.fillStyle='rgba(232,232,240,.35)';cx.font='10px "Space Mono", monospace';cx.textAlign='center';cx.textBaseline='alphabetic';
+  cx.fillText('13-site trapped-ion chain',W/2,y+58);
+  requestAnimationFrame(draw);
 }
-function set(v){if(broken)return;d=v;$('d').value=v*100;if(d>=1){d=1;broken=true;flash=1;$('d').disabled=true}readout();draw()}
-$('d').oninput=e=>{stopA();set(e.target.value/100)};
-function stopA(){clearInterval(anim);anim=null}
-$('auto').onclick=()=>{if(broken)return;stopA();anim=setInterval(()=>{set(Math.min(1,d+.01));if(broken)stopA()},60)};
-$('rst').onclick=()=>{stopA();broken=false;flash=0;d=0;$('d').disabled=false;$('d').value=0;readout();draw()};
-rs();readout();draw();
+
+// ════════════════════════════════════════════════════════════
+// READOUTS
+// ════════════════════════════════════════════════════════════
+const seg=x=>Math.min(100,x/TL/1.6*100);
+function sizeCanvas(c){const w=c.clientWidth,h=c.clientHeight;if(c.width!==w*devicePixelRatio){c.width=w*devicePixelRatio;c.height=h*devicePixelRatio;}const x=c.getContext('2d');x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);x.clearRect(0,0,w,h);return [x,w,h];}
+function chart(){
+  const [x,w,h]=sizeCanvas($('tc')),L=34,B=16,T=6,Y=v=>h-B-(h-B-T)*v/(TL*1.25),Xp=f=>L+(w-L-6)*f;
+  x.font='9px "Space Mono", monospace';x.fillStyle='rgba(232,232,240,.4)';
+  [[TI,'TL_IVA'],[TL,'TL']].forEach(([v,l])=>{x.strokeStyle=v===TL?'rgba(255,58,58,.6)':'rgba(240,192,96,.5)';x.setLineDash([3,3]);x.beginPath();x.moveTo(L,Y(v));x.lineTo(w-6,Y(v));x.stroke();x.setLineDash([]);x.fillText(l,0,v===TL?Y(v)-2:Y(v)+9);});
+  x.fillText('0',L-10,h-B+3);x.fillText('0%',L,h-3);x.fillText('100%',w-34,h-3);
+  // τ = TL × fraction, coloured by phase
+  for(let f=0;f<=1.0001;f+=0.01){const t=TL*f;x.fillStyle=tauColor(t);x.fillRect(Xp(f)-1.2,Y(t)-1.2,2.4,2.4);}
+  const f=broken?1:d,t=broken?0:TL*d;
+  x.fillStyle='#fff';x.beginPath();x.arc(Xp(f),Y(broken?TL:t),4,0,6.3);x.fill();
+  if(broken){x.fillStyle=COL.NOBLE;x.beginPath();x.arc(Xp(1),Y(0),4,0,6.3);x.fill();x.fillText('Noble pairs',Xp(1)-70,Y(0)-6);}
+}
+function readout(){
+  const E=broken?0:d,x=broken?0:TL*E,p=ph(x);
+  $('k-state').textContent=broken?'String broken':'String stretched';
+  $('k-e').textContent=(E*100).toFixed(0)+'%';
+  $('k-tau').textContent=x.toFixed(4);
+  $('k-tl').textContent=(x/TL).toFixed(3);
+  $('k-q').textContent=broken?4:2;
+  $('k-ph').innerHTML=`<span style="color:${COL[p]}">${PN[p]}</span>`;
+  $('gauge').style.background=`linear-gradient(90deg,${COL.LOCKED} 0 ${seg(TI)}%,${COL.IVA} ${seg(TI)}% ${seg(TL)}%,${COL.SHATTER} ${seg(TL)}% 100%)`;
+  $('mk').style.left=seg(x)+'%';
+  $('k-msg').innerHTML=broken?'Two pairs, each with equal B on both charges: B_out = |B₁ − B₂| = 0, τ = 0, <b>Noble</b>.':E>=TI/TL?'Approaching TL. Stored energy nears the pair energy.':'Energy is accumulating in the string.';
+  $('bv-ph').textContent=PN[p].toUpperCase();$('bv-ph').style.color=COL[p];
+  $('bv-s').textContent=broken?'two Noble pairs':`τ = ${(x/TL).toFixed(3)} TL`;
+  $('d-v').textContent=Math.round(d*100)+'%';
+  chart();caption();
+}
+function caption(){
+  const p=ph(broken?0:TL*d);
+  const L={
+    pre:'Two charges are joined by a <b>string</b> of force. Pull them apart and the energy stored in the string grows, and its torsion climbs toward the <b>Torsion Limit</b>.',
+    iva:'The string is close to its limit. It is holding almost enough energy to make a new particle and antiparticle.',
+    post:'The string <b>broke</b>. Its energy became a new particle–antiparticle pair, so there are now two pairs instead of one stretched pair. Each new pair is balanced, so each sits at τ = 0: <b>Noble</b>.'};
+  const R={
+    pre:'τ = B/P: B is the energy stored in the string, P its holding rigidity. The dial is calibrated so the source\'s break point sits at τ = TL, the Layer-0 boundary of the reduction at [9,9,3,22]. Locked below TL_IVA = 0.88 TL.',
+    iva:'IVA Peak: TL_IVA ≤ τ &lt; TL. Stored energy approaches the pair energy E = 2mc².',
+    post:'Shatter at τ = TL: the identity reorganizes into two smaller stable identities. Each pair carries equal B on both charges, so B_out = |B₁ − B₂| = 0 by Same-B Necessity: two Noble pairs.'};
+  const k=broken?'post':p==='IVA'?'iva':'pre';
+  $('caption').innerHTML=(mode==='learner'?L:R)[k];
+}
+
+// ════════════════════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════════════════════
+function setMode(m){mode=m;document.body.classList.toggle('res',m==='res');$('m-l').classList.toggle('on',m!=='res');$('m-r').classList.toggle('on',m==='res');caption();}
+function set(v){if(broken)return;d=v;$('d').value=v*100;if(d>=1){d=1;broken=true;flash=1;$('d').disabled=true;stopA();}readout();}
+function stopA(){clearInterval(anim);anim=null;$('auto').classList.remove('on');$('auto').textContent='▶ PULL AUTOMATICALLY';}
+$('d').oninput=e=>{stopA();set(e.target.value/100);};
+$('auto').onclick=()=>{if(broken)return;if(anim){stopA();return;}$('auto').classList.add('on');$('auto').textContent='■ STOP';anim=setInterval(()=>{set(Math.min(1,d+.005*speed));},60);};
+$('rst').onclick=()=>{stopA();broken=false;flash=0;d=0;$('d').disabled=false;$('d').value=0;readout();};
+$('sp').oninput=e=>{speed=+e.target.value;$('sp-v').textContent='×'+(speed/2).toFixed(1).replace('.0','');};
+addEventListener('resize',()=>{rs();readout();});
+rs();setMode('learner');readout();draw();
 </script>
 </body>
 </html>
