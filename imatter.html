@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMatter™ by AxiomForge™ · TL-Cell Matter, Mass and Gravity · Earth Worked Example · Applied Identity Physics™</title>
+<meta name="description" content="IMatter™ by AxiomForge™: build matter from TL-cells and count it. Worked example: Earth filled with the Preliminary Reference Earth Model (PREM) layers, counted cell by cell to its measured mass, mean density, moment of inertia and surface gravity. Free, in the browser.">
+<meta name="keywords" content="IMatter, AxiomForge, TL-cell, voxel Earth, Earth density model, PREM, Earth mass calculation, moment of inertia, gravity profile, cutaway Earth 3D, sparse voxel octree, Barnes-Hut, Identity Physics, Applied Identity Physics, Lean 4 formal verification">
+<meta name="author" content="HIGHTISTIC (Russell Vernon Trent III)">
+<link rel="canonical" href="https://uuia.app/imatter">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"IMatter by AxiomForge","alternateName":"IMatter™ by AxiomForge™","url":"https://uuia.app/imatter","applicationCategory":"EducationalApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Matter built from TL-cells and counted: Earth filled with the PREM density layers reproduces its measured mass, mean density, moment of inertia and surface gravity.","author":{"@type":"Person","name":"Russell Vernon Trent III","alternateName":"HIGHTISTIC","sameAs":["https://orcid.org/0009-0005-5313-7443","https://uuia.app/sovereigncv"]},"publisher":{"@type":"Organization","name":"SNSFT Foundation"},"isPartOf":{"@type":"CreativeWork","name":"Applied Identity Physics"}}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--anchor:#00ffc8;--locked:#7b4fff;--gold:#f0c060;--shatter:#ff3a3a;--bg:#050508;--surface:#0d0d14;--border:rgba(0,255,200,0.12);--text:#e8e8f0;--dim:rgba(232,232,240,0.55);--faint:rgba(232,232,240,0.28)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden}
+#app{display:grid;grid-template-columns:290px 1fr 340px;grid-template-rows:56px 1fr;height:100vh}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.96);gap:14px}
+.h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem}
+.h-title em{font-style:normal;color:var(--anchor)}
+.h-title i{font-style:normal;font-size:.66rem;color:var(--dim);font-weight:700}
+.h-sub{font-size:.52rem;color:var(--dim);margin-top:2px}
+.h-right{font-size:.48rem;color:var(--faint);text-align:right;line-height:1.6}
+.mode{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
+.mode button{font-family:'Syne',sans-serif;font-weight:800;font-size:.58rem;padding:.42rem .9rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.mode button.on{background:var(--anchor);color:#000}
+#left,#right{overflow-y:auto;padding:10px;background:rgba(13,13,20,.9);display:flex;flex-direction:column;gap:9px}
+#left{border-right:1px solid var(--border)}#right{border-left:1px solid var(--border)}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:9px}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.6rem;color:var(--anchor);letter-spacing:.08em;margin-bottom:7px;display:flex;justify-content:space-between}
+.st small{font-family:'Space Mono',monospace;font-weight:400;color:var(--faint);letter-spacing:0}
+.seg{display:flex;gap:4px;margin-bottom:5px}
+.btn{flex:1;font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:.5rem .3rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.btn:hover{color:var(--text)}
+.btn.on{border-color:var(--anchor);color:var(--anchor);background:rgba(0,255,200,.07)}
+.lbl{display:flex;justify-content:space-between;font-size:.52rem;color:var(--dim);margin:6px 0 2px}
+.lbl b{color:var(--anchor);font-weight:400}
+input[type=range]{width:100%;accent-color:#00ffc8}
+.note{font-size:.52rem;color:var(--dim);line-height:1.65}
+.note b{color:var(--text);font-weight:400}
+.note p+p{margin-top:6px}
+.kv{display:flex;justify-content:space-between;font-size:.54rem;padding:4px 0;border-bottom:1px solid rgba(0,255,200,.06);gap:8px}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--dim)}
+.kv span:last-child{text-align:right}
+.ok{color:var(--anchor)}
+table{width:100%;border-collapse:collapse;font-size:.5rem}
+th{color:var(--dim);font-weight:400;text-align:right;padding:3px 2px;border-bottom:1px solid var(--border)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:3px 2px;border-bottom:1px solid rgba(0,255,200,.05)}
+td .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle}
+#view{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#0b0f1a 0%,#000 70%);touch-action:none}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#legend{position:absolute;top:10px;left:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:.48rem;pointer-events:none}
+#legend .lb{height:7px;border-radius:3px;margin:4px 0;width:220px}
+#legend .rw{display:flex;justify-content:space-between;width:220px}
+#badge{position:absolute;top:10px;right:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 10px;text-align:right;pointer-events:none}
+#badge .ph{font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;color:var(--anchor)}
+#badge small{display:block;font-size:.48rem;color:var(--dim);margin-top:2px}
+#caption{position:absolute;left:12px;right:12px;bottom:10px;font-size:.58rem;line-height:1.65;background:rgba(5,5,8,.88);border:1px solid var(--border);border-radius:8px;padding:8px 12px;pointer-events:none}
+#caption b{color:var(--anchor);font-weight:400}
+#probe{position:absolute;display:none;background:rgba(5,5,8,.92);border:1px solid var(--gold);border-radius:6px;padding:6px 9px;font-size:.5rem;line-height:1.6;pointer-events:none;white-space:nowrap}
+#busy{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-weight:800;color:var(--anchor);font-size:.85rem;display:none;background:rgba(5,5,8,.9);padding:10px 16px;border:1px solid var(--border);border-radius:8px}
+canvas.chart{width:100%;height:120px;display:block}
+ul.src{padding-left:14px;font-size:.52rem;color:var(--dim);line-height:1.6}
+ul.src li{margin:3px 0}
+.r-only{display:none}body.res .r-only{display:block}body.res .l-only{display:none}
+.foot{font-size:.44rem;color:var(--faint);line-height:1.6;text-align:center;padding:4px 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media (max-width:900px){
+  html,body{overflow:auto;height:auto}
+  #app{grid-template-columns:1fr;grid-template-rows:auto 66vh auto auto;height:auto}
+  #hdr{flex-wrap:wrap;padding:8px 12px}.h-right,.h-sub{display:none}
+  #view{grid-row:2}#left{grid-row:3}#right{grid-row:4}#left,#right{border:none;overflow:visible}
+  #legend,#caption{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="hdr">
+  <div>
+    <div class="h-title"><em>IM</em>atter<span class="tm">™</span> <i>by AxiomForge<span class="tm">™</span> · Applied Identity Physics<span class="tm">™</span></i></div>
+    <div class="h-sub">matter built from TL-cells and counted · worked example: Earth · 1 unit = 1 cm · TL = 0.136899099984016</div>
+  </div>
+  <div class="mode"><button id="m-l" class="on">LEARNER</button><button id="m-r">RESEARCHER</button></div>
+  <div class="h-right">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation<br>uuia.app/imatter · [9,9,3,XX]</div>
+</div>
+
+<div id="left">
+  <div class="sec">
+    <div class="st">WORKED EXAMPLE · EARTH</div>
+    <div class="note l-only"><p>Earth is filled with tiny cubes called <b>TL-cells</b>. Each cube takes the density of the rock or metal at its spot, from the standard model seismologists use. Count the cubes, add up their weight, and the total has to match the real Earth.</p></div>
+    <div class="note r-only"><p>Each TL-cell of edge h takes the Preliminary Reference Earth Model (PREM) density at its center. Mass, mean density, polar moment of inertia and the gravity profile are sums over cells, compared with the measured values.</p></div>
+  </div>
+  <div class="sec">
+    <div class="st">TL-CELLS</div>
+    <div class="lbl"><span>Cells across Earth</span><b id="n-v">96</b></div>
+    <input type="range" id="n" min="0" max="4" value="2">
+    <div class="note" id="n-note"></div>
+  </div>
+  <div class="sec">
+    <div class="st">CUTAWAY</div>
+    <div class="seg" id="cut"><button class="btn on" data-v="wedge">WEDGE</button><button class="btn" data-v="half">HALF</button><button class="btn" data-v="octant">OCTANT</button><button class="btn" data-v="none">WHOLE</button></div>
+    <div class="lbl"><span>Show layers from depth</span><b id="d-v">0 km</b></div>
+    <input type="range" id="d" min="0" max="6000" step="50" value="0">
+    <div class="note l-only">Peel the planet: slide right to strip away the outer layers and look at the core.</div>
+  </div>
+  <div class="sec">
+    <div class="st">VIEW</div>
+    <div class="seg" id="col"><button class="btn on" data-v="dens">DENSITY</button><button class="btn" data-v="layer">LAYERS</button></div>
+    <div class="seg"><button class="btn on" id="rot">AUTO-ROTATE</button><button class="btn" id="cam">RESET CAMERA</button></div>
+    <div class="note">Drag to orbit, scroll or pinch to zoom. Hover or tap a cell to read it.</div>
+  </div>
+  <div class="sec">
+    <div class="st">EXPORT</div>
+    <div class="seg"><button class="btn" id="x-json">COUNTS JSON</button><button class="btn" id="x-csv">LAYERS CSV</button><button class="btn" id="x-png">VIEW PNG</button></div>
+  </div>
+  <div class="sec r-only">
+    <div class="st">SCALE</div>
+    <div class="note"><p><b>1 unit = 1 cm</b> (Unreal Engine convention; glTF, Blender and Unity divide by 100 for meters). Geometry is stored as dimensionless TL-cell counts; one declared edge length per scene converts every count to physical units.</p><p>One double-precision frame keeps 1 cm out to about 9 × 10¹³ m. Larger scenes give each octree cell its own local origin, so 1 cm holds at any scale.</p></div>
+  </div>
+</div>
+
+<div id="view">
+  <canvas id="gl"></canvas>
+  <div id="legend"><div id="lg-t">density · g/cm³</div><div class="lb" id="lg-b"></div><div class="rw" id="lg-r"><span>1.0</span><span>13.1</span></div></div>
+  <div id="badge"><div class="ph" id="b-m">—</div><small id="b-s"></small></div>
+  <div id="caption"></div>
+  <div id="probe"></div>
+  <div id="busy">COUNTING CELLS…</div>
+</div>
+
+<div id="right">
+  <div class="sec">
+    <div class="st">COUNT VS MEASURED</div>
+    <div class="kv"><span>TL-cells inside Earth</span><span id="k-n">—</span></div>
+    <div class="kv"><span>TL-cell edge</span><span id="k-h">—</span></div>
+    <div class="kv"><span>Mass</span><span id="k-m">—</span></div>
+    <div class="kv"><span>Mean density</span><span id="k-r">—</span></div>
+    <div class="kv"><span>Moment of inertia I/MR²</span><span id="k-i">—</span></div>
+    <div class="kv"><span>Surface gravity</span><span id="k-g">—</span></div>
+    <div class="kv"><span>Peak gravity</span><span id="k-gm">—</span></div>
+    <div class="kv"><span>Core share of mass</span><span id="k-c">—</span></div>
+    <div class="note l-only" style="margin-top:6px">Teal numbers are within 1% of the measured Earth. The moment of inertia says how much weight sits near the middle: a uniform ball would read 0.400, and Earth reads 0.331 because its heavy iron core is packed in the center.</div>
+    <div class="note r-only" style="margin-top:6px">M = Σ ρᵢh³. ρ̄ = M / (4/3 πR³). I = Σ mᵢ(xᵢ² + yᵢ²). g(r) = G·M(&lt;r)/r². Measured: M = GM/G with GM = 3.986004418 × 10¹⁴ m³/s² and G = 6.67430 × 10⁻¹¹ m³/(kg·s²); R = 6371.0 km; I/MR² = 0.3307; surface GM/R² = 9.820 m/s².</div>
+  </div>
+  <div class="sec">
+    <div class="st">LAYERS</div>
+    <table><thead><tr><th>Layer</th><th>Cells</th><th>Mass %</th><th>ρ g/cm³</th></tr></thead><tbody id="layers"></tbody></table>
+  </div>
+  <div class="sec">
+    <div class="st">GRAVITY INSIDE EARTH</div>
+    <canvas class="chart" id="gchart"></canvas>
+    <div class="note" style="margin-top:4px">g from the cells (line) against radius. Gravity rises going down, peaks at the core–mantle boundary, then falls to zero at the center.</div>
+  </div>
+  <div class="sec">
+    <div class="st">CONVERGENCE <small>smaller cells → exact</small></div>
+    <table><thead><tr><th>Cells across</th><th>Edge km</th><th>Cells inside</th><th>mean ρ</th><th>vs 5.513</th></tr></thead><tbody id="conv"></tbody></table>
+  </div>
+  <div class="sec r-only">
+    <div class="st">BUILT FROM</div>
+    <ul class="src">
+      <li>Dziewonski &amp; Anderson (1981), "Preliminary Reference Earth Model," Physics of the Earth and Planetary Interiors 25: the density of every layer.</li>
+      <li>IERS Conventions (2010), Technical Note 36: GM⊕ = 3.986004418 × 10¹⁴ m³/s². CODATA 2018: G = 6.67430 × 10⁻¹¹. IUGG mean radius 6371.0 km.</li>
+      <li>Yoder (1995), "Astrometric and Geodetic Properties of Earth and the Solar System," AGU Reference Shelf 1: I/MR² = 0.3307.</li>
+      <li>Laine &amp; Karras (2010), "Efficient Sparse Voxel Octrees": cell storage at scale. Barnes &amp; Hut (1986), Nature 324: gravity summed through the tree.</li>
+      <li>Lorensen &amp; Cline (1987), "Marching Cubes," SIGGRAPH: smooth surfaces from cells.</li>
+      <li>Epic Games, Unreal Engine: 1 unit = 1 cm; Large World Coordinates (UE5, double precision). Khronos glTF 2.0: 1 unit = 1 m.</li>
+      <li>three.js r128 (MIT): instanced rendering. Identity Physics Corpus on TL (DOI base 10.5281/zenodo.18719748).</li>
+    </ul>
+  </div>
+  <div class="foot">IMatter™ by AxiomForge™ · Applied Identity Physics™ · SNSFT Foundation<br>TL = 0.136899099984016 · HIGHTISTIC (Russell Vernon Trent III)</div>
+</div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// IMATTER CORE (no UI): TL-cell fill, counts, gravity
+// ════════════════════════════════════════════════════════════
+const IMatterCore=(()=>{
+  const R=6371.0, G=6.67430e-11, GM=3.986004418e14;
+  const MEAS={mass:GM/G, rho:GM/G/(4/3*Math.PI*Math.pow(R*1e3,3))/1e3, imr2:0.3307, g:GM/Math.pow(R*1e3,2)};
+  // PREM density polynomials in x = r / 6371 km (g/cm³)
+  const SEG=[[0,1221.5,x=>13.0885-8.8381*x*x,0],[1221.5,3480,x=>12.5815-1.2638*x-3.6426*x*x-5.5281*x*x*x,1],
+    [3480,5701,x=>7.9565-6.4761*x+5.5283*x*x-3.0807*x*x*x,2],[5701,5771,x=>5.3197-1.4836*x,3],[5771,5971,x=>11.2494-8.0298*x,3],
+    [5971,6151,x=>7.1089-3.8045*x,3],[6151,6346.6,x=>2.6910+0.6924*x,4],[6346.6,6356,x=>2.9,5],[6356,6368,x=>2.6,5],[6368,6371.0001,x=>1.02,6]];
+  const LAYERS=[{name:'Inner core',r0:0,r1:1221.5,col:'#ffe9a8'},{name:'Outer core',r0:1221.5,r1:3480,col:'#f0c060'},{name:'Lower mantle',r0:3480,r1:5701,col:'#c8a0ff'},
+    {name:'Transition zone',r0:5701,r1:6151,col:'#7b4fff'},{name:'Upper mantle',r0:6151,r1:6346.6,col:'#5a3cc0'},{name:'Crust',r0:6346.6,r1:6368,col:'#2c2070'},{name:'Ocean',r0:6368,r1:6371,col:'#00ffc8'}];
+  function sample(rkm){for(const s of SEG)if(rkm>=s[0]&&rkm<s[1])return [s[2](rkm/R),s[3]];return [0,-1];}
+  // fill an n×n×n grid spanning the sphere: each cell takes the density at its center
+  function fill(n){
+    const h=2*R/n,N3=n*n*n,dens=new Float32Array(N3),lay=new Int8Array(N3).fill(-1);
+    for(let k=0;k<n;k++){const z=(k+0.5)*h-R;for(let j=0;j<n;j++){const y=(j+0.5)*h-R;for(let i=0;i<n;i++){const x=(i+0.5)*h-R,r=Math.sqrt(x*x+y*y+z*z);
+      if(r<=R){const [d,l]=sample(r),o=(k*n+j)*n+i;dens[o]=d;lay[o]=l;}}}}
+    return {n,h,dens,lay};
+  }
+  // counts over the cells
+  function count(g){
+    const {n,h,dens,lay}=g,hm=h*1e3,v=hm*hm*hm*1e3; // cell volume in m³ × (kg/m³ per g/cm³)
+    let M=0,I=0,cells=0;const L=LAYERS.map(()=>({cells:0,mass:0}));
+    const nb=200,shell=new Float64Array(nb);
+    for(let k=0;k<n;k++){const z=((k+0.5)*h-R)*1e3;for(let j=0;j<n;j++){const y=((j+0.5)*h-R)*1e3;for(let i=0;i<n;i++){const o=(k*n+j)*n+i;if(lay[o]<0)continue;
+      const x=((i+0.5)*h-R)*1e3,m=dens[o]*v;M+=m;I+=m*(x*x+y*y);cells++;L[lay[o]].cells++;L[lay[o]].mass+=m;
+      const r=Math.sqrt(x*x+y*y+z*z)/1e3;shell[Math.min(nb-1,Math.floor(r/R*nb))]+=m;}}}
+    const gprof=[];let acc=0;for(let b=0;b<nb;b++){acc+=shell[b];const r=(b+1)/nb*R*1e3;gprof.push([r/1e3,G*acc/(r*r)]);}
+    const V=4/3*Math.PI*Math.pow(R*1e3,3);let gmax=0,rmax=0;for(const [r,gg] of gprof)if(gg>gmax){gmax=gg;rmax=r;}
+    return {cells,M,rho:M/V/1e3,imr2:I/(M*Math.pow(R*1e3,2)),g:G*M/Math.pow(R*1e3,2),gmax,rmax,core:(L[0].mass+L[1].mass)/M,L,gprof};
+  }
+  // streaming count for large grids (no storage)
+  function countLite(n){const h=2*R/n,hm=h*1e3,v=hm*hm*hm*1e3;let M=0,c=0;
+    for(let k=0;k<n;k++){const z=(k+0.5)*h-R;for(let j=0;j<n;j++){const y=(j+0.5)*h-R,yz=y*y+z*z;if(yz>R*R)continue;for(let i=0;i<n;i++){const x=(i+0.5)*h-R,r=Math.sqrt(x*x+yz);if(r<=R){M+=sample(r)[0]*v;c++;}}}}
+    return {n,h,cells:c,rho:M/(4/3*Math.PI*Math.pow(R*1e3,3))/1e3};}
+  return {R,G,GM,MEAS,LAYERS,fill,count,countLite,sample};
+})();
+
+// ════════════════════════════════════════════════════════════
+// UI
+// ════════════════════════════════════════════════════════════
+const $=id=>document.getElementById(id),C=IMatterCore;
+const NS=[32,64,96,128,160];
+const S={ni:2,cut:'wedge',depth:0,col:'dens',rot:true};
+let grid=null,stats=null;
+const hx=h=>[1,3,5].map(k=>parseInt(h.slice(k,k+2),16)/255);
+// density colors: luminance rises with density (dark violet → violet → gold → pale gold)
+const STOPS=[[1.0,hx('#1c1440')],[3.3,hx('#4a32b0')],[5.6,hx('#7b4fff')],[9.9,hx('#f0c060')],[13.1,hx('#ffe9a8')]];
+function densCol(d){let s=0;while(s<STOPS.length-2&&d>STOPS[s+1][0])s++;const a=STOPS[s],b=STOPS[s+1],u=Math.max(0,Math.min(1,(d-a[0])/(b[0]-a[0])));return [0,1,2].map(c=>a[1][c]*(1-u)+b[1][c]*u);}
+$('lg-b').style.background='linear-gradient(90deg,'+STOPS.map(s=>`rgb(${s[1].map(v=>v*255|0)}) ${((s[0]-1)/12.1*100).toFixed(0)}%`).join(',')+')';
+
+// three.js scene
+let R3,scene,cam,inst=null,orbit={th:-0.9,ph:1.2,d:3.1};const gl3d=(()=>{try{R3=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,preserveDrawingBuffer:true});return true;}catch(e){return false;}})();
+if(gl3d){R3.setPixelRatio(Math.min(devicePixelRatio||1,2));scene=new THREE.Scene();cam=new THREE.PerspectiveCamera(38,1,0.01,50);cam.up.set(0,0,1);
+  scene.add(new THREE.HemisphereLight(0xffffff,0x202034,0.75));const dl=new THREE.DirectionalLight(0xffffff,0.85);dl.position.set(-2,-3,4);scene.add(dl);}
+function removed(x,y,z){ // x,y,z in units of R
+  if(S.cut==='wedge')return x>0&&y<0;if(S.cut==='half')return y<0;if(S.cut==='octant')return x>0&&y<0&&z>0;return false;}
+let visIdx=[];
+function buildCells(){
+  if(!gl3d||!grid)return;if(inst){scene.remove(inst);inst.geometry.dispose();inst.material.dispose();inst=null;}
+  const {n,h,dens,lay}=grid,R=C.R,rmax=R-S.depth,keep=(i,j,k)=>{if(i<0||j<0||k<0||i>=n||j>=n||k>=n)return false;const o=(k*n+j)*n+i;if(lay[o]<0)return false;
+    const x=(i+0.5)*h-R,y=(j+0.5)*h-R,z=(k+0.5)*h-R;if(Math.sqrt(x*x+y*y+z*z)>rmax)return false;return !removed(x,y,z);};
+  visIdx=[];
+  for(let k=0;k<n;k++)for(let j=0;j<n;j++)for(let i=0;i<n;i++){if(!keep(i,j,k))continue;
+    if(!keep(i+1,j,k)||!keep(i-1,j,k)||!keep(i,j+1,k)||!keep(i,j-1,k)||!keep(i,j,k+1)||!keep(i,j,k-1))visIdx.push((k*n+j)*n+i);}
+  const s=1/R,box=new THREE.BoxGeometry(h*s*0.96,h*s*0.96,h*s*0.96),mat=new THREE.MeshStandardMaterial({roughness:0.75,metalness:0});
+  inst=new THREE.InstancedMesh(box,mat,visIdx.length);const m=new THREE.Matrix4(),c=new THREE.Color();
+  visIdx.forEach((o,q)=>{const i=o%n,j=Math.floor(o/n)%n,k=Math.floor(o/(n*n));m.makeTranslation(((i+0.5)*h-R)*s,((j+0.5)*h-R)*s,((k+0.5)*h-R)*s);inst.setMatrixAt(q,m);
+    const col=S.col==='dens'?densCol(dens[o]):hx(C.LAYERS[lay[o]].col);c.setRGB(col[0],col[1],col[2]);inst.setColorAt(q,c);});
+  inst.instanceMatrix.needsUpdate=true;if(inst.instanceColor)inst.instanceColor.needsUpdate=true;scene.add(inst);
+  $('b-s').textContent=`${visIdx.length.toLocaleString()} exposed cells drawn`;
+}
+function fitD(){return 3.1/Math.min(1,cam?cam.aspect:1);}
+function resize(){const v=$('view'),W=v.clientWidth,H=v.clientHeight;if(gl3d){R3.setSize(W,H,false);cam.aspect=W/Math.max(1,H);cam.updateProjectionMatrix();orbit.d=Math.max(orbit.d,fitD());}}
+addEventListener('resize',resize);
+let dragging=false;
+function loop(){if(gl3d){if(S.rot&&!dragging)orbit.th+=0.0025;const {th,ph,d}=orbit;cam.position.set(d*Math.sin(ph)*Math.cos(th),d*Math.sin(ph)*Math.sin(th),d*Math.cos(ph));cam.lookAt(0,0,0);R3.render(scene,cam);}requestAnimationFrame(loop);}
+// orbit, pinch, probe
+const ptr=new Map();let pinch=null,last=null;const RC=gl3d?new THREE.Raycaster():null;
+$('gl').addEventListener('pointerdown',e=>{$('gl').setPointerCapture(e.pointerId);ptr.set(e.pointerId,[e.clientX,e.clientY]);dragging=true;last=[e.clientX,e.clientY];
+  if(ptr.size===2){const [a,b]=[...ptr.values()];pinch={d0:Math.hypot(a[0]-b[0],a[1]-b[1]),od:orbit.d};}});
+$('gl').addEventListener('pointermove',e=>{
+  if(ptr.has(e.pointerId))ptr.set(e.pointerId,[e.clientX,e.clientY]);
+  if(pinch&&ptr.size>=2){const [a,b]=[...ptr.values()];orbit.d=Math.min(10,Math.max(1.3,pinch.od*pinch.d0/Math.max(1,Math.hypot(a[0]-b[0],a[1]-b[1]))));return;}
+  if(dragging&&last&&ptr.size===1){orbit.th-=(e.clientX-last[0])*0.008;orbit.ph=Math.min(3.1,Math.max(0.05,orbit.ph-(e.clientY-last[1])*0.006));last=[e.clientX,e.clientY];}
+  probe(e);});
+const up=e=>{ptr.delete(e.pointerId);if(ptr.size<2)pinch=null;if(!ptr.size){dragging=false;last=null;}};
+$('gl').addEventListener('pointerup',up);$('gl').addEventListener('pointercancel',up);$('gl').addEventListener('pointerleave',()=>{$('probe').style.display='none';});
+$('gl').addEventListener('wheel',e=>{e.preventDefault();orbit.d=Math.min(10,Math.max(1.3,orbit.d*Math.exp(e.deltaY*0.001)));},{passive:false});
+function probe(e){
+  if(!inst)return;const b=$('gl').getBoundingClientRect();RC.setFromCamera(new THREE.Vector2((e.clientX-b.left)/b.width*2-1,-(e.clientY-b.top)/b.height*2+1),cam);
+  const h=RC.intersectObject(inst);const P=$('probe');if(!h.length||h[0].instanceId==null){P.style.display='none';return;}
+  const o=visIdx[h[0].instanceId],{n}=grid,i=o%n,j=Math.floor(o/n)%n,k=Math.floor(o/(n*n)),R=C.R,x=(i+0.5)*grid.h-R,y=(j+0.5)*grid.h-R,z=(k+0.5)*grid.h-R,r=Math.sqrt(x*x+y*y+z*z);
+  P.innerHTML=`<b style="color:${C.LAYERS[grid.lay[o]].col}">${C.LAYERS[grid.lay[o]].name}</b><br>depth ${(R-r).toFixed(0)} km · radius ${r.toFixed(0)} km<br>density ${grid.dens[o].toFixed(3)} g/cm³<br>cell mass ${(grid.dens[o]*Math.pow(grid.h*1e3,3)*1e3).toExponential(3)} kg`;
+  P.style.display='block';P.style.left=Math.min(b.width-210,e.clientX-b.left+14)+'px';P.style.top=(e.clientY-b.top+14)+'px';}
+
+// readouts
+const pctErr=(a,b)=>((a/b-1)*100);
+function mark(el,val,err,fmt){$(el).innerHTML=`<span class="${Math.abs(err)<1?'ok':''}">${fmt}</span> <span style="color:var(--faint)">(${err>=0?'+':''}${err.toFixed(2)}%)</span>`;}
+function readouts(){
+  const s=stats,M=C.MEAS,h=grid.h;
+  $('k-n').textContent=s.cells.toLocaleString();
+  $('k-h').textContent=`${h.toFixed(1)} km = ${(h*1e5).toExponential(3)} cm`;
+  mark('k-m',s.M,pctErr(s.M,M.mass),`${s.M.toExponential(4)} kg`);
+  mark('k-r',s.rho,pctErr(s.rho,M.rho),`${s.rho.toFixed(4)} g/cm³`);
+  mark('k-i',s.imr2,pctErr(s.imr2,M.imr2),s.imr2.toFixed(4));
+  mark('k-g',s.g,pctErr(s.g,M.g),`${s.g.toFixed(3)} m/s²`);
+  $('k-gm').textContent=`${s.gmax.toFixed(2)} m/s² at ${s.rmax.toFixed(0)} km radius`;
+  $('k-c').textContent=(s.core*100).toFixed(1)+'%';
+  $('layers').innerHTML=C.LAYERS.map((L,k)=>{const q=s.L[k],mr=(L.r0+L.r1)/2,d=C.sample(Math.min(mr,6370.9))[0];
+    return `<tr><td><span class="sw" style="background:${L.col}"></span>${L.name}</td><td>${q.cells.toLocaleString()}</td><td>${(q.mass/s.M*100).toFixed(2)}</td><td>${d.toFixed(2)}</td></tr>`;}).join('');
+  const err=pctErr(s.rho,M.rho);$('b-m').textContent=`mean ρ ${s.rho.toFixed(3)} · ${err>=0?'+':''}${err.toFixed(2)}%`;
+  $('caption').innerHTML=`<b>${s.cells.toLocaleString()}</b> TL-cells, each ${h.toFixed(0)} km on a side (${(h*1e5).toExponential(2)} cm in Unreal units). Counted mass ${s.M.toExponential(3)} kg against the measured ${M.mass.toExponential(3)} kg; core ${(s.core*100).toFixed(1)}% of the mass; gravity peaks at the core–mantle boundary.`;
+  drawG();
+}
+function drawG(){
+  const c=$('gchart'),r=devicePixelRatio||1,W=c.clientWidth,H=c.clientHeight;c.width=W*r;c.height=H*r;const x=c.getContext('2d');x.setTransform(r,0,0,r,0,0);x.clearRect(0,0,W,H);
+  const P=stats.gprof,gm=11.5,px=v=>28+v/C.R*(W-36),py=v=>H-14-v/gm*(H-22);
+  x.strokeStyle='rgba(232,232,240,.15)';x.lineWidth=1;for(const v of [0,5,10]){x.beginPath();x.moveTo(28,py(v));x.lineTo(W-8,py(v));x.stroke();}
+  x.fillStyle='rgba(232,232,240,.5)';x.font='9px "Space Mono", monospace';x.fillText('10',8,py(10)+3);x.fillText('5',14,py(5)+3);x.fillText('0',14,py(0)+3);
+  for(const L of C.LAYERS.slice(0,3)){x.strokeStyle='rgba(240,192,96,.25)';x.setLineDash([3,3]);x.beginPath();x.moveTo(px(L.r1),6);x.lineTo(px(L.r1),H-14);x.stroke();}x.setLineDash([]);
+  x.fillText('center',28,H-2);x.fillText('surface',W-48,H-2);x.fillText('CMB',px(3480)-10,H-2);
+  x.strokeStyle='#00ffc8';x.lineWidth=2;x.beginPath();P.forEach(([rr,g],i)=>{i?x.lineTo(px(rr),py(g)):x.moveTo(px(rr),py(g));});x.stroke();
+  x.fillStyle='#f0c060';x.beginPath();x.arc(px(stats.rmax),py(stats.gmax),3,0,6.283);x.fill();
+}
+async function convergence(){
+  const rows=[];$('conv').innerHTML='<tr><td colspan="5" style="color:var(--faint)">counting…</td></tr>';
+  for(const n of [32,64,128,256]){await new Promise(r=>setTimeout(r,10));const c=C.countLite(n);rows.push(c);
+    $('conv').innerHTML=rows.map(q=>{const e=pctErr(q.rho,C.MEAS.rho);return `<tr><td>${q.n}</td><td>${q.h.toFixed(1)}</td><td>${q.cells.toLocaleString()}</td><td>${q.rho.toFixed(4)}</td><td class="${Math.abs(e)<0.1?'ok':''}">${e>=0?'+':''}${e.toFixed(2)}%</td></tr>`;}).join('');}
+}
+function rebuild(){
+  $('busy').style.display='block';
+  setTimeout(()=>{const n=NS[S.ni];grid=C.fill(n);stats=C.count(grid);buildCells();readouts();$('busy').style.display='none';},20);
+}
+function noteN(){const n=NS[S.ni],h=2*C.R/n;$('n-v').textContent=n;$('n-note').textContent=`${n}³ grid · each TL-cell ${h.toFixed(0)} km on a side`;}
+$('n').oninput=e=>{S.ni=+e.target.value;noteN();};$('n').onchange=rebuild;
+$('d').oninput=e=>{S.depth=+e.target.value;$('d-v').textContent=S.depth+' km';cancelAnimationFrame(S.raf);S.raf=requestAnimationFrame(buildCells);};
+function seg(id,key,fn){$(id).querySelectorAll('.btn').forEach(b=>b.onclick=()=>{S[key]=b.dataset.v;$(id).querySelectorAll('.btn').forEach(o=>o.classList.toggle('on',o===b));fn();});}
+seg('cut','cut',buildCells);
+seg('col','col',()=>{buildCells();const d=S.col==='dens';$('lg-t').textContent=d?'density · g/cm³':'layers';$('lg-b').style.background=d?'linear-gradient(90deg,'+STOPS.map(s=>`rgb(${s[1].map(v=>v*255|0)}) ${((s[0]-1)/12.1*100).toFixed(0)}%`).join(',')+')':'linear-gradient(90deg,'+[...C.LAYERS].reverse().map((L,i,a)=>`${L.col} ${i/a.length*100}% ${(i+1)/a.length*100}%`).join(',')+')';
+  $('lg-r').innerHTML=d?'<span>1.0</span><span>13.1</span>':'<span>ocean</span><span>inner core</span>';});
+$('rot').onclick=()=>{S.rot=!S.rot;$('rot').classList.toggle('on',S.rot);};
+$('cam').onclick=()=>{orbit={th:-0.9,ph:1.2,d:fitD()};};
+$('m-l').onclick=()=>{document.body.classList.remove('res');$('m-l').classList.add('on');$('m-r').classList.remove('on');};
+$('m-r').onclick=()=>{document.body.classList.add('res');$('m-r').classList.add('on');$('m-l').classList.remove('on');};
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);}
+$('x-json').onclick=()=>{const s=stats;dl(new Blob([JSON.stringify({tool:'IMatter by AxiomForge',url:'https://uuia.app/imatter',example:'Earth (PREM)',unit:'1 unit = 1 cm',grid:NS[S.ni],tl_cell_edge_km:grid.h,tl_cell_edge_cm:grid.h*1e5,
+  cells:s.cells,mass_kg:s.M,mean_density:s.rho,I_over_MR2:s.imr2,surface_g:s.g,peak_g:s.gmax,peak_g_radius_km:s.rmax,core_mass_fraction:s.core,measured:C.MEAS,
+  layers:C.LAYERS.map((L,k)=>({name:L.name,r0_km:L.r0,r1_km:L.r1,cells:s.L[k].cells,mass_kg:s.L[k].mass}))},null,2)],{type:'application/json'}),'imatter_earth.json');};
+$('x-csv').onclick=()=>{const s=stats;dl(new Blob(['layer,r0_km,r1_km,cells,mass_kg,mass_share\n'+C.LAYERS.map((L,k)=>`${L.name},${L.r0},${L.r1},${s.L[k].cells},${s.L[k].mass.toExponential(6)},${(s.L[k].mass/s.M).toFixed(6)}`).join('\n')],{type:'text/csv'}),'imatter_earth_layers.csv');};
+$('x-png').onclick=()=>{if(!gl3d)return;R3.render(scene,cam);$('gl').toBlob(b=>dl(b,'imatter_earth.png'));};
+noteN();resize();loop();rebuild();setTimeout(convergence,600);
+</script>
+</body>
+</html>
