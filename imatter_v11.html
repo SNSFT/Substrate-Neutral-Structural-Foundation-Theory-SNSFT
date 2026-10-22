@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMatter™ · 2.5 Million Cubes of Real Planet, Weighed and Smashed Live in a Web Page · by AxiomForge™</title>
+<meta name="description" content="2.5 million cubes of real planet, weighed and smashed live in a web page. Build Earth, the Moon, Mars or your own world from the core out with TL-cells, check it against the real planet (Earth within 0.07%), then dig into it or hit it with Meteor Crater, Chicxulub or the Moon-forming Theia impact and watch the debris rain back down. Free, no install, runs on a phone.">
+<meta name="keywords" content="planet simulator, asteroid impact simulator, planet collision simulator free, smash planets browser, voxel planet, Chicxulub impact simulation, dinosaur extinction asteroid simulator, Moon forming impact Theia, Earth interior 3D, layers of the Earth cutaway, crater calculator 3D, Minecraft planet physics, IMatter, AxiomForge, TL-cell, PREM, moment of inertia, Applied Identity Physics, Identity Physics">
+<meta name="author" content="HIGHTISTIC (Russell Vernon Trent III)">
+<meta property="og:title" content="IMatter™: 2.5 million cubes of real planet">
+<meta property="og:description" content="2.5 million cubes of real planet, weighed and smashed live in a web page. Build Earth, the Moon, Mars or your own world from the core out with TL-cells, check it against the real planet (Earth within 0.07%), then dig into it or hit it with Meteor Crater, Chicxulub or the Moon-forming Theia impact and watch the debris rain back down. Free, no install, runs on a phone.">
+<meta property="og:url" content="https://uuia.app/imatter">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://uuia.app/imatter">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"IMatter by AxiomForge","alternateName":"IMatter™ by AxiomForge™","url":"https://uuia.app/imatter","applicationCategory":"EducationalApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"2.5 million cubes of real planet, weighed and smashed live in a web page. Build Earth, the Moon, Mars or your own world from the core out with TL-cells, check it against the real planet (Earth within 0.07%), then dig into it or hit it with Meteor Crater, Chicxulub or the Moon-forming Theia impact and watch the debris rain back down. Free, no install, runs on a phone.","author":{"@type":"Person","name":"Russell Vernon Trent III","alternateName":"HIGHTISTIC","sameAs":["https://orcid.org/0009-0005-5313-7443","https://uuia.app/sovereigncv"]},"publisher":{"@type":"Organization","name":"SNSFT Foundation"},"isPartOf":{"@type":"CreativeWork","name":"Applied Identity Physics"}}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--anchor:#00ffc8;--locked:#7b4fff;--gold:#f0c060;--shatter:#ff3a3a;--bg:#050508;--surface:#0d0d14;--border:rgba(0,255,200,0.12);--text:#e8e8f0;--dim:rgba(232,232,240,0.55);--faint:rgba(232,232,240,0.28)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden}
+#app{display:grid;grid-template-columns:290px 1fr 340px;grid-template-rows:56px 1fr;height:100vh}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.96);gap:14px}
+.h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem}
+.h-title em{font-style:normal;color:var(--anchor)}
+.h-title i{font-style:normal;font-size:.66rem;color:var(--dim);font-weight:700}
+.h-sub{font-size:.52rem;color:var(--dim);margin-top:2px}
+.h-right{font-size:.48rem;color:var(--faint);text-align:right;line-height:1.6}
+.mode{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
+.mode button{font-family:'Syne',sans-serif;font-weight:800;font-size:.58rem;padding:.42rem .9rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.mode button.on{background:var(--anchor);color:#000}
+#left,#right{overflow-y:auto;padding:10px;background:rgba(13,13,20,.9);display:flex;flex-direction:column;gap:9px}
+#left{border-right:1px solid var(--border)}#right{border-left:1px solid var(--border)}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:9px}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.6rem;color:var(--anchor);letter-spacing:.08em;margin-bottom:7px;display:flex;justify-content:space-between}
+.st small{font-family:'Space Mono',monospace;font-weight:400;color:var(--faint);letter-spacing:0}
+.seg{display:flex;gap:4px;margin-bottom:5px}
+.btn{flex:1;font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:.5rem .3rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.btn:hover{color:var(--text)}
+.btn.on{border-color:var(--anchor);color:var(--anchor);background:rgba(0,255,200,.07)}
+.lbl{display:flex;justify-content:space-between;font-size:.52rem;color:var(--dim);margin:6px 0 2px}
+.lbl b{color:var(--anchor);font-weight:400}
+input[type=range]{width:100%;accent-color:#00ffc8}
+.note{font-size:.52rem;color:var(--dim);line-height:1.65}
+.note b{color:var(--text);font-weight:400}
+.note p+p{margin-top:6px}
+.kv{display:flex;justify-content:space-between;font-size:.54rem;padding:4px 0;border-bottom:1px solid rgba(0,255,200,.06);gap:8px}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--dim)}
+.kv span:last-child{text-align:right}
+.ok{color:var(--anchor)}
+table{width:100%;border-collapse:collapse;font-size:.5rem}
+th{color:var(--dim);font-weight:400;text-align:right;padding:3px 2px;border-bottom:1px solid var(--border)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:3px 2px;border-bottom:1px solid rgba(0,255,200,.05)}
+td .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle}
+#view{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#0b0f1a 0%,#000 70%);touch-action:none}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#legend{position:absolute;top:10px;left:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:.48rem;pointer-events:none}
+#legend .lb{height:7px;border-radius:3px;margin:4px 0;width:220px}
+#legend .rw{display:flex;justify-content:space-between;width:220px}
+#lg-l div{display:flex;align-items:center;gap:6px;margin:3px 0;font-size:.52rem}
+#lg-l i{display:inline-block;width:14px;height:10px;border-radius:2px;border:1px solid rgba(255,255,255,.25)}
+#badge{position:absolute;top:10px;right:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 10px;text-align:right;pointer-events:none}
+#badge .ph{font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;color:var(--anchor)}
+#badge small{display:block;font-size:.48rem;color:var(--dim);margin-top:2px}
+#caption{position:absolute;left:12px;right:12px;bottom:10px;font-size:.58rem;line-height:1.65;background:rgba(5,5,8,.88);border:1px solid var(--border);border-radius:8px;padding:8px 12px;pointer-events:none}
+#caption b{color:var(--anchor);font-weight:400}
+#probe{position:absolute;display:none;background:rgba(5,5,8,.92);border:1px solid var(--gold);border-radius:6px;padding:6px 9px;font-size:.5rem;line-height:1.6;pointer-events:none;white-space:nowrap}
+#busy{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-weight:800;color:var(--anchor);font-size:.85rem;display:none;background:rgba(5,5,8,.9);padding:10px 16px;border:1px solid var(--border);border-radius:8px}
+canvas.chart{width:100%;height:120px;display:block}
+ul.src{padding-left:14px;font-size:.52rem;color:var(--dim);line-height:1.6}
+ul.src li{margin:3px 0}
+.r-only{display:none}body.res .r-only{display:block}body.res .l-only{display:none}
+.foot{font-size:.44rem;color:var(--faint);line-height:1.6;text-align:center;padding:4px 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media (max-width:900px){
+  html,body{overflow:auto;height:auto}
+  #app{grid-template-columns:1fr;grid-template-rows:auto 66vh auto auto;height:auto}
+  #hdr{flex-wrap:wrap;padding:8px 12px}.h-right,.h-sub{display:none}
+  #view{grid-row:2}#left{grid-row:3}#right{grid-row:4}#left,#right{border:none;overflow:visible}
+  #legend,#caption{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="hdr">
+  <div>
+    <div class="h-title"><em>IM</em>atter<span class="tm">™</span> <i>by AxiomForge<span class="tm">™</span> · Applied Identity Physics<span class="tm">™</span></i></div>
+    <div class="h-sub">2.5 million cubes of real planet, weighed and smashed live in a web page · worked examples: Earth, Moon, Mars · 1 unit = 1 cm · TL = 0.136899099984016</div>
+  </div>
+  <div class="mode"><button id="m-l" class="on">LEARNER</button><button id="m-r">RESEARCHER</button></div>
+  <div class="h-right">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation<br>uuia.app/imatter · [9,9,3,27]</div>
+</div>
+
+<div id="left">
+  <div class="sec">
+    <div class="st">WORKED EXAMPLES</div>
+    <div class="seg" id="body"><button class="btn on" data-v="earth">EARTH</button><button class="btn" data-v="moon">MOON</button><button class="btn" data-v="mars">MARS</button><button class="btn" data-v="custom">BUILD</button></div>
+    <div id="mcore" style="display:none"><div class="lbl"><span>Mars core density (InSight range)</span><b id="mc-v">6.00 g/cm³</b></div><input type="range" id="mc" min="570" max="630" value="600"><div class="note" style="margin-top:4px">Slide the core density across the InSight seismic range and watch the moment of inertia in the THREE-BODY CHECK move toward the measured 0.3644.</div></div>
+    <div class="note" id="fit-note" style="margin:4px 0 6px"></div>
+    <div class="note l-only"><p>Each world is filled with tiny cubes called <b>TL-cells</b>. Each cube takes the density of the rock or metal at its spot, from the standard model seismologists use. Count the cubes, add up their weight, and the total has to match the real Earth.</p></div>
+    <div class="note r-only"><p>Each TL-cell of edge h takes the Preliminary Reference Earth Model (PREM) density at its center. Mass, mean density, polar moment of inertia and the gravity profile are sums over cells, compared with the measured values.</p></div>
+  </div>
+  <div class="sec" id="builder" style="display:none">
+    <div class="st">PLANET BUILDER</div>
+    <div class="seg" id="tpl"><button class="btn" data-v="rock">ROCK BALL</button><button class="btn" data-v="earthlike">EARTH-LIKE</button><button class="btn" data-v="ice">ICE WORLD</button></div>
+    <div class="lbl"><span>Radius</span><b id="br-v">5,000 km</b></div><input type="range" id="brad" min="200" max="20000" step="50" value="5000">
+    <div id="blayers"></div>
+    <div class="seg" style="margin-top:6px"><button class="btn" id="badd">+ ADD LAYER</button><button class="btn on" id="bgo">BUILD WORLD</button></div>
+    <div class="note l-only">Stack layers from the center out. Each layer reaches to a share of the radius; the top layer always reaches the surface. The page works out the exact answer from formulas, then counts the cells, and the two have to agree.</div>
+    <div class="note r-only">Layers are constant density. Exact: M = Σ ρ·(4/3)π(r₁³ − r₀³), I = Σ ρ·(8/15)π(r₁⁵ − r₀⁵); a uniform ball gives I/MR² = 0.4 exactly. Material densities at surface conditions: iron 7.87, granite 2.70, basalt 3.00, water 1.00, ice 0.92 g/cm³; mantle rock 3.30 and compressed iron-nickel core 11.0 are typical planetary values.</div>
+  </div>
+  <div class="sec">
+    <div class="st">TL-CELLS</div>
+    <div class="lbl"><span>Cells across <i class='bn' style='font-style:normal'>Earth</i></span><b id="n-v">96</b></div>
+    <input type="range" id="n" min="0" max="5" value="2">
+    <div class="note" id="n-note"></div>
+  </div>
+  <div class="sec">
+    <div class="st">TOOLS <small id="tool-k"></small></div>
+    <div class="seg" id="tool"><button class="btn on" data-v="orbit">ORBIT</button><button class="btn" data-v="dig">DIG</button><button class="btn" data-v="place">PLACE</button><button class="btn" data-v="paint">PAINT</button></div>
+    <div class="lbl"><span>Brush</span><b id="bs-v">2 cells</b></div><input type="range" id="bsz" min="0" max="10" value="2">
+    <div class="lbl"><span>Material</span></div>
+    <select id="mat" style="width:100%;font-family:'Space Mono',monospace;font-size:.52rem;background:#0a0a10;color:var(--text);border:1px solid var(--border);border-radius:4px;padding:5px"></select>
+    <div class="seg" style="margin-top:7px"><button class="btn" id="undo">↶ UNDO</button><button class="btn" id="reset">RESET WORLD</button></div>
+    <div class="note l-only">DIG removes cells, PLACE adds cells on the face you touch, PAINT changes what cells are made of. With a tool on, one finger or the left mouse button works the tool; turn the view with two fingers or the right mouse button. Every number updates after each stroke.</div>
+    <div class="note r-only">Edits change cell occupancy and density directly; mass, I/MR², gravity and the layer table are recounted from the cells after each stroke. Keys: O orbit, D dig, P place, A paint, Ctrl+Z undo, [ and ] brush.</div>
+  </div>
+  <div class="sec">
+    <div class="st">IMPACT</div>
+    <div class="seg" id="ipre"><button class="btn" data-v="meteor">METEOR CRATER</button><button class="btn" data-v="chicx">CHICXULUB</button><button class="btn" data-v="theia">THEIA</button></div>
+    <div class="lbl"><span>Impactor diameter</span><b id="id-v">—</b></div><input type="range" id="idia" min="100" max="690" value="410">
+    <div class="lbl"><span>Material</span></div>
+    <div class="seg" id="imat"><button class="btn on" data-v="iron">IRON 7.87</button><button class="btn" data-v="rock">ROCK 2.70</button><button class="btn" data-v="ice">ICE 0.92</button></div>
+    <div class="lbl"><span>Speed</span><b id="iv-v">20 km/s</b></div><input type="range" id="ispd" min="2" max="72" value="20">
+    <div class="lbl"><span>Angle from horizontal</span><b id="ia-v">45°</b></div><input type="range" id="iang" min="15" max="90" value="45">
+    <div class="seg" style="margin-top:7px"><button class="btn" id="iaim">AIM</button><button class="btn on" id="ifire" style="border-color:#ff3a3a;color:#ff3a3a">FIRE</button><button class="btn" id="iclear" title="Land the debris still in flight and finish every impact">CLEAR ALOFT</button></div>
+    <div class="note l-only">Pick a size, material, speed and angle, then FIRE. AIM lets you click the spot to hit; otherwise it strikes the side facing you. Small impacts dig a crater and throw out debris that falls back as a blanket; big enough impacts blow part of the planet away.</div>
+    <div class="note r-only">Crater: Collins, Melosh &amp; Marcus (2005) π-group scaling, transient D = 1.161 (ρᵢ/ρₜ)^⅓ L^0.78 v^0.44 g^−0.22 sin^⅓θ; final simple 1.25 D, complex 1.17 D^1.13 / D_c^0.13 (D_c = 3.2 km). Bowl depth D/2√2. Disruption: Leinhardt &amp; Stewart (2012) universal law, M_lr/M_tot = 1 − Q_R / 2Q*_RD, c* = 1.9, μ̄ = 0.36. Ejecta speeds follow a power law (Housen &amp; Holsapple 2011); debris below escape speed falls back ballistically and builds a blanket.</div>
+  </div>
+  <div class="sec">
+    <div class="st">CUTAWAY</div>
+    <div class="seg" id="cut"><button class="btn on" data-v="wedge">WEDGE</button><button class="btn" data-v="half">HALF</button><button class="btn" data-v="octant">OCTANT</button><button class="btn" data-v="none">WHOLE</button></div>
+    <div class="lbl"><span>Show layers from depth</span><b id="d-v">0 km</b></div>
+    <input type="range" id="d" min="0" max="6000" step="50" value="0">
+    <div class="note l-only">Peel the planet: slide right to strip away the outer layers and look at the core.</div>
+  </div>
+  <div class="sec">
+    <div class="st">VIEW</div>
+    <div class="seg" id="col"><button class="btn on" data-v="layer">LAYERS</button><button class="btn" data-v="dens">DENSITY</button></div>
+    <div class="seg" id="draw"><button class="btn on" data-v="exposed" title="Draw only cells that touch air, the way voxel games do">EXPOSED CELLS</button><button class="btn" data-v="all" title="Stress test: draw every cell, hidden ones included">ALL CELLS · STRESS TEST</button></div>
+    <div class="seg" id="camm"><button class="btn on" data-v="orbit">ORBIT CAMERA</button><button class="btn" data-v="fly">FLY CAMERA</button></div>
+    <div class="seg"><button class="btn on" id="rot">AUTO-ROTATE</button><button class="btn" id="cam">RESET CAMERA</button></div>
+    <div class="note l-only">ORBIT: drag to turn, scroll to move in, all the way inside if you like; double-click any cell to circle around that spot. FLY: drag to look around, scroll or W/S to move forward and back, A/D to slide sideways, Q/E down and up, hold Shift to go faster. On a phone, drag to look and pinch to move.</div>
+    <div class="note r-only">Orbit camera: target point, distance and two angles; double-click sets the target to a cell. Fly camera: free position with yaw and pitch, Z up. In fly mode the tool hotkeys are off; W/A/S/D/Q/E and the arrow keys move the camera.</div>
+  </div>
+  <div class="sec">
+    <div class="st">EXPORT</div>
+    <div class="seg"><button class="btn" id="x-json">COUNTS JSON</button><button class="btn" id="x-csv">LAYERS CSV</button><button class="btn" id="x-png">VIEW PNG</button></div>
+  </div>
+  <div class="sec r-only">
+    <div class="st">SCALE</div>
+    <div class="note"><p><b>1 unit = 1 cm</b> (Unreal Engine convention; glTF, Blender and Unity divide by 100 for meters). Geometry is stored as dimensionless TL-cell counts; one declared edge length per scene converts every count to physical units.</p><p>One double-precision frame keeps 1 cm out to about 9 × 10¹³ m. Larger scenes give each octree cell its own local origin, so 1 cm holds at any scale.</p></div>
+  </div>
+</div>
+
+<div id="view">
+  <canvas id="gl"></canvas>
+  <div id="legend"><div id="lg-t">layers</div><div class="lb" id="lg-b"></div><div class="rw" id="lg-r"></div><div id="lg-l"></div></div>
+  <div id="badge"><div class="ph" id="b-m">—</div><small id="b-s"></small><small id="fps" style="font-family:Syne,sans-serif;font-weight:800;font-size:.7rem">— fps</small></div>
+  <div id="caption"></div>
+  <div id="probe"></div>
+  <div id="busy">COUNTING CELLS…</div>
+</div>
+
+<div id="right">
+  <div class="sec">
+    <div class="st">COUNT VS MEASURED</div>
+    <div class="kv"><span>TL-cells inside <i class='bn' style='font-style:normal'>Earth</i></span><span id="k-n">—</span></div>
+    <div class="kv"><span>TL-cell edge</span><span id="k-h">—</span></div>
+    <div class="kv"><span>Mass</span><span id="k-m">—</span></div>
+    <div class="kv"><span>Mean density</span><span id="k-r">—</span></div>
+    <div class="kv"><span>Moment of inertia I/MR²</span><span id="k-i">—</span></div>
+    <div class="kv"><span>Surface gravity</span><span id="k-g">—</span></div>
+    <div class="kv"><span>Peak gravity</span><span id="k-gm">—</span></div>
+    <div class="kv"><span>Escape velocity</span><span id="k-v">—</span></div>
+    <div class="kv"><span>Core share of mass</span><span id="k-c">—</span></div>
+    <div class="note l-only" style="margin-top:6px">Teal numbers are within 1% of the measured value. The moment of inertia says how much weight sits near the middle: a uniform ball would read 0.400, and Earth reads 0.331 because its heavy iron core is packed in the center.</div>
+    <div class="note r-only" style="margin-top:6px">M = Σ ρᵢh³. ρ̄ = M / (4/3 πR³). I = Σ mᵢ(xᵢ² + yᵢ²). g(r) = G·M(&lt;r)/r². Measured: M = GM/G with GM = 3.986004418 × 10¹⁴ m³/s² and G = 6.67430 × 10⁻¹¹ m³/(kg·s²); R = 6371.0 km; I/MR² = 0.3307; surface GM/R² = 9.820 m/s².</div>
+  </div>
+  <div class="sec" id="ires" style="display:none">
+    <div class="st">IMPACT RESULT <small id="ir-k"></small></div>
+    <div class="kv"><span>Impactor mass</span><span id="ir-m">—</span></div>
+    <div class="kv"><span>Energy</span><span id="ir-e">—</span></div>
+    <div class="kv"><span>Seismic magnitude</span><span id="ir-s">—</span></div>
+    <div class="kv"><span>Transient crater</span><span id="ir-t">—</span></div>
+    <div class="kv"><span>Final crater</span><span id="ir-f">—</span></div>
+    <div class="kv"><span>Crater in TL-cells</span><span id="ir-c">—</span></div>
+    <div class="kv"><span>Specific energy Q_R / Q*_RD</span><span id="ir-q">—</span></div>
+    <div class="kv"><span>Largest remnant</span><span id="ir-l">—</span></div>
+    <div class="kv"><span>Cells removed · escaped · fell back · still aloft (bound)</span><span id="ir-x">—</span></div>
+    <div class="note" id="ir-n" style="margin-top:5px"></div>
+  </div>
+  <div class="sec" id="edits" style="display:none">
+    <div class="st">EDITS</div>
+    <div class="kv"><span>Cells dug</span><span id="e-d">0</span></div>
+    <div class="kv"><span>Cells placed</span><span id="e-p">0</span></div>
+    <div class="kv"><span>Cells painted</span><span id="e-a">0</span></div>
+    <div class="kv"><span>Mass change</span><span id="e-m">0</span></div>
+    <div class="kv"><span>Moment of inertia change</span><span id="e-i">0</span></div>
+    <div class="note" style="margin-top:5px">Edits are measured against the world as it was built. The comparison column above still shows the original target, so you can watch your digging pull the numbers away from it.</div>
+  </div>
+  <div class="sec">
+    <div class="st">THREE-BODY CHECK <small>moment of inertia · 128 cells across</small></div>
+    <table><thead><tr><th>Body</th><th>Counted</th><th>Measured</th><th>Off by</th></tr></thead><tbody id="tri"><tr><td colspan="4" style="color:var(--faint)">counting…</td></tr></tbody></table>
+    <div class="note l-only" style="margin-top:5px">The moment of inertia tells how much weight sits near the middle. It is never put in by hand: it comes out of the count, so matching it on three different worlds is a real test.</div>
+    <div class="note r-only" style="margin-top:5px">Earth uses PREM directly. For the Moon and Mars, the core and crust come from published seismic and gravity models, the mantle density is solved from the measured mass, and I/MR² is then predicted by the count. Measured values are C/MR²; normalization conventions (polar C against mean moment, mean against equatorial radius) differ by up to about 0.4%.</div>
+  </div>
+  <div class="sec">
+    <div class="st">LAYERS</div>
+    <table><thead><tr><th>Layer</th><th>Cells</th><th>Mass %</th><th>ρ g/cm³</th></tr></thead><tbody id="layers"></tbody></table>
+  </div>
+  <div class="sec">
+    <div class="st">GRAVITY INSIDE <span class="bn">EARTH</span></div>
+    <canvas class="chart" id="gchart"></canvas>
+    <div class="note" style="margin-top:4px">g from the cells against radius, center to surface. On Earth gravity rises going down and peaks at the core–mantle boundary; on the Moon and Mars, with lighter cores, it peaks at the surface. It falls to zero at the center on every world.</div>
+  </div>
+  <div class="sec">
+    <div class="st">CONVERGENCE <small>smaller cells → exact</small></div>
+    <table><thead><tr><th>Cells across</th><th>Edge km</th><th>Cells inside</th><th id="cv-h1">mean ρ</th><th id="cv-h2">vs measured</th></tr></thead><tbody id="conv"></tbody></table>
+  </div>
+  <div class="sec r-only">
+    <div class="st">BUILT FROM</div>
+    <ul class="src">
+      <li>Dziewonski &amp; Anderson (1981), "Preliminary Reference Earth Model," Physics of the Earth and Planetary Interiors 25: the density of every layer.</li>
+      <li>IERS Conventions (2010), Technical Note 36: GM⊕ = 3.986004418 × 10¹⁴ m³/s². CODATA 2018: G = 6.67430 × 10⁻¹¹. IUGG mean radius 6371.0 km.</li>
+      <li>Yoder (1995), "Astrometric and Geodetic Properties of Earth and the Solar System," AGU Reference Shelf 1: I/MR² = 0.3307.</li>
+      <li>Moon: Weber et al. (2011), "Seismic Detection of the Lunar Core," Science 331: core layers. Wieczorek et al. (2013), "The Crust of the Moon as Seen by GRAIL," Science 339: crust density 2.55 g/cm³, about 40 km thick. GM = 4902.80 km³/s² (GRAIL). I/MR² = 0.3929 ± 0.0009 (Williams et al. 1996, lunar laser ranging).</li>
+      <li>Mars: Stähler et al. (2021), "Seismic detection of the martian core," Science 373: core radius 1830 km, density 5.7–6.3 g/cm³. Knapmeyer-Endrun et al. (2021) and Khan et al. (2021), Science 373: crust and upper mantle. GM = 42828.37 km³/s²; I/MR² = 0.3644 ± 0.0005 (Konopliv et al. 2011, Icarus 211).</li>
+      <li>Collins, Melosh &amp; Marcus (2005), "Earth Impact Effects Program," Meteoritics &amp; Planetary Science 40: crater scaling, energy, seismic magnitude. Leinhardt &amp; Stewart (2012), "Collisions between gravity-dominated bodies I," Astrophysical Journal 745: disruption threshold and largest remnant. Housen &amp; Holsapple (2011), Icarus 211: ejecta speed scaling. Canup (2004), Icarus 168: the Moon-forming impact.</li>
+      <li>Laine &amp; Karras (2010), "Efficient Sparse Voxel Octrees": cell storage at scale. Barnes &amp; Hut (1986), Nature 324: gravity summed through the tree.</li>
+      <li>Lorensen &amp; Cline (1987), "Marching Cubes," SIGGRAPH: smooth surfaces from cells.</li>
+      <li>Epic Games, Unreal Engine: 1 unit = 1 cm; Large World Coordinates (UE5, double precision). Khronos glTF 2.0: 1 unit = 1 m.</li>
+      <li>three.js r128 (MIT): instanced rendering. Identity Physics Corpus on TL (DOI base 10.5281/zenodo.18719748).</li>
+    </ul>
+  </div>
+  <div class="foot">IMatter™ by AxiomForge™ · Applied Identity Physics™ · SNSFT Foundation<br>TL = 0.136899099984016 · HIGHTISTIC (Russell Vernon Trent III)</div>
+</div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// IMATTER CORE (no UI): TL-cell fill, counts, gravity
+// ════════════════════════════════════════════════════════════
+const IMatterCore=(()=>{
+  const G=6.67430e-11;
+  // colorblind-safe layer colors (Okabe–Ito), neighbors alternating light and dark
+  const CL={ic:'#F0E442',oc:'#D55E00',pm:'#CC79A7',lm:'#0072B2',tz:'#56B4E9',um:'#009E73',cr:'#E8C8DC',oce:'#1F3A93'};
+  const BODIES={
+    earth:{name:'Earth',R:6371.0,GM:3.986004418e14,imr2:0.3307,imrErr:null,fit:null,
+      layers:[{name:'Inner core',r0:0,r1:1221.5,col:CL.ic},{name:'Outer core',r0:1221.5,r1:3480,col:CL.oc},{name:'Lower mantle',r0:3480,r1:5701,col:CL.lm},
+        {name:'Transition zone',r0:5701,r1:6151,col:CL.tz},{name:'Upper mantle',r0:6151,r1:6346.6,col:CL.um},{name:'Crust',r0:6346.6,r1:6368,col:CL.cr},{name:'Ocean',r0:6368,r1:6371,col:CL.oce}],
+      seg:()=>{const x=r=>r/6371;return [[0,1221.5,r=>13.0885-8.8381*x(r)**2,0],[1221.5,3480,r=>12.5815-1.2638*x(r)-3.6426*x(r)**2-5.5281*x(r)**3,1],
+        [3480,5701,r=>7.9565-6.4761*x(r)+5.5283*x(r)**2-3.0807*x(r)**3,2],[5701,5771,r=>5.3197-1.4836*x(r),3],[5771,5971,r=>11.2494-8.0298*x(r),3],
+        [5971,6151,r=>7.1089-3.8045*x(r),3],[6151,6346.6,r=>2.6910+0.6924*x(r),4],[6346.6,6356,r=>2.9,5],[6356,6368,r=>2.6,5],[6368,6371.0001,r=>1.02,6]];}},
+    moon:{name:'Moon',R:1737.4,GM:4.9028e12,imr2:0.3929,imrErr:0.0009,fit:'uniform',
+      layers:[{name:'Inner core',r0:0,r1:240,col:CL.ic,d:8.0},{name:'Outer core',r0:240,r1:330,col:CL.oc,d:5.1},{name:'Partial melt',r0:330,r1:480,col:CL.pm,d:3.4},
+        {name:'Mantle',r0:480,r1:1697.4,col:CL.lm,fit:true},{name:'Crust',r0:1697.4,r1:1737.4001,col:CL.cr,d:2.55}]},
+    mars:{name:'Mars',R:3389.5,GM:4.282837e13,imr2:0.3644,imrErr:0.0005,fit:'gradient',top:3.35,
+      layers:[{name:'Core',r0:0,r1:1830,col:CL.oc,d:6.0,param:'core'},{name:'Mantle',r0:1830,r1:3349.5,col:CL.lm,fit:true},{name:'Crust',r0:3349.5,r1:3389.5001,col:CL.cr,d:2.9}]}
+  };
+  const MATS={core:{name:'Iron-nickel core',d:11.0,col:'#D55E00'},iron:{name:'Iron',d:7.87,col:'#9A9AA8'},mantle:{name:'Mantle rock',d:3.30,col:'#0072B2'},
+    basalt:{name:'Basalt',d:3.00,col:'#56B4E9'},granite:{name:'Granite',d:2.70,col:'#E8C8DC'},water:{name:'Water',d:1.00,col:'#1F3A93'},ice:{name:'Ice',d:0.92,col:'#BFE8FF'},custom:{name:'Custom',d:5.0,col:'#009E73'}};
+  const C={G,BODIES,MATS,key:null,R:0,LAYERS:[],MEAS:{},SEG:[],fitText:'',params:{core:6.0},build:{R:5000,layers:[{mat:'core',top:45,d:11.0},{mat:'mantle',top:96,d:3.3},{mat:'granite',top:100,d:2.7}]}};
+  const vol=(a,b)=>4/3*Math.PI*(Math.pow(b*1e3,3)-Math.pow(a*1e3,3));   // m³
+  C.use=key=>{
+    if(key==='custom'){ // exact values from the layer formulas: M = Σ ρ·4/3·π(r1³−r0³), I = Σ ρ·8/15·π(r1⁵−r0⁵)
+      const B=C.build,R=B.R;let r0=0,M=0,I=0;C.LAYERS=[];C.SEG=[];
+      B.layers.forEach((L,k)=>{const r1=k===B.layers.length-1?R:Math.max(r0+1,Math.min(R,L.top/100*R)),d=L.mat==='custom'?L.d:MATS[L.mat].d,a=r0*1e3,b=r1*1e3;
+        M+=d*1e3*4/3*Math.PI*(b**3-a**3);I+=d*1e3*8/15*Math.PI*(b**5-a**5);C.LAYERS.push({name:(L.mat==='custom'?'Custom '+d.toFixed(2):MATS[L.mat].name),r0,r1,col:MATS[L.mat].col});
+        C.SEG.push([r0,k===B.layers.length-1?R+1e-6:r1,()=>d,k]);r0=r1;});
+      C.key='custom';C.R=R;C.MEAS={mass:M,rho:M/vol(0,R)/1e3,imr2:I/(M*(R*1e3)**2),imrErr:null,g:G*M/(R*1e3)**2,fit:false,formula:true,name:'Custom world'};
+      C.fitText='';return;}
+    const b=BODIES[key];C.key=key;C.R=b.R;C.LAYERS=b.layers.map(L=>({name:L.name,r0:L.r0,r1:Math.min(L.r1,b.R),col:L.col}));
+    const M=b.GM/G;C.MEAS={mass:M,rho:M/vol(0,b.R)/1e3,imr2:b.imr2,imrErr:b.imrErr,g:b.GM/Math.pow(b.R*1e3,2),fit:!!b.fit,name:b.name};
+    if(!b.fit){C.SEG=b.seg();C.fitText='';return;}
+    if(key==='mars')b.layers[0].d=C.params.core;
+    const fixed=b.layers.filter(L=>!L.fit).reduce((m,L)=>m+L.d*1e3*vol(L.r0,Math.min(L.r1,b.R)),0),F=b.layers.find(L=>L.fit),li=b.layers.indexOf(F);
+    C.SEG=b.layers.filter(L=>!L.fit).map(L=>[L.r0,L.r1,()=>L.d,b.layers.indexOf(L)]);
+    if(b.fit==='uniform'){const d=(M-fixed)/vol(F.r0,F.r1)/1e3;C.SEG.push([F.r0,F.r1,()=>d,li]);C.fitText=`mantle density solved from the measured mass: ${d.toFixed(3)} g/cm³`;}
+    else{ // mantle density rises linearly with depth from a fixed top value; the bottom value is solved from the measured mass
+      const a=F.r0*1e3,c=F.r1*1e3,W=4*Math.PI/(c-a)*((c*Math.pow(c,3)/3-Math.pow(c,4)/4)-(c*Math.pow(a,3)/3-Math.pow(a,4)/4));
+      const top=b.top,bot=top+((M-fixed)/1e3-top*vol(F.r0,F.r1))/W;
+      C.SEG.push([F.r0,F.r1,r=>top+(bot-top)*(F.r1-r)/(F.r1-F.r0),li]);C.fitText=`mantle density solved from the measured mass: ${top.toFixed(2)} at the top rising to ${bot.toFixed(3)} g/cm³ at the core`;}
+    C.SEG.sort((p,q)=>p[0]-q[0]);
+  };
+  C.sample=rkm=>{for(const s of C.SEG)if(rkm>=s[0]&&rkm<s[1])return [s[2](rkm),s[3]];return [0,-1];};
+  C.fill=n=>{const R=C.R,h=2*R/n,N3=n*n*n,dens=new Float32Array(N3),lay=new Int8Array(N3).fill(-1);
+    for(let k=0;k<n;k++){const z=(k+0.5)*h-R;for(let j=0;j<n;j++){const y=(j+0.5)*h-R;for(let i=0;i<n;i++){const x=(i+0.5)*h-R,r=Math.sqrt(x*x+y*y+z*z);
+      if(r<=R){const [d,l]=C.sample(r),o=(k*n+j)*n+i;dens[o]=d;lay[o]=l;}}}}
+    return {n,h,dens,lay};};
+  C.count=g=>{
+    const R=C.R,{n,h,dens,lay}=g,hm=h*1e3,v=hm*hm*hm*1e3;let M=0,I=0,cells=0;const L=C.LAYERS.map(()=>({cells:0,mass:0})),nb=200,shell=new Float64Array(nb);
+    for(let k=0;k<n;k++){const z=((k+0.5)*h-R)*1e3;for(let j=0;j<n;j++){const y=((j+0.5)*h-R)*1e3;for(let i=0;i<n;i++){const o=(k*n+j)*n+i;if(lay[o]<0)continue;
+      const x=((i+0.5)*h-R)*1e3,m=dens[o]*v;M+=m;I+=m*(x*x+y*y);cells++;L[lay[o]].cells++;L[lay[o]].mass+=m;shell[Math.min(nb-1,Math.floor(Math.sqrt(x*x+y*y+z*z)/1e3/R*nb))]+=m;}}}
+    const gprof=[];let acc=0;for(let b=0;b<nb;b++){acc+=shell[b];const r=(b+1)/nb*R*1e3;gprof.push([r/1e3,G*acc/(r*r)]);}
+    let gmax=0,rmax=0;for(const [r,gg] of gprof)if(gg>gmax){gmax=gg;rmax=r;}
+    const coreMass=C.LAYERS.reduce((m,Ly,k)=>m+(/core/i.test(Ly.name)?L[k].mass:0),0);
+    return {cells,M,rho:M/vol(0,R)/1e3,imr2:I/(M*Math.pow(R*1e3,2)),g:G*M/Math.pow(R*1e3,2),gmax,rmax,core:coreMass/M,L,gprof};};
+  C.countLite=n=>{const R=C.R,h=2*R/n,hm=h*1e3,v=hm*hm*hm*1e3;let M=0,I=0,c=0;
+    for(let k=0;k<n;k++){const z=(k+0.5)*h-R;for(let j=0;j<n;j++){const y=(j+0.5)*h-R,yz=y*y+z*z;if(yz>R*R)continue;for(let i=0;i<n;i++){const x=(i+0.5)*h-R,r=Math.sqrt(x*x+yz);
+      if(r<=R){const m=C.sample(r)[0]*v;M+=m;I+=m*(x*x+y*y)*1e6;c++;}}}}
+    return {n,h,cells:c,rho:M/vol(0,R)/1e3,imr2:I/(M*Math.pow(R*1e3,2))};};
+  C.use('earth');return C;
+})();
+
+// ════════════════════════════════════════════════════════════
+// UI
+// ════════════════════════════════════════════════════════════
+const $=id=>document.getElementById(id),C=IMatterCore;
+const NS=[32,64,96,128,160,168];
+const S={ni:2,cut:'wedge',depth:0,col:'layer',rot:true};
+let grid=null,stats=null;
+const hx=h=>[1,3,5].map(k=>parseInt(h.slice(k,k+2),16)/255);
+// density colors: luminance rises with density (dark violet → violet → gold → pale gold)
+const STOPS=[[1.0,hx('#1c1440')],[3.3,hx('#4a32b0')],[5.6,hx('#7b4fff')],[9.9,hx('#f0c060')],[13.1,hx('#ffe9a8')]];
+function densCol(d){let s=0;while(s<STOPS.length-2&&d>STOPS[s+1][0])s++;const a=STOPS[s],b=STOPS[s+1],u=Math.max(0,Math.min(1,(d-a[0])/(b[0]-a[0])));return [0,1,2].map(c=>a[1][c]*(1-u)+b[1][c]*u);}
+$('lg-b').style.background='linear-gradient(90deg,'+STOPS.map(s=>`rgb(${s[1].map(v=>v*255|0)}) ${((s[0]-1)/12.1*100).toFixed(0)}%`).join(',')+')';
+
+// three.js scene
+let R3,scene,cam,inst=null,orbit={th:-0.9,ph:1.2,d:3.1,t:[0,0,0]},fly={pos:null,yaw:0,pitch:0},keys=new Set();S.cam='orbit';const gl3d=(()=>{try{R3=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,preserveDrawingBuffer:true});return true;}catch(e){return false;}})();
+if(gl3d){R3.setPixelRatio(Math.min(devicePixelRatio||1,2));scene=new THREE.Scene();cam=new THREE.PerspectiveCamera(38,1,0.01,50);cam.up.set(0,0,1);
+  scene.add(new THREE.HemisphereLight(0xffffff,0x202034,0.75));const dl=new THREE.DirectionalLight(0xffffff,0.85);dl.position.set(-2,-3,4);scene.add(dl);}
+function removed(x,y,z){ // x,y,z in units of R
+  if(S.cut==='wedge')return x>0&&y<0;if(S.cut==='half')return y<0;if(S.cut==='octant')return x>0&&y<0&&z>0;return false;}
+let visIdx=[];
+function buildCells(){
+  if(!gl3d||!grid)return;if(inst){scene.remove(inst);inst.geometry.dispose();inst.material.dispose();inst=null;}
+  const {n,h,dens,lay}=grid,R=C.R,rmax=R-S.depth,keep=(i,j,k)=>{if(i<0||j<0||k<0||i>=n||j>=n||k>=n)return false;const o=(k*n+j)*n+i;if(lay[o]<0)return false;
+    const x=(i+0.5)*h-R,y=(j+0.5)*h-R,z=(k+0.5)*h-R;if(S.depth>0&&Math.sqrt(x*x+y*y+z*z)>rmax)return false;return !removed(x,y,z);};
+  visIdx=[];
+  for(let k=0;k<n;k++)for(let j=0;j<n;j++)for(let i=0;i<n;i++){if(!keep(i,j,k))continue;
+    if(S.all||!keep(i+1,j,k)||!keep(i-1,j,k)||!keep(i,j+1,k)||!keep(i,j-1,k)||!keep(i,j,k+1)||!keep(i,j,k-1))visIdx.push((k*n+j)*n+i);}
+  const s=1/R,box=new THREE.BoxGeometry(h*s*0.96,h*s*0.96,h*s*0.96),mat=S.all?new THREE.MeshLambertMaterial():new THREE.MeshStandardMaterial({roughness:0.75,metalness:0});cam.near=0.002;cam.updateProjectionMatrix();
+  inst=new THREE.InstancedMesh(box,mat,visIdx.length);const m=new THREE.Matrix4(),c=new THREE.Color();
+  visIdx.forEach((o,q)=>{const i=o%n,j=Math.floor(o/n)%n,k=Math.floor(o/(n*n));m.makeTranslation(((i+0.5)*h-R)*s,((j+0.5)*h-R)*s,((k+0.5)*h-R)*s);inst.setMatrixAt(q,m);
+    const col=S.col==='dens'?densCol(dens[o]):hx(C.LAYERS[lay[o]].col);c.setRGB(col[0],col[1],col[2]);inst.setColorAt(q,c);});
+  inst.instanceMatrix.needsUpdate=true;if(inst.instanceColor)inst.instanceColor.needsUpdate=true;scene.add(inst);
+  S.drawn=visIdx.length;$('b-s').textContent=`${visIdx.length.toLocaleString()} ${S.all?'cells drawn (all)':'exposed cells drawn'} · ${(visIdx.length*12/1e6).toFixed(1)} M triangles`;
+}
+function fitD(){return 3.1/Math.min(1,cam?cam.aspect:1);}
+function resize(){const v=$('view'),W=v.clientWidth,H=v.clientHeight;if(gl3d){R3.setSize(W,H,false);cam.aspect=W/Math.max(1,H);cam.updateProjectionMatrix();if(orbit.t[0]===0&&orbit.t[1]===0&&orbit.t[2]===0&&!resize.done){orbit.d=Math.max(orbit.d,fitD());resize.done=true;}}}
+addEventListener('resize',resize);
+let dragging=false;
+let fpsN=0,fpsT=performance.now();
+function loop(){fpsN++;const nowT=performance.now();if(nowT-fpsT>=1000){S.fps=fpsN*1000/(nowT-fpsT);fpsN=0;fpsT=nowT;$('fps').textContent=S.fps.toFixed(0)+' fps';$('fps').style.color=S.fps>=50?'#00ffc8':S.fps>=25?'#f0c060':'#ff3a3a';}
+  if(gl3d){const dtF=Math.min(0.05,(nowT-(loop.l||nowT))/1000);loop.l=nowT;
+    for(let i=shots.length-1;i>=0;i--){const s0=shots[i],t=Math.min(1,(nowT-s0.t0)/1100);s0.mesh.position.lerpVectors(s0.start,s0.end,t*t);if(t>=1){scene.remove(s0.mesh);shots.splice(i,1);doImpact(s0.n,s0.dir,s0.imp);}}
+    for(let i=swarms.length-1;i>=0;i--)if(stepParts(swarms[i],dtF))swarms.splice(i,1);
+    if(S.cam==='fly'){flyStep(dtF);const f=flyDir();cam.position.copy(fly.pos);cam.lookAt(fly.pos.clone().add(f));}
+    else{if(S.rot&&!dragging)orbit.th+=0.0025;const {th,ph,d,t}=orbit;cam.position.set(t[0]+d*Math.sin(ph)*Math.cos(th),t[1]+d*Math.sin(ph)*Math.sin(th),t[2]+d*Math.cos(ph));cam.lookAt(t[0],t[1],t[2]);}
+    R3.render(scene,cam);}requestAnimationFrame(loop);}
+// orbit, pinch, probe
+const ptr=new Map();let pinch=null,last=null;const RC=gl3d?new THREE.Raycaster():null;
+$('gl').addEventListener('contextmenu',e=>e.preventDefault());
+let stroke=false,orbitBtn=false;
+function hitCell(e){if(!inst)return null;const b=$('gl').getBoundingClientRect();RC.setFromCamera(new THREE.Vector2((e.clientX-b.left)/b.width*2-1,-(e.clientY-b.top)/b.height*2+1),cam);const h=RC.intersectObject(inst);return h.length&&h[0].instanceId!=null?h[0]:null;}
+$('gl').addEventListener('pointerdown',e=>{$('gl').setPointerCapture(e.pointerId);ptr.set(e.pointerId,[e.clientX,e.clientY]);dragging=true;last=[e.clientX,e.clientY];orbitBtn=e.button===2||e.button===1;
+  if(ptr.size===2){if(stroke){stroke=false;endStroke();}const [a,b]=[...ptr.values()];pinch={d0:Math.hypot(a[0]-b[0],a[1]-b[1]),od:orbit.d,m:[(a[0]+b[0])/2,(a[1]+b[1])/2],th:orbit.th,ph:orbit.ph,yaw:fly.yaw,pitch:fly.pitch,dl:Math.hypot(a[0]-b[0],a[1]-b[1])};return;}
+  if(S.tool==='aim'&&!orbitBtn){const h=hitCell(e);if(h){setAim(h);setTool('orbit');$('iaim').classList.remove('on');}return;}
+  if(S.tool!=='orbit'&&!orbitBtn){const h=hitCell(e);if(h){pushUndo();stroke=true;applyBrush(h);}}});
+$('gl').addEventListener('pointermove',e=>{
+  if(ptr.has(e.pointerId))ptr.set(e.pointerId,[e.clientX,e.clientY]);
+  if(pinch&&ptr.size>=2&&S.cam==='fly'){const [a,b]=[...ptr.values()],dd=Math.hypot(a[0]-b[0],a[1]-b[1]),m=[(a[0]+b[0])/2,(a[1]+b[1])/2];fly.pos.add(flyDir().multiplyScalar((dd-pinch.dl)*0.004));pinch.dl=dd;
+    fly.yaw=pinch.yaw-(m[0]-pinch.m[0])*0.004;fly.pitch=Math.max(-1.5,Math.min(1.5,pinch.pitch-(m[1]-pinch.m[1])*0.004));return;}
+  if(pinch&&ptr.size>=2){const [a,b]=[...ptr.values()],m=[(a[0]+b[0])/2,(a[1]+b[1])/2];orbit.d=Math.min(12,Math.max(0.02,pinch.od*pinch.d0/Math.max(1,Math.hypot(a[0]-b[0],a[1]-b[1]))));
+    orbit.th=pinch.th-(m[0]-pinch.m[0])*0.008;orbit.ph=Math.min(3.1,Math.max(0.05,pinch.ph-(m[1]-pinch.m[1])*0.006));return;}
+  if(stroke&&ptr.size===1){const h=hitCell(e);if(h)applyBrush(h);probe(e);return;}
+  if(dragging&&last&&ptr.size===1&&(S.tool==='orbit'||orbitBtn)&&S.cam==='fly'){fly.yaw-=(e.clientX-last[0])*0.004;fly.pitch=Math.max(-1.5,Math.min(1.5,fly.pitch-(e.clientY-last[1])*0.004));last=[e.clientX,e.clientY];}
+  else if(dragging&&last&&ptr.size===1&&(S.tool==='orbit'||orbitBtn)){orbit.th-=(e.clientX-last[0])*0.008;orbit.ph=Math.min(3.1,Math.max(0.05,orbit.ph-(e.clientY-last[1])*0.006));last=[e.clientX,e.clientY];}
+  probe(e);});
+const up=e=>{if(stroke&&ptr.size<=1){stroke=false;endStroke();}ptr.delete(e.pointerId);if(ptr.size<2)pinch=null;if(!ptr.size){dragging=false;last=null;}};
+$('gl').addEventListener('pointerup',up);$('gl').addEventListener('pointercancel',up);$('gl').addEventListener('pointerleave',()=>{$('probe').style.display='none';});
+$('gl').addEventListener('wheel',e=>{e.preventDefault();if(S.cam==='fly'){fly.pos.add(flyDir().multiplyScalar(-e.deltaY*0.0012*(keys.has('shift')?3:1)));return;}orbit.d=Math.min(12,Math.max(0.02,orbit.d*Math.exp(e.deltaY*0.001)));},{passive:false});
+function probe(e){
+  if(!inst)return;const b=$('gl').getBoundingClientRect();RC.setFromCamera(new THREE.Vector2((e.clientX-b.left)/b.width*2-1,-(e.clientY-b.top)/b.height*2+1),cam);
+  const h=RC.intersectObject(inst);const P=$('probe');if(!h.length||h[0].instanceId==null){P.style.display='none';return;}
+  if(grid.lay[visIdx[h[0].instanceId]]<0||!C.LAYERS[grid.lay[visIdx[h[0].instanceId]]]){P.style.display='none';return;}
+  const o=visIdx[h[0].instanceId],{n}=grid,i=o%n,j=Math.floor(o/n)%n,k=Math.floor(o/(n*n)),R=C.R,x=(i+0.5)*grid.h-R,y=(j+0.5)*grid.h-R,z=(k+0.5)*grid.h-R,r=Math.sqrt(x*x+y*y+z*z);
+  P.innerHTML=`<b style="color:${C.LAYERS[grid.lay[o]].col}">${C.LAYERS[grid.lay[o]].name}</b><br>depth ${(R-r).toFixed(0)} km · radius ${r.toFixed(0)} km<br>density ${grid.dens[o].toFixed(3)} g/cm³<br>cell mass ${(grid.dens[o]*Math.pow(grid.h*1e3,3)*1e3).toExponential(3)} kg`;
+  P.style.display='block';P.style.left=Math.min(b.width-210,e.clientX-b.left+14)+'px';P.style.top=(e.clientY-b.top+14)+'px';}
+
+// readouts
+const pctErr=(a,b)=>((a/b-1)*100);
+function mark(el,val,err,fmt){$(el).innerHTML=`<span class="${Math.abs(err)<1?'ok':''}">${fmt}</span> <span style="color:var(--faint)">(${err>=0?'+':''}${err.toFixed(2)}%)</span>`;}
+function readouts(){
+  const s=stats,M=C.MEAS,h=grid.h,fit=M.fit,tag=' <span style="color:var(--faint)">· set by fit</span>';
+  $('k-n').textContent=s.cells.toLocaleString();
+  $('k-h').textContent=`${h.toFixed(1)} km = ${(h*1e5).toExponential(3)} cm`;
+  mark('k-m',s.M,pctErr(s.M,M.mass),`${s.M.toExponential(4)} kg`);if(fit)$('k-m').innerHTML+=tag;
+  mark('k-r',s.rho,pctErr(s.rho,M.rho),`${s.rho.toFixed(4)} g/cm³`);if(fit)$('k-r').innerHTML+=tag;
+  mark('k-i',s.imr2,pctErr(s.imr2,M.imr2),s.imr2.toFixed(4));$('k-i').innerHTML+=` <span style="color:var(--faint)">vs ${M.formula?M.imr2.toFixed(4)+' exact':M.imr2+(M.imrErr?' ± '+M.imrErr:'')}</span>`;
+  mark('k-g',s.g,pctErr(s.g,M.g),`${s.g.toFixed(3)} m/s²`);if(fit)$('k-g').innerHTML+=tag;
+  $('k-gm').textContent=`${s.gmax.toFixed(2)} m/s² at ${s.rmax.toFixed(0)} km radius`;
+  $('k-c').textContent=(s.core*100).toFixed(1)+'%';
+  {const ve=Math.sqrt(2*C.G*s.M/(C.R*1e3))/1e3,vm=Math.sqrt(2*C.G*M.mass/(C.R*1e3))/1e3;mark('k-v',ve,pctErr(ve,vm),`${ve.toFixed(2)} km/s`);if(fit)$('k-v').innerHTML+=tag;}
+  $('layers').innerHTML=C.LAYERS.map((L,k)=>{const q=s.L[k],mr=(L.r0+L.r1)/2,d=L.mat?C.MATS[L.mat].d:C.sample(Math.min(mr,C.R*0.99999))[0];
+    return `<tr><td><span class="sw" style="background:${L.col}"></span>${L.name}</td><td>${q.cells.toLocaleString()}</td><td>${(q.mass/s.M*100).toFixed(2)}</td><td>${d.toFixed(2)}</td></tr>`;}).join('');
+  const ei=pctErr(s.imr2,M.imr2),er=pctErr(s.rho,M.rho);
+  $('b-m').textContent=fit?`I/MR² ${s.imr2.toFixed(4)} · ${ei>=0?'+':''}${ei.toFixed(2)}%`:`mean ρ ${s.rho.toFixed(3)} · ${er>=0?'+':''}${er.toFixed(2)}%`;
+  $('caption').innerHTML=`<b>${M.name}</b> · ${s.cells.toLocaleString()} TL-cells, each ${h.toFixed(0)} km on a side (${(h*1e5).toExponential(2)} cm in Unreal units). Counted mass ${s.M.toExponential(3)} kg against the ${M.formula?'exact':'measured'} ${M.mass.toExponential(3)} kg; moment of inertia ${s.imr2.toFixed(4)} against ${M.formula?M.imr2.toFixed(4)+' exact':M.imr2}; core ${(s.core*100).toFixed(1)}% of the mass.`;
+  $('fit-note').innerHTML=M.formula?`<b>Custom world:</b> the comparison column is the exact answer from the layer formulas, so the count is tested against pure math.`:C.fitText?`<b>${M.name}:</b> ${C.fitText}. The moment of inertia is then predicted by the count.`:`<b>${M.name}:</b> every layer from PREM; mass, density, moment of inertia and gravity are all predicted by the count.`;
+  drawG();
+}
+function drawG(){
+  const c=$('gchart'),r=devicePixelRatio||1,W=c.clientWidth,H=c.clientHeight;c.width=W*r;c.height=H*r;const x=c.getContext('2d');x.setTransform(r,0,0,r,0,0);x.clearRect(0,0,W,H);
+  const P=stats.gprof,gm=Math.max(...P.map(q=>q[1]))*1.15,px=v=>28+v/C.R*(W-36),py=v=>H-14-v/gm*(H-22);
+  x.strokeStyle='rgba(232,232,240,.15)';x.lineWidth=1;const tick=gm>8?5:gm>3?1:0.5;for(let v=0;v<=gm;v+=tick){x.fillStyle='rgba(232,232,240,.5)';x.font='9px "Space Mono", monospace';x.fillText(v.toFixed(tick<1?1:0),6,py(v)+3);x.beginPath();x.moveTo(28,py(v));x.lineTo(W-8,py(v));x.stroke();}
+  x.fillStyle='rgba(232,232,240,.5)';x.font='9px "Space Mono", monospace';
+  for(const L of C.LAYERS.filter(L=>L.r1<C.R*0.97)){x.strokeStyle='rgba(240,192,96,.25)';x.setLineDash([3,3]);x.beginPath();x.moveTo(px(L.r1),6);x.lineTo(px(L.r1),H-14);x.stroke();}x.setLineDash([]);
+  x.fillText('center',28,H-2);x.fillText('surface',W-48,H-2);const cr=C.LAYERS.filter(L=>/core/i.test(L.name)).reduce((m,L)=>Math.max(m,L.r1),0);if(cr)x.fillText('CMB',px(cr)-10,H-2);
+  x.strokeStyle='#00ffc8';x.lineWidth=2;x.beginPath();P.forEach(([rr,g],i)=>{i?x.lineTo(px(rr),py(g)):x.moveTo(px(rr),py(g));});x.stroke();
+  x.fillStyle='#f0c060';x.beginPath();x.arc(px(stats.rmax),py(stats.gmax),3,0,6.283);x.fill();
+}
+async function convergence(){
+  const rows=[];$('conv').innerHTML='<tr><td colspan="5" style="color:var(--faint)">counting…</td></tr>';
+  const key0=C.key;for(const n of [32,64,128,256]){if(C.key!==key0)return;await new Promise(r=>setTimeout(r,10));const c=C.countLite(n);rows.push(c);
+    $('conv').innerHTML=rows.map(q=>{const e=C.MEAS.fit?pctErr(q.imr2,C.MEAS.imr2):pctErr(q.rho,C.MEAS.rho);return `<tr><td>${q.n}</td><td>${q.h.toFixed(1)}</td><td>${q.cells.toLocaleString()}</td><td>${(C.MEAS.fit?q.imr2:q.rho).toFixed(4)}</td><td class="${Math.abs(e)<0.1?'ok':''}">${e>=0?'+':''}${e.toFixed(2)}%</td></tr>`;}).join('');}
+}
+function rebuild(){clearSim();
+  $('busy').style.display='block';
+  setTimeout(()=>{if(C.key)C.use(C.key);const n=NS[S.ni];grid=C.fill(n);stats=C.count(grid);startEdits();buildCells();readouts();legend();$('busy').style.display='none';$('cv-h1').textContent=C.MEAS.fit?'I/MR²':'mean ρ';},20);
+}
+function noteN(){const n=NS[S.ni],h=2*C.R/n;$('d').max=Math.floor(C.R*0.95/50)*50;$('n-v').textContent=n;$('n-note').textContent=`${n}³ grid · each TL-cell ${h.toFixed(0)} km on a side`;}
+$('n').oninput=e=>{S.ni=+e.target.value;noteN();};$('n').onchange=rebuild;
+$('d').oninput=e=>{S.depth=+e.target.value;$('d-v').textContent=S.depth+' km';cancelAnimationFrame(S.raf);S.raf=requestAnimationFrame(buildCells);};
+function seg(id,key,fn){$(id).querySelectorAll('.btn').forEach(b=>b.onclick=()=>{S[key]=b.dataset.v;$(id).querySelectorAll('.btn').forEach(o=>o.classList.toggle('on',o===b));fn();});}
+
+
+// ════════════════════════════════════════════════════════════
+// TOOLS: dig, place, paint, with live recount and undo
+// ════════════════════════════════════════════════════════════
+S.tool='orbit';S.bs=2;S.mat='mantle';S.ed=null;const undoStack=[];
+$('mat').innerHTML=Object.entries(C.MATS).filter(([m])=>m!=='custom').map(([m,v])=>`<option value="${m}" ${m===S.mat?'selected':''}>${v.name} · ${v.d.toFixed(2)} g/cm³</option>`).join('');
+$('mat').onchange=e=>S.mat=e.target.value;
+function setTool(t){S.tool=t;$('tool').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===t));$('gl').style.cursor=t==='orbit'?'grab':'crosshair';if(t!=='orbit')S.rot=false,$('rot').classList.remove('on');}
+$('tool').querySelectorAll('.btn').forEach(b=>b.onclick=()=>setTool(b.dataset.v));
+$('bsz').oninput=e=>{S.bs=+e.target.value;$('bs-v').textContent=S.bs+(S.bs===1?' cell':' cells');};
+function startEdits(){S.ed={dug:0,placed:0,painted:0,M0:stats.M,I0:stats.imr2*stats.M};$('edits').style.display='none';undoStack.length=0;}
+function matLayer(m){let k=C.LAYERS.findIndex(L=>L.mat===m);if(k<0){C.LAYERS.push({name:C.MATS[m].name+' (placed)',r0:0,r1:0,col:C.MATS[m].col,mat:m});k=C.LAYERS.length-1;}return k;}
+function cellAt(h){const o=visIdx[h.instanceId];if(o==null)return null;const n=grid.n;return [o%n,Math.floor(o/n)%n,Math.floor(o/(n*n))];}
+function applyBrush(h){
+  const c=cellAt(h);if(!c)return;const {n,dens,lay}=grid;let [ci,cj,ck]=c;
+  if(S.tool==='place'){const nm=h.face.normal;const ax=[Math.abs(nm.x),Math.abs(nm.y),Math.abs(nm.z)],m=Math.max(...ax),d=ax.indexOf(m),sg=Math.sign([nm.x,nm.y,nm.z][d]);if(d===0)ci+=sg;else if(d===1)cj+=sg;else ck+=sg;}
+  const B=S.bs,B2=(B+0.5)*(B+0.5),li=S.tool==='dig'?-1:matLayer(S.mat),dn=S.tool==='dig'?0:C.MATS[S.mat].d;let ch=0;
+  for(let k=ck-B;k<=ck+B;k++)for(let j=cj-B;j<=cj+B;j++)for(let i=ci-B;i<=ci+B;i++){
+    if(i<0||j<0||k<0||i>=n||j>=n||k>=n)continue;if((i-ci)**2+(j-cj)**2+(k-ck)**2>B2)continue;const o=(k*n+j)*n+i;
+    if(S.tool==='dig'&&lay[o]>=0){lay[o]=-1;dens[o]=0;S.ed.dug++;ch++;}
+    else if(S.tool==='place'&&lay[o]<0){lay[o]=li;dens[o]=dn;S.ed.placed++;ch++;}
+    else if(S.tool==='paint'&&lay[o]>=0&&lay[o]!==li){lay[o]=li;dens[o]=dn;S.ed.painted++;ch++;}}
+  if(ch)scheduleBuild();
+}
+let bT=0;function scheduleBuild(){if(bT)return;bT=setTimeout(()=>{bT=0;buildCells();},90);}
+function endStroke(){clearTimeout(bT);bT=0;buildCells();stats=C.count(grid);readouts();legend();showEdits();}
+function showEdits(){const E=S.ed;if(!E)return;const any=E.dug+E.placed+E.painted>0;$('edits').style.display=any?'block':'none';
+  $('e-d').textContent=E.dug.toLocaleString();$('e-p').textContent=E.placed.toLocaleString();$('e-a').textContent=E.painted.toLocaleString();
+  const dm=stats.M-E.M0,di=stats.imr2*stats.M-E.I0;$('e-m').textContent=`${dm>=0?'+':''}${dm.toExponential(3)} kg (${dm>=0?'+':''}${(dm/E.M0*100).toFixed(3)}%)`;
+  $('e-i').textContent=`${di>=0?'+':''}${(di/E.I0*100).toFixed(3)}%`;}
+function pushUndo(){undoStack.push({loose:grid.loose?grid.loose.slice():null,dens:grid.dens.slice(),lay:grid.lay.slice(),ed:{...S.ed},layers:C.LAYERS.map(L=>({...L}))});if(undoStack.length>12)undoStack.shift();}
+function undo(){const u=undoStack.pop();if(!u)return;clearSim();grid.dens=u.dens;grid.lay=u.lay;grid.loose=u.loose;S.ed=u.ed;C.LAYERS=u.layers;endStroke();}
+$('undo').onclick=undo;$('reset').onclick=()=>{rebuild();};
+addEventListener('keydown',e=>{if(e.target.tagName==='SELECT'||e.target.tagName==='INPUT'&&e.target.type!=='range')return;const k=e.key.toLowerCase();
+  if((e.ctrlKey||e.metaKey)&&k==='z'){e.preventDefault();undo();return;}if(e.ctrlKey||e.metaKey)return;
+  const m={o:'orbit',d:'dig',p:'place',a:'paint'};if(m[k])setTool(m[k]);
+  if(k==='['||k===']'){S.bs=Math.max(0,Math.min(10,S.bs+(k===']'?1:-1)));$('bsz').value=S.bs;$('bs-v').textContent=S.bs+(S.bs===1?' cell':' cells');}});
+
+// ════════════════════════════════════════════════════════════
+// IMPACTS: crater scaling, disruption law, ballistic ejecta
+// ════════════════════════════════════════════════════════════
+const IMAT={iron:7.87,rock:2.70,ice:0.92};S.imp={mat:'iron',v:20,ang:45,dia:0};let aim=null,shots=[],swarms=[];
+const diaFromSlider=v=>Math.pow(10,v/100);   // 10 m … 7,900 km
+function fmtLen(m){return m<1000?m.toFixed(0)+' m':m<1e6?(m/1e3).toFixed(m<1e4?2:1)+' km':(m/1e3).toLocaleString(undefined,{maximumFractionDigits:0})+' km';}
+function impUI(){S.imp.dia=diaFromSlider(+$('idia').value);$('id-v').textContent=fmtLen(S.imp.dia);S.imp.v=+$('ispd').value;$('iv-v').textContent=S.imp.v+' km/s';S.imp.ang=+$('iang').value;$('ia-v').textContent=S.imp.ang+'°';}
+['idia','ispd','iang'].forEach(id=>$(id).oninput=impUI);
+$('imat').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{S.imp.mat=b.dataset.v;$('imat').querySelectorAll('.btn').forEach(o=>o.classList.toggle('on',o===b));});
+const IPRE={meteor:{body:'earth',dia:35,mat:'iron',v:12.8,ang:45,note:'Meteor Crater, Arizona: measured rim diameter 1.19 km; impactor estimates 30–50 m of iron.'},
+  chicx:{body:'earth',dia:14000,mat:'rock',v:20,ang:45,note:'Chicxulub, Mexico: measured diameter about 150–200 km; impactor estimates 10–15 km.'},
+  theia:{body:'earth',dia:6.78e6,mat:'rock',v:10,ang:45,note:'Theia: a Mars-sized body striking the early Earth near escape speed, the leading explanation for the Moon. The Moon holds 1.2% of Earth’s mass.'}};
+$('ipre').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{const P=IPRE[b.dataset.v];S.imp.note=P.note;
+  $('idia').value=Math.round(Math.log10(P.dia)*100);$('ispd').value=P.v;$('iang').value=P.ang;S.imp.mat=P.mat;$('imat').querySelectorAll('.btn').forEach(o=>o.classList.toggle('on',o.dataset.v===P.mat));impUI();S.imp.v=P.v;$('iv-v').textContent=P.v+' km/s';
+  if(C.key!==P.body){$('body').querySelector(`[data-v="${P.body}"]`).click();}});
+impUI();
+// aim marker
+let reticle=null;if(gl3d){reticle=new THREE.Mesh(new THREE.RingGeometry(0.035,0.05,40),new THREE.MeshBasicMaterial({color:0xff3a3a,depthTest:false,transparent:true,side:THREE.DoubleSide}));reticle.renderOrder=9;reticle.visible=false;scene.add(reticle);}
+function setAim(h){const n=h.point.clone().normalize();aim={p:n.clone(),n};reticle.position.copy(n.clone().multiplyScalar(1.01));reticle.lookAt(n.clone().multiplyScalar(2));reticle.visible=true;}
+$('iaim').onclick=()=>{S.tool='aim';$('tool').querySelectorAll('.btn').forEach(b=>b.classList.remove('on'));$('iaim').classList.add('on');$('gl').style.cursor='crosshair';S.rot=false;$('rot').classList.remove('on');toast2('Click the spot to hit');};
+function toast2(t){$('b-s').textContent=t;}
+function cellIdx(x,y,z){const {n,h}=grid,R=C.R,i=Math.floor((x*R+R)/h),j=Math.floor((y*R+R)/h),k=Math.floor((z*R+R)/h);return (i<0||j<0||k<0||i>=n||j>=n||k>=n)?-1:(k*n+j)*n+i;}
+function cellPos(o){const {n,h}=grid,R=C.R;return [((o%n)+0.5)*h/R-1,((Math.floor(o/n)%n)+0.5)*h/R-1,((Math.floor(o/(n*n)))+0.5)*h/R-1];}
+$('iclear').onclick=()=>clearAloft();
+$('ifire').onclick=()=>{
+  const n=aim?aim.n.clone():cam.position.clone().normalize();
+  const tng=new THREE.Vector3(0,0,1).cross(n);if(tng.lengthSq()<1e-6)tng.set(1,0,0);tng.normalize();
+  const th=S.imp.ang*Math.PI/180,dir=n.clone().multiplyScalar(-Math.sin(th)).add(tng.clone().multiplyScalar(Math.cos(th))).normalize();
+  const L=S.imp.dia,Rimp=Math.max(0.012,L/2/1e3/C.R);
+  const mesh=new THREE.Mesh(new THREE.SphereGeometry(Rimp,24,16),new THREE.MeshStandardMaterial({color:{iron:0x9a9aa8,rock:0xb08060,ice:0xbfe8ff}[S.imp.mat],emissive:0x331100}));
+  const start=n.clone().multiplyScalar(1+Rimp).sub(dir.clone().multiplyScalar(2.2));mesh.position.copy(start);scene.add(mesh);
+  shots.push({mesh,start,end:n.clone().multiplyScalar(1+Rimp*0.2),n,dir,t0:performance.now(),imp:{...S.imp}});$('ires').style.display='none';
+};
+function impactPhysics(n,IM){
+  const G=C.G,R=C.R*1e3,M=stats.M,g=G*M/(R*R),vesc=Math.sqrt(2*G*M/R),L=IM.dia,v=IM.v*1e3,th=IM.ang*Math.PI/180;
+  const ri=IMAT[IM.mat]*1e3,o0=cellIdx(n.x*0.995,n.y*0.995,n.z*0.995);let rt=2.5e3;
+  {let o=o0,p=n.clone();for(let q=0;q<grid.n&&(o<0||grid.lay[o]<0);q++){p.multiplyScalar(0.99);o=cellIdx(p.x,p.y,p.z);}if(o>=0&&grid.dens[o]>0)rt=grid.dens[o]*1e3;}
+  const mi=ri*Math.PI/6*L*L*L,E=0.5*mi*v*v;
+  const Dtc=1.161*Math.pow(ri/rt,1/3)*Math.pow(L,0.78)*Math.pow(v,0.44)*Math.pow(g,-0.22)*Math.pow(Math.sin(th),1/3);
+  const Dc=3200*9.81/g,Dfr=1.25*Dtc<Dc?1.25*Dtc:1.17*Math.pow(Dtc,1.13)/Math.pow(Dc,0.13);
+  // Leinhardt & Stewart (2012): catastrophic disruption threshold and largest remnant
+  const Mt=M,Mtot=Mt+mi,mu=Mt*mi/Mtot,QR=0.5*mu*v*v/Mtot,RC1=Math.pow(3*Mtot/(4*Math.PI*1000),1/3),gam=Math.min(1,mi/Mt);
+  const Qrd=1.9*4/5*Math.PI*1000*G*RC1*RC1*Math.pow(0.25*(gam+1)*(gam+1)/gam,2/(3*0.36)-1),fl=Math.max(0,Math.min(1,1-0.5*QR/Qrd));
+  return {g,vesc,L,v,mi,E,Dtc,Dfr,rt,QR,Qrd,fl,mag:0.67*Math.log10(E)-5.87,imp:IM};
+}
+function doImpact(n,dir,IM){
+  IM=IM||S.imp;pushUndo();const P=impactPhysics(n,IM),{dens,lay}=grid,h=grid.h,R=C.R,cellM=Math.pow(h*1e3,3)*1e3;
+  const removed=[];const hit=n.clone();
+  const ejectFrac=1-P.fl,dTr=P.Dtc/1e3/(2*Math.SQRT2)/R,rTr=P.Dfr/2/1e3/R;   // bowl: final-crater radius, transient depth   // world units (R = 1)
+  if(ejectFrac>1e-3){ // disruption regime: the mass beyond the largest remnant leaves from the impact side
+    const target=ejectFrac*stats.M,cand=[];for(let o=0;o<lay.length;o++)if(lay[o]>=0){const c=cellPos(o);cand.push([o,(c[0]-hit.x)**2+(c[1]-hit.y)**2+(c[2]-hit.z)**2]);}
+    cand.sort((a,b)=>a[1]-b[1]);let m=0;for(const [o] of cand){if(m>=target)break;m+=dens[o]*cellM;removed.push([o,lay[o],dens[o]]);lay[o]=-1;dens[o]=0;}
+  }else{ // crater regime: excavate the transient bowl
+    const B=Math.ceil(Math.max(rTr,dTr)*R/h)+1,c0=cellIdx(hit.x*0.999,hit.y*0.999,hit.z*0.999);
+    if(c0>=0&&rTr*R>=h*0.5){const nn=grid.n,ci=c0%nn,cj=Math.floor(c0/nn)%nn,ck=Math.floor(c0/(nn*nn));
+      for(let k=ck-B;k<=ck+B;k++)for(let j=cj-B;j<=cj+B;j++)for(let i=ci-B;i<=ci+B;i++){if(i<0||j<0||k<0||i>=nn||j>=nn||k>=nn)continue;const o=(k*nn+j)*nn+i;if(lay[o]<0)continue;
+        const c=cellPos(o),sx=c[0]-hit.x,sy=c[1]-hit.y,sz=c[2]-hit.z,a=-(sx*n.x+sy*n.y+sz*n.z),rx=sx+a*n.x,ry=sy+a*n.y,rz=sz+a*n.z,rr=Math.sqrt(rx*rx+ry*ry+rz*rz);
+        if(rr<=rTr&&a<=dTr*(1-(rr/rTr)**2)+0.5*h/R){removed.push([o,lay[o],dens[o]]);lay[o]=-1;dens[o]=0;}}}
+    // impactor material lines the crater floor
+    let ni=P.mi/cellM;if(ni<1)ni=Math.random()<ni?1:0;ni=Math.round(ni);const li=matLayer(IM.mat==='rock'?'granite':IM.mat);
+    // placed only inside the excavated bowl, starting from its deepest cells, then marked loose so settling packs it onto the floor
+    {const mk=IM.mat==='rock'?'granite':IM.mat,bowl=removed.map(r=>{const c=cellPos(r[0]);return [r[0],c[0]*hit.x+c[1]*hit.y+c[2]*hit.z];}).sort((u,v)=>u[1]-v[1]);
+     if(!grid.loose)grid.loose=new Uint8Array(lay.length);for(let q=0;q<Math.min(ni,bowl.length);q++){const o=bowl[q][0];if(lay[o]<0){lay[o]=li;dens[o]=C.MATS[mk].d;grid.loose[o]=1;}}
+     settle();}
+  }
+  // ejecta: power-law speeds (Housen & Holsapple), launched from the impact site
+  const N=removed.length,maxP=4000,w=Math.max(1,Math.ceil(N/maxP)),np=Math.ceil(N/w),pos=new Float32Array(np*3),col=new Float32Array(np*3),vel=new Float32Array(np*3),src=[];
+  const vmin=Math.max(0.15*P.vesc,Math.sqrt(P.g*Math.max(P.Dtc,h*1e3)/2)),scl=1/(C.R*1e3);
+  for(let q=0;q<np;q++){const r=removed[q*w],c=cellPos(r[0]);pos.set(c,q*3);const cc=S.col==='dens'?densCol(r[2]):hx(C.LAYERS[r[1]].col);col.set(cc,q*3);
+    let sp=vmin*Math.pow(Math.random()+1e-6,-1/1.23);if(ejectFrac>1e-3)sp=P.vesc*(0.6+0.9*Math.random());sp=Math.min(sp,P.v);
+    const out=new THREE.Vector3(c[0],c[1],c[2]).sub(hit).add(n.clone().multiplyScalar(0.02)).normalize().add(n.clone().multiplyScalar(0.9)).add(new THREE.Vector3(Math.random()-0.5,Math.random()-0.5,Math.random()-0.5).multiplyScalar(0.5)).normalize();
+    vel.set([out.x*sp*scl,out.y*sp*scl,out.z*sp*scl],q*3);src.push(r);}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const pts=new THREE.Points(g,new THREE.PointsMaterial({size:Math.max(0.012,h/C.R*0.9),vertexColors:true,sizeAttenuation:true}));scene.add(pts);
+  const alive=new Uint8Array(np).fill(1);
+  swarms.push({pts,vel,alive,src,w,scl3:scl*scl*scl,N,P,t0:performance.now(),esc:0,back:0,t:0,lr:0,simT:Math.max(60,2*vmin/P.g*3)});
+  S.lastImp=P;buildCells();stats=C.count(grid);readouts();legend();showEdits();showImpact(P,N,0,0);
+}
+function stepParts(parts,dt){
+  const GMw=C.G*stats.M*parts.scl3,{pts,vel,alive}=parts,pa=pts.geometry.attributes.position,p=pa.array,np=alive.length;let live=0;
+  const T=dt*parts.simT/3,sub=4,ds=T/sub;   // about 3 s of screen time covers the ballistic flights
+  for(let q=0;q<np;q++){if(!alive[q])continue;live++;
+    for(let k=0;k<sub;k++){const x=p[q*3],y=p[q*3+1],z=p[q*3+2],r2=x*x+y*y+z*z,r=Math.sqrt(r2),a=-GMw/(r2*r);vel[q*3]+=a*x*ds;vel[q*3+1]+=a*y*ds;vel[q*3+2]+=a*z*ds;p[q*3]+=vel[q*3]*ds;p[q*3+1]+=vel[q*3+1]*ds;p[q*3+2]+=vel[q*3+2]*ds;}
+    const x=p[q*3],y=p[q*3+1],z=p[q*3+2],r=Math.hypot(x,y,z),vr=(vel[q*3]*x+vel[q*3+1]*y+vel[q*3+2]*z)/r;
+    if(r>6){alive[q]=0;parts.esc+=parts.w;p[q*3]=p[q*3+1]=p[q*3+2]=1e6;continue;}
+    if(vr<0){let o=cellIdx(x,y,z);if(o>=0&&grid.lay[o]>=0){ // landed: stack the debris on the surface below
+      const u=[x/r,y/r,z/r];let rr=r;for(let s2=0;s2<grid.n&&o>=0&&grid.lay[o]>=0;s2++){rr+=grid.h/C.R*0.5;o=cellIdx(u[0]*rr,u[1]*rr,u[2]*rr);}
+      const S0=parts.src[q];for(let c=0;c<parts.w;c++){let o2=o,r3=rr;for(let s3=0;s3<6&&o2>=0&&grid.lay[o2]>=0;s3++){r3+=grid.h/C.R*0.5;o2=cellIdx(u[0]*r3,u[1]*r3,u[2]*r3);}
+        if(o2>=0){grid.lay[o2]=S0[1];grid.dens[o2]=S0[2];if(!grid.loose)grid.loose=new Uint8Array(grid.lay.length);grid.loose[o2]=1;}}
+      alive[q]=0;parts.back+=parts.w;p[q*3]=p[q*3+1]=p[q*3+2]=1e6;parts.dirty=true;}}
+  }
+  pa.needsUpdate=true;parts.t+=dt;
+  if(parts.dirty&&parts.t-(parts.lb||0)>0.25){parts.lb=parts.t;parts.dirty=false;settle();buildCells();}
+  if(parts===swarms[swarms.length-1]&&parts.t-parts.lr>0.5){parts.lr=parts.t;showImpact(parts.P,parts.N,Math.min(parts.esc,parts.N),Math.min(parts.back,parts.N),live*parts.w);}
+  if(!live){finishSwarm(parts);return true;}
+  return false;
+}
+// a swarm ends when every fragment has landed or escaped; CLEAR ALOFT ends the rest, counting what is still flying as bound debris
+function finishSwarm(parts){const {pts,vel,alive}=parts,p=pts.geometry.attributes.position.array,np=alive.length,GMw=C.G*stats.M*parts.scl3;
+  let fly=0;for(let q=0;q<np;q++){if(!alive[q])continue;const x=p[q*3],y=p[q*3+1],z=p[q*3+2],r=Math.hypot(x,y,z),v2=vel[q*3]**2+vel[q*3+1]**2+vel[q*3+2]**2;if(v2/2-GMw/r>=0)parts.esc+=parts.w;else fly+=parts.w;}
+  settle();scene.remove(pts);pts.geometry.dispose();const n0=parts.N,e=Math.min(parts.esc,n0),b=Math.min(parts.back,n0-e);buildCells();stats=C.count(grid);readouts();legend();showEdits();showImpact(parts.P,n0,e,b,Math.min(fly,n0-e-b));}
+function clearAloft(){while(swarms.length)finishSwarm(swarms.pop());}
+function clearSim(){for(const s0 of shots)scene.remove(s0.mesh);shots=[];for(const sw of swarms){scene.remove(sw.pts);sw.pts.geometry.dispose();}swarms=[];}
+function showImpact(P,N,esc,back,fly){fly=fly||0;
+  $('ires').style.display='block';const mt=P.E/4.184e15;
+  $('ir-m').textContent=P.mi.toExponential(3)+' kg';$('ir-e').textContent=`${P.E.toExponential(3)} J · ${mt<1e3?mt.toPrecision(3):mt.toExponential(2)} Mt TNT`;
+  $('ir-s').textContent=P.mag.toFixed(1);const whole=P.fl<0.999;$('ir-t').textContent=whole?'— (whole-body regime)':fmtLen(P.Dtc);$('ir-f').textContent=whole?'— (whole-body regime)':fmtLen(P.Dfr);
+  const cc=P.Dfr/1e3/grid.h;$('ir-c').textContent=whole?'—':cc<1?`${cc.toFixed(3)} (smaller than one cell)`:`${cc.toFixed(1)} cells across`;
+  $('ir-q').textContent=`${P.QR.toExponential(2)} / ${P.Qrd.toExponential(2)} J/kg`;$('ir-l').textContent=(P.fl*100).toFixed(P.fl>0.999?4:2)+'% of the combined mass';
+  $('ir-x').textContent=`${N.toLocaleString()} · ${esc.toLocaleString()} · ${back.toLocaleString()} · ${fly.toLocaleString()}`;
+  $('ir-k').textContent=P.fl<0.5?'catastrophic':P.fl<0.999?'disruptive':'crater';
+  $('ir-n').innerHTML=(P.imp&&P.imp.note?P.imp.note+'<br>':'')+`Escape speed here ${(P.vesc/1e3).toFixed(2)} km/s; surface gravity ${P.g.toFixed(2)} m/s²; target density at the impact site ${(P.rt/1e3).toFixed(2)} g/cm³.`;
+}
+
+// ════════════════════════════════════════════════════════════
+// CAMERA: orbit around any point, or fly freely
+// ════════════════════════════════════════════════════════════
+function flyDir(){return new THREE.Vector3(Math.cos(fly.pitch)*Math.cos(fly.yaw),Math.cos(fly.pitch)*Math.sin(fly.yaw),Math.sin(fly.pitch));}
+function flyStep(dt){if(!keys.size)return;const sp=(keys.has('shift')?1.6:0.45)*dt,f=flyDir(),r=new THREE.Vector3().crossVectors(f,new THREE.Vector3(0,0,1)).normalize(),v=new THREE.Vector3();
+  if(keys.has('w')||keys.has('arrowup'))v.add(f);if(keys.has('s')||keys.has('arrowdown'))v.sub(f);if(keys.has('d')||keys.has('arrowright'))v.add(r);if(keys.has('a')||keys.has('arrowleft'))v.sub(r);
+  if(keys.has('e'))v.z+=1;if(keys.has('q'))v.z-=1;if(v.lengthSq())fly.pos.add(v.normalize().multiplyScalar(sp));}
+function setCam(m){
+  if(m===S.cam)return;
+  if(m==='fly'){fly.pos=cam.position.clone();const t=new THREE.Vector3(...orbit.t),f=t.sub(fly.pos).normalize();fly.yaw=Math.atan2(f.y,f.x);fly.pitch=Math.asin(Math.max(-1,Math.min(1,f.z)));S.rot=false;$('rot').classList.remove('on');}
+  else{const f=flyDir(),t=fly.pos.clone().add(f.clone().multiplyScalar(Math.max(0.3,fly.pos.length()*0.5)));orbit.t=[t.x,t.y,t.z];const off=fly.pos.clone().sub(t);orbit.d=off.length();orbit.th=Math.atan2(off.y,off.x);orbit.ph=Math.acos(Math.max(-1,Math.min(1,off.z/orbit.d)));}
+  S.cam=m;$('camm').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===m));}
+$('camm').querySelectorAll('.btn').forEach(b=>b.onclick=()=>setCam(b.dataset.v));
+addEventListener('keydown',e=>{if(S.cam!=='fly')return;if(e.target.tagName==='SELECT'||e.target.tagName==='INPUT'&&e.target.type!=='range')return;const k=e.key.toLowerCase();
+  if(['w','a','s','d','q','e','shift','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){keys.add(k);e.preventDefault();e.stopImmediatePropagation();}},true);
+addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));addEventListener('blur',()=>keys.clear());
+$('gl').addEventListener('dblclick',e=>{if(S.cam!=='orbit')return;const h=hitCell(e);if(!h)return;const p=h.point;
+  const cp=cam.position.clone();orbit.t=[p.x,p.y,p.z];const off=cp.sub(p);orbit.d=Math.max(0.05,Math.min(off.length(),0.8));orbit.th=Math.atan2(off.y,off.x);orbit.ph=Math.acos(Math.max(-1,Math.min(1,off.z/off.length())));S.rot=false;$('rot').classList.remove('on');});
+
+// settling: loose debris drops one cell at a time toward the center (straight down first, then sliding down-slope) until it rests on something
+function settle(){
+  const L=grid.loose;if(!L)return 0;const {n,lay,dens}=grid;let list=[];for(let o=0;o<L.length;o++)if(L[o])list.push(o);let moved=0;
+  const step=(o)=>{const i=o%n,j=Math.floor(o/n)%n,k=Math.floor(o/(n*n)),c=[i+0.5-n/2,j+0.5-n/2,k+0.5-n/2],ax=[0,1,2].sort((p,q)=>Math.abs(c[q])-Math.abs(c[p]));
+    const cand=[];const d=[0,0,0];d[ax[0]]=-Math.sign(c[ax[0]]);cand.push(d.slice());   // straight toward the center along the dominant axis
+    const dg=[];for(const a2 of [ax[1],ax[2]])for(const sg of [-1,1]){const e=d.slice();e[a2]=sg;dg.push(e);}   // then all four diagonal-down neighbors (angle of repose about 45°)
+    for(let q=dg.length-1;q>0;q--){const r=Math.floor(Math.random()*(q+1));[dg[q],dg[r]]=[dg[r],dg[q]];}cand.push(...dg);
+    for(const v of cand){const ii=i+v[0],jj=j+v[1],kk=k+v[2];if(ii<0||jj<0||kk<0||ii>=n||jj>=n||kk>=n)continue;const q=(kk*n+jj)*n+ii;if(lay[q]<0)return q;}return -1;};
+  for(let pass=0;pass<n*2;pass++){let mv=0;const next=[];
+    for(const o of list){if(lay[o]<0){continue;}const q=step(o);if(q>=0){lay[q]=lay[o];dens[q]=dens[o];L[q]=1;lay[o]=-1;dens[o]=0;L[o]=0;moved++;mv++;next.push(q);}else next.push(o);}
+    list=next;if(!mv)break;}   // every loose cell is retried each pass, so a stack collapses as the cells under it move
+  return moved;
+}
+// bodies
+
+// planet builder
+const TPL={rock:{R:3000,layers:[{mat:'granite',top:100,d:2.7}]},earthlike:{R:6000,layers:[{mat:'core',top:20,d:11},{mat:'iron',top:55,d:7.87},{mat:'mantle',top:99,d:3.3},{mat:'granite',top:100,d:2.7}]},
+  ice:{R:2500,layers:[{mat:'mantle',top:55,d:3.3},{mat:'water',top:85,d:1},{mat:'ice',top:100,d:0.92}]}};
+function renderBuilder(){
+  const B=C.build;$('brad').value=B.R;$('br-v').textContent=B.R.toLocaleString()+' km';
+  $('blayers').innerHTML=B.layers.map((L,k)=>{const last=k===B.layers.length-1;return `<div style="border:1px solid rgba(0,255,200,.08);border-radius:6px;padding:6px;margin-top:5px">
+    <div style="display:flex;gap:5px;align-items:center;font-size:.5rem"><i style="width:10px;height:10px;border-radius:2px;background:${C.MATS[L.mat].col};display:inline-block"></i>
+    <select data-bm="${k}" style="flex:1;font-family:'Space Mono',monospace;font-size:.5rem;background:#0a0a10;color:var(--text);border:1px solid var(--border);border-radius:4px;padding:3px">${Object.entries(C.MATS).map(([m,v])=>`<option value="${m}" ${m===L.mat?'selected':''}>${v.name}${m==='custom'?'':' · '+v.d.toFixed(2)}</option>`).join('')}</select>
+    ${B.layers.length>1?`<button data-bx="${k}" style="background:none;border:none;color:var(--faint);cursor:pointer;font-size:.8rem">×</button>`:''}</div>
+    ${L.mat==='custom'?`<div class="lbl"><span>Density</span><b>${L.d.toFixed(2)} g/cm³</b></div><input type="range" data-bd="${k}" min="50" max="1600" value="${Math.round(L.d*100)}">`:''}
+    ${last?`<div class="note" style="margin-top:3px">reaches the surface</div>`:`<div class="lbl"><span>Reaches</span><b>${L.top}% of radius · ${Math.round(L.top/100*B.R).toLocaleString()} km</b></div><input type="range" data-bt="${k}" min="1" max="99" value="${L.top}">`}</div>`;}).join('');
+}
+$('blayers').addEventListener('input',e=>{const B=C.build,t=e.target;
+  if(t.dataset.bt!==undefined){const k=+t.dataset.bt;B.layers[k].top=+t.value;for(let q=k+1;q<B.layers.length-1;q++)B.layers[q].top=Math.max(B.layers[q].top,B.layers[k].top+1);for(let q=0;q<k;q++)B.layers[q].top=Math.min(B.layers[q].top,B.layers[k].top-1);}
+  if(t.dataset.bd!==undefined)B.layers[+t.dataset.bd].d=t.value/100;
+  const lb=t.previousElementSibling&&t.previousElementSibling.querySelector('b');if(lb){if(t.dataset.bt!==undefined){const L=B.layers[+t.dataset.bt];lb.textContent=`${L.top}% of radius · ${Math.round(L.top/100*B.R).toLocaleString()} km`;}else lb.textContent=(t.value/100).toFixed(2)+' g/cm³';}});
+$('blayers').addEventListener('change',e=>{if(e.target.dataset.bt!==undefined||e.target.dataset.bd!==undefined)renderBuilder();});
+$('blayers').addEventListener('change',e=>{const B=C.build,t=e.target;if(t.dataset.bm!==undefined){B.layers[+t.dataset.bm].mat=t.value;renderBuilder();}});
+$('blayers').addEventListener('click',e=>{const k=e.target.dataset.bx;if(k===undefined)return;C.build.layers.splice(+k,1);renderBuilder();});
+$('badd').onclick=()=>{const B=C.build,L=B.layers,n=L.length,prev=n>1?L[n-2].top:0,top=Math.min(98,Math.max(prev+1,Math.round((prev+100)/2)));L.splice(n-1,0,{mat:'basalt',top,d:3});renderBuilder();};
+$('brad').oninput=e=>{C.build.R=+e.target.value;$('br-v').textContent=C.build.R.toLocaleString()+' km';};
+$('bgo').onclick=()=>setBody('custom');
+$('tpl').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{C.build=JSON.parse(JSON.stringify(TPL[b.dataset.v]));renderBuilder();setBody('custom');});
+function setBody(k){clearSim();aim=null;if(reticle)reticle.visible=false;$('ires').style.display='none';C.use(k);$('builder').style.display=k==='custom'?'block':'none';if(k==='custom')renderBuilder();document.querySelectorAll('.bn').forEach(e=>e.textContent=e.tagName==='SPAN'&&e.closest('.st')?C.MEAS.name.toUpperCase():C.MEAS.name);$('mcore').style.display=k==='mars'?'block':'none';S.depth=0;$('d').value=0;$('d-v').textContent='0 km';noteN();rebuild();setTimeout(convergence,400);}
+seg('body','bodyKey',()=>setBody(S.bodyKey));
+$('mc').oninput=e=>{C.params.core=e.target.value/100;$('mc-v').textContent=C.params.core.toFixed(2)+' g/cm³';};
+$('mc').onchange=()=>{setBody('mars');triCheck();};
+async function triCheck(){
+  const rows=[];for(const k of ['earth','moon','mars']){await new Promise(r=>setTimeout(r,10));const cur=C.key;C.use(k);const q=C.countLite(128),M=C.MEAS;C.use(cur);rows.push([M,q]);}
+  $('tri').innerHTML=rows.map(([M,q])=>{const e=pctErr(q.imr2,M.imr2);return `<tr><td>${M.name}</td><td>${q.imr2.toFixed(4)}</td><td>${M.imr2}${M.imrErr?' ± '+M.imrErr:''}</td><td class="${Math.abs(e)<1?'ok':''}">${e>=0?'+':''}${e.toFixed(2)}%</td></tr>`;}).join('');
+}
+seg('cut','cut',buildCells);
+seg('draw','draw',()=>{S.all=S.draw==='all';$('busy').textContent=S.all?'DRAWING EVERY CELL…':'COUNTING CELLS…';$('busy').style.display='block';setTimeout(()=>{buildCells();$('busy').style.display='none';},20);});
+function legend(){const d=S.col==='dens';$('lg-t').textContent=d?'density · g/cm³':'layers · center to surface';
+  $('lg-b').style.display=d?'block':'none';$('lg-r').style.display=d?'flex':'none';$('lg-l').style.display=d?'none':'block';
+  $('lg-b').style.background='linear-gradient(90deg,'+STOPS.map(q=>`rgb(${q[1].map(v=>v*255|0)}) ${((q[0]-1)/12.1*100).toFixed(0)}%`).join(',')+')';$('lg-r').innerHTML='<span>1.0</span><span>13.1</span>';
+  $('lg-l').innerHTML=C.LAYERS.map(L=>`<div><i style="background:${L.col}"></i>${L.name}</div>`).join('');}
+seg('col','col',()=>{buildCells();legend();});
+$('rot').onclick=()=>{S.rot=!S.rot;$('rot').classList.toggle('on',S.rot);};
+$('cam').onclick=()=>{setCam('orbit');orbit={th:-0.9,ph:1.2,d:fitD(),t:[0,0,0]};};
+$('m-l').onclick=()=>{document.body.classList.remove('res');$('m-l').classList.add('on');$('m-r').classList.remove('on');};
+$('m-r').onclick=()=>{document.body.classList.add('res');$('m-r').classList.add('on');$('m-l').classList.remove('on');};
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);}
+$('x-json').onclick=()=>{const s=stats;dl(new Blob([JSON.stringify({tool:'IMatter by AxiomForge',url:'https://uuia.app/imatter',example:'Earth (PREM)',unit:'1 unit = 1 cm',grid:NS[S.ni],tl_cell_edge_km:grid.h,tl_cell_edge_cm:grid.h*1e5,
+  cells:s.cells,mass_kg:s.M,mean_density:s.rho,I_over_MR2:s.imr2,surface_g:s.g,peak_g:s.gmax,peak_g_radius_km:s.rmax,core_mass_fraction:s.core,measured:C.MEAS,
+  layers:C.LAYERS.map((L,k)=>({name:L.name,r0_km:L.r0,r1_km:L.r1,cells:s.L[k].cells,mass_kg:s.L[k].mass}))},null,2)],{type:'application/json'}),'imatter_earth.json');};
+$('x-csv').onclick=()=>{const s=stats;dl(new Blob(['layer,r0_km,r1_km,cells,mass_kg,mass_share\n'+C.LAYERS.map((L,k)=>`${L.name},${L.r0},${L.r1},${s.L[k].cells},${s.L[k].mass.toExponential(6)},${(s.L[k].mass/s.M).toFixed(6)}`).join('\n')],{type:'text/csv'}),'imatter_earth_layers.csv');};
+$('x-png').onclick=()=>{if(!gl3d)return;R3.render(scene,cam);$('gl').toBlob(b=>dl(b,'imatter_earth.png'));};
+legend();noteN();resize();loop();rebuild();setTimeout(convergence,600);setTimeout(triCheck,2500);
+</script>
+</body>
+</html>
