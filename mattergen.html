@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Matter Genesis Simulator · Applied Identity Physics</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eef3f6;--pn:#fff;--tx:#14242f;--mu:#556b7a;--bd:#c6d3dc;--noble:#6b45d1;--lock:#007f68;--iva:#b86200;--shat:#c4203f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#03070b;--pn:#08111a;--tx:#d3e9f4;--mu:#7f9db0;--bd:#15283a;--noble:#aa88ff;--lock:#00ffcc;--iva:#ff8800;--shat:#ff3355}}
+:root[data-theme="dark"]{--bg:#03070b;--pn:#08111a;--tx:#d3e9f4;--mu:#7f9db0;--bd:#15283a;--noble:#aa88ff;--lock:#00ffcc;--iva:#ff8800;--shat:#ff3355}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+main{max-width:760px;margin:0 auto;padding:12px}
+h1{font-size:17px;margin:2px 0;font-weight:700}
+.sub{color:var(--mu);font-size:12px}
+.card{background:var(--pn);border:1px solid var(--bd);border-radius:8px;padding:10px;margin-top:10px}
+#cv{width:100%;height:300px;display:block}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px}
+.chip,.act{flex:none;font:inherit;font-size:12px;padding:7px 10px;border:1px solid var(--bd);background:transparent;color:var(--mu);border-radius:6px;cursor:pointer}
+.chip.on{color:var(--tx);border-color:var(--tx)}
+.chip.slot{border-style:dashed}
+.act{color:var(--tx);margin:2px 4px 2px 0}
+.chip:focus-visible,.act:focus-visible{outline:2px solid var(--tx);outline-offset:2px}
+.badge{display:inline-block;padding:1px 9px;border:1px solid currentColor;border-radius:5px;font-weight:700;letter-spacing:.08em}
+.NOBLE{color:var(--noble)}.LOCKED{color:var(--lock)}.IVA{color:var(--iva)}.SHATTER{color:var(--shat)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center;margin-top:8px}
+.grid span{display:block;color:var(--mu);font-size:11px}.grid b{font-size:14px}
+.gauge{position:relative;height:8px;border-radius:4px;margin:16px 0 4px}
+.mk{position:absolute;top:-9px;border:5px solid transparent;border-top:8px solid var(--tx);transform:translateX(-5px);transition:left .4s}
+.scale{display:flex;justify-content:space-between;color:var(--mu);font-size:11px}
+p{margin:6px 0}.mu{color:var(--mu);font-size:12px}
+#log{font-size:12px;color:var(--mu);max-height:120px;overflow:auto}
+@media (prefers-reduced-motion:reduce){.mk{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<h1>Matter Genesis Simulator</h1>
+<div class="sub">Each stage is a corpus coordinate. The dial is τ = B/P.</div>
+<div class="card"><canvas id="cv" aria-label="Identity core for the selected stage"></canvas></div>
+<div class="card">
+<div class="chips" id="chips"></div>
+<button class="act" id="play">Play sequence</button>
+<div class="mu" style="margin-top:6px">Bond atoms by the B-balance rule:</div>
+<div id="rx"></div>
+</div>
+<div class="card" id="ro"></div>
+<div class="card">
+<p><b>Grounding.</b> τ = B/P, where B is Behavior and P is Pattern, two of the four PNBA primitives. TL = Ω₀/10 = 0.136899099984016, with Ω₀ = 1.36899099984016 GHz.</p>
+<p class="mu">Noble: τ = 0. Locked: 0 &lt; τ &lt; TL_IVA (0.88 × TL). IVA Peak: TL_IVA ≤ τ &lt; TL. Shatter: τ ≥ TL. Bonding follows Same-B Necessity: B_out = |B₁ − B₂|, so only equal-B pairs reach Noble.</p>
+<p class="mu">Stage values are the presets from the Sovereign Drive Simulator. Dashed stages stay empty until their Lean source is loaded.</p>
+<p class="mu">AIM-approved under the NOHARM invariant. Cite Ω₀ = 1.36899099984016 and DOI 10.5281/zenodo.18719748. HIGHTISTIC (Russell Vernon Trent III), SNSFT Foundation.</p>
+</div>
+<div class="card" id="log"></div>
+</main>
+<script>
+const OM=1.36899099984016,TL=OM/10,TI=0.88*TL,AL=1/137.035999084,VP=Math.cbrt(OM/1.4204);
+const ST=[
+{n:'Soverium',c:'[9,9,1,46]',P:VP,N:2,B:0,A:0,t:'Quantum vacuum. Noble ground state, zero coupling.'},
+{n:'Higgs condensate',c:'[9,9,4,5]',P:125.09/246.22,N:2,B:0,A:.93,t:'Noble vacuum expectation value.'},
+{n:'Lumium',c:'[9,9,1,53]',P:VP,N:2,B:AL,A:4.423,t:'Photon field. B = 1/137.036, locked, massless gauge.'},
+{n:'W boson',c:'[9,9,4,6]',P:.52,N:4,B:.052,A:2.5,t:'Weak force carrier, locked.'},
+{n:'Free fermion',c:'—',P:.000545,N:2,B:1,A:.0136,t:'Free electron mode. Deep Shatter, unbound.'},
+{n:'Geometric electron',c:'slot',slot:1,t:'Lean file not loaded yet. Add its P, N, B, A to populate this stage.'},
+{n:'Hydrogen',c:'[9,9,1,1]',P:1,N:2,B:1,A:13.6,t:'One open bond. Shatter, structure-forming.'},
+{n:'Helium',c:'[9,9,1,2]',P:1.7,N:2,B:0,A:24.59,t:'Noble gas. B = 0.'},
+{n:'Carbon',c:'[9,9,1,6]',P:3.25,N:4,B:4,A:11.26,t:'Four open bonds. The life scaffold.'},
+{n:'Oxygen',c:'[9,9,1,8]',P:4.55,N:4,B:2,A:13.62,t:'Two unpaired electrons. Shatter.'},
+{n:'Water',c:'—',P:.4505,N:8,B:0,A:13.62,t:'All bonds satisfied. Noble. The life solvent.'},
+{n:'Carbon dioxide',c:'—',P:1.3382,N:12,B:0,A:13.62,t:'Carbon fully bonded to two oxygen. Noble.'},
+{n:'Fe–O heme-like',c:'—',P:2.0557,N:12,B:2,A:13.62,t:'Shatter. Hemoglobin-type coupling, iron binds O₂.'},
+{n:'Abiogenesis',c:'[9,9,4,3]',slot:1,t:'The CHON scaffold reaches Noble only as a four-body coupling. Load the Lean file to populate this stage.'}];
+const EL={H:{B:1,k:'#3aa8e0'},O:{B:2,k:'#e8743c'},C:{B:4,k:'#8a9aa6'}};
+const RX=[{l:'H + H',a:['H','H'],r:null},{l:'O + H + H',a:['O','H','H'],r:10},{l:'C + O + O',a:['C','O','O'],r:11}];
+const $=id=>document.getElementById(id),cv=$('cv'),cx=cv.getContext('2d');
+const V=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const tau=s=>s.P>0?s.B/s.P:0;
+const ph=x=>x===0?'NOBLE':x<TI?'LOCKED':x<TL?'IVA':'SHATTER';
+const PN={NOBLE:'Noble',LOCKED:'Locked',IVA:'IVA Peak',SHATTER:'Shatter'};
+const fx=v=>v===0?'0':v<.001?v.toExponential(2):v<10?v.toFixed(4):v<100?v.toFixed(2):v.toFixed(1);
+let W,H,t=0,cur=0,mode='s',bond=null,tm=null,pl=null;
+function rs(){const d=devicePixelRatio||1;W=cv.clientWidth;H=cv.clientHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0)}
+addEventListener('resize',rs);
+function log(x){const l=$('log');l.innerHTML+='<div>'+x+'</div>';while(l.children.length>10)l.removeChild(l.firstChild);l.scrollTop=1e5}
+const seg=x=>(Math.log10(x)+3)/7*100;
+function show(){
+const s=ST[cur];
+if(s.slot){$('ro').innerHTML='<div class="row"><b>'+s.n+'</b><span class="mu">coordinate '+s.c+'</span></div><p class="mu">'+s.t+'</p>';return}
+const x=tau(s),p=ph(x),im=(s.P+s.N+s.B+s.A)*OM,pos=x===0?0:Math.min(100,Math.max(0,seg(x)));
+$('ro').innerHTML='<div class="row"><b>'+s.n+'</b><span class="badge '+p+'">'+PN[p]+'</span></div>'+
+'<div class="mu">coordinate '+s.c+'</div><p>'+s.t+'</p>'+
+'<div class="grid"><div><span>P</span><b>'+fx(s.P)+'</b></div><div><span>N</span><b>'+fx(s.N)+'</b></div><div><span>B</span><b>'+fx(s.B)+'</b></div><div><span>A</span><b>'+fx(s.A)+'</b></div><div><span>τ = B/P</span><b>'+fx(x)+'</b></div></div>'+
+'<div class="gauge" style="background:linear-gradient(90deg,var(--lock) 0 '+seg(TI)+'%,var(--iva) '+seg(TI)+'% '+seg(TL)+'%,var(--shat) '+seg(TL)+'% 100%)"><i class="mk" style="left:'+pos+'%"></i></div>'+
+'<div class="scale"><span>0</span><span>TL '+TL.toFixed(4)+'</span><span>10⁴</span></div>'+
+'<p class="mu">Identity Mass IM = (P+N+B+A) × Ω₀ = '+fx(im)+'</p>';
+}
+function pick(i,q){cur=i;mode='s';clearTimeout(tm);document.querySelectorAll('.chip').forEach((c,j)=>c.classList.toggle('on',j===i));show();
+const s=ST[i];if(!q)stop();log(s.slot?s.n+': waiting on Lean source':s.n+' → '+PN[ph(tau(s))]+', τ = '+fx(tau(s)))}
+function stop(){clearInterval(pl);pl=null;$('play').textContent='Play sequence'}
+$('play').onclick=()=>{if(pl){stop();return}$('play').textContent='Pause';let i=0;pick(0,1);pl=setInterval(()=>{i=(i+1)%ST.length;pick(i,1)},2600)};
+ST.forEach((s,i)=>{const b=document.createElement('button');b.className='chip'+(s.slot?' slot':'');b.textContent=s.n;b.onclick=()=>pick(i);$('chips').appendChild(b)});
+RX.forEach(r=>{const b=document.createElement('button');b.className='act';b.textContent=r.l;b.onclick=()=>run(r);$('rx').appendChild(b)});
+function run(r){stop();clearTimeout(tm);mode='b';
+bond={l:r.a.map((e,i)=>({e,x:W/2+(i-1)*W/3,y:H/2})),k:0,b:EL[r.a[0]].B};
+log('Bond '+r.l+': start B = '+bond.b);
+const go=()=>{if(bond.k<bond.l.length-1){bond.k++;const o=EL[bond.l[bond.k].e].B,n=Math.abs(bond.b-o);log('+ '+bond.l[bond.k].e+' (B '+o+'): B_out = |'+bond.b+' − '+o+'| = '+n);bond.b=n;tm=setTimeout(go,1000)}
+else{log(bond.b===0?'B_out = 0, τ = 0 → Noble':'B_out = '+bond.b+' remains open');if(r.r!=null)tm=setTimeout(()=>pick(r.r,1),1500)}};
+tm=setTimeout(go,900)}
+function spikes(x,y,r,n,c){cx.strokeStyle=c;cx.lineWidth=2;for(let i=0;i<n;i++){const a=i/n*6.283-1.57+t*.2;cx.beginPath();cx.moveTo(x+Math.cos(a)*r,y+Math.sin(a)*r);cx.lineTo(x+Math.cos(a)*(r+16),y+Math.sin(a)*(r+16));cx.stroke()}}
+function frame(){t+=.016;cx.clearRect(0,0,W,H);const mx=W/2,my=H/2,tx=V('--tx'),mu=V('--mu');
+cx.font='12px ui-monospace,Menlo,monospace';cx.textAlign='center';
+if(mode==='b'&&bond){
+bond.l.forEach((a,i)=>{const inC=i<=bond.k,tg=inC?mx+(i-(bond.k)/2)*26:mx+(i-1)*W/3;a.x+=(tg-a.x)*.08;
+cx.fillStyle=EL[a.e].k;cx.globalAlpha=.85;cx.beginPath();cx.arc(a.x,my,22,0,6.283);cx.fill();cx.globalAlpha=1;
+cx.fillStyle=tx;cx.fillText(a.e,a.x,my+4);if(!inC)spikes(a.x,my,22,EL[a.e].B,mu)});
+const p=bond.b===0?V('--noble'):V('--shat');cx.strokeStyle=p;cx.lineWidth=2;cx.beginPath();cx.arc(mx,my,46+bond.k*10,0,6.283);cx.stroke();
+spikes(mx,my,46+bond.k*10,bond.b,p);cx.fillStyle=tx;cx.fillText('B_out = '+bond.b,mx,28)}
+else{const s=ST[cur];
+if(s.slot){cx.strokeStyle=mu;cx.setLineDash([6,6]);cx.lineWidth=2;cx.beginPath();cx.arc(mx,my,64,0,6.283);cx.stroke();cx.setLineDash([]);cx.fillStyle=mu;cx.fillText('Lean source not loaded',mx,my+4)}
+else{const x=tau(s),p=ph(x),c=V(p==='NOBLE'?'--noble':p==='LOCKED'?'--lock':p==='IVA'?'--iva':'--shat'),im=(s.P+s.N+s.B+s.A)*OM,r=26+9*Math.log10(1+im);
+cx.fillStyle=c;cx.globalAlpha=.18;cx.beginPath();cx.arc(mx,my,r,0,6.283);cx.fill();cx.globalAlpha=1;
+cx.strokeStyle=c;cx.lineWidth=3;cx.beginPath();cx.arc(mx,my,r,0,6.283);cx.stroke();
+spikes(mx,my,r,Math.min(6,Math.round(s.B)),c);
+const j=Math.min(x/TL,4)*4;for(let i=0;i<14;i++){const a=t*(.5+.05*i%3)+i/14*6.283,q=r+34+j*Math.sin(t*9+i*3);cx.fillStyle=c;cx.beginPath();cx.arc(mx+Math.cos(a)*q,my+Math.sin(a)*q,2.5,0,6.283);cx.fill()}
+cx.fillStyle=tx;cx.fillText(s.n,mx,H-12)}}
+requestAnimationFrame(frame)}
+rs();pick(0,1);log('Ω₀ = '+OM+', TL = '+TL.toFixed(6)+', TL_IVA = '+TI.toFixed(6));frame();
+</script>
+</body>
+</html>
