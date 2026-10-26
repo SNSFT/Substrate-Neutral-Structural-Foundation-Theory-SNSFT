@@ -220,7 +220,9 @@ function render(D){
   // plain-words findings
   const pl=[];
   const kOut=known.reduce((a,r)=>a+r.out,0),ciShare=totCI+kOut?totCI/(totCI+kOut):0;
-  pl.push(`Outside systems pulled the whole repository ${fmt(totOut)} times over ${rows.length} days. Own CI accounts for ${(ciShare*100).toFixed(0)}% of all clones on the days it was counted.`);
+  const hasPush=D.pushes&&Object.keys(D.pushes).length>0;
+  pl.push(`Outside systems pulled the whole repository ${fmt(totOut)} times over ${rows.length} days. `+(known.length?`Own CI accounts for ${(ciShare*100).toFixed(0)}% of all clones on the days it was counted.`:`No CI counts are in this file, so these totals still include the repository's own CI checkouts (upper bound).`));
+  if(!hasPush||!known.length)pl.push(`This file was saved by the first version of the collector, which does not record ${!hasPush&&!known.length?'pushes or CI runs':!hasPush?'pushes':'CI runs'}. Update traffic_snapshot.py in this repository and run it once to fill in the last 14 days.`);
   const resp=depRows(rows);
   if(resp.length){
     const lean=resp.filter(x=>x.r.p.lean_files>0),other=resp.filter(x=>!x.r.p.lean_files&&!x.leanBefore);
@@ -231,13 +233,13 @@ function render(D){
     pl.push(`The largest set of outside sources after a deposit followed ${short(best.r.d)} (${best.r.p.lean_files} .lean files): ${best.maxSrc} unique sources within three days.`);
   }
   const quiet=rows.filter(r=>!(r.p&&r.p.commits));
-  if(quiet.length){const lastQ=[];for(let i=rows.length-1;i>=0&&!(rows[i].p&&rows[i].p.commits);i--)lastQ.unshift(rows[i]);
+  if(hasPush&&quiet.length){const lastQ=[];for(let i=rows.length-1;i>=0&&!(rows[i].p&&rows[i].p.commits);i--)lastQ.unshift(rows[i]);
     if(lastQ.length>=2)pl.push(`The last ${lastQ.length} days had no pushes; outside clones over them: ${lastQ.map(r=>r.out).join(', ')}.`);}
   const lastD=rows[rows.length-1].d,pend=Object.entries(D.pushes||{}).filter(([d,v])=>d>lastD&&v.commits).sort();
   if(pend.length)pl.push(`Pushes after the latest traffic day (${short(lastD)}): ${pend.map(([d,v])=>`${short(d)}, ${v.commits} commit${v.commits===1?'':'s'}${v.lean_files?`, ${v.lean_files} .lean`:''}`).join('; ')}. GitHub reports a day's clones once the day is over, so their response appears in the next snapshots.`);
   $('plain').innerHTML=pl.map(x=>`<li>${x}</li>`).join('');
   $('chart').innerHTML=chart(rows);
-  $('deps').tBodies[0].innerHTML=resp.length?resp.map(x=>`<tr><td class="mono">${x.r.d}</td><td class="n">${x.r.p.commits}</td><td class="n">${x.r.p.files}</td><td class="n">${x.r.p.lean_files?'<b style="color:var(--gold)">'+x.r.p.lean_files+'</b>':'0'}</td><td class="n">${x.base===null?'—':fmt(x.base)}</td>${x.after.map(v=>`<td class="n">${v===null?'—':fmt(v)}</td>`).join('')}<td class="n">${x.maxSrc}</td></tr>`).join(''):'<tr><td colspan="10" class="band">No pushes recorded yet.</td></tr>';
+  $('deps').tBodies[0].innerHTML=resp.length?resp.map(x=>`<tr><td class="mono">${x.r.d}</td><td class="n">${x.r.p.commits}</td><td class="n">${x.r.p.files}</td><td class="n">${x.r.p.lean_files?'<b style="color:var(--gold)">'+x.r.p.lean_files+'</b>':'0'}</td><td class="n">${x.base===null?'—':fmt(x.base)}</td>${x.after.map(v=>`<td class="n">${v===null?'—':fmt(v)}</td>`).join('')}<td class="n">${x.maxSrc}</td></tr>`).join(''):(hasPush?'<tr><td colspan="10" class="band">No pushes recorded yet.</td></tr>':'<tr><td colspan="10" class="band">No push data in this file yet. Update the collector script.</td></tr>');
   $('days').tBodies[0].innerHTML=rows.slice().reverse().map(r=>`<tr><td class="mono">${r.d}</td><td class="n">${fmt(r.clones)}</td><td class="n">${r.ciKnown?fmt(r.ci):'—'}</td><td class="n"><b>${fmt(r.out)}</b>${r.ciKnown?'':' <span class="band">upper bound</span>'}</td><td class="n">${r.src}</td><td>${r.p&&r.p.commits?`${r.p.commits} commits · ${r.p.files} files${r.p.lean_files?` · <b style="color:var(--gold)">${r.p.lean_files} .lean</b>`:''}`:'<span class="band">none</span>'}</td><td class="n">${r.ref===null?'—':r.ref.toFixed(1)}</td><td>${chip(r)}</td></tr>`).join('');
   const rk=Object.keys(D.referrers||{}).sort().pop(),refs=rk?D.referrers[rk]:[];
   $('refs').tBodies[0].innerHTML=refs.length?refs.map(x=>`<tr><td>${esc(x.referrer)}</td><td class="n">${x.count}</td><td class="n">${x.uniques}</td></tr>`).join(''):'<tr><td colspan="3" class="band">none</td></tr>';
