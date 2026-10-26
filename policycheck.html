@@ -115,6 +115,7 @@ body.researcher .l-only{display:none!important}
     <div><label for="benef">Stated beneficiary group</label><select id="benef"><option value="">— none named —</option></select>
       <p class="help">The group the policy says it helps. The stated-allegiance check tests this group's measured outcome.</p></div>
   </div>
+  <div id="mnotes"></div>
 </section>
 
 <section>
@@ -185,6 +186,8 @@ Shatter line:  X* = X_ref·(1 − TL)/(1 − ℓ)  (higher is better)    X* = X_
       <label style="margin-top:.6rem">Multi-year check</label>
       <div class="row"><span class="band" style="min-width:9ch">Window years</span><input id="sW" type="number" min="2" max="10" step="1" value="3" style="width:6rem"></div>
       <p class="help">Each year is also placed against the highest payment of the previous N years, so a slow slide that never trips the year-to-year check is still caught. To guarantee no N-year stretch reaches Shatter, the max drop must stay below 1 − (1 − TL)^(1/N): 4.79% per year for 3 years.</p>
+      <label for="sJ" style="margin-top:.6rem">The verdict judges</label>
+      <select id="sJ"><option value="rule">Rule 2, the bounded change (a payout design)</option><option value="paid">The payment as made (a record to place)</option></select>
       <label for="sP" style="margin-top:.6rem">People paid (optional)</label><input id="sP" type="number" min="0" placeholder="Scales the reserve from per person to a total">
       <div class="row noprint" style="margin-top:.9rem"><button class="btn primary" id="srun">Run the series</button></div>
     </div>
@@ -244,15 +247,16 @@ Guaranteed for every W-year stretch: (1 − d)^W &gt; 1 − TL  ⇔  d &lt; 1 �
     <p><b>Bounded uncertainty.</b> The ± band is applied to each projection. If the whole band stays inside one phase, the placement holds. If the band reaches a boundary, the placement is marked open, and better data decides it.</p>
     <p><b>The verdict.</b> The policy passes when no group reaches Shatter at any horizon, either as written or on the ground. The net effect sums each group's signed change weighted by its people: Justice as a net gain across every party (APPA NOHARM Lossless Kernel [9,0,1,1]).</p>
     <p><b>Payments over time.</b> A repeating payment is placed year against year: τ = 1 − this year ÷ last year, counted only when it drops. The same history is then run through a rolling average and through a bounded-change rule with a reserve. A bounded rule with a max drop below TL can never place a single year in Shatter; the question it answers is how large a reserve that takes, given the real history. Each year is also placed against the highest payment of the previous N years, because a run of drops that each pass can add up to Shatter: the deferred-harm check from Function over Fallacy, applied to the payout rule itself. Smoothing rules of this kind are standard for endowments; Yale's spends 80% of the prior year's spending plus 20% of a target rate on the endowment, for intergenerational neutrality.</p>
+    <p><b>Real events.</b> Three modules place published data: family net worth by income group from the Federal Reserve's Survey of Consumer Finances, 2007 to 2010 (the aggregate mask); child poverty under the expanded Child Tax Credit, 2021 to 2022, from the Census Bureau (deferred harm); and in Payments over time, the Alaska Permanent Fund Dividend (the swing) the buying power of the federal minimum wage, 2010 to 2025 (the slow slide), and the buying power of any fixed payment, 1913 to 2025 (the inflation threshold). Each carries its source. They place outcomes, not people: no verdict on any official, party or intention.</p>
     <p><b>The four checks</b> come from Function over Fallacy: the aggregate mask (the overall number improves while a group is harmed), deferred harm (fine now, Shatter later), compliant on paper (fine as written, Shatter on the ground), and stated allegiance (the named beneficiary is harmed).</p>
   </div>
-  <div class="note">This tool measures effect, not motive. It does not render a verdict on any person, party or intention, and a policy can fail through honest miscalculation. Its output is a starting point for scrutiny, to be confirmed by more than one independent party with real data. The module examples use illustrative numbers; replace them with your own.</div>
+  <div class="note">This tool measures effect, not motive. It does not render a verdict on any person, party or intention, and a policy can fail through honest miscalculation. Its output is a starting point for scrutiny, to be confirmed by more than one independent party with real data. The Examples modules use illustrative numbers; the Real events modules use published data with sources. Replace either with your own.</div>
 </section>
 
 </main>
 
 <footer class="wrap">
-  <p><b>Built from:</b> Function over Fallacy: An Applied Identity Physics Standard for Structural Accountability in Public Policy · Applied Identity Physics Economics reduction (proofpress.org) · APPA NOHARM Lossless Kernel [9,0,1,1] · Magna Carta of the Digital Mind [9,9,5,3] · Bounded uncertainty (proofpress.org) · Permanent Fund Dividend history: Alaska Department of Revenue, Permanent Fund Dividend Division (pfd.alaska.gov).</p>
+  <p><b>Built from:</b> Function over Fallacy: An Applied Identity Physics Standard for Structural Accountability in Public Policy · Applied Identity Physics Economics reduction (proofpress.org) · APPA NOHARM Lossless Kernel [9,0,1,1] · Magna Carta of the Digital Mind [9,9,5,3] · Bounded uncertainty (proofpress.org) · Permanent Fund Dividend history: Alaska Department of Revenue, Permanent Fund Dividend Division (pfd.alaska.gov) · Federal Reserve Bulletin (2012), Survey of Consumer Finances 2007 to 2010 · U.S. Census Bureau, Supplemental Poverty Measure · Bureau of Labor Statistics, CPI-U · Federal Reserve Bank of Minneapolis, Consumer Price Index 1913–.</p>
   <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · DOI base 10.5281/zenodo.18719748 · Free to use under the NOHARM invariant, with citation.</p>
   <p class="mono" style="color:var(--accent);opacity:.7">[9,9,9,9] :: {ANC} · The Manifold is Holding</p>
 </footer>
@@ -300,6 +304,41 @@ const MODULES={
       {group:"Low-income households",measure:"Monthly energy cost ($)",better:"lower",people:12000,before:310,y0:250,y1:255,y3:340,impl:4,unc:5},
       {group:"Middle-income households",measure:"Monthly energy cost ($)",better:"lower",people:30000,before:260,y0:255,y1:256,y3:262,impl:0,unc:4},
       {group:"Small utilities",measure:"Annual operating margin ($K)",better:"higher",people:40,before:900,y0:870,y1:860,y3:850,impl:0,unc:6}]},
+  mw:{name:"Minimum wage change · flawed design: one-step jump, $10 to $15 (example values)",policy:"Minimum wage change: one step from $10 to $15",purpose:"Raise pay for the lowest-paid workers.",beneficiary:"Workers at the minimum",
+    notes:"Illustrative values for a small town. The raise reaches workers at the minimum, while the business with thin margins takes the whole step at once, and workers who were paid above the minimum for their skill lose most of their premium (wage compression). Pair it with the good design: the same $10 to $15, indexed and phased in over about ten years, with a slower schedule for small employers. Built from: Card and Krueger (1994); Cengiz, Dube, Lindner and Zipperer (2019) on spillovers above the minimum; Luca and Luca (2019) on exit risk for restaurants with thin margins.",
+    rows:[
+      {group:"Workers at the minimum",measure:"Hourly pay ($)",better:"higher",people:400,before:10,y0:15,y1:15,y3:15,impl:0,unc:2},
+      {group:"Workers at the minimum",measure:"Weekly hours",better:"higher",people:400,before:32,y0:30,y1:30,y3:30,impl:0,unc:3},
+      {group:"Workers paid above the minimum",measure:"Pay premium over the minimum ($/hr)",better:"higher",people:150,before:5,y0:2,y1:2,y3:2,impl:0,unc:5},
+      {group:"Small restaurant, 4 employees",measure:"Annual operating profit ($K)",better:"higher",people:40,before:50,y0:5.2,y1:15,y3:25,impl:0,unc:5},
+      {group:"Large chain",measure:"Operating margin (%)",better:"higher",people:10,before:6,y0:5.4,y1:5.7,y3:6,impl:0,unc:3},
+      {group:"Customer households",measure:"Average meal price ($)",better:"lower",people:1500,before:15,y0:15.5,y1:16,y3:16.3,impl:0,unc:2}]},
+  mwGood:{name:"Minimum wage change · good design: indexed phase-in, small-employer schedule (example values)",policy:"Minimum wage change: $10 to $15 phased in about 4% a year, indexed, slower schedule for small employers",purpose:"Raise pay for the lowest-paid workers.",beneficiary:"Workers at the minimum",
+    notes:"Illustrative values for the same town. The minimum rises about 4% a year toward $15 and then follows prices, so workers gain every year, the premium for skill is kept, and the small restaurant absorbs each step. The 3-year horizon shows only the start of the climb: at 4% a year, $10 reaches $15 in about ten years. The net effect still leans slightly negative because customer households pay part of the raise through prices; the verdict rests on placement, and every group stays out of Shatter. The same structure is in use: Alaska adjusts its minimum wage for inflation each year, and California's 2016 law gave employers with 25 or fewer workers an extra year.",
+    rows:[
+      {group:"Workers at the minimum",measure:"Hourly pay ($)",better:"higher",people:400,before:10,y0:10.4,y1:10.82,y3:11.7,impl:0,unc:2},
+      {group:"Workers at the minimum",measure:"Weekly hours",better:"higher",people:400,before:32,y0:32,y1:32,y3:31.5,impl:0,unc:3},
+      {group:"Workers paid above the minimum",measure:"Pay premium over the minimum ($/hr)",better:"higher",people:150,before:5,y0:4.9,y1:4.8,y3:4.7,impl:0,unc:5},
+      {group:"Small restaurant, 4 employees",measure:"Annual operating profit ($K)",better:"higher",people:40,before:50,y0:48,y1:47,y3:46,impl:0,unc:5},
+      {group:"Large chain",measure:"Operating margin (%)",better:"higher",people:10,before:6,y0:5.95,y1:5.9,y3:5.9,impl:0,unc:3},
+      {group:"Customer households",measure:"Average meal price ($)",better:"lower",people:1500,before:15,y0:15.1,y1:15.2,y3:15.45,impl:0,unc:2}]},
+  housing:{real:true,name:"Housing bust, 2007 to 2010 · family net worth by income group (Federal Reserve)",policy:"Housing bust and recession, 2007 to 2010 (published event)",purpose:"Placement of a published event, not a policy. Median family net worth by income group, 2007 and 2010, in 2010 dollars.",beneficiary:"",
+    notes:"Source: Federal Reserve Bulletin (June 2012), Changes in U.S. Family Finances from 2007 to 2010: Evidence from the Survey of Consumer Finances, Table 4 (median net worth) and Table 1 (median income), 2010 dollars. Before is 2007; Now is 2010. People is each group's share of families, in percent; the all-family and owner/renter rows carry 0 so each family is weighted once. Read it for the aggregate mask: median income falls 7.7% (Locked) and mean net worth 14.7% (just past TL), while median net worth falls 38.8% (Shatter). Every income group below the top 10% is in Shatter, and the top 10% gains.",
+    rows:[
+      {group:"Lowest 20% of income",measure:"Median net worth ($)",better:"higher",people:20,before:8500,y0:6200,y1:null,y3:null,impl:0,unc:0},
+      {group:"20th to 40th percentile",measure:"Median net worth ($)",better:"higher",people:20,before:39600,y0:25600,y1:null,y3:null,impl:0,unc:0},
+      {group:"40th to 60th percentile",measure:"Median net worth ($)",better:"higher",people:20,before:92300,y0:65900,y1:null,y3:null,impl:0,unc:0},
+      {group:"60th to 80th percentile",measure:"Median net worth ($)",better:"higher",people:20,before:215700,y0:128600,y1:null,y3:null,impl:0,unc:0},
+      {group:"80th to 90th percentile",measure:"Median net worth ($)",better:"higher",people:10,before:373200,y0:286600,y1:null,y3:null,impl:0,unc:0},
+      {group:"Top 10% of income",measure:"Median net worth ($)",better:"higher",people:10,before:1172300,y0:1194300,y1:null,y3:null,impl:0,unc:0},
+      {group:"Homeowners",measure:"Median net worth ($)",better:"higher",people:0,before:246000,y0:174500,y1:null,y3:null,impl:0,unc:0},
+      {group:"Renters",measure:"Median net worth ($)",better:"higher",people:0,before:5400,y0:5100,y1:null,y3:null,impl:0,unc:0},
+      {group:"All families",measure:"Median income ($)",better:"higher",people:0,before:49600,y0:45800,y1:null,y3:null,impl:0,unc:0},
+      {group:"All families",measure:"Mean net worth ($)",better:"higher",people:0,before:584600,y0:498800,y1:null,y3:null,impl:0,unc:0},
+      {group:"All families",measure:"Median net worth ($)",better:"higher",people:0,before:126400,y0:77300,y1:null,y3:null,impl:0,unc:0}]},
+  ctc:{real:true,name:"Expanded Child Tax Credit, one-year design (2021) · child poverty (Census Bureau)",policy:"Expanded Child Tax Credit, one-year design (2021)",purpose:"Reduce child poverty through a larger, fully refundable, monthly Child Tax Credit for 2021.",beneficiary:"Children",
+    notes:"Source: U.S. Census Bureau, Supplemental Poverty Measure, child poverty rate: 5.2% in 2021 with the expanded credit in effect, 12.4% in 2022 after it expired. Before and Now are 2021; 1 yr is 2022. Lower is better, so τ = 12.4 / 5.2 − 1 = 1.385. Read it for deferred harm: the design passes in its own year and the named beneficiary is in Shatter one year later, because the benefit ended at a fixed date.",
+    rows:[{group:"Children",measure:"Child poverty rate, Supplemental Poverty Measure (%)",better:"lower",people:1,before:5.2,y0:5.2,y1:12.4,y3:null,impl:0,unc:0}]},
   billGood:{name:"Bill provision · good design: gradual phase-down instead of a cliff (example values)",purpose:"Lower energy costs for low-income households, with the credit phased down gradually instead of ending all at once.",beneficiary:"Low-income households",
     rows:[
       {group:"Low-income households",measure:"Monthly energy cost ($)",better:"lower",people:12000,before:310,y0:250,y1:255,y3:285,impl:2,unc:5},
@@ -324,7 +363,7 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').re
 function rows(){return [...$('tbl').tBodies[0].rows].map(tr=>{const o={};tr.querySelectorAll('[data-k]').forEach(e=>{const k=e.dataset.k;o[k]=(e.type==='number')?(e.value===''?null:+e.value):e.value;});return o;});}
 function syncBenef(){const cur=$('benef').value;const gs=[...new Set(rows().map(r=>r.group).filter(Boolean))];
   $('benef').innerHTML='<option value="">— none named —</option>'+gs.map(g=>`<option>${esc(g)}</option>`).join('');if(gs.includes(cur))$('benef').value=cur;}
-function loadModule(m){$('tbl').tBodies[0].innerHTML='';m.rows.forEach(addRow);if(m.purpose!==undefined)$('purpose').value=m.purpose;syncBenef();if(m.beneficiary)$('benef').value=m.beneficiary;$('pname').value=m.policy!==undefined?m.policy:(m.rows&&m.rows.some(r=>r.group)&&m.name?m.name.replace(/\s*\(example values\)\s*$/,''):'');}
+function loadModule(m){$('mnotes').innerHTML=m.notes?`<div class="note">${esc(m.notes)}</div>`:'';$('tbl').tBodies[0].innerHTML='';m.rows.forEach(addRow);if(m.purpose!==undefined)$('purpose').value=m.purpose;syncBenef();if(m.beneficiary)$('benef').value=m.beneficiary;$('pname').value=m.policy!==undefined?m.policy:(m.rows&&m.rows.some(r=>r.group)&&m.name?m.name.replace(/\s*\(example values\)\s*$/,''):'');}
 // torsion: adverse change against the group's own reference
 function tauOf(r,after,implOn){
   if(r.before==null||after==null||r.before===0)return null;
@@ -359,7 +398,7 @@ function analyze(R,b){
   const nPer={};res.forEach(o=>{nPer[o.r.group]=(nPer[o.r.group]||0)+1;});const wt=o=>(o.r.people||0)/nPer[o.r.group];
   const W=res.reduce((s,o)=>s+wt(o),0);
   const agg=W?res.reduce((s,o)=>s+wt(o)*((o.h.y0||{signed:0}).signed),0)/W:0;
-  const net3=W?res.reduce((s,o)=>s+wt(o)*((o.h.y3||{signed:0}).signed),0)/W:0;
+  const net3=W?res.reduce((s,o)=>s+wt(o)*((o.h.y3||o.h.y1||o.h.y0||{signed:0}).signed),0)/W:0;
   const F=[];
   const aggHit=agg>=0&&res.some(o=>o.h.y0&&o.h.y0.tau>=TL);
   F.push({hit:aggHit,t:'1 · The aggregate mask',p:aggHit?`The people-weighted overall change is ${fmtS(agg)}, which looks fine, while at least one group is in Shatter now. The average hides the harm.`:`The overall number does not hide a group in Shatter. Weighted overall change now: ${fmtS(agg)}.`});
@@ -373,7 +412,7 @@ function analyze(R,b){
   return {res,anyShatter,shatterList,F,agg,net3,W};
 }
 function sentence(o){const r=o.r,w=o.worst;if(!w)return null;const m=esc(r.measure.toLowerCase().replace(/\s*\(.*?\)\s*/g,' ').trim());
-  if(w.tau===0){const g=o.h.y3||o.h.y0;return `<b>${esc(r.group)}</b> ${g&&g.signed>0?`gain ${(g.signed*100).toFixed(1)}% on ${m} by 3 years.`:`hold steady on ${m}.`} <span class="ph ${g&&g.signed>0?'gain':'noble'}">${g&&g.signed>0?'GAIN':'NOBLE'}</span>`;}
+  if(w.tau===0){const g=o.h.y3||o.h.y1||o.h.y0,gl=o.h.y3?'by 3 years':o.h.y1?'by 1 year':'now';return `<b>${esc(r.group)}</b> ${g&&g.signed>0?`gain ${(g.signed*100).toFixed(1)}% on ${m} ${gl}.`:`hold steady on ${m}.`} <span class="ph ${g&&g.signed>0?'gain':'noble'}">${g&&g.signed>0?'GAIN':'NOBLE'}</span>`;}
   const p=phase(w.tau);const what=p==='shatter'?'more than the group can carry':p==='iva'?'under strain, at the edge':'a loss the group can carry';
   let s=`<b>${esc(r.group)}</b> are ${(w.tau*100).toFixed(1)}% worse off on ${m} (${w.lab}): ${what}. <span class="ph ${p}">${PH[p]}</span>`;
   if(p==='shatter'){const x=shatterLine(r);s+=`<span class="fix">To pass, ${m} needs to stay ${r.better==='higher'?'at or above':'at or below'} ${fmtV(x)} as projected (on-the-ground loss included).</span>`;}
@@ -386,7 +425,7 @@ function run(){
   $('plain').innerHTML=A.res.map(sentence).filter(Boolean).map(x=>`<li>${x}</li>`).join('');
   $('work').tBodies[0].innerHTML=A.res.map(o=>{const r=o.r;return `<tr><td><b>${esc(r.group)}</b><br><span class="band">${esc(r.measure)}</span></td><td class="mono">${fmtV(r.before)}</td>${HZ.map(([k])=>`<td class="mono">${fmtV(ground(r,r[k]))}</td>`).join('')}${HZ.map(([k])=>`<td class="mono">${o.h[k]?o.h[k].tau.toFixed(6):'—'}</td>`).join('')}<td class="mono">${fmtV(shatterLine(r))}</td></tr>`;}).join('');
   $('flags').innerHTML=A.F.map(f=>`<div class="flag ${f.hit?'hit':'clear'}"><h4>${f.t}</h4><p>${f.p}</p></div>`).join('');
-  $('net').innerHTML=`<span>People covered</span><span>${Math.round(A.W).toLocaleString()}</span><span>Weighted change now</span><span>${fmtS(A.agg)}</span><span>Weighted change at 3 years</span><span>${fmtS(A.net3)}</span><span>Net direction</span><span>${A.net3>0?'Net gain across everyone (Justice as net Identity Mass gain)':A.net3<0?'Net loss across everyone':'No net change'}</span>`;
+  $('net').innerHTML=`<span>People covered</span><span>${Math.round(A.W).toLocaleString()}</span><span>Weighted change now</span><span>${fmtS(A.agg)}</span><span>Weighted change at the latest horizon</span><span>${fmtS(A.net3)}</span><span>Net direction</span><span>${A.net3>0?'Net gain across everyone (Justice as net Identity Mass gain)':A.net3<0?'Net loss across everyone':'No net change'}</span>`;
   const v=$('verdict');
   if(!R.length){v.className='verdict empty';v.innerHTML='<h3>No groups entered</h3>';}
   else if(A.anyShatter){v.className='verdict fail';v.innerHTML=`<h3>FAIL · at least one group reaches Shatter</h3><p class="help" style="margin:0">${A.shatterList.map(x=>`${esc(x.r.group)} · ${esc(x.r.measure)} (${x.lab}, τ = ${fmtT(x.tau)}) <span class="fix" style="display:inline">· to pass: ${x.r.better==='higher'?'≥':'≤'} ${fmtV(shatterLine(x.r))}</span>`).join('<br>')}</p>`;}
@@ -399,19 +438,19 @@ function compare(B){
   const RB=(B.rows||[]).filter(r=>r.group&&r.before!=null),Bz=analyze(RB,B.beneficiary||'');
   const key=r=>r.group+'¦'+r.measure,keys=[...new Set([...RA.map(key),...RB.map(key)])];
   const cell=(Z,k)=>{const o=Z.res.find(o=>key(o.r)===k);if(!o)return'<span class="band">not in this design</span>';const w=o.worst;if(!w)return'—';
-    if(w.tau===0){const g=o.h.y3||o.h.y0;return g&&g.signed>0?`<span class="ph gain">GAIN +${(g.signed*100).toFixed(1)}%</span>`:'<span class="ph noble">NOBLE</span>';}
+    if(w.tau===0){const g=o.h.y3||o.h.y1||o.h.y0;return g&&g.signed>0?`<span class="ph gain">GAIN +${(g.signed*100).toFixed(1)}%</span>`:'<span class="ph noble">NOBLE</span>';}
     const p=phase(w.tau);return `<span class="ph ${p}">${PH[p]}</span> <span class="mono band">τ ${fmtT(w.tau)} (${w.lab})</span>`;};
   const vd=Z=>`<span class="ph ${Z.anyShatter?'shatter':'locked'}">${Z.anyShatter?'FAIL':'PASS'}</span>`;
   const hits=Z=>Z.F.filter(f=>f.hit).map(f=>f.t.slice(4)).join(', ')||'none';
   $('cmpout').innerHTML=`<div class="tablewrap"><table style="min-width:720px"><thead><tr><th>Group · measure (worst horizon)</th><th>A · ${esc($('pname').value||'on screen')}</th><th>B · ${esc(B.name||'compared design')}</th></tr></thead><tbody>
   <tr><td><b>Verdict</b></td><td>${vd(A)}</td><td>${vd(Bz)}</td></tr>
   <tr><td><b>Checks tripped</b></td><td class="band">${hits(A)}</td><td class="band">${hits(Bz)}</td></tr>
-  <tr><td><b>Weighted change at 3 years</b></td><td class="mono">${fmtS(A.net3)}</td><td class="mono">${fmtS(Bz.net3)}</td></tr>
+  <tr><td><b>Weighted change at the latest horizon</b></td><td class="mono">${fmtS(A.net3)}</td><td class="mono">${fmtS(Bz.net3)}</td></tr>
   ${keys.map(k=>{const [g,m]=k.split('¦');return `<tr><td><b>${esc(g)}</b><br><span class="band">${esc(m)}</span></td><td>${cell(A,k)}</td><td>${cell(Bz,k)}</td></tr>`;}).join('')}</tbody></table></div>`;
 }
 function b64e(s){return btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 function b64d(s){s=s.replace(/-/g,'+').replace(/_/g,'/');return new TextDecoder().decode(Uint8Array.from(atob(s),c=>c.charCodeAt(0)));}
-function state(){return {policy:$('pname').value,purpose:$('purpose').value,beneficiary:$('benef').value,rows:rows(),series:{name:$('sname').value,text:$('stext').value,N:+$('sN').value,d:+$('sD').value,u:+$('sU').value,W:+$('sW').value,people:$('sP').value}};}
+function state(){return {policy:$('pname').value,purpose:$('purpose').value,beneficiary:$('benef').value,rows:rows(),series:{name:$('sname').value,text:$('stext').value,N:+$('sN').value,d:+$('sD').value,u:+$('sU').value,W:+$('sW').value,judge:$('sJ').value,people:$('sP').value}};}
 function shareURL(){return location.href.split('#')[0]+'#s='+b64e(JSON.stringify(state()));}
 function fmtS(x){return (x>=0?'+':'')+(x*100).toFixed(2)+'%';}
 async function hashInputs(o){const s=JSON.stringify({policy:o.policy,beneficiary:o.beneficiary,rows:o.rows});const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('');}
@@ -431,9 +470,10 @@ async function renderVerify(){
 function dl(obj,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
 function slug(s){return (s||'policy').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'policy';}
 // wiring
-Object.entries(MODULES).forEach(([k,m])=>{const o=document.createElement('option');o.value=k;o.textContent=m.name;$('module').appendChild(o);});
+function fillMenu(sel,skipBlank){const g1=document.createElement('optgroup'),g2=document.createElement('optgroup');g1.label='Examples (illustrative values)';g2.label='Real events (published data)';Object.entries(MODULES).forEach(([k,m])=>{if(skipBlank&&k==='blank')return;const o=document.createElement('option');o.value=k;o.textContent=m.name;(m.real?g2:g1).appendChild(o);});sel.appendChild(g1);sel.appendChild(g2);}
+fillMenu($('module'),false);
 $('module').value='pay';
-Object.entries(MODULES).filter(([k])=>k!=='blank').forEach(([k,m])=>{const o=document.createElement('option');o.value=k;o.textContent=m.name;$('cmpmod').appendChild(o);});$('cmpmod').value='payGood';
+fillMenu($('cmpmod'),true);$('cmpmod').value='payGood';
 $('loadmod').onclick=()=>loadModule(MODULES[$('module').value]);
 $('addrow').onclick=()=>addRow();
 $('run').onclick=run;
@@ -469,11 +509,19 @@ const SERIES={
 2024 1702
 2025 1000
 2026 1200`,
-    notes:"Amounts as paid per eligible Alaska resident, energy relief included where the state paid it with the dividend: 2022 includes $662 and 2024 includes $298; 2026 is $1,200, which includes a $200 energy relief payment. 2008 also carried a one-time $1,200 Alaska Resource Rebate, paid separately and not counted here; counted, the 2009 drop is τ = 0.601. Promised amounts for 2016 to 2018 are the published estimates under the statutory formula before the payment was set lower (2017 is given as over $2,300). In 2016 the Alaska Supreme Court ruled that the dividend requires an appropriation by the Legislature each year. Sources: Alaska Department of Revenue, Permanent Fund Dividend Division; Alaska Permanent Fund (Wikipedia dividend table); Alaska's News Source, 30 September 2026; KTNA, 2015.",
+    notes:"Amounts as paid per eligible Alaska resident, energy relief included where the state paid it with the dividend: 2022 includes $662 and 2024 includes $298; 2026 is $1,200, which includes a $200 energy relief payment. 2008 also carried a one-time $1,200 Alaska Resource Rebate, paid separately and not counted here; counted, the 2009 drop is τ = 0.601. Promised amounts for 2016 to 2018 are the published estimates under the statutory formula before the payment was set lower (2017 is given as over $2,300). In August 2017 the Alaska Supreme Court upheld the 2016 veto, ruling that the dividend requires an appropriation by the Legislature each year (Wielechowski v. State). Sources: Alaska Department of Revenue, Permanent Fund Dividend Division; Alaska Permanent Fund (Wikipedia dividend table); Alaska's News Source, 30 September 2026; KTNA, 2015.",
     N:3,d:4,u:4,W:3,people:""},
-  blank:{name:"Blank",text:"",notes:"",N:3,d:10,u:10,people:""}
+  minwage:{name:"Federal minimum wage, buying power, 2010 to 2025 (in 2010 dollars)",judge:"paid",
+    text:"2010 7.25\n2011 7.03\n2012 6.89\n2013 6.79\n2014 6.68\n2015 6.67\n2016 6.59\n2017 6.45\n2018 6.30\n2019 6.18\n2020 6.11\n2021 5.83\n2022 5.40\n2023 5.19\n2024 5.04\n2025 4.91",
+    notes:"The federal minimum wage has been $7.25 an hour since 24 July 2009. Each amount is $7.25 converted to 2010 dollars with the Bureau of Labor Statistics Consumer Price Index for All Urban Consumers (CPI-U), annual averages: amount = 7.25 × CPI(2010) ÷ CPI(year). Buying power falls from $7.25 to $4.91, a 32% loss. Read it for the slow slide: every year-to-year change is Locked, while the 3-year slide reaches IVA Peak in 2022 and Shatter in 2023. The verdict judges the wage as paid; the two payout rules do not apply to a wage and are shown for reference only. Sources: Fair Labor Standards Act as amended in 2007; Bureau of Labor Statistics CPI-U annual averages.",
+    N:3,d:4,u:4,W:3,people:""},
+  inflation:{name:"Buying power of a fixed $1,000 payment, 1913 to 2025 (in 1913 dollars)",judge:"paid",
+    text:"1913 1000.00\n1914 990.00\n1915 980.20\n1916 908.26\n1917 773.44\n1918 660.00\n1919 572.25\n1920 495.00\n1921 553.07\n1922 589.29\n1923 578.95\n1924 578.95\n1925 565.71\n1926 559.32\n1927 568.97\n1928 575.58\n1929 575.58\n1930 592.81\n1931 651.32\n1932 727.94\n1933 767.44\n1934 738.81\n1935 722.63\n1936 712.23\n1937 687.50\n1938 702.13\n1939 712.23\n1940 707.14\n1941 673.47\n1942 607.36\n1943 572.25\n1944 562.50\n1945 550.00\n1946 507.69\n1947 443.95\n1948 412.50\n1949 415.97\n1950 410.79\n1951 380.77\n1952 372.18\n1953 369.40\n1954 368.03\n1955 369.40\n1956 363.97\n1957 352.31\n1958 342.56\n1959 339.04\n1960 334.46\n1961 331.10\n1962 326.73\n1963 323.53\n1964 319.35\n1965 314.29\n1966 304.62\n1967 296.41\n1968 284.48\n1969 269.75\n1970 255.15\n1971 244.44\n1972 236.84\n1973 222.97\n1974 200.81\n1975 184.01\n1976 173.99\n1977 163.37\n1978 151.84\n1979 136.36\n1980 120.15\n1981 108.91\n1982 102.59\n1983 99.40\n1984 95.28\n1985 92.01\n1986 90.33\n1987 87.15\n1988 83.69\n1989 79.84\n1990 75.75\n1991 72.69\n1992 70.56\n1993 68.51\n1994 66.80\n1995 64.96\n1996 63.10\n1997 61.68\n1998 60.74\n1999 59.42\n2000 57.49\n2001 55.90\n2002 55.03\n2003 53.80\n2004 52.41\n2005 50.69\n2006 49.11\n2007 47.75\n2008 45.98\n2009 46.15\n2010 45.40\n2011 44.01\n2012 43.12\n2013 42.50\n2014 41.82\n2015 41.77\n2016 41.25\n2017 40.39\n2018 39.43\n2019 38.72\n2020 38.25\n2021 36.54\n2022 33.83\n2023 32.49\n2024 31.56\n2025 30.75",
+    notes:"A payment that never changes, $1,000 a year, valued in 1913 dollars with the Consumer Price Index for All Urban Consumers (CPI-U), annual averages: amount = 1,000 × CPI(1913) ÷ CPI(year). It isolates inflation from every other cause. Read it for the inflation threshold: a fixed payment reaches Shatter over 3 years when prices rise 5.03% a year on average, over 1 year at 15.86%. Year to year, only 1917 and 1918 reach Shatter. Over 3 years, 24 of 110 stretches do, in four clusters: 1917 to 1921, 1942 to 1949, 1970 to 1983, and 2023. Set the window to 10 years and every stretch ending from 1965 on is in Shatter. From 1930 to 1934 prices fell, so a fixed payment gained buying power. Sources: Federal Reserve Bank of Minneapolis, Consumer Price Index 1913–, and Bureau of Labor Statistics CPI-U annual averages.",
+    N:3,d:4,u:4,W:3,people:""},
+  blank:{name:"Blank",text:"",notes:"",N:3,d:4,u:4,W:3,people:""}
 };
-const money=x=>(x<0?'−$':'$')+Math.round(Math.abs(x)).toLocaleString();
+const money=x=>{const a=Math.abs(x);return (x<0?'−$':'$')+(a<100&&Math.round(a)!==a?a.toFixed(2):Math.round(a).toLocaleString());};
 function parseSeries(t){return t.split(/\n/).map(l=>l.trim().replace(/[$,]/g,'')).filter(Boolean).map(l=>l.split(/[\s;:\t]+/).map(Number)).filter(a=>a.length>=2&&isFinite(a[0])&&isFinite(a[1])&&a[1]>=0).map(a=>({y:a[0],a:a[1],p:a.length>2&&isFinite(a[2])&&a[2]>0?a[2]:null})).sort((x,z)=>x.y-z.y);}
 function simRule(S,kind,o){o=o||{};const Wn=o.W||3;
   const P=[];S.forEach((s,i)=>{let p;
@@ -496,13 +544,13 @@ function svgChart(S,rules){
   const X=y=>L+(W-L-Rm)*(x1===x0?0.5:(y-x0)/(x1-x0)),Y=v=>T+(H-T-B)*(1-v/ymax);
   let g='';const step=Math.pow(10,Math.floor(Math.log10(ymax/4))),tick=[1,2,5].map(k=>k*step).find(k=>ymax/k<=6)||step*10;
   for(let v=0;v<=ymax;v+=tick)g+=`<line x1="${L}" x2="${W-Rm}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${money(v)}</text>`;
-  const ev=Math.max(1,Math.ceil(xs.length/10));xs.forEach((y,i)=>{if(i%ev===0||i===xs.length-1)g+=`<text x="${X(y)}" y="${H-10}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${y}</text>`;});
+  const ev=Math.max(1,Math.ceil(xs.length/10));let lastX=-99;xs.forEach((y,i)=>{if((i%ev===0&&(i===0||X(xs[xs.length-1])-X(y)>34))||i===xs.length-1)g+=`<text x="${X(y)}" y="${H-10}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${y}</text>`;});
   const used=[];
   rules.forEach(r=>{const pts=S.map((s,i)=>`${X(s.y).toFixed(1)},${Y(r.sim.P[i]).toFixed(1)}`).join(' ');
     g+=`<polyline points="${pts}" fill="none" stroke="${r.col}" stroke-width="${r.w}" stroke-dasharray="${r.dash}" stroke-linejoin="round"/>`;
     r.sim.sh.forEach(i=>{g+=`<circle cx="${X(S[i].y)}" cy="${Y(r.sim.P[i])}" r="5.5" fill="var(--bg)" stroke="${r.col}" stroke-width="2"/><text x="${X(S[i].y)}" y="${Y(r.sim.P[i])+4}" text-anchor="middle" font-size="8" font-weight="700" fill="${r.col}" font-family="Space Mono,monospace">S</text>`;});
     r.sim.wsh.filter(i=>!r.sim.sh.includes(i)).forEach(i=>{g+=`<rect x="${X(S[i].y)-5}" y="${Y(r.sim.P[i])-5}" width="10" height="10" fill="var(--bg)" stroke="${r.col}" stroke-width="2"/><text x="${X(S[i].y)}" y="${Y(r.sim.P[i])+3.5}" text-anchor="middle" font-size="7.5" font-weight="700" fill="${r.col}" font-family="Space Mono,monospace">W</text>`;});
-    let ly=Y(r.sim.P[S.length-1]);while(used.some(u=>Math.abs(u-ly)<15))ly+=15;used.push(ly);
+    let ly=Y(r.sim.P[S.length-1]);const dir=ly>H-B-40?-1:1;while(used.some(u=>Math.abs(u-ly)<15))ly+=15*dir;used.push(ly);
     g+=`<text x="${W-Rm+8}" y="${ly+4}" font-size="11.5" fill="${r.col}" font-family="Inter,sans-serif" font-weight="600">${r.short}</text>`;});
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Payment per year under each rule; circles marked S are Shatter years">${g}</svg><p class="band">Lines differ by brightness and pattern: as paid is the bright solid line, rolling average is dashed, bounded change is the thick cyan line. A circle with S marks a year that dropped into Shatter against the year before; a square with W marks a year in Shatter only against the highest payment of the multi-year window (a slow slide).</p>`;
 }
@@ -518,7 +566,11 @@ function runSeries(){
   const fails=x=>x.sh.length||x.wsh.length;const n=S.length-1,yr=i=>S[i].y,paid=rules[0].sim,bnd=rules[2].sim,avg=rules[1].sim;
   const v=$('sverdict'),sum1=r=>{const s=r.sim;return `${r.short}: ${s.sh.length} of ${n} years in Shatter, ${s.wsh.length} ${W}-year slides in Shatter`;};
   const ctx=`<br><span class="band">For comparison · ${sum1(rules[0])} · ${sum1(rules[1])}.</span>`;
-  if(!fails(bnd)){v.className='verdict pass';v.innerHTML=`<h3>PASS · ${rules[2].name}</h3><p class="help" style="margin:0">No year and no ${W}-year stretch reaches Shatter. Worst year-to-year drop τ = ${fmtT(bnd.worst)}; worst ${W}-year slide τ = ${fmtT(bnd.wworst)}. Starting reserve needed: ${money(bnd.R0)} per person.${ctx}</p>`;}
+  if($('sJ').value==='paid'){const ctx2=`<br><span class="band">For comparison · ${sum1(rules[1])} · ${sum1(rules[2])}.</span>`,yrs=[...new Set([...paid.sh,...paid.wsh])].sort((a,b)=>a-b);
+    if(!fails(paid)){v.className='verdict pass';v.innerHTML=`<h3>PASS as paid · no year and no ${W}-year stretch reaches Shatter</h3><p class="help" style="margin:0">Worst year-to-year drop τ = ${fmtT(paid.worst)}; worst ${W}-year slide τ = ${fmtT(paid.wworst)}.${ctx2}</p>`;}
+    else if(!paid.sh.length){v.className='verdict fail';v.innerHTML=`<h3>FAIL as paid · every year passes, but ${paid.wsh.length} ${W}-year slide${paid.wsh.length>1?'s':''} reach${paid.wsh.length>1?'':'es'} Shatter</h3><p class="help" style="margin:0">${paid.wsh.map(i=>`${yr(i)} (τ = ${fmtT(paid.win[i])})`).join(' · ')}. Worst year-to-year drop τ = ${fmtT(paid.worst)}. This is the slow slide: no single year fails, and the stretch does.${ctx2}</p>`;}
+    else{v.className='verdict fail';v.innerHTML=`<h3>FAIL as paid · ${paid.sh.length} of ${n} year-to-year changes reach Shatter</h3><p class="help" style="margin:0">${paid.sh.map(i=>`${yr(i)} (τ = ${fmtT(paid.tau[i])})`).join(' · ')}. ${paid.wsh.length} ${W}-year slides in Shatter; worst τ = ${fmtT(paid.wworst)}.${ctx2}</p>`;}}
+  else if(!fails(bnd)){v.className='verdict pass';v.innerHTML=`<h3>PASS · ${rules[2].name}</h3><p class="help" style="margin:0">No year and no ${W}-year stretch reaches Shatter. Worst year-to-year drop τ = ${fmtT(bnd.worst)}; worst ${W}-year slide τ = ${fmtT(bnd.wworst)}. Starting reserve needed: ${money(bnd.R0)} per person.${ctx}</p>`;}
   else{const yrs=[...new Set([...bnd.sh,...bnd.wsh])].sort((a,b)=>a-b);v.className='verdict fail';v.innerHTML=`<h3>FAIL · ${rules[2].name}</h3><p class="help" style="margin:0">${bnd.sh.length?`${bnd.sh.length} year-to-year drop${bnd.sh.length>1?'s':''} and `:''}${bnd.wsh.length} ${W}-year slide${bnd.wsh.length===1?'':'s'} reach Shatter (${yrs.map(yr).join(', ')}). <span class="fix" style="display:inline">To pass: set the max drop below ${(dLim*100).toFixed(2)}% (the guaranteed limit for ${W} years).</span>${ctx}</p>`;}
   $('schart').innerHTML=svgChart(S,rules);
   const tot=x=>ppl?` (${money(x*ppl)} for ${ppl.toLocaleString()} people)`:'';
@@ -537,10 +589,10 @@ function runSeries(){
   $('syear').tBodies[0].innerHTML=S.map((s,i)=>`<tr><td class="mono"><b>${s.y}</b></td><td class="mono">${money(s.a)}</td>${hasP?`<td class="mono">${s.p?money(s.p):'—'}</td><td>${s.p?ch(Math.max(0,1-s.a/s.p)):'—'}</td>`:''}${rules.map(r=>`${r.k==='paid'?'':`<td class="mono">${money(r.sim.P[i])}</td>`}<td>${ch(r.sim.tau[i])}</td><td>${ch(r.sim.win[i])}</td>${res&&r.k!=='paid'?`<td class="mono">${money(r.sim.bal[i])}</td>`:''}`).join('')}</tr>`).join('');
   lastSeries={name:$('sname').value,text:$('stext').value,W,N,d:d*100,u:u*100,people:$('sP').value};
 }
-function loadSeries(m){$('sname').value=m.name==='Blank'?'':(m.name||'');$('stext').value=m.text||'';$('sN').value=m.N??3;$('sD').value=m.d??10;$('sU').value=m.u??10;$('sW').value=m.W??3;$('sP').value=m.people??'';$('snotes').innerHTML=m.notes?`<div class="note">${esc(m.notes)}</div>`:'';}
+function loadSeries(m){$('sname').value=m.name==='Blank'?'':(m.name||'');$('stext').value=m.text||'';$('sN').value=m.N??3;$('sD').value=m.d??10;$('sU').value=m.u??4;$('sW').value=m.W??3;$('sJ').value=m.judge||'rule';$('sP').value=m.people??'';$('snotes').innerHTML=m.notes?`<div class="note">${esc(m.notes)}</div>`:'';}
 Object.entries(SERIES).forEach(([k,m])=>{const o=document.createElement('option');o.value=k;o.textContent=m.name;$('smod').appendChild(o);});
 $('sload').onclick=()=>{loadSeries(SERIES[$('smod').value]);runSeries();};
-$('srun').onclick=runSeries;
+$('srun').onclick=runSeries;$('sJ').onchange=runSeries;
 
 let fromLink=false;
 if(location.hash.startsWith('#s=')){try{const st=JSON.parse(b64d(location.hash.slice(3)));loadModule(st);$('pname').value=st.policy||'';if(st.series)loadSeries(st.series);fromLink=true;}catch(_){}}
