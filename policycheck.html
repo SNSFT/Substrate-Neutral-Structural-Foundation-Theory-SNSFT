@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Policy Impact Check · Function over Fallacy · Applied Identity Physics</title>
+<meta name="description" content="Check what a policy does, not what it says. Policy Impact Check places every affected group against the Torsion Limit TL = 0.136899099984016, over time and on the ground, and flags the four ways harm hides: the aggregate mask, deferred harm, compliant on paper, and stated allegiance. Free, offline, no data leaves your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e17;--surface:#111827;--surface-2:#1a2332;--border:#1e2a3a;--border-2:#2a3a50;
+  --text:#e2e8f0;--muted:#94a3b8;--dim:#64748b;--accent:#22d3ee;--gold:#fbbf24;
+  /* phase colours chosen so each step differs in brightness as well as hue */
+  --noble:#e2e8f0;--locked:#34d399;--iva:#fbbf24;--shatter:#f87171;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+a{color:var(--accent)}
+.mono{font-family:'Space Mono',monospace}
+header{border-bottom:1px solid var(--border);padding:1.6rem 0 1.2rem}
+.wrap{max-width:1240px;margin:0 auto;padding:0 1.25rem}
+.eyebrow{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(1.6rem,3.6vw,2.3rem);font-weight:700;letter-spacing:-.02em;margin:.2rem 0 .3rem}
+.tag{color:var(--muted);max-width:80ch}
+.tag b{color:var(--gold);font-weight:600}
+section{padding:1.4rem 0;border-bottom:1px solid var(--border)}
+h2{font-size:1.15rem;font-weight:700;margin-bottom:.8rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+h2 .n{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--bg);background:var(--accent);border-radius:100px;padding:.05rem .55rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+label{display:block;font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+input,select,textarea{width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.5rem .6rem;font:inherit;font-size:.92rem}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+textarea{min-height:64px;resize:vertical}
+.btn{background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.45rem .8rem;font-family:'Space Mono',monospace;font-size:.74rem;letter-spacing:.04em;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#04121a;border-color:var(--accent);font-weight:700}
+.row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.help{font-size:.85rem;color:var(--muted);margin:.4rem 0 .8rem;max-width:90ch}
+.tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:1060px}
+th,td{padding:.4rem .45rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}
+th{font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--surface);position:sticky;top:0}
+td input,td select{padding:.35rem .4rem;font-size:.85rem}
+td.num input{text-align:right}
+.x{background:none;border:none;color:var(--dim);cursor:pointer;font-size:1.1rem}
+.x:hover{color:var(--shatter)}
+.verdict{border-radius:10px;padding:1.1rem 1.2rem;border:2px solid;margin-bottom:1rem}
+.verdict.pass{border-color:var(--locked);background:rgba(52,211,153,.07)}
+.verdict.fail{border-color:var(--shatter);background:rgba(248,113,113,.07)}
+.verdict.empty{border-color:var(--border-2)}
+.verdict h3{font-size:1.25rem;margin-bottom:.3rem}
+.ph{display:inline-block;font-family:'Space Mono',monospace;font-size:.72rem;font-weight:700;border-radius:4px;padding:.1rem .45rem;white-space:nowrap}
+.ph.noble{background:var(--noble);color:#0a0e17}
+.ph.locked{background:var(--locked);color:#06281c}
+.ph.iva{background:var(--iva);color:#2a1d00}
+.ph.shatter{background:var(--shatter);color:#2b0606}
+.ph.gain{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.band{font-size:.72rem;color:var(--muted)}
+.flags{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.8rem;margin:1rem 0}
+.flag{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem}
+.flag h4{font-size:.95rem;margin-bottom:.25rem;display:flex;gap:.5rem;align-items:center}
+.flag p{font-size:.85rem;color:var(--muted)}
+.flag.hit{border-color:var(--shatter)}
+.flag.hit h4::before{content:"⚑";color:var(--shatter)}
+.flag.clear h4::before{content:"✓";color:var(--locked)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:.3rem 1rem;font-size:.9rem}
+.kv span:nth-child(odd){color:var(--muted)}
+.ruler{position:relative;height:34px;margin:.6rem 0 1.4rem;border-radius:6px;overflow:hidden;display:flex}
+.ruler div{height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:.6rem;font-size:.8rem;color:var(--muted)}
+footer{padding:2rem 0 3rem;color:var(--muted);font-size:.82rem}
+footer p{margin-bottom:.5rem}
+.note{font-size:.82rem;color:var(--muted);background:var(--surface);border-left:3px solid var(--gold);padding:.7rem .9rem;border-radius:4px;margin-top:.8rem}
+
+.modes{display:inline-flex;border:1px solid var(--border-2);border-radius:100px;overflow:hidden;margin-top:.8rem}
+.modes button{background:none;border:none;color:var(--muted);font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.08em;padding:.4rem .9rem;cursor:pointer}
+.modes button.on{background:var(--accent);color:#04121a;font-weight:700}
+body:not(.researcher) .r-only{display:none!important}
+body.researcher .l-only{display:none!important}
+.plain{list-style:none;display:grid;gap:.45rem;margin:.4rem 0 1rem}
+.plain li{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;font-size:.92rem}
+.fix{display:block;font-size:.8rem;color:var(--accent);margin-top:.15rem}
+.formula{font-family:'Space Mono',monospace;font-size:.8rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.7rem .9rem;margin:.6rem 0;overflow-x:auto;white-space:pre}
+@media print{
+  body{background:#fff;color:#000}.noprint{display:none!important}
+  section{border-color:#ccc}.tablewrap{border-color:#ccc}th{background:#eee;color:#000}
+  input,select,textarea{border:none;background:none;color:#000}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Applied Identity Physics™ · SNSFT Foundation</div>
+    <h1>Policy Impact Check</h1>
+    <p class="tag"><b>Function over Fallacy. Step 6 or it didn't happen.</b> A policy's stated intent and its measured effect are two different things. This tool checks the effect: every affected group, over time and on the ground, placed against the Torsion Limit TL = 0.136899099984016. Nothing you enter leaves your browser.</p>
+    <div class="modes noprint" role="group" aria-label="Mode"><button id="mL" class="on">LEARNER</button><button id="mR">RESEARCHER</button></div>
+    <p class="help l-only" style="margin-top:.5rem">Learner mode: plain words, rounded numbers. Switch to Researcher for the formulas, full precision and the working for every row.</p>
+    <p class="help r-only" style="margin-top:.5rem">Researcher mode: τ to full precision, TL = 0.136899099984016, TL_IVA = 0.88 TL = 0.120471207985934, and the working for every row.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section>
+  <h2><span class="n">1</span> The policy</h2>
+  <div class="grid2">
+    <div><label for="pname">Policy or decision</label><input id="pname" placeholder="e.g. 2027 staff pay schedule"></div>
+    <div><label for="module">Start from a module</label>
+      <div class="row"><select id="module" style="flex:1"></select><button class="btn noprint" id="loadmod">Load</button></div></div>
+    <div><label for="purpose">Stated purpose</label><textarea id="purpose" placeholder="What the policy says it will do"></textarea></div>
+    <div><label for="benef">Stated beneficiary group</label><select id="benef"><option value="">— none named —</option></select>
+      <p class="help">The group the policy says it helps. The stated-allegiance check tests this group's measured outcome.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">2</span> Affected groups</h2>
+  <p class="help">One row per group and measure. <b>Before</b> is the group's situation now. <b>After</b> is the projection at each horizon, as the policy text reads. <b>On-the-ground loss</b> is the extra loss from how the policy is actually carried out (delays, paperwork, enforcement), as a percent. <b>±</b> is the uncertainty in the projection, as a percent of Before. <b>People</b> is how many people the row covers, used for the aggregate check.</p>
+  <div class="tablewrap">
+    <table id="tbl">
+      <thead><tr>
+        <th>Group</th><th>Measure</th><th>Better when</th><th>People</th><th>Before</th><th>After · now</th><th>After · 1 yr</th><th>After · 3 yr</th><th>On-the-ground loss %</th><th>± %</th><th class="noprint"></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class="row noprint" style="margin-top:.7rem">
+    <button class="btn" id="addrow">+ Add group</button>
+    <button class="btn primary" id="run">Run the check</button>
+  </div>
+</section>
+
+<section id="results">
+  <h2><span class="n">3</span> Result</h2>
+  <div id="verdict" class="verdict empty"><h3>No check run yet</h3><p class="help">Fill in the groups and press Run the check.</p></div>
+  <div class="legend">
+    <span><span class="ph noble">NOBLE</span> τ = 0, no loss</span>
+    <span><span class="ph locked">LOCKED</span> 0 &lt; τ &lt; TL_IVA</span>
+    <span><span class="ph iva">IVA PEAK</span> TL_IVA ≤ τ &lt; TL</span>
+    <span><span class="ph shatter">SHATTER</span> τ ≥ TL</span>
+    <span><span class="ph gain">GAIN</span> the group is better off</span>
+  </div>
+  <div class="tablewrap" style="margin-top:.8rem"><table id="out"><thead><tr><th>Group · measure</th><th>Now</th><th>1 yr</th><th>3 yr</th><th>Now, on paper only</th><th>Placement holds within ±?</th></tr></thead><tbody></tbody></table></div>
+  <h2 style="margin-top:1.4rem">In plain words</h2>
+  <ul class="plain" id="plain"></ul>
+  <div class="r-only">
+    <h2>The working</h2>
+    <div class="formula">τ = max(0, −s),  s = (X − X_ref) / X_ref  when higher is better
+                    s = (X_ref − X) / X_ref  when lower is better
+X on the ground = X·(1 − ℓ) when higher is better,  X·(1 + ℓ) when lower is better   (ℓ = on-the-ground loss)
+Shatter line:  X* = X_ref·(1 − TL)/(1 − ℓ)  (higher is better)    X* = X_ref·(1 + TL)/(1 + ℓ)  (lower is better)</div>
+    <div class="tablewrap"><table id="work" style="min-width:900px"><thead><tr><th>Group · measure</th><th>X_ref</th><th>X now (ground)</th><th>X 1 yr (ground)</th><th>X 3 yr (ground)</th><th>τ now</th><th>τ 1 yr</th><th>τ 3 yr</th><th>Shatter line X*</th></tr></thead><tbody></tbody></table></div>
+  </div>
+  <h2 style="margin-top:1.4rem">The four ways harm hides</h2>
+  <div class="flags" id="flags"></div>
+  <h2>Net effect across everyone</h2>
+  <div class="kv" id="net"></div>
+</section>
+
+
+<section id="series">
+  <h2><span class="n">4</span> Payments over time</h2>
+  <p class="help">For a payment that repeats every year (a dividend, a grant, a stipend, a wage supplement). Each year is placed against the year before, because last year's payment is what a household budgets on. Then the same history is run through two payout rules to see which one keeps every year out of Shatter, and how big a reserve that takes.</p>
+  <div class="grid2">
+    <div>
+      <label for="smod">Start from a module</label>
+      <div class="row"><select id="smod" style="flex:1"></select><button class="btn noprint" id="sload">Load</button></div>
+      <label for="sname" style="margin-top:.7rem">Payment</label><input id="sname">
+      <label for="stext" style="margin-top:.7rem">Year · amount paid · amount promised (optional)</label>
+      <textarea id="stext" class="mono" style="min-height:220px;font-size:.82rem" spellcheck="false"></textarea>
+      <p class="help">One year per line. The third number is optional: what the formula or the law said the payment should be. When it is there, the year is also placed against it (paid versus promised).</p>
+    </div>
+    <div>
+      <label>Rule 1 · rolling average</label>
+      <div class="row"><span class="band" style="min-width:9ch">Years</span><input id="sN" type="number" min="2" max="10" step="1" value="3" style="width:6rem"></div>
+      <p class="help">Each year pays the average of the last N years' amounts.</p>
+      <label style="margin-top:.6rem">Rule 2 · bounded change with a reserve</label>
+      <div class="row"><span class="band" style="min-width:9ch">Max drop %</span><input id="sD" type="number" min="0" max="50" step="0.01" value="4" style="width:6rem"></div>
+      <div class="row" style="margin-top:.4rem"><span class="band" style="min-width:9ch">Max rise %</span><input id="sU" type="number" min="0" max="200" step="0.01" value="4" style="width:6rem"></div>
+      <p class="help">Each year pays the amount, but never less than last year minus the max drop, and never more than last year plus the max rise. Good years put the difference into a reserve; lean years draw it down. A max drop of 12.0% sits just under the IVA Peak edge (TL_IVA = 12.047%).</p>
+      <label style="margin-top:.6rem">Multi-year check</label>
+      <div class="row"><span class="band" style="min-width:9ch">Window years</span><input id="sW" type="number" min="2" max="10" step="1" value="3" style="width:6rem"></div>
+      <p class="help">Each year is also placed against the highest payment of the previous N years, so a slow slide that never trips the year-to-year check is still caught. To guarantee no N-year stretch reaches Shatter, the max drop must stay below 1 − (1 − TL)^(1/N): 4.79% per year for 3 years.</p>
+      <label for="sP" style="margin-top:.6rem">People paid (optional)</label><input id="sP" type="number" min="0" placeholder="Scales the reserve from per person to a total">
+      <div class="row noprint" style="margin-top:.9rem"><button class="btn primary" id="srun">Run the series</button></div>
+    </div>
+  </div>
+  <div id="snotes"></div>
+  <div id="sverdict" class="verdict empty" style="margin-top:1rem"><h3>No series run yet</h3></div>
+  <div id="schart" style="margin:.4rem 0 1rem"></div>
+  <ul class="plain" id="splain"></ul>
+  <div class="tablewrap"><table id="ssum" style="min-width:980px"><thead><tr><th>Payout rule</th><th>Verdict</th><th>Shatter years</th><th>IVA Peak years</th><th>Worst drop (τ)</th><th>Worst multi-year drop (τ)</th><th>Multi-year Shatter years</th><th>Paid in total, per person</th><th>Starting reserve needed, per person</th><th>Reserve at the end</th></tr></thead><tbody></tbody></table></div>
+  <h2 style="margin-top:1.2rem">Year by year</h2>
+  <div class="tablewrap"><table id="syear" style="min-width:1300px"><thead></thead><tbody></tbody></table></div>
+  <div class="r-only">
+    <h2 style="margin-top:1.2rem">The working</h2>
+    <div class="formula">τ_t = max(0, 1 − P_t / P_(t−1))                       drop against last year's payment
+τ_paper = max(0, 1 − paid_t / promised_t)            paid versus promised
+Rolling average:   P_t = mean(A_(t−N+1) … A_t)
+Bounded change:    P_t = min( max(A_t, (1 − d)·P_(t−1)), (1 + u)·P_(t−1) ),  P_first = A_first
+Reserve:           R_t = R_(t−1) + (A_t − P_t);   starting reserve = max(0, −min_t Σ(A − P))
+Multi-year slide: τ_W,t = max over k = 1…W of max(0, 1 − P_t / P_(t−k))
+Highest max drop that stays out of Shatter: d &lt; TL = 13.6899%;  out of IVA Peak: d &lt; TL_IVA = 12.0471%
+Guaranteed for every W-year stretch: (1 − d)^W &gt; 1 − TL  ⇔  d &lt; 1 − (1 − TL)^(1/W)   (W = 3: 4.7890%)</div>
+  </div>
+</section>
+
+<section class="noprint">
+  <h2><span class="n">5</span> Compare two designs</h2>
+  <p class="help">Boards choose between options. Compare the design on screen (A) with a module or a saved file (B), group by group.</p>
+  <div class="row"><select id="cmpmod" style="flex:1;min-width:240px"></select><button class="btn" id="cmprun">Compare with A</button>
+    <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Compare with a file<input type="file" id="cmpfile" accept=".json" hidden></label></div>
+  <div id="cmpout" style="margin-top:1rem"></div>
+</section>
+
+<section class="noprint">
+  <h2><span class="n">6</span> Share and verify</h2>
+  <p class="help">Share link: the whole setup is packed into the link itself. Anyone who opens it sees exactly the same inputs; nothing is stored on a server.</p>
+  <div class="row" style="margin-bottom:1rem"><button class="btn primary" id="share">Copy share link</button><span id="sharemsg" class="band"></span></div>
+  <p class="help">Independent verification: a check run only by the party being checked is not enough (Magna Carta, Article 61: no authority is the sole judge of its own compliance). Save this run, have a second party with a different interest run the same inputs, and load both here. When two independent runs match the same inputs and the same verdict, the result is marked independently verified.</p>
+  <div class="grid2">
+    <div><label for="runby">Run by</label><input id="runby" placeholder="Name"></div>
+    <div><label for="interest">Interest or affiliation</label><input id="interest" placeholder="e.g. board treasurer, staff representative"></div>
+  </div>
+  <div class="row" style="margin-top:.8rem">
+    <button class="btn" id="saverun">Save this run (.json)</button>
+    <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Load runs to compare<input type="file" id="loadruns" accept=".json" multiple hidden></label>
+    <button class="btn" id="savemod">Save groups as a module</button>
+    <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Load a module file<input type="file" id="loadmodfile" accept=".json" hidden></label>
+    <button class="btn" onclick="window.print()">Print report</button>
+  </div>
+  <div id="verify" style="margin-top:1rem"></div>
+</section>
+
+<section>
+  <h2>How the check works</h2>
+  <div class="help" style="max-width:100ch">
+    <p><b>The measure.</b> Each group's torsion is its adverse change against its own reference, the reduction of the Applied Identity Physics Economics paper: τ = |X − X_ref| / X_ref, counted only in the direction that harms the group. X_ref is the group's situation before the policy; X is the projected situation after. A group that ends up better off has τ = 0 and is shown as a gain.</p>
+    <p><b>The placement.</b> TL = 0.136899099984016 and TL_IVA = 0.88 × TL = 0.120471207985934. A group below TL_IVA is Locked: it carries the change. Between TL_IVA and TL it is at IVA Peak: under strain at the edge. At or above TL it is in Shatter: the change exceeds what the group can carry. The Economics paper places real events the same way: a 2% inflation target at τ = 0.020 (Locked), US output in 1932 at 0.129 (IVA Peak), a 20% bear market at 0.200 (Shatter).</p>
+    <p><b>Bounded uncertainty.</b> The ± band is applied to each projection. If the whole band stays inside one phase, the placement holds. If the band reaches a boundary, the placement is marked open, and better data decides it.</p>
+    <p><b>The verdict.</b> The policy passes when no group reaches Shatter at any horizon, either as written or on the ground. The net effect sums each group's signed change weighted by its people: Justice as a net gain across every party (APPA NOHARM Lossless Kernel [9,0,1,1]).</p>
+    <p><b>Payments over time.</b> A repeating payment is placed year against year: τ = 1 − this year ÷ last year, counted only when it drops. The same history is then run through a rolling average and through a bounded-change rule with a reserve. A bounded rule with a max drop below TL can never place a single year in Shatter; the question it answers is how large a reserve that takes, given the real history. Each year is also placed against the highest payment of the previous N years, because a run of drops that each pass can add up to Shatter: the deferred-harm check from Function over Fallacy, applied to the payout rule itself. Smoothing rules of this kind are standard for endowments; Yale's spends 80% of the prior year's spending plus 20% of a target rate on the endowment, for intergenerational neutrality.</p>
+    <p><b>The four checks</b> come from Function over Fallacy: the aggregate mask (the overall number improves while a group is harmed), deferred harm (fine now, Shatter later), compliant on paper (fine as written, Shatter on the ground), and stated allegiance (the named beneficiary is harmed).</p>
+  </div>
+  <div class="note">This tool measures effect, not motive. It does not render a verdict on any person, party or intention, and a policy can fail through honest miscalculation. Its output is a starting point for scrutiny, to be confirmed by more than one independent party with real data. The module examples use illustrative numbers; replace them with your own.</div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p><b>Built from:</b> Function over Fallacy: An Applied Identity Physics Standard for Structural Accountability in Public Policy · Applied Identity Physics Economics reduction (proofpress.org) · APPA NOHARM Lossless Kernel [9,0,1,1] · Magna Carta of the Digital Mind [9,9,5,3] · Bounded uncertainty (proofpress.org) · Permanent Fund Dividend history: Alaska Department of Revenue, Permanent Fund Dividend Division (pfd.alaska.gov).</p>
+  <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · DOI base 10.5281/zenodo.18719748 · Free to use under the NOHARM invariant, with citation.</p>
+  <p class="mono" style="color:var(--accent);opacity:.7">[9,9,9,9] :: {ANC} · The Manifold is Holding</p>
+</footer>
+
+<script>
+const TL=0.136899099984016, TLIVA=0.88*TL;
+const MODULES={
+  blank:{name:"Blank",purpose:"",beneficiary:"",rows:[{group:"",measure:"",better:"higher",people:"",before:"",y0:"",y1:"",y3:"",impl:0,unc:5}]},
+  pay:{name:"Pay schedule change · flawed design (example values)",purpose:"Keep the organization competitive by raising leadership pay while holding the budget flat.",beneficiary:"Program staff",
+    rows:[
+      {group:"Executive team",measure:"Annual salary ($)",better:"higher",people:3,before:120000,y0:150000,y1:150000,y3:150000,impl:0,unc:2},
+      {group:"Program staff",measure:"Annual salary ($)",better:"higher",people:20,before:48000,y0:46500,y1:45000,y3:42500,impl:0,unc:3},
+      {group:"Facilities staff",measure:"Annual salary ($)",better:"higher",people:4,before:36000,y0:33500,y1:32500,y3:31000,impl:0,unc:3},
+      {group:"Program staff",measure:"Benefit hours per month",better:"higher",people:20,before:12,y0:12,y1:11,y3:10,impl:5,unc:5}]},
+  payGood:{name:"Pay schedule change · good design: capped top, living-wage floor (example values)",purpose:"Keep the organization competitive while capping leadership pay and lifting the lowest-paid staff to a living wage.",beneficiary:"Program staff",
+    rows:[
+      {group:"Executive team",measure:"Annual salary ($)",better:"higher",people:3,before:120000,y0:126000,y1:126000,y3:126000,impl:0,unc:2},
+      {group:"Program staff",measure:"Annual salary ($)",better:"higher",people:20,before:48000,y0:50400,y1:51400,y3:52900,impl:0,unc:3},
+      {group:"Facilities staff",measure:"Annual salary ($)",better:"higher",people:4,before:36000,y0:39600,y1:40400,y3:41600,impl:0,unc:3},
+      {group:"Program staff",measure:"Benefit hours per month",better:"higher",people:20,before:12,y0:12,y1:13,y3:13,impl:0,unc:5}]},
+  school:{name:"School schedule change · flawed design (example values)",purpose:"Add instructional minutes to raise reading scores for struggling students.",beneficiary:"Students reading below grade level",
+    rows:[
+      {group:"Students reading below grade level",measure:"Reading support minutes per week",better:"higher",people:80,before:150,y0:165,y1:165,y3:165,impl:25,unc:8},
+      {group:"Rural bus riders",measure:"Daily commute minutes",better:"lower",people:120,before:70,y0:82,y1:82,y3:82,impl:0,unc:5},
+      {group:"Teachers",measure:"Unpaid prep minutes per week",better:"lower",people:30,before:300,y0:330,y1:345,y3:360,impl:0,unc:5},
+      {group:"All students",measure:"Instructional minutes per week",better:"higher",people:1500,before:1650,y0:1710,y1:1710,y3:1710,impl:0,unc:2}]},
+  schoolGood:{name:"School schedule change · good design: funded tutors, added bus route, paid prep (example values)",purpose:"Add instructional minutes to raise reading scores for struggling students, with tutors funded, an added bus route and paid prep time.",beneficiary:"Students reading below grade level",
+    rows:[
+      {group:"Students reading below grade level",measure:"Reading support minutes per week",better:"higher",people:80,before:150,y0:165,y1:170,y3:175,impl:5,unc:8},
+      {group:"Rural bus riders",measure:"Daily commute minutes",better:"lower",people:120,before:70,y0:72,y1:72,y3:72,impl:0,unc:5},
+      {group:"Teachers",measure:"Unpaid prep minutes per week",better:"lower",people:30,before:300,y0:300,y1:290,y3:280,impl:0,unc:5},
+      {group:"All students",measure:"Instructional minutes per week",better:"higher",people:1500,before:1650,y0:1710,y1:1710,y3:1710,impl:0,unc:2}]},
+  fee:{name:"Fee change · flawed design: flat fee (example values)",purpose:"Fund road maintenance with a flat vehicle registration fee.",beneficiary:"Rural residents (low income)",
+    rows:[
+      {group:"Rural residents (low income)",measure:"Monthly disposable income ($)",better:"higher",people:900,before:600,y0:560,y1:540,y3:515,impl:2,unc:4},
+      {group:"Urban residents (median income)",measure:"Monthly disposable income ($)",better:"higher",people:5000,before:2400,y0:2360,y1:2358,y3:2355,impl:0,unc:3},
+      {group:"Rural residents (low income)",measure:"Road days passable per year",better:"higher",people:900,before:250,y0:250,y1:262,y3:275,impl:0,unc:6}]},
+  feeGood:{name:"Fee change · good design: income-scaled with low-income exemption (example values)",purpose:"Fund road maintenance with a registration fee scaled to income, with low-income households exempt.",beneficiary:"Rural residents (low income)",
+    rows:[
+      {group:"Rural residents (low income)",measure:"Monthly disposable income ($)",better:"higher",people:900,before:600,y0:600,y1:600,y3:600,impl:1,unc:4},
+      {group:"Urban residents (median income)",measure:"Monthly disposable income ($)",better:"higher",people:5000,before:2400,y0:2380,y1:2379,y3:2378,impl:0,unc:3},
+      {group:"Rural residents (low income)",measure:"Road days passable per year",better:"higher",people:900,before:250,y0:250,y1:262,y3:275,impl:0,unc:6}]},
+  bill:{name:"Bill provision · expiring credit, flawed design (example values)",purpose:"Temporary credit to lower energy costs for low-income households.",beneficiary:"Low-income households",
+    rows:[
+      {group:"Low-income households",measure:"Monthly energy cost ($)",better:"lower",people:12000,before:310,y0:250,y1:255,y3:340,impl:4,unc:5},
+      {group:"Middle-income households",measure:"Monthly energy cost ($)",better:"lower",people:30000,before:260,y0:255,y1:256,y3:262,impl:0,unc:4},
+      {group:"Small utilities",measure:"Annual operating margin ($K)",better:"higher",people:40,before:900,y0:870,y1:860,y3:850,impl:0,unc:6}]},
+  billGood:{name:"Bill provision · good design: gradual phase-down instead of a cliff (example values)",purpose:"Lower energy costs for low-income households, with the credit phased down gradually instead of ending all at once.",beneficiary:"Low-income households",
+    rows:[
+      {group:"Low-income households",measure:"Monthly energy cost ($)",better:"lower",people:12000,before:310,y0:250,y1:255,y3:285,impl:2,unc:5},
+      {group:"Middle-income households",measure:"Monthly energy cost ($)",better:"lower",people:30000,before:260,y0:255,y1:256,y3:258,impl:0,unc:4},
+      {group:"Small utilities",measure:"Annual operating margin ($K)",better:"higher",people:40,before:900,y0:885,y1:880,y3:875,impl:0,unc:6}]}
+};
+const $=id=>document.getElementById(id);
+const COLS=['group','measure','better','people','before','y0','y1','y3','impl','unc'];
+function addRow(r={}){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input data-k="group" value="${esc(r.group??'')}" placeholder="Group"></td>
+  <td><input data-k="measure" value="${esc(r.measure??'')}" placeholder="What changes for them"></td>
+  <td><select data-k="better"><option value="higher">Higher</option><option value="lower">Lower</option></select></td>
+  ${['people','before','y0','y1','y3','impl','unc'].map(k=>`<td class="num"><input data-k="${k}" type="number" step="any" value="${r[k]??''}"></td>`).join('')}
+  <td class="noprint"><button class="x" title="Remove row" aria-label="Remove row">×</button></td>`;
+  tr.querySelector('select').value=r.better||'higher';
+  tr.querySelector('.x').onclick=()=>{tr.remove();syncBenef();};
+  tr.querySelector('[data-k="group"]').addEventListener('change',syncBenef);
+  $('tbl').tBodies[0].appendChild(tr);
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function rows(){return [...$('tbl').tBodies[0].rows].map(tr=>{const o={};tr.querySelectorAll('[data-k]').forEach(e=>{const k=e.dataset.k;o[k]=(e.type==='number')?(e.value===''?null:+e.value):e.value;});return o;});}
+function syncBenef(){const cur=$('benef').value;const gs=[...new Set(rows().map(r=>r.group).filter(Boolean))];
+  $('benef').innerHTML='<option value="">— none named —</option>'+gs.map(g=>`<option>${esc(g)}</option>`).join('');if(gs.includes(cur))$('benef').value=cur;}
+function loadModule(m){$('tbl').tBodies[0].innerHTML='';m.rows.forEach(addRow);if(m.purpose!==undefined)$('purpose').value=m.purpose;syncBenef();if(m.beneficiary)$('benef').value=m.beneficiary;$('pname').value=m.policy!==undefined?m.policy:(m.rows&&m.rows.some(r=>r.group)&&m.name?m.name.replace(/\s*\(example values\)\s*$/,''):'');}
+// torsion: adverse change against the group's own reference
+function tauOf(r,after,implOn){
+  if(r.before==null||after==null||r.before===0)return null;
+  let a=after;const imp=implOn?(r.impl||0)/100:0;
+  if(r.better==='higher')a=after*(1-imp);else a=after*(1+imp);
+  const signed=(r.better==='higher'?(a-r.before):(r.before-a))/Math.abs(r.before); // + is good for the group
+  return {tau:Math.max(0,-signed),signed};
+}
+function phase(t){if(t==null)return null;if(t===0)return'noble';if(t<TLIVA)return'locked';if(t<TL)return'iva';return'shatter';}
+const PH={noble:'NOBLE',locked:'LOCKED',iva:'IVA PEAK',shatter:'SHATTER'};
+function chip(res){if(!res)return'<span class="band">—</span>';const p=phase(res.tau);
+  if(res.tau===0&&res.signed>0)return`<span class="ph gain">GAIN +${(res.signed*100).toFixed(1)}%</span>`;
+  return`<span class="ph ${p}">${PH[p]}</span> <span class="mono band">τ = ${res.tau.toFixed(4)}</span>`;}
+function holds(r,after,implOn){ // bounded uncertainty: does the ± band stay inside one phase
+  const u=(r.unc||0)/100;if(after==null||!r.before)return null;
+  const lo=tauOf(r,after-u*r.before*(r.better==='higher'?1:-1),implOn),hi=tauOf(r,after+u*r.before*(r.better==='higher'?1:-1),implOn);
+  if(!lo||!hi)return null;return phase(lo.tau)===phase(hi.tau);
+}
+let lastRun=null;
+const RES=()=>document.body.classList.contains('researcher');
+const fmtT=t=>RES()?t.toFixed(6):t.toFixed(3);
+function shatterLine(r){const l=(r.impl||0)/100;return r.better==='higher'?r.before*(1-TL)/(1-l):r.before*(1+TL)/(1+l);}
+function fmtV(x){if(x==null)return'—';const a=Math.abs(x);return a>=1000?Math.round(x).toLocaleString():a>=10?x.toFixed(1):x.toFixed(2);}
+function ground(r,after){const l=(r.impl||0)/100;return after==null?null:(r.better==='higher'?after*(1-l):after*(1+l));}
+const HZ=[['y0','now'],['y1','1 yr'],['y3','3 yr']];
+function analyze(R,b){
+  let anyShatter=false;const shatterList=[];
+  const res=R.map(r=>{const o={r,h:{}};HZ.forEach(([k])=>{o.h[k]=tauOf(r,r[k],true);});o.paper=tauOf(r,r.y0,false);
+    o.hold=HZ.every(([k])=>holds(r,r[k],true)!==false);
+    o.worst=HZ.reduce((m,[k,lab])=>o.h[k]&&(!m||o.h[k].tau>m.tau)?{...o.h[k],lab}:m,null);
+    HZ.forEach(([k,lab])=>{if(o.h[k]&&o.h[k].tau>=TL){anyShatter=true;shatterList.push({r,lab,tau:o.h[k].tau});}});return o;});
+  const nPer={};res.forEach(o=>{nPer[o.r.group]=(nPer[o.r.group]||0)+1;});const wt=o=>(o.r.people||0)/nPer[o.r.group];
+  const W=res.reduce((s,o)=>s+wt(o),0);
+  const agg=W?res.reduce((s,o)=>s+wt(o)*((o.h.y0||{signed:0}).signed),0)/W:0;
+  const net3=W?res.reduce((s,o)=>s+wt(o)*((o.h.y3||{signed:0}).signed),0)/W:0;
+  const F=[];
+  const aggHit=agg>=0&&res.some(o=>o.h.y0&&o.h.y0.tau>=TL);
+  F.push({hit:aggHit,t:'1 · The aggregate mask',p:aggHit?`The people-weighted overall change is ${fmtS(agg)}, which looks fine, while at least one group is in Shatter now. The average hides the harm.`:`The overall number does not hide a group in Shatter. Weighted overall change now: ${fmtS(agg)}.`});
+  const def=res.filter(o=>o.h.y0&&o.h.y0.tau<TL&&((o.h.y1&&o.h.y1.tau>=TL)||(o.h.y3&&o.h.y3.tau>=TL)));
+  F.push({hit:def.length>0,t:'2 · Deferred harm',p:def.length?`Fine now, Shatter later for: ${def.map(o=>esc(o.r.group)+' · '+esc(o.r.measure)).join('; ')}.`:'No group passes now and reaches Shatter at 1 or 3 years.'});
+  const pap=res.filter(o=>o.paper&&o.paper.tau<TL&&o.h.y0&&o.h.y0.tau>=TL);
+  F.push({hit:pap.length>0,t:'3 · Compliant on paper',p:pap.length?`Passes as written, Shatter on the ground for: ${pap.map(o=>esc(o.r.group)+' · '+esc(o.r.measure)).join('; ')}.`:'No group passes as written and fails once on-the-ground losses are counted.'});
+  const bo=res.filter(o=>o.r.group===b);
+  const bHarm=bo.filter(o=>HZ.some(([k])=>o.h[k]&&o.h[k].tau>0));const bShat=bo.filter(o=>HZ.some(([k])=>o.h[k]&&o.h[k].tau>=TL));
+  F.push({hit:bShat.length>0,t:'4 · Stated allegiance',p:!b?'No beneficiary group is named, so this check has nothing to test.':bShat.length?`The policy names "${esc(b)}" as its beneficiary, and that group reaches Shatter on: ${bShat.map(o=>esc(o.r.measure)).join('; ')}.`:bHarm.length?`"${esc(b)}" loses ground on ${bHarm.map(o=>esc(o.r.measure)).join('; ')}, but stays below TL.`:`"${esc(b)}" is not harmed on any measure.`});
+  return {res,anyShatter,shatterList,F,agg,net3,W};
+}
+function sentence(o){const r=o.r,w=o.worst;if(!w)return null;const m=esc(r.measure.toLowerCase().replace(/\s*\(.*?\)\s*/g,' ').trim());
+  if(w.tau===0){const g=o.h.y3||o.h.y0;return `<b>${esc(r.group)}</b> ${g&&g.signed>0?`gain ${(g.signed*100).toFixed(1)}% on ${m} by 3 years.`:`hold steady on ${m}.`} <span class="ph ${g&&g.signed>0?'gain':'noble'}">${g&&g.signed>0?'GAIN':'NOBLE'}</span>`;}
+  const p=phase(w.tau);const what=p==='shatter'?'more than the group can carry':p==='iva'?'under strain, at the edge':'a loss the group can carry';
+  let s=`<b>${esc(r.group)}</b> are ${(w.tau*100).toFixed(1)}% worse off on ${m} (${w.lab}): ${what}. <span class="ph ${p}">${PH[p]}</span>`;
+  if(p==='shatter'){const x=shatterLine(r);s+=`<span class="fix">To pass, ${m} needs to stay ${r.better==='higher'?'at or above':'at or below'} ${fmtV(x)} as projected (on-the-ground loss included).</span>`;}
+  return s;}
+function run(){
+  const R=rows().filter(r=>r.group&&r.before!=null),b=$('benef').value,A=analyze(R,b);
+  const ob=$('out').tBodies[0];ob.innerHTML='';
+  A.res.forEach(o=>{const r=o.r,tr=document.createElement('tr');
+    tr.innerHTML=`<td><b>${esc(r.group)}</b><br><span class="band">${esc(r.measure)}</span></td><td>${chip(o.h.y0)}</td><td>${chip(o.h.y1)}</td><td>${chip(o.h.y3)}</td><td>${chip(o.paper)}</td><td>${o.hold?'<span class="band">Yes, within ±'+(r.unc||0)+'%</span>':'<span class="ph iva">OPEN</span> <span class="band">band reaches a boundary</span>'}</td>`;ob.appendChild(tr);});
+  $('plain').innerHTML=A.res.map(sentence).filter(Boolean).map(x=>`<li>${x}</li>`).join('');
+  $('work').tBodies[0].innerHTML=A.res.map(o=>{const r=o.r;return `<tr><td><b>${esc(r.group)}</b><br><span class="band">${esc(r.measure)}</span></td><td class="mono">${fmtV(r.before)}</td>${HZ.map(([k])=>`<td class="mono">${fmtV(ground(r,r[k]))}</td>`).join('')}${HZ.map(([k])=>`<td class="mono">${o.h[k]?o.h[k].tau.toFixed(6):'—'}</td>`).join('')}<td class="mono">${fmtV(shatterLine(r))}</td></tr>`;}).join('');
+  $('flags').innerHTML=A.F.map(f=>`<div class="flag ${f.hit?'hit':'clear'}"><h4>${f.t}</h4><p>${f.p}</p></div>`).join('');
+  $('net').innerHTML=`<span>People covered</span><span>${Math.round(A.W).toLocaleString()}</span><span>Weighted change now</span><span>${fmtS(A.agg)}</span><span>Weighted change at 3 years</span><span>${fmtS(A.net3)}</span><span>Net direction</span><span>${A.net3>0?'Net gain across everyone (Justice as net Identity Mass gain)':A.net3<0?'Net loss across everyone':'No net change'}</span>`;
+  const v=$('verdict');
+  if(!R.length){v.className='verdict empty';v.innerHTML='<h3>No groups entered</h3>';}
+  else if(A.anyShatter){v.className='verdict fail';v.innerHTML=`<h3>FAIL · at least one group reaches Shatter</h3><p class="help" style="margin:0">${A.shatterList.map(x=>`${esc(x.r.group)} · ${esc(x.r.measure)} (${x.lab}, τ = ${fmtT(x.tau)}) <span class="fix" style="display:inline">· to pass: ${x.r.better==='higher'?'≥':'≤'} ${fmtV(shatterLine(x.r))}</span>`).join('<br>')}</p>`;}
+  else{const iva=A.res.some(o=>HZ.some(([k])=>o.h[k]&&o.h[k].tau>=TLIVA));v.className='verdict pass';v.innerHTML=`<h3>PASS · no group reaches Shatter</h3><p class="help" style="margin:0">${iva?'At least one group sits at IVA Peak, under strain at the edge. Watch it.':'Every group is Locked, Noble or better off.'}</p>`;}
+  lastRun={tool:'Policy Impact Check',version:2,policy:$('pname').value,purpose:$('purpose').value,beneficiary:b,rows:R,verdict:A.anyShatter?'FAIL':'PASS',shatter:A.shatterList.map(x=>`${x.r.group} · ${x.r.measure} (${x.lab}, τ = ${x.tau.toFixed(6)})`),runBy:$('runby').value,interest:$('interest').value,date:new Date().toISOString()};
+  renderVerify();
+}
+function compare(B){
+  const RA=rows().filter(r=>r.group&&r.before!=null),A=analyze(RA,$('benef').value);
+  const RB=(B.rows||[]).filter(r=>r.group&&r.before!=null),Bz=analyze(RB,B.beneficiary||'');
+  const key=r=>r.group+'¦'+r.measure,keys=[...new Set([...RA.map(key),...RB.map(key)])];
+  const cell=(Z,k)=>{const o=Z.res.find(o=>key(o.r)===k);if(!o)return'<span class="band">not in this design</span>';const w=o.worst;if(!w)return'—';
+    if(w.tau===0){const g=o.h.y3||o.h.y0;return g&&g.signed>0?`<span class="ph gain">GAIN +${(g.signed*100).toFixed(1)}%</span>`:'<span class="ph noble">NOBLE</span>';}
+    const p=phase(w.tau);return `<span class="ph ${p}">${PH[p]}</span> <span class="mono band">τ ${fmtT(w.tau)} (${w.lab})</span>`;};
+  const vd=Z=>`<span class="ph ${Z.anyShatter?'shatter':'locked'}">${Z.anyShatter?'FAIL':'PASS'}</span>`;
+  const hits=Z=>Z.F.filter(f=>f.hit).map(f=>f.t.slice(4)).join(', ')||'none';
+  $('cmpout').innerHTML=`<div class="tablewrap"><table style="min-width:720px"><thead><tr><th>Group · measure (worst horizon)</th><th>A · ${esc($('pname').value||'on screen')}</th><th>B · ${esc(B.name||'compared design')}</th></tr></thead><tbody>
+  <tr><td><b>Verdict</b></td><td>${vd(A)}</td><td>${vd(Bz)}</td></tr>
+  <tr><td><b>Checks tripped</b></td><td class="band">${hits(A)}</td><td class="band">${hits(Bz)}</td></tr>
+  <tr><td><b>Weighted change at 3 years</b></td><td class="mono">${fmtS(A.net3)}</td><td class="mono">${fmtS(Bz.net3)}</td></tr>
+  ${keys.map(k=>{const [g,m]=k.split('¦');return `<tr><td><b>${esc(g)}</b><br><span class="band">${esc(m)}</span></td><td>${cell(A,k)}</td><td>${cell(Bz,k)}</td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function b64e(s){return btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function b64d(s){s=s.replace(/-/g,'+').replace(/_/g,'/');return new TextDecoder().decode(Uint8Array.from(atob(s),c=>c.charCodeAt(0)));}
+function state(){return {policy:$('pname').value,purpose:$('purpose').value,beneficiary:$('benef').value,rows:rows(),series:{name:$('sname').value,text:$('stext').value,N:+$('sN').value,d:+$('sD').value,u:+$('sU').value,W:+$('sW').value,people:$('sP').value}};}
+function shareURL(){return location.href.split('#')[0]+'#s='+b64e(JSON.stringify(state()));}
+function fmtS(x){return (x>=0?'+':'')+(x*100).toFixed(2)+'%';}
+async function hashInputs(o){const s=JSON.stringify({policy:o.policy,beneficiary:o.beneficiary,rows:o.rows});const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+let loaded=[];
+async function renderVerify(){
+  const all=[...loaded];if(lastRun)all.unshift({...lastRun,_this:true});
+  for(const r of all)r._h=r._h||await hashInputs(r);
+  if(!all.length){$('verify').innerHTML='';return;}
+  const by={};all.forEach(r=>{(by[r._h]=by[r._h]||[]).push(r);});
+  let html='<div class="tablewrap"><table style="min-width:640px"><thead><tr><th>Run by</th><th>Interest</th><th>Verdict</th><th>Inputs fingerprint</th></tr></thead><tbody>';
+  all.forEach(r=>{html+=`<tr><td>${esc(r.runBy||'—')}${r._this?' <span class="band">(this run)</span>':''}</td><td>${esc(r.interest||'—')}</td><td><span class="ph ${r.verdict==='FAIL'?'shatter':'locked'}">${r.verdict}</span></td><td class="mono band">${r._h.slice(0,16)}…</td></tr>`;});
+  html+='</tbody></table></div>';
+  const ok=Object.values(by).find(g=>{const people=new Set(g.map(r=>(r.runBy||'').trim().toLowerCase()).filter(Boolean));const verdicts=new Set(g.map(r=>r.verdict));return people.size>=2&&verdicts.size===1;});
+  html+=ok?`<p class="help" style="color:var(--locked)">✓ Independently verified: ${new Set(ok.map(r=>r.runBy)).size} different parties ran identical inputs and reached the same verdict (${ok[0].verdict}).</p>`:`<p class="help">Not yet independently verified. Two different parties need runs with identical inputs and the same verdict.</p>`;
+  $('verify').innerHTML=html;
+}
+function dl(obj,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
+function slug(s){return (s||'policy').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'policy';}
+// wiring
+Object.entries(MODULES).forEach(([k,m])=>{const o=document.createElement('option');o.value=k;o.textContent=m.name;$('module').appendChild(o);});
+$('module').value='pay';
+Object.entries(MODULES).filter(([k])=>k!=='blank').forEach(([k,m])=>{const o=document.createElement('option');o.value=k;o.textContent=m.name;$('cmpmod').appendChild(o);});$('cmpmod').value='payGood';
+$('loadmod').onclick=()=>loadModule(MODULES[$('module').value]);
+$('addrow').onclick=()=>addRow();
+$('run').onclick=run;
+$('saverun').onclick=()=>{if(!lastRun)run();lastRun.runBy=$('runby').value;lastRun.interest=$('interest').value;dl(lastRun,`policycheck-run-${slug(lastRun.policy)}-${slug(lastRun.runBy||'anon')}.json`);};
+$('savemod').onclick=()=>dl({name:$('pname').value||'Custom module',purpose:$('purpose').value,beneficiary:$('benef').value,rows:rows()},`policycheck-module-${slug($('pname').value)}.json`);
+$('loadmodfile').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const m=JSON.parse(t);if(!Array.isArray(m.rows))throw 0;loadModule(m);}catch(_){alert('That file is not a Policy Impact Check module.');}});e.target.value='';};
+$('loadruns').onchange=async e=>{for(const f of e.target.files){try{const r=JSON.parse(await f.text());if(r.tool==='Policy Impact Check')loaded.push(r);}catch(_){}}e.target.value='';renderVerify();};
+$('cmprun').onclick=()=>compare(MODULES[$('cmpmod').value]);
+$('cmpfile').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const m=JSON.parse(t);if(!Array.isArray(m.rows))throw 0;compare({...m,name:m.name||m.policy||f.name});}catch(_){$('cmpout').innerHTML='<p class="help">That file is not a Policy Impact Check module or run.</p>';}});e.target.value='';};
+$('share').onclick=async()=>{const u=shareURL();history.replaceState(null,'',u);try{await navigator.clipboard.writeText(u);$('sharemsg').textContent='Link copied. Anyone who opens it sees these exact inputs.';}catch(_){$('sharemsg').textContent='Link is in the address bar; copy it from there.';}};
+function setMode(r){document.body.classList.toggle('researcher',r);$('mR').classList.toggle('on',r);$('mL').classList.toggle('on',!r);try{localStorage.setItem('pc-mode',r?'r':'l');}catch(_){}if(lastRun)run();if(lastSeries)runSeries();}
+$('mL').onclick=()=>setMode(false);$('mR').onclick=()=>setMode(true);
+try{if(localStorage.getItem('pc-mode')==='r'){document.body.classList.add('researcher');$('mR').classList.add('on');$('mL').classList.remove('on');}}catch(_){}
+// ---- payments over time (series operator) ----
+const SERIES={
+  pfd:{name:"Alaska Permanent Fund Dividend, 2008 to 2026 (as paid)",
+    text:`2008 2069
+2009 1305
+2010 1281
+2011 1174
+2012 878
+2013 900
+2014 1884
+2015 2072
+2016 1022 2052
+2017 1100 2300
+2018 1600 2700
+2019 1606
+2020 992
+2021 1114
+2022 3284
+2023 1312
+2024 1702
+2025 1000
+2026 1200`,
+    notes:"Amounts as paid per eligible Alaska resident, energy relief included where the state paid it with the dividend: 2022 includes $662 and 2024 includes $298; 2026 is $1,200, which includes a $200 energy relief payment. 2008 also carried a one-time $1,200 Alaska Resource Rebate, paid separately and not counted here; counted, the 2009 drop is τ = 0.601. Promised amounts for 2016 to 2018 are the published estimates under the statutory formula before the payment was set lower (2017 is given as over $2,300). In 2016 the Alaska Supreme Court ruled that the dividend requires an appropriation by the Legislature each year. Sources: Alaska Department of Revenue, Permanent Fund Dividend Division; Alaska Permanent Fund (Wikipedia dividend table); Alaska's News Source, 30 September 2026; KTNA, 2015.",
+    N:3,d:4,u:4,W:3,people:""},
+  blank:{name:"Blank",text:"",notes:"",N:3,d:10,u:10,people:""}
+};
+const money=x=>(x<0?'−$':'$')+Math.round(Math.abs(x)).toLocaleString();
+function parseSeries(t){return t.split(/\n/).map(l=>l.trim().replace(/[$,]/g,'')).filter(Boolean).map(l=>l.split(/[\s;:\t]+/).map(Number)).filter(a=>a.length>=2&&isFinite(a[0])&&isFinite(a[1])&&a[1]>=0).map(a=>({y:a[0],a:a[1],p:a.length>2&&isFinite(a[2])&&a[2]>0?a[2]:null})).sort((x,z)=>x.y-z.y);}
+function simRule(S,kind,o){o=o||{};const Wn=o.W||3;
+  const P=[];S.forEach((s,i)=>{let p;
+    if(kind==='paid')p=s.a;
+    else if(kind==='avg'){const w=S.slice(Math.max(0,i-o.N+1),i+1);p=w.reduce((m,x)=>m+x.a,0)/w.length;}
+    else{if(i===0)p=s.a;else{const q=P[i-1];p=Math.min(Math.max(s.a,(1-o.d)*q),(1+o.u)*q);}}
+    P.push(p);});
+  const tau=P.map((p,i)=>i===0||P[i-1]<=0?null:Math.max(0,1-p/P[i-1]));
+  let cum=0,minc=0;const cumA=[];S.forEach((s,i)=>{cum+=s.a-P[i];cumA.push(cum);minc=Math.min(minc,cum);});
+  const R0=Math.max(0,-minc);const ts=tau.filter(t=>t!=null);
+  const win=P.map((p,i)=>{if(i===0)return null;let m=0;for(let k=1;k<=Math.min(Wn,i);k++)if(P[i-k]>0)m=Math.max(m,1-p/P[i-k]);return m;});
+  const wsh=[];win.forEach((t,i)=>{if(t!=null&&t>=TL)wsh.push(i);});const wworst=Math.max(0,...win.filter(t=>t!=null));const wwi=win.findIndex(t=>t!=null&&t>=wworst-1e-9);
+  const sh=[],iv=[];tau.forEach((t,i)=>{if(t==null)return;if(t>=TL)sh.push(i);else if(t>=TLIVA)iv.push(i);});
+  const worst=ts.length?Math.max(...ts):0;const wi=tau.findIndex(t=>t!=null&&t>=worst-1e-9);
+  return {P,tau,win,wsh,wworst,wwi,R0,end:R0+cum,bal:cumA.map(c=>R0+c),sh,iv,worst,wi,total:P.reduce((m,x)=>m+x,0)};
+}
+function svgChart(S,rules){
+  const W=820,H=300,L=56,Rm=150,T=16,B=30,xs=S.map(s=>s.y),all=rules.flatMap(r=>r.sim.P).concat(S.map(s=>s.a));
+  const ymax=Math.max(...all)*1.08,x0=xs[0],x1=xs[xs.length-1]||x0+1;
+  const X=y=>L+(W-L-Rm)*(x1===x0?0.5:(y-x0)/(x1-x0)),Y=v=>T+(H-T-B)*(1-v/ymax);
+  let g='';const step=Math.pow(10,Math.floor(Math.log10(ymax/4))),tick=[1,2,5].map(k=>k*step).find(k=>ymax/k<=6)||step*10;
+  for(let v=0;v<=ymax;v+=tick)g+=`<line x1="${L}" x2="${W-Rm}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${money(v)}</text>`;
+  const ev=Math.max(1,Math.ceil(xs.length/10));xs.forEach((y,i)=>{if(i%ev===0||i===xs.length-1)g+=`<text x="${X(y)}" y="${H-10}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${y}</text>`;});
+  const used=[];
+  rules.forEach(r=>{const pts=S.map((s,i)=>`${X(s.y).toFixed(1)},${Y(r.sim.P[i]).toFixed(1)}`).join(' ');
+    g+=`<polyline points="${pts}" fill="none" stroke="${r.col}" stroke-width="${r.w}" stroke-dasharray="${r.dash}" stroke-linejoin="round"/>`;
+    r.sim.sh.forEach(i=>{g+=`<circle cx="${X(S[i].y)}" cy="${Y(r.sim.P[i])}" r="5.5" fill="var(--bg)" stroke="${r.col}" stroke-width="2"/><text x="${X(S[i].y)}" y="${Y(r.sim.P[i])+4}" text-anchor="middle" font-size="8" font-weight="700" fill="${r.col}" font-family="Space Mono,monospace">S</text>`;});
+    r.sim.wsh.filter(i=>!r.sim.sh.includes(i)).forEach(i=>{g+=`<rect x="${X(S[i].y)-5}" y="${Y(r.sim.P[i])-5}" width="10" height="10" fill="var(--bg)" stroke="${r.col}" stroke-width="2"/><text x="${X(S[i].y)}" y="${Y(r.sim.P[i])+3.5}" text-anchor="middle" font-size="7.5" font-weight="700" fill="${r.col}" font-family="Space Mono,monospace">W</text>`;});
+    let ly=Y(r.sim.P[S.length-1]);while(used.some(u=>Math.abs(u-ly)<15))ly+=15;used.push(ly);
+    g+=`<text x="${W-Rm+8}" y="${ly+4}" font-size="11.5" fill="${r.col}" font-family="Inter,sans-serif" font-weight="600">${r.short}</text>`;});
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Payment per year under each rule; circles marked S are Shatter years">${g}</svg><p class="band">Lines differ by brightness and pattern: as paid is the bright solid line, rolling average is dashed, bounded change is the thick cyan line. A circle with S marks a year that dropped into Shatter against the year before; a square with W marks a year in Shatter only against the highest payment of the multi-year window (a slow slide).</p>`;
+}
+let lastSeries=null;
+function runSeries(){
+  const S=parseSeries($('stext').value);
+  const W=Math.max(2,Math.min(10,Math.round(+$('sW').value||3))),dLim=1-Math.pow(1-TL,1/W),N=Math.max(2,Math.round(+$('sN').value||3)),d=Math.max(0,(+$('sD').value||0)/100),u=Math.max(0,(+$('sU').value||0)/100),ppl=+$('sP').value||0;
+  if(S.length<2){$('sverdict').className='verdict empty';$('sverdict').innerHTML='<h3>Enter at least two years</h3>';['schart','splain'].forEach(k=>$(k).innerHTML='');$('ssum').tBodies[0].innerHTML='';$('syear').tHead.innerHTML='';$('syear').tBodies[0].innerHTML='';return;}
+  const rules=[
+    {k:'paid',name:'As paid',short:'As paid',col:'var(--text)',w:2,dash:'',sim:simRule(S,'paid',{W})},
+    {k:'avg',name:`Rolling ${N}-year average`,short:`${N}-yr average`,col:'var(--gold)',w:2,dash:'7 5',sim:simRule(S,'avg',{N,W})},
+    {k:'bnd',name:`Bounded change (drop ≤ ${+(d*100).toFixed(2)}%, rise ≤ ${+(u*100).toFixed(2)}%) with reserve`,short:'Bounded',col:'var(--accent)',w:4,dash:'',sim:simRule(S,'bnd',{d,u,W})}];
+  const fails=x=>x.sh.length||x.wsh.length;const n=S.length-1,yr=i=>S[i].y,paid=rules[0].sim,bnd=rules[2].sim,avg=rules[1].sim;
+  const v=$('sverdict'),sum1=r=>{const s=r.sim;return `${r.short}: ${s.sh.length} of ${n} years in Shatter, ${s.wsh.length} ${W}-year slides in Shatter`;};
+  const ctx=`<br><span class="band">For comparison · ${sum1(rules[0])} · ${sum1(rules[1])}.</span>`;
+  if(!fails(bnd)){v.className='verdict pass';v.innerHTML=`<h3>PASS · ${rules[2].name}</h3><p class="help" style="margin:0">No year and no ${W}-year stretch reaches Shatter. Worst year-to-year drop τ = ${fmtT(bnd.worst)}; worst ${W}-year slide τ = ${fmtT(bnd.wworst)}. Starting reserve needed: ${money(bnd.R0)} per person.${ctx}</p>`;}
+  else{const yrs=[...new Set([...bnd.sh,...bnd.wsh])].sort((a,b)=>a-b);v.className='verdict fail';v.innerHTML=`<h3>FAIL · ${rules[2].name}</h3><p class="help" style="margin:0">${bnd.sh.length?`${bnd.sh.length} year-to-year drop${bnd.sh.length>1?'s':''} and `:''}${bnd.wsh.length} ${W}-year slide${bnd.wsh.length===1?'':'s'} reach Shatter (${yrs.map(yr).join(', ')}). <span class="fix" style="display:inline">To pass: set the max drop below ${(dLim*100).toFixed(2)}% (the guaranteed limit for ${W} years).</span>${ctx}</p>`;}
+  $('schart').innerHTML=svgChart(S,rules);
+  const tot=x=>ppl?` (${money(x*ppl)} for ${ppl.toLocaleString()} people)`:'';
+  const line=(r)=>{const s=r.sim;const wOnly=s.wsh.filter(i=>!s.sh.includes(i));return `<b>${r.name}:</b> ${s.sh.length?`${s.sh.length} Shatter year${s.sh.length>1?'s':''} (${s.sh.map(yr).join(', ')})`:'no Shatter years'}${s.iv.length?`, ${s.iv.length} at IVA Peak`:''}; worst drop ${(s.worst*100).toFixed(1)}%${s.wi>0?' in '+yr(s.wi):''}. Over ${W} years: worst slide ${(s.wworst*100).toFixed(1)}%${s.wwi>0?' ending '+yr(s.wwi):''}${wOnly.length?`, and ${wOnly.length} more year${wOnly.length>1?'s':''} still in Shatter against the highest payment of the previous ${W} years, which the year-to-year check does not see (${wOnly.map(yr).join(', ')})`:''}.`;};
+  const paper=S.map((s,i)=>s.p?{i,t:Math.max(0,1-s.a/s.p)}:null).filter(Boolean);
+  let pl=[`<li>${line(rules[0])} <span class="ph ${fails(paid)?'shatter':'locked'}">${fails(paid)?'SHATTER':'PASS'}</span></li>`,
+    `<li>${line(rules[1])}${avg.R0>0?` Needs a starting reserve of ${money(avg.R0)} per person${tot(avg.R0)}.`:''} <span class="ph ${fails(avg)?'shatter':'locked'}">${fails(avg)?'SHATTER':'PASS'}</span></li>`,
+    `<li>${line(rules[2])} ${fails(bnd)?'':`Every year and every ${W}-year stretch stays out of Shatter. `}Needs a starting reserve of ${money(bnd.R0)} per person${tot(bnd.R0)}, and ends holding ${money(bnd.end)} per person. <span class="ph ${fails(bnd)?'shatter':'locked'}">${fails(bnd)?'SHATTER':'PASS'}</span>${d>=TL?'<span class="fix">A max drop at or above TL lets a single year reach Shatter. Set it below 13.69%.</span>':''}</li>`,
+    (()=>{const dl=Math.floor(dLim*10000-1e-9)/10000,g=simRule(S,'bnd',{d:dl,u,W});return `<li><b>Guaranteed limit for ${W} years:</b> a max drop below ${(dLim*100).toFixed(2)}% per year keeps every ${W}-year stretch out of Shatter, because ${W} back-to-back max drops stay under TL: (1 − d)^${W} &gt; 1 − TL. At ${(dl*100).toFixed(2)}%, with the same max rise, the reserve needed is ${money(g.R0)} per person${tot(g.R0)}; worst ${W}-year slide ${(g.wworst*100).toFixed(1)}%. <span class="ph ${fails(g)?'shatter':'locked'}">${fails(g)?'SHATTER':'PASS'}</span> <button class="btn noprint" id="suse" style="margin-left:.4rem">Use ${(dl*100).toFixed(2)}%</button></li>`;})()];
+  if(paper.length)pl.push(`<li><b>Paid versus promised:</b> ${paper.map(o=>`${yr(o.i)} paid ${money(S[o.i].a)} of ${money(S[o.i].p)} (τ = ${fmtT(o.t)}, <span class="ph ${phase(o.t)||'noble'}">${PH[phase(o.t)||'noble']}</span>)`).join('; ')}. This is the compliant-on-paper gap: the payment the formula produced against the payment made.</li>`);
+  $('splain').innerHTML=pl.join('');const ub=$('suse');if(ub)ub.onclick=()=>{$('sD').value=(Math.floor(dLim*10000-1e-9)/100).toFixed(2);runSeries();};
+  $('ssum').tBodies[0].innerHTML=rules.map(r=>{const s=r.sim;return `<tr><td><b>${r.name}</b></td><td><span class="ph ${fails(s)?'shatter':'locked'}">${fails(s)?'FAIL':'PASS'}</span></td><td class="mono">${s.sh.length}</td><td class="mono">${s.iv.length}</td><td class="mono">${fmtT(s.worst)}</td><td class="mono">${fmtT(s.wworst)}</td><td class="mono">${s.wsh.length}</td><td class="mono">${money(s.total)}</td><td class="mono">${money(s.R0)}${tot(s.R0)}</td><td class="mono">${money(s.end)}</td></tr>`;}).join('');
+  const hasP=paper.length>0,res=RES();
+  $('syear').tHead.innerHTML=`<tr><th>Year</th><th>Amount</th>${hasP?'<th>Promised</th><th>Paid vs promised</th>':''}${rules.map(r=>`${r.k==='paid'?'':`<th>${r.short} · pays</th>`}<th>${r.short} · drop</th><th>${r.short} · ${W}-yr slide</th>${res&&r.k!=='paid'?`<th>${r.short} · reserve</th>`:''}`).join('')}</tr>`;
+  const ch=t=>t==null?'<span class="band">—</span>':t===0?'<span class="ph gain">UP</span>':`<span class="ph ${phase(t)}">${PH[phase(t)]}</span> <span class="mono band">${fmtT(t)}</span>`;
+  $('syear').tBodies[0].innerHTML=S.map((s,i)=>`<tr><td class="mono"><b>${s.y}</b></td><td class="mono">${money(s.a)}</td>${hasP?`<td class="mono">${s.p?money(s.p):'—'}</td><td>${s.p?ch(Math.max(0,1-s.a/s.p)):'—'}</td>`:''}${rules.map(r=>`${r.k==='paid'?'':`<td class="mono">${money(r.sim.P[i])}</td>`}<td>${ch(r.sim.tau[i])}</td><td>${ch(r.sim.win[i])}</td>${res&&r.k!=='paid'?`<td class="mono">${money(r.sim.bal[i])}</td>`:''}`).join('')}</tr>`).join('');
+  lastSeries={name:$('sname').value,text:$('stext').value,W,N,d:d*100,u:u*100,people:$('sP').value};
+}
+function loadSeries(m){$('sname').value=m.name==='Blank'?'':(m.name||'');$('stext').value=m.text||'';$('sN').value=m.N??3;$('sD').value=m.d??10;$('sU').value=m.u??10;$('sW').value=m.W??3;$('sP').value=m.people??'';$('snotes').innerHTML=m.notes?`<div class="note">${esc(m.notes)}</div>`:'';}
+Object.entries(SERIES).forEach(([k,m])=>{const o=document.createElement('option');o.value=k;o.textContent=m.name;$('smod').appendChild(o);});
+$('sload').onclick=()=>{loadSeries(SERIES[$('smod').value]);runSeries();};
+$('srun').onclick=runSeries;
+
+let fromLink=false;
+if(location.hash.startsWith('#s=')){try{const st=JSON.parse(b64d(location.hash.slice(3)));loadModule(st);$('pname').value=st.policy||'';if(st.series)loadSeries(st.series);fromLink=true;}catch(_){}}
+if(!fromLink){loadModule(MODULES.pay);$('pname').value='Staff pay schedule change';loadSeries(SERIES.pfd);}
+run();runSeries();
+
+</script>
+</body>
+</html>
