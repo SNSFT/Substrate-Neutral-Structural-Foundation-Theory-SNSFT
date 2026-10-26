@@ -49,6 +49,11 @@ td.n{font-family:'Space Mono',monospace;text-align:right}
 .ph.shatter{background:var(--shatter);color:#2b0606}
 .ph.surge{background:transparent;color:var(--accent);border:1px solid var(--accent)}
 .ph.quiet{background:transparent;color:var(--muted);border:1px solid var(--border-2)}
+.ranges{display:inline-flex;flex-wrap:wrap;border:1px solid var(--border-2);border-radius:8px;overflow:hidden}
+.ranges button{background:none;border:none;border-right:1px solid var(--border-2);color:var(--muted);font-family:'Space Mono',monospace;font-size:.72rem;padding:.4rem .7rem;cursor:pointer}
+.ranges button:last-child{border-right:none}
+.ranges button.on{background:var(--accent);color:#04121a;font-weight:700}
+.ranges button:disabled{opacity:.35;cursor:default}
 .legend{display:flex;flex-wrap:wrap;gap:.9rem;font-size:.8rem;color:var(--muted);margin:.4rem 0}
 .sw{display:inline-block;width:14px;height:10px;vertical-align:middle;margin-right:.35rem;border-radius:2px}
 .plain{list-style:none;display:grid;gap:.45rem;margin:.4rem 0}
@@ -86,7 +91,10 @@ footer p{margin-bottom:.5rem}
 </section>
 
 <section id="summary" hidden>
-  <h2>Outside acquisition</h2>
+  <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem">
+    <h2 style="margin:0">Outside acquisition</h2>
+    <div class="ranges" id="ranges" role="group" aria-label="Date range"></div>
+  </div>
   <div class="cards" id="cards"></div>
   <ul class="plain" id="plain" style="margin-top:1rem"></ul>
 </section>
@@ -99,6 +107,8 @@ footer p{margin-bottom:.5rem}
     <span><span class="sw" style="background:transparent;border-top:2px dashed var(--gold);height:0"></span>outside sources (unique cloners)</span>
     <span>▲ Lean deposit (number = .lean files) · △ other files only</span>
   </div>
+  <div class="row" style="margin-bottom:.5rem"><label class="band" style="display:flex;gap:.4rem;align-items:center;text-transform:none;letter-spacing:0;font-family:inherit;font-size:.82rem;margin:0"><input type="checkbox" id="logscale" style="width:auto"> Log scale (shows small days next to large waves)</label>
+    <span class="band" id="rangeinfo"></span></div>
   <div id="chart"></div>
 </section>
 
@@ -179,21 +189,22 @@ function chip(r){
 }
 
 function chart(rows){
-  const W=Math.max(900,rows.length*56),H=340,L=52,R=78,T=34,B=46;
+  const n=rows.length,W=n<=30?Math.max(900,n*56):Math.max(1100,n*11),H=340,L=56,R=78,T=34,B=46,LOG=$('logscale').checked;
   const maxC=Math.max(1,...rows.map(r=>r.out+(r.ci||0))),maxS=Math.max(1,...rows.map(r=>r.src));
-  const bw=(W-L-R)/rows.length,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-v/maxC),YS=v=>T+(H-T-B)*(1-v/maxS);
+  const lg=v=>Math.log10(1+v),bw=(W-L-R)/n,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-(LOG?lg(v)/lg(maxC):v/maxC)),YS=v=>T+(H-T-B)*(1-(LOG?lg(v)/lg(maxS):v/maxS));
   const step=Math.pow(10,Math.floor(Math.log10(maxC/4)));const tick=[1,2,5].map(k=>k*step).find(k=>maxC/k<=5)||step*10;
+  const ticks=LOG?[0,1,10,100,1000,10000,100000].filter(v=>v<=maxC):(()=>{const t=[];for(let v=0;v<=maxC;v+=tick)t.push(v);return t;})();
   let g='';
-  for(let v=0;v<=maxC;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${v}</text>`;
+  for(const v of ticks)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${v}</text>`;
   g+=`<text x="${W-R+8}" y="${YS(maxS)+4}" font-size="11" fill="var(--gold)" font-family="Space Mono,monospace">${maxS}</text><text x="${W-R+8}" y="${YS(maxS)+18}" font-size="10" fill="var(--gold)" font-family="Space Mono,monospace">sources</text><text x="${W-R+8}" y="${YS(0)+4}" font-size="11" fill="var(--gold)" font-family="Space Mono,monospace">0</text><text x="${L-6}" y="${T-14}" text-anchor="end" font-size="10" fill="var(--accent)" font-family="Space Mono,monospace">clones</text>`;
   rows.forEach((r,i)=>{
     const x=X(i)+bw*.15,w=bw*.7;
     g+=`<rect x="${x}" y="${Y(r.out)}" width="${w}" height="${Y(0)-Y(r.out)}" fill="var(--accent)" ${r.ciKnown?'':'fill-opacity=".45"'}><title>${r.d}: ${r.out} outside clones${r.ciKnown?'':' (no CI count, upper bound)'}</title></rect>`;
     if(r.ci)g+=`<rect x="${x}" y="${Y(r.out+r.ci)}" width="${w}" height="${Y(0)-Y(r.ci)}" fill="var(--border-2)"><title>${r.d}: ${r.ci} CI runs</title></rect>`;
-    if(r.p&&r.p.commits){const cx=X(i)+bw/2,yy=T-14;
+    if(r.p&&r.p.commits&&(n<=60||r.p.lean_files)){const cx=X(i)+bw/2,yy=T-14;
       if(r.p.lean_files)g+=`<path d="M${cx-7},${yy+6} L${cx+7},${yy+6} L${cx},${yy-6} Z" fill="var(--gold)"/><text x="${cx}" y="${yy+19}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--gold)" font-family="Space Mono,monospace">${r.p.lean_files}</text>`;
       else g+=`<path d="M${cx-6},${yy+5} L${cx+6},${yy+5} L${cx},${yy-5} Z" fill="none" stroke="var(--muted)" stroke-width="1.5"/>`;}
-    const every=Math.max(1,Math.ceil(rows.length/20));
+    const every=n<=30?Math.max(1,Math.ceil(n/20)):7;
     if(i%every===0||i===rows.length-1){const dd=r.d.slice(8).replace(/^0/,''),newM=i===0||r.d.slice(5,7)!==rows[i-1].d.slice(5,7);
       g+=`<text x="${X(i)+bw/2}" y="${H-24}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${dd}</text>`;
       if(newM)g+=`<text x="${X(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="10.5" fill="var(--text)" font-family="Space Mono,monospace">${new Date(r.d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'})}</text>`;}
@@ -201,11 +212,18 @@ function chart(rows){
   const pts=rows.map((r,i)=>`${(X(i)+bw/2).toFixed(1)},${YS(r.src).toFixed(1)}`).join(' ');
   g+=`<polyline points="${pts}" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="6 4"/>`;
   rows.forEach((r,i)=>{g+=`<circle cx="${X(i)+bw/2}" cy="${YS(r.src)}" r="3" fill="var(--gold)"><title>${r.d}: ${r.src} outside sources</title></circle>`;});
-  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${Math.min(W,rows.length*40+130)}px;display:block" role="img" aria-label="Outside clones per day with CI runs stacked, unique sources as a dashed line, and deposit markers">${g}</svg></div>`;
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${n<=30?Math.min(W,n*40+130):Math.min(W,n*7+140)}px;display:block" role="img" aria-label="Outside clones per day with CI runs stacked, unique sources as a dashed line, and deposit markers">${g}</svg></div>`;
 }
 
+const RANGES=[['7d','7 days',7],['14d','14 days',14],['30d','30 days',30],['90d','90 days',90],['6m','6 months',183],['1y','1 year',365],['all','All',Infinity]];
+let RANGE=(()=>{try{return localStorage.getItem('acq-range')||'30d';}catch(_){return'30d';}})(),DATA=null;
 function render(D){
-  const rows=build(D);place(rows);
+  DATA=D;
+  const full=build(D);place(full);const depAll=depRows(full);
+  const span=full.length,sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2];
+  $('ranges').innerHTML=RANGES.map(([k,l,nd])=>`<button data-k="${k}" class="${k===sel[0]?'on':''}" ${nd!==Infinity&&nd>span*2&&k!==sel[0]?'disabled title="Not enough history yet"':''}>${l}</button>`).join('');
+  $('ranges').querySelectorAll('button').forEach(b=>b.onclick=()=>{RANGE=b.dataset.k;try{localStorage.setItem('acq-range',RANGE);}catch(_){}render(DATA);});
+  const rows=sel[2]===Infinity?full:full.slice(-sel[2]);
   const known=rows.filter(r=>r.ciKnown);
   const totOut=rows.reduce((a,r)=>a+r.out,0),totCI=known.reduce((a,r)=>a+r.ci,0);
   const leanDays=rows.filter(r=>r.p&&r.p.lean_files>0),leanFiles=leanDays.reduce((a,r)=>a+r.p.lean_files,0);
@@ -221,9 +239,9 @@ function render(D){
   const pl=[];
   const kOut=known.reduce((a,r)=>a+r.out,0),ciShare=totCI+kOut?totCI/(totCI+kOut):0;
   const hasPush=D.pushes&&Object.keys(D.pushes).length>0;
-  pl.push(`Outside systems pulled the whole repository ${fmt(totOut)} times over ${rows.length} days. `+(known.length?`Own CI accounts for ${(ciShare*100).toFixed(0)}% of all clones on the days it was counted.`:`No CI counts are in this file, so these totals still include the repository's own CI checkouts (upper bound).`));
-  if(!hasPush||!known.length)pl.push(`This file was saved by the first version of the collector, which does not record ${!hasPush&&!known.length?'pushes or CI runs':!hasPush?'pushes':'CI runs'}. Update traffic_snapshot.py in this repository and run it once to fill in the last 14 days.`);
-  const resp=depRows(rows);
+  pl.push(`Outside systems pulled the whole repository ${fmt(totOut)} times over these ${rows.length} days. `+(known.length?`Own CI accounts for ${(ciShare*100).toFixed(0)}% of all clones on the days it was counted.`:`No CI counts are in this file, so these totals still include the repository's own CI checkouts (upper bound).`));
+  if(!hasPush||!known.length)pl.push(`This file was saved by the first version of the collector, which does not record ${!hasPush&&!known.length?'pushes or CI runs':!hasPush?'pushes':'CI runs'}. Update traffic_snapshot.py in this repository, then run the workflow once with the backfill days set to cover the range you want.`);
+  const firstD=rows[0].d,resp=depAll.filter(x=>x.r.d>=firstD);
   if(resp.length){
     const lean=resp.filter(x=>x.r.p.lean_files>0),other=resp.filter(x=>!x.r.p.lean_files&&!x.leanBefore);
     const avg=a=>a.length?a.reduce((s,x)=>s+x.win,0)/a.length:null;
@@ -238,7 +256,8 @@ function render(D){
   const lastD=rows[rows.length-1].d,pend=Object.entries(D.pushes||{}).filter(([d,v])=>d>lastD&&v.commits).sort();
   if(pend.length)pl.push(`Pushes after the latest traffic day (${short(lastD)}): ${pend.map(([d,v])=>`${short(d)}, ${v.commits} commit${v.commits===1?'':'s'}${v.lean_files?`, ${v.lean_files} .lean`:''}`).join('; ')}. GitHub reports a day's clones once the day is over, so their response appears in the next snapshots.`);
   $('plain').innerHTML=pl.map(x=>`<li>${x}</li>`).join('');
-  $('chart').innerHTML=chart(rows);
+  $('chart').innerHTML=chart(rows);LAST=rows;
+  $('rangeinfo').textContent=`${short(rows[0].d)} – ${short(rows[rows.length-1].d)} · ${rows.length} days`+(D.sources&&D.sources.repohistory?` · earlier days imported from RepoHistory`:'');
   $('deps').tBodies[0].innerHTML=resp.length?resp.map(x=>`<tr><td class="mono">${x.r.d}</td><td class="n">${x.r.p.commits}</td><td class="n">${x.r.p.files}</td><td class="n">${x.r.p.lean_files?'<b style="color:var(--gold)">'+x.r.p.lean_files+'</b>':'0'}</td><td class="n">${x.base===null?'—':fmt(x.base)}</td>${x.after.map(v=>`<td class="n">${v===null?'—':fmt(v)}</td>`).join('')}<td class="n">${x.maxSrc}</td></tr>`).join(''):(hasPush?'<tr><td colspan="10" class="band">No pushes recorded yet.</td></tr>':'<tr><td colspan="10" class="band">No push data in this file yet. Update the collector script.</td></tr>');
   $('days').tBodies[0].innerHTML=rows.slice().reverse().map(r=>`<tr><td class="mono">${r.d}</td><td class="n">${fmt(r.clones)}</td><td class="n">${r.ciKnown?fmt(r.ci):'—'}</td><td class="n"><b>${fmt(r.out)}</b>${r.ciKnown?'':' <span class="band">upper bound</span>'}</td><td class="n">${r.src}</td><td>${r.p&&r.p.commits?`${r.p.commits} commits · ${r.p.files} files${r.p.lean_files?` · <b style="color:var(--gold)">${r.p.lean_files} .lean</b>`:''}`:'<span class="band">none</span>'}</td><td class="n">${r.ref===null?'—':r.ref.toFixed(1)}</td><td>${chip(r)}</td></tr>`).join('');
   const rk=Object.keys(D.referrers||{}).sort().pop(),refs=rk?D.referrers[rk]:[];
@@ -247,7 +266,7 @@ function render(D){
   $('stats').tBodies[0].innerHTML=Object.entries(st).map(([k,v])=>`<tr><td class="band">${esc(k.replace(/_/g,' '))}</td><td class="n">${fmt(v)}</td></tr>`).join('')+(sk?`<tr><td class="band">snapshot</td><td class="n">${sk}</td></tr>`:'');
   $('views').tBodies[0].innerHTML=Object.entries(D.views||{}).sort().reverse().map(([d,v])=>`<tr><td class="mono">${d}</td><td class="n">${v.count}</td><td class="n">${v.uniques}</td></tr>`).join('');
   ['summary','chartsec','depsec','daysec','ctxsec'].forEach(id=>$(id).hidden=false);
-  $('msg').textContent=`${D.repo||'Repository'} · ${rows.length} days · updated ${D.updated||'—'}`;
+  $('msg').textContent=`${D.repo||'Repository'} · ${full.length} days recorded (${short(full[0].d)} – ${short(full[full.length-1].d)}) · showing ${rows.length} · updated ${D.updated||'—'}`;
 }
 function depRows(rows){
   return rows.map((r,i)=>{
@@ -273,6 +292,8 @@ async function loadRemote(){
     try{history.replaceState(null,'',`?repo=${repo}&branch=${encodeURIComponent(br)}`);}catch(_){}
   }catch(e){$('msg').textContent=e.message||String(e);}
 }
+let LAST=null;
+$('logscale').onchange=()=>{if(LAST)$('chart').innerHTML=chart(LAST);};
 $('load').onclick=loadRemote;
 $('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{render(JSON.parse(t));}catch(err){$('msg').textContent='That file could not be read: '+err.message;}});e.target.value='';};
 const q=new URLSearchParams(location.search);
