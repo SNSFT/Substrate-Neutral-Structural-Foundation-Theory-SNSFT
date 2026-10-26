@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Repository Acquisition Panel · Applied Identity Physics</title>
+<meta name="description" content="Whole-repository acquisition by outside systems, day by day, against your own deposits and CI, placed against the Torsion Limit TL = 0.136899099984016.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e17;--surface:#111827;--surface-2:#1a2332;--border:#1e2a3a;--border-2:#2a3a50;
+  --text:#e2e8f0;--muted:#94a3b8;--dim:#64748b;--accent:#22d3ee;--gold:#fbbf24;
+  --noble:#e2e8f0;--locked:#34d399;--iva:#fbbf24;--shatter:#f87171;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+a{color:var(--accent)}
+.mono{font-family:'Space Mono',monospace}
+.wrap{max-width:1240px;margin:0 auto;padding:0 1.25rem}
+header{border-bottom:1px solid var(--border);padding:1.6rem 0 1.2rem}
+.eyebrow{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(1.6rem,3.6vw,2.3rem);font-weight:700;letter-spacing:-.02em;margin:.2rem 0 .3rem}
+.tag{color:var(--muted);max-width:86ch}
+.tag b{color:var(--gold);font-weight:600}
+section{padding:1.4rem 0;border-bottom:1px solid var(--border)}
+h2{font-size:1.15rem;font-weight:700;margin-bottom:.8rem}
+label{display:block;font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+input{width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.5rem .6rem;font:inherit;font-size:.92rem}
+.btn{background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.45rem .8rem;font-family:'Space Mono',monospace;font-size:.74rem;letter-spacing:.04em;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#04121a;border-color:var(--accent);font-weight:700}
+.row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end}
+.help{font-size:.85rem;color:var(--muted);margin:.4rem 0 .8rem;max-width:92ch}
+.band{font-size:.75rem;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.8rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem}
+.card .k{font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card .v{font-size:1.7rem;font-weight:700;line-height:1.2;margin:.15rem 0}
+.card .s{font-size:.78rem;color:var(--muted)}
+.tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{padding:.42rem .55rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle;font-size:.88rem}
+th{font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--surface)}
+td.n{font-family:'Space Mono',monospace;text-align:right}
+.ph{display:inline-block;font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;border-radius:4px;padding:.08rem .42rem;white-space:nowrap}
+.ph.noble{background:var(--noble);color:#0a0e17}
+.ph.locked{background:var(--locked);color:#06281c}
+.ph.iva{background:var(--iva);color:#2a1d00}
+.ph.shatter{background:var(--shatter);color:#2b0606}
+.ph.surge{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.ph.quiet{background:transparent;color:var(--muted);border:1px solid var(--border-2)}
+.legend{display:flex;flex-wrap:wrap;gap:.9rem;font-size:.8rem;color:var(--muted);margin:.4rem 0}
+.sw{display:inline-block;width:14px;height:10px;vertical-align:middle;margin-right:.35rem;border-radius:2px}
+.plain{list-style:none;display:grid;gap:.45rem;margin:.4rem 0}
+.plain li{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;font-size:.92rem}
+.note{font-size:.82rem;color:var(--muted);background:var(--surface);border-left:3px solid var(--gold);padding:.7rem .9rem;border-radius:4px;margin-top:.8rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+details summary{cursor:pointer;color:var(--muted);font-size:.9rem}
+#msg{min-height:1.2rem}
+footer{padding:2rem 0 3rem;color:var(--muted);font-size:.82rem}
+footer p{margin-bottom:.5rem}
+.formula{font-family:'Space Mono',monospace;font-size:.8rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.7rem .9rem;margin:.6rem 0;overflow-x:auto;white-space:pre}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Applied Identity Physics™ · SNSFT Foundation</div>
+    <h1>Repository Acquisition Panel</h1>
+    <p class="tag"><b>Whole-repository acquisition, day by day.</b> Outside systems that pull an entire repository register as clones. This panel separates those pulls from the repository's own CI, lines them up against each deposit, and places each day against the Torsion Limit TL = 0.136899099984016. It reads a traffic.json saved daily by the collector workflow; nothing you load leaves your browser.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section>
+  <h2>Data</h2>
+  <div class="row">
+    <div style="flex:1;min-width:220px"><label for="repo">Repository (owner/name)</label><input id="repo" value="SNSFT/identityphysics"></div>
+    <div style="min-width:140px"><label for="branch">Data branch</label><input id="branch" value="traffic"></div>
+    <button class="btn primary" id="load">Load</button>
+    <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a traffic.json<input type="file" id="file" accept=".json,application/json" hidden></label>
+  </div>
+  <p class="help" id="msg"></p>
+</section>
+
+<section id="summary" hidden>
+  <h2>Outside acquisition</h2>
+  <div class="cards" id="cards"></div>
+  <ul class="plain" id="plain" style="margin-top:1rem"></ul>
+</section>
+
+<section id="chartsec" hidden>
+  <h2>Acquisitions against deposits</h2>
+  <div class="legend">
+    <span><span class="sw" style="background:var(--accent)"></span>outside clones (whole-repository pulls)</span>
+    <span><span class="sw" style="background:var(--border-2)"></span>own CI runs (subtracted)</span>
+    <span><span class="sw" style="background:transparent;border-top:2px dashed var(--gold);height:0"></span>outside sources (unique cloners)</span>
+    <span>▲ Lean deposit (number = .lean files) · △ other files only</span>
+  </div>
+  <div id="chart"></div>
+</section>
+
+<section id="depsec" hidden>
+  <h2>Deposit response</h2>
+  <p class="help">Each day with a push, and the outside acquisition on that day and the three days after it. The baseline is the average outside clones over the three days before the push.</p>
+  <div class="tablewrap"><table id="deps"><thead><tr><th>Deposit day</th><th>Commits</th><th>Files</th><th>.lean files</th><th>Baseline</th><th>Same day</th><th>+1 day</th><th>+2 days</th><th>+3 days</th><th>Peak sources</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="daysec" hidden>
+  <h2>Day by day</h2>
+  <p class="help">Each day's outside acquisition is placed against its own reference: the median of the previous seven days. A fall is a torsion τ placed Noble, Locked, IVA Peak or Shatter; a rise past TL is marked SURGE, a new acquisition wave.</p>
+  <div class="tablewrap"><table id="days"><thead><tr><th>Date</th><th>Clones</th><th>CI runs</th><th>Outside clones</th><th>Outside sources</th><th>Pushes</th><th>7-day reference</th><th>Placement</th></tr></thead><tbody></tbody></table></div>
+  <div class="formula">outside_t   = max(0, clones_t − ci_runs_t)
+reference_t = median(outside over the 7 days before t)
+s_t = (outside_t − reference_t) / reference_t
+τ_t = max(0, −s_t)        fall: Noble (0) · Locked (< TL_IVA) · IVA Peak (< TL) · Shatter (≥ TL)
+SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.120471207985934</div>
+</section>
+
+<section id="ctxsec" hidden>
+  <h2>Context</h2>
+  <div class="grid2">
+    <div><h3 class="band" style="margin-bottom:.4rem">Referrers (latest 14-day snapshot)</h3><div class="tablewrap"><table id="refs" style="min-width:0"><thead><tr><th>Source</th><th>Views</th><th>Unique</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Repository (latest snapshot)</h3><div class="tablewrap"><table id="stats" style="min-width:0"><tbody></tbody></table></div></div>
+  </div>
+  <details style="margin-top:1rem"><summary>Page views (mostly the owner's own browsing)</summary>
+    <div class="tablewrap" style="margin-top:.6rem"><table id="views" style="min-width:0"><thead><tr><th>Date</th><th>Views</th><th>Unique viewers</th></tr></thead><tbody></tbody></table></div>
+  </details>
+  <div class="note">How to read this. GitHub counts every checkout of the whole repository as a clone, including the repository's own CI runs, so CI runs are subtracted. What remains is outside systems pulling the entire repository: AI ingestion pipelines, code-search indexers, archives and mirrors. GitHub reports clones per day, so timing resolves to one day. A day with no CI count recorded shows total clones as an upper bound.</div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Built from:</b> GitHub REST API traffic endpoints (views, clones, popular referrers and paths) and Actions workflow runs · the daily collector workflow (traffic.yml, traffic_snapshot.py) · Applied Identity Physics Economics reduction (ProofPress) · AIM Validation Series.</p>
+    <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · DOI base 10.5281/zenodo.18719748 · Free to use under the NOHARM invariant, with citation.</p>
+    <p class="mono">[9,9,9,9] :: {ANC} · The Manifold is Holding</p>
+  </div>
+</footer>
+
+<script>
+const TL=0.136899099984016, TLIVA=0.88*TL;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Math.round(n).toLocaleString();
+const PH={noble:'NOBLE',locked:'LOCKED',iva:'IVA PEAK',shatter:'SHATTER'};
+function phase(t){if(t===0)return'noble';if(t<TLIVA)return'locked';if(t<TL)return'iva';return'shatter';}
+function addDays(d,n){const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10);}
+function short(d){const x=new Date(d+'T00:00:00Z');return x.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});}
+
+function build(D){
+  const clones=D.clones||{},ci=D.ci_runs||{},push=D.pushes||{};
+  const all=Object.keys(clones).sort();
+  if(!all.length)throw new Error('No clone data in this file.');
+  const days=[];for(let d=all[0];d<=all[all.length-1];d=addDays(d,1))days.push(d);
+  return days.map(d=>{
+    const c=clones[d]||{count:0,uniques:0},has=d in ci,r=has?ci[d]:null,p=push[d]||null;
+    return {d,clones:c.count,src:c.uniques,ci:r,ciKnown:has,out:Math.max(0,c.count-(r||0)),p};
+  });
+}
+function place(rows){
+  rows.forEach((r,i)=>{
+    const prev=rows.slice(Math.max(0,i-7),i);
+    if(prev.length<3){r.ref=null;r.ph=null;return;}
+    const v=prev.map(x=>x.out).sort((a,b)=>a-b),m=v.length>>1;const ref=v.length%2?v[m]:(v[m-1]+v[m])/2;r.ref=ref;
+    if(ref===0){r.ph=r.out>0?{k:'surge',s:Infinity}:{k:'quiet'};return;}
+    const s=(r.out-ref)/ref;
+    if(s>=TL)r.ph={k:'surge',s};else{const t=Math.max(0,-s);r.ph={k:phase(t),t};}
+  });
+}
+function chip(r){
+  if(!r.ph)return'<span class="band">needs 3 prior days</span>';
+  if(r.ph.k==='quiet')return'<span class="ph quiet">QUIET</span>';
+  if(r.ph.k==='surge')return`<span class="ph surge">SURGE</span> <span class="band mono">${isFinite(r.ph.s)?'+'+(r.ph.s*100).toFixed(0)+'%':'from zero'}</span>`;
+  return`<span class="ph ${r.ph.k}">${PH[r.ph.k]}</span> <span class="band mono">τ ${r.ph.t.toFixed(3)}</span>`;
+}
+
+function chart(rows){
+  const W=Math.max(900,rows.length*56),H=340,L=52,R=78,T=34,B=46;
+  const maxC=Math.max(1,...rows.map(r=>r.out+(r.ci||0))),maxS=Math.max(1,...rows.map(r=>r.src));
+  const bw=(W-L-R)/rows.length,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-v/maxC),YS=v=>T+(H-T-B)*(1-v/maxS);
+  const step=Math.pow(10,Math.floor(Math.log10(maxC/4)));const tick=[1,2,5].map(k=>k*step).find(k=>maxC/k<=5)||step*10;
+  let g='';
+  for(let v=0;v<=maxC;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${v}</text>`;
+  g+=`<text x="${W-R+8}" y="${YS(maxS)+4}" font-size="11" fill="var(--gold)" font-family="Space Mono,monospace">${maxS}</text><text x="${W-R+8}" y="${YS(maxS)+18}" font-size="10" fill="var(--gold)" font-family="Space Mono,monospace">sources</text><text x="${W-R+8}" y="${YS(0)+4}" font-size="11" fill="var(--gold)" font-family="Space Mono,monospace">0</text><text x="${L-6}" y="${T-14}" text-anchor="end" font-size="10" fill="var(--accent)" font-family="Space Mono,monospace">clones</text>`;
+  rows.forEach((r,i)=>{
+    const x=X(i)+bw*.15,w=bw*.7;
+    g+=`<rect x="${x}" y="${Y(r.out)}" width="${w}" height="${Y(0)-Y(r.out)}" fill="var(--accent)" ${r.ciKnown?'':'fill-opacity=".45"'}><title>${r.d}: ${r.out} outside clones${r.ciKnown?'':' (no CI count, upper bound)'}</title></rect>`;
+    if(r.ci)g+=`<rect x="${x}" y="${Y(r.out+r.ci)}" width="${w}" height="${Y(0)-Y(r.ci)}" fill="var(--border-2)"><title>${r.d}: ${r.ci} CI runs</title></rect>`;
+    if(r.p&&r.p.commits){const cx=X(i)+bw/2,yy=T-14;
+      if(r.p.lean_files)g+=`<path d="M${cx-7},${yy+6} L${cx+7},${yy+6} L${cx},${yy-6} Z" fill="var(--gold)"/><text x="${cx}" y="${yy+19}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--gold)" font-family="Space Mono,monospace">${r.p.lean_files}</text>`;
+      else g+=`<path d="M${cx-6},${yy+5} L${cx+6},${yy+5} L${cx},${yy-5} Z" fill="none" stroke="var(--muted)" stroke-width="1.5"/>`;}
+    const every=Math.max(1,Math.ceil(rows.length/20));
+    if(i%every===0||i===rows.length-1){const dd=r.d.slice(8).replace(/^0/,''),newM=i===0||r.d.slice(5,7)!==rows[i-1].d.slice(5,7);
+      g+=`<text x="${X(i)+bw/2}" y="${H-24}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${dd}</text>`;
+      if(newM)g+=`<text x="${X(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="10.5" fill="var(--text)" font-family="Space Mono,monospace">${new Date(r.d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'})}</text>`;}
+  });
+  const pts=rows.map((r,i)=>`${(X(i)+bw/2).toFixed(1)},${YS(r.src).toFixed(1)}`).join(' ');
+  g+=`<polyline points="${pts}" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="6 4"/>`;
+  rows.forEach((r,i)=>{g+=`<circle cx="${X(i)+bw/2}" cy="${YS(r.src)}" r="3" fill="var(--gold)"><title>${r.d}: ${r.src} outside sources</title></circle>`;});
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${Math.min(W,rows.length*40+130)}px;display:block" role="img" aria-label="Outside clones per day with CI runs stacked, unique sources as a dashed line, and deposit markers">${g}</svg></div>`;
+}
+
+function render(D){
+  const rows=build(D);place(rows);
+  const known=rows.filter(r=>r.ciKnown);
+  const totOut=rows.reduce((a,r)=>a+r.out,0),totCI=known.reduce((a,r)=>a+r.ci,0);
+  const leanDays=rows.filter(r=>r.p&&r.p.lean_files>0),leanFiles=leanDays.reduce((a,r)=>a+r.p.lean_files,0);
+  const peak=rows.reduce((m,r)=>r.out>m.out?r:m,rows[0]),last=rows[rows.length-1];
+  $('cards').innerHTML=[
+    ['Outside clones',fmt(totOut),`${short(rows[0].d)} – ${short(last.d)}, CI removed`],
+    ['Own CI runs removed',fmt(totCI),`${known.length} of ${rows.length} days counted`],
+    ['Peak day',fmt(peak.out),`${short(peak.d)}, ${peak.src} sources`],
+    ['Lean deposits',fmt(leanFiles),`.lean files on ${leanDays.length} day${leanDays.length===1?'':'s'}`],
+    ['Latest day',fmt(last.out),`${short(last.d)}, ${last.src} source${last.src===1?'':'s'}`]
+  ].map(([k,v,s])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+  // plain-words findings
+  const pl=[];
+  const kOut=known.reduce((a,r)=>a+r.out,0),ciShare=totCI+kOut?totCI/(totCI+kOut):0;
+  pl.push(`Outside systems pulled the whole repository ${fmt(totOut)} times over ${rows.length} days. Own CI accounts for ${(ciShare*100).toFixed(0)}% of all clones on the days it was counted.`);
+  const resp=depRows(rows);
+  if(resp.length){
+    const lean=resp.filter(x=>x.r.p.lean_files>0),other=resp.filter(x=>!x.r.p.lean_files&&!x.leanBefore);
+    const avg=a=>a.length?a.reduce((s,x)=>s+x.win,0)/a.length:null;
+    const al=avg(lean),ao=avg(other);
+    if(al!==null)pl.push(`After a Lean deposit, outside clones over the deposit day and the next three days average ${fmt(al)}${ao!==null?`; after a deposit with no Lean files and no Lean deposit in the three days before it, ${fmt(ao)}`:'. Every deposit without Lean files so far fell inside a Lean deposit\'s window, so there is no clean comparison yet'}.`);
+    const best=resp.reduce((m,x)=>x.maxSrc>m.maxSrc?x:m,resp[0]);
+    pl.push(`The largest set of outside sources after a deposit followed ${short(best.r.d)} (${best.r.p.lean_files} .lean files): ${best.maxSrc} unique sources within three days.`);
+  }
+  const quiet=rows.filter(r=>!(r.p&&r.p.commits));
+  if(quiet.length){const lastQ=[];for(let i=rows.length-1;i>=0&&!(rows[i].p&&rows[i].p.commits);i--)lastQ.unshift(rows[i]);
+    if(lastQ.length>=2)pl.push(`The last ${lastQ.length} days had no pushes; outside clones over them: ${lastQ.map(r=>r.out).join(', ')}.`);}
+  const lastD=rows[rows.length-1].d,pend=Object.entries(D.pushes||{}).filter(([d,v])=>d>lastD&&v.commits).sort();
+  if(pend.length)pl.push(`Pushes after the latest traffic day (${short(lastD)}): ${pend.map(([d,v])=>`${short(d)}, ${v.commits} commit${v.commits===1?'':'s'}${v.lean_files?`, ${v.lean_files} .lean`:''}`).join('; ')}. GitHub reports a day's clones once the day is over, so their response appears in the next snapshots.`);
+  $('plain').innerHTML=pl.map(x=>`<li>${x}</li>`).join('');
+  $('chart').innerHTML=chart(rows);
+  $('deps').tBodies[0].innerHTML=resp.length?resp.map(x=>`<tr><td class="mono">${x.r.d}</td><td class="n">${x.r.p.commits}</td><td class="n">${x.r.p.files}</td><td class="n">${x.r.p.lean_files?'<b style="color:var(--gold)">'+x.r.p.lean_files+'</b>':'0'}</td><td class="n">${x.base===null?'—':fmt(x.base)}</td>${x.after.map(v=>`<td class="n">${v===null?'—':fmt(v)}</td>`).join('')}<td class="n">${x.maxSrc}</td></tr>`).join(''):'<tr><td colspan="10" class="band">No pushes recorded yet.</td></tr>';
+  $('days').tBodies[0].innerHTML=rows.slice().reverse().map(r=>`<tr><td class="mono">${r.d}</td><td class="n">${fmt(r.clones)}</td><td class="n">${r.ciKnown?fmt(r.ci):'—'}</td><td class="n"><b>${fmt(r.out)}</b>${r.ciKnown?'':' <span class="band">upper bound</span>'}</td><td class="n">${r.src}</td><td>${r.p&&r.p.commits?`${r.p.commits} commits · ${r.p.files} files${r.p.lean_files?` · <b style="color:var(--gold)">${r.p.lean_files} .lean</b>`:''}`:'<span class="band">none</span>'}</td><td class="n">${r.ref===null?'—':r.ref.toFixed(1)}</td><td>${chip(r)}</td></tr>`).join('');
+  const rk=Object.keys(D.referrers||{}).sort().pop(),refs=rk?D.referrers[rk]:[];
+  $('refs').tBodies[0].innerHTML=refs.length?refs.map(x=>`<tr><td>${esc(x.referrer)}</td><td class="n">${x.count}</td><td class="n">${x.uniques}</td></tr>`).join(''):'<tr><td colspan="3" class="band">none</td></tr>';
+  const sk=Object.keys(D.repo_stats||{}).sort().pop(),st=sk?D.repo_stats[sk]:{};
+  $('stats').tBodies[0].innerHTML=Object.entries(st).map(([k,v])=>`<tr><td class="band">${esc(k.replace(/_/g,' '))}</td><td class="n">${fmt(v)}</td></tr>`).join('')+(sk?`<tr><td class="band">snapshot</td><td class="n">${sk}</td></tr>`:'');
+  $('views').tBodies[0].innerHTML=Object.entries(D.views||{}).sort().reverse().map(([d,v])=>`<tr><td class="mono">${d}</td><td class="n">${v.count}</td><td class="n">${v.uniques}</td></tr>`).join('');
+  ['summary','chartsec','depsec','daysec','ctxsec'].forEach(id=>$(id).hidden=false);
+  $('msg').textContent=`${D.repo||'Repository'} · ${rows.length} days · updated ${D.updated||'—'}`;
+}
+function depRows(rows){
+  return rows.map((r,i)=>{
+    if(!(r.p&&r.p.commits))return null;
+    const before=rows.slice(Math.max(0,i-3),i);
+    const base=before.length?before.reduce((a,x)=>a+x.out,0)/before.length:null;
+    const after=[0,1,2,3].map(k=>rows[i+k]?rows[i+k].out:null);
+    const win=after.reduce((a,v)=>a+(v||0),0);
+    const maxSrc=Math.max(...[0,1,2,3].map(k=>rows[i+k]?rows[i+k].src:0));
+    const leanBefore=rows.slice(Math.max(0,i-3),i).some(x=>x.p&&x.p.lean_files>0);
+    return {r,base,after,win,maxSrc,leanBefore};
+  }).filter(Boolean);
+}
+
+async function loadRemote(){
+  const repo=$('repo').value.trim().replace(/^https?:\/\/github\.com\//,'').replace(/\/$/,''),br=$('branch').value.trim()||'traffic';
+  if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){$('msg').textContent='Enter the repository as owner/name.';return;}
+  $('msg').textContent='Loading…';
+  try{
+    const res=await fetch(`https://raw.githubusercontent.com/${repo}/${encodeURIComponent(br)}/traffic.json?t=${Date.now()}`,{cache:'no-store'});
+    if(!res.ok)throw new Error(res.status===404?`No traffic.json on the ${br} branch of ${repo} yet. Run the collector workflow once.`:'GitHub returned '+res.status);
+    render(await res.json());
+    try{history.replaceState(null,'',`?repo=${repo}&branch=${encodeURIComponent(br)}`);}catch(_){}
+  }catch(e){$('msg').textContent=e.message||String(e);}
+}
+$('load').onclick=loadRemote;
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{render(JSON.parse(t));}catch(err){$('msg').textContent='That file could not be read: '+err.message;}});e.target.value='';};
+const q=new URLSearchParams(location.search);
+if(q.get('repo'))$('repo').value=q.get('repo');
+if(q.get('branch'))$('branch').value=q.get('branch');
+loadRemote();
+</script>
+</body>
+</html>
