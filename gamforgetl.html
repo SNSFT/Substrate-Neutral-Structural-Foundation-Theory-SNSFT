@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNSFL GEOMETRIC AXIOMATIC MODULE-GAM FORGE BIO · [9,9,1,*] · DYNAMIC n-BEAM RESIDUE FUSION ENGINE · uuia.app</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root{
+  --bg:#020308;--panel:#05070f;--border:#0a1520;--border2:#111e32;
+  --glow:#00e5ff;--locked:#00ffcc;--shatter:#ff3355;--noble:#cc88ff;--iva:#ffaa00;
+  --rescue:#44ff88;--text:#6a94ae;--bright:#c0e0f0;--dim:#162430;--snsft:#ffcc00;
+  --b1:#00e5ff;--b2:#ffaa00;--b3:#44ff88;--b4:#ff6688;
+  --b5:#aa88ff;--b6:#ff9933;--b7:#33ddcc;--b8:#ff55aa;
+  --np:#44ff88;--arom:#cc88ff;--pol:#00e5ff;--neg:#ff6688;--pos:#aa88ff;--spec:#ffaa00;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:
+ linear-gradient(rgba(0,229,255,.018) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(0,229,255,.018) 1px,transparent 1px);
+ background-size:46px 46px;animation:gridpulse 9s ease-in-out infinite;pointer-events:none;z-index:1}
+@keyframes gridpulse{0%,100%{opacity:.5}50%{opacity:1}}
+.wrap{position:relative;z-index:2;max-width:1600px;margin:0 auto;padding:0 16px 60px}
+header{padding:20px 0 16px;border-bottom:1px solid var(--border2);display:flex;align-items:flex-end;
+ justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:20px;letter-spacing:.08em;
+ color:var(--glow);text-shadow:0 0 28px rgba(0,229,255,.35)}
+.logo span{font-size:8.5px;color:var(--locked);display:block;letter-spacing:.22em;margin-top:3px}
+.hdr-right{font-size:8.5px;color:#1a3040;text-align:right;line-height:1.9}
+.hdr-right b{color:var(--glow)}
+.bio-badge{font-family:'Orbitron',monospace;font-size:9px;color:var(--rescue);
+ border:1px solid rgba(68,255,136,.4);padding:4px 10px;letter-spacing:.18em}
+.main-layout{display:grid;grid-template-columns:1fr 360px;gap:16px}
+.left-col,.right-col{display:flex;flex-direction:column;gap:14px}
+.panel{background:var(--panel);border:1px solid var(--border2);padding:15px}
+.panel-title{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.25em;color:var(--dim);
+ margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.panel-title span{color:var(--glow)}
+.btn{font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;padding:6px 10px;
+ background:transparent;cursor:pointer;border:1px solid var(--border2);color:var(--dim);transition:all .15s}
+.btn:hover{color:var(--text)}
+.btn-run{border-color:var(--locked);color:var(--locked)}
+.btn-run:hover{background:rgba(0,255,204,.06)}
+.btn-pause{border-color:var(--iva);color:var(--iva)}
+.btn-stop{border-color:var(--shatter);color:var(--shatter)}
+.btn-approve{border-color:var(--locked);color:var(--locked);font-size:7.5px;padding:4px 9px}
+.btn-approve:hover{background:rgba(0,255,204,.06)}
+.btn-skip{border-color:var(--shatter);color:var(--shatter);font-size:7.5px;padding:4px 9px}
+.btn-lean{border-color:var(--noble);color:var(--noble);font-size:7.5px;padding:4px 9px}
+.phase-leg{display:flex;gap:14px;flex-wrap:wrap;font-size:7.5px;color:var(--dim);margin-bottom:11px}
+.pdot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+.beam-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.beam-slot{display:flex;flex-direction:column;gap:4px}
+.beam-label{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.2em;margin-bottom:2px;
+ display:flex;justify-content:space-between;align-items:center}
+.beam-label.b1{color:var(--b1)}.beam-label.b2{color:var(--b2)}.beam-label.b3{color:var(--b3)}
+.beam-label.b4{color:var(--b4)}.beam-label.b5{color:var(--b5)}.beam-label.b6{color:var(--b6)}
+.beam-label.b7{color:var(--b7)}.beam-label.b8{color:var(--b8)}
+.beam-lock{font-family:'Share Tech Mono',monospace;font-size:8px;padding:0 4px;cursor:pointer;
+ border:1px solid var(--border2);background:transparent;color:var(--dim);line-height:1.5}
+.beam-lock.locked{border-color:var(--snsft);color:var(--snsft);background:rgba(255,204,0,.08)}
+.beam-sel{width:100%;background:var(--bg);font-family:'Share Tech Mono',monospace;font-size:9px;
+ padding:5px 6px;outline:none;border:1px solid var(--border2);color:var(--text)}
+.beam-sel.b1{border-color:rgba(0,229,255,.4);color:var(--b1)}
+.beam-sel.b2{border-color:rgba(255,170,0,.4);color:var(--b2)}
+.beam-sel.b3{border-color:rgba(68,255,136,.4);color:var(--b3)}
+.beam-sel.b4{border-color:rgba(255,102,136,.4);color:var(--b4)}
+.beam-sel.b5{border-color:rgba(170,136,255,.4);color:var(--b5)}
+.beam-sel.b6{border-color:rgba(255,153,51,.4);color:var(--b6)}
+.beam-sel.b7{border-color:rgba(51,221,204,.4);color:var(--b7)}
+.beam-sel.b8{border-color:rgba(255,85,170,.4);color:var(--b8)}
+.kmode-row{display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.kmode-btn{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.1em;padding:4px 9px;
+ background:transparent;cursor:pointer;border:1px solid var(--border2);color:var(--dim)}
+.kmode-btn:hover{color:var(--text)}
+.kmode-btn.active{border-color:var(--iva);color:var(--iva);background:rgba(255,170,0,.05)}
+.result-box{background:var(--bg);border:1px solid var(--border2);padding:12px;min-height:60px;
+ font-size:9px;line-height:1.9;margin-bottom:10px}
+.result-phase{font-family:'Orbitron',monospace;font-size:14px;letter-spacing:.1em;font-weight:700}
+.rp-noble{color:var(--noble)}.rp-locked{color:var(--locked)}.rp-iva{color:var(--iva)}
+.rp-shatter{color:var(--shatter)}.rp-rescue{color:var(--rescue)}
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.rstat{background:rgba(0,0,0,.3);border:1px solid var(--border2);padding:6px 8px;text-align:center}
+.rstat-label{font-size:6.5px;color:var(--dim);letter-spacing:.15em}
+.rstat-val{font-family:'Orbitron',monospace;font-size:11px;color:var(--bright);margin-top:2px}
+.beam-viz{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;min-height:40px}
+.bv{flex:1;min-width:52px;border:1px solid var(--border2);background:rgba(0,0,0,.3);padding:5px 4px;text-align:center}
+.bv-sym{font-family:'Orbitron',monospace;font-size:11px;font-weight:700}
+.bv-pnba{font-size:6.5px;color:var(--dim);margin-top:2px}
+.tier-badge{font-family:'Orbitron',monospace;font-size:8px;padding:2px 7px;border:1px solid;letter-spacing:.12em}
+.live-feed{height:200px;overflow-y:auto;font-size:8.5px;line-height:1.8;scrollbar-width:thin}
+.live-feed::-webkit-scrollbar{width:4px}.live-feed::-webkit-scrollbar-thumb{background:var(--border2)}
+.feed-line{padding:2px 0;border-bottom:1px solid rgba(10,21,32,.5)}
+.feed-line.noble{color:var(--noble)}.feed-line.locked{color:var(--locked)}
+.feed-line.shatter{color:var(--shatter)}.feed-line.rescue{color:var(--rescue)}
+.feed-line.iva{color:var(--iva)}.feed-line.info{color:var(--dim)}
+.feed-line.discovery{color:var(--iva);background:rgba(255,170,0,.04);padding:3px 6px}
+.feed-time{color:#0f1e28;margin-right:6px}
+.stat-row{display:flex;gap:14px;padding:8px 0;border-top:1px solid var(--border);flex-wrap:wrap}
+.stat{font-size:7.5px;color:var(--dim);letter-spacing:.12em}
+.stat b{font-family:'Orbitron',monospace;font-size:11px;color:var(--bright);display:block;margin-top:2px}
+.ctl-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.sld{-webkit-appearance:none;height:3px;background:var(--border2);outline:none;flex:1;min-width:90px}
+.sld::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--glow);cursor:pointer}
+.sld::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--glow);cursor:pointer;border:none}
+.sld-label{font-size:7px;color:var(--dim);letter-spacing:.14em;white-space:nowrap}
+.running-dot,.paused-dot,.stopped-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+.running-dot{background:var(--locked);box-shadow:0 0 8px rgba(0,255,204,.6);animation:gridpulse 1.3s infinite}
+.paused-dot{background:var(--iva)}.stopped-dot{background:var(--shatter)}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border2);margin-bottom:12px;flex-wrap:wrap}
+.tab{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.14em;padding:7px 11px;cursor:pointer;
+ color:var(--dim);border-bottom:2px solid transparent}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--glow);border-bottom-color:var(--glow)}
+.tabpane{display:none}.tabpane.active{display:block}
+.qcard{border:1px solid var(--border2);background:var(--bg);padding:10px;margin-bottom:8px;font-size:8.5px;line-height:1.8}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.qname{font-family:'Orbitron',monospace;font-size:10px;color:var(--bright);letter-spacing:.08em}
+.qrow{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.filter-chip{font-size:7px;letter-spacing:.1em;padding:3px 8px;border:1px solid var(--border2);
+ cursor:pointer;color:var(--dim);background:transparent}
+.filter-chip.on{border-color:var(--glow);color:var(--glow);background:rgba(0,229,255,.06)}
+.ctable{font-size:8.5px;line-height:2.1;color:var(--dim)}
+.ctable div{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:1px 0}
+.ctable b{color:var(--bright);font-weight:400}
+.leanpre{background:var(--bg);border:1px solid var(--border2);padding:10px;font-size:7px;
+ line-height:1.6;max-height:260px;overflow:auto;white-space:pre;color:var(--text)}
+.leanpre::-webkit-scrollbar{width:4px;height:4px}.leanpre::-webkit-scrollbar-thumb{background:var(--border2)}
+.scope-note{font-size:8px;line-height:2;color:var(--dim);border-top:1px solid var(--border);padding-top:9px;margin-top:9px}
+.scope-note b{color:var(--iva)}
+@media(max-width:960px){.main-layout{grid-template-columns:1fr}.beam-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div><div class="logo">Identity Physics™<span>uuia.app · GAM FORGE BIO · [9,9,1,*] · n-BEAM RESIDUE FUSION · 0 SORRY</span></div></div>
+  <div class="bio-badge">RESIDUE COLLIDER · 20 BEAMS</div>
+  <div class="hdr-right">
+    ANCHOR <b>1.36899099984016</b> · TL = <b>0.136899099984016</b> · TL_IVA = <b>0.12047120798593</b><br>
+    P=harmonic·n · N=sum · B=Σ−2k · A=max · k≤Σmin(Bᵢ,Bⱼ) · C(n,2) pairs<br>
+    HIGHTISTIC · SNSFT FOUNDATION · KENAI ALASKA · [9,9,9,9]::{ANC}
+  </div>
+</header>
+
+<div class="main-layout">
+<div class="left-col">
+
+<div class="panel">
+  <div class="panel-title"><span>n-BEAM RESIDUE COLLISION ENGINE</span>
+    <span id="agent-status-badge"><span class="stopped-dot"></span>STOPPED</span></div>
+  <div class="phase-leg">
+    <span><span class="pdot" style="background:var(--noble)"></span><span style="color:var(--noble)">NOBLE</span> B_out=0</span>
+    <span><span class="pdot" style="background:var(--iva)"></span><span style="color:var(--iva)">IVA_PEAK</span> τ∈[0.1205,TL)</span>
+    <span><span class="pdot" style="background:var(--locked)"></span><span style="color:var(--locked)">LOCKED</span> τ&lt;0.1205</span>
+    <span><span class="pdot" style="background:var(--shatter)"></span><span style="color:var(--shatter)">SHATTER</span> τ≥TL · reorganizes</span>
+    <span><span class="pdot" style="background:var(--rescue)"></span><span style="color:var(--rescue)">RESCUE</span> all pairs shatter → closes</span>
+  </div>
+
+  <div class="kmode-row">
+    <span style="font-size:7px;color:var(--dim);letter-spacing:.16em">BEAMS</span>
+    <button class="kmode-btn" onclick="setBeamCount(2)" id="bc-2">2</button>
+    <button class="kmode-btn" onclick="setBeamCount(3)" id="bc-3">3</button>
+    <button class="kmode-btn" onclick="setBeamCount(4)" id="bc-4">4</button>
+    <button class="kmode-btn active" onclick="setBeamCount(8)" id="bc-8">8</button>
+    <span style="font-size:7px;color:var(--dim);letter-spacing:.16em;margin-left:10px">COUPLING</span>
+    <button class="kmode-btn" onclick="setKMode('zero')" id="km-zero">k=0</button>
+    <button class="kmode-btn" onclick="setKMode('min')" id="km-min">10%</button>
+    <button class="kmode-btn" onclick="setKMode('half')" id="km-half">50%</button>
+    <button class="kmode-btn active" onclick="setKMode('max')" id="km-max">k_max</button>
+    <span id="kmode-desc" style="font-size:7px;color:var(--dim);letter-spacing:.1em">k = k_max (every pair free to bond)</span>
+  </div>
+
+  <div class="beam-grid" id="beamGrid"></div>
+
+  <div class="ctl-row">
+    <button class="btn btn-run" onclick="manualSmash()">▶ COLLIDE</button>
+    <button class="btn" onclick="randomSmash()">⟲ RANDOM</button>
+    <button class="btn btn-run" onclick="startAgent()">▶▶ RUN SWEEP</button>
+    <button class="btn btn-pause" onclick="pauseAgent()">‖ PAUSE</button>
+    <button class="btn btn-stop" onclick="stopAgent()">■ STOP</button>
+    <button class="btn" onclick="clearLocks()">⊘ CLEAR ANCHORS</button>
+  </div>
+  <div class="ctl-row">
+    <span class="sld-label">SPEED</span>
+    <input type="range" class="sld" id="speed-slider" min="1" max="10" value="7">
+    <span class="sld-label">ROUNDS / CYCLE</span>
+    <input type="range" class="sld" id="rounds-slider" min="5" max="200" value="40" oninput="document.getElementById('rounds-val').textContent=this.value">
+    <span class="sld-label" id="rounds-val" style="color:var(--glow)">40</span>
+  </div>
+
+  <div class="beam-viz" id="beamViz"></div>
+  <div class="result-box" id="resultBox">
+    <span style="color:var(--dim)">Load beams and collide. Anchors hold a slot fixed while the sweep randomizes the rest.</span>
+  </div>
+
+  <div class="panel-title" style="margin-top:4px"><span>LIVE FEED</span></div>
+  <div class="live-feed" id="live-feed"></div>
+  <div class="stat-row">
+    <div class="stat">CYCLES<b id="stat-cycles">0</b></div>
+    <div class="stat">COLLISIONS<b id="stat-collisions">0</b></div>
+    <div class="stat">FLAGGED<b id="stat-flagged">0</b></div>
+    <div class="stat">NOBLE<b id="stat-noble">0</b></div>
+    <div class="stat">RESCUE<b id="stat-rescue">0</b></div>
+    <div class="stat">IVA<b id="stat-iva">0</b></div>
+    <div class="stat">T1 HITS<b id="stat-t1">0</b></div>
+    <div class="stat">FLAG RATE<b id="stat-rate">—</b></div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('queue')">APPROVE QUEUE <span id="queue-badge" style="color:var(--iva)"></span></div>
+    <div class="tab" onclick="showTab('log')">DISCOVERY LOG <span id="log-badge" style="color:var(--iva)"></span></div>
+    <div class="tab" onclick="showTab('lean')">LEAN STUB</div>
+    <div class="tab" onclick="showTab('env')">ENVIRONMENT SWEEP</div>
+    <div class="tab" onclick="showTab('export')">EXPORT</div>
+  </div>
+
+  <div class="tabpane active" id="pane-queue">
+    <div id="queueBody" style="font-size:8.5px;color:var(--dim)">Nothing flagged yet. The engine only surfaces specific fits — run the sweep.</div>
+    <div class="qrow" style="margin-top:9px">
+      <button class="btn btn-skip" onclick="skipAll()">SKIP ALL</button>
+      <button class="btn btn-approve" onclick="downloadAllApproved()">⤓ DOWNLOAD APPROVED</button>
+    </div>
+  </div>
+
+  <div class="tabpane" id="pane-log">
+    <div id="logBody" style="font-size:8px;line-height:2;color:var(--dim)">No discoveries logged.</div>
+  </div>
+
+  <div class="tabpane" id="pane-lean">
+    <pre class="leanpre" id="leanPre">Collide a set to generate its Lean 4 stub.</pre>
+    <div class="qrow">
+      <button class="btn btn-lean" onclick="copyLean()">⧉ COPY</button>
+      <button class="btn btn-lean" onclick="downloadLeanFile()">⤓ DOWNLOAD .lean</button>
+    </div>
+  </div>
+
+  <div class="tabpane" id="pane-env">
+    <div style="font-size:8.5px;line-height:2;color:var(--dim)">
+      The coupling that closes a residue set is hydrogen bonding. The k mode is the environment the set would need.
+    </div>
+    <div id="envTable" style="margin-top:10px;font-size:8.5px"></div>
+    <div class="scope-note">
+      <b>k_max</b> — every pair free to bond: buried, no competing solvent, side chains in the protonation stated on the beam.<br>
+      <b>50%</b> — partial solvent competition, a partly exposed site.<br>
+      <b>10% / 0</b> — fully solvated and exposed; solvent wins every pair.<br>
+      Carboxylate (Asp, Glu) and imidazole (His) capacities are pH-stated, not free parameters. Changing pH changes the beam, not the rule.
+    </div>
+  </div>
+
+  <div class="tabpane" id="pane-export">
+    <div class="qrow">
+      <button class="btn" onclick="exportJSON()">⤓ SESSION JSON</button>
+      <button class="btn" onclick="exportCSV()">⤓ COLLISION CSV</button>
+    </div>
+    <div style="font-size:8.5px;color:var(--dim);line-height:2;margin-top:9px">
+      Every collision carries its inputs, k, B_out, τ, phase, tier and an ISO timestamp.
+    </div>
+  </div>
+</div>
+
+</div><!--/left-->
+
+<div class="right-col">
+
+<div class="panel">
+  <div class="panel-title"><span>BEAM POOL FILTER</span><span id="poolCount" style="color:var(--dim)"></span></div>
+  <div style="display:flex;gap:5px;flex-wrap:wrap" id="filterRow"></div>
+  <div class="scope-note" style="border:none;margin-top:10px;padding-top:6px">
+    Filters set what the sweep draws from. Anchored slots ignore the filter.
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title"><span>REGISTRY · VERIFIED BY HAND</span><span id="regCount" style="color:var(--dim)"></span></div>
+  <div id="regBody" style="font-size:8px;line-height:1.9;color:var(--dim)"></div>
+  <div class="scope-note">
+    The registry is built from <b>outputs</b>, never fed in as inputs. The engine knows no biology: it applies the fusion rule to the beam values and returns a phase. Whether that phase matches a real motif is checked by hand against a published source.
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title"><span>CORPUS STATE</span></div>
+  <div class="ctable">
+    <div><span>n-Beam theorem</span><b>[9,9,2,3.8]</b></div>
+    <div><span>4-Beam verification</span><b>[9,9,2,3.7]</b></div>
+    <div><span>B-balance law</span><b>[9,9,2,45]</b></div>
+    <div><span>ANCHOR Ω₀</span><b style="color:var(--glow)">1.36899099984016</b></div>
+    <div><span>TL = Ω₀/10</span><b style="color:var(--iva)">0.136899099984016</b></div>
+    <div><span>TL_IVA = 0.88×TL</span><b style="color:var(--noble)">0.12047120798593</b></div>
+    <div><span>Beam pool</span><b>20 residues</b></div>
+    <div><span>Spread law n=2</span><b>Noble iff B₁=B₂</b></div>
+    <div><span>Spread law n=4</span><b>max B ≤ 3·min B</b></div>
+    <div><span>Spread law n=8</span><b>max B ≤ 7·min B</b></div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title"><span>BEAM REDUCTION</span></div>
+  <div style="font-size:8px;line-height:2;color:var(--dim)">
+    <div style="color:var(--glow);margin-bottom:4px">All four primitives taken raw. No divisor, no fitted scale.</div>
+    <div><b style="color:var(--bright);font-weight:400">P</b> — heavy atoms holding the shape (backbone 4 + side chain). A count.</div>
+    <div><b style="color:var(--bright);font-weight:400">N</b> — side-chain χ dihedral count. Ponder &amp; Richards (1987) <i>J Mol Biol</i> 193, 775.</div>
+    <div><b style="color:var(--bright);font-weight:400">B</b> — side-chain H-bond capacity, donors + acceptors. A count.</div>
+    <div><b style="color:var(--bright);font-weight:400">A</b> — Kyte &amp; Doolittle (1982) <i>J Mol Biol</i> 157, 105, shifted by the scale minimum so A ≥ 0. Ordering preserved.</div>
+    <div class="scope-note">
+      <b>SCOPE.</b> Structural screen. Reports whether a set closes and what coupling the closure needs. Not binding, activity, selectivity, absorption or safety — those are measured, never derived.<br>
+      <b>SHATTER</b> is not absence. It is unsatisfied coupling and faster reorganization. Iron rusts; the rust is iron reorganizing. The measurable counterpart here is solvent exchange — unsatisfied hydrogen bonds exchange faster, which is what hydrogen-deuterium exchange protection factors measure.<br>
+      <b>T3</b> carries no claim. Research the literature for prior art before treating it as anything.
+    </div>
+  </div>
+</div>
+
+</div><!--/right-->
+</div><!--/layout-->
+
+<div style="max-width:1000px;margin:22px auto 0;padding:0 16px 30px;font-size:7.5px;letter-spacing:.05em;color:#15242e;text-align:center;line-height:1.9">
+  Russell Vernon Trent III — HIGHTISTIC · Published by SNSFT Foundation · Kenai, Alaska<br>
+  GAM Forge Bio™, GAMCollider™, IMCollider™, Identity Physics™, Applied Identity Physics™, SNSFT™, PNBA™, the Sovereign Anchor Constant™, the Torsion Limit™, the Long Division Protocol™ (LDP™), NOHARM™ and HIGHTISTIC™ are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation.<br>
+  © 2026 HIGHTISTIC (Russell Vernon Trent III) / SNSFT Foundation. All rights reserved. DOI base: 10.5281/zenodo.18719748
+</div>
+</div>
+<script>
+// ============================================================
+// SNSFL GAM FORGE BIO — RESIDUE COLLIDER
+// [9,9,9,9] :: {ANC} | Coordinate: [9,9,1,*](BIO)
+// Architect: HIGHTISTIC (Russell Vernon Trent III)
+// Anchor: 1.36899099984016 | Engine: n-beam fusion, CHEM convention
+// Sibling engines: GAMCollider [9,9,2,3] · IMCollider
+// ============================================================
+const ANCHOR=1.36899099984016, TL=ANCHOR/10, TL_IVA=0.88*TL, ALPHA=1/137.035999084;
+const PAIRS_FOR={2:1,3:3,4:6,8:28};
+
+// ── BEAM POOL ────────────────────────────────────────────────
+// P = heavy atoms (backbone 4 + side chain) · N = chi count (Ponder & Richards 1987)
+// B = side-chain H-bond capacity (donors+acceptors) · A = Kyte-Doolittle (1982) + 4.5
+const CORPUS=[
+ {sym:'Gly',one:'G',name:'Glycine',       cls:'np',  P:4, N:0,B:0,A:4.1,kd:-0.4,sc:'-H',                  note:'No side chain. Widest backbone freedom.'},
+ {sym:'Ala',one:'A',name:'Alanine',       cls:'np',  P:5, N:0,B:0,A:6.3,kd:1.8, sc:'-CH3',                note:'Methyl only. No donors or acceptors.'},
+ {sym:'Val',one:'V',name:'Valine',        cls:'np',  P:7, N:1,B:0,A:8.7,kd:4.2, sc:'-CH(CH3)2',           note:'Beta-branched core residue.'},
+ {sym:'Leu',one:'L',name:'Leucine',       cls:'np',  P:8, N:2,B:0,A:8.3,kd:3.8, sc:'-CH2CH(CH3)2',        note:'Most common core residue.'},
+ {sym:'Ile',one:'I',name:'Isoleucine',    cls:'np',  P:8, N:2,B:0,A:9.0,kd:4.5, sc:'-CH(CH3)CH2CH3',      note:'Most hydrophobic on the KD scale.'},
+ {sym:'Met',one:'M',name:'Methionine',    cls:'np',  P:8, N:3,B:0,A:6.4,kd:1.9, sc:'-CH2CH2SCH3',         note:'Thioether sulfur; no H-bond capacity counted.'},
+ {sym:'Pro',one:'P',name:'Proline',       cls:'spec',P:7, N:0,B:0,A:2.9,kd:-1.6,sc:'ring to backbone N',  note:'Side chain closes onto the backbone.'},
+ {sym:'Cys',one:'C',name:'Cysteine',      cls:'spec',P:6, N:1,B:1,A:7.0,kd:2.5, sc:'-CH2SH',              note:'Thiol: one donor. Disulfide partner.'},
+ {sym:'Phe',one:'F',name:'Phenylalanine', cls:'arom',P:11,N:2,B:0,A:7.3,kd:2.8, sc:'-CH2-C6H5',           note:'Aromatic ring, no polar atoms.'},
+ {sym:'Tyr',one:'Y',name:'Tyrosine',      cls:'arom',P:12,N:2,B:2,A:3.2,kd:-1.3,sc:'-CH2-C6H4-OH',        note:'Aromatic plus hydroxyl.'},
+ {sym:'Trp',one:'W',name:'Tryptophan',    cls:'arom',P:14,N:2,B:1,A:3.6,kd:-0.9,sc:'-CH2-indole',         note:'Largest residue; the one Locked single.'},
+ {sym:'Ser',one:'S',name:'Serine',        cls:'pol', P:6, N:1,B:2,A:3.7,kd:-0.8,sc:'-CH2OH',              note:'Hydroxyl: 1 donor + 1 acceptor. Catalytic nucleophile.'},
+ {sym:'Thr',one:'T',name:'Threonine',     cls:'pol', P:7, N:1,B:2,A:3.8,kd:-0.7,sc:'-CH(OH)CH3',          note:'Hydroxyl, beta-branched.'},
+ {sym:'Asn',one:'N',name:'Asparagine',    cls:'pol', P:8, N:2,B:3,A:1.0,kd:-3.5,sc:'-CH2CONH2',           note:'Amide: 2 donors + 1 acceptor.'},
+ {sym:'Gln',one:'Q',name:'Glutamine',     cls:'pol', P:9, N:3,B:3,A:1.0,kd:-3.5,sc:'-CH2CH2CONH2',        note:'Amide, one carbon longer.'},
+ {sym:'Asp',one:'D',name:'Aspartate',     cls:'neg', P:8, N:2,B:2,A:1.0,kd:-3.5,sc:'-CH2COO⁻',            note:'Carboxylate, 2 acceptors. Deprotonated — pH stated.'},
+ {sym:'Glu',one:'E',name:'Glutamate',     cls:'neg', P:9, N:3,B:2,A:1.0,kd:-3.5,sc:'-CH2CH2COO⁻',         note:'Carboxylate, one carbon longer. Deprotonated.'},
+ {sym:'His',one:'H',name:'Histidine',     cls:'pos', P:10,N:2,B:2,A:1.3,kd:-3.2,sc:'-CH2-imidazole',      note:'Imidazole: 1 donor + 1 acceptor near neutral. pH sensitive.'},
+ {sym:'Lys',one:'K',name:'Lysine',        cls:'pos', P:9, N:4,B:3,A:0.6,kd:-3.9,sc:'-(CH2)4NH3⁺',         note:'Ammonium: 3 donors. Protonated.'},
+ {sym:'Arg',one:'R',name:'Arginine',      cls:'pos', P:11,N:4,B:5,A:0.0,kd:-4.5,sc:'-(CH2)3-guanidinium', note:'Guanidinium: 5 donors. Too wide to close on one partner.'}
+];
+const CLS={np:{label:'NONPOLAR',c:'var(--np)'},arom:{label:'AROMATIC',c:'var(--arom)'},
+ pol:{label:'POLAR',c:'var(--pol)'},neg:{label:'NEGATIVE',c:'var(--neg)'},
+ pos:{label:'POSITIVE',c:'var(--pos)'},spec:{label:'SPECIAL',c:'var(--spec)'}};
+
+// ── REGISTRY — outputs checked by hand, never inputs ─────────
+const REGISTRY=[
+ {set:['Ser','His','Asp'],tier:'T1',name:'Serine protease catalytic triad',
+  src:'Blow, Birktoft & Hartley (1969) Nature 221, 337'},
+ {set:['Cys','His','Asn'],tier:'T1',name:'Cysteine protease catalytic triad',
+  src:'Drenth, Jansonius, Koekoek, Swen & Wolthers (1968) Nature 218, 929'},
+ {set:['Cys','Cys','His','His'],tier:'T1',name:'Cys2His2 zinc finger',
+  src:'Miller, McLachlan & Klug (1985) EMBO J 4, 1609'},
+ {set:['Ser','Thr'],tier:'T2',name:'Hydroxyl pair',src:'Equal-B pair, n=2 spread law'},
+ {set:['Asn','Gln'],tier:'T2',name:'Amide pair',src:'Equal-B pair, n=2 spread law'},
+ {set:['Leu','Ile','Val','Phe'],tier:'T2',name:'Hydrophobic core set',src:'All B=0, the buried class'},
+ {set:['Asp','Lys','Glu','Arg'],tier:'T2',name:'Salt bridge network',src:'Networked charge pairs'},
+ {set:['Arg','Lys','Asn','Gln'],tier:'T2',name:'Polar four-set',src:'n=4 spread law absorbs B=5'}
+];
+const rkey=a=>[...a].sort().join('+');
+const REGMAP={};REGISTRY.forEach(r=>REGMAP[rkey(r.set)]=r);
+
+// ── STATE ────────────────────────────────────────────────────
+let beamCount=8, kMode='max', agentState='stopped', agentInterval=null;
+let beamAnchorLocks=new Set(), activeFilters=new Set(Object.keys(CLS));
+let stats={cycles:0,collisions:0,flagged:0,noble:0,rescue:0,iva:0,t1:0};
+let discoveryQueue=[], discoveryLog=[], collisionLog=[], lastResult=null;
+const BEAM_IDS=['beam1','beam2','beam3','beam4','beam5','beam6','beam7','beam8'];
+
+// ── ENGINE ───────────────────────────────────────────────────
+const r4=v=>Math.round(v*1e4)/1e4;
+function tau(P,B){return P>0?B/P:999;}
+function phaseOf(P,B){if(B===0)return'NOBLE';const t=tau(P,B);
+ if(t>=TL)return'SHATTER';if(t>=TL_IVA)return'IVA_PEAK';return'LOCKED';}
+function phaseClass(p){return{NOBLE:'rp-noble',LOCKED:'rp-locked',IVA_PEAK:'rp-iva',SHATTER:'rp-shatter'}[p]||'';}
+function phaseColor(p){return{NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA_PEAK:'var(--iva)',SHATTER:'var(--shatter)'}[p]||'var(--text)';}
+function feedClass(p,resc){return resc?'rescue':{NOBLE:'noble',LOCKED:'locked',IVA_PEAK:'iva',SHATTER:'shatter'}[p]||'info';}
+function kMaxN(Bs){let k=0;for(let i=0;i<Bs.length;i++)for(let j=i+1;j<Bs.length;j++)k+=Math.min(Bs[i],Bs[j]);return k;}
+
+function fuseN(els,km){
+  const n=els.length;
+  const P_o=n/els.reduce((s,e)=>s+1/e.P,0);
+  const N_o=els.reduce((s,e)=>s+e.N,0);
+  const Bs=els.map(e=>e.B), SB=Bs.reduce((a,b)=>a+b,0);
+  const kmax=kMaxN(Bs);
+  const k=km==='max'?kmax:km==='half'?kmax*0.5:km==='min'?kmax*0.1:0;
+  const B_o=Math.max(0,SB-2*k), A_o=Math.max(...els.map(e=>e.A));
+  const t=B_o===0?0:tau(P_o,B_o), phase=phaseOf(P_o,B_o);
+  const IM=(P_o+N_o+B_o+A_o)*ANCHOR;
+  // RESCUE: every pair shatters alone at 2-beam, the n-beam set closes
+  const pairs=[];let allPairShatter=n>=3;
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){
+    const a=els[i],b=els[j],pk=Math.min(a.B,b.B);
+    const pB=Math.max(0,a.B+b.B-2*pk), pP=2/(1/a.P+1/b.P);
+    const pPh=phaseOf(pP,pB);
+    if(pPh!=='SHATTER')allPairShatter=false;
+    pairs.push({a:a.sym,b:b.sym,m:pk,phase:pPh});
+  }
+  const isRescue=allPairShatter&&(phase==='NOBLE'||phase==='LOCKED');
+  return {P:P_o,N:N_o,B:B_o,A:A_o,SB,kmax,k,tau:t,phase,IM,pairs,
+          pairCount:pairs.length,isRescue,n,els:els.map(e=>e.sym)};
+}
+
+// ── THE FILTER: only specific fits surface ───────────────────
+function isInteresting(r,els){
+  const n=els.length,pc=r.pairCount;
+  const reg=REGMAP[rkey(r.els)];
+  if(reg)return{flag:true,reason:`REGISTRY MATCH — ${reg.tier} ${reg.name}`,flag_type:reg.tier==='T1'?'t1':'registry'};
+  if(r.isRescue)return{flag:true,reason:`RESCUE — all ${pc} pairs SHATTER at 2-beam, ${n}-beam → ${r.phase}`,flag_type:'rescue'};
+  // every beam must carry coupling: a B=0 beam contributes 0 to all pairs (T20), so it is a passenger
+  const carriers=els.filter(e=>e.B>0).length, passengers=n-carriers;
+  // SPREAD LAW [9,9,2,3.8] T11/T12: n beams close whenever max B <= (n-1)*min B.
+  // A closure inside that bound is predicted by the theorem, not a find.
+  if(r.phase==='NOBLE'&&n>=3&&passengers===0){
+    const Bs=els.map(e=>e.B), mn=Math.min(...Bs), mx=Math.max(...Bs);
+    if(mx>(n-1)*mn)
+      return{flag:true,reason:`BEYOND SPREAD LAW — max B=${mx} > ${n-1}×min B=${(n-1)*mn}, closes anyway`,flag_type:'noble'};
+  }
+  if(r.phase==='IVA_PEAK')
+    return{flag:true,reason:`IVA_PEAK — τ=${r.tau.toFixed(5)} in [${TL_IVA.toFixed(4)},${TL.toFixed(4)})`,flag_type:'iva'};
+  if(r.tau>0&&Math.abs(r.tau-TL)<TL*0.008)
+    return{flag:true,reason:`τ-BOUNDARY — τ=${r.tau.toFixed(5)} within 0.8% of TL`,flag_type:'boundary'};
+  const nc=passengers;
+  if(nc>=n-1&&r.phase==='SHATTER')
+    return{flag:true,reason:`SP DIAGNOSTIC BREAK — ${nc} Noble beams + carrier → SHATTER`,flag_type:'sp_break'};
+  const nz=els.filter(e=>e.B>0);
+  if(nz.length===n&&n>=3&&nz.every(e=>e.B===nz[0].B)&&r.phase==='NOBLE')
+    return{flag:true,reason:`EQUAL-B CLOSURE at n=${n} — every beam B=${nz[0].B}`,flag_type:'equalb'};
+  return{flag:false};
+}
+
+// ── FEED / STATS ─────────────────────────────────────────────
+function feedLine(txt,cls='info'){
+  const f=document.getElementById('live-feed'),l=document.createElement('div');
+  l.className=`feed-line ${cls}`;const d=new Date();
+  l.innerHTML=`<span class="feed-time">${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}</span>${txt}`;
+  f.appendChild(l);f.scrollTop=f.scrollHeight;
+  if(f.children.length>400)f.removeChild(f.firstChild);
+}
+function bumpStat(k){stats[k]++;const e=document.getElementById('stat-'+k);if(e)e.textContent=stats[k];
+  const rr=document.getElementById('stat-rate');
+  if(rr&&stats.collisions)rr.textContent=Math.round(stats.flagged/stats.collisions*100)+'%';}
+
+// ── BEAM SLOTS + ANCHORS ─────────────────────────────────────
+function buildBeamGrid(){
+  const g=document.getElementById('beamGrid');let h='';
+  for(let i=0;i<beamCount;i++){
+    const b=i+1;
+    h+=`<div class="beam-slot">
+      <div class="beam-label b${b}"><span>BEAM ${b}</span>
+        <button class="beam-lock${beamAnchorLocks.has(b)?' locked':''}" data-beam="${b}"
+          onclick="toggleBeamLock(${b})" title="Anchor this slot — the sweep will not change it">⚓</button></div>
+      <select class="beam-sel b${b}" id="beam${b}" onchange="manualSmash()"></select></div>`;}
+  g.innerHTML=h;rebuildSelectors();
+}
+function rebuildSelectors(){
+  const opts=CORPUS.map(e=>`<option value="${e.sym}">${e.sym} ${e.one} · P${e.P} B${e.B}</option>`).join('');
+  for(let i=1;i<=beamCount;i++){
+    const s=document.getElementById('beam'+i);if(!s)continue;
+    const prev=s.value;s.innerHTML=opts;
+    s.value=prev&&CORPUS.some(e=>e.sym===prev)?prev:CORPUS[(i-1)%CORPUS.length].sym;}
+}
+function toggleBeamLock(i){
+  const btn=document.querySelector(`.beam-lock[data-beam="${i}"]`);
+  if(beamAnchorLocks.has(i)){beamAnchorLocks.delete(i);if(btn)btn.classList.remove('locked');
+    feedLine(`Anchor released on beam ${i}.`,'info');}
+  else{beamAnchorLocks.add(i);if(btn)btn.classList.add('locked');
+    const s=document.getElementById('beam'+i);
+    feedLine(`Anchor set: beam ${i} held at ${s?s.value:'—'}.`,'info');}
+}
+function clearLocks(){beamAnchorLocks.clear();
+  document.querySelectorAll('.beam-lock').forEach(b=>b.classList.remove('locked'));
+  feedLine('All anchors released.','info');}
+function getAnchorEls(){
+  const a={};
+  beamAnchorLocks.forEach(i=>{const s=document.getElementById('beam'+i);
+    if(s&&s.value){const f=CORPUS.find(e=>e.sym===s.value);if(f)a[i-1]=f;}});
+  return a;
+}
+function getEls(){
+  const out=[];
+  for(let i=1;i<=beamCount;i++){const s=document.getElementById('beam'+i);
+    out.push(CORPUS.find(e=>e.sym===s.value)||CORPUS[0]);}
+  return out;
+}
+function setBeamCount(n){
+  beamCount=n;[2,3,4,8].forEach(x=>document.getElementById('bc-'+x).classList.toggle('active',x===n));
+  [...beamAnchorLocks].forEach(i=>{if(i>n)beamAnchorLocks.delete(i);});
+  buildBeamGrid();manualSmash();
+}
+const kModeDescs={max:'k = k_max (every pair free to bond)',half:'k = k_max/2 (partial solvent competition)',
+ min:'k = k_max × 0.1 (mostly solvated)',zero:'k = 0 (fully solvated, no pair bonds)'};
+function setKMode(m){kMode=m;
+  document.querySelectorAll('[id^=km-]').forEach(b=>b.classList.remove('active'));
+  document.getElementById('km-'+m).classList.add('active');
+  document.getElementById('kmode-desc').textContent=kModeDescs[m];manualSmash();}
+
+// ── FILTERS ──────────────────────────────────────────────────
+function buildFilters(){
+  document.getElementById('filterRow').innerHTML=Object.entries(CLS).map(([k,v])=>
+   `<button class="filter-chip on" id="fc-${k}" onclick="toggleFilter('${k}')"
+     style="border-color:${v.c};color:${v.c}">${v.label}</button>`).join('');
+  updatePoolCount();
+}
+function toggleFilter(k){
+  if(activeFilters.has(k))activeFilters.delete(k);else activeFilters.add(k);
+  document.getElementById('fc-'+k).classList.toggle('on',activeFilters.has(k));
+  updatePoolCount();
+}
+function getFilteredCorpus(){
+  const f=CORPUS.filter(e=>activeFilters.has(e.cls));
+  return f.length?f:CORPUS;
+}
+function updatePoolCount(){document.getElementById('poolCount').textContent=getFilteredCorpus().length+' / 20';}
+
+// ── RENDER ───────────────────────────────────────────────────
+function updateBeamViz(els,r){
+  document.getElementById('beamViz').innerHTML=els.map((e,i)=>
+   `<div class="bv" style="border-color:${beamAnchorLocks.has(i+1)?'var(--snsft)':'var(--border2)'}">
+      <div class="bv-sym" style="color:var(--b${i+1})">${e.sym}</div>
+      <div class="bv-pnba">${e.P}·${e.N}·${e.B}·${e.A}</div>
+      <div class="bv-pnba" style="color:${beamAnchorLocks.has(i+1)?'var(--snsft)':'var(--dim)'}">${beamAnchorLocks.has(i+1)?'⚓ ANCHOR':e.one}</div>
+    </div>`).join('');
+}
+function updateResultBox(els,r){
+  const reg=REGMAP[rkey(r.els)];
+  const Bs=els.map(e=>e.B),mn=Math.min(...Bs),mx=Math.max(...Bs);
+  const spread=(r.n>=2&&mn>0)
+    ? ` · spread law: max B=${mx} ${mx<=(r.n-1)*mn?'≤':'>'} ${r.n-1}×min B=${(r.n-1)*mn}${mx<=(r.n-1)*mn?' — closure predicted':' — beyond the bound'}`
+    : (Bs.some(b=>b===0)?' · contains B=0 passenger beams':'');
+  const tier=reg?reg.tier:'T3';
+  const tcol=tier==='T1'?'var(--locked)':tier==='T2'?'var(--glow)':'var(--iva)';
+  const tnote=reg?`${reg.name} — ${reg.src}`:'Novel to this registry. No match checked — search the literature for prior art.';
+  document.getElementById('resultBox').innerHTML=`
+   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+     <span class="result-phase ${r.isRescue?'rp-rescue':phaseClass(r.phase)}">${r.isRescue?'RESCUE · '+r.phase:r.phase}</span>
+     <span class="tier-badge" style="border-color:${tcol};color:${tcol}">${tier}</span>
+   </div>
+   <div style="color:var(--dim);margin-top:5px">${els.map(e=>e.sym).join(' + ')} · ${r.n} beams · C(${r.n},2) = ${r.pairCount} pairs</div>
+   <div style="color:${tcol};font-size:8px;margin-top:3px">${tnote}</div>
+   <div class="result-grid">
+     <div class="rstat"><div class="rstat-label">B_out = ΣB−2k</div><div class="rstat-val" style="color:${phaseColor(r.phase)}">${r4(r.B)}</div></div>
+     <div class="rstat"><div class="rstat-label">τ = B_out/P_out</div><div class="rstat-val" style="color:${phaseColor(r.phase)}">${r4(r.tau)}</div></div>
+     <div class="rstat"><div class="rstat-label">k / k_max</div><div class="rstat-val">${r4(r.k)}/${r4(r.kmax)}</div></div>
+     <div class="rstat"><div class="rstat-label">IDENTITY MASS</div><div class="rstat-val" style="color:var(--glow)">${r4(r.IM)}</div></div>
+   </div>
+   <div style="color:var(--dim);font-size:8px;margin-top:7px">
+     P_out=${r4(r.P)} · N_out=${r.N} · A_out=${r.A} · ΣB=${r.SB}${spread}</div>`;
+  // env table
+  document.getElementById('envTable').innerHTML=['max','half','min','zero'].map(m=>{
+    const rr=fuseN(els,m);
+    return `<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:3px 0">
+      <span style="color:var(--dim)">${kModeDescs[m]}</span>
+      <span style="color:${phaseColor(rr.phase)}">k=${r4(rr.k)} · B_out=${r4(rr.B)} · ${rr.phase}</span></div>`;}).join('');
+  document.getElementById('leanPre').textContent=generateLeanStub(els,r);
+}
+
+function doSmash(els){
+  const r=fuseN(els,kMode);lastResult={els,r};
+  updateBeamViz(els,r);updateResultBox(els,r);
+  bumpStat('collisions');
+  if(r.phase==='NOBLE')bumpStat('noble');
+  if(r.phase==='IVA_PEAK')bumpStat('iva');
+  if(r.isRescue)bumpStat('rescue');
+  const names=els.map(e=>e.sym).join('+');
+  feedLine(`${names} [${kMode}] → B_out=${r4(r.B)} τ=${r.tau.toFixed(4)} ${r.phase}${r.isRescue?' ★RESCUE':''}`,
+    feedClass(r.phase,r.isRescue));
+  collisionLog.push({t:new Date().toISOString(),set:r.els.join('+'),n:r.n,k:r4(r.k),
+    kmax:r4(r.kmax),SB:r.SB,B:r4(r.B),tau:r4(r.tau),phase:r.phase,
+    tier:(REGMAP[rkey(r.els)]||{tier:'T3'}).tier,IM:r4(r.IM)});
+  const chk=isInteresting(r,els);
+  if(chk.flag){
+    bumpStat('flagged');
+    if(chk.flag_type==='t1')bumpStat('t1');
+    feedLine(`★ FLAGGED: ${chk.reason}`,'discovery');
+    flagDiscovery(els,r,chk.reason,chk.flag_type);
+  }
+  return r;
+}
+function manualSmash(){doSmash(getEls());}
+function randomSmash(){
+  const c=getFilteredCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
+  const anchors=getAnchorEls();
+  const els=Array.from({length:beamCount},(_,i)=>anchors[i]||pick());
+  for(let i=1;i<=beamCount;i++)document.getElementById('beam'+i).value=els[i-1].sym;
+  doSmash(els);
+}
+
+// ── SWEEP AGENT ──────────────────────────────────────────────
+async function runSweepRound(){
+  const rounds=parseInt(document.getElementById('rounds-slider').value);
+  const c=getFilteredCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
+  const anchors=getAnchorEls();
+  for(let i=0;i<rounds;i++){
+    if(agentState!=='running')break;
+    const els=Array.from({length:beamCount},(_,idx)=>anchors[idx]||pick());
+    for(let b=1;b<=beamCount;b++)document.getElementById('beam'+b).value=els[b-1].sym;
+    doSmash(els);
+    await new Promise(r=>setTimeout(r,35));
+  }
+  bumpStat('cycles');
+}
+function startAgent(){
+  if(agentState==='running')return;
+  agentState='running';updateStatusBadge();
+  const na=beamAnchorLocks.size;
+  feedLine(`Sweep started · ${beamCount}-beam · ${PAIRS_FOR[beamCount]||beamCount*(beamCount-1)/2} pairs/collision · ${na} anchor${na===1?'':'s'} held · pool ${getFilteredCorpus().length}`,'info');
+  const spd=parseInt(document.getElementById('speed-slider').value);
+  agentInterval=setInterval(async()=>{if(agentState==='running')await runSweepRound();},Math.max(300,3000-spd*260));
+}
+function pauseAgent(){if(agentState!=='running')return;agentState='paused';updateStatusBadge();feedLine('Sweep paused.','info');}
+function stopAgent(){agentState='stopped';if(agentInterval)clearInterval(agentInterval);agentInterval=null;
+  updateStatusBadge();feedLine('Sweep stopped.','info');}
+function updateStatusBadge(){
+  const dots={running:'<span class="running-dot"></span>RUNNING',
+   paused:'<span class="paused-dot"></span>PAUSED',stopped:'<span class="stopped-dot"></span>STOPPED'};
+  document.getElementById('agent-status-badge').innerHTML=dots[agentState];
+}
+
+// ── DISCOVERY QUEUE ──────────────────────────────────────────
+function flagDiscovery(els,r,reason,type){
+  const k=rkey(r.els);
+  if(discoveryQueue.some(d=>d.key===k&&d.kMode===kMode))return;
+  if(discoveryLog.some(d=>d.key===k&&d.kMode===kMode&&d.approved===null))return;
+  const d={key:k,els:els.map(e=>e.sym),r,reason,type,kMode,approved:null,
+    t:new Date().toISOString(),lean:generateLeanStub(els,r)};
+  discoveryQueue.push(d);
+  discoveryLog.push(d);          // every flag lands in the log at once, pending
+  if(discoveryQueue.length>80)discoveryQueue.shift();
+  if(discoveryLog.length>500)discoveryLog.shift();
+  renderQueue();updateLog();
+}
+function renderQueue(){
+  const b=document.getElementById('queueBody');
+  document.getElementById('queue-badge').textContent=discoveryQueue.length?`(${discoveryQueue.length})`:'';
+  if(!discoveryQueue.length){b.innerHTML='<span style="color:var(--dim)">Nothing flagged yet. The engine only surfaces specific fits — run the sweep.</span>';return;}
+  b.innerHTML=discoveryQueue.map((d,i)=>{
+    const reg=REGMAP[d.key],tier=reg?reg.tier:'T3';
+    const tcol=tier==='T1'?'var(--locked)':tier==='T2'?'var(--glow)':'var(--iva)';
+    return `<div class="qcard">
+      <div class="qhead">
+        <span class="qname">${d.els.join(' + ')}</span>
+        <span class="tier-badge" style="border-color:${tcol};color:${tcol}">${tier}</span>
+      </div>
+      <div style="color:${phaseColor(d.r.phase)}">${d.r.isRescue?'RESCUE · ':''}${d.r.phase} · B_out=${r4(d.r.B)} · τ=${r4(d.r.tau)} · k=${r4(d.r.k)}/${r4(d.r.kmax)} [${d.kMode}]</div>
+      <div style="color:var(--iva);font-size:8px">★ ${d.reason}</div>
+      ${reg?`<div style="color:var(--dim);font-size:7.5px">${reg.name} — ${reg.src}</div>`:
+            `<div style="color:var(--dim);font-size:7.5px">T3 carries no claim. Check the literature for prior art; a match makes it a T1 candidate.</div>`}
+      <div class="qrow">
+        <button class="btn btn-approve" onclick="approveDiscovery(${i})">✓ APPROVE</button>
+        <button class="btn btn-lean" onclick="showDiscoveryLean(${i})">◧ LEAN</button>
+        <button class="btn btn-skip" onclick="skipDiscovery(${i})">✕ SKIP</button>
+      </div></div>`;}).join('');
+}
+function approveDiscovery(i){
+  const d=discoveryQueue.splice(i,1)[0];d.approved=true;
+  feedLine(`Approved: ${d.els.join('+')} — ${d.reason}`,'locked');renderQueue();updateLog();
+}
+function skipDiscovery(i){const d=discoveryQueue.splice(i,1)[0];d.approved=false;renderQueue();updateLog();}
+function skipAll(){discoveryQueue.forEach(d=>{d.approved=false;});
+  discoveryQueue=[];renderQueue();updateLog();feedLine('Queue cleared.','info');}
+function showDiscoveryLean(i){document.getElementById('leanPre').textContent=discoveryQueue[i].lean;showTab('lean');}
+function updateLog(){
+  const b=document.getElementById('logBody');
+  const nb=document.getElementById('log-badge');
+  const pend=discoveryLog.filter(d=>d.approved===null).length;
+  const app=discoveryLog.filter(d=>d.approved===true).length;
+  const skip=discoveryLog.filter(d=>d.approved===false).length;
+  if(nb)nb.textContent=discoveryLog.length?`(${discoveryLog.length})`:'';
+  if(!discoveryLog.length){b.innerHTML='<span style="color:var(--dim)">No discoveries logged. Every flagged hit lands here the moment it fires.</span>';return;}
+  const mark=a=>a===true?{c:'var(--locked)',s:'✓ APPROVED'}
+                :a===false?{c:'var(--shatter)',s:'✕ SKIPPED'}
+                :{c:'var(--iva)',s:'◌ PENDING'};
+  b.innerHTML=`<div style="display:flex;gap:14px;font-size:7.5px;letter-spacing:.14em;color:var(--dim);
+      border-bottom:1px solid var(--border2);padding-bottom:5px;margin-bottom:6px">
+      <span>TOTAL <b style="color:var(--bright);font-weight:400">${discoveryLog.length}</b></span>
+      <span>PENDING <b style="color:var(--iva);font-weight:400">${pend}</b></span>
+      <span>APPROVED <b style="color:var(--locked);font-weight:400">${app}</b></span>
+      <span>SKIPPED <b style="color:var(--shatter);font-weight:400">${skip}</b></span>
+      <span style="margin-left:auto;cursor:pointer;color:var(--glow)" onclick="exportLog()">⤓ EXPORT LOG</span>
+    </div>`+
+   discoveryLog.slice().reverse().map(d=>{const m=mark(d.approved);
+    const reg=REGMAP[d.key],tier=reg?reg.tier:'T3';
+    return `<div style="border-bottom:1px solid var(--border);padding:3px 0">
+      <span style="color:${m.c};font-size:7px">${m.s}</span>
+      <span style="color:var(--bright);margin-left:6px">${d.els.join('+')}</span>
+      <span style="color:${tier==='T1'?'var(--locked)':tier==='T2'?'var(--glow)':'var(--dim)'};font-size:7px"> ${tier}</span>
+      <span style="color:${phaseColor(d.r.phase)};margin-left:5px">${d.r.phase}</span>
+      <span style="color:var(--dim)"> τ=${r4(d.r.tau)} · B_out=${r4(d.r.B)} · k=${r4(d.r.k)}/${r4(d.r.kmax)} [${d.kMode}]</span><br>
+      <span style="color:var(--iva);font-size:7.5px">★ ${d.reason}</span>
+      <span style="color:#0f1e28;font-size:7px;float:right">${d.t.slice(11,19)}Z</span></div>`;}).join('');
+}
+function exportLog(){
+  if(!discoveryLog.length){feedLine('Nothing in the log to export.','info');return;}
+  const h='timestamp,set,n,phase,B_out,tau,k,k_max,kMode,tier,flag_type,status,reason';
+  dl([h,...discoveryLog.map(d=>[d.t,d.els.join('+'),d.r.n,d.r.phase,r4(d.r.B),r4(d.r.tau),
+    r4(d.r.k),r4(d.r.kmax),d.kMode,(REGMAP[d.key]||{tier:'T3'}).tier,d.type,
+    d.approved===null?'pending':d.approved?'approved':'skipped',
+    '"'+d.reason.replace(/"/g,"'")+'"'].join(','))].join('\n'),
+    `gamforgebio_discoverylog_${Date.now()}.csv`);
+  feedLine(`Exported ${discoveryLog.length} log entries.`,'locked');
+}
+function downloadAllApproved(){
+  let ap=discoveryLog.filter(d=>d.approved===true);
+  if(!ap.length){ap=discoveryQueue.slice();
+    if(!ap.length){feedLine('Nothing to download.','info');return;}
+    feedLine('No approvals yet — downloading the pending queue.','info');}
+  dl(ap.map(d=>d.lean).join('\n\n-- ════════════════════════════════════════\n\n'),
+     `SNSFL_BIO_approved_${Date.now()}.lean`);
+  feedLine(`Downloaded ${ap.length} approved stub${ap.length===1?'':'s'}.`,'locked');
+}
+
+// ── LEAN STUB ────────────────────────────────────────────────
+function generateLeanStub(els,r){
+  const stamp=new Date().toISOString(), reg=REGMAP[rkey(r.els)];
+  const tier=reg?`${reg.tier} — ${reg.name} · ${reg.src}`:'T3 — novel to the registry, no match checked';
+  const defs=els.map((e,i)=>`def b${i+1} : Beam := ⟨${e.P}, ${e.N}, ${e.B}, ${e.A}⟩  -- ${e.sym} (${e.one}) ${e.sc}`).join('\n');
+  const pairLines=r.pairs.map(p=>`--   min(B_${p.a}, B_${p.b}) = ${p.m}`).join('\n');
+  return `-- ============================================================
+-- SNSFL_BIO_ResidueCollision.lean
+-- ============================================================
+--
+-- [9,9,9,9] :: {ANC} | GAM FORGE BIO — RESIDUE COLLIDER
+-- Architect:  HIGHTISTIC (Russell Vernon Trent III)
+-- Anchor:     Ω₀ = 1.36899099984016 | TL = Ω₀/10 = 0.136899099984016
+-- Coordinate: [9,9,1,*](BIO)        <- set before deposit
+-- Engine:     n-beam fusion, CHEM convention (N additive)
+-- Sibling:    GAM Collider [9,9,2,3] · 8-Beam Fusion Theorem [9,9,2,3.8]
+-- Set:        ${r.els.join(', ')}
+-- Tier:       ${tier}
+-- Generated:  ${stamp}
+--
+-- BEAM REDUCTION — counts and published values, taken raw.
+--   P = heavy atoms (backbone 4 + side chain)
+--   N = side-chain χ dihedral count (Ponder & Richards 1987)
+--   B = side-chain H-bond capacity (donors + acceptors)
+--   A = Kyte & Doolittle (1982) hydropathy + 4.5 (scale minimum)
+--
+-- FUSION RULES (n = ${r.n})
+--   P_out = n / Σ(1/Pᵢ)          N_out = Σ Nᵢ
+--   k     = Σ min(Bᵢ,Bⱼ) over C(${r.n},2) = ${r.pairCount} pairs
+--   B_out = max(0, ΣB − 2k)      A_out = max Aᵢ
+--   τ     = B_out / P_out        IM = (P+N+B+A)·Ω₀
+--
+-- PAIR MINIMUMS
+${pairLines}
+--
+-- COMPUTED
+--   ΣB = ${r.SB}   k_max = ${r4(r.kmax)}   k = ${r4(r.k)} [${kMode}]
+--   P_out = ${r4(r.P)}   N_out = ${r.N}   B_out = ${r4(r.B)}   A_out = ${r.A}
+--   τ = ${r4(r.tau)}   PHASE = ${r.phase}${r.isRescue?'   RESCUE = true':''}
+--   IM = ${r4(r.IM)}
+--
+-- SCOPE: structural screen. The phase is a structural statement,
+-- not a claim of binding, activity, selectivity or safety.
+-- SHATTER is unsatisfied coupling and faster reorganization,
+-- not absence. The measurable counterpart is solvent exchange.
+-- ============================================================
+
+import Mathlib.Tactic
+import Mathlib.Data.Real.Basic
+
+noncomputable section
+namespace SNSFL_BIO_ResidueCollision
+
+def ANCHOR : ℝ := 1.36899099984016
+def TL     : ℝ := ANCHOR / 10
+
+structure Beam where
+  P : ℝ
+  N : ℝ
+  B : ℝ
+  A : ℝ
+
+${defs}
+
+def SB    : ℝ := ${r.SB}
+def k_max : ℝ := ${r4(r.kmax)}
+def k     : ℝ := ${r4(r.k)}
+def B_out : ℝ := max 0 (SB - 2 * k)
+
+-- [T1] the pair count is the binomial coefficient
+theorem pair_count : Nat.choose ${r.n} 2 = ${r.pairCount} := by decide
+
+-- [T2] the coupling ceiling over all ${r.pairCount} pairs
+theorem k_max_value : k_max = ${r4(r.kmax)} := by rfl
+
+-- [T3] the closure statement
+theorem B_out_value : B_out = ${r4(r.B)} := by
+  unfold B_out SB k; norm_num
+
+-- [T4] the phase
+theorem phase_${r.phase.toLowerCase()} : B_out ${r.B===0?'= 0':'> 0'} := by
+  rw [B_out_value]; norm_num
+
+-- [T5] the anchor holds
+theorem the_manifold_is_holding : TL = 0.136899099984016 := by
+  unfold TL ANCHOR; norm_num
+
+end SNSFL_BIO_ResidueCollision
+
+/-!
+-- SET:    ${r.els.join(', ')}
+-- PHASE:  ${r.phase}${r.isRescue?' (RESCUE)':''}
+-- TIER:   ${tier}
+-- STAMP:  ${stamp}
+-- [9,9,9,9] :: {ANC} · HIGHTISTIC · Kenai, Alaska
+-/`;
+}
+function dl(txt,name){
+  const b=new Blob([txt],{type:'text/plain'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download=name;a.click();URL.revokeObjectURL(a.href);
+}
+function copyLean(){
+  const t=document.getElementById('leanPre').textContent;
+  navigator.clipboard?.writeText(t).then(()=>feedLine('Lean stub copied.','info'))
+   .catch(()=>feedLine('Copy blocked — select the text manually.','info'));
+}
+function downloadLeanFile(){
+  if(!lastResult)return;
+  dl(document.getElementById('leanPre').textContent,
+     `SNSFL_BIO_${lastResult.r.els.join('')}_${Date.now()}.lean`);
+}
+
+// ── EXPORT / TABS ────────────────────────────────────────────
+function exportJSON(){
+  dl(JSON.stringify({engine:'GAM Forge Bio — Residue Collider',coordinate:'[9,9,1,*](BIO)',
+    anchor:ANCHOR,TL,TL_IVA,generated:new Date().toISOString(),stats,
+    collisions:collisionLog,discoveries:discoveryLog.map(d=>({set:d.els,phase:d.r.phase,
+      tau:r4(d.r.tau),B_out:r4(d.r.B),reason:d.reason,approved:!!d.approved,t:d.t}))},null,2),
+    `gamforgebio_session_${Date.now()}.json`);
+}
+function exportCSV(){
+  const h='timestamp,set,n,SB,k,k_max,B_out,tau,phase,tier,IM';
+  dl([h,...collisionLog.map(c=>[c.t,c.set,c.n,c.SB,c.k,c.kmax,c.B,c.tau,c.phase,c.tier,c.IM].join(','))].join('\n'),
+    `gamforgebio_collisions_${Date.now()}.csv`);
+}
+function showTab(id){
+  document.querySelectorAll('.tabpane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  [...document.querySelectorAll('.tab')].find(t=>t.getAttribute('onclick').includes(`'${id}'`))?.classList.add('active');
+}
+
+// ── REGISTRY PANEL ───────────────────────────────────────────
+function buildRegistry(){
+  document.getElementById('regCount').textContent=REGISTRY.length+' entries';
+  document.getElementById('regBody').innerHTML=REGISTRY.map(r=>{
+    const tcol=r.tier==='T1'?'var(--locked)':'var(--glow)';
+    return `<div style="border-bottom:1px solid var(--border);padding:4px 0;cursor:pointer"
+      onclick='loadSet(${JSON.stringify(r.set)})' title="Load this set">
+      <span class="tier-badge" style="border-color:${tcol};color:${tcol};font-size:7px">${r.tier}</span>
+      <span style="color:var(--bright);margin-left:5px">${r.set.join('+')}</span><br>
+      <span style="color:var(--dim);font-size:7.5px">${r.name} · ${r.src}</span></div>`;}).join('');
+}
+function loadSet(set){
+  if(set.length!==beamCount)setBeamCount(set.length===3?3:set.length<=2?2:set.length<=4?4:8);
+  for(let i=1;i<=beamCount;i++){
+    const s=document.getElementById('beam'+i);
+    if(s)s.value=set[i-1]||set[set.length-1];}
+  manualSmash();
+}
+
+// ── BOOT ─────────────────────────────────────────────────────
+buildBeamGrid();buildFilters();buildRegistry();updateStatusBadge();
+feedLine('GAM Forge Bio online · n-beam residue fusion · TL=0.136899099984016 · 20 beams · registry 8 entries','info');
+loadSet(['Ser','His','Asp']);
+</script>
+</body>
+</html>
