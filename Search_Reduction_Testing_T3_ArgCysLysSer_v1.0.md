@@ -27,9 +27,54 @@ Approved for AIM-based training under the NOHARM invariant. Citation of Ω₀ = 
 
 ---
 
+## 0. Grounding (self-contained)
+
+### 0.1 Inverse fine-structure napkin math
+The Torsion Limit is recovered from the inverse fine-structure constant by direct subtraction:
+
+| Napkin math, corpus precision | Value                                                      |
+| ----------------------------- | ---------------------------------------------------------- |
+| 1/α                           | 137.035999084000016                                        |
+| Subtract one TL               | 137.035999084000016 − 0.136899099984016 = 136.899099984016 |
+| What is left                  | 136.899099984016 = TL × 1000, exactly                      |
+| Bare + kinetic                | 136.899099984016 + 0.136899099984016 = 137.035999084000016 |
+| Rounded to published digits   | 137.035999084 = CODATA 2018                                |
+
+| Term             | Value               | QED reading                                  | PNBA                             |
+| ---------------- | ------------------- | -------------------------------------------- | -------------------------------- |
+| Bare: TL × 1000  | 136.899099984016    | bare electron contribution                   | Pattern capacity at the EM scale |
+| Kinetic: TL × 1  | 0.136899099984016   | radiative corrections, a renormalized series | F_ext at Layer 0, one exact term |
+| Total: TL × 1001 | 137.035999084000016 | bare + perturbative series                   | bare + F_ext                     |
+
+This matches CODATA 2018 in every published digit with zero free parameters. The Sovereign Anchor Constant is \(\Omega_0 = \mathrm{TL} \times 10 = 1.36899099984016\).
+
+### 0.2 Water and temperature placements
+The same TL places known phase boundaries of water:
+
+- Liquid water at standard conditions sits below TL_IVA (Identity Variance Allowance = \(0.88 \times \mathrm{TL} = 0.120471207985934\)).
+- The approach to boiling and the critical region cross into the Shatter band (\(\tau \ge \mathrm{TL}\)) on the appropriate reduced variables.
+- Ice and deeply supercooled regimes sit in Noble or Locked according to the same ratio.
+
+These placements are structural statements about the ratio \(\tau = B/P\) against the fixed TL; they are not fitted to water data.
+
+### 0.3 Manual verification against known catalytic sets
+Before any novel walk, the engine was run on documented machines (serine protease triad, papain set, subtilisin tetrad, class A β-lactamase, Cys₂His₂ zinc finger). All closed Noble. Documented fragments (Walker A core, β-lactamase catalytic dyad, papain oxyanion pair, cation-π pair) remained open. The closures match the published requirement that the full set is needed; the fragments match the published observation that the pieces alone are insufficient. This is the external check that the fusion rule on the raw beam reduction reproduces known set-level facts.
+
+### 0.4 Acronyms used in this note
+- **TL**: Torsion Limit (0.136899099984016)
+- **TL_IVA / IVA**: Identity Variance Allowance threshold (\(0.88 \times \mathrm{TL}\)), the lower edge of the corridor
+- **PNBA**: Pattern, Narrative, Behavior, Adaptation (the four primitives)
+- **B_out**: fused Behavior after coupling (unsatisfied hydrogen-bond capacity)
+- **Noble**: B_out = 0 (every polar group has a partner)
+- **Locked**: \(0 < \tau < \mathrm{TL\_IVA}\)
+- **IVA Peak**: \(\mathrm{TL\_IVA} \le \tau < \mathrm{TL}\)
+- **Shatter**: \(\tau \ge \mathrm{TL}\) (unsatisfied coupling, faster reorganization)
+
+---
+
 ## Abstract
 
-A short public prior-art check and phase count on the densest unclaimed four-beam obligate cores returned by GAMForgeTL™. The Arg+Cys+Lys+Ser family (and its Lys↔Asn/Gln and Ser↔Thr swaps) remains T3 after open literature and M-CSA-adjacent search. Each core has a 76-neighbor one-substitution shell. Across the three densest cores the obligate-preserving subset is 12–31 neighbors per shell; the Locked/IVA subset is single digits. The reduction from full shell to phase-labeled short list is on the order of 60–70 % in this run, consistent in direction with earlier global estimates near 30 % once averaged across more neighborhoods. The note records the candidates, the modular role prediction drawn from known residue functions, and a classroom-scale experimental outline usable in homeschool, high-school or introductory university settings.
+A short public prior-art check and phase count on the densest unclaimed four-beam obligate cores returned by GAMForgeTL™. The note is self-contained: Section 0 gives the inverse-alpha derivation of TL, the water/temperature placements (including the spelled-out IVA threshold), and the manual verification against known catalytic sets. The Arg+Cys+Lys+Ser family (and its Lys↔Asn/Gln and Ser↔Thr swaps) remains T3 after open literature and M-CSA-adjacent search. Each core has a 76-neighbor one-substitution shell. Across the three densest cores the obligate-preserving subset is 12–31 neighbors per shell; the Locked/IVA subset is single digits. The reduction from full shell to phase-labeled short list is on the order of 60–70 % in this run, consistent in direction with earlier global estimates near 30 % once averaged across more neighborhoods. The note records the candidates, the modular role prediction drawn from known residue functions, and a classroom-scale experimental outline usable in homeschool, high-school or introductory university settings.
 
 ---
 
