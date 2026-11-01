@@ -416,35 +416,51 @@ function fuseN(els,km){
     pairs.push({a:a.sym,b:b.sym,m:pk,phase:pPh});
   }
   const isRescue=allPairShatter&&(phase==='NOBLE'||phase==='LOCKED');
-  return {P:P_o,N:N_o,B:B_o,A:A_o,SB,kmax,k,tau:t,phase,IM,pairs,
+  // COUPLING SURPLUS: 2k − ΣB. Positive = closed with this much to spare.
+  // Negative = open, and |surplus| is exactly B_out. One signed quantity that
+  // keeps working after B_out pins to zero. Derived, not a primitive.
+  const surplus=2*k-SB;
+  return {P:P_o,N:N_o,B:B_o,A:A_o,SB,kmax,k,surplus,tau:t,phase,IM,pairs,
           pairCount:pairs.length,isRescue,n,els:els.map(e=>e.sym)};
 }
 
-// ── THE FILTER: only specific fits surface ───────────────────
+// ── CAPTURE: what counts as a result ─────────────────────────
+// A result is captured on what it IS, never on whether a theorem anticipated
+// it. Spread-law and equal-B verdicts are LABELS that ride on the flag so they
+// can be filtered at view time. An invariant guides a search; it never gates
+// what gets logged, because every collision is data — a shatter included.
 function isInteresting(r,els){
   const n=els.length,pc=r.pairCount;
   const reg=REGMAP[rkey(r.els)];
   if(reg)return{flag:true,reason:`REGISTRY MATCH — ${reg.tier} ${reg.name}`,flag_type:reg.tier==='T1'?'t1':'registry'};
   if(r.isRescue)return{flag:true,reason:`RESCUE — all ${pc} pairs SHATTER at 2-beam, ${n}-beam → ${r.phase}`,flag_type:'rescue'};
-  // every beam must carry coupling: a B=0 beam contributes 0 to all pairs (T20), so it is a passenger
-  const carriers=els.filter(e=>e.B>0).length, passengers=n-carriers;
-  // SPREAD LAW [9,9,2,3.8] T11/T12: n beams close whenever max B <= (n-1)*min B.
-  // A closure inside that bound is predicted by the theorem, not a find.
-  if(r.phase==='NOBLE'&&n>=3&&passengers===0){
-    const Bs=els.map(e=>e.B), mn=Math.min(...Bs), mx=Math.max(...Bs);
-    if(mx>(n-1)*mn)
-      return{flag:true,reason:`BEYOND SPREAD LAW — max B=${mx} > ${n-1}×min B=${(n-1)*mn}, closes anyway`,flag_type:'noble'};
-  }
   if(r.phase==='IVA_PEAK')
     return{flag:true,reason:`IVA_PEAK — τ=${r.tau.toFixed(5)} in [${TL_IVA.toFixed(4)},${TL.toFixed(4)})`,flag_type:'iva'};
   if(r.tau>0&&Math.abs(r.tau-TL)<TL*0.008)
     return{flag:true,reason:`τ-BOUNDARY — τ=${r.tau.toFixed(5)} within 0.8% of TL`,flag_type:'boundary'};
-  const nc=passengers;
-  if(nc>=n-1&&r.phase==='SHATTER')
-    return{flag:true,reason:`SP DIAGNOSTIC BREAK — ${nc} Noble beams + carrier → SHATTER`,flag_type:'sp_break'};
-  const nz=els.filter(e=>e.B>0);
-  if(nz.length===n&&n>=3&&nz.every(e=>e.B===nz[0].B)&&r.phase==='NOBLE')
-    return{flag:true,reason:`EQUAL-B CLOSURE at n=${n} — every beam B=${nz[0].B}`,flag_type:'equalb'};
+
+  // carriers only: a B=0 beam contributes 0 to ΣB and 0 to every pair minimum
+  // (T20), so dragging min B to 0 was what made the old branch skip every set
+  // that contained a medium.
+  const cB=els.filter(e=>e.B>0).map(e=>e.B);
+  const nc=cB.length, passengers=n-nc;
+
+  if(passengers>=n-1&&r.phase==='SHATTER')
+    return{flag:true,reason:`SP DIAGNOSTIC BREAK — ${passengers} Noble beams + carrier → SHATTER`,flag_type:'sp_break'};
+
+  // NOBLE EMERGENCE — every closure where something came in carrying load.
+  if(r.phase==='NOBLE'&&nc>0){
+    const mn=Math.min(...cB), mx=Math.max(...cB);
+    // spread law [9,9,2,3.8] T11/T12, evaluated on the CARRIERS
+    const beyond = nc>=2 && mx>(nc-1)*mn;
+    const equalB = nc>=3 && cB.every(b=>b===cB[0]);
+    const tags=[`surplus ${r4(r.surplus)}`];
+    tags.push(beyond?'beyond spread law':'spread law predicts');
+    if(equalB)tags.push(`equal-B at ${cB[0]}`);
+    if(passengers)tags.push(`${passengers} passenger${passengers>1?'s':''}`);
+    return{flag:true,reason:`${n}-BEAM NOBLE EMERGENCE — ${tags.join(' · ')}`,
+           flag_type: beyond?'noble_beyond':'noble'};
+  }
   return{flag:false};
 }
 
@@ -454,7 +470,7 @@ function feedLine(txt,cls='info'){
   l.className=`feed-line ${cls}`;const d=new Date();
   l.innerHTML=`<span class="feed-time">${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}</span>${txt}`;
   f.appendChild(l);f.scrollTop=f.scrollHeight;
-  if(f.children.length>400)f.removeChild(f.firstChild);
+  if(f.children.length>3000)f.removeChild(f.firstChild);
 }
 function bumpStat(k){stats[k]++;const e=document.getElementById('stat-'+k);if(e)e.textContent=stats[k];
   const rr=document.getElementById('stat-rate');
@@ -469,7 +485,7 @@ function buildBeamGrid(){
       <div class="beam-label b${b}"><span>BEAM ${b}</span>
         <button class="beam-lock${beamAnchorLocks.has(b)?' locked':''}" data-beam="${b}"
           onclick="toggleBeamLock(${b})" title="Anchor this slot — the sweep will not change it">⚓</button></div>
-      <select class="beam-sel b${b}" id="beam${b}" onchange="manualSmash()"></select></div>`;}
+      <select class="beam-sel b${b}" id="beam${b}" onchange="previewSmash()"></select></div>`;}
   g.innerHTML=h;rebuildSelectors();
 }
 function rebuildSelectors(){
@@ -505,14 +521,14 @@ function getEls(){
 function setBeamCount(n){
   beamCount=n;[2,3,4,8].forEach(x=>document.getElementById('bc-'+x).classList.toggle('active',x===n));
   [...beamAnchorLocks].forEach(i=>{if(i>n)beamAnchorLocks.delete(i);});
-  buildBeamGrid();manualSmash();
+  buildBeamGrid();previewSmash();
 }
 const kModeDescs={max:'k = k_max (every pair free to bond)',half:'k = k_max/2 (partial solvent competition)',
  min:'k = k_max × 0.1 (mostly solvated)',zero:'k = 0 (fully solvated, no pair bonds)'};
 function setKMode(m){kMode=m;
   document.querySelectorAll('[id^=km-]').forEach(b=>b.classList.remove('active'));
   document.getElementById('km-'+m).classList.add('active');
-  document.getElementById('kmode-desc').textContent=kModeDescs[m];manualSmash();}
+  document.getElementById('kmode-desc').textContent=kModeDescs[m];previewSmash();}
 
 // ── FILTERS ──────────────────────────────────────────────────
 function buildFilters(){
@@ -543,10 +559,15 @@ function updateBeamViz(els,r){
 }
 function updateResultBox(els,r){
   const reg=REGMAP[rkey(r.els)];
-  const Bs=els.map(e=>e.B),mn=Math.min(...Bs),mx=Math.max(...Bs);
-  const spread=(r.n>=2&&mn>0)
-    ? ` · spread law: max B=${mx} ${mx<=(r.n-1)*mn?'≤':'>'} ${r.n-1}×min B=${(r.n-1)*mn}${mx<=(r.n-1)*mn?' — closure predicted':' — beyond the bound'}`
-    : (Bs.some(b=>b===0)?' · contains B=0 passenger beams':'');
+  const cB=els.filter(e=>e.B>0).map(e=>e.B), nc=cB.length;
+  const mn=nc?Math.min(...cB):0, mx=nc?Math.max(...cB):0;
+  const surpTxt = r.B===0
+    ? ` · coupling surplus ${r4(r.surplus)} (closed with ${r4(r.surplus)} to spare)`
+    : ` · ${r4(r.B)} bond${r.B>1?'s':''} open`;
+  const spread=(nc>=2)
+    ? `${surpTxt} · carrier spread law: max B=${mx} ${mx<=(nc-1)*mn?'≤':'>'} ${nc-1}×min B=${(nc-1)*mn}${mx<=(nc-1)*mn?' — predicted':' — beyond the bound'}`
+      + (nc<r.n?` · ${r.n-nc} passenger beam${r.n-nc>1?'s':''}`:'')
+    : surpTxt;
   const tier=reg?reg.tier:'T3';
   const tcol=tier==='T1'?'var(--locked)':tier==='T2'?'var(--glow)':'var(--iva)';
   const tnote=reg?`${reg.name} — ${reg.src}`:'Novel to this registry. No match checked — search the literature for prior art.';
@@ -574,7 +595,7 @@ function updateResultBox(els,r){
   document.getElementById('leanPre').textContent=generateLeanStub(els,r);
 }
 
-function doSmash(els){
+function doSmash(els,manual){
   const r=fuseN(els,kMode);lastResult={els,r};
   updateBeamViz(els,r);updateResultBox(els,r);
   bumpStat('collisions');
@@ -585,18 +606,29 @@ function doSmash(els){
   feedLine(`${names} [${kMode}] → B_out=${r4(r.B)} τ=${r.tau.toFixed(4)} ${r.phase}${r.isRescue?' ★RESCUE':''}`,
     feedClass(r.phase,r.isRescue));
   collisionLog.push({t:new Date().toISOString(),set:r.els.join('+'),n:r.n,k:r4(r.k),
-    kmax:r4(r.kmax),SB:r.SB,B:r4(r.B),tau:r4(r.tau),phase:r.phase,
+    kmax:r4(r.kmax),SB:r.SB,surplus:r4(r.surplus),B:r4(r.B),tau:r4(r.tau),phase:r.phase,
+    P:r4(r.P),N:r4(r.N),A:r4(r.A),manual:manual?1:0,
     tier:(REGMAP[rkey(r.els)]||{tier:'T3'}).tier,IM:r4(r.IM)});
   const chk=isInteresting(r,els);
   if(chk.flag){
     bumpStat('flagged');
     if(chk.flag_type==='t1')bumpStat('t1');
     feedLine(`★ FLAGGED: ${chk.reason}`,'discovery');
-    flagDiscovery(els,r,chk.reason,chk.flag_type);
+    flagDiscovery(els,r,chk.reason,chk.flag_type,manual);
+  }else if(manual){
+    // A MANUAL collision is a deliberate question. It lands in the log
+    // whatever the answer is — including SHATTER and including a repeat.
+    const reason=`MANUAL COLLISION — ${r.phase} · B_out=${r4(r.B)} · τ=${r.tau.toFixed(5)} · surplus ${r4(r.surplus)}`;
+    feedLine(`◆ LOGGED (manual): ${reason}`,'info');
+    flagDiscovery(els,r,reason,'manual',true);
   }
   return r;
 }
-function manualSmash(){doSmash(getEls());}
+// ▶ COLLIDE is the manual act and always logs. Changing a dropdown or the
+// k-mode only previews, so setting up a set does not fill the log with
+// half-built states.
+function manualSmash(){doSmash(getEls(),true);}
+function previewSmash(){doSmash(getEls(),false);}
 function randomSmash(){
   const c=getFilteredCorpus(),pick=()=>c[Math.floor(Math.random()*c.length)];
   const anchors=getAnchorEls();
@@ -637,23 +669,49 @@ function updateStatusBadge(){
 }
 
 // ── DISCOVERY QUEUE ──────────────────────────────────────────
-function flagDiscovery(els,r,reason,type){
+function flagDiscovery(els,r,reason,type,force){
   const k=rkey(r.els);
-  if(discoveryQueue.some(d=>d.key===k&&d.kMode===kMode))return;
-  if(discoveryLog.some(d=>d.key===k&&d.kMode===kMode&&d.approved===null))return;
-  const d={key:k,els:els.map(e=>e.sym),r,reason,type,kMode,approved:null,
+  // Dedup suppresses repeats from a sweep only. A manual collision is never
+  // deduped — asking the same question twice is allowed to answer twice.
+  if(!force){
+    if(discoveryQueue.some(d=>d.key===k&&d.kMode===kMode))return;
+    if(discoveryLog.some(d=>d.key===k&&d.kMode===kMode&&d.approved===null))return;
+  }
+  const d={key:k,els:els.map(e=>e.sym),r,reason,type,kMode,approved:null,manual:!!force,
     t:new Date().toISOString(),lean:generateLeanStub(els,r)};
   discoveryQueue.push(d);
   discoveryLog.push(d);          // every flag lands in the log at once, pending
-  if(discoveryQueue.length>80)discoveryQueue.shift();
-  if(discoveryLog.length>500)discoveryLog.shift();
+  // NOTHING IS DISCARDED. The old 80/500 caps threw away results that had
+  // already been computed. Holding them costs almost nothing — a run is a few
+  // numbers per row — so the queue and the log keep everything and only the
+  // DOM render is windowed (renderQueue / updateLog below).
   renderQueue();updateLog();
 }
+// ── RENDER WINDOW ────────────────────────────────────────────
+// Everything is held; only what is drawn is limited. Redraws are coalesced so
+// a thousand-collision sweep paints a few times a second instead of a
+// thousand times — the cost was always the DOM, never the arithmetic.
+const QUEUE_CARDS=120, LOG_ROWS=400;
+let _qT=null,_qD=false,_lT=null,_lD=false;
 function renderQueue(){
+  if(_qT){_qD=true;return;}
+  renderQueueNow();
+  _qT=setTimeout(()=>{_qT=null;if(_qD){_qD=false;renderQueue();}},200);
+}
+function updateLog(){
+  if(_lT){_lD=true;return;}
+  updateLogNow();
+  _lT=setTimeout(()=>{_lT=null;if(_lD){_lD=false;updateLog();}},200);
+}
+function renderQueueNow(){
   const b=document.getElementById('queueBody');
   document.getElementById('queue-badge').textContent=discoveryQueue.length?`(${discoveryQueue.length})`:'';
-  if(!discoveryQueue.length){b.innerHTML='<span style="color:var(--dim)">Nothing flagged yet. The engine only surfaces specific fits — run the sweep.</span>';return;}
-  b.innerHTML=discoveryQueue.map((d,i)=>{
+  if(!discoveryQueue.length){b.innerHTML='<span style="color:var(--dim)">Nothing flagged yet. Run the sweep, or collide manually — a manual collision always lands here.</span>';return;}
+  const start=Math.max(0,discoveryQueue.length-QUEUE_CARDS);
+  const hdr=start?`<div style="color:var(--dim);font-size:7.5px;letter-spacing:.12em;padding-bottom:5px">
+    SHOWING THE LAST ${QUEUE_CARDS} OF ${discoveryQueue.length} — none discarded, all ${discoveryQueue.length} are in the log and the export</div>`:'';
+  b.innerHTML=hdr+discoveryQueue.slice(start).map((d,j)=>{
+    const i=start+j;
     const reg=REGMAP[d.key],tier=reg?reg.tier:'T3';
     const tcol=tier==='T1'?'var(--locked)':tier==='T2'?'var(--glow)':'var(--iva)';
     return `<div class="qcard">
@@ -662,7 +720,7 @@ function renderQueue(){
         <span class="tier-badge" style="border-color:${tcol};color:${tcol}">${tier}</span>
       </div>
       <div style="color:${phaseColor(d.r.phase)}">${d.r.isRescue?'RESCUE · ':''}${d.r.phase} · B_out=${r4(d.r.B)} · τ=${r4(d.r.tau)} · k=${r4(d.r.k)}/${r4(d.r.kmax)} [${d.kMode}]</div>
-      <div style="color:var(--iva);font-size:8px">★ ${d.reason}</div>
+      <div style="color:${d.manual?'var(--glow)':'var(--iva)'};font-size:8px">${d.manual?'◆':'★'} ${d.reason}</div>
       ${reg?`<div style="color:var(--dim);font-size:7.5px">${reg.name} — ${reg.src}</div>`:
             `<div style="color:var(--dim);font-size:7.5px">T3 carries no claim. Check the literature for prior art; a match makes it a T1 candidate.</div>`}
       <div class="qrow">
@@ -679,7 +737,7 @@ function skipDiscovery(i){const d=discoveryQueue.splice(i,1)[0];d.approved=false
 function skipAll(){discoveryQueue.forEach(d=>{d.approved=false;});
   discoveryQueue=[];renderQueue();updateLog();feedLine('Queue cleared.','info');}
 function showDiscoveryLean(i){document.getElementById('leanPre').textContent=discoveryQueue[i].lean;showTab('lean');}
-function updateLog(){
+function updateLogNow(){
   const b=document.getElementById('logBody');
   const nb=document.getElementById('log-badge');
   const pend=discoveryLog.filter(d=>d.approved===null).length;
@@ -698,7 +756,9 @@ function updateLog(){
       <span>SKIPPED <b style="color:var(--shatter);font-weight:400">${skip}</b></span>
       <span style="margin-left:auto;cursor:pointer;color:var(--glow)" onclick="exportLog()">⤓ EXPORT LOG</span>
     </div>`+
-   discoveryLog.slice().reverse().map(d=>{const m=mark(d.approved);
+   (discoveryLog.length>LOG_ROWS?`<div style="color:var(--dim);font-size:7.5px;letter-spacing:.12em;padding-bottom:4px">
+      SHOWING THE LAST ${LOG_ROWS} — the export carries all ${discoveryLog.length}</div>`:'')+
+   discoveryLog.slice(-LOG_ROWS).reverse().map(d=>{const m=mark(d.approved);
     const reg=REGMAP[d.key],tier=reg?reg.tier:'T3';
     return `<div style="border-bottom:1px solid var(--border);padding:3px 0">
       <span style="color:${m.c};font-size:7px">${m.s}</span>
@@ -711,9 +771,11 @@ function updateLog(){
 }
 function exportLog(){
   if(!discoveryLog.length){feedLine('Nothing in the log to export.','info');return;}
-  const h='timestamp,set,n,phase,B_out,tau,k,k_max,kMode,tier,flag_type,status,reason';
-  dl([h,...discoveryLog.map(d=>[d.t,d.els.join('+'),d.r.n,d.r.phase,r4(d.r.B),r4(d.r.tau),
+  const h='timestamp,set,n,phase,B_out,surplus,SB,tau,P_out,N_out,A_out,IM,k,k_max,kMode,tier,flag_type,origin,status,reason';
+  dl([h,...discoveryLog.map(d=>[d.t,d.els.join('+'),d.r.n,d.r.phase,r4(d.r.B),
+    r4(d.r.surplus),d.r.SB,r4(d.r.tau),r4(d.r.P),r4(d.r.N),r4(d.r.A),r4(d.r.IM),
     r4(d.r.k),r4(d.r.kmax),d.kMode,(REGMAP[d.key]||{tier:'T3'}).tier,d.type,
+    d.manual?'manual':'sweep',
     d.approved===null?'pending':d.approved?'approved':'skipped',
     '"'+d.reason.replace(/"/g,"'")+'"'].join(','))].join('\n'),
     `gamforgebio_discoverylog_${Date.now()}.csv`);
