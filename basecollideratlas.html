@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BaseColliderAtlas™ · Whole Genome to Single Base, Live in a Web Page · by AxiomForge™</title>
+<meta name="description" content="An atlas of a DNA sequence from whole genome down to a single base. Zoom continuously from a ring coloured by hydrogen bonds per base pair, through a region track, to a base-level view that collides the reference base against all three alternatives and shows what each one leaves open. Free, no install, runs offline, reads standard FASTA.">
+<meta name="keywords" content="DNA visualizer, FASTA viewer, base pair, substitution, mutation browser, genome ring, GC content, hydrogen bonds, sequence space, BaseColliderAtlas, BaseCollider, AxiomForge, genome atlas, sequence atlas, Applied Identity Physics, Identity Physics, PNBA, Torsion Limit">
+<meta name="author" content="HIGHTISTIC (Russell Vernon Trent III)">
+<meta property="og:title" content="BaseColliderAtlas™: whole genome to single base">
+<meta property="og:description" content="Load DNA and see what every possible substitution does to it — whole genome, region, and base level. Reads standard FASTA. Free, offline, runs on a phone.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--anchor:#00ffc8;--locked:#7b4fff;--gold:#f0c060;--shatter:#ff3a3a;--bg:#050508;--surface:#0d0d14;--border:rgba(0,255,200,0.12);--text:#e8e8f0;--dim:rgba(232,232,240,0.55);--faint:rgba(232,232,240,0.28)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden}
+#app{display:grid;grid-template-columns:290px 1fr 340px;grid-template-rows:56px 1fr;height:100vh}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.96);gap:14px}
+.h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem}
+.h-title em{font-style:normal;color:var(--anchor)}
+.h-title i{font-style:normal;font-size:.66rem;color:var(--dim);font-weight:700}
+.h-sub{font-size:.52rem;color:var(--dim);margin-top:2px}
+.h-right{font-size:.48rem;color:var(--faint);text-align:right;line-height:1.6}
+.mode{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
+.mode button{font-family:'Syne',sans-serif;font-weight:800;font-size:.58rem;padding:.42rem .9rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.mode button.on{background:var(--anchor);color:#000}
+#left,#right{overflow-y:auto;padding:10px;background:rgba(13,13,20,.9);display:flex;flex-direction:column;gap:9px}
+#left{border-right:1px solid var(--border)}#right{border-left:1px solid var(--border)}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:9px}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.6rem;color:var(--anchor);letter-spacing:.08em;margin-bottom:7px;display:flex;justify-content:space-between;align-items:baseline}
+.st small{font-family:'Space Mono',monospace;font-weight:400;color:var(--faint);letter-spacing:0}
+.seg{display:flex;gap:4px;margin-bottom:5px}
+.btn{flex:1;font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:.5rem .3rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.btn:hover{color:var(--text)}
+.btn.on{border-color:var(--anchor);color:var(--anchor);background:rgba(0,255,200,.07)}
+.lbl{display:flex;justify-content:space-between;font-size:.52rem;color:var(--dim);margin:6px 0 2px}
+.lbl b{color:var(--anchor);font-weight:400}
+input[type=range]{width:100%;accent-color:#00ffc8}
+.note{font-size:.52rem;color:var(--dim);line-height:1.65}
+.note b{color:var(--text);font-weight:400}
+.note p+p{margin-top:6px}
+.kv{display:flex;justify-content:space-between;font-size:.54rem;padding:4px 0;border-bottom:1px solid rgba(0,255,200,.06);gap:8px}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--dim)}
+.kv span:last-child{text-align:right}
+.ok{color:var(--anchor)}
+table{width:100%;border-collapse:collapse;font-size:.5rem}
+th{color:var(--dim);font-weight:400;text-align:right;padding:3px 2px;border-bottom:1px solid var(--border)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:3px 2px;border-bottom:1px solid rgba(0,255,200,.05)}
+td .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle}
+#view{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#0b0f1a 0%,#000 70%)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#legend{position:absolute;top:10px;left:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:.48rem;pointer-events:none}
+#legend div.rw{display:flex;align-items:center;gap:6px;margin:3px 0;font-size:.52rem}
+#legend i{display:inline-block;width:14px;height:10px;border-radius:2px;border:1px solid rgba(255,255,255,.25);font-style:normal}
+#badge{position:absolute;top:10px;right:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 10px;text-align:right;pointer-events:none}
+#badge .ph{font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;color:var(--anchor)}
+#badge small{display:block;font-size:.48rem;color:var(--dim);margin-top:2px}
+#caption{position:absolute;left:12px;right:12px;bottom:10px;font-size:.58rem;line-height:1.65;background:rgba(5,5,8,.88);border:1px solid var(--border);border-radius:8px;padding:8px 12px;pointer-events:none}
+#caption b{color:var(--anchor);font-weight:400}
+#busy{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-weight:800;color:var(--anchor);font-size:.85rem;display:none;background:rgba(5,5,8,.9);padding:10px 16px;border:1px solid var(--border);border-radius:8px}
+.exlist{display:flex;flex-direction:column;gap:3px}
+.ex{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:.42rem .5rem;border:1px solid transparent;border-radius:5px;cursor:pointer;font-size:.54rem;color:var(--dim)}
+.ex:hover{color:var(--text);border-color:rgba(0,255,200,.18)}
+.ex.on{border-color:var(--anchor);color:var(--anchor);background:rgba(0,255,200,.07)}
+.ex .sz{font-size:.48rem;color:var(--faint);white-space:nowrap}
+.ex.lead{border-color:rgba(240,192,96,.45);color:var(--gold)}
+.ex.lead.on{background:rgba(240,192,96,.1)}
+.grp{font-size:.46rem;color:var(--faint);letter-spacing:.08em;margin:7px 0 2px;text-transform:uppercase}
+.synth{display:inline-block;font-size:.42rem;letter-spacing:.06em;color:#000;background:var(--gold);border-radius:3px;padding:1px 4px;vertical-align:middle}
+.warn{border-color:rgba(240,192,96,.4);background:rgba(240,192,96,.06)}
+.warn .st{color:var(--gold)}
+ul.src{padding-left:14px;font-size:.52rem;color:var(--dim);line-height:1.6}
+ul.src li{margin:3px 0}
+.r-only{display:none}body.res .r-only{display:block}body.res .l-only{display:none}
+tr.r-only{display:none}body.res tr.r-only{display:table-row}
+.foot{font-size:.44rem;color:var(--faint);line-height:1.6;text-align:center;padding:4px 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media (max-width:900px){
+  html,body{overflow:auto;height:auto}
+  #app{grid-template-columns:1fr;grid-template-rows:auto 66vh auto auto;height:auto}
+  #hdr{flex-wrap:wrap;padding:8px 12px}.h-right,.h-sub{display:none}
+  #view{grid-row:2}#left{grid-row:3}#right{grid-row:4}#left,#right{border:none;overflow:visible}
+  #legend,#caption{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="hdr">
+  <div>
+    <div class="h-title"><em>Base</em>Collider<em>Atlas</em><span class="tm">™</span> <i>by AxiomForge<span class="tm">™</span> · Applied Identity Physics<span class="tm">™</span></i></div>
+    <div class="h-sub">Whole genome to single base in one continuous zoom · collider opens at base level · reads standard FASTA · TL = 0.136899099984016</div>
+  </div>
+  <div class="mode"><button id="m-l" class="on">LEARNER</button><button id="m-r">RESEARCHER</button></div>
+  <div class="h-right">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation<br>uuia.app/basecollideratlas · [9,9,2,57]</div>
+</div>
+
+<div id="left">
+
+  <div class="sec">
+    <div class="st">SEQUENCE <small id="ex-count">10 examples</small></div>
+    <div class="exlist" id="exlist"></div>
+    <div style="margin-top:8px">
+      <label class="btn" style="display:block;text-align:center;padding:.55rem">LOAD YOUR OWN FASTA
+        <input type="file" id="fasta" accept=".fa,.fasta,.fna,.txt,.seq" style="display:none">
+      </label>
+    </div>
+    <div class="note" style="margin-top:7px">Any <b>.fasta</b> file works — the format every sequence database exports. Download one from NCBI and drop it in.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">VIEW</div>
+    <div class="seg">
+      <button class="btn on" data-view="ring">WHOLE</button>
+      <button class="btn" data-view="track">REGION</button>
+      <button class="btn" data-view="base">BASE</button>
+    </div>
+    <div class="note l-only" id="view-help">These three are the same picture at different distances, and <b>scrolling moves between them on its own</b>. Zoom in far enough and the letters appear.</div>
+    <div class="lbl"><span>position</span><b id="pos-v">1</b></div>
+    <input type="range" id="pos" min="0" max="1000" value="0">
+    <div class="lbl"><span>zoom</span><b id="win-v">whole sequence</b></div>
+    <input type="range" id="win" min="0" max="1000" value="1000">
+    <div class="note" style="margin-top:6px"><b>Scroll on the picture to zoom</b>, centred wherever the pointer is. Click to pick a position. Nothing animates — the picture only changes when you change something.</div>
+  </div>
+
+  <div class="sec r-only">
+    <div class="st">THE RULE</div>
+    <div class="note">
+      <p>Each base carries a donor count and an acceptor count.</p>
+      <p><b>A</b> (1,1) &nbsp; <b>T</b> (1,1) &nbsp; <b>G</b> (2,1) &nbsp; <b>C</b> (1,2)</p>
+      <p>For a pair <b>x·y</b>:</p>
+      <p><b>bonds</b> = min(d<sub>x</sub>,a<sub>y</sub>) + min(d<sub>y</sub>,a<sub>x</sub>)<br>
+         <b>capacity</b> = d<sub>x</sub>+a<sub>x</sub>+d<sub>y</sub>+a<sub>y</sub><br>
+         <b>open</b> = capacity − 2·bonds</p>
+      <p>A pair with <b>open = 0</b> has no unsatisfied capacity left. That is Noble.</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="st">EXPORT</div>
+    <div class="seg">
+      <button class="btn" id="exp-fa">FASTA</button>
+      <button class="btn" id="exp-csv">CSV</button>
+    </div>
+    <div class="note l-only">FASTA sends the sequence you are looking at to any other tool. CSV gives you the table behind the picture.</div>
+    <div class="note r-only">FASTA writes the current window with a header naming the source and coordinates — paste it into BLAST to ask whether it occurs anywhere known. CSV emits one row per position: index, reference, complement, bonds, and each substitution with its open capacity. Both write the visible window, capped at 20,000 positions.</div>
+  </div>
+
+</div>
+
+<div id="view">
+  <canvas id="gl"></canvas>
+  <div id="legend"></div>
+  <div id="badge"><div class="ph" id="b-ph">—</div><small id="b-sub">—</small></div>
+  <div id="caption"></div>
+  <div id="busy">BUILDING…</div>
+</div>
+
+<div id="right">
+
+  <div class="sec">
+    <div class="st">READOUT</div>
+    <div id="readout"></div>
+  </div>
+
+  <div class="sec" id="sec-sub">
+    <div class="st">THIS POSITION</div>
+    <div id="subbox"></div>
+    <div class="note l-only" style="margin-top:7px">The top letter is the base that is there. The three below are the only other bases it could be, and what each one would do to the pair.</div>
+  </div>
+
+  <div class="sec r-only">
+    <div class="st">PAIR TABLE <small>all 16</small></div>
+    <table id="pairtab"></table>
+    <div class="note" style="margin-top:7px">Computed from the donor/acceptor counts alone. Four pairs close: A·T and G·C, the canonical two, plus A·A and T·T, which occur as real non-canonical pairs.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">WHAT YOU ARE SEEING</div>
+    <div class="note l-only" id="expl-l"></div>
+    <div class="note r-only" id="expl-r"></div>
+  </div>
+
+  <div class="sec warn" id="synthbox">
+    <div class="st">ABOUT THIS SEQUENCE</div>
+    <div class="note" id="synthnote"></div>
+  </div>
+
+  <div class="sec r-only">
+    <div class="st">SOURCES</div>
+    <ul class="src">
+      <li>Donor/acceptor model and the Torsion Limit: Identity Physics Corpus, DOI 10.5281/zenodo.18719748</li>
+      <li>Sequence format: Pearson &amp; Lipman (1988), FASTA</li>
+      <li>Reference sequences: NCBI RefSeq / GenBank, public domain</li>
+      <li>Companion engines: GAMCollider™ (elements), GAMForgeTL™ (residues), IMCollider™ (cognitive states)</li>
+    </ul>
+  </div>
+
+  <div class="foot">BaseColliderAtlas™ by AxiomForge™ · Applied Identity Physics™ · SNSFT Foundation<br>TL = 0.136899099984016 · HIGHTISTIC (Russell Vernon Trent III)</div>
+
+</div>
+</div>
+
+<script>
+"use strict";
+
+/* ---------- the rule ---------- */
+const DON={A:1,T:1,G:2,C:1}, ACC={A:1,T:1,G:1,C:2}, COMP={A:"T",T:"A",G:"C",C:"G",N:"N",U:"A"};
+const ALPHA=["A","C","G","T"];
+function pairOf(x,y){
+  if(!(x in DON)||!(y in DON)) return {bonds:0,open:null};
+  const b=Math.min(DON[x],ACC[y])+Math.min(DON[y],ACC[x]);
+  const cap=DON[x]+ACC[x]+DON[y]+ACC[y];
+  return {bonds:b, open:cap-2*b};
+}
+const OPENCOL={0:"#a78bfa",1:"#f0c060",2:"#ff6b6b"};
+const OPENGLYPH={0:"●",1:"◆",2:"▲"};
+/* the three alternatives, ranked by what they leave open rather than by the
+   alphabet — so row 1 is always the least disruptive substitution available  */
+function altsFor(ref,comp){
+  const r=ref==="U"?"T":ref;
+  return ALPHA.filter(a=>a!==r).map(a=>({a,q:pairOf(a,comp)}))
+              .sort((x,y)=> x.q.open-y.q.open || (x.a<y.a?-1:1));
+}
+
+/* ---------- exemplars: HBB pinned, then ascending by size ---------- */
+const EX=[
+ {id:"hbb",  lead:true, name:"HBB · human β-globin", bp:1600,    circ:false, gc:0.46, grp:"start here",
+  note:"The gene behind sickle-cell anaemia. The sickle allele is <b>a single substitution</b> — GAG→GTG at codon 6, one base. Open the BASE view and that is one cell on this strip.",
+  acc:"NG_059281 / HBB", mark:{pos:92,label:"codon 6 · GAG→GTG · sickle"}},
+ {id:"coi",  name:"COI barcodes · 5 species", bp:650,  circ:false, gc:0.42, grp:"genes",
+  note:"The standard species-identification gene, about 650 bp, sequenced for millions of species. The same gene in human, dog, frog, whale and fruit fly — so a walk from one to another is a real path.", acc:"BOLD / GenBank COI"},
+ {id:"puc",  name:"pUC19 plasmid", bp:2686, circ:true,  gc:0.507, grp:"engineered",
+  note:"A cloning plasmid, circular and designed rather than evolved. Every molecular biology student has handled it.", acc:"L09137"},
+ {id:"phix", name:"phiX174", bp:5386, circ:true, gc:0.447, grp:"viruses and phage",
+  note:"The first DNA genome ever sequenced, by Sanger in 1977. Still used as the control lane on modern sequencers.", acc:"NC_001422"},
+ {id:"mito", name:"Human mitochondrion", bp:16569, circ:true, gc:0.44, grp:"organelles",
+  note:"Circular, small enough to see whole, and the reference every human mitochondrial study on earth is stated against.", acc:"NC_012920 (rCRS)"},
+ {id:"cov",  name:"SARS-CoV-2", bp:29903, circ:false, gc:0.38, grp:"viruses and phage", rna:true,
+  note:"An <b>RNA</b> genome — U in place of T. Its variants are substitutions on exactly this kind of strip.", acc:"NC_045512"},
+ {id:"lam",  name:"Lambda phage", bp:48502, circ:false, gc:0.498, grp:"viruses and phage",
+  note:"Linear, and the workhorse of molecular biology for fifty years.", acc:"NC_001416"},
+ {id:"chl",  name:"Arabidopsis chloroplast", bp:154478, circ:true, gc:0.364, grp:"organelles", ir:true,
+  note:"Circular with two large <b>inverted repeats</b> — the same sequence twice, reversed. They show up as a visible symmetry in the ring.", acc:"NC_000932"},
+ {id:"ecoli",name:"E. coli K-12 MG1655", bp:4641652, circ:true, gc:0.508, grp:"genomes", skew:true,
+  note:"The most-studied genome in existence, complete since 1997. The GC skew flips at the replication origin and terminus, which is why the ring has two halves.", acc:"NC_000913"},
+ {id:"yeast",name:"Yeast S288C · chr I", bp:230218, circ:false, gc:0.393, grp:"genomes",
+  note:"The first eukaryotic genome. Chromosome I of sixteen — a real multi-FASTA holds all of them.", acc:"GCF_000146045"}
+];
+
+/* ---------- synthetic sequence builder ---------- */
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function build(ex){
+  const n=ex.bp, rnd=mulberry(ex.id.split("").reduce((a,c)=>a*31+c.charCodeAt(0)|0,7));
+  const s=new Uint8Array(n);                       // 0A 1C 2G 3T
+  for(let i=0;i<n;i++){
+    let gc=ex.gc + 0.030*Math.sin(i/n*2*Math.PI*7) + 0.018*Math.sin(i/n*2*Math.PI*23);
+    if(ex.ir){ const f=i/n; if((f>0.26&&f<0.44)||(f>0.60&&f<0.78)) gc+=0.055; }
+    let g;
+    if(ex.skew){ const f=i/n, lead=(f>0.845||f<0.342)?1:-1; g=0.5+0.11*lead; } else g=0.5;
+    if(rnd()<gc) s[i]= rnd()<g ? 2 : 1;
+    else         s[i]= rnd()<0.5 ? 0 : 3;
+  }
+  return s;
+}
+const L2C="ACGT";
+const letter=(v,rna)=> (rna && v===3) ? "U" : L2C[v];
+
+/* ---------- state ----------
+   span (bases visible) is primary; the view tier is derived from it, so the
+   wheel crosses tiers on its own instead of making the user pick one.      */
+let cur=EX[0], seq=build(cur), pos=0, span=cur.bp, userLoaded=null, pinned=null;
+const $=id=>document.getElementById(id);
+const cv=$("gl"), ctx=cv.getContext("2d");
+const fmt=n=>n.toLocaleString();
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+function baseMax(){ const w=cv.getBoundingClientRect().width||900; return Math.max(12,Math.floor((w-120)/14)); }
+function tier(){
+  const n=seq.length;
+  if(pinned==="ring"||span>=n) return "ring";
+  if(span<=baseMax()) return "base";
+  return "track";
+}
+Object.defineProperty(window,"view",{get:tier});
+
+/* ---------- exemplar list ---------- */
+(function(){
+  const box=$("exlist"); const seen=new Set();
+  EX.forEach(ex=>{
+    if(!seen.has(ex.grp)){ seen.add(ex.grp);
+      const g=document.createElement("div"); g.className="grp"; g.textContent=ex.grp; box.appendChild(g); }
+    const d=document.createElement("div");
+    d.className="ex"+(ex.lead?" lead":"")+(ex===cur?" on":"");
+    d.innerHTML='<span>'+ex.name+'</span><span class="sz">'+(ex.bp>=1e6?(ex.bp/1e6).toFixed(2)+" Mb":ex.bp>=1000?(ex.bp/1000).toFixed(1)+" kb":ex.bp+" bp")+'</span>';
+    d.onclick=()=>{ load(ex); };
+    box.appendChild(d);
+  });
+})();
+
+function load(ex){
+  $("busy").style.display="block";
+  setTimeout(()=>{
+    cur=ex; userLoaded=null; seq=build(ex); pos=Math.floor(ex.bp/2); span=ex.bp; pinned=null;
+    document.querySelectorAll(".ex").forEach((n,i)=>n.classList.toggle("on",EX[i]===ex));
+    $("busy").style.display="none"; syncControls(); draw();
+  },16);
+}
+
+/* ---------- FASTA in ---------- */
+$("fasta").onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  $("busy").style.display="block";
+  const r=new FileReader();
+  r.onload=()=>{
+    const lines=String(r.result).split(/\r?\n/);
+    let hdr="uploaded sequence", body=[];
+    for(const ln of lines){
+      if(ln.startsWith(">")){ if(body.length) break; hdr=ln.slice(1).trim()||hdr; }
+      else body.push(ln.trim());
+    }
+    const txt=body.join("").toUpperCase();
+    const a=new Uint8Array(txt.length); let k=0, soft=0, ns=0;
+    for(let i=0;i<txt.length;i++){
+      const c=txt[i]; const v=c==="A"?0:c==="C"?1:c==="G"?2:(c==="T"||c==="U")?3:-1;
+      if(v<0){ if(c==="N") ns++; continue; }
+      a[k++]=v;
+    }
+    seq=a.slice(0,k);
+    userLoaded={name:hdr.slice(0,70), bp:k, skipped:ns, rna:txt.indexOf("U")>=0 && txt.indexOf("T")<0};
+    cur={id:"user",name:hdr.slice(0,46),bp:k,circ:false,grp:"uploaded",rna:userLoaded.rna,
+         note:"Your file. "+fmt(k)+" bases read"+(ns?", "+fmt(ns)+" N or ambiguous positions skipped":"")+".",acc:hdr.slice(0,70)};
+    document.querySelectorAll(".ex").forEach(n=>n.classList.remove("on"));
+    pos=Math.floor(k/2); span=k; pinned=null;
+    $("busy").style.display="none"; syncControls(); draw();
+  };
+  r.readAsText(f);
+};
+
+/* ---------- controls ----------
+   the span slider is logarithmic: 12 bases to a whole genome is five orders
+   of magnitude, and a linear slider spends its whole travel in the last 1%. */
+const SMIN=12;
+function spanToSlider(s){ const n=seq.length; return Math.round(1000*Math.log(s/SMIN)/Math.log(n/SMIN)); }
+function sliderToSpan(v){ const n=seq.length; return Math.round(SMIN*Math.pow(n/SMIN,v/1000)); }
+function spanLabel(s){
+  const n=seq.length;
+  if(s>=n) return "whole sequence";
+  return s>=1e6?(s/1e6).toFixed(2)+" Mb":s>=1000?(s/1000).toFixed(1)+" kb":s+" bp";
+}
+function syncControls(){
+  const n=seq.length;
+  span=clamp(span,Math.min(SMIN,n),n); pos=clamp(pos,0,n-1);
+  $("pos").max=Math.max(0,n-1); $("pos").value=pos;
+  $("win").min=0; $("win").max=1000; $("win").value=spanToSlider(span);
+  $("pos-v").textContent=fmt(pos+1); $("win-v").textContent=spanLabel(span);
+  $("ex-count").textContent=fmt(n)+" bases";
+  const t=tier();
+  document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("on",x.dataset.view===t));
+}
+$("pos").oninput=e=>{pos=+e.target.value; pinned=null; $("pos-v").textContent=fmt(pos+1); draw();};
+$("win").oninput=e=>{span=sliderToSpan(+e.target.value); pinned=null; syncControls(); draw();};
+document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{
+  const n=seq.length, v=b.dataset.view;
+  pinned = v==="ring" ? "ring" : null;
+  if(v==="ring") span=n;
+  else if(v==="base") span=Math.min(n,baseMax());
+  else span=clamp(Math.round(n/20),baseMax()*3,Math.max(baseMax()*3,Math.round(n*0.8)));
+  syncControls(); draw();
+});
+$("m-l").onclick=()=>{document.body.classList.remove("res");$("m-l").classList.add("on");$("m-r").classList.remove("on");draw();};
+$("m-r").onclick=()=>{document.body.classList.add("res");$("m-r").classList.add("on");$("m-l").classList.remove("on");draw();};
+
+/* ---------- drawing ---------- */
+function fit(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);
+  cv.width=Math.max(1,r.width*d);cv.height=Math.max(1,r.height*d);ctx.setTransform(d,0,0,d,0,0);return r;}
+
+function bondAt(i){ const x=L2C[seq[i]]; return pairOf(x,COMP[x]).bonds; }
+
+function draw(){
+  const r=fit(); ctx.clearRect(0,0,r.width,r.height);
+  const t=tier();
+  if(t==="ring") drawRing(r); else if(t==="track") drawTrack(r); else drawBase(r);
+  readout(); explain();
+  document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("on",x.dataset.view===t));
+}
+/* window start for the linear tiers, kept on screen and clamped to the ends */
+function winStart(count){ const n=seq.length; return clamp(pos-Math.floor(count/2),0,Math.max(0,n-count)); }
+
+function ramp(t){ t=Math.max(0,Math.min(1,t));
+  const a=[8,47,73],b=[14,165,233],c=[165,243,252];
+  const mix=(p,q,u)=>p.map((v,i)=>Math.round(v+(q[i]-v)*u));
+  return "rgb("+(t<.5?mix(a,b,t/.5):mix(b,c,(t-.5)/.5)).join(",")+")";
+}
+
+function drawRing(r){
+  const n=seq.length, BINS=Math.min(3600,Math.max(180,n));
+  const cx=r.width/2, cy=r.height/2;
+  const R=Math.min(r.width,r.height)*0.40, TH=Math.max(16,R*0.14);
+  const mean=new Float32Array(BINS);
+  for(let b=0;b<BINS;b++){
+    const s=Math.floor(b*n/BINS), e=Math.max(s+1,Math.floor((b+1)*n/BINS));
+    let acc=0; for(let i=s;i<e;i++) acc+=bondAt(i);
+    mean[b]=acc/(e-s);
+  }
+  let lo=Infinity,hi=-Infinity; for(const v of mean){if(v<lo)lo=v;if(v>hi)hi=v;}
+  if(hi-lo<1e-6){lo-=0.05;hi+=0.05;}
+  for(let b=0;b<BINS;b++){
+    const a0=-Math.PI/2+2*Math.PI*b/BINS, a1=-Math.PI/2+2*Math.PI*(b+1.02)/BINS;
+    ctx.beginPath(); ctx.arc(cx,cy,R,a0,a1); ctx.arc(cx,cy,R-TH,a1,a0,true); ctx.closePath();
+    ctx.fillStyle=ramp((mean[b]-lo)/(hi-lo)); ctx.fill();
+  }
+  // current position marker
+  const ap=-Math.PI/2+2*Math.PI*pos/n;
+  ctx.strokeStyle="#00ffc8"; ctx.lineWidth=2; ctx.beginPath();
+  ctx.moveTo(cx+(R-TH-10)*Math.cos(ap),cy+(R-TH-10)*Math.sin(ap));
+  ctx.lineTo(cx+(R+12)*Math.cos(ap),cy+(R+12)*Math.sin(ap)); ctx.stroke();
+  // centre
+  ctx.textAlign="center"; ctx.fillStyle="#e8e8f0"; ctx.font="700 "+Math.max(13,R*0.085)+"px Syne,sans-serif";
+  ctx.fillText(cur.name,cx,cy-6);
+  ctx.fillStyle="#00ffc8"; ctx.font=Math.max(11,R*0.065)+"px 'Space Mono',monospace";
+  ctx.fillText(fmt(n)+" "+(cur.circ?"bp · circular":"bp"),cx,cy+Math.max(14,R*0.085));
+  ctx.fillStyle="rgba(232,232,240,.4)"; ctx.font=Math.max(9,R*0.045)+"px 'Space Mono',monospace";
+  ctx.fillText(Math.max(1,Math.round(n/BINS))+" bases per bin",cx,cy+Math.max(30,R*0.16));
+  $("legend").innerHTML='<div class="rw"><i style="background:'+ramp(0)+'"></i>fewer bonds · AT-rich</div>'
+    +'<div class="rw"><i style="background:'+ramp(1)+'"></i>more bonds · GC-rich</div>'
+    +'<div class="rw"><i style="background:#00ffc8"></i>your position</div>';
+  $("b-ph").textContent="WHOLE"; $("b-sub").textContent=fmt(n)+" bases";
+  cap("Colour is <b>hydrogen bonds per base pair</b>, averaged over each bin. G·C makes three, A·T makes two — so pale is GC-rich and dark is AT-rich. Every position here is Noble: a matched strand leaves nothing open.");
+}
+
+function drawTrack(r){
+  const n=seq.length, W=r.width-70, H=r.height;
+  const s=winStart(span);
+  const cols=Math.min(Math.round(W),span);
+  const y0=H*0.34, h=H*0.26;
+  for(let c=0;c<cols;c++){
+    const i0=s+Math.floor(c*span/cols), i1=Math.max(i0+1,s+Math.floor((c+1)*span/cols));
+    let acc=0; for(let i=i0;i<i1;i++) acc+=bondAt(i);
+    const m=acc/(i1-i0);
+    ctx.fillStyle=ramp((m-2)/1);
+    ctx.fillRect(35+c*(W/cols), y0, Math.ceil(W/cols)+0.5, h);
+  }
+  ctx.strokeStyle="rgba(0,255,200,.25)"; ctx.lineWidth=1; ctx.strokeRect(35,y0,W,h);
+  const px=35+W*((pos-s)/span);
+  ctx.strokeStyle="#00ffc8"; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(px,y0-14); ctx.lineTo(px,y0+h+14); ctx.stroke();
+  ctx.fillStyle="rgba(232,232,240,.5)"; ctx.font="11px 'Space Mono',monospace"; ctx.textAlign="left";
+  ctx.fillText(fmt(s+1),35,y0-22); ctx.textAlign="right"; ctx.fillText(fmt(s+span),35+W,y0-22);
+  ctx.textAlign="center"; ctx.fillStyle="#00ffc8"; ctx.fillText(fmt(pos+1),px,y0+h+30);
+  $("legend").innerHTML='<div class="rw"><i style="background:'+ramp(0)+'"></i>2 bonds · A·T</div>'
+    +'<div class="rw"><i style="background:'+ramp(1)+'"></i>3 bonds · G·C</div>';
+  $("b-ph").textContent="REGION"; $("b-sub").textContent=fmt(span)+" bp window";
+  cap("A window of <b>"+fmt(span)+"</b> bases, about <b>"+Math.max(1,Math.round(span/Math.max(1,W)))+"</b> per pixel. Same colour as the whole view. <b>Scroll to zoom</b> — keep going and the letters appear.");
+}
+
+function drawBase(r){
+  const n=seq.length, W=r.width, H=r.height;
+  const count=clamp(span,12,Math.min(n,baseMax()));
+  const s=winStart(count);
+  const cw=(W-120)/count, x0=70;
+  const rh=Math.min(46,Math.max(26,(H-200)/3));
+  const blockH=26+22+34+3*rh;                       // ref + comp + bonds + three sub rows
+  const yRef=Math.max(H*0.17,(H-blockH)/2+13), yComp=yRef+26, yBond=yComp+22, ySub=yBond+34;
+  ctx.textAlign="center"; ctx.textBaseline="middle";
+  const fs=Math.max(9,Math.min(16,cw*0.68));
+  for(let k=0;k<count;k++){
+    const i=s+k, x=x0+k*cw, ref=letter(seq[i],cur.rna), comp=COMP[ref];
+    const p=pairOf(ref==="U"?"T":ref,comp);
+    ctx.fillStyle="rgba(0,255,200,.07)"; ctx.fillRect(x+1,yRef-13,cw-2,26);
+    ctx.fillStyle="#e8e8f0"; ctx.font="700 "+fs+"px 'Space Mono',monospace"; ctx.fillText(ref,x+cw/2,yRef);
+    ctx.fillStyle="rgba(232,232,240,.35)"; ctx.font=(fs-2)+"px 'Space Mono',monospace"; ctx.fillText(comp,x+cw/2,yComp);
+    ctx.fillStyle=p.bonds===3?"#38bdf8":"rgba(232,232,240,.3)"; ctx.font=(fs-4)+"px 'Space Mono',monospace";
+    ctx.fillText(String(p.bonds),x+cw/2,yBond);
+    altsFor(ref,comp).forEach((o,j)=>{
+      const q=o.q, y=ySub+j*rh, col=OPENCOL[q.open];
+      ctx.fillStyle=col+"33"; ctx.fillRect(x+1,y,cw-2,rh-5);
+      ctx.fillStyle=col; ctx.font="700 "+(fs-1)+"px 'Space Mono',monospace";
+      ctx.fillText(o.a,x+cw/2,y+rh*0.34);
+      ctx.font=(fs-4)+"px 'Space Mono',monospace"; ctx.fillText(OPENGLYPH[q.open],x+cw/2,y+rh*0.72);
+    });
+    if(i===pos){ ctx.strokeStyle="#00ffc8"; ctx.lineWidth=1.5; ctx.strokeRect(x+0.5,yRef-15,cw-1,(ySub+3*rh)-yRef+12); }
+  }
+  ctx.textAlign="right"; ctx.fillStyle="rgba(232,232,240,.45)"; ctx.font="10px 'Space Mono',monospace";
+  ctx.fillText("5'",x0-10,yRef); ctx.fillText("3'",x0-10,yComp); ctx.fillText("bonds",x0-10,yBond);
+  ctx.fillText("least open",x0-10,ySub+rh*0.45);
+  ctx.fillText("ranked ↓",x0-10,ySub+rh+rh*0.45);
+  ctx.fillText("most open",x0-10,ySub+2*rh+rh*0.45);
+  ctx.textAlign="left"; ctx.fillText(fmt(s+1),x0,yRef-32);
+  if(cur.mark && cur.mark.pos>=s && cur.mark.pos<s+count){
+    const mx=x0+(cur.mark.pos-s)*cw+cw/2;
+    ctx.strokeStyle="#f0c060"; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(mx,yRef-34); ctx.lineTo(mx,yRef-18); ctx.stroke();
+    ctx.fillStyle="#f0c060"; ctx.textAlign="center"; ctx.font="10px 'Space Mono',monospace";
+    ctx.fillText(cur.mark.label,mx,yRef-44);
+  }
+  $("legend").innerHTML=[0,1,2].map(o=>'<div class="rw"><i style="background:'+OPENCOL[o]+'33;border-color:'+OPENCOL[o]+'">'
+    +'</i>'+OPENGLYPH[o]+'&nbsp; '+o+' open'+(o===0?" · closes · Noble":"")+'</div>').join("");
+  $("b-ph").textContent="BASE"; $("b-sub").textContent=count+" positions";
+  cap("Each column is one position. The top letter is the base that is <b>there</b>; the three below are the only other bases it <b>could</b> be, ranked top to bottom by how much each would leave open. <b>Click a column</b> to read it on the right.");
+}
+function cap(h){ $("caption").innerHTML=h; }
+
+/* ---------- panels ---------- */
+function readout(){
+  const n=seq.length, ref=letter(seq[pos],cur.rna), comp=COMP[ref];
+  const p=pairOf(ref==="U"?"T":ref,comp);
+  let gc=0, sample=Math.min(n,200000), step=Math.max(1,Math.floor(n/sample));
+  let cnt=0; for(let i=0;i<n;i+=step){ if(seq[i]===1||seq[i]===2) gc++; cnt++; }
+  const rows=[
+    ["sequence",cur.name],
+    ["length",fmt(n)+" "+(cur.rna?"bases":"bp")],
+    ["topology",cur.circ?"circular":"linear"],
+    ["GC content",(100*gc/cnt).toFixed(1)+"%"],
+    ["position",fmt(pos+1)],
+    ["base",'<b class="ok">'+ref+"·"+comp+"</b>"],
+    ["bonds",p.bonds],
+    ["open",'<span style="color:'+OPENCOL[p.open]+'">'+p.open+" "+OPENGLYPH[p.open]+"</span>"],
+    ["phase",p.open===0?'<span class="ok">NOBLE</span>':"OPEN"]
+  ];
+  $("readout").innerHTML=rows.map(r=>'<div class="kv"><span>'+r[0]+'</span><span>'+r[1]+'</span></div>').join("");
+
+  const alts=altsFor(ref,comp);
+  $("subbox").innerHTML='<table><tr><th>sub</th><th>pair</th><th>bonds</th><th>open</th></tr>'
+   +'<tr><td style="color:#00ffc8">'+ref+' <small>(here)</small></td><td>'+ref+'·'+comp+'</td><td>'+p.bonds+'</td><td>'+p.open+' '+OPENGLYPH[p.open]+'</td></tr>'
+   +alts.map(o=>'<tr><td style="color:'+OPENCOL[o.q.open]+'">'+o.a+'</td><td>'+o.a+'·'+comp
+     +'</td><td>'+o.q.bonds+'</td><td style="color:'+OPENCOL[o.q.open]+'">'+o.q.open+' '+OPENGLYPH[o.q.open]+'</td></tr>').join("")
+   +'</table>';
+
+  let t='<tr><th>pair</th><th>bonds</th><th>open</th><th></th></tr>';
+  for(const x of ALPHA) for(const y of ALPHA){ const q=pairOf(x,y);
+    t+='<tr><td>'+x+'·'+y+'</td><td>'+q.bonds+'</td><td>'+q.open+'</td><td style="color:'+OPENCOL[q.open]+'">'+OPENGLYPH[q.open]+(q.open===0?" closes":"")+'</td></tr>'; }
+  $("pairtab").innerHTML=t;
+
+  $("synthnote").innerHTML = userLoaded
+    ? cur.note
+    : '<span class="synth">SYNTHETIC</span> &nbsp;This is a <b>stand-in</b> of the correct length, topology and GC content — not the real read. '
+      +'Download the real one from NCBI (<b>'+cur.acc+'</b>) and load it with the button on the left; everything on this page then runs on the actual sequence.<p>'+cur.note+'</p>';
+}
+
+function explain(){
+  const n=seq.length;
+  $("expl-l").innerHTML={
+    ring:"<p>The whole sequence, bent into a circle so it fits on one screen.</p><p>Pale stretches are <b>GC-rich</b> — those pairs hold with three hydrogen bonds. Dark stretches are <b>AT-rich</b>, holding with two. That is the single most-used measurement in genomics, and here it falls out of counting donors and acceptors.</p>",
+    track:"<p>A slice of the sequence, stretched out straight.</p><p>Same colours as the circle. Slide <b>position</b> to travel along it, and switch to BASE when you want to see the letters themselves.</p>",
+    base:"<p>Close enough to read individual letters.</p><p>Under each one are the three other bases that could sit there. A <b>purple circle</b> means that swap still closes the pair. <b>Gold diamond</b> leaves one bond unsatisfied, <b>red triangle</b> leaves two.</p><p>The three rows are <b>ranked</b> — the top one is whichever swap leaves the least open. So the purple line along the top row breaks exactly where the sequence goes <b>G or C</b>, because those are the positions with no substitution that still closes.</p>"
+  }[view];
+  $("expl-r").innerHTML={
+    ring:"<p>"+fmt(n)+" positions binned to at most 3,600 arcs; each arc is the mean of min(d,a) bond counts over its bin. With a complementary strand every position is Noble, so phase is constant and carries nothing at this zoom — bond count is the only varying quantity and it is identical to GC fraction rescaled.</p>",
+    track:"<p>Linear window, one column per pixel or per base, whichever is coarser. Colour maps bond count 2→3 across the full ramp rather than the sequence's own range, so regions are comparable between sequences.</p>",
+    base:"<p>Per position: reference base, its Watson–Crick complement, bond count, and the three substitutions with the open capacity each produces against the <i>unchanged</i> complement.</p><p>Substitution rows are sorted by open capacity ascending, ties broken alphabetically, so row 1 is the minimum-disruption alternative at every position and the CSV columns follow the same ranking.</p><p>The asymmetry is exact: at A or T, one of three substitutions closes (A·A and T·T both satisfy at 2 bonds) and none reach 2 open. At G or C, none close and the transversion to the other strong base reaches 2 open.</p>"
+  }[view];
+}
+
+/* ---------- export ---------- */
+function dl(name,text,mime){
+  const b=new Blob([text],{type:mime}); const a=document.createElement("a");
+  a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(a.href);
+}
+$("exp-fa").onclick=()=>{
+  const n=seq.length, count=clamp(Math.min(span,20000),1,n);
+  const s=winStart(count);
+  let out=">"+cur.name.replace(/\s+/g," ")+" | BaseColliderAtlas window "+(s+1)+"-"+(s+count)
+         +(userLoaded?"":" | SYNTHETIC stand-in, not the real "+cur.acc)+"\n";
+  let line="";
+  for(let i=s;i<s+count;i++){ line+=letter(seq[i],cur.rna); if(line.length===60){out+=line+"\n";line="";} }
+  if(line) out+=line+"\n";
+  dl("basecollideratlas_"+cur.id+"_"+(s+1)+"-"+(s+count)+".fasta",out,"text/plain");
+};
+$("exp-csv").onclick=()=>{
+  const n=seq.length, count=clamp(Math.min(span,20000),1,n);
+  const s=winStart(count);
+  let out="position,reference,complement,bonds,open,best_sub,best_open,mid_sub,mid_open,worst_sub,worst_open\n";
+  for(let i=s;i<s+count;i++){
+    const ref=letter(seq[i],cur.rna), r2=ref==="U"?"T":ref, comp=COMP[ref], p=pairOf(r2,comp);
+    const a=altsFor(ref,comp);
+    out+=[i+1,ref,comp,p.bonds,p.open,a[0].a,a[0].q.open,a[1].a,a[1].q.open,a[2].a,a[2].q.open].join(",")+"\n";
+  }
+  dl("basecollideratlas_"+cur.id+"_"+(s+1)+"-"+(s+count)+".csv",out,"text/csv");
+};
+
+/* ---------- which base is under the cursor, per tier ---------- */
+function idxAt(e){
+  const r=cv.getBoundingClientRect(), n=seq.length, t=tier();
+  if(t==="ring"){
+    const cx=r.width/2, cy=r.height/2;
+    let a=Math.atan2(e.clientY-r.top-cy, e.clientX-r.left-cx)+Math.PI/2;
+    if(a<0) a+=2*Math.PI;
+    return clamp(Math.floor(n*a/(2*Math.PI)),0,n-1);
+  }
+  if(t==="track"){
+    const W=r.width-70, s=winStart(span);
+    const f=clamp((e.clientX-r.left-35)/W,0,1);
+    return clamp(s+Math.floor(f*span),0,n-1);
+  }
+  const count=clamp(span,12,Math.min(n,baseMax())), s=winStart(count);
+  const k=Math.floor((e.clientX-r.left-70)/((r.width-120)/count));
+  return clamp(s+k,0,n-1);
+}
+
+/* ---------- wheel zooms, anchored on the base under the cursor ---------- */
+cv.addEventListener("wheel",e=>{
+  e.preventDefault();
+  const n=seq.length, anchor=idxAt(e);
+  const r=cv.getBoundingClientRect();
+  // where in the window the anchor sits now, so it stays put after the zoom
+  const t=tier();
+  let frac=0.5;
+  if(t==="track"){ const W=r.width-70; frac=clamp((e.clientX-r.left-35)/W,0,1); }
+  else if(t==="base"){ const count=clamp(span,12,Math.min(n,baseMax()));
+    frac=clamp((e.clientX-r.left-70)/(r.width-120),0,1); }
+  const k=Math.exp((e.deltaY>0?1:-1)*0.18);
+  const next=clamp(Math.round(span*k),Math.min(SMIN,n),n);
+  if(next===span) return;
+  pinned=null; span=next;
+  // put the anchor back where the cursor is
+  const count = tier()==="base" ? clamp(span,12,Math.min(n,baseMax())) : span;
+  pos = clamp(Math.round(anchor - (frac-0.5)*count), 0, n-1);
+  syncControls(); draw();
+},{passive:false});
+
+/* ---------- click picks a position; no camera move ---------- */
+cv.onclick=e=>{
+  const t=tier();
+  if(t==="ring"){ // zoom to the arc that was clicked, one tier in
+    pos=idxAt(e); pinned=null; span=Math.max(Math.min(seq.length,2000),baseMax()*3);
+    syncControls(); draw(); return;
+  }
+  pos=idxAt(e); $("pos").value=pos; $("pos-v").textContent=fmt(pos+1); draw();
+};
+cv.style.cursor="crosshair";
+
+addEventListener("resize",()=>{syncControls();draw();});
+syncControls(); draw();
+</script>
+</body>
+</html>
