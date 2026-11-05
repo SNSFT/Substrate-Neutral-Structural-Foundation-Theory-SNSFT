@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BaseCollider™ · Smash Nucleobases, Read the Phase · by AxiomForge™</title>
+<meta name="description" content="Collide two, four or eight nucleobases and read the fusion output. Harmonic P, summed N, torsion sum minus coupling exchange, measured ionization energy as the adaptation ceiling. Five k-modes including CRIT. Reproduces Watson-Crick pairing, G-tetrads, i-motifs and the G-quadruplex core from counting alone. Free, no install, runs offline.">
+<meta name="keywords" content="nucleobase collider, base pairing, hydrogen bonds, Watson-Crick, G-quadruplex, i-motif, G-tetrad, wobble pair, 8-beam fusion, BaseCollider, AxiomForge, Applied Identity Physics, Identity Physics, PNBA, Torsion Limit, k_max, CRIT">
+<meta name="author" content="HIGHTISTIC (Russell Vernon Trent III)">
+<meta property="og:title" content="BaseCollider™: smash nucleobases, read the phase">
+<meta property="og:description" content="Two, four or eight base beams into one fusion output. Reproduces Watson-Crick pairing and quadruplex stability from counting alone. Free, offline, runs on a phone.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--anchor:#00ffc8;--locked:#7b4fff;--gold:#f0c060;--shatter:#ff3a3a;--bg:#050508;--surface:#0d0d14;--border:rgba(0,255,200,0.12);--text:#e8e8f0;--dim:rgba(232,232,240,0.55);--faint:rgba(232,232,240,0.28)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden}
+#app{display:grid;grid-template-columns:290px 1fr 340px;grid-template-rows:56px 1fr;height:100vh}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.96);gap:14px}
+.h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem}
+.h-title em{font-style:normal;color:var(--anchor)}
+.h-title i{font-style:normal;font-size:.66rem;color:var(--dim);font-weight:700}
+.h-sub{font-size:.52rem;color:var(--dim);margin-top:2px}
+.h-right{font-size:.48rem;color:var(--faint);text-align:right;line-height:1.6}
+.mode{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
+.mode button{font-family:'Syne',sans-serif;font-weight:800;font-size:.58rem;padding:.42rem .9rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.mode button.on{background:var(--anchor);color:#000}
+#left,#right{overflow-y:auto;padding:10px;background:rgba(13,13,20,.9);display:flex;flex-direction:column;gap:9px}
+#left{border-right:1px solid var(--border)}#right{border-left:1px solid var(--border)}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:9px}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.6rem;color:var(--anchor);letter-spacing:.08em;margin-bottom:7px;display:flex;justify-content:space-between;align-items:baseline}
+.st small{font-family:'Space Mono',monospace;font-weight:400;color:var(--faint);letter-spacing:0}
+.seg{display:flex;gap:4px;margin-bottom:5px}
+.btn{flex:1;font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:.5rem .3rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.btn:hover{color:var(--text)}
+.btn.on{border-color:var(--anchor);color:var(--anchor);background:rgba(0,255,200,.07)}
+.btn.go{border-color:var(--gold);color:var(--gold);font-size:.62rem;padding:.6rem}
+.btn.go:hover{background:rgba(240,192,96,.1)}
+.lbl{display:flex;justify-content:space-between;font-size:.52rem;color:var(--dim);margin:6px 0 2px}
+.lbl b{color:var(--anchor);font-weight:400}
+.note{font-size:.52rem;color:var(--dim);line-height:1.65}
+.note b{color:var(--text);font-weight:400}
+.note p+p{margin-top:6px}
+.note code{color:var(--gold);font-size:.95em}
+.kv{display:flex;justify-content:space-between;font-size:.54rem;padding:4px 0;border-bottom:1px solid rgba(0,255,200,.06);gap:8px}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--dim)}
+.kv span:last-child{text-align:right}
+.ok{color:var(--anchor)}
+table{width:100%;border-collapse:collapse;font-size:.5rem}
+th{color:var(--dim);font-weight:400;text-align:right;padding:3px 2px;border-bottom:1px solid var(--border)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:3px 2px;border-bottom:1px solid rgba(0,255,200,.05)}
+#view{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#0b0f1a 0%,#000 72%)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#badge{position:absolute;top:10px;right:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 10px;text-align:right;pointer-events:none}
+#badge .ph{font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;color:var(--anchor)}
+#badge small{display:block;font-size:.48rem;color:var(--dim);margin-top:2px}
+#caption{position:absolute;left:12px;right:12px;bottom:10px;font-size:.58rem;line-height:1.65;background:rgba(5,5,8,.88);border:1px solid var(--border);border-radius:8px;padding:8px 12px;pointer-events:none}
+#caption b{color:var(--anchor);font-weight:400}
+#legend{position:absolute;top:10px;left:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 9px;pointer-events:none}
+#legend .rw{display:flex;align-items:center;gap:6px;margin:3px 0;font-size:.52rem}
+#legend i{display:inline-block;width:14px;height:10px;border-radius:2px;border:1px solid rgba(255,255,255,.25);font-style:normal}
+.slots{display:flex;flex-direction:column;gap:4px}
+.slot{display:flex;align-items:center;gap:6px;font-size:.52rem}
+.slot.off{opacity:.25;pointer-events:none}
+.slot .bn{width:46px;color:var(--faint);font-size:.46rem;letter-spacing:.06em;flex-shrink:0}
+.slot select{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.52rem;padding:4px 5px;border-radius:4px}
+.pool{display:flex;flex-wrap:wrap;gap:4px}
+.pb{font-family:'Syne',sans-serif;font-weight:800;font-size:.62rem;width:30px;height:30px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--dim);cursor:pointer}
+.pb:hover{color:var(--text);border-color:rgba(0,255,200,.3)}
+.ph-NOBLE{color:var(--anchor)}.ph-LOCKED{color:var(--locked)}
+.ph-IVA_PEAK{color:var(--gold)}.ph-SHATTER{color:var(--shatter)}
+.match{font-size:.56rem;line-height:1.6}
+.match .nm{font-family:'Syne',sans-serif;font-weight:800;color:var(--gold);font-size:.68rem}
+.match .rf{color:var(--faint);font-size:.5rem;margin-top:4px;line-height:1.55}
+.flagbox{border-color:rgba(240,192,96,.45);background:rgba(240,192,96,.07)}
+.flagbox .st{color:var(--gold)}
+.warn{border-color:rgba(240,192,96,.4);background:rgba(240,192,96,.06)}
+.warn .st{color:var(--gold)}
+ul.src{padding-left:14px;font-size:.5rem;color:var(--dim);line-height:1.6}
+ul.src li{margin:3px 0}
+.r-only{display:none}body.res .r-only{display:block}body.res .l-only{display:none}
+tr.r-only{display:none}body.res tr.r-only{display:table-row}
+.foot{font-size:.44rem;color:var(--faint);line-height:1.6;text-align:center;padding:4px 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media (max-width:900px){
+  html,body{overflow:auto;height:auto}
+  #app{grid-template-columns:1fr;grid-template-rows:auto 60vh auto auto;height:auto}
+  #hdr{flex-wrap:wrap;padding:8px 12px}.h-right,.h-sub{display:none}
+  #view{grid-row:2}#left{grid-row:3}#right{grid-row:4}#left,#right{border:none;overflow:visible}
+  #legend,#caption{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="hdr">
+  <div>
+    <div class="h-title"><em>Base</em>Collider<span class="tm">™</span> <i>by AxiomForge<span class="tm">™</span> · Applied Identity Physics<span class="tm">™</span></i></div>
+    <div class="h-sub">Smash two, four or eight nucleobases · read the fusion output · TL = 0.136899099984016</div>
+  </div>
+  <div class="mode"><button id="m-l" class="on">LEARNER</button><button id="m-r">RESEARCHER</button></div>
+  <div class="h-right">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation<br>uuia.app/basecollider · [9,9,2,56]</div>
+</div>
+
+<div id="left">
+
+  <div class="sec">
+    <div class="st">BEAMS</div>
+    <div class="seg">
+      <button class="btn" id="n-2" data-n="2">2</button>
+      <button class="btn on" id="n-4" data-n="4">4</button>
+      <button class="btn" id="n-8" data-n="8">8</button>
+    </div>
+    <div class="note" id="n-note"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">BASE POOL <small>click to fill</small></div>
+    <div class="pool" id="pool"></div>
+    <div class="note" style="margin-top:7px">Click a base to drop it into the next open beam. <b id="fill-state"></b></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">BEAM SLOTS</div>
+    <div class="slots" id="slots"></div>
+    <div class="seg" style="margin-top:7px">
+      <button class="btn" id="clr">CLEAR</button>
+      <button class="btn" id="rnd">RANDOM</button>
+    </div>
+    <button class="btn go" id="smash" style="width:100%">SMASH</button>
+  </div>
+
+  <div class="sec">
+    <div class="st">k-MODE <small id="km-sub"></small></div>
+    <div class="seg">
+      <button class="btn on" data-k="max">MAX</button>
+      <button class="btn" data-k="half">HALF</button>
+      <button class="btn" data-k="crit">CRIT</button>
+    </div>
+    <div class="seg">
+      <button class="btn" data-k="min">MIN</button>
+      <button class="btn" data-k="zero">ZERO</button>
+    </div>
+    <div class="note" id="km-note"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">F_EXT <small>ΔB on Behaviour</small></div>
+    <div class="slot" style="margin-bottom:6px">
+      <span class="bn">TARGET</span>
+      <select id="fx-t"><option value="-1">all beams</option></select>
+    </div>
+    <div class="lbl"><span>ΔB</span><b id="fx-v">0.000</b></div>
+    <input type="range" id="fx-r" min="-200" max="200" value="0" step="1">
+    <div class="seg" style="margin-top:5px">
+      <button class="btn" data-fx="1">PROTONATE +1</button>
+      <button class="btn" id="fx-solve" style="border-color:var(--gold);color:var(--gold)">SOLVE → IVA</button>
+    </div>
+    <div class="seg">
+      <button class="btn" data-fx="1">OXIDIZE +1</button>
+      <button class="btn" data-fx="0">METHYLATE 0</button>
+      <button class="btn" data-fx="-1">DEPROT −1</button>
+    </div>
+    <div class="note" id="fx-note"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">KNOWN STRUCTURES</div>
+    <div class="seg" style="flex-direction:column;gap:4px" id="presets"></div>
+  </div>
+
+</div>
+
+<div id="view">
+  <canvas id="gl"></canvas>
+  <div id="legend"></div>
+  <div id="badge"><div class="ph" id="bph">—</div><small id="bsub">select beams and smash</small></div>
+  <div id="caption"></div>
+</div>
+
+<div id="right">
+
+  <div class="sec">
+    <div class="st">OUTPUT <small id="out-sub"></small></div>
+    <div id="out"></div>
+  </div>
+
+  <div class="sec" id="matchsec">
+    <div class="st">MATCH</div>
+    <div class="match" id="match"></div>
+  </div>
+
+  <div class="sec" id="flagsec" style="display:none">
+    <div class="st">ANCHOR FLAG</div>
+    <div class="note" id="flag"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">READING IT</div>
+    <div class="note" id="read"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">k → CONDITIONS <small>melting axis</small></div>
+    <table id="ctab"></table>
+    <div class="note" style="margin-top:7px">k is how much of the available hydrogen bonding is actually engaged. For DNA that axis is temperature and denaturant: k_max is fully annealed, k = 0 is fully denatured. F_ext is the other axis — it changes what a base <b>can</b> do, not how much of it is engaged.</div>
+  </div>
+
+  <div class="sec r-only">
+    <div class="st">INPUT DERIVATION</div>
+    <div class="note">
+      <p><b>P</b> — the base is run through the engine's own n-body rule over its constituent atoms: <code>P = n / Σ(1/Pᵢ)</code>, with atomic P from the periodic ladder (H = 1.000, step 0.650 across a period). Not assigned.</p>
+      <p><b>N</b> — <code>N = Σ Nᵢ</code> over the atoms, atomic <code>N = 2 × period</code>. Same rule the element engine uses for fusion output.</p>
+      <p><b>B</b> — hydrogen-bond capacity: donors plus acceptors on the pairing face. This is the one substrate-specific input. Of eight candidate definitions tested it is the only one that reproduces the known counts A·T = 2 and G·C = 3. Covalent bonds inside the base are internal structure and are already absorbed into P.</p>
+      <p><b>A</b> — the base's own measured adiabatic first ionization energy in eV, the same quantity the element pool uses. Experimental, not computed.</p>
+      <p>The fusion rules are unchanged from the 8-beam engine. Only the identities and their inputs differ.</p>
+    </div>
+  </div>
+
+  <div class="sec r-only">
+    <div class="st">POOL INPUTS</div>
+    <table id="ptab"></table>
+  </div>
+
+  <div class="sec warn r-only">
+    <div class="st">WHERE THIS POOL PLACES</div>
+    <div class="note">
+      <p>Bonds are counted, so <code>B_out</code> is bounded below by <b>1</b> for any pool with integer B — verified over every integer-B pool for n = 2…8, B = 0…6, all k-modes. The middle bands are therefore reached by raising P, not by lowering B:</p>
+      <p><code>band reachable ⟺ P_out &gt; B_out / TL</code>, which at B_out = 1 is <b>P_out &gt; 7.3046</b>.</p>
+      <p>Nucleobase P runs 1.767 to 1.990, so this pool places in two of the four bands: <b>NOBLE</b> when the hydrogen bonding closes, <b>SHATTER</b> when anything is left open. That is what pairing does — a pair satisfies its donors and acceptors or it does not.</p>
+      <p>The bands are unchanged; this pool occupies two of them. A pool whose P range clears 7.3 places in all four on the same ruler. Running the same engine on high-P element beams: 7×Kr + Br gives P_out 8.1627, B_out 1, τ 0.12251 — <b>IVA PEAK</b>. 7×Ar + Cl gives P_out 6.6613, τ 0.15012 — Shatter. Narrow low-P pools read binary; widening the pool's P range fills the middle in.</p>
+    </div>
+  </div>
+
+  <div class="sec r-only">
+    <div class="st">SOURCES</div>
+    <ul class="src">
+      <li>Adenine AIE 8.267 ± 0.005 eV, cytosine 8.66 ± 0.01 eV — TPEPICO, via Schwell &amp; Hochlaf, <i>Top. Curr. Chem.</i> 355 (2014) 155, doi:10.1007/128_2014_550</li>
+      <li>Thymine AIE 8.9178 ± 0.001 eV — MATI spectroscopy, same review</li>
+      <li>Uracil AIE 9.15 ± 0.03 eV — PIMS, same review</li>
+      <li>Guanine AIE 7.75 ± 0.05 eV — VUV photoionization, thermal vaporization onset; Zhou et al., LBNL</li>
+      <li>Fusion rules: <code>SNSFL_8Beam_Fusion_Theorem.lean</code> [9,9,2,3.8], 27 theorems, 0 sorry</li>
+      <li>k-mode CRIT: <code>k = k_max/(n−1)</code>, as implemented in IMCollider™ [9,9,6,*]</li>
+    </ul>
+  </div>
+
+  <div class="foot">BaseCollider™ by AxiomForge™ · Applied Identity Physics™ · SNSFT Foundation<br>TL = 0.136899099984016 · HIGHTISTIC (Russell Vernon Trent III)</div>
+
+</div>
+</div>
+
+<script>
+"use strict";
+/* ───────── constants, unchanged from the engine ───────── */
+const OMEGA = 1.36899099984016;
+const TL    = OMEGA / 10;            // 0.136899099984016
+const TL_IVA_PEAK = 0.88 * TL;       // 0.12047120798593408
+const ALPHA_INV   = 137.035999084;   // CODATA 2018, 1/alpha
+
+/* atomic inputs, copied from the element pool */
+const ATOM = { H:[1.000,2], C:[3.250,4], N:[3.900,4], O:[4.550,4] };
+
+/* nucleobase identities: formula, H-bond capacity, measured adiabatic IE (eV) */
+const BASE_DEF = [
+  { sym:'A', name:'Adenine',  cls:'purine',     f:{C:5,H:5,N:5},       B:2, A:8.267 },
+  { sym:'T', name:'Thymine',  cls:'pyrimidine', f:{C:5,H:6,N:2,O:2},   B:2, A:8.918 },
+  { sym:'G', name:'Guanine',  cls:'purine',     f:{C:5,H:5,N:5,O:1},   B:3, A:7.750 },
+  { sym:'C', name:'Cytosine', cls:'pyrimidine', f:{C:4,H:5,N:3,O:1},   B:3, A:8.660 },
+  { sym:'U', name:'Uracil',   cls:'pyrimidine', f:{C:4,H:4,N:2,O:2},   B:2, A:9.150 }
+];
+const POOL = BASE_DEF.map(d => {
+  let n = 0, rs = 0, N = 0;
+  for (const el in d.f) { n += d.f[el]; rs += d.f[el]/ATOM[el][0]; N += d.f[el]*ATOM[el][1]; }
+  const formula = Object.keys(d.f).map(e => e + (d.f[e] > 1 ? d.f[e] : '')).join('');
+  return Object.assign({}, d, { P: n/rs, N, atoms:n, formula });
+});
+const BY = {}; POOL.forEach(b => BY[b.sym] = b);
+
+/* ───────── engine ───────── */
+function tau_of(P, B) { return P > 0 ? B/P : 999; }
+function phaseOf(P, B) {
+  if (B === 0) return 'NOBLE';
+  const t = tau_of(P, B);
+  if (t >= TL) return 'SHATTER';
+  if (t >= TL_IVA_PEAK) return 'IVA_PEAK';
+  return 'LOCKED';
+}
+function im_of(P, N, B, A) { return (P + N + B + A) * OMEGA; }
+
+function kMaxN(Bs) {
+  let s = 0;
+  for (let i = 0; i < Bs.length; i++)
+    for (let j = i+1; j < Bs.length; j++) s += Math.min(Bs[i], Bs[j]);
+  return s;
+}
+function kFor(mode, kmax, n) {
+  return mode === 'max'  ? kmax
+       : mode === 'half' ? kmax * 0.5
+       : mode === 'crit' ? kmax / Math.max(1, n - 1)
+       : mode === 'min'  ? kmax * 0.1
+       :                   0;
+}
+function fuseN(states, mode) {
+  const n = states.length;
+  const P_o = n === 2
+    ? (states[0].P * states[1].P) / (states[0].P + states[1].P)
+    : n / states.reduce((s,e) => s + 1/e.P, 0);
+  const N_o = states.reduce((s,e) => s + e.N, 0);
+  const A_o = Math.max.apply(null, states.map(e => e.A));
+  const Bs  = states.map(e => e.B);
+  const SB  = Bs.reduce((s,b) => s + b, 0);
+  const kmax = kMaxN(Bs);
+  const k = kFor(mode, kmax, n);
+  const B_o = Math.max(0, SB - 2*k);
+  /* dispersion identity: under CRIT, B_out == sum|Bi-Bj| / (n-1) */
+  let disp = 0;
+  for (let i = 0; i < n; i++) for (let j = i+1; j < n; j++) disp += Math.abs(Bs[i]-Bs[j]);
+  disp = n > 1 ? disp/(n-1) : 0;
+  return { P:P_o, N:N_o, B:B_o, A:A_o, tau:tau_of(P_o,B_o), phase:phaseOf(P_o,B_o),
+           IM:im_of(P_o,N_o,B_o,A_o), k, kmax, SB, n, kStar:SB/2,
+           kCrit:kmax/Math.max(1,n-1), disp, uniform:new Set(Bs).size === 1 };
+}
+
+/* ───────── known structures ─────────
+   kReal = bonds the published geometry actually forms, for the margin column */
+const KNOWN = [
+  { key:'AT',       n:2, kReal:2,  name:'Watson–Crick A·T',
+    ref:'Two hydrogen bonds, N6–O4 and N1–N3. Watson & Crick, Nature 171 (1953) 737.' },
+  { key:'GC',       n:2, kReal:3,  name:'Watson–Crick G·C',
+    ref:'Three hydrogen bonds, O6–N4, N1–N3, N2–O2. Watson & Crick, Nature 171 (1953) 737.' },
+  { key:'AU',       n:2, kReal:2,  name:'Watson–Crick A·U (RNA)',
+    ref:'Two hydrogen bonds. The RNA equivalent of A·T; uracil lacks thymine’s 5-methyl.' },
+  { key:'GT',       n:2, kReal:2,  name:'G·T wobble mispair',
+    ref:'Two hydrogen bonds in a shifted geometry. Crick, J. Mol. Biol. 19 (1966) 548.' },
+  { key:'GU',       n:2, kReal:2,  name:'G·U wobble pair',
+    ref:'The canonical RNA wobble. Crick, J. Mol. Biol. 19 (1966) 548.' },
+  { key:'AATT',     n:4, kReal:4,  name:'A·T base-pair stack ×2',
+    ref:'Two stacked Watson–Crick A·T pairs, the B-form duplex unit.' },
+  { key:'CCGG',     n:4, kReal:6,  name:'G·C base-pair stack ×2',
+    ref:'Two stacked Watson–Crick G·C pairs, the B-form duplex unit.' },
+  { key:'GGGG',     n:4, kReal:8,  name:'G-tetrad',
+    ref:'Four guanines in a cyclic Hoogsteen arrangement, eight hydrogen bonds. Gellert et al., PNAS 48 (1962) 2013.' },
+  { key:'CCCC',     n:4, kReal:8,  name:'i-motif C·C⁺ tetrad',
+    ref:'Two intercalated hemiprotonated C·C⁺ pairs. Gehring, Leroy & Guéron, Nature 363 (1993) 561.' },
+  { key:'GGGGGGGG', n:8, kReal:16, name:'G-quadruplex core',
+    ref:'Two stacked G-tetrads, sixteen hydrogen bonds. Reviewed in Burge et al., Nucleic Acids Res. 34 (2006) 5402.' }
+];
+function matchOf(syms) {
+  const key = syms.slice().sort().join('');
+  return KNOWN.find(k => k.key === key && k.n === syms.length) || null;
+}
+
+/* ───────── presets ───────── */
+const PRESETS = [
+  ['A·T pair',        ['A','T']],
+  ['G·C pair',        ['G','C']],
+  ['G·T wobble',      ['G','T']],
+  ['A·T stack ×2',    ['A','T','A','T']],
+  ['G·C stack ×2',    ['G','C','G','C']],
+  ['G-tetrad',        ['G','G','G','G']],
+  ['i-motif tetrad',  ['C','C','C','C']],
+  ['Mixed 4 (GCAT)',  ['G','C','A','T']],
+  ['Quadruplex core', ['G','G','G','G','G','G','G','G']],
+  ['8-beam 4G/4A',    ['G','G','G','G','A','A','A','A']]
+];
+
+/* ───────── state ───────── */
+let nBeams = 4, kMode = 'max', slots = ['G','C','G','C'], res = null, researcher = false;
+let fxTarget = -1, fxDB = 0;        /* F_ext: ΔB on Behaviour. -1 = all beams */
+
+/* F_ext acts on B alone. Fractional ΔB is the population fraction carrying the
+   modification — at a given pH some fraction of cytosines hold the extra N3 donor. */
+function effStates(syms) {
+  return syms.map((s,i) => {
+    const b = BY[s];
+    const d = (fxTarget === -1 || fxTarget === i) ? fxDB : 0;
+    return d === 0 ? b : Object.assign({}, b, { B: Math.max(0, b.B + d) });
+  });
+}
+
+/* ───────── build static UI ───────── */
+const $ = id => document.getElementById(id);
+
+$('pool').innerHTML = POOL.map(b =>
+  `<button class="pb" data-sym="${b.sym}" title="${b.name} ${b.formula} · B=${b.B} · A=${b.A} eV">${b.sym}</button>`
+).join('');
+
+$('presets').innerHTML = PRESETS.map((p,i) =>
+  `<button class="btn" data-pre="${i}" style="flex:none;text-align:left;padding-left:7px">${p[0]}</button>`
+).join('');
+
+$('ptab').innerHTML =
+  '<tr><th>base</th><th>formula</th><th>P</th><th>N</th><th>B</th><th>A eV</th></tr>' +
+  POOL.map(b => `<tr><td>${b.sym} <span style="color:var(--faint)">${b.name.slice(0,4)}</span></td>`+
+    `<td style="text-align:left;color:var(--dim)">${b.formula}</td>`+
+    `<td>${b.P.toFixed(5)}</td><td>${b.N}</td><td>${b.B}</td><td>${b.A.toFixed(3)}</td></tr>`).join('');
+
+$('ctab').innerHTML =
+  '<tr><th>k</th><th>bonding engaged</th><th>DNA condition</th></tr>' +
+  [['0',        'none, strands apart',      'fully denatured · above T_m, urea/formamide, pH &gt; 11'],
+   ['0.1·k_max','transient nucleation',     'just above T_m, a few pairs forming and breaking'],
+   ['0.5·k_max','about half engaged',       'melting transition, near T_m'],
+   ['k*',       'exactly closed, no spare', 'annealed duplex below T_m'],
+   ['k_max',    'all pairwise capacity',    'ceiling only — real geometry stops at k real']]
+  .map(r => `<tr><td style="color:var(--anchor)">${r[0]}</td>`+
+            `<td style="text-align:left;color:var(--text)">${r[1]}</td>`+
+            `<td style="text-align:left;color:var(--dim)">${r[2]}</td></tr>`).join('');
+
+$('legend').innerHTML = [
+  ['var(--anchor)','NOBLE — closed, τ = 0'],
+  ['var(--locked)','LOCKED — 0 &lt; τ &lt; 0.88·TL'],
+  ['var(--gold)','IVA PEAK — 0.88·TL ≤ τ &lt; TL'],
+  ['var(--shatter)','SHATTER — τ ≥ TL, reorganizes']
+].map(r => `<div class="rw"><i style="background:${r[0]}"></i>${r[1]}</div>`).join('');
+
+function renderSlots() {
+  $('slots').innerHTML = Array.from({length:8}, (_,i) => {
+    const off = i >= nBeams ? ' off' : '';
+    const opts = POOL.map(b =>
+      `<option value="${b.sym}"${slots[i]===b.sym?' selected':''}>${b.sym} — ${b.name}</option>`).join('');
+    return `<div class="slot${off}"><span class="bn">BEAM ${i+1}</span><select data-slot="${i}">`+
+           `<option value=""${!slots[i]?' selected':''}>— empty —</option>${opts}</select></div>`;
+  }).join('');
+  $('slots').querySelectorAll('select').forEach(s =>
+    s.addEventListener('change', e => {
+      slots[+e.target.dataset.slot] = e.target.value || null;
+      syncFill(); run();
+    }));
+}
+function syncFill() {
+  const filled = slots.slice(0,nBeams).filter(Boolean).length;
+  $('fill-state').textContent = `${filled} of ${nBeams} filled`;
+  $('n-note').innerHTML = nBeams === 2
+    ? 'Two beams. <b>P_out = P₁P₂/(P₁+P₂)</b> and k_max = min(B₁,B₂) — the ordinary pairing rule. One pair.'
+    : `${nBeams} beams. <b>P_out = n/Σ(1/Pᵢ)</b> and k_max sums min(Bᵢ,Bⱼ) over all C(${nBeams},2) = ${nBeams*(nBeams-1)/2} pairs.`;
+}
+
+/* ───────── canvas ───────── */
+const cv = $('gl'), cx = cv.getContext('2d');
+function fit() {
+  const r = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+  cv.width = Math.round(r.width*d); cv.height = Math.round(r.height*d);
+  cx.setTransform(d,0,0,d,0,0);
+  return { w:r.width, h:r.height };
+}
+const PHC = { NOBLE:'#00ffc8', LOCKED:'#7b4fff', IVA_PEAK:'#f0c060', SHATTER:'#ff3a3a' };
+
+function draw() {
+  const { w, h } = fit();
+  cx.clearRect(0,0,w,h);
+  if (!res) {
+    cx.fillStyle = 'rgba(232,232,240,.3)';
+    cx.font = "600 13px 'Space Mono',monospace"; cx.textAlign = 'center';
+    cx.fillText('fill the beams and press SMASH', w/2, h/2);
+    return;
+  }
+  const splitY = Math.min(h*0.56, h-170);
+  drawFan(w, splitY);
+  drawSweep(w, splitY, h);
+}
+
+function drawFan(w, hh) {
+  const els = effStates(slots.slice(0,nBeams).filter(Boolean));
+  const n = els.length;
+  const bx = Math.max(58, w*0.17);            // beam column x
+  const nodeX = Math.min(w*0.70, w-150);      // output node x
+  const nodeY = hh*0.52;
+  const r = n > 4 ? 11 : 13;                  // beam radius
+  const pitch = Math.min(46, (hh - 46) / Math.max(1, n));
+  const top = nodeY - pitch*(n-1)/2;
+  const NR = Math.min(hh*0.30, 72);           // node radius
+
+  els.forEach((e,i) => {
+    const sy = top + pitch*i;
+    const t = tau_of(e.P, e.B), col = PHC[phaseOf(e.P, e.B)];
+    /* line stops at the node edge, never crosses it */
+    const dx = nodeX - bx, dy = nodeY - sy, L = Math.hypot(dx,dy) || 1;
+    cx.strokeStyle = col; cx.globalAlpha = .45; cx.lineWidth = 1.3;
+    cx.beginPath();
+    cx.moveTo(bx + dx/L*r, sy + dy/L*r);
+    cx.lineTo(nodeX - dx/L*NR, nodeY - dy/L*NR);
+    cx.stroke(); cx.globalAlpha = 1;
+    cx.fillStyle = col; cx.globalAlpha = .14;
+    cx.beginPath(); cx.arc(bx, sy, r, 0, 7); cx.fill(); cx.globalAlpha = 1;
+    cx.strokeStyle = col; cx.lineWidth = 1; cx.stroke();
+    cx.fillStyle = col; cx.font = `800 ${n>4?11:13}px 'Syne',sans-serif`; cx.textAlign = 'center';
+    cx.fillText(e.sym, bx, sy + (n>4?4:4.5));
+    cx.fillStyle = 'rgba(232,232,240,.45)'; cx.font = "9px 'Space Mono',monospace";
+    const lbl = `B=${fmt(e.B)}  τ=${t.toFixed(2)}`;
+    if (bx - r - 6 >= cx.measureText(lbl).width + 4) {   /* room to the left */
+      cx.textAlign = 'right'; cx.fillText(lbl, bx - r - 6, sy + 3);
+    } else if (pitch >= 26) {                             /* otherwise under it */
+      cx.textAlign = 'center'; cx.fillText(lbl, bx, sy + r + 11);
+    }
+  });
+
+  const col = PHC[res.phase];
+  cx.strokeStyle = col; cx.globalAlpha = .25; cx.lineWidth = 1;
+  cx.beginPath(); cx.arc(nodeX, nodeY, NR*1.3, 0, 7); cx.stroke(); cx.globalAlpha = 1;
+  cx.fillStyle = col; cx.globalAlpha = .10;
+  cx.beginPath(); cx.arc(nodeX, nodeY, NR, 0, 7); cx.fill(); cx.globalAlpha = 1;
+  cx.strokeStyle = col; cx.lineWidth = 1.6; cx.beginPath(); cx.arc(nodeX,nodeY,NR,0,7); cx.stroke();
+  cx.fillStyle = col; cx.textAlign = 'center'; cx.font = "800 14px 'Syne',sans-serif";
+  cx.fillText(res.phase.replace('_',' '), nodeX, nodeY - 2);
+  cx.fillStyle = 'rgba(232,232,240,.6)'; cx.font = "10px 'Space Mono',monospace";
+  cx.fillText(`B_out = ${fmt(res.B)}`, nodeX, nodeY + 15);
+  cx.fillText(`τ = ${res.tau.toFixed(5)}`, nodeX, nodeY + 28);
+}
+
+function drawSweep(w, y0, h) {
+  const L = 72, R = w-34, T = y0+30, Bm = h-80;
+  if (Bm - T < 40) return;
+  const kmax = res.kmax || 1, SB = res.SB;
+  const X = k => L + (R-L)*(k/kmax);
+  const Y = b => Bm - (Bm-T)*(b/Math.max(SB,1));
+  cx.strokeStyle = 'rgba(0,255,200,.18)'; cx.lineWidth = 1;
+  cx.beginPath(); cx.moveTo(L,T); cx.lineTo(L,Bm); cx.lineTo(R,Bm); cx.stroke();
+
+  /* the band, to scale on B_out — a hairline, which is the point */
+  const yl = Y(TL*res.P), yh = Y(TL_IVA_PEAK*res.P);
+  cx.fillStyle = 'rgba(240,192,96,.55)';
+  cx.fillRect(L, yl, R-L, Math.max(1.1, yh-yl));
+
+  /* and the same band read on the k axis: τ crosses TL at k_TL, 0.88·TL at k_IVA.
+     Both sit just left of k*, so the corridor is a narrow strip in k. */
+  const kTL  = (SB - TL*res.P)/2, kIVA = (SB - TL_IVA_PEAK*res.P)/2;
+  if (kTL > 0 && kTL <= kmax) {
+    const x0 = X(kTL), x1 = Math.min(X(kIVA), R);
+    cx.fillStyle = 'rgba(240,192,96,.22)';
+    cx.fillRect(x0, T, Math.max(1.5, x1-x0), Bm-T);
+    cx.strokeStyle = 'rgba(240,192,96,.55)'; cx.lineWidth = 1;
+    cx.beginPath(); cx.moveTo(x0, T); cx.lineTo(x0, Bm); cx.stroke();
+  }
+
+  cx.strokeStyle = 'rgba(232,232,240,.8)'; cx.lineWidth = 1.8;
+  cx.beginPath(); cx.moveTo(X(0), Y(SB));
+  const kz = Math.min(SB/2, kmax);
+  cx.lineTo(X(kz), Y(Math.max(0, SB - 2*kz)));
+  if (SB/2 < kmax) cx.lineTo(X(kmax), Y(0));
+  cx.stroke();
+
+  const km = (fxDB === 0) ? matchOf(slots.slice(0,nBeams).filter(Boolean)) : null;
+  const marks = [
+    [res.kStar, 'k*',    'rgba(0,255,200,.8)'],
+    [res.kCrit, 'CRIT',  'rgba(240,192,96,.9)'],
+    [kmax,      'k_max', 'rgba(123,79,255,.85)']
+  ];
+  if (km) marks.push([km.kReal, 'k real', 'rgba(255,255,255,.6)']);
+  marks.sort((a,b) => a[0] - b[0]);
+  cx.font = "9px 'Space Mono',monospace"; cx.textAlign = 'center';
+  let lastX = -1e9, row = 0;
+  marks.forEach(([k,lab,c]) => {
+    if (k > kmax + 1e-9) return;
+    const x = X(k);
+    row = (x - lastX < 34) ? row + 1 : 0;      /* stack labels that would collide */
+    lastX = x;
+    const ly = T - 10 - row*11;
+    cx.strokeStyle = c; cx.lineWidth = 1; cx.setLineDash([3,3]);
+    cx.beginPath(); cx.moveTo(x, ly + 3); cx.lineTo(x, Bm); cx.stroke(); cx.setLineDash([]);
+    cx.fillStyle = c; cx.fillText(lab, x, ly);
+  });
+
+  cx.fillStyle = PHC[res.phase];
+  cx.beginPath(); cx.arc(X(Math.min(res.k,kmax)), Y(res.B), 4.5, 0, 7); cx.fill();
+
+  cx.fillStyle = 'rgba(232,232,240,.5)'; cx.textAlign = 'right';
+  cx.fillText(String(SB), L-7, Y(SB)+3);
+  cx.fillText('0', L-7, Bm+3);
+  cx.save(); cx.translate(L-42, (T+Bm)/2); cx.rotate(-Math.PI/2);
+  cx.textAlign = 'center'; cx.fillText('B_out', 0, 0); cx.restore();
+  cx.textAlign = 'center';
+  cx.fillText(`coupling exchange k   →   k_max = ${kmax}`, (L+R)/2, Bm+20);
+  cx.textAlign = 'right'; cx.fillStyle = 'rgba(240,192,96,.85)';
+  cx.fillText('band', R-4, yl-5);
+}
+
+/* ───────── readouts ───────── */
+const fmt = v => Number.isInteger(v) ? String(v) : v.toFixed(4);
+
+function run() {
+  const syms = slots.slice(0,nBeams).filter(Boolean);
+  if (syms.length !== nBeams) {
+    res = null; $('bph').textContent = '—';
+    $('bsub').textContent = `${syms.length} of ${nBeams} beams filled`;
+    $('out').innerHTML = '<div class="note">Fill every beam slot, then smash.</div>';
+    $('match').innerHTML = '<div class="note">—</div>';
+    $('flagsec').style.display = 'none';
+    $('read').innerHTML = '<div class="note">—</div>';
+    $('caption').innerHTML = ''; draw(); return;
+  }
+  const els = effStates(syms);
+  res = fuseN(els, kMode);
+  const km = (fxDB === 0) ? matchOf(syms) : null;   /* perturbed pool is no longer the catalogued structure */
+
+  $('bph').textContent = res.phase.replace('_',' ');
+  $('bph').style.color = PHC[res.phase];
+  $('bsub').textContent = `${syms.join('+')} · k=${fmt(res.k)}/${res.kmax} · ${kMode.toUpperCase()}`;
+  $('out-sub').textContent = `${syms.join('+')} · ${kMode.toUpperCase()}`;
+
+  const margin = km ? km.kReal - res.kStar : null;
+  $('out').innerHTML = [
+    ['phase', `<b class="ph-${res.phase}">${res.phase.replace('_',' ')}</b>`],
+    ['P_out', res.P.toFixed(5)],
+    ['N_out', res.N],
+    ['B_out', `<b style="color:${res.B===0?'var(--anchor)':'var(--shatter)'}">${fmt(res.B)}</b>`],
+    ['A_out', res.A.toFixed(3) + ' eV'],
+    ['τ',     res.tau.toFixed(6)],
+    ['TL',    '0.136899099984016'],
+    ['IM',    res.IM.toFixed(5)]
+  ].map(r => `<div class="kv"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')
+  + '<div style="height:7px"></div>'
+  + [
+    ['ΣB', res.SB],
+    ['k* (Noble point, ΣB/2)', fmt(res.kStar)],
+    ['k_crit = k_max/(n−1)', res.kCrit.toFixed(4)],
+    ['k_max', res.kmax],
+    ['k in use', fmt(res.k)]
+  ].concat(km ? [['k real (published geometry)', km.kReal],
+                 ['margin (k real − k*)', (margin>0?'+':'') + fmt(margin)]] : [])
+   .map(r => `<div class="kv"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('');
+
+  $('match').innerHTML = km
+    ? `<div class="nm">${km.name}</div><div class="rf">${km.ref}</div>`
+    : (fxDB !== 0
+      ? `<div class="nm" style="color:var(--gold)">Perturbed · F_ext ΔB ${fxDB>0?'+':''}${fxDB.toFixed(3)}</div>`+
+        `<div class="rf">F_ext has moved B off the catalogued values, so this is no longer the published `+
+        `structure and no literature match is asserted. Set ΔB to 0 to read the match again.</div>`
+      : `<div class="nm" style="color:var(--locked)">No catalogued structure</div>`+
+        `<div class="rf">This combination is not in the built-in list of published structures. `+
+        `The output is the engine's reading of it, with no literature match asserted.</div>`);
+
+  const dAlpha = Math.abs(res.IM - ALPHA_INV);
+  if (dAlpha < 0.4) {
+    $('flagsec').style.display = '';
+    $('flag').innerHTML = `<p><b>IM ≈ 1/α.</b> IM = ${res.IM.toFixed(5)} against `+
+      `1/α = 137.035999084, a difference of <b>${dAlpha.toFixed(5)}</b>.</p>`+
+      `<p>This is the engine's standing flag, fired on a window of ±0.4. `+
+      `Across the 15 two-beam combinations in this pool, IM spans roughly 127 to 160, `+
+      `so a ±0.4 window catches about 2.4% of that span per combination. `+
+      `Read the difference, not the flag.</p>`;
+  } else $('flagsec').style.display = 'none';
+
+  /* reading-it panel: learner prose, researcher mechanics */
+  const openTxt = res.B === 0
+    ? 'every donor found an acceptor, so nothing is left open'
+    : `${fmt(res.B)} of the hydrogen bonding is left open`;
+  $('read').innerHTML = researcher ? researcherNote(res, km) : learnerNote(res, km, openTxt);
+
+  $('caption').innerHTML = `<b>${syms.join(' + ')}</b> → <b>${res.phase.replace('_',' ')}</b> · `+
+    `ΣB ${fmt(res.SB)} · k ${fmt(res.k)} of k_max ${fmt(res.kmax)} · B_out ${fmt(res.B)}` +
+    (fxDB !== 0 ? ` · F_ext ΔB ${fxDB>0?'+':''}${fxDB.toFixed(3)}` : '') +
+    (km ? ` · <b>${km.name}</b>` : '');
+  fxTargets(); fxNote();
+  draw();
+}
+
+function learnerNote(r, km, openTxt) {
+  let s = `<p>Each base arrives carrying a count of hydrogen bonds it can make: `+
+          `<b>${r.SB}</b> in total across ${r.n} beams.</p>`;
+  s += `<p>The collision lets them exchange <b>k = ${fmt(r.k)}</b> of those bonds with each other. `+
+       `Every exchanged bond uses up two counts, one on each side, so what is left over is `+
+       `<code>${r.SB} − 2×${fmt(r.k)} = ${fmt(r.B)}</code>. Here ${openTxt}.</p>`;
+  if (r.B === 0)
+    s += `<p>Nothing open means <b>NOBLE</b>: the structure is satisfied and stops reaching for partners. `+
+         `This is what a closed base pair is.</p>`;
+  else
+    s += `<p>Anything left open pushes τ past TL, which is <b>SHATTER</b> — not destruction, `+
+         `reorganization. An unsatisfied base goes looking for a different partner, `+
+         `which is exactly what mismatched bases do.</p>`;
+  if (km) s += `<p>This combination is a known structure: <b>${km.name}</b>. `+
+    `Published geometry forms ${km.kReal} bonds; the Noble point k* sits at ${fmt(r.kStar)}. `+
+    (km.kReal === r.kStar
+      ? `Those are equal, so the real structure sits exactly at closure.`
+      : `The real structure runs <b>${km.kReal - r.kStar}</b> above closure, which is headroom.`) + `</p>`;
+  return s;
+}
+function researcherNote(r, km) {
+  let s = `<p><code>B_out = max(0, ΣB − 2k)</code> with <code>k = ${kMode}</code>. `+
+          `<code>P_out = ${r.n===2?'P₁P₂/(P₁+P₂)':'n/Σ(1/Pᵢ)'}</code>, `+
+          `<code>N_out = ΣNᵢ</code>, <code>A_out = max Aᵢ</code>, `+
+          `<code>τ = B_out/P_out</code> against TL.</p>`;
+  s += `<p><b>k_max</b> = Σ min(Bᵢ,Bⱼ) over C(${r.n},2) = ${r.n*(r.n-1)/2} pairs = ${r.kmax}. `+
+       `A planar tetrad bonds only its 4 cyclic neighbours, so k_max is a ceiling and geometry `+
+       `picks the point on the sweep, not the maximum.</p>`;
+  if (kMode === 'crit') {
+    s += `<p><b>CRIT closed form.</b> With <code>k = k_max/(n−1)</code>, `+
+         `<code>B_out = (1/(n−1))·Σ|Bᵢ−Bⱼ|</code> exactly. Here that is `+
+         `<b>${r.disp.toFixed(4)}</b>, matching B_out = ${fmt(r.B)}. `+
+         `It vanishes if and only if every Bᵢ is equal — this pool is `+
+         `<b>${r.uniform?'uniform':'mixed'}</b> in B. Verified over all 137,249 pools for n = 2…6, B = 0…6.</p>`;
+    s += `<p>With B ∈ {2,3}, m strong of n gives <code>B_out = m(n−m)/(n−1)</code>, which is `+
+         `(n/2)·H for Nei's unbiased heterozygosity H. CRIT over a base pool reads composition, `+
+         `not geometry.</p>`;
+  }
+  if (r.n >= 3 && kMode === 'max')
+    s += `<p><b>MAX saturates here.</b> For n ≥ 3, k_max ≥ ΣB/2 for every pool in this substrate, `+
+         `so MAX always lands at or past the Noble point. CRIT is the mode that discriminates `+
+         `at multi-beam.</p>`;
+  if (km) {
+    const m = km.kReal - r.kStar;
+    s += `<p><b>${km.name}</b> · k real ${km.kReal} · k* ${fmt(r.kStar)} · `+
+         `margin <b>${(m>0?'+':'')}${fmt(m)}</b> · k_max ${r.kmax}. `+
+         (m === 0 ? 'Sits exactly at the Noble point, no headroom.'
+                  : 'Sits above the Noble point, so bonding can be lost before the structure opens.') + `</p>`;
+  }
+  s += `<p><b>Placement.</b> At P_out = ${r.P.toFixed(5)}, LOCKED spans `+
+       `0 &lt; B_out &lt; ${(TL_IVA_PEAK*r.P).toFixed(5)} and IVA PEAK spans `+
+       `${(TL_IVA_PEAK*r.P).toFixed(5)} ≤ B_out &lt; ${(TL*r.P).toFixed(5)}. `+
+       `Integer B floors B_out at 1, so the middle bands need `+
+       `<code>P_out &gt; B_out/TL</code> — at B_out = 1 that is P_out &gt; 7.3046. `+
+       `This pool runs 1.767–1.990 and so places in two of the four bands at ΔB = 0. `+
+       `The bands do not change; a pool with a wider P range occupies all four on the same ruler.</p>`;
+  s += `<p><b>F_ext opens the corridor.</b> ΔB is not restricted to integers, so F_ext is the control `+
+       `that puts this substrate on all four bands. At the current P_out the whole IVA Peak corridor `+
+       `is B_out ∈ [${(TL_IVA_PEAK*r.P).toFixed(5)}, ${(TL*r.P).toFixed(5)}) — narrow, but on the `+
+       `same ruler. On the sweep the corridor shows twice: shaded across B_out, and as the strip in k `+
+       `between k_TL = ${((r.SB - TL*r.P)/2).toFixed(4)} and k_IVA = `+
+       `${((r.SB - TL_IVA_PEAK*r.P)/2).toFixed(4)}, just left of k*.</p>`;
+  return s;
+}
+
+/* ───────── wiring ───────── */
+$('pool').addEventListener('click', e => {
+  const b = e.target.closest('.pb'); if (!b) return;
+  let i = slots.slice(0,nBeams).findIndex(s => !s);
+  if (i < 0) i = 0;
+  slots[i] = b.dataset.sym; renderSlots(); syncFill(); run();
+});
+document.querySelectorAll('[data-n]').forEach(b => b.addEventListener('click', () => {
+  nBeams = +b.dataset.n;
+  document.querySelectorAll('[data-n]').forEach(x => x.classList.toggle('on', x === b));
+  renderSlots(); syncFill(); updateKmSub(); run();
+}));
+document.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => {
+  kMode = b.dataset.k;
+  document.querySelectorAll('[data-k]').forEach(x => x.classList.toggle('on', x === b));
+  updateKmSub(); run();
+}));
+$('presets').addEventListener('click', e => {
+  const b = e.target.closest('[data-pre]'); if (!b) return;
+  const p = PRESETS[+b.dataset.pre];
+  nBeams = p[1].length;
+  document.querySelectorAll('[data-n]').forEach(x => x.classList.toggle('on', +x.dataset.n === nBeams));
+  slots = p[1].slice(); while (slots.length < 8) slots.push(null);
+  renderSlots(); syncFill(); updateKmSub(); run();
+});
+$('clr').addEventListener('click', () => { slots = [null,null,null,null,null,null,null,null];
+  renderSlots(); syncFill(); run(); });
+$('rnd').addEventListener('click', () => {
+  slots = Array.from({length:8}, () => POOL[Math.floor(Math.random()*POOL.length)].sym);
+  renderSlots(); syncFill(); run();
+});
+$('smash').addEventListener('click', run);
+
+/* ── F_ext ── */
+function fxTargets() {
+  $('fx-t').innerHTML = '<option value="-1">all beams</option>' +
+    slots.slice(0,nBeams).map((s,i) =>
+      `<option value="${i}"${fxTarget===i?' selected':''}>beam ${i+1}${s?' · '+s:''}</option>`).join('');
+  $('fx-t').value = String(fxTarget);
+}
+function fxNote() {
+  const r = res;
+  if (fxDB === 0) {
+    $('fx-note').innerHTML = 'F_ext acts on B alone. A fractional ΔB is the population fraction '+
+      'carrying the modification — at a given pH some fraction of cytosines hold the extra N3 donor.';
+    return;
+  }
+  const lo = r ? TL_IVA_PEAK*r.P : 0, hi = r ? TL*r.P : 0;
+  $('fx-note').innerHTML = `ΔB ${fxDB>0?'+':''}${fxDB.toFixed(3)} on `+
+    (fxTarget===-1?'every beam':'beam '+(fxTarget+1)) + '. ' +
+    (r ? `At this P_out the corridor is B_out ∈ [${lo.toFixed(5)}, ${hi.toFixed(5)}). `+
+         `Integer B cannot land there; fractional ΔB can.` : '');
+}
+$('fx-t').addEventListener('change', e => { fxTarget = +e.target.value; run(); });
+$('fx-r').addEventListener('input', e => {
+  fxDB = +e.target.value / 100;
+  $('fx-v').textContent = (fxDB>0?'+':'') + fxDB.toFixed(3);
+  run();
+});
+function applyFx(d) {
+  fxDB = d;
+  $('fx-r').value = String(Math.round(d*100));
+  $('fx-v').textContent = (d>0?'+':'') + d.toFixed(3);
+  run();
+}
+document.querySelectorAll('[data-fx]').forEach(b =>
+  b.addEventListener('click', () => applyFx(+b.dataset.fx)));
+
+/* Inverse F_ext, as in IMCollider: solve for the ΔB that lands the output mid-corridor.
+   τ_mid = 0.94·TL. Scanned rather than closed-form, because k_max moves with B. */
+$('fx-solve').addEventListener('click', () => {
+  const syms = slots.slice(0,nBeams).filter(Boolean);
+  if (syms.length !== nBeams) return;
+  const target = 0.94 * TL, save = fxDB;
+  const scan = mode => {                 /* 0.001 resolution over the slider's full ±2.000 */
+    let best = null;
+    for (let i = -2000; i <= 2000; i++) {
+      fxDB = i/1000;
+      const r = fuseN(effStates(syms), mode);
+      if (r.B <= 0) continue;
+      const err = Math.abs(r.tau - target);
+      if (best === null || err < best.err) best = { d:fxDB, err };
+    }
+    return (best && best.err <= 0.005) ? best : null;
+  };
+  const hit = scan(kMode);
+  fxDB = save;
+  if (hit) { applyFx(+hit.d.toFixed(3)); return; }
+  /* MAX saturates for n ≥ 3 here, so the corridor is often reachable only under CRIT */
+  const alt = (kMode !== 'crit') ? (() => { const h = scan('crit'); fxDB = save; return h; })() : null;
+  applyFx(save);
+  $('fx-note').innerHTML = alt
+    ? `<b>Not reachable under ${kMode.toUpperCase()}.</b> At n ≥ 3, MAX lands at or past the `+
+      `Noble point whatever ΔB does, so B_out stays 0. Switch to CRIT and ΔB `+
+      `${alt.d>0?'+':''}${alt.d.toFixed(3)} puts this pool in the corridor.`
+    : '<b>No ΔB within ±2.000 lands this pool in the corridor.</b> '+
+      'Try targeting a single beam rather than all beams, or a different k-mode.';
+});
+function updateKmSub() {
+  const n = nBeams;
+  $('km-sub').textContent = `k_crit = k_max/${n-1}`;
+  const notes = {
+    max:  'k = k_max. Every pair exchanges as much as it can. For n ≥ 3 this always reaches the Noble point in this substrate, so it stops discriminating.',
+    half: 'k = k_max/2. Half the available exchange.',
+    crit: `k = k_max/(n−1). Exactly the Noble point for a pool uniform in B, and B_out = Σ|Bᵢ−Bⱼ|/(n−1) otherwise. At n = 2 this is the ordinary pairing rule.`,
+    min:  'k = k_max/10. Almost no exchange, so most bonding stays open.',
+    zero: 'k = 0. No exchange at all; B_out = ΣB. The beams pass through each other.'
+  };
+  $('km-note').textContent = notes[kMode];
+}
+$('m-l').addEventListener('click', () => setMode(false));
+$('m-r').addEventListener('click', () => setMode(true));
+function setMode(r) {
+  researcher = r; document.body.classList.toggle('res', r);
+  $('m-l').classList.toggle('on', !r); $('m-r').classList.toggle('on', r);
+  run();
+}
+window.addEventListener('resize', draw);
+
+renderSlots(); syncFill(); updateKmSub(); run();
+</script>
+</body>
+</html>
