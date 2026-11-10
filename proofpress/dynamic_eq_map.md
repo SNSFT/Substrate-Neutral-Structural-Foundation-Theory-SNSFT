@@ -787,7 +787,308 @@ projection.
 
 ---
 
-## 10. Quick index of forms
+## 10. Legacy forms as Layer 2 projections
+
+Every form in this section **projects from** the Dynamic Equation. The hierarchy runs
+$\mathrm{L0}\to\mathrm{L1}\to\mathrm{L2}$ and is never inverted: none of these grounds the structure,
+and the structure does not require any of them. The **projection** column states which coordinates the
+Layer 2 form carries and which it sets to identity or zero — the same pattern `lag_step` exhibits in
+§8.1, where $P$, $N$ and $A$ go to the identity and every operator content lands on $B$.
+
+### 10.1 Mechanics and dynamics
+
+$$
+\text{Newton:}\quad \frac{d}{dt}(mv) = F
+\qquad\text{vs}\qquad
+\frac{d}{dt}(\mathrm{IM}\cdot\mathbf{P}_v) = \sum_X \lambda_X O_X S + F_{\text{ext}}
+$$
+
+| mapping | |
+|---|---|
+| $mv \longleftrightarrow \mathrm{IM}\cdot\mathbf{P}_v$ | momentum is identity mass times purpose vector |
+| $F \longleftrightarrow F_{\text{ext}}$ | the forcing term, already primitive |
+| **projection** | $\sum_X \lambda_X O_X S = 0$ — forcing only, no internal operators |
+
+$$
+\boxed{\;\text{Newton's second law is the Dynamic Equation with the operator sum empty}\;}
+$$
+
+$$
+\text{Lagrange:}\quad L = T - V \;\longrightarrow\; \dot P\dot N - (B+A)
+\qquad
+\text{Euler–Lagrange:}\quad \frac{d}{dt}\frac{\partial L}{\partial \dot q} = \frac{\partial L}{\partial q}
+\;\longrightarrow\; N\dot P = BP
+$$
+
+| | projection |
+|---|---|
+| Lagrangian | kinetic $=$ the $P$–$N$ product; potential $=$ the $B$–$A$ sum (§8) |
+| Euler–Lagrange | Narrative momentum against the Pattern–Behavior balance |
+| Noether | symmetry $\leftrightarrow$ conservation; what the projection preserves |
+| Rayleigh dissipation | a $B$-channel loss term written into a chosen formalism |
+
+### 10.2 Relativity and mass–energy
+
+$$
+E_0 = mc^2, \qquad E_k = \tfrac12 m v^2, \qquad
+\gamma = \frac{1}{\sqrt{1-\tau_A^2}}, \qquad \tau_A = \frac vc
+$$
+
+$$
+\boxed{\;\eta = \frac{E_k}{E_0} = \frac{\tfrac12 mv^2}{mc^2} = \frac12\left(\frac vc\right)^2 = \frac{\tau_A^2}{2}
+\qquad\Longleftrightarrow\qquad \tau_A^2 = 2\eta\;}
+$$
+
+The mass cancels. $E = mc^2$ and the corpus conversion fraction are **one identity read two ways** —
+$E = mc^2$ gives the total, $\eta$ gives the fraction of it converted, and $\tau_A$ is the same number
+as the ratio in the Lorentz factor.
+
+| | |
+|---|---|
+| **projection** | $E=mc^2$ carries the $P$ reading (capacity); $\eta$ carries the $A$ reading (fraction accommodated) |
+| relativistic reading | $\eta_{\text{rel}} = \gamma - 1$; total conversion at $\tau_A = \sqrt3/2$ where $\gamma = 2$ exactly |
+| classical bound | $\eta < \tfrac12$ always — the classical reading cannot represent total conversion |
+| self-reported error | relative error $= \tfrac32\eta$ to leading order, sandwiched in $[\tfrac32\eta,\,2\eta]$ |
+
+$$
+\text{Planck: } E = h\nu \qquad \text{de Broglie: } \lambda = \frac hp \qquad \text{Compton: } \lambda_C = \frac{h}{mc}
+$$
+
+### 10.3 Quantum
+
+$$
+\text{Schrödinger:}\quad i\hbar\,\frac{\partial \psi}{\partial t} = \hat H\psi
+\qquad\text{vs}\qquad
+\frac{d}{dt}\bigl(\mathrm{IM}\cdot\mathbf{P}_v\bigr) = \sum_X \lambda_X O_X S + F_{\text{ext}}
+$$
+
+Both sides align by form: a time derivative of the state on the left, an operator acting on the state
+on the right.
+
+| mapping | |
+|---|---|
+| $\psi \longleftrightarrow S$ | the state |
+| $\hat H \longleftrightarrow \sum_X \lambda_X O_X$ | the weighted operator sum |
+| $i\hbar\,\partial_t \longleftrightarrow \dfrac{d}{dt}(\mathrm{IM}\cdot\mathbf{P}_v)$ | the left side |
+| **projection** | $F_{\text{ext}} = 0$ |
+
+$$
+\boxed{\;\text{the closed Schrödinger equation is the Dynamic Equation at } F_{\text{ext}} = 0\;}
+$$
+
+This is why the closed form is closable at all. A closed Hamiltonian needs no environment, so the
+forcing term can be set to zero and never missed — and when an environment is required, Layer 2 adds it
+back on top at the same layer (a Lindblad dissipator, a bath coupling, a stochastic term) rather than
+having carried it from the start. Thermodynamics cannot be written that way at all, which is why
+reducing thermal is what put $F_{\text{ext}}$ at Layer 0.
+
+$$
+\text{fine structure:}\quad \alpha^{-1} = \frac{4\pi\varepsilon_0 \hbar c}{e^2} = 137.035999084000016 = \mathrm{TL}\cdot 1001
+$$
+
+Substituting SI base units cancels mass, length, time and current completely: the anchor is a pure
+number, and $1001 = 7\cdot11\cdot13$ is an integer.
+
+### 10.4 Thermodynamics and transport — the originating domain
+
+$$
+\text{Fourier:}\quad \mathbf{q} = -k\,\nabla T
+\qquad
+\text{Fick:}\quad \mathbf{J} = -D\,\nabla c
+\qquad
+\text{Ohm:}\quad \mathbf{J} = \sigma \mathbf{E}
+$$
+
+One shape in three substrates: **flux per unit gradient**, which is the definition of $B$ in the
+thermal reading. These are $B$-readings, not separate laws.
+
+$$
+\text{first law:}\quad dU = \delta Q - \delta W
+\qquad
+\text{second law:}\quad dS \ge 0
+\qquad
+\text{heat equation:}\quad \frac{\partial T}{\partial t} = \alpha\nabla^2 T
+$$
+
+| legacy form | PNBA reading | projection |
+|---|---|---|
+| Fourier / Fick / Ohm | $B$ — flux per unit gradient | carries $B$; $P$, $N$, $A$ implicit in the coefficient |
+| heat capacity $C$ | $P$ — capacity to hold energy without changing phase | carries $P$ |
+| relaxation time $\tau_{\text{relax}}$, decay constant | $A$ — equation-of-state response | carries $A$ |
+| the worldline through state space | $N$ — temporal continuity | carries $N$ |
+| first law | $F_{\text{ext}}$ as $\delta Q$, a primitive input | the law that **cannot** be closed |
+| second law | Pattern decoherence from the anchor, monotone ([9,9,0,3]) | carries $P$ and $N$ |
+| zeroth law | contact with a reservoir — $F_{\text{ext}}$ by construction | — |
+
+$$
+\boxed{\;\text{thermodynamics is the one domain whose } F_{\text{ext}} \text{ cannot be set to zero}\;}
+$$
+
+### 10.5 Electromagnetism and optics
+
+$$
+n = \sqrt{\varepsilon_r \mu_r}
+\qquad\Longrightarrow\qquad
+\varepsilon_r = n^2 = \frac{1}{\tau_A^2} = \mathrm{mr}(\tau_A)
+$$
+
+$$
+\text{Beer–Lambert:}\quad I = I_0 e^{-\alpha \ell}, \qquad \alpha\ell = \ln\frac{I_0}{I} = \tau_B
+$$
+
+$$
+\text{Stefan–Boltzmann:}\quad j^* = \sigma T^4
+\qquad
+\text{Maxwell (source form):}\quad \partial_\mu F^{\mu\nu} = \mu_0 J^\nu
+$$
+
+| | |
+|---|---|
+| $\varepsilon_r$ | the matched ratio of the medium — $P$ reading |
+| $n$ | $1/\tau_A$ — Reading A in a medium |
+| $\alpha\ell$ | Reading B, an e-fold count |
+| **vacuum** | $\mathrm{mr}(\tau) = 1$ — the same point that is the horizon in gravitation |
+
+Corridor on permittivity: $(53.3579104808,\;68.9022604349]$, fifteen integers $54$–$68$ inside,
+$\varepsilon_r = 59$ prime.
+
+### 10.6 Gravitation
+
+$$
+\text{Einstein:}\quad G_{\mu\nu} = \frac{8\pi G}{c^4}T_{\mu\nu}
+\qquad
+\text{Schwarzschild:}\quad r_s = \frac{2GM}{c^2}
+\qquad
+v_{\text{esc}} = \sqrt{\frac{2GM}{r}}
+$$
+
+$$
+r_{\text{match}} = \frac{r_s}{\tau_A^2} = r_s\cdot \mathrm{mr}(\tau_A)
+$$
+
+| | |
+|---|---|
+| $v_{\text{esc}}$ | the square-root operator $S$ as the constitutive relation of gravitation |
+| $r_s$ | the Pattern-lock threshold — $B$ coupling against capacity |
+| $r_{\text{match}}$ | the matched ratio applied to $r_s$; the mass cancels |
+| **horizon** | $\mathrm{mr}(\tau) = 1$ — the same point that is vacuum in optics |
+
+### 10.7 Structures and fatigue
+
+$$
+\text{Saint-Venant:}\quad T = \beta\, G\,\theta\, a b^3, \qquad \beta = \mathrm{TL} \ \text{(8 s.f.)}
+$$
+
+$$
+\text{Scanlan flutter:}\quad R = \frac{\rho B_{\text{deck}}^4 A_2^*}{2I\zeta}, \qquad \tau = R\cdot\mathrm{TL}, \qquad \text{onset at } R = 1
+$$
+
+$$
+\text{Basquin:}\quad \sigma_a = \sigma_f'(2N_f)^{b}
+\qquad\Longleftrightarrow\qquad
+N_f \propto B^{-m}, \quad m = \frac{1}{|b|}
+$$
+
+$$
+\text{Coffin–Manson:}\quad \frac{\Delta\varepsilon_p}{2} = \varepsilon_f'(2N_f)^{c}
+\qquad
+\text{Paris:}\quad \frac{da}{dN} = C(\Delta K)^{m}
+$$
+
+| legacy form | PNBA reading | projection |
+|---|---|---|
+| Basquin exponent $b$ | $m = 1/\lvert b\rvert$, the exponent in $dP/dN = -kB^m$ | carries the $B\!\to\!P$ coupling |
+| Paris exponent | the same power-law degradation shape, read on crack length | carries the same coupling |
+| endurance limit | the balance $B_e = (r/k)^{1/m}$ | carries $A$ as the recovery channel |
+| damping ratio $\zeta$ | $P = 2I\zeta$ — Pattern capacity itself | carries $P$ |
+| UTS | $P_0 = \mathrm{UTS}/\mathrm{TL}$ | carries $P$ at the Shatter boundary |
+
+**Miner's rule and the memory split.** Linear damage accumulation says
+$\sum_i n_i / N_{f,i} = 1$ with no dependence on load order. §2.5 establishes that *forcing* is
+additive and order-blind; §2.6 establishes that *damage* is not forcing and lives in the operator sum,
+where accumulation has memory. So the known load-sequence sensitivity that Miner's rule does not
+capture is exactly what the two sections separate: Miner's rule treats damage with the arithmetic that
+belongs to $F_{\text{ext}}$.
+
+### 10.8 The projection ledger
+
+| legacy form | layer | carries | sets to identity / zero |
+|---|---|---|---|
+| Newton $\frac{d}{dt}(mv)=F$ | L2 | $F_{\text{ext}}$ | the whole operator sum |
+| Lagrangian $L = T - V$ | L2 | $B$ operator | $P$, $N$, $A$ operators |
+| Euler–Lagrange | L2 | $N\dot P = BP$ | the rest |
+| Schrödinger (closed) | L2 | $\sum_X\lambda_X O_X$ | $F_{\text{ext}}$ |
+| Fourier / Fick / Ohm | L2 | $B$ | $P$, $N$, $A$ into the coefficient |
+| first law | L2 | $F_{\text{ext}}$, $P$ | — ($F_{\text{ext}}$ not removable) |
+| second law | L2 | $P$, $N$ | $B$, $A$ |
+| $n=\sqrt{\varepsilon_r\mu_r}$ | L2 | $S$, $P$ | $N$, $B$, $A$ |
+| Schwarzschild $r_s$ | L2 | $B$ against $P$ | $N$, $A$ |
+| Basquin | L2 | $B\!\to\!P$ coupling | $N$ as a count only, $A$ dropped |
+| Basquin $+$ endurance limit | L2 | $B\!\to\!P$ and $A$ | — |
+| Scanlan flutter | L2 | $B$, $P$ | $N$, $A$ |
+
+---
+
+## 11. The e-fold family — one equation, nine substrates
+
+$$
+Y = Y_0\,e^{-\tau}, \qquad \tau = \ln\frac{Y_0}{Y}, \qquad \text{consumed} = 1 - e^{-\tau}
+$$
+
+This is Reading B. Each row below is the **same function of the same argument**, not an analogy — the
+e-fold count is additive along a path in every one of them, so stacking slabs and staging a burn are
+one operation.
+
+| substrate | quantity $Y$ | the count $\tau$ | legacy name |
+|---|---|---|---|
+| propulsion | vehicle mass $m$ | $\Delta v / v_e$ | Tsiolkovsky |
+| optics | intensity $I$ | $\alpha\ell$ | Beer–Lambert |
+| nuclear | activity $N$ | $\lambda t$ | radioactive decay |
+| circuits | voltage $V$ | $t/RC$ | RC discharge |
+| chemistry | concentration $c$ | $kt$ | first-order kinetics |
+| acoustics | pressure amplitude | $\alpha x$ | absorption |
+| atmosphere | pressure $p$ | $h/H$ | barometric, scale height |
+| capital | principal | $rt$ | continuous compounding |
+| fatigue | capacity $P$ | $\ln\dfrac{P_0\mathrm{TL}}{B}$ | — (§7.9) |
+
+$$
+\boxed{\;\tau_1 + \tau_2 = \ln\frac{Y_0}{Y_1} + \ln\frac{Y_1}{Y_2} = \ln\frac{Y_0}{Y_2}\;}
+$$
+
+**Exact decade row.** $\tau = \ln 10 \Longrightarrow \text{consumed} = 9/10$ exactly.
+
+| $\tau$ | consumed | remaining |
+|---|---|---|
+| $0$ | $0$ | $1$ |
+| $\ln 2 = 0.6931\ldots$ | $1/2$ exactly | $1/2$ |
+| $1$ | $0.6321\ldots$ | $1/e$ |
+| $\ln 10 = 2.3026\ldots$ | $9/10$ exactly | $1/10$ |
+| $\ln 100$ | $99/100$ exactly | $1/100$ |
+
+---
+
+## 12. The phase reading across substrates
+
+$\tau = B/P$ in every row. One scale, one unit, one set of four boundaries.
+
+| substrate | $\tau$ | Noble $\tau=0$ | Shatter $\tau\ge\mathrm{TL}$ |
+|---|---|---|---|
+| driven structure | $B/(2I\zeta)\cdot\mathrm{TL}$ | no aerodynamic load | flutter onset reached |
+| fatigue | $B\,\mathrm{TL}/\mathrm{UTS}$ | unloaded | static fracture |
+| gravitation | $r_s/r$ family | flat space far field | horizon |
+| optics | $1/n$ | — | vacuum limit |
+| propulsion | $v/c$, or burn depth | unfired | corridor ceiling |
+| thermal | flux against capacity | isothermal, no gradient | phase change forced |
+
+| boundary | value | exact |
+|---|---|---|
+| Noble | $0$ | exact |
+| IVA floor | $0.12047120798593408$ | $0.88\,\mathrm{TL}$ |
+| IVA ceiling / Shatter | $0.136899099984016$ | $\mathrm{TL} = \alpha^{-1}/1001$ |
+
+---
+
+## 13. Quick index of forms
 
 | # | form | where |
 |---|---|---|
@@ -809,10 +1110,18 @@ projection.
 | 16 | $b_0 = S(\mathrm{mr}(S(\mathrm{TL}))) = 1/\sqrt{\mathrm{TL}}$ | the geometric base |
 | 17 | $\tau_{\text{rung}}(n) = b_0^{-n}$, $\eta_n = \mathrm{TL}^n/2$ | the ladder |
 | 18 | $\alpha^{-1} = \mathrm{TL}\cdot 1001 = \Omega_0\cdot 100.1$ | the anchor |
+| 19 | $\frac{d}{dt}(mv) = F$ | Newton — the operator sum empty |
+| 20 | $i\hbar\,\partial_t\psi = \hat H\psi$ | Schrödinger — $F_{\text{ext}} = 0$ |
+| 21 | $E_0 = mc^2$, $\eta = E_k/E_0$ | mass–energy and its companion fraction |
+| 22 | $\mathbf{q} = -k\nabla T$ | Fourier — the $B$ reading, thermal |
+| 23 | $dU = \delta Q - \delta W$ | first law — $F_{\text{ext}}$ not removable |
+| 24 | $\sigma_a = \sigma_f'(2N_f)^b$ | Basquin — $m = 1/|b|$ |
+| 25 | $Y = Y_0 e^{-\tau}$ | the e-fold family, nine substrates |
+| 26 | $r_{\text{match}} = r_s/\tau_A^2$ | matched radius — the mass cancels |
 
 ---
 
-## 11. Formal layer — coordinates and counts
+## 14. Formal layer — coordinates and counts
 
 | coordinate | file | theorems | lines |
 |---|---|---|---|
