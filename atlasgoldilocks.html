@@ -158,7 +158,11 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
     <div class="btn on" id="b-band">◆ CORRIDOR BAND · ON</div>
     <div class="btn on" id="b-edges">◆ HILL EDGES · ON</div>
     <div class="btn on" id="b-names">◆ LABELS · ON</div>
-    <div class="btn" id="b-csv">⬇ EXPORT CSV</div>
+    <div class="btn" id="b-card">⬇ PLANET CARD</div>
+    <div class="btn" id="b-csv">⬇ EXPORT CSV · FIELD</div>
+    <div class="note" style="margin-top:5px">PLANET CARD writes everything about the selected planet
+    with the arithmetic shown, and records the reading, the clock offset and the boundary it was taken
+    under — so two cards of one planet can be set side by side.</div>
   </div>
 
   <div class="sec">
@@ -734,12 +738,248 @@ $('b-csv').onclick=()=>{
     const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=fn; a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),2000); btn.textContent=was; })();
   btn.textContent='⬇ SAVING…'; };
+// ── PLANET CARD : everything about one planet, with the arithmetic shown ──
+function planetCard(){
+  if(sel<0) return null;
+  const p=P[sel], v=p._||live(p), N=x=>x===null||x===undefined?'—':x;
+  const age=p.age!==null?p.age:T0, Lr=dt===0?1:gough(Math.max(0.05,age+dt/1000))/gough(age);
+  const sMean=(v.L/(p.a*p.a))/S_RUN, e=p.e;
+  const sPeri=e!==null?sMean/Math.pow(1-e,2):null, sAph=e!==null?sMean/Math.pow(1+e,2):null;
+  const PHN=k=>k===null?'—':PH[k];
+  const ph=x=>x===null?'—':PHN(phaseOf(TL*x));
+  const L=[];
+  const W=s=>L.push(s);
+  W('# AtlasGoldilocks — '+p.nm);
+  W('');
+  W('**Host** '+p.host+(p.npl>1?' · '+p.npl+'-planet system':' · single planet')+
+    (p.teff?' · '+p.teff+' K':'')+(p.dist?' · '+p.dist.toFixed(2)+' pc':'')+(p.vmag?' · V = '+p.vmag:''));
+  W('**Coordinate** [9,9,3,26](COSM) · **Anchor** Ω₀ = 1.36899099984016 · **TL** = 0.136899099984016');
+  W('**IVA floor** TL_IVA = 0.88 × TL = 0.12047120798593408 · **annulus ratio** √(25/22) = 1.0660035818 exactly');
+  W('');
+  W('## Settings in force');
+  W('');
+  W('| Setting | Value |');
+  W('|---|---|');
+  W('| reading | **'+(peri?'perihelion':'mean flux')+'** |');
+  W('| clock offset Δt | **'+(dt===0?'now':(dt>0?'+':'')+dt.toLocaleString()+' Myr')+'** |');
+  W('| host luminosity factor at that offset | ×'+Lr.toFixed(6)+' |');
+  W('| core–mantle boundary | '+(cmbOv===null?'solved from M and R':'set by hand to '+cmbOv.toFixed(2)+' R')+' |');
+  W('| generated | '+new Date().toISOString()+' |');
+  W('');
+  W('Changing the reading, the clock or the boundary changes the numbers below. Each card records');
+  W('the settings it was taken under, so two cards of the same planet can be compared directly.');
+  W('');
+  W('## What was read from the catalogue');
+  W('');
+  W('NASA Exoplanet Archive, Planetary Systems table, default parameter set. Blank means the row');
+  W('carries no value, and the quantities that need it are left uncomputed rather than assumed.');
+  W('');
+  W('| Field | Value |');
+  W('|---|---|');
+  W('| semi-major axis a | '+(p.a!==null?p.a+' AU':'—')+' |');
+  W('| eccentricity e | '+(e!==null?e:'— not measured')+' |');
+  W('| orbital period | '+(p.per!==null?p.per+' d':'—')+' |');
+  W('| planet mass | '+(p.M!==null?p.M+' M⊕':'—')+' |');
+  W('| planet radius | '+(p.R!==null?p.R+' R⊕':'—')+' |');
+  W('| host effective temperature | '+(p.teff!==null?p.teff+' K':'—')+' |');
+  W('| host mass | '+(p.Ms!==null?p.Ms+' M☉':'—')+' |');
+  W('| host age | '+(p.age!==null?p.age+' Gyr':'—')+' |');
+  W('| distance | '+(p.dist!==null?p.dist+' pc':'—')+' |');
+  W('');
+  if(v.L===null||p.a===null){
+    W('## No placement');
+    W('');
+    W('This row carries no derivable host luminosity or no semi-major axis, so the flux axis cannot');
+    W('be read for it. The row is kept and the reason recorded.');
+  } else {
+  W('## Step 1 — host luminosity');
+  W('');
+  W('> L/L☉ = (R★/R☉)² × (T_eff / 5772 K)⁴');
+  W('');
+  W('**L = '+v.L.toFixed(6)+' L☉**'+(dt!==0?'  (at Δt = '+dt+' Myr; the catalogue epoch value is '+p.L.toFixed(6)+')':''));
+  W('');
+  W('## Step 2 — flux at the planet');
+  W('');
+  W('> S/S⊕ = L / a² = '+v.L.toFixed(6)+' / '+p.a+'² = **'+(v.L/(p.a*p.a)).toFixed(6)+'**');
+  W('');
+  W('## Step 3 — reduced flux and torsion');
+  W('');
+  W('S_runaway = 1.0400 S⊕, the flux at which vapor pressure reaches ambient.');
+  W('');
+  W('> s = S / S_runaway,  τ = TL · s');
+  W('');
+  W('| Reading | s | τ | τ / TL | Phase |');
+  W('|---|---|---|---|---|');
+  W('| mean flux | '+sMean.toFixed(6)+' | '+(TL*sMean).toFixed(6)+' | '+sMean.toFixed(4)+' | **'+ph(sMean)+'** |');
+  if(sPeri!==null) W('| perihelion | '+sPeri.toFixed(6)+' | '+(TL*sPeri).toFixed(6)+' | '+sPeri.toFixed(4)+' | **'+ph(sPeri)+'** |');
+  if(sAph!==null) W('| aphelion | '+sAph.toFixed(6)+' | '+(TL*sAph).toFixed(6)+' | '+sAph.toFixed(4)+' | **'+ph(sAph)+'** |');
+  W('');
+  W('The card is taken at the **'+(peri?'perihelion':'mean flux')+'** reading, so the placement above is **'+PHN(v.ph)+'**.');
+  W('');
+  W('## Step 4 — the annulus');
+  W('');
+  W('> d_in = √(L / S_run),  d_out = d_in × √(25/22)');
+  W('');
+  W('| | |');
+  W('|---|---|');
+  W('| inner edge d_in | **'+v.din.toFixed(6)+' AU** |');
+  W('| outer edge d_out | **'+v.dout.toFixed(6)+' AU** |');
+  W('| width | '+((v.dout-v.din)*AU/1e3).toLocaleString(undefined,{maximumFractionDigits:0})+' km |');
+  W('| ratio d_out/d_in | '+(v.dout/v.din).toFixed(10)+' |');
+  W('| this planet at a = '+p.a+' AU | '+(v.across<0?'**inside the inner edge**':v.across>1?'**outside the outer edge**':'**'+(v.across*100).toFixed(2)+'% across the annulus**')+' |');
+  W('');
+  W('The ratio carries no stellar term, so it is the same number on every star in the catalogue.');
+  W('');
+  W('## Step 5 — does the orbit hold its phase?');
+  W('');
+  if(e===null){
+    W('The archive carries no eccentricity for this row, so the holding criterion is left uncomputed.');
+    W('A circular orbit is not assumed.');
+  } else {
+    const hu=e*sMean/Math.pow(1-e*e,2);
+    W('> swing = 4es/(1 − e²)²,  corridor width = 1 − 0.88 = 0.12,  so  e·s/(1 − e²)² < 3/100');
+    W('');
+    W('| | |');
+    W('|---|---|');
+    W('| e·s/(1 − e²)² | '+hu.toFixed(6)+' |');
+    W('| bound | 0.03 |');
+    W('| **holding utilisation** | **'+(hu/0.03*100).toFixed(1)+'%** |');
+    W('| flux swing | '+(4*e*sMean/Math.pow(1-e*e,2)).toFixed(6)+' = '+(4*e*sMean/Math.pow(1-e*e,2)/0.12*100).toFixed(1)+'% of the corridor width |');
+    W('| verdict | **'+(hu<0.03?'holds — the swing fits inside the corridor':'does not hold — the swing is wider than the corridor')+'** |');
+    W('');
+    W('The utilisation and the swing fraction are one quantity, because the criterion is the swing');
+    W('fitting inside the corridor.');
+  }
+  W('');
+  W('## Step 6 — the margin, and what a perihelion spends');
+  W('');
+  if(sMean>=1){
+    W('s = '+sMean.toFixed(6)+' stands at or past the boil, so there is no margin left to spend.');
+  } else {
+    const e0=e||0, push=sMean/Math.pow(1-e0,2)-sMean, m=1-sMean;
+    W('> margin = 1 − s,  push = s/(1 − e)² − s,  Ũ = push / margin');
+    W('');
+    W('| | |');
+    W('|---|---|');
+    W('| margin 1 − s | '+m.toFixed(6)+' |');
+    W('| perihelion push | '+push.toFixed(6)+(e===null?'  (no eccentricity in the row, so the push reads zero)':'')+' |');
+    W('| **Ũ = push / margin** | **'+(push/m>=10?(push/m*100).toFixed(0):(push/m*100).toFixed(1))+'%** |');
+    W('');
+    W('Earth stands at 85.6% on this quantity.');
+  }
+  W('');
+  W('## Step 7 — the clock');
+  W('');
+  W('> L(t)/L_now = [1 + 0.4(1 − t/T₀)]⁻¹,  T₀ = 4.57 Gyr');
+  W('');
+  W('| Δt | mean s | phase | perihelion s | phase |');
+  W('|---|---|---|---|---|');
+  for(const d of [-2000,-1000,0,1000,2000,4000]){
+    const Lx=p.L*gough(Math.max(0.05,age+d/1000))/gough(age);
+    const sm=(Lx/(p.a*p.a))/S_RUN, sp=e!==null?sm/Math.pow(1-e,2):null;
+    W('| '+(d===0?'**now**':(d>0?'+':'')+d.toLocaleString()+' Myr')+' | '+sm.toFixed(4)+' | '+ph(sm)+
+      ' | '+(sp!==null?sp.toFixed(4):'—')+' | '+(sp!==null?ph(sp):'—')+' |');
+  }
+  W('');
+  W((p.age!==null?'Host age '+p.age+' Gyr, from the archive.':'The archive carries no host age, so T₀ = 4.57 Gyr is used as the reference epoch.'));
+  }
+  W('');
+  W('## Step 8 — the interior');
+  W('');
+  if(p.M===null||p.R===null){
+    W('The archive carries '+(p.M===null&&p.R===null?'neither a mass nor a radius':p.M===null?'no mass':'no radius')+
+      ' for this planet, so no interior is counted. A row without both is kept and the reason recorded.');
+  } else {
+    const Rm=p.R*RE, Mk=p.M*ME, rb=Mk/(4/3*Math.PI*Rm*Rm*Rm);
+    const x3=(rb-RHO_M)/(RHO_C-RHO_M);
+    const g=G*Mk/(Rm*Rm), Hs=287*288/g/1000;
+    W('Core and mantle held at Earth\'s volume-mean densities, 11,800 and 4,400 kg/m³. The');
+    W('core–mantle boundary is the one interior parameter mass and radius constrain.');
+    W('');
+    W('> ρ̄ = M / ((4/3)πR³),  x = ∛[(ρ̄ − 4400)/(11800 − 4400)]');
+    W('> I/MR² = (2/5) · [11800 x⁵ + 4400(1 − x⁵)] / ρ̄');
+    W('');
+    W('| | |');
+    W('|---|---|');
+    W('| mean density ρ̄ | '+rb.toFixed(0)+' kg/m³ |');
+    if(x3<0||x3>1){
+      W('| core fraction | **no real solution** |');
+      W('');
+      W('**Outside the rock-and-iron envelope.** ρ̄ = '+rb.toFixed(0)+' kg/m³ is '+(x3<0?'below the mantle density':'above the core density')+
+        ', so no core fraction between zero and one reproduces this mass at this radius. The planet carries volatiles.');
+      W('');
+      W('| | |');
+      W('|---|---|');
+    } else {
+      const x=cmbOv!==null?cmbOv:Math.cbrt(x3), x5=Math.pow(x,5);
+      const cf=RHO_C*Math.pow(x,3)/rb, imr=0.4*(RHO_C*x5+RHO_M*(1-x5))/rb;
+      W('| core–mantle boundary x | **'+x.toFixed(5)+' R**'+(cmbOv!==null?' (set by hand)':'')+' |');
+      W('| core share of mass | **'+(cf*100).toFixed(1)+'%** |');
+      W('| **I/MR² predicted** | **'+imr.toFixed(4)+'** |');
+    }
+    W('| surface gravity g | '+g.toFixed(3)+' m/s² |');
+    W('| scale height H = R_spec·T/g | '+Hs.toFixed(2)+' km |');
+    W('| IVA band 361.15–373.15 K occupies | '+(Hs*1.2).toFixed(1)+' km of altitude |');
+    W('');
+    W('Two uniform layers put Earth at I/MR² = 0.3421 against the measured 0.3307, so the model term');
+    W('is about 3.4%. Earth\'s scale height on the same arithmetic is 8.42 km.');
+  }
+  W('');
+  const sysp=(BYHOST[p.host]||[]).filter(q=>q.a!==null).sort((a,b)=>a.a-b.a);
+  if(sysp.length>1){
+    W('## Step 9 — the system');
+    W('');
+    W('> τ = TL × 2√3 / Δ,  Δ = (a₂ − a₁)/R_H,  R_H = ∛((m₁+m₂)/3M★)·(a₁+a₂)/2');
+    W('');
+    W('Gladman (1993): two orbits can never cross when Δ > 2√3 ≈ 3.4641, so Δ = 2√3 is τ = TL.');
+    W('');
+    W('| Planet | a (AU) | s | phase |');
+    W('|---|---|---|---|');
+    for(const q of sysp){ const w=q._||live(q);
+      W('| '+(q.i===sel?'**'+q.nm+'**':q.nm)+' | '+q.a.toFixed(5)+' | '+(w.s!==null?w.s.toFixed(4):'—')+' | '+PHN(w.ph)+' |'); }
+    W('');
+    const ed=[];
+    for(let k=1;k<sysp.length;k++){ const a=sysp[k-1],b=sysp[k];
+      if(a.M===null||b.M===null||a.Ms===null) continue;
+      const rh=Math.cbrt((a.M*ME+b.M*ME)/(3*a.Ms*1.98847e30))*(a.a+b.a)/2;
+      const D=(b.a-a.a)/rh, t=TL*HILL_CRIT/D;
+      ed.push('| '+a.nm+' – '+b.nm+' | '+D.toFixed(2)+' | '+t.toFixed(6)+' | '+(t/TL).toFixed(4)+' | **'+PHN(phaseOf(t))+'** |'); }
+    if(ed.length){ W('| Neighboring pair | Δ (R_H) | τ | τ/TL | Phase |'); W('|---|---|---|---|---|'); ed.forEach(W); }
+    else W('No neighboring pair in this system carries both planet masses and a host mass, so no spacing torsion is computed.');
+    W('');
+  }
+  W('---');
+  W('');
+  W('AtlasGoldilocks™ by AxiomForge™ · Applied Identity Physics™ · [9,9,3,26](COSM)');
+  W('HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska');
+  W('Parent reduction DOI 10.5281/zenodo.24127910 · anchor DOI 10.5281/zenodo.18719748 · ORCID 0009-0005-5313-7443');
+  W('109 theorems + master · 1,038 lines · 0 sorry · 0 custom axioms · Lean 4 v4.31.0, Mathlib');
+  W('');
+  W('Data: NASA Exoplanet Archive, Planetary Systems table, default parameter set.');
+  W('Gough (1981) luminosity track · Gladman (1993) Hill criterion · Stefan–Boltzmann law.');
+  W('Nothing on this card is fitted. Every number follows from the catalogue row and the constants above.');
+  return {text:L.join('\n'), name:'atlasgoldilocks_'+p.nm.replace(/[^A-Za-z0-9]+/g,'_')+
+    '_'+(peri?'perihelion':'mean')+'_dt'+dt+'.md'};
+}
+$('b-card').onclick=()=>{
+  const c=planetCard();
+  if(!c){ $('b-card').textContent='⬇ SELECT A PLANET FIRST';
+    setTimeout(()=>$('b-card').textContent='⬇ PLANET CARD',1600); return; }
+  const btn=$('b-card'); btn.textContent='⬇ SAVING…';
+  (async()=>{ try{ const d=await claude.use('downloads');
+      if(d){ await d.save({filename:c.name,data:c.text}); btn.textContent='⬇ PLANET CARD'; return; } }catch(err){}
+    const b=new Blob([c.text],{type:'text/markdown'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=c.name; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000); btn.textContent='⬇ PLANET CARD'; })();
+};
+
 addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT') return;
   const k=e.key.toLowerCase();
   if(k==='f') document.querySelector('.tab[data-v=field]').click();
   if(k==='s') document.querySelector('.tab[data-v=system]').click();
   if(k==='w') document.querySelector('.tab[data-v=walk]').click();
-  if(k==='x'){ flat=!flat; draw(); } });
+  if(k==='x'){ flat=!flat; draw(); }
+  if(k==='c') $('b-card').click(); });
 
 // ── boot ────────────────────────────────────────────────────────────
 (function(j){
