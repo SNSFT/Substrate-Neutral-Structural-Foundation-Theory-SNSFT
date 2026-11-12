@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToneForms™ · Type a Constant, Walk Inside the Solid It Builds, Print It · by AxiomForge™</title>
+<meta name="description" content="Type any constant and watch it build a solid you can walk inside, peel apart layer by layer, and send to a 3D printer. Stepped shells, Gyroid, Schwarz P and Diamond, run on the Sovereign Anchor Constant and the Torsion Limit, with the arm counts read straight off the continued fraction. Free, no install, runs on a phone.">
+<meta name="keywords" content="triply periodic minimal surface, gyroid generator, Schwarz P surface, diamond surface, nodal surface, periodic nodal surface, continued fraction spiral, phyllotaxis 3D, golden angle spiral, STL export math surface, gyroid STL, 3D printable minimal surface, standing wave lattice, ToneForms, AxiomForge, TL-cell, Torsion Limit, Sovereign Anchor Constant, Applied Identity Physics, Identity Physics">
+<meta name="author" content="HIGHTISTIC (Russell Vernon Trent III)">
+<meta property="og:title" content="ToneForms™: type a constant, walk inside the solid it builds">
+<meta property="og:description" content="Type any constant and watch it build a solid you can walk inside, peel apart layer by layer, and send to a 3D printer. Stepped shells, Gyroid, Schwarz P and Diamond, run on the Sovereign Anchor Constant and the Torsion Limit. Free, no install, runs on a phone.">
+<meta property="og:url" content="https://uuia.app/toneforms">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://uuia.app/toneforms">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"ToneForms by AxiomForge","alternateName":"ToneForms™ by AxiomForge™","url":"https://uuia.app/toneforms","applicationCategory":"EducationalApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Type any constant and watch it build a solid you can walk inside, peel apart layer by layer, and send to a 3D printer. Stepped shells, Gyroid, Schwarz P and Diamond, run on the Sovereign Anchor Constant and the Torsion Limit, with the arm counts read straight off the continued fraction.","author":{"@type":"Person","name":"Russell Vernon Trent III","alternateName":"HIGHTISTIC","sameAs":["https://orcid.org/0009-0005-5313-7443","https://uuia.app/sovereigncv"]},"publisher":{"@type":"Organization","name":"SNSFT Foundation"},"isPartOf":{"@type":"CreativeWork","name":"Applied Identity Physics"}}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--anchor:#00ffc8;--locked:#7b4fff;--gold:#f0c060;--shatter:#ff3a3a;--bg:#050508;--surface:#0d0d14;--border:rgba(0,255,200,0.12);--text:#e8e8f0;--dim:rgba(232,232,240,0.55);--faint:rgba(232,232,240,0.28)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',ui-monospace,monospace;overflow:hidden}
+#app{display:grid;grid-template-columns:290px 1fr 340px;grid-template-rows:56px 1fr;height:100vh}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.96);gap:14px}
+.h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem}
+.h-title em{font-style:normal;color:var(--anchor)}
+.h-title i{font-style:normal;font-size:.66rem;color:var(--dim);font-weight:700}
+.h-sub{font-size:.52rem;color:var(--dim);margin-top:2px}
+.h-right{font-size:.48rem;color:var(--faint);text-align:right;line-height:1.6}
+.mode{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
+.mode button{font-family:'Syne',sans-serif;font-weight:800;font-size:.58rem;padding:.42rem .9rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.mode button.on{background:var(--anchor);color:#000}
+#left,#right{overflow-y:auto;padding:10px;background:rgba(13,13,20,.9);display:flex;flex-direction:column;gap:9px}
+#left{border-right:1px solid var(--border)}#right{border-left:1px solid var(--border)}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:9px}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.6rem;color:var(--anchor);letter-spacing:.08em;margin-bottom:7px;display:flex;justify-content:space-between}
+.st small{font-family:'Space Mono',monospace;font-weight:400;color:var(--faint);letter-spacing:0}
+.seg{display:flex;gap:4px;margin-bottom:5px;flex-wrap:wrap}
+/* flex:1 1 auto keeps the automatic min-content floor, so a label never
+   outgrows its box — the row wraps instead */
+.btn{flex:1 1 auto;font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:.5rem .4rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;cursor:pointer;letter-spacing:.03em;white-space:nowrap;text-align:center}
+.btn:hover{color:var(--text)}
+.btn.on{border-color:var(--anchor);color:var(--anchor);background:rgba(0,255,200,.07)}
+.lbl{display:flex;justify-content:space-between;font-size:.52rem;color:var(--dim);margin:6px 0 2px;gap:8px}
+.lbl b{color:var(--anchor);font-weight:400;text-align:right}
+input[type=range]{width:100%;accent-color:#00ffc8}
+input[type=text],input[type=number]{width:100%;font-family:'Space Mono',monospace;font-size:.58rem;background:#0a0a10;color:var(--text);border:1px solid var(--border);border-radius:4px;padding:6px}
+input[type=text]:focus,input[type=number]:focus{outline:none;border-color:var(--anchor)}
+.ck{display:flex;align-items:center;gap:7px;font-size:.52rem;color:var(--dim);cursor:pointer;margin-top:7px}
+.ck input{accent-color:#00ffc8}
+.note{font-size:.52rem;color:var(--dim);line-height:1.65}
+.note b{color:var(--text);font-weight:400}
+.note p+p{margin-top:6px}
+.kv{display:flex;justify-content:space-between;font-size:.54rem;padding:4px 0;border-bottom:1px solid rgba(0,255,200,.06);gap:8px}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--dim);flex-shrink:0}
+.kv span:last-child{text-align:right;word-break:break-word}
+.ok{color:var(--anchor)}
+table{width:100%;border-collapse:collapse;font-size:.5rem}
+th{color:var(--dim);font-weight:400;text-align:right;padding:3px 2px;border-bottom:1px solid var(--border)}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;padding:3px 2px;border-bottom:1px solid rgba(0,255,200,.05)}
+#view{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#0b0f1a 0%,#000 70%);touch-action:none}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab;outline:none}
+#gl.grabbing{cursor:grabbing}#gl.walk{cursor:crosshair}
+body.lightbg #view{background:radial-gradient(ellipse at 50% 45%,#fbfaf5 0%,#ece9df 70%)}
+#legend{position:absolute;top:10px;left:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:.48rem;pointer-events:none}
+#legend .lb{height:7px;border-radius:3px;margin:4px 0;width:220px}
+#legend .rw{display:flex;justify-content:space-between;width:220px;color:var(--dim)}
+#badge{position:absolute;top:10px;right:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 10px;text-align:right;pointer-events:none}
+#badge .ph{font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;color:var(--anchor)}
+#badge small{display:block;font-size:.48rem;color:var(--dim);margin-top:2px}
+#caption{position:absolute;left:12px;right:12px;bottom:10px;font-size:.58rem;line-height:1.65;background:rgba(5,5,8,.88);border:1px solid var(--border);border-radius:8px;padding:8px 12px;pointer-events:none}
+#caption b{color:var(--anchor);font-weight:400}
+#probe{position:absolute;display:none;background:rgba(5,5,8,.92);border:1px solid var(--gold);border-radius:6px;padding:6px 9px;font-size:.5rem;line-height:1.6;pointer-events:none;white-space:nowrap}
+#busy{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-weight:800;color:var(--anchor);font-size:.85rem;display:none;background:rgba(5,5,8,.9);padding:10px 16px;border:1px solid var(--border);border-radius:8px}
+ul.src{padding-left:14px;font-size:.52rem;color:var(--dim);line-height:1.6}
+ul.src li{margin:3px 0}
+.r-only{display:none}body.res .r-only{display:block}body.res .l-only{display:none}
+.foot{font-size:.44rem;color:var(--faint);line-height:1.6;text-align:center;padding:4px 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media (max-width:900px){
+  html,body{overflow:auto;height:auto}
+  #app{grid-template-columns:1fr;grid-template-rows:auto 66vh auto auto;height:auto}
+  #hdr{flex-wrap:wrap;padding:8px 12px}.h-right,.h-sub{display:none}
+  #view{grid-row:2}#left{grid-row:3}#right{grid-row:4}#left,#right{border:none;overflow:visible}
+  #legend,#caption{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="hdr">
+  <div>
+    <div class="h-title"><em>Tone</em>Forms<span class="tm">™</span> <i>by AxiomForge<span class="tm">™</span> · Applied Identity Physics<span class="tm">™</span></i></div>
+    <div class="h-sub">Type a constant, walk inside the solid it builds, print it · stepped shells, Gyroid, Schwarz P, Diamond · Ω₀ = 1.36899099984016 · TL = 0.136899099984016</div>
+  </div>
+  <div class="mode"><button id="m-l" class="on">LEARNER</button><button id="m-r">RESEARCHER</button></div>
+  <div class="h-right">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation<br>uuia.app/toneforms</div>
+</div>
+
+<div id="left">
+  <div class="sec">
+    <div class="st">FORM</div>
+    <div class="seg" id="form"><button class="btn on" data-v="spiral">STEPPED SHELLS</button><button class="btn" data-v="gyroid">GYROID</button></div>
+    <div class="seg" id="form2"><button class="btn" data-v="schwarz">SCHWARZ P</button><button class="btn" data-v="diamond">DIAMOND</button></div>
+    <div class="note" id="form-note" style="margin-top:4px"></div>
+    <div class="note l-only"><p>Every form here is made of tiny cubes called <b>TL-cells</b>, the same cells that fill a planet in IMatter. A cell lights up when the tone's wave passes through zero at that spot, so what you see is the shape the tone draws in a solid ball.</p></div>
+    <div class="note r-only"><p>Each form is a scalar field sampled on a cubic grid clipped to the unit ball. A TL-cell carries its own field value and its own radius, so the level, the band and the peel are read per frame off the stored cells rather than rebuilt. Stepped shells carry the angular residue as the cell value; the three surfaces carry the normalized nodal function.</p></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">ELEMENT <small id="el-count"></small></div>
+    <div class="seg" id="elgrp">
+      <button class="btn on" data-v="el">ELEMENTS</button><button class="btn on" data-v="ere">EREs</button>
+      <button class="btn on" data-v="sm">PARTICLES</button><button class="btn on" data-v="sp">S-PART</button>
+    </div>
+    <select id="elsel" style="width:100%;background:#0a0a10;border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:9px;padding:5px 6px;outline:none;margin-top:3px"></select>
+    <div class="lbl"><span>Phase</span><b id="el-ph">—</b></div>
+    <div class="lbl"><span>Sits off the node by</span><b id="el-lv">—</b></div>
+    <div class="seg" style="margin-top:6px">
+      <button class="btn" id="el-push">SEND READING &#8594; TONE</button>
+      <button class="btn" id="el-clear">CLEAR</button>
+    </div>
+    <div class="seg" id="elread">
+      <button class="btn on" data-v="tau" title="Torsion ratio B/P — the impedance reading">&#964; = B/P</button>
+      <button class="btn" data-v="P" title="Pattern — structural density">P</button>
+      <button class="btn" data-v="B" title="Behavior — bond capacity">B</button>
+      <button class="btn" data-v="A" title="Adaptation — response ceiling">A</button>
+    </div>
+    <div class="note l-only"><p>The entry is the <b>substrate</b> and the tone is what you drive it with, so they are two separate dials. Pick a substrate and it stays put while you sweep the tone &#8212; that is how you see the same material resonate across the range, or the same tone run through different materials.</p>
+    <p>A Noble entry reads &#964; = 0 and sits exactly on the surface, which is the clean unbroken shape. The more torsion a substrate carries, the further off that surface it sits, until the shape opens into separate pieces. Use SEND READING &#8594; TONE when you want the substrate to drive the tone as well.</p></div>
+    <div class="note r-only"><p>&#964; = B/P sets the level, which is the offset from the nodal surface, as 0.46&#183;tanh(&#964;/TL) &#8212; &#964; = 0 lands on the node exactly, the Shatter boundary at TL = 0.136899099984016 lands at 0.35, and the whole &#964; range stays inside the stored band. Level sets of a triply periodic surface stay connected near the node and pinch into separate components further out, so the phase and the topology of the figure move together.</p>
+    <p>The tone is independent and sets the spacing, so substrate and drive sweep separately. On the stepped shells the level picks a phase band of the angular residue, so narrow the band to see it bite. P, B and A are the alternate readings SEND READING &#8594; TONE will push.</p></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">TONE <small id="tone-k"></small></div>
+    <input type="text" id="tone" value="1.36899099984016" spellcheck="false" aria-label="Tone">
+    <div class="seg" style="margin-top:5px" id="tpre"><button class="btn on" data-v="1.36899099984016">Ω₀</button><button class="btn" data-v="0.136899099984016">TL</button><button class="btn" data-v="0.12047120798593408">TL·IVA</button></div>
+    <div class="seg" id="tpre2"><button class="btn" data-v="1.04">S_run</button><button class="btn" data-v="0.88">FLOOR</button><button class="btn" data-v="137.50776405003785">GOLDEN φ</button></div>
+    <div class="lbl"><span>Reading</span><b id="tone-v">—</b></div>
+    <div class="note l-only">Type any positive number and press Enter. The tone is the one dial everything else hangs off: on the shells it is the turn taken between one point and the next, and on the surfaces it is how closely the waves are packed.</div>
+    <div class="note r-only">Stepped shells use the tone directly as the angular step in degrees. The surfaces set spacing as π·(1.15 Ω₀)/tone, clamped to [0.2π, 14π], so Ω₀ lands the reference spacing and a tone ten times finer gives ten times the spatial frequency, which is a thousand times the cells in a volume.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">RESOLUTION</div>
+    <div class="lbl"><span>Grid</span><b id="n-v">52</b></div>
+    <input type="range" id="dens" min="18" max="112" value="52">
+    <div class="note" id="n-note"></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">LEVEL AND BAND</div>
+    <div class="lbl"><span>Level</span><b id="lv-v">0.00</b></div>
+    <input type="range" id="level" min="-100" max="100" value="0">
+    <div class="lbl"><span>Band</span><b id="bd-v">±0.06</b></div>
+    <input type="range" id="band" min="1" max="100" value="100">
+    <label class="ck"><input type="checkbox" id="res"> RESONATE · sweep the level live</label>
+    <div class="note l-only">The surface sits where the wave crosses zero. Slide the level to move off zero and you walk through the whole family of shapes the tone makes; turn on RESONATE and it breathes through them on its own, which is the lattice ringing.</div>
+    <div class="note r-only">Cells are stored across a band of ±0.46 in normalized field value, so scrubbing the level selects a level set of the same field without a rebuild. RESONATE drives the level sinusoidally inside the stored band at a 2.6 s period. On stepped shells the level selects a phase band of the angular residue, which pulls single arms out of the figure.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">LAYERS</div>
+    <div class="lbl"><span>Peel from outside</span><b id="pl-v">r ≤ 1.00</b></div>
+    <input type="range" id="peel" min="2" max="100" value="100">
+    <div class="lbl"><span>Open the core</span><b id="cr-v">r ≥ 0.00</b></div>
+    <input type="range" id="core" min="0" max="98" value="0">
+    <div class="note l-only">Peel the form: slide the first one down to strip the outside away, and bring the second one up to hollow out the middle. Put them close together and you are looking at one thin shell on its own.</div>
+    <div class="note r-only">Both are radial clips on the stored cell radius, so a narrow window between them isolates a spherical shell and shows how the structure resolves at that radius alone.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">VIEW</div>
+    <div class="seg" id="camm"><button class="btn on" data-v="orbit">ORBIT CAMERA</button><button class="btn" data-v="walk">WALK INSIDE</button></div>
+    <div class="seg" id="vpre"><button class="btn" data-v="top">TOP DOWN</button><button class="btn" data-v="front">FRONT</button><button class="btn" data-v="side">SIDE</button><button class="btn" data-v="free">RESET</button></div>
+    <div class="seg"><button class="btn on" id="rot">AUTO-ROTATE</button></div>
+    <div class="lbl"><span>Distance from center</span><b id="z-v">2.00</b></div>
+    <input type="range" id="zoom" min="4" max="600" value="200">
+    <label class="ck"><input type="checkbox" id="inv"> Invert drag</label>
+    <div class="note l-only">ORBIT: drag to turn, scroll to move in, all the way inside if you like. WALK INSIDE: drag to look around, scroll or W/S to move forward and back, A/D to slide sideways, Q/E down and up. TOP DOWN on the stepped shells gives you the flat rosette, and with AUTO-ROTATE on it spins in place.</div>
+    <div class="note r-only">Orbit camera: two angles and a distance, always looking at the origin. Walk camera: free position with yaw and pitch, world +y up, near plane 0.02, 60° vertical field of view. Pitch reaches ±π/2 exactly, so TOP DOWN is a true polar view. Keys: W/A/S/D/Q/E and the arrow keys move, R resets.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">COLOR</div>
+    <div class="seg" id="col"><button class="btn on" data-v="tone">TONE</button><button class="btn" data-v="level">LEVEL</button><button class="btn" data-v="shell">SHELL</button><button class="btn" data-v="depth">DEPTH</button></div>
+    <label class="ck"><input type="checkbox" id="light"> Light background for printing</label>
+  </div>
+
+  <div class="sec">
+    <div class="st">EXPORT</div>
+    <div class="seg"><button class="btn" id="x-png">VIEW PNG</button><button class="btn" id="x-stl">MESH STL</button><button class="btn" id="x-obj">POINTS OBJ</button></div>
+    <div class="seg"><button class="btn" id="x-json">SAVE JSON</button><button class="btn" id="x-load">LOAD JSON</button><button class="btn" id="x-link">SHARE LINK</button></div>
+    <input type="file" id="loadFile" accept=".json,application/json" style="display:none">
+    <div class="lbl"><span>PNG scale</span><b id="px-v">2×</b></div>
+    <input type="range" id="pxMul" min="1" max="4" value="2">
+    <div class="note" id="io-note" style="margin-top:5px"></div>
+    <div class="note r-only" style="margin-top:5px">STL writes one cube per lit cell at the current cell edge, binary, thinned to 45,000 cubes so the file stays openable; that mesh drops straight into IMatter as TL-cells. OBJ writes the lit cells as vertices and point elements. JSON and the share link carry the full state, so a link reopens the exact form.</div>
+  </div>
+</div>
+
+<div id="view">
+  <canvas id="gl"></canvas>
+  <div id="legend"><div id="lg-t">tone</div><div class="lb" id="lg-b"></div><div class="rw" id="lg-r"></div></div>
+  <div id="badge"><div class="ph" id="b-m">—</div><small id="b-s"></small><small id="fps" style="font-family:Syne,sans-serif;font-weight:800;font-size:.7rem">— fps</small></div>
+  <div id="caption"></div>
+  <div id="probe"></div>
+  <div id="busy">BUILDING CELLS…</div>
+</div>
+
+<div id="right">
+  <div class="sec">
+    <div class="st">READING</div>
+    <div class="kv"><span>Form</span><span id="k-f">—</span></div>
+    <div class="kv"><span>Tone</span><span id="k-t">—</span></div>
+    <div class="kv"><span>Tone / full turn</span><span id="k-q">—</span></div>
+    <div class="kv"><span>Continued fraction</span><span id="k-c">—</span></div>
+    <div class="kv"><span>Arm counts</span><span id="k-a">—</span></div>
+    <div class="kv"><span id="k-sl">Spacing</span><span id="k-s">—</span></div>
+    <div class="kv"><span>TL-cells stored</span><span id="k-n">—</span></div>
+    <div class="kv"><span>TL-cells lit</span><span id="k-l">—</span></div>
+    <div class="kv" id="kv-el" style="display:none"><span>Entry</span><span id="k-el">—</span></div>
+    <div class="kv" id="kv-pnba" style="display:none"><span>P · N · B · A</span><span id="k-pnba">—</span></div>
+    <div class="kv" id="kv-tau" style="display:none"><span>τ = B/P</span><span id="k-tau">—</span></div>
+    <div class="note l-only" style="margin-top:6px">The arm counts are the numbers of arms the figure can show. They are not chosen: they fall out of the tone by the same arithmetic that finds the best simple fraction for any number.</div>
+    <div class="note r-only" style="margin-top:6px">Arm counts are the denominators of the convergents of the continued fraction of tone/360. A figure resolves into q arms when q is a convergent denominator, because q steps then land within one residue of a whole number of turns.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">NEAR-CLOSURE <small>how far each arm step misses a full turn</small></div>
+    <table><thead><tr><th>Arms q</th><th>q · tone</th><th>Turns</th><th>Drift</th></tr></thead><tbody id="conv"></tbody></table>
+    <div class="note l-only" style="margin-top:5px">Take q steps and you almost get back where you started. The drift is how far you miss by. A small drift means a tight figure; two arm counts next to each other, like 262 and 263, means the tone sits between two closures and fills in evenly instead of picking a few arms.</div>
+    <div class="note r-only" style="margin-top:5px">Drift is q·tone reduced to the nearest multiple of 360°, signed. A negative drift winds the arms one way and a positive drift the other; the magnitude sets the pitch of the arm as it climbs in polar angle, so the arms read as logarithmic spirals rather than straight rays.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">CELL</div>
+    <div class="kv"><span>Pointer</span><span id="p-x">hover the form</span></div>
+    <div class="kv"><span>Field value</span><span id="p-v">—</span></div>
+    <div class="kv"><span>Radius</span><span id="p-r">—</span></div>
+    <div class="kv"><span>Distance from level</span><span id="p-d">—</span></div>
+    <div class="note" style="margin-top:5px">Every cell carries its own value and its own radius. Hover any one of them to read what it holds.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">BUILD</div>
+    <div class="kv"><span>Grid</span><span id="k-g">—</span></div>
+    <div class="kv"><span>TL-cell edge</span><span id="k-h">—</span></div>
+    <div class="kv"><span>Periods across</span><span id="k-p">—</span></div>
+    <div class="kv"><span>Samples per period</span><span id="k-sp">—</span></div>
+    <div class="note r-only" style="margin-top:5px">Six samples per period is the floor for a nodal set to read cleanly. Below that the reading says so and the resolution slider is the fix; the stored cells and the arithmetic are unchanged either way.</div>
+    <div class="note r-only" style="margin-top:5px">The surface spacing tops out at 14 π, which the grid can still sample, so a tone below τ = 0.112453 reads at that ceiling — Noble and most of Locked share one surface picture. The stepped shells take the tone directly as degrees with no ceiling, so that form separates the whole τ range and is the one to read the low end on.</div>
+  </div>
+
+  <div class="sec r-only">
+    <div class="st">BUILT FROM</div>
+    <ul class="src">
+      <li>Schwarz (1890), <i>Gesammelte Mathematische Abhandlungen</i>: the P and D triply periodic minimal surfaces.</li>
+      <li>Schoen (1970), "Infinite Periodic Minimal Surfaces Without Self-Intersections," NASA Technical Note D-5541: the gyroid.</li>
+      <li>von Schnering &amp; Nesper (1991), "Nodal surfaces of Fourier series: fundamental invariants of structured matter," <i>Zeitschrift für Physik B Condensed Matter</i> 83: periodic nodal surfaces generated from the characteristic structure factors S(hkl) of a space group.</li>
+      <li>von Schnering &amp; Nesper (1987), "How Nature Adapts Chemical Structures to Curved Surfaces," <i>Angewandte Chemie International Edition</i> 26: the surfaces as inner surfaces of crystalline matter.</li>
+      <li>Nesper &amp; Grin (2011), "Periodic Space Partitioners (PSP) and their relations to crystal chemistry," <i>Zeitschrift für Kristallographie</i> 226: thirty years of nodal, minimal and zero-potential surfaces together.</li>
+      <li>Khinchin (1964), <i>Continued Fractions</i>: convergents as the best rational approximations, which is where the arm counts come from.</li>
+      <li>Identity Physics Corpus on the Sovereign Anchor Constant and the Torsion Limit (DOI base 10.5281/zenodo.18719748).</li>
+    </ul>
+  </div>
+  <div class="foot">ToneForms™ by AxiomForge™ · Applied Identity Physics™ · SNSFT Foundation<br>Ω₀ = 1.36899099984016 · TL = 0.136899099984016 · HIGHTISTIC (Russell Vernon Trent III)</div>
+</div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// TONEFORMS CORE (no UI): constants, form pool, cell fill
+// a new form is a POOL entry; the engine below never names one
+// ════════════════════════════════════════════════════════════
+const ToneFormsCore=(()=>{
+  const K={OMEGA0:1.36899099984016,TL:0.136899099984016,TL_IVA:0.12047120798593408,S_RUN:1.04,
+           FLOOR:0.88,PHI_DEG:137.50776405003785,
+           BASE:1.36899099984016*1.15,CELLCAP:240000,DRAWCAP:110000,STORE:0.46,
+           NEAR:0.02,FOV:60*Math.PI/180,PMAX:Math.PI/2,STRIDE:5};
+  const POOL={
+    spiral:{name:'Stepped shells',kind:'step',vmax:0.5,shells:22,band:100,
+      eq:'nested shells, each stepped by the tone',
+      blurb:'Points march around nested shells, turning by the tone each time.'},
+    gyroid:{name:'Gyroid',kind:'field',vmax:1.5,band:6,
+      eq:'sin x cos y + sin y cos z + sin z cos x = 0',
+      blurb:'The gyroid: one surface, two channels, no straight lines anywhere in it.',
+      f:(x,y,z)=>Math.sin(x)*Math.cos(y)+Math.sin(y)*Math.cos(z)+Math.sin(z)*Math.cos(x)},
+    schwarz:{name:'Schwarz P',kind:'field',vmax:3.0,band:6,
+      eq:'cos x + cos y + cos z = 0',
+      blurb:'Schwarz P: the simplest of them, a lattice of round openings on every face.',
+      f:(x,y,z)=>Math.cos(x)+Math.cos(y)+Math.cos(z)},
+    diamond:{name:'Diamond',kind:'field',vmax:2.0,band:6,
+      eq:'four-term diamond surface = 0',
+      blurb:'Schwarz D: each of its two channels traces the diamond lattice itself.',
+      f:(x,y,z)=>{const sx=Math.sin(x),sy=Math.sin(y),sz=Math.sin(z),cx=Math.cos(x),cy=Math.cos(y),cz=Math.cos(z);
+        return sx*sy*sz+sx*cy*cz+cx*sy*cz+cx*cy*sz;}}
+  };
+  const clamp=(v,a,b)=>v<a?a:(v>b?b:v);
+  const C={K,POOL,clamp};
+  /* GAMCollider corpus [9,9,2,3] — PNBA per entry: sym, name, P, N, B, A */
+  C.CORPUS={
+    /* periodic elements */
+    el:[
+      ['H','Hydrogen',1.0,2,1,13.6],['He','Helium',1.7,2,0,24.59],['Li','Lithium',1.3,2,1,5.39],
+      ['Be','Beryllium',1.95,4,2,9.32],['B','Boron',2.6,4,3,8.3],['C','Carbon',3.25,4,4,11.26],
+      ['N','Nitrogen',3.9,4,3,14.53],['O','Oxygen',4.55,4,2,13.62],['F','Fluorine',5.2,4,1,17.42],
+      ['Ne','Neon',5.85,4,0,21.56],['Na','Sodium',2.2,6,1,5.14],['Mg','Magnesium',2.85,6,2,7.65],
+      ['Al','Aluminum',3.5,6,3,5.99],['Si','Silicon',4.15,6,4,8.15],['P','Phosphorus',4.8,6,3,10.49],
+      ['S','Sulfur',5.45,6,2,10.36],['Cl','Chlorine',6.1,6,1,12.97],['Ar','Argon',6.75,6,0,15.76],
+      ['K','Potassium',2.2,8,1,4.34],['Ca','Calcium',2.85,8,2,6.11],['Sc','Scandium',3.0,8,3,6.56],
+      ['Ti','Titanium',3.15,8,4,6.83],['V','Vanadium',3.3,8,5,6.75],['Cr','Chromium',3.45,8,6,6.77],
+      ['Mn','Manganese',3.6,8,5,7.43],['Fe','Iron',3.75,8,4,7.9],['Co','Cobalt',3.9,8,3,7.88],
+      ['Ni','Nickel',4.05,8,2,7.64],['Cu','Copper',4.2,8,1,7.73],['Zn','Zinc',4.35,8,2,9.39],
+      ['Ga','Gallium',5.0,8,3,6.0],['Ge','Germanium',5.65,8,4,7.9],['As','Arsenic',6.3,8,3,9.81],
+      ['Se','Selenium',6.95,8,2,9.75],['Br','Bromine',7.6,8,1,11.81],['Kr','Krypton',8.25,8,0,14.0],
+      ['Rb','Rubidium',2.2,10,1,4.18],['Sr','Strontium',2.85,10,2,5.69],['Y','Yttrium',3.0,10,3,6.22],
+      ['Zr','Zirconium',3.15,10,4,6.63],['Nb','Niobium',3.3,10,5,6.76],['Mo','Molybdenum',3.45,10,6,7.09],
+      ['Tc','Technetium',3.6,10,5,7.28],['Ru','Ruthenium',3.75,10,4,7.36],['Rh','Rhodium',3.9,10,3,7.46],
+      ['Pd','Palladium',4.05,10,0,8.34],['Ag','Silver',4.2,10,1,7.58],['Cd','Cadmium',4.35,10,2,8.99],
+      ['In','Indium',5.0,10,3,5.79],['Sn','Tin',5.65,10,4,7.34],['Sb','Antimony',6.3,10,3,8.61],
+      ['Te','Tellurium',6.95,10,2,9.01],['I','Iodine',7.6,10,1,10.45],['Xe','Xenon',8.25,10,0,12.13],
+      ['Cs','Cesium',2.2,12,1,3.89],['Ba','Barium',2.85,12,2,5.21],['La','Lanthanum',3.0,12,3,5.58],
+      ['Ce','Cerium',3.05,12,4,5.54],['Pr','Praseodymium',3.1,12,5,5.47],['Nd','Neodymium',3.15,12,6,5.53],
+      ['Pm','Promethium',3.2,12,5,5.58],['Sm','Samarium',3.25,12,6,5.64],['Eu','Europium',3.3,12,7,5.67],
+      ['Gd','Gadolinium',3.35,12,8,6.15],['Tb','Terbium',3.4,12,9,5.86],['Dy','Dysprosium',3.45,12,10,5.94],
+      ['Ho','Holmium',3.5,12,11,6.02],['Er','Erbium',3.55,12,12,6.11],['Tm','Thulium',3.6,12,13,6.18],
+      ['Yb','Ytterbium',3.65,12,14,6.25],['Lu','Lutetium',3.7,12,3,5.43],['Hf','Hafnium',3.85,12,4,6.83],
+      ['Ta','Tantalum',4.0,12,5,7.55],['W','Tungsten',4.15,12,6,7.86],['Re','Rhenium',4.3,12,5,7.83],
+      ['Os','Osmium',4.45,12,4,8.44],['Ir','Iridium',4.6,12,3,8.97],['Pt','Platinum',4.75,12,2,8.96],
+      ['Au','Gold',4.9,12,1,9.23],['Hg','Mercury',5.05,12,2,10.44],['Tl','Thallium',5.7,12,3,6.11],
+      ['Pb','Lead',6.35,12,4,7.42],['Bi','Bismuth',7.0,12,3,7.29],['Po','Polonium',7.65,12,2,8.42],
+      ['At','Astatine',8.3,12,1,9.5],['Rn','Radon',8.95,12,0,10.75],['Fr','Francium',2.2,14,1,4.07],
+      ['Ra','Radium',2.85,14,2,5.28],['Ac','Actinium',3.0,14,3,5.17],['Th','Thorium',3.05,14,4,6.31],
+      ['Pa','Protactinium',3.1,14,5,5.89],['U','Uranium',3.15,14,6,6.19],['Np','Neptunium',3.2,14,5,6.27],
+      ['Pu','Plutonium',3.25,14,6,6.03],['Am','Americium',3.3,14,7,5.97],['Cm','Curium',3.35,14,8,5.99],
+      ['Bk','Berkelium',3.4,14,9,6.2],['Cf','Californium',3.45,14,10,6.28],
+      ['Es','Einsteinium',3.5,14,11,6.37],['Fm','Fermium',3.55,14,12,6.5],['Md','Mendelevium',3.6,14,13,6.58],
+      ['No','Nobelium',3.65,14,14,6.65],['Lr','Lawrencium',3.7,14,3,4.87],
+      ['Rf','Rutherfordium',3.85,14,4,6.01],['Db','Dubnium',4.0,14,5,6.8],['Sg','Seaborgium',4.15,14,6,7.8],
+      ['Bh','Bohrium',4.3,14,5,7.7],['Hs','Hassium',4.45,14,4,7.6],['Mt','Meitnerium',4.6,14,3,7.7],
+      ['Ds','Darmstadtium',4.75,14,2,9.6],['Rg','Roentgenium',4.9,14,1,10.6],
+      ['Cn','Copernicium',5.05,14,2,11.97],['Nh','Nihonium',5.7,14,3,7.31],['Fl','Flerovium',6.35,14,4,8.0],
+      ['Mc','Moscovium',7.0,14,3,7.5],['Lv','Livermorium',7.65,14,2,8.0],['Ts','Tennessine',8.3,14,1,7.7],
+      ['Og','Oganesson',8.95,14,0,8.8]
+    ],
+    /* emergent resonant elements */
+    ere:[
+      ['Sv','Soverium',0.98778701,2,0,0],['Lm','Lumium',0.98778701,2,0.00729735,4.423],
+      ['Ve','Velium',0.98778701,2,1,4.423],['Nx','Nexium',1.368991,1.36899099984016,1.368991,1.368991],
+      ['Ax','Axionium',0.98778701,1,0.10132118,0.01],['De','Dark Energy',0.98778701,1,0,0.689],
+      ['Dm','Dark Matter',0.98778701,1,0.269,0.269],['Hi','Higgs',0.50804159,1,0.13,0.93],
+      ['Gl2','Gluino',1.06578902,8,0,0.118],['Zo','Zoivum',1.368991,2,0.1368991,10.0],
+      ['Zc','Zoivum Condensate',0.6844955,4,0,10.0],['SP','Sovereign Peak',17.963,12,0,1.18],
+      ['Li2','Limium',0.37546559,13,0.05121982,6.845],['Fv','Fusovium',0.15816944,29,0.02318504,6.845],
+      ['Pa2','Pa2',0.18092443,19,0.02805649,6.845],['Dq','Diquonium',0.00515799,3,0,0.118],
+      ['Wm','Wimpium',0.98778701,3,0.034,0.01],['GU','GUT State',0.98778701,1,0.04,0.04],
+      ['EW','EW Plasma',0.98778701,2,0.231,0.231],['Zb','Z-boson',0.37035009,2,0.2312,0.2312],
+      ['Wb','W-boson',0.32644383,2,0.03355705,0.881447]
+    ],
+    /* standard model particles */
+    sm:[
+      ['qu','Up Quark',0.00234,3,0.667,0.118],['qd','Down Quark',0.00501,3,0.333,0.118],
+      ['qs','Strange Quark',0.09912,3,0.333,0.118],['qc','Charm Quark',1.3589,3,0.667,0.118],
+      ['qb','Bottom Quark',4.455,3,0.333,0.118],['qt','Top Quark',184.126,3,0.667,0.118],
+      ['e','Electron',0.000545,2,1,0.0136],['mu','Muon',0.11261,2,1,0.11261],['ta','Tau',1.89376,2,1,1.89376],
+      ['P+','Proton',1.0,3,1,0.0136],['Nt','Neutron',1.00138,3,1,0.000835],['pi','Pion+',0.14875,2,1,0.118],
+      ['p0','Pion0',0.14386,2,0,0.118],['K+','Kaon+',0.52616,2,1,0.118],['Jy','J/psi',3.30064203,2,0,0.118],
+      ['Ups','Upsilon',10.08268391,2,0,0.118]
+    ],
+    /* S-particles */
+    sp:[
+      ['Xcc2','Ξcc++ Baryon',3.85947785,3,0,0.118],['Xcc1','Ξcc+ Baryon',3.8581243,3,0,0.118],
+      ['Occ','Ωcc+ Baryon',3.74091948,3,0,0.118],['Xbb0','Ξbb0 Baryon',11.12790321,3,0,0.118],
+      ['Xbb1','Ξbb- Baryon',11.12790321,3,0,0.118],['Obb','Ωbb- Baryon',11.19078476,3,0,0.118],
+      ['Occc','Ωccc Baryon',5.11045837,3,0,0.118],['Obbb','Ωbbb Baryon',15.31645408,3,0,0.118],
+      ['AsN','AsN Semiconductor',2.409,12,0,14.53],['CoN','CoN Magnet Phase',1.872,11,0,14.53]
+    ]
+  };
+  C.GROUPS={el:'Elements',ere:'EREs',sm:'Particles',sp:'S-Particles'};
+  C.all=()=>{const o=[];for(const k in C.CORPUS)for(const r of C.CORPUS[k])
+    o.push({grp:k,sym:r[0],name:r[1],P:r[2],N:r[3],B:r[4],A:r[5]});return o;};
+  C.tau=(P,B)=>P>0?B/P:999;
+  C.phaseOf=(P,B)=>{if(B===0)return'NOBLE';const t=C.tau(P,B);
+    return t>=K.TL?'SHATTER':(t>=K.TL_IVA?'IVA_PEAK':'LOCKED');};
+  C.PHCOL={NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA_PEAK:'var(--iva)',SHATTER:'var(--shatter)'};
+  /* tone 0 is the Noble limit: spacing runs to the ceiling */
+  C.scaleOf=tone=>tone>0?clamp(Math.PI*K.BASE/tone,0.2*Math.PI,14*Math.PI):14*Math.PI;
+  C.periods=tone=>C.scaleOf(tone)/Math.PI;
+  C.cf=(x,n)=>{const a=[];let v=x;for(let i=0;i<n;i++){const w=Math.floor(v);a.push(w);const f=v-w;if(f<1e-11)break;v=1/f;}return a;};
+  C.convergents=a=>{let p0=1,q0=0,p1=a[0],q1=1;const o=[];for(let i=1;i<a.length;i++){const p2=a[i]*p1+p0,q2=a[i]*q1+q0;p0=p1;q0=q1;p1=p2;q1=q2;o.push(q1);}return o;};
+  C.drift=(q,tone)=>{let r=(q*tone)%360;if(r>180)r-=360;if(r<-180)r+=360;return r;};
+  // fill: one pass, writes x y z value radius per cell
+  C.fill=(form,tone,n)=>{
+    const P=POOL[form],cap=K.CELLCAP,S=K.STRIDE,buf=new Float32Array(cap*S);let c=0;
+    if(P.kind==='step'){
+      const shells=P.shells,total=n*n*8,wsum=(shells+1)*(2*shells+1)/(6*shells);let idx=0;
+      for(let s=0;s<shells;s++){const rad=(s+1)/shells,cnt=Math.max(8,Math.round(total*rad*rad/wsum));
+        for(let i=0;i<cnt;i++){if(c>=cap)break;
+          const z=1-2*(i+0.5)/cnt,rr=Math.sqrt(Math.max(0,1-z*z)),th=idx*tone*Math.PI/180;
+          let v=(idx*tone/360);v=(v-Math.floor(v))-0.5;idx++;
+          buf[c*S]=rad*rr*Math.cos(th);buf[c*S+1]=rad*rr*Math.sin(th);buf[c*S+2]=rad*z;
+          buf[c*S+3]=v/P.vmax;buf[c*S+4]=rad;c++;}}
+      return {cells:buf,n:c,h:2/Math.cbrt(Math.max(c,1)),grid:n};
+    }
+    const sc=C.scaleOf(tone),f=P.f,iv=P.vmax,st=K.STORE;
+    outer:
+    for(let i=0;i<n;i++){const x=(i/(n-1))*2-1;
+      for(let j=0;j<n;j++){const y=(j/(n-1))*2-1;
+        for(let m=0;m<n;m++){const z=(m/(n-1))*2-1,r2=x*x+y*y+z*z;
+          if(r2>1)continue;
+          const v=f(x*sc,y*sc,z*sc)/iv;
+          if(v<-st||v>st)continue;
+          if(c>=cap)break outer;
+          buf[c*S]=x;buf[c*S+1]=y;buf[c*S+2]=z;buf[c*S+3]=v;buf[c*S+4]=Math.sqrt(r2);c++;}}}
+    return {cells:buf,n:c,h:2/n,grid:n};
+  };
+  return C;
+})();
+
+// ════════════════════════════════════════════════════════════
+// UI
+// ════════════════════════════════════════════════════════════
+const $=id=>document.getElementById(id),C=ToneFormsCore,K=C.K,clamp=C.clamp;
+const S={form:'spiral',tone:K.OMEGA0,dens:52,level:0,band:100,res:false,peel:100,core:0,
+         cam:'orbit',rot:true,dist:2.00,yaw:0.62,pitch:0.42,pos:[0,0,0],invert:false,
+         col:'tone',light:false,pxMul:2,
+         elGroups:{el:true,ere:true,sm:true,sp:true},elSym:'',elRead:'tau'};
+let G=null,NLIVE=0,PROJ=null,NPROJ=0;
+const cv=$('gl'),gx=cv.getContext('2d');let W=1180,H=860;
+const t0=performance.now();
+
+// ── color ramp: cool at the low end of a channel, warm at the high end
+const STOPS=[[0.0,[0.11,0.08,0.25]],[0.25,[0.29,0.20,0.69]],[0.5,[0.48,0.31,1.0]],[0.78,[0.94,0.75,0.38]],[1.0,[1.0,0.91,0.66]]];
+function ramp(t){t=clamp(t,0,1);let s=0;while(s<STOPS.length-2&&t>STOPS[s+1][0])s++;
+  const a=STOPS[s],b=STOPS[s+1],u=clamp((t-a[0])/(b[0]-a[0]),0,1);
+  return [0,1,2].map(k=>a[1][k]*(1-u)+b[1][k]*u);}
+$('lg-b').style.background='linear-gradient(90deg,'+STOPS.map(s=>`rgb(${s[1].map(v=>Math.round(v*255))}) ${(s[0]*100).toFixed(0)}%`).join(',')+')';
+
+// ── camera
+const CAM={};
+CAM.basis=()=>{const cy=Math.cos(S.yaw),sy=Math.sin(S.yaw),cp=Math.cos(S.pitch),sp=Math.sin(S.pitch);
+  const f=[cp*sy,sp,cp*cy],r=[cy,0,-sy];
+  const u=[f[1]*r[2]-f[2]*r[1],f[2]*r[0]-f[0]*r[2],f[0]*r[1]-f[1]*r[0]];  // up = forward x right
+  return {f,r,u};};
+CAM.eye=b=>S.cam==='orbit'?[-S.dist*b.f[0],-S.dist*b.f[1],-S.dist*b.f[2]]:S.pos;
+CAM.setDist=d=>{S.dist=clamp(d,0.04,6);
+  if(S.cam==='walk'){const b=CAM.basis(),p=S.pos,L=Math.hypot(p[0],p[1],p[2]);
+    if(L<1e-6)S.pos=[-S.dist*b.f[0],-S.dist*b.f[1],-S.dist*b.f[2]];
+    else{const k=S.dist/L;S.pos=[p[0]*k,p[1]*k,p[2]*k];}}};
+CAM.move=(fwd,side,up)=>{const b=CAM.basis();for(let i=0;i<3;i++)S.pos[i]+=b.f[i]*fwd+b.r[i]*side+b.u[i]*up;};
+CAM.toWalk=()=>{const b=CAM.basis();S.pos=[-S.dist*b.f[0],-S.dist*b.f[1],-S.dist*b.f[2]];S.cam='walk';};
+CAM.VIEWS={top:{yaw:0,pitch:-K.PMAX},front:{yaw:0,pitch:0},side:{yaw:Math.PI/2,pitch:0},free:{yaw:0.62,pitch:0.42}};
+CAM.view=name=>{const v=CAM.VIEWS[name]||CAM.VIEWS.free;S.cam='orbit';S.yaw=v.yaw;S.pitch=v.pitch;
+  if(name==='free')S.dist=2.00;syncCam();};
+
+// ── live window
+function win(){let lvl=S.level/100;
+  if(S.res)lvl=(K.STORE-S.band/100*0.6)*Math.sin((performance.now()-t0)/2600*Math.PI*2);
+  return {lvl,bw:S.band/100,pOut:S.peel/100,pIn:S.core/100};}
+
+// ── draw
+const NB=96,bk=[];for(let i=0;i<NB;i++)bk.push([]);
+function draw(){
+  if(!G)return;
+  gx.clearRect(0,0,W,H);
+  const b=CAM.basis(),e=CAM.eye(b),St=K.STRIDE,cells=G.cells;
+  const fx=b.f[0],fy=b.f[1],fz=b.f[2],rx=b.r[0],ry=b.r[1],rz=b.r[2],ux=b.u[0],uy=b.u[1],uz=b.u[2];
+  const focal=(Math.min(W,H)*0.5)/Math.tan(K.FOV/2),cx=W/2,cy=H/2,near=K.NEAR;
+  const {lvl,bw,pOut,pIn}=win();
+  for(let i=0;i<NB;i++)bk[i].length=0;
+  const stride=G.n>K.DRAWCAP?Math.ceil(G.n/K.DRAWCAP):1;
+  if(!PROJ||PROJ.length<K.DRAWCAP*6)PROJ=new Float32Array(K.DRAWCAP*6);
+  let live=0,np=0;
+  for(let i=0;i<G.n;i+=stride){
+    const k=i*St,v=cells[k+3],r=cells[k+4];
+    if(r<pIn||r>pOut)continue;
+    if(v<lvl-bw||v>lvl+bw)continue;
+    live++;
+    const dx=cells[k]-e[0],dy=cells[k+1]-e[1],dz=cells[k+2]-e[2];
+    const vz=dx*fx+dy*fy+dz*fz;if(vz<=near)continue;
+    const sx=cx+(dx*rx+dy*ry+dz*rz)/vz*focal,sy=cy-(dx*ux+dy*uy+dz*uz)/vz*focal;
+    if(sx<-8||sx>W+8||sy<-8||sy>H+8)continue;
+    bk[clamp(Math.floor(vz/6.5*NB),0,NB-1)].push(sx,sy,vz,v,r);
+    PROJ[np*6]=sx;PROJ[np*6+1]=sy;PROJ[np*6+2]=vz;PROJ[np*6+3]=v;PROJ[np*6+4]=r;PROJ[np*6+5]=i;np++;
+  }
+  NLIVE=live;NPROJ=np;
+  for(let i=NB-1;i>=0;i--){const a=bk[i],L=a.length;
+    for(let j=0;j<L;j+=5){
+      const px=a[j],py=a[j+1],vz=a[j+2],v=a[j+3],r=a[j+4],dn=clamp(1-vz/5.2,0,1);
+      let t;
+      if(S.col==='tone')t=(v+1)/2;
+      else if(S.col==='level')t=1-clamp(Math.abs(v-lvl)/Math.max(bw,1e-6),0,1);
+      else if(S.col==='shell')t=r;
+      else t=dn;
+      const c=ramp(t),al=S.light?(0.18+0.62*dn):(0.12+0.82*dn*dn);
+      gx.fillStyle=`rgba(${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.round(c[2]*255)},${al.toFixed(3)})`;
+      gx.fillRect(px,py,0.8+2.3*dn+clamp(1.4/vz,0,2.4),0.8+2.3*dn+clamp(1.4/vz,0,2.4));}}
+  const d=Math.hypot(e[0],e[1],e[2]);
+  $('b-s').textContent=`${live.toLocaleString()} TL-cells lit · ${S.cam==='orbit'?'orbit':'walk'}${d<1?' · inside':''}${stride>1?' · every '+stride:''}`;
+  $('k-l').textContent=live.toLocaleString();
+  $('z-v').textContent=d.toFixed(2);
+}
+
+// ── readouts
+function readouts(){
+  const P=C.POOL[S.form],frac=S.tone/360,a=C.cf(frac,9),q=C.convergents(a).slice(0,5);
+  $('k-f').textContent=P.name;
+  $('k-t').textContent=String(S.tone);
+  $('k-q').textContent=frac.toFixed(12);
+  $('k-c').textContent='['+a.slice(0,7).join(', ')+']';
+  $('k-a').textContent=q.join(', ');
+  if(P.kind==='step'){
+    $('k-sl').textContent='Step';$('k-s').textContent=S.tone.toFixed(6)+'°';
+    $('k-g').textContent=P.shells+' shells';
+    $('k-h').textContent=G?G.h.toFixed(4)+' of the radius':'—';
+    $('k-p').textContent='—';$('k-sp').textContent='—';
+  }else{
+    const per=C.periods(S.tone),sp=S.dens/Math.max(per,1e-9);
+    $('k-sl').textContent='Spacing';
+    $('k-s').innerHTML=per>=13.999
+      ? `14.000 π <span style="color:var(--gold)">at the ceiling</span>`
+      : per.toFixed(3)+' π';
+    $('k-g').textContent=S.dens+'³';
+    $('k-h').textContent=(2/S.dens).toFixed(4)+' of the radius';
+    $('k-p').textContent=per.toFixed(2);
+    $('k-sp').innerHTML=sp<6?`<span style="color:var(--gold)">${sp.toFixed(1)} · raise resolution</span>`:`<span class="ok">${sp.toFixed(1)}</span>`;
+  }
+  $('k-n').textContent=G?G.n.toLocaleString():'—';
+  $('conv').innerHTML=q.map(v=>{const d=C.drift(v,S.tone),turns=Math.round(v*S.tone/360);
+    return `<tr><td>${v.toLocaleString()}</td><td>${(v*S.tone).toFixed(3)}°</td><td>${turns}</td><td class="${Math.abs(d)<0.1?'ok':''}">${d>=0?'+':''}${d.toFixed(4)}°</td></tr>`;}).join('');
+  const e=currentEl();
+  ['kv-el','kv-pnba','kv-tau'].forEach(id=>$(id).style.display=e?'flex':'none');
+  if(e){
+    const ph=C.phaseOf(e.P,e.B),t=C.tau(e.P,e.B);
+    $('k-el').innerHTML=`${e.sym} — ${e.name} <span style="color:${C.PHCOL[ph]}">${ph}</span>`;
+    $('k-pnba').textContent=`${e.P.toPrecision(6)} · ${e.N} · ${e.B} · ${e.A}`;
+    $('k-tau').innerHTML=`<span style="color:${C.PHCOL[ph]}">${t.toFixed(6)}</span>`;
+    $('el-ph').innerHTML=`<span style="color:${C.PHCOL[ph]}">${ph}</span> · τ=${t.toFixed(5)}`;
+    const L=elLevel(e);
+    $('el-lv').innerHTML=(S.level===L)
+      ? (L/100).toFixed(2)
+      : `${(L/100).toFixed(2)} <span style="color:var(--gold)">· level moved to ${(S.level/100).toFixed(2)}</span>`;
+    $('b-m').innerHTML=`<span style="color:${C.PHCOL[ph]}">${ph==='IVA_PEAK'?'IVA':ph}</span>`;
+  }else{
+    $('el-ph').textContent='—';$('el-lv').textContent='—';
+    $('b-m').textContent=q[0].toLocaleString()+' arms';
+  }
+  $('caption').innerHTML=`<b>${P.name}</b> · ${P.blurb} Tone ${S.tone}${P.kind==='step'?'° per step':', spacing '+C.periods(S.tone).toFixed(2)+'π'}. `+
+    `Arm counts ${q.join(', ')} come straight off the continued fraction ${'['+a.slice(0,5).join(', ')+'…]'}; the first misses a full turn by ${C.drift(q[0],S.tone).toFixed(4)}°, and that miss is what winds the arms.`;
+  $('form-note').innerHTML=`<b>${P.name}:</b> ${P.eq}`;
+  $('tone-v').textContent=S.tone===0?(P.kind==='step'?'0° — the shells register with zero drift':'spacing at the ceiling')
+    :(P.kind==='step'?S.tone.toFixed(6)+'° per step':C.periods(S.tone).toFixed(3)+'π spacing');
+  $('tone-k').textContent=S.tone===0?'zero impedance · the Noble limit':
+    S.tone===K.OMEGA0?'Sovereign Anchor Constant':S.tone===K.TL?'Torsion Limit':
+    S.tone===K.TL_IVA?'IVA floor':S.tone===K.PHI_DEG?'golden angle':'custom';
+  legend();
+}
+function legend(){const n={tone:'tone · field value',level:'nearness to the level',shell:'shell · center to surface',depth:'depth · far to near'}[S.col];
+  $('lg-t').textContent=n;
+  $('lg-r').innerHTML=S.col==='tone'?'<span>−1</span><span>+1</span>':S.col==='shell'?'<span>center</span><span>surface</span>':
+    S.col==='depth'?'<span>far</span><span>near</span>':'<span>edge of band</span><span>on the level</span>';}
+
+// ── build
+function rebuild(){
+  $('busy').style.display='block';
+  setTimeout(()=>{G=C.fill(S.form,S.tone,S.dens);readouts();draw();$('busy').style.display='none';},20);
+}
+let reT=null;const rebuildSoon=()=>{if(reT)clearTimeout(reT);reT=setTimeout(()=>{reT=null;rebuild();},130);};
+
+// ── notes and sync
+function notes(){
+  const P=C.POOL[S.form];
+  $('n-v').textContent=S.dens;
+  $('n-note').textContent=P.kind==='step'?`${S.dens}² × 8 points spread over ${P.shells} shells by surface area`:`${S.dens}³ grid clipped to the ball`;
+  $('lv-v').textContent=S.res?'sweeping':(S.level/100).toFixed(2);
+  $('bd-v').textContent='±'+(S.band/100).toFixed(2);
+  $('pl-v').textContent='r ≤ '+(S.peel/100).toFixed(2);
+  $('cr-v').textContent='r ≥ '+(S.core/100).toFixed(2);
+  $('px-v').textContent=S.pxMul+'×';
+}
+function syncCam(){cv.className=S.cam==='walk'?'walk':'';
+  $('camm').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.cam));
+  $('zoom').value=Math.round(clamp(S.dist,0.04,6)*100);}
+function syncAll(){
+  $('tone').value=S.tone;$('dens').value=S.dens;$('level').value=S.level;$('band').value=S.band;
+  $('peel').value=S.peel;$('core').value=S.core;$('pxMul').value=S.pxMul;
+  $('res').checked=S.res;$('light').checked=S.light;$('inv').checked=S.invert;
+  document.body.classList.toggle('lightbg',S.light);
+  $('rot').classList.toggle('on',S.rot);
+  ['form','form2'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.form)));
+  ['tpre','tpre2'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.tone)));
+  $('col').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.col));
+  $('elgrp').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',!!S.elGroups[b.dataset.v]));
+  $('elread').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.elRead));
+  buildElSel();
+  syncCam();notes();}
+
+// ── controls
+function seg(id,fn){$(id).querySelectorAll('.btn').forEach(b=>b.onclick=()=>fn(b.dataset.v,b));}
+['form','form2'].forEach(id=>seg(id,v=>{S.form=v;S.band=C.POOL[v].band;syncAll();rebuild();}));
+function setTone(v){
+  const x=parseFloat(v);
+  if(!isFinite(x)||x<0)return;            /* 0 is the Noble limit, so it is allowed */
+  S.tone=x;                                /* the substrate is a separate axis, so it stays */
+  $('tone').value=x;syncAll();rebuild();}
+
+/* ── element pool: an entry's torsion ratio is directly a tone ── */
+function elList(){return C.all().filter(e=>S.elGroups[e.grp]);}
+function elReading(e){
+  if(S.elRead==='tau')return C.tau(e.P,e.B);
+  return e[S.elRead];}
+function buildElSel(){
+  const L=elList(),sel=$('elsel');
+  sel.innerHTML='<option value="">— pick an entry —</option>'+L.map(e=>{
+    const ph=C.phaseOf(e.P,e.B),pre={el:'',ere:'\u25C6 ',sm:'\u00B7 ',sp:'\u2B21 '}[e.grp];
+    return `<option value="${e.grp}:${e.sym}">${pre}${e.sym} — ${e.name} · τ=${C.tau(e.P,e.B).toFixed(4)} ${ph.slice(0,4)}</option>`;
+  }).join('');
+  sel.value=S.elSym;
+  $('el-count').textContent=L.length+' of '+C.all().length;}
+function currentEl(){
+  if(!S.elSym)return null;
+  const [g,s]=S.elSym.split(':');
+  return C.all().find(e=>e.grp===g&&e.sym===s)||null;}
+/* An entry's torsion sets how far off the nodal surface it sits.
+   Linear up to the Shatter boundary so the phase boundaries land on fixed
+   levels, then logarithmic above it so the whole Shatter range spreads
+   out instead of piling on one value. Every result stays inside the band. */
+function elLevel(e){
+  const r=C.tau(e.P,e.B)/K.TL;
+  const L=r<=0?0:(r<1?0.30*r:0.30+0.16*Math.tanh(Math.log10(r)/1.5));
+  return Math.round(100*L);}
+function pickEl(){
+  const e=currentEl();
+  if(!e){$('el-ph').textContent='—';readouts();draw();return;}
+  S.level=elLevel(e);
+  syncAll();readouts();draw();}
+function pushTone(){                       /* one-shot: send the chosen reading to the tone */
+  const e=currentEl();if(!e)return;
+  setTone(elReading(e));}
+['tpre','tpre2'].forEach(id=>seg(id,v=>setTone(v)));
+$('tone').addEventListener('change',e=>setTone(e.target.value));
+$('tone').addEventListener('keydown',e=>{if(e.key==='Enter')setTone(e.target.value);});
+$('dens').oninput=e=>{S.dens=+e.target.value;notes();rebuildSoon();};
+['level','band','peel','core'].forEach(id=>$(id).oninput=e=>{
+  S[id]=+e.target.value;notes();if(id==='level'&&S.elSym)readouts();draw();});
+$('res').onchange=e=>{S.res=e.target.checked;notes();};
+$('light').onchange=e=>{S.light=e.target.checked;document.body.classList.toggle('lightbg',S.light);draw();};
+$('inv').onchange=e=>{S.invert=e.target.checked;};
+$('pxMul').oninput=e=>{S.pxMul=+e.target.value;notes();};
+seg('col',v=>{S.col=v;$('col').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===v));legend();draw();});
+seg('camm',v=>{if(v==='walk')CAM.toWalk();else S.cam='orbit';syncCam();notes();cv.focus();draw();});
+seg('vpre',v=>{CAM.view(v);notes();draw();});
+$('rot').onclick=()=>{S.rot=!S.rot;$('rot').classList.toggle('on',S.rot);};
+
+// ── element pool bindings
+seg('elgrp',(v,b)=>{S.elGroups[v]=!S.elGroups[v];b.classList.toggle('on',S.elGroups[v]);
+  if(!elList().some(e=>e.grp+':'+e.sym===S.elSym))S.elSym='';
+  buildElSel();readouts();});
+$('elsel').onchange=e=>{S.elSym=e.target.value;pickEl();};
+seg('elread',v=>{S.elRead=v;
+  $('elread').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  notes();});
+$('el-push').onclick=pushTone;
+$('el-clear').onclick=()=>{S.elSym='';S.level=0;syncAll();readouts();draw();};
+
+// ── pointer
+let drag=false,lx=0,ly=0;
+const pt=e=>{const b=cv.getBoundingClientRect();return [(e.clientX-b.left)/b.width*W,(e.clientY-b.top)/b.height*H];};
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('pointerdown',e=>{drag=true;const p=pt(e);lx=p[0];ly=p[1];cv.setPointerCapture(e.pointerId);cv.classList.add('grabbing');cv.focus();});
+cv.addEventListener('pointermove',e=>{
+  if(!drag){probe(e);return;}
+  const p=pt(e),dx=p[0]-lx,dy=p[1]-ly;lx=p[0];ly=p[1];
+  const sg=S.invert?-1:1;
+  // the point under the pointer travels with the pointer; orbiting and turning
+  // in place need opposite signs to read the same way
+  if(S.cam==='orbit'){S.yaw+=dx*0.006*sg;S.pitch=clamp(S.pitch-dy*0.006*sg,-K.PMAX,K.PMAX);}
+  else{S.yaw-=dx*0.005*sg;S.pitch=clamp(S.pitch+dy*0.005*sg,-K.PMAX,K.PMAX);}
+  draw();});
+const upEv=()=>{drag=false;cv.classList.remove('grabbing');};
+cv.addEventListener('pointerup',upEv);cv.addEventListener('pointercancel',upEv);
+cv.addEventListener('pointerleave',()=>{$('probe').style.display='none';});
+cv.addEventListener('wheel',e=>{e.preventDefault();
+  if(S.cam==='orbit')CAM.setDist(S.dist*Math.exp(e.deltaY*0.001));
+  else CAM.move(-e.deltaY*0.0012,0,0);
+  syncCam();notes();draw();},{passive:false});
+
+function probe(e){
+  if(!NPROJ){$('probe').style.display='none';return;}
+  const b=cv.getBoundingClientRect(),mx=(e.clientX-b.left)/b.width*W,my=(e.clientY-b.top)/b.height*H;
+  let best=-1,bd=256;
+  for(let i=0;i<NPROJ;i++){const dx=PROJ[i*6]-mx,dy=PROJ[i*6+1]-my,d=dx*dx+dy*dy;if(d<bd){bd=d;best=i;}}
+  const P=$('probe');
+  if(best<0){P.style.display='none';return;}
+  const v=PROJ[best*6+3],r=PROJ[best*6+4],{lvl}=win();
+  P.innerHTML=`<b style="color:var(--gold)">TL-cell</b><br>field value ${v.toFixed(4)}<br>radius ${r.toFixed(4)}<br>from level ${Math.abs(v-lvl).toFixed(4)}`;
+  P.style.display='block';
+  P.style.left=Math.min(b.width-150,e.clientX-b.left+14)+'px';P.style.top=(e.clientY-b.top+14)+'px';
+  $('p-x').textContent='on a cell';$('p-v').textContent=v.toFixed(5);
+  $('p-r').textContent=r.toFixed(5);$('p-d').textContent=Math.abs(v-lvl).toFixed(5);
+}
+
+// ── keyboard
+const keys=new Set();
+cv.addEventListener('keydown',e=>{const k=e.key.toLowerCase();
+  if(['w','a','s','d','q','e','shift','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){keys.add(k);e.preventDefault();}
+  if(k==='r'){CAM.view('free');notes();draw();}});
+cv.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
+addEventListener('blur',()=>keys.clear());
+function walkStep(){
+  if(S.cam!=='walk'||!keys.size)return false;
+  const sp=keys.has('shift')?0.055:0.022;let f=0,s=0,u=0;
+  if(keys.has('w')||keys.has('arrowup'))f+=sp;
+  if(keys.has('s')||keys.has('arrowdown'))f-=sp;
+  if(keys.has('d')||keys.has('arrowright'))s+=sp;
+  if(keys.has('a')||keys.has('arrowleft'))s-=sp;
+  if(keys.has('e'))u+=sp;if(keys.has('q'))u-=sp;
+  if(f||s||u){CAM.move(f,s,u);return true;}
+  return false;}
+
+// ── export
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;
+  document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);}
+const stem=()=>'toneform-'+S.form+'-'+String(S.tone).replace(/[^0-9]/g,'').slice(0,10);
+const io=m=>$('io-note').textContent=m||'';
+function pack(){return {v:1,tool:'ToneForms by AxiomForge',url:'https://uuia.app/toneforms',
+  form:S.form,tone:S.tone,dens:S.dens,level:S.level,band:S.band,res:S.res,peel:S.peel,core:S.core,
+  col:S.col,light:S.light,invert:S.invert,elSym:S.elSym,elRead:S.elRead,elGroups:S.elGroups,
+  cam:S.cam,rot:S.rot,dist:S.dist,yaw:S.yaw,pitch:S.pitch,pos:S.pos.slice()};}
+function apply(o){
+  if(!o||typeof o!=='object')return false;
+  if(o.form&&C.POOL[o.form])S.form=o.form;
+  if(isFinite(o.tone)&&o.tone>=0)S.tone=+o.tone;
+  if(typeof o.elSym==='string')S.elSym=o.elSym;
+  if(o.elRead)S.elRead=o.elRead;
+  if(o.elGroups)S.elGroups=Object.assign({el:true,ere:true,sm:true,sp:true},o.elGroups);
+  if(isFinite(o.dens))S.dens=clamp(Math.round(o.dens),18,112);
+  if(isFinite(o.level))S.level=clamp(+o.level,-100,100);
+  if(isFinite(o.band))S.band=clamp(+o.band,1,100);
+  if(isFinite(o.peel))S.peel=clamp(+o.peel,2,100);
+  if(isFinite(o.core))S.core=clamp(+o.core,0,98);
+  if(isFinite(o.dist))S.dist=clamp(+o.dist,0.04,6);
+  if(isFinite(o.yaw))S.yaw=+o.yaw;
+  if(isFinite(o.pitch))S.pitch=clamp(+o.pitch,-K.PMAX,K.PMAX);
+  if(o.col)S.col=o.col;
+  if(o.cam==='walk'||o.cam==='orbit')S.cam=o.cam;
+  S.res=!!o.res;S.light=!!o.light;S.invert=!!o.invert;S.rot=o.rot!==false;
+  if(Array.isArray(o.pos)&&o.pos.length===3)S.pos=o.pos.slice();
+  return true;}
+function visible(cap){
+  const {lvl,bw,pOut,pIn}=win(),St=K.STRIDE,c=G.cells,out=[];
+  for(let i=0;i<G.n;i++){const k=i*St,v=c[k+3],r=c[k+4];
+    if(r<pIn||r>pOut)continue;if(v<lvl-bw||v>lvl+bw)continue;
+    out.push(c[k],c[k+1],c[k+2]);}
+  const n=out.length/3;if(n<=cap)return {a:out,n,thin:1};
+  const st=Math.ceil(n/cap),o2=[];for(let j=0;j<n;j+=st)o2.push(out[j*3],out[j*3+1],out[j*3+2]);
+  return {a:o2,n:o2.length/3,thin:st};}
+$('x-png').onclick=()=>{const m=S.pxMul,oc=document.createElement('canvas');
+  oc.width=W*m;oc.height=H*m;const o=oc.getContext('2d');
+  o.fillStyle=S.light?'#f4f2ea':'#050508';o.fillRect(0,0,oc.width,oc.height);
+  o.drawImage(cv,0,0,oc.width,oc.height);
+  oc.toBlob(b=>{dl(b,stem()+'-'+m+'x.png');io(m+'× PNG written');});};
+$('x-obj').onclick=()=>{io('writing OBJ…');setTimeout(()=>{
+  const V=visible(400000),a=V.a,L=['# ToneForms '+C.POOL[S.form].name+'  tone '+S.tone+'  '+V.n+' TL-cells'];
+  for(let i=0;i<a.length;i+=3)L.push('v '+a[i].toFixed(5)+' '+a[i+1].toFixed(5)+' '+a[i+2].toFixed(5));
+  for(let i=0;i<V.n;i++)L.push('p '+(i+1));
+  dl(new Blob([L.join('\n')],{type:'text/plain'}),stem()+'.obj');
+  io(`OBJ written · ${V.n.toLocaleString()} cells${V.thin>1?', every '+V.thin:''}`);},20);};
+$('x-stl').onclick=()=>{io('writing STL…');setTimeout(()=>{
+  const V=visible(45000),a=V.a,n=V.n,h=0.9/Math.max(S.dens,18);
+  const ntri=n*12,buf=new ArrayBuffer(84+ntri*50),dv=new DataView(buf);
+  const hdr='ToneForms '+C.POOL[S.form].name+' tone '+S.tone;
+  for(let q=0;q<80;q++)dv.setUint8(q,q<hdr.length?hdr.charCodeAt(q)&0x7f:32);
+  dv.setUint32(80,ntri,true);
+  // corner bits: 4 = +x, 2 = +y, 1 = +z
+  const F=[[0,0,-1,0,2,6,0,6,4],[0,0,1,1,5,7,1,7,3],[-1,0,0,0,1,3,0,3,2],
+           [1,0,0,4,6,7,4,7,5],[0,-1,0,0,4,5,0,5,1],[0,1,0,2,3,7,2,7,6]];
+  let o=84;
+  for(let i=0;i<n;i++){const x=a[i*3],y=a[i*3+1],z=a[i*3+2];
+    for(let fi=0;fi<6;fi++){const fd=F[fi];
+      for(let tj=0;tj<2;tj++){
+        dv.setFloat32(o,fd[0],true);dv.setFloat32(o+4,fd[1],true);dv.setFloat32(o+8,fd[2],true);
+        for(let c2=0;c2<3;c2++){const ci=fd[3+tj*3+c2];
+          dv.setFloat32(o+12+c2*12,x+((ci&4)?h:-h),true);
+          dv.setFloat32(o+16+c2*12,y+((ci&2)?h:-h),true);
+          dv.setFloat32(o+20+c2*12,z+((ci&1)?h:-h),true);}
+        dv.setUint16(o+48,0,true);o+=50;}}}
+  dl(new Blob([buf],{type:'model/stl'}),stem()+'.stl');
+  io(`STL written · ${n.toLocaleString()} cubes, ${ntri.toLocaleString()} triangles${V.thin>1?', every '+V.thin:''}`);},20);};
+$('x-json').onclick=()=>{dl(new Blob([JSON.stringify(pack(),null,2)],{type:'application/json'}),stem()+'.json');io('toneform saved');};
+$('x-load').onclick=()=>$('loadFile').click();
+$('loadFile').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
+  const fr=new FileReader();
+  fr.onload=()=>{try{apply(JSON.parse(fr.result));syncAll();rebuild();io('loaded '+f.name);}
+                 catch(err){io('that file did not read as a toneform');}};
+  fr.readAsText(f);e.target.value='';};
+$('x-link').onclick=()=>{const u=location.origin+location.pathname+'#t='+encodeURIComponent(JSON.stringify(pack()));
+  location.hash=u.split('#')[1];
+  if(navigator.clipboard)navigator.clipboard.writeText(u).then(()=>io('link copied'),()=>io('link is in the address bar'));
+  else io('link is in the address bar');};
+
+// ── mode
+$('m-l').onclick=()=>{document.body.classList.remove('res');$('m-l').classList.add('on');$('m-r').classList.remove('on');};
+$('m-r').onclick=()=>{document.body.classList.add('res');$('m-r').classList.add('on');$('m-l').classList.remove('on');};
+
+// ── resize and loop
+function resize(){const v=$('view'),r=Math.min(devicePixelRatio||1,2);
+  W=Math.max(320,Math.round(v.clientWidth*r));H=Math.max(240,Math.round(v.clientHeight*r));
+  cv.width=W;cv.height=H;draw();}
+addEventListener('resize',resize);
+let fpsN=0,fpsT=performance.now();
+function loop(){
+  fpsN++;const now=performance.now();
+  if(now-fpsT>=1000){const f=fpsN*1000/(now-fpsT);fpsN=0;fpsT=now;
+    $('fps').textContent=f.toFixed(0)+' fps';
+    $('fps').style.color=f>=50?'#00ffc8':f>=25?'#f0c060':'#ff3a3a';}
+  let moved=walkStep();
+  if(S.rot&&!drag){S.yaw+=S.cam==='orbit'?0.0021:0.0012;moved=true;}
+  if(moved||S.res)draw();
+  requestAnimationFrame(loop);}
+
+// ── boot
+(function(){const m=(location.hash||'').match(/[#&]t=([^&]+)/);
+  if(m){try{apply(JSON.parse(decodeURIComponent(m[1])));}catch(e){}}})();
+syncAll();resize();rebuild();loop();
+</script>
+</body>
+</html>
