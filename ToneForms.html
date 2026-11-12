@@ -18,7 +18,7 @@
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
-:root{--anchor:#00ffc8;--locked:#7b4fff;--gold:#f0c060;--shatter:#ff3a3a;--bg:#050508;--surface:#0d0d14;--border:rgba(0,255,200,0.12);--text:#e8e8f0;--dim:rgba(232,232,240,0.55);--faint:rgba(232,232,240,0.28)}
+:root{--anchor:#00ffc8;--locked:#7b4fff;--gold:#f0c060;--shatter:#ff3a3a;--noble:#00ffc8;--iva:#f0c060;--bg:#050508;--surface:#0d0d14;--border:rgba(0,255,200,0.12);--text:#e8e8f0;--dim:rgba(232,232,240,0.55);--faint:rgba(232,232,240,0.28)}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',ui-monospace,monospace;overflow:hidden}
 #app{display:grid;grid-template-columns:290px 1fr 340px;grid-template-rows:56px 1fr;height:100vh}
@@ -137,10 +137,56 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
   </div>
 
   <div class="sec">
+    <div class="st">COLLIDE <small id="bm-n">no beams</small></div>
+    <div class="seg"><button class="btn" id="bm-add">ADD THE PICKED ENTRY</button></div>
+    <select id="bm-pre" style="width:100%;background:#0a0a10;border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:9px;padding:5px 6px;outline:none;margin-top:5px">
+      <option value="">&#8212; verified collisions [9,9,2,3.7] &#8212;</option>
+      <option value="C,H,O,N">CHON organic scaffold &#183; 4-beam</option>
+      <option value="C,H,O,N,C,H,O,N">CHON &#215;2 &#183; 8-beam</option>
+      <option value="S,Ti,N,H">TiN ceramic &#183; PRB 1994</option>
+      <option value="Ni,He,H,Ti">Nitinol &#183; Buehler 1963</option>
+      <option value="He,Au,C,W">WC&#8211;Au carbide &#183; ASM</option>
+      <option value="O,Pu,Fe,P+">PuO&#8322; fuel + Fe &#183; IAEA TRS-415</option>
+      <option value="C,Fe,Nt,C">Fe&#8323;C cementite &#183; Zener 1948</option>
+      <option value="qb,Cl,W,H">bottom quark &#183; PDG 2022</option>
+      <option value="O,H,O,H,O,H,O,H">water &#215;4 &#183; 8-beam</option>
+      <option value="Ga,As,Ga,As,Ga,As,Ga,As">GaAs &#215;4 &#183; Nobel 2000</option>
+      <option value="W,H,He,He">W+H+He+He &#183; 4-beam residual</option>
+      <option value="W,H,He,He,W,H,He,He">the same doubled &#183; 8-beam</option>
+    </select>
+    <div class="seg" style="margin-top:5px"><button class="btn" id="bm-paste">PASTE A COLLIDER FILE</button><button class="btn" id="bm-clear">CLEAR</button></div>
+    <div id="lean-box" style="display:none;margin-top:5px">
+      <textarea id="lean-txt" rows="4" placeholder="paste a GAM Collider .lean output here" spellcheck="false" style="width:100%;background:#0a0a10;color:var(--text);border:1px solid var(--border);border-radius:4px;padding:6px;font-family:'Space Mono',monospace;font-size:9px;outline:none;resize:vertical"></textarea>
+      <div class="seg" style="margin-top:4px"><button class="btn" id="lean-go">LOAD THE BEAMS</button></div>
+      <div class="note" id="lean-note" style="margin-top:5px"></div>
+    </div>
+    <div class="note" id="bm-list" style="margin:7px 0 0;color:var(--anchor)">&#8212;</div>
+    <div class="seg" style="margin-top:7px" id="bmview"><button class="btn on" data-v="overlap">SHARED SITES</button><button class="btn" data-v="fused">FUSED FORM</button></div>
+    <div class="lbl"><span>Pairs C(n,2)</span><b id="bm-pairs">&#8212;</b></div>
+    <div class="lbl"><span>&#931;B &#183; k_max</span><b id="bm-k">&#8212;</b></div>
+    <div class="lbl"><span>B_out = max(0, &#931;B &#8722; 2k)</span><b id="bm-bout">&#8212;</b></div>
+    <div class="lbl"><span>P_out harmonic</span><b id="bm-pout">&#8212;</b></div>
+    <div class="lbl"><span>&#964;_out</span><b id="bm-tau">&#8212;</b></div>
+    <div class="lbl"><span>Identity Mass &#937;&#8320;(P+N+B+A)</span><b id="bm-im">&#8212;</b></div>
+    <div class="lbl"><span>Rescue</span><b id="bm-res">&#8212;</b></div>
+    <div class="lbl"><span>Spread law max B &#8804; (n&#8722;1) min B</span><b id="bm-spr">&#8212;</b></div>
+    <div class="lbl"><span>Inert beams</span><b id="bm-inert">&#8212;</b></div>
+    <div class="lbl"><span>B-balance</span><b id="bm-bal">&#8212;</b></div>
+    <div class="lbl"><span>Shared by all beams</span><b id="bm-share">&#8212;</b></div>
+    <div class="note l-only"><p>Load beams and collide them. Two is rarely enough &#8212; most complex matter needs four. CHON is the one to try: carbon, hydrogen, oxygen and nitrogen each read Shatter on their own, and every pair of them reads Shatter too, but all four together come out <b>Noble</b>. That is compositional closure, and it is the scaffold of everything alive.</p>
+    <p>PASTE A COLLIDER FILE takes a GAM Collider .lean output straight from the engine and loads its beams, so a collision you ran there opens here as a geometry.</p>
+    <p>SHARED SITES colors each cell by how many beams are satisfied there &#8212; the brightest cells are where every beam agrees. FUSED FORM draws the single figure the fused output makes.</p></div>
+    <div class="note r-only"><p>ToneForms runs the GAM engine, where N_out is additive, because the pool is physical substrates and N is nucleon count. The PSY engine at [9,9,6,28] takes N_out as the bottleneck minimum and adds a narrative floor, which is what cognitive pools need. Its spread law carries across either engine and is reported here.</p>
+    <p>The Pattern rule is the n-body harmonic mean at every beam count, n = 2 included. The n-body rule is GAM Collider v15 [9,9,2,3]. P_out is the harmonic mean of the beam patterns, N_out their sum, and A_out the adaptation ceiling. The pairwise coupling k_max = &#931; min(B&#7522;, B&#11388;) over C(n,2) pairs absorbs bond capacity, so B_out = max(0, &#931;B &#8722; 2k_max) and Identity Mass is &#937;&#8320;(P+N+B+A). Adding beams adds pairs faster than it adds B, which is why a composition can reach &#964; = 0 with no individually Noble input.</p>
+    <p>CHON at four beams: &#931;B = 10 against k_max = 10 over six pairs, so B_out = 0 and IM = 42.127001. At eight beams k_max = 50 over twenty-eight pairs and IM = 61.292875. In SHARED SITES each beam opens a band at its own &#964;; in FUSED FORM the level comes from &#964;_out, so a Noble output sits on the nodal surface exactly.</p></div>
+  </div>
+
+  <div class="sec">
     <div class="st">TONE <small id="tone-k"></small></div>
     <input type="text" id="tone" value="1.36899099984016" spellcheck="false" aria-label="Tone">
-    <div class="seg" style="margin-top:5px" id="tpre"><button class="btn on" data-v="1.36899099984016">Ω₀</button><button class="btn" data-v="0.136899099984016">TL</button><button class="btn" data-v="0.12047120798593408">TL·IVA</button></div>
-    <div class="seg" id="tpre2"><button class="btn" data-v="1.04">S_run</button><button class="btn" data-v="0.88">FLOOR</button><button class="btn" data-v="137.50776405003785">GOLDEN φ</button></div>
+    <div class="seg" style="margin-top:5px" id="tpre"><button class="btn on" data-v="1.36899099984016">Ω₀</button><button class="btn" data-v="0.136899099984016">TL</button><button class="btn" data-v="0">NOBLE 0</button></div>
+    <div class="seg" id="tpre2"><button class="btn" data-v="0.12047120798593408">TL·IVA</button><button class="btn" data-v="1.04">S_run</button><button class="btn" data-v="0.88">FLOOR</button></div>
+    <div class="seg" id="tpre3"><button class="btn" data-v="137.035999084" title="Omega0 x 100.1">α⁻¹</button><button class="btn" data-v="137.50776405003785">GOLDEN φ</button></div>
     <div class="lbl"><span>Reading</span><b id="tone-v">—</b></div>
     <div class="note l-only">Type any positive number and press Enter. The tone is the one dial everything else hangs off: on the shells it is the turn taken between one point and the next, and on the surfaces it is how closely the waves are packed.</div>
     <div class="note r-only">Stepped shells use the tone directly as the angular step in degrees. The surfaces set spacing as π·(1.15 Ω₀)/tone, clamped to [0.2π, 14π], so Ω₀ lands the reference spacing and a tone ten times finer gives ten times the spatial frequency, which is a thousand times the cells in a volume.</div>
@@ -160,6 +206,7 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
     <div class="lbl"><span>Band</span><b id="bd-v">±0.06</b></div>
     <input type="range" id="band" min="1" max="100" value="100">
     <label class="ck"><input type="checkbox" id="res"> RESONATE · sweep the level live</label>
+    <div class="note" style="margin-top:5px">With beams loaded the sweep carries the whole set together, so the shared sites breathe while the beams hold their spacing.</div>
     <div class="note l-only">The surface sits where the wave crosses zero. Slide the level to move off zero and you walk through the whole family of shapes the tone makes; turn on RESONATE and it breathes through them on its own, which is the lattice ringing.</div>
     <div class="note r-only">Cells are stored across a band of ±0.46 in normalized field value, so scrubbing the level selects a level set of the same field without a rebuild. RESONATE drives the level sinusoidally inside the stored band at a 2.6 s period. On stepped shells the level selects a phase band of the angular residue, which pulls single arms out of the figure.</div>
   </div>
@@ -188,7 +235,8 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
 
   <div class="sec">
     <div class="st">COLOR</div>
-    <div class="seg" id="col"><button class="btn on" data-v="tone">TONE</button><button class="btn" data-v="level">LEVEL</button><button class="btn" data-v="shell">SHELL</button><button class="btn" data-v="depth">DEPTH</button></div>
+    <div class="seg" id="col"><button class="btn on" data-v="tone">TONE</button><button class="btn" data-v="phase">PHASE</button><button class="btn" data-v="level">LEVEL</button></div>
+    <div class="seg" id="col2"><button class="btn" data-v="shell">SHELL</button><button class="btn" data-v="depth">DEPTH</button></div>
     <label class="ck"><input type="checkbox" id="light"> Light background for printing</label>
   </div>
 
@@ -200,6 +248,7 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
     <div class="lbl"><span>PNG scale</span><b id="px-v">2×</b></div>
     <input type="range" id="pxMul" min="1" max="4" value="2">
     <div class="note" id="io-note" style="margin-top:5px"></div>
+    <div class="note r-only" style="margin-top:5px">A saved .json carries the beams written out in full with their PNBA, the fused output the run produced, the engine rule it was produced under and the time it was saved, so the record stands on its own and checks itself when it reopens.</div>
     <div class="note r-only" style="margin-top:5px">STL writes one cube per lit cell at the current cell edge, binary, thinned to 45,000 cubes so the file stays openable; that mesh drops straight into IMatter as TL-cells. OBJ writes the lit cells as vertices and point elements. JSON and the share link carry the full state, so a link reopens the exact form.</div>
   </div>
 </div>
@@ -386,6 +435,40 @@ const ToneFormsCore=(()=>{
   C.all=()=>{const o=[];for(const k in C.CORPUS)for(const r of C.CORPUS[k])
     o.push({grp:k,sym:r[0],name:r[1],P:r[2],N:r[3],B:r[4],A:r[5]});return o;};
   C.tau=(P,B)=>P>0?B/P:999;
+  /* GAM Collider v15 n-body fusion [9,9,2,3]:
+     P_out is the harmonic mean, N_out the sum, A_out the adaptation ceiling,
+     and k_max = sum of min(Bi,Bj) over C(n,2) pairs absorbs pairwise bond
+     capacity, so B_out = max(0, sum B - 2 k_max). More beams means more pairs,
+     which drives the output toward Noble: compositional closure. */
+  C.fuseN=function(L){
+    const n=L.length;
+    if(!n)return null;
+    /* one Pattern rule at every beam count: the n-body harmonic mean */
+    const P=n/L.reduce((a,e)=>a+1/e.P,0);
+    const N=L.reduce((a,e)=>a+e.N,0);
+    const sB=L.reduce((a,e)=>a+e.B,0);
+    let k=0,pairs=0,allPairsShatter=n>=2;
+    for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){
+      k+=Math.min(L[i].B,L[j].B);pairs++;
+      /* a pair is read with the engine's own 2-beam rule */
+      const pB=Math.max(0,L[i].B+L[j].B-2*Math.min(L[i].B,L[j].B));
+      const pP=2/(1/L[i].P+1/L[j].P);
+      if(!(pB>0&&pB/pP>=K.TL))allPairsShatter=false;}
+    const B=Math.max(0,sB-2*k), A=Math.max.apply(null,L.map(e=>e.A));
+    /* spread law [9,9,6,28]: Noble whenever max B <= (n-1) min B */
+    const act=L.map(e=>e.B).filter(b=>b>0);
+    const mn=act.length?Math.min.apply(null,act):0, mx=act.length?Math.max.apply(null,act):0;
+    const spread=act.length>=2&&mx<=(n-1)*mn;
+    /* a B = 0 beam adds nothing to k: fabrication atmosphere, not a component */
+    const inert=L.filter(e=>e.B===0).map(e=>e.sym);
+    return {n,pairs,P,N,B,A,sB,k,IM:(P+N+B+A)*K.OMEGA0,tau:C.tau(P,B),
+            phase:C.phaseOf(P,B),rescue:B===0&&allPairsShatter,spread,mn,mx,inert};};
+  /* B-balance stoichiometry [9,9,2,45]: n1 B1 = n2 B2, GCD reduced */
+  C.bBalance=function(a,b){
+    const B1=Math.round(a.B), B2=Math.round(b.B);
+    if(B1<1||B2<1||Math.abs(a.B-B1)>1e-9||Math.abs(b.B-B2)>1e-9)return null;
+    const gcd=(x,y)=>y?gcd(y,x%y):x, g=gcd(B1,B2);
+    return {n1:B2/g,n2:B1/g,sym1:a.sym,sym2:b.sym};};
   C.phaseOf=(P,B)=>{if(B===0)return'NOBLE';const t=C.tau(P,B);
     return t>=K.TL?'SHATTER':(t>=K.TL_IVA?'IVA_PEAK':'LOCKED');};
   C.PHCOL={NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA_PEAK:'var(--iva)',SHATTER:'var(--shatter)'};
@@ -430,7 +513,8 @@ const $=id=>document.getElementById(id),C=ToneFormsCore,K=C.K,clamp=C.clamp;
 const S={form:'spiral',tone:K.OMEGA0,dens:52,level:0,band:100,res:false,peel:100,core:0,
          cam:'orbit',rot:true,dist:2.00,yaw:0.62,pitch:0.42,pos:[0,0,0],invert:false,
          col:'tone',light:false,pxMul:2,
-         elGroups:{el:true,ere:true,sm:true,sp:true},elSym:'',elRead:'tau'};
+         elGroups:{el:true,ere:true,sm:true,sp:true},elSym:'',elRead:'tau',
+         beams:[],bmView:'overlap',designation:''};
 let G=null,NLIVE=0,PROJ=null,NPROJ=0;
 const cv=$('gl'),gx=cv.getContext('2d');let W=1180,H=860;
 const t0=performance.now();
@@ -460,9 +544,12 @@ CAM.view=name=>{const v=CAM.VIEWS[name]||CAM.VIEWS.free;S.cam='orbit';S.yaw=v.ya
   if(name==='free')S.dist=2.00;syncCam();};
 
 // ── live window
-function win(){let lvl=S.level/100;
-  if(S.res)lvl=(K.STORE-S.band/100*0.6)*Math.sin((performance.now()-t0)/2600*Math.PI*2);
-  return {lvl,bw:S.band/100,pOut:S.peel/100,pIn:S.core/100};}
+function win(){
+  const bw=S.band/100;
+  /* one sweep, handed out separately so the beam levels can take it too */
+  const osc=S.res?Math.sin((performance.now()-t0)/2600*Math.PI*2):0;
+  return {lvl:S.res?(K.STORE-bw*0.6)*osc:S.level/100,
+          osc, bw, pOut:S.peel/100, pIn:S.core/100};}
 
 // ── draw
 const NB=96,bk=[];for(let i=0;i<NB;i++)bk.push([]);
@@ -472,7 +559,21 @@ function draw(){
   const b=CAM.basis(),e=CAM.eye(b),St=K.STRIDE,cells=G.cells;
   const fx=b.f[0],fy=b.f[1],fz=b.f[2],rx=b.r[0],ry=b.r[1],rz=b.r[2],ux=b.u[0],uy=b.u[1],uz=b.u[2];
   const focal=(Math.min(W,H)*0.5)/Math.tan(K.FOV/2),cx=W/2,cy=H/2,near=K.NEAR;
-  const {lvl,bw,pOut,pIn}=win();
+  const {lvl,osc,bw,pOut,pIn}=win();
+  /* each beam opens a band at its own torsion; a cell inside several of them
+     is a site those beams satisfy at once */
+  const BL=beamList(), nbeam=BL.length;
+  /* the whole set rides one sweep, two band widths wide, so the beams keep
+     their spacing relative to each other while the figure breathes */
+  const bOsc=osc*Math.min(bw*2,K.STORE);
+  const BLV=BL.map(e=>elLevel(e)/100+bOsc);
+  const FO=nbeam>=2?C.fuseN(BL):null;
+  const fusedLvl=FO?Math.round(100*(FO.tau/K.TL<=0?0:(FO.tau/K.TL<1?0.30*FO.tau/K.TL:
+                 0.30+0.16*Math.tanh(Math.log10(FO.tau/K.TL)/1.5))))/100:0;
+  const useBeams=nbeam>=2&&S.bmView==='overlap';
+  const useFused=nbeam>=2&&S.bmView==='fused';
+  let allShared=0;
+  const DEPTH=[[60,90,140],[123,79,255],[240,192,96],[255,140,60],[255,245,210]];
   for(let i=0;i<NB;i++)bk[i].length=0;
   const stride=G.n>K.DRAWCAP?Math.ceil(G.n/K.DRAWCAP):1;
   if(!PROJ||PROJ.length<K.DRAWCAP*6)PROJ=new Float32Array(K.DRAWCAP*6);
@@ -480,28 +581,46 @@ function draw(){
   for(let i=0;i<G.n;i+=stride){
     const k=i*St,v=cells[k+3],r=cells[k+4];
     if(r<pIn||r>pOut)continue;
-    if(v<lvl-bw||v>lvl+bw)continue;
+    let depth=0;
+    if(useBeams){
+      for(let q=0;q<nbeam;q++)if(v>=BLV[q]-bw&&v<=BLV[q]+bw)depth++;
+      if(!depth)continue;
+      if(depth===nbeam)allShared++;
+    }else{
+      const L0=useFused?fusedLvl+bOsc:lvl;
+      if(v<L0-bw||v>L0+bw)continue;
+    }
     live++;
     const dx=cells[k]-e[0],dy=cells[k+1]-e[1],dz=cells[k+2]-e[2];
     const vz=dx*fx+dy*fy+dz*fz;if(vz<=near)continue;
     const sx=cx+(dx*rx+dy*ry+dz*rz)/vz*focal,sy=cy-(dx*ux+dy*uy+dz*uz)/vz*focal;
     if(sx<-8||sx>W+8||sy<-8||sy>H+8)continue;
-    bk[clamp(Math.floor(vz/6.5*NB),0,NB-1)].push(sx,sy,vz,v,r);
+    bk[clamp(Math.floor(vz/6.5*NB),0,NB-1)].push(sx,sy,vz,v,r,depth);
     PROJ[np*6]=sx;PROJ[np*6+1]=sy;PROJ[np*6+2]=vz;PROJ[np*6+3]=v;PROJ[np*6+4]=r;PROJ[np*6+5]=i;np++;
   }
   NLIVE=live;NPROJ=np;
   for(let i=NB-1;i>=0;i--){const a=bk[i],L=a.length;
-    for(let j=0;j<L;j+=5){
-      const px=a[j],py=a[j+1],vz=a[j+2],v=a[j+3],r=a[j+4],dn=clamp(1-vz/5.2,0,1);
-      let t;
-      if(S.col==='tone')t=(v+1)/2;
+    for(let j=0;j<L;j+=6){
+      const px=a[j],py=a[j+1],vz=a[j+2],v=a[j+3],r=a[j+4],side=a[j+5],dn=clamp(1-vz/5.2,0,1);
+      let t,pc=null;
+      if(useBeams)pc=DEPTH[clamp(Math.round((side-1)/Math.max(nbeam-1,1)*4),0,4)];
+      else
+      /* the normalized field value sits on the same axis as tau, so the
+         Torsion Limit boundaries read directly on each cell */
+      if(S.col==='phase'){const m=Math.abs(v);
+        pc=m===0?[0,255,200]:(m>=K.TL?[255,58,58]:(m>=K.TL_IVA?[240,192,96]:[123,79,255]));}
+      else if(S.col==='tone')t=(v+1)/2;
       else if(S.col==='level')t=1-clamp(Math.abs(v-lvl)/Math.max(bw,1e-6),0,1);
       else if(S.col==='shell')t=r;
       else t=dn;
-      const c=ramp(t),al=S.light?(0.18+0.62*dn):(0.12+0.82*dn*dn);
-      gx.fillStyle=`rgba(${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.round(c[2]*255)},${al.toFixed(3)})`;
+      const al=S.light?(0.18+0.62*dn):(0.12+0.82*dn*dn);
+      const c=pc||ramp(t).map(u=>Math.round(u*255));
+      gx.fillStyle=`rgba(${c[0]},${c[1]},${c[2]},${al.toFixed(3)})`;
       gx.fillRect(px,py,0.8+2.3*dn+clamp(1.4/vz,0,2.4),0.8+2.3*dn+clamp(1.4/vz,0,2.4));}}
   const d=Math.hypot(e[0],e[1],e[2]);
+  if(useBeams)$('bm-share').innerHTML=
+    `<span style="color:#fff5d2">${allShared.toLocaleString()}</span> · ${(100*allShared/Math.max(live,1)).toFixed(2)}%`;
+  else if(nbeam<2)$('bm-share').textContent='—';
   $('b-s').textContent=`${live.toLocaleString()} TL-cells lit · ${S.cam==='orbit'?'orbit':'walk'}${d<1?' · inside':''}${stride>1?' · every '+stride:''}`;
   $('k-l').textContent=live.toLocaleString();
   $('z-v').textContent=d.toFixed(2);
@@ -534,7 +653,35 @@ function readouts(){
   $('k-n').textContent=G?G.n.toLocaleString():'—';
   $('conv').innerHTML=q.map(v=>{const d=C.drift(v,S.tone),turns=Math.round(v*S.tone/360);
     return `<tr><td>${v.toLocaleString()}</td><td>${(v*S.tone).toFixed(3)}°</td><td>${turns}</td><td class="${Math.abs(d)<0.1?'ok':''}">${d>=0?'+':''}${d.toFixed(4)}°</td></tr>`;}).join('');
-  const e=currentEl();
+  const e=currentEl(), BL=beamList(), F=fusedOut();
+  $('bm-n').textContent=BL.length?BL.length+' beam'+(BL.length===1?'':'s'):'no beams';
+  $('bm-list').innerHTML=BL.length
+    ? BL.map(b=>`<span style="color:${C.PHCOL[C.phaseOf(b.P,b.B)]}">${b.sym}</span>`).join(' + ')
+    : '—';
+  if(F){
+    $('bm-pairs').textContent=F.pairs;
+    $('bm-k').textContent=`${F.sB.toFixed(3)} · ${F.k.toFixed(3)}`;
+    $('bm-bout').innerHTML=F.B===0
+      ? `<span style="color:#00ffc8">0 — closure</span>` : F.B.toFixed(6);
+    $('bm-pout').textContent=F.P.toFixed(8);
+    $('bm-tau').innerHTML=`<span style="color:${C.PHCOL[F.phase]}">${F.tau.toFixed(6)} ${F.phase}</span>`;
+    $('bm-im').textContent=F.IM.toFixed(6);
+    $('bm-res').innerHTML=F.rescue
+      ? `<span style="color:var(--gold)">yes — every pair Shatter, the body Noble</span>`
+      : (F.B===0?'closes without it':'—');
+    $('bm-spr').innerHTML=F.spread
+      ? `<span style="color:#00ffc8">${F.mx} ≤ ${(F.n-1)*F.mn} — closes</span>`
+      : (F.mn?`${F.mx} against ${(F.n-1)*F.mn} — read k directly`:'—');
+    $('bm-inert').textContent=F.inert.length?F.inert.join(', ')+' — no contribution to k':'none';
+    const bal=BL.length===2?C.bBalance(BL[0],BL[1]):null;
+    $('bm-bal').innerHTML=bal
+      ? `${bal.n1}&#215;${bal.sym1} : ${bal.n2}&#215;${bal.sym2}`
+      : (BL.length===2?'—':'two beams for a formula unit');
+    $('b-m').innerHTML=`<span style="color:${C.PHCOL[F.phase]}">${F.phase==='IVA_PEAK'?'IVA':F.phase}</span>`;
+  }else{
+    ['bm-pairs','bm-k','bm-bout','bm-pout','bm-tau','bm-im','bm-res','bm-spr','bm-inert','bm-bal']
+      .forEach(id=>$(id).textContent='—');
+  }
   ['kv-el','kv-pnba','kv-tau'].forEach(id=>$(id).style.display=e?'flex':'none');
   if(e){
     const ph=C.phaseOf(e.P,e.B),t=C.tau(e.P,e.B);
@@ -549,8 +696,8 @@ function readouts(){
     $('b-m').innerHTML=`<span style="color:${C.PHCOL[ph]}">${ph==='IVA_PEAK'?'IVA':ph}</span>`;
   }else{
     $('el-ph').textContent='—';$('el-lv').textContent='—';
-    $('b-m').textContent=q[0].toLocaleString()+' arms';
   }
+  if(!F&&!e)$('b-m').textContent=q[0].toLocaleString()+' arms';
   $('caption').innerHTML=`<b>${P.name}</b> · ${P.blurb} Tone ${S.tone}${P.kind==='step'?'° per step':', spacing '+C.periods(S.tone).toFixed(2)+'π'}. `+
     `Arm counts ${q.join(', ')} come straight off the continued fraction ${'['+a.slice(0,5).join(', ')+'…]'}; the first misses a full turn by ${C.drift(q[0],S.tone).toFixed(4)}°, and that miss is what winds the arms.`;
   $('form-note').innerHTML=`<b>${P.name}:</b> ${P.eq}`;
@@ -561,8 +708,18 @@ function readouts(){
     S.tone===K.TL_IVA?'IVA floor':S.tone===K.PHI_DEG?'golden angle':'custom';
   legend();
 }
-function legend(){const n={tone:'tone · field value',level:'nearness to the level',shell:'shell · center to surface',depth:'depth · far to near'}[S.col];
-  $('lg-t').textContent=n;
+function legend(){
+  $('lg-t').textContent={tone:'tone · field value',phase:'phase · torsion of the cell',
+    level:'nearness to the level',shell:'shell · center to surface',depth:'depth · far to near'}[S.col];
+  const bar=$('lg-b');
+  if(S.col==='phase'){
+    bar.style.background='linear-gradient(90deg,#00ffc8 0%,#00ffc8 4%,#7b4fff 4%,#7b4fff 60%,'+
+      '#f0c060 60%,#f0c060 68%,#ff3a3a 68%,#ff3a3a 100%)';
+    $('lg-r').innerHTML='<span style="color:#00ffc8">NOBLE</span>'+
+      '<span style="color:#7b4fff">LOCKED</span><span style="color:#f0c060">IVA</span>'+
+      '<span style="color:#ff3a3a">SHATTER</span>';
+    return;}
+  bar.style.background='linear-gradient(90deg,'+STOPS.map(s=>`rgb(${s[1].map(v=>Math.round(v*255))}) ${(s[0]*100).toFixed(0)}%`).join(',')+')';
   $('lg-r').innerHTML=S.col==='tone'?'<span>−1</span><span>+1</span>':S.col==='shell'?'<span>center</span><span>surface</span>':
     S.col==='depth'?'<span>far</span><span>near</span>':'<span>edge of band</span><span>on the level</span>';}
 
@@ -594,11 +751,12 @@ function syncAll(){
   document.body.classList.toggle('lightbg',S.light);
   $('rot').classList.toggle('on',S.rot);
   ['form','form2'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.form)));
-  ['tpre','tpre2'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.tone)));
-  $('col').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.col));
+  ['tpre','tpre2','tpre3'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.tone)));
+  ['col','col2'].forEach(g=>$(g).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.col)));
   $('elgrp').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',!!S.elGroups[b.dataset.v]));
   $('elread').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.elRead));
   buildElSel();
+  $('bmview').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.bmView));
   syncCam();notes();}
 
 // ── controls
@@ -640,10 +798,42 @@ function pickEl(){
   if(!e){$('el-ph').textContent='—';readouts();draw();return;}
   S.level=elLevel(e);
   syncAll();readouts();draw();}
+const byKey=k=>{const[g,s]=k.split(':');return C.all().find(e=>e.grp===g&&e.sym===s)||null;};
+const beamList=()=>S.beams.map(b=>typeof b==='string'?byKey(b):b).filter(Boolean);
+/* a GAM Collider file states each beam's symbol and its full PNBA, so it loads
+   on its own terms — the symbol need not be one of the 165 carried here */
+function parseLean(txt){
+  const out=[], re=/^\s*--\s*Beam\s*\d+\s*:\s*(\S+)\s+P=([-\d.eE+]+)\s+N=([-\d.eE+]+)\s+B=([-\d.eE+]+)\s+A=([-\d.eE+]+)/gm;
+  let m; while((m=re.exec(txt)))out.push({sym:m[1],P:+m[2],N:+m[3],B:+m[4],A:+m[5]});
+  const g=(re2)=>{const r=txt.match(re2);return r?r[1].trim():'';};
+  return {beams:out, des:g(/Designation:\s*(\S+)/), im:g(/^\s*--\s*IM:\s*([\d.]+)/m),
+          phase:g(/^\s*--\s*Phase:\s*([A-Z_]+)/m), coll:g(/^\s*--\s*Collision:\s*(.+?)\s*(?:·|$)/m)};}
+function loadLean(txt){
+  const P=parseLean(txt);
+  if(!P.beams.length){$('lean-note').innerHTML='<span style="color:var(--gold)">no beam lines found in that text</span>';return;}
+  S.beams=P.beams.slice(0,8).map(b=>{
+    const e=C.all().find(x=>x.sym===b.sym&&Math.abs(x.P-b.P)<1e-6&&Math.abs(x.B-b.B)<1e-6);
+    return e?e.grp+':'+e.sym:{grp:'file',sym:b.sym,name:b.sym+' from file',P:b.P,N:b.N,B:b.B,A:b.A};});
+  S.designation=P.des||'';
+  const known=S.beams.filter(b=>typeof b==='string').length;
+  syncAll();readouts();draw();
+  const F=fusedOut();
+  const agree=F&&P.im?Math.abs(F.IM-parseFloat(P.im))<5e-6:null;
+  $('lean-note').innerHTML=
+    `<b>${P.des||'collider file'}</b> \u00b7 ${P.coll||''}<br>`+
+    `${P.beams.length} beams loaded, ${known} matched in corpus<br>`+
+    (P.im?`file IM ${P.im} \u00b7 page ${F?F.IM.toFixed(6):'\u2014'} `+
+      (agree?'<span style="color:#00ffc8">agree</span>':'<span style="color:var(--gold)">differ</span>'):'')+
+    (P.phase?`<br>file phase ${P.phase} \u00b7 page ${F?F.phase:'\u2014'}`:'');}
+const fusedOut=()=>{const L=beamList();return L.length>=2?C.fuseN(L):null;};
+function addBeam(k){if(k&&S.beams.length<8){S.beams.push(k);syncAll();readouts();draw();}}
+function setBeams(syms){
+  S.beams=syms.map(s=>{const e=C.all().find(x=>x.sym===s);return e?e.grp+':'+e.sym:null;}).filter(Boolean);
+  syncAll();readouts();draw();}
 function pushTone(){                       /* one-shot: send the chosen reading to the tone */
   const e=currentEl();if(!e)return;
   setTone(elReading(e));}
-['tpre','tpre2'].forEach(id=>seg(id,v=>setTone(v)));
+['tpre','tpre2','tpre3'].forEach(id=>seg(id,v=>setTone(v)));
 $('tone').addEventListener('change',e=>setTone(e.target.value));
 $('tone').addEventListener('keydown',e=>{if(e.key==='Enter')setTone(e.target.value);});
 $('dens').oninput=e=>{S.dens=+e.target.value;notes();rebuildSoon();};
@@ -653,7 +843,9 @@ $('res').onchange=e=>{S.res=e.target.checked;notes();};
 $('light').onchange=e=>{S.light=e.target.checked;document.body.classList.toggle('lightbg',S.light);draw();};
 $('inv').onchange=e=>{S.invert=e.target.checked;};
 $('pxMul').oninput=e=>{S.pxMul=+e.target.value;notes();};
-seg('col',v=>{S.col=v;$('col').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===v));legend();draw();});
+['col','col2'].forEach(id=>seg(id,v=>{S.col=v;
+  ['col','col2'].forEach(g=>$(g).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===v)));
+  legend();draw();}));
 seg('camm',v=>{if(v==='walk')CAM.toWalk();else S.cam='orbit';syncCam();notes();cv.focus();draw();});
 seg('vpre',v=>{CAM.view(v);notes();draw();});
 $('rot').onclick=()=>{S.rot=!S.rot;$('rot').classList.toggle('on',S.rot);};
@@ -667,6 +859,16 @@ seg('elread',v=>{S.elRead=v;
   $('elread').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   notes();});
 $('el-push').onclick=pushTone;
+$('bm-add').onclick=()=>addBeam(S.elSym);
+$('bm-pre').onchange=e=>{if(e.target.value)setBeams(e.target.value.split(','));};
+$('bm-clear').onclick=()=>{S.beams=[];$('lean-note').innerHTML='';syncAll();readouts();draw();};
+$('bm-paste').onclick=()=>{const b=$('lean-box');
+  b.style.display=b.style.display==='none'?'block':'none';
+  if(b.style.display==='block')$('lean-txt').focus();};
+$('lean-go').onclick=()=>loadLean($('lean-txt').value);
+seg('bmview',v=>{S.bmView=v;
+  $('bmview').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  draw();});
 $('el-clear').onclick=()=>{S.elSym='';S.level=0;syncAll();readouts();draw();};
 
 // ── pointer
@@ -729,9 +931,19 @@ function dl(blob,name){const a=document.createElement('a');a.href=URL.createObje
   document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);}
 const stem=()=>'toneform-'+S.form+'-'+String(S.tone).replace(/[^0-9]/g,'').slice(0,10);
 const io=m=>$('io-note').textContent=m||'';
-function pack(){return {v:1,tool:'ToneForms by AxiomForge',url:'https://uuia.app/toneforms',
+function pack(){
+  const BL=beamList(), F=BL.length>=2?C.fuseN(BL):null;
+  return {v:2,tool:'ToneForms by AxiomForge',url:'https://uuia.app/toneforms',
+  saved:new Date().toISOString(),
+  engine:'GAM Collider v15 n-body [9,9,2,3] · P_out = n/(sum 1/Pi) at every beam count',
+  designation:S.designation||'',
+  /* written out in full so the record stands without the corpus */
+  beamsPNBA:BL.map(e=>({sym:e.sym,name:e.name,P:e.P,N:e.N,B:e.B,A:e.A,
+                        tau:C.tau(e.P,e.B),phase:C.phaseOf(e.P,e.B)})),
+  fused:F?{n:F.n,pairs:F.pairs,sumB:F.sB,k_max:F.k,P_out:F.P,N_out:F.N,B_out:F.B,A_out:F.A,
+           tau_out:F.tau,phase:F.phase,IM:F.IM,rescue:F.rescue,spread:F.spread}:null,
   form:S.form,tone:S.tone,dens:S.dens,level:S.level,band:S.band,res:S.res,peel:S.peel,core:S.core,
-  col:S.col,light:S.light,invert:S.invert,elSym:S.elSym,elRead:S.elRead,elGroups:S.elGroups,
+  col:S.col,light:S.light,invert:S.invert,elSym:S.elSym,elRead:S.elRead,elGroups:S.elGroups,beams:S.beams.slice(),bmView:S.bmView,
   cam:S.cam,rot:S.rot,dist:S.dist,yaw:S.yaw,pitch:S.pitch,pos:S.pos.slice()};}
 function apply(o){
   if(!o||typeof o!=='object')return false;
@@ -739,6 +951,17 @@ function apply(o){
   if(isFinite(o.tone)&&o.tone>=0)S.tone=+o.tone;
   if(typeof o.elSym==='string')S.elSym=o.elSym;
   if(o.elRead)S.elRead=o.elRead;
+  if(Array.isArray(o.beams)){
+    const PN=Array.isArray(o.beamsPNBA)?o.beamsPNBA:[];
+    S.beams=o.beams.slice(0,8).map((b,i)=>{
+      if(typeof b!=='string')return b;
+      if(byKey(b))return b;
+      const p=PN[i];                        /* the file carried it, so use that */
+      return p?{grp:'file',sym:p.sym,name:p.name||p.sym,P:p.P,N:p.N,B:p.B,A:p.A}:b;
+    }).filter(Boolean);
+  }
+  if(typeof o.designation==='string')S.designation=o.designation;
+  if(o.bmView)S.bmView=o.bmView;
   if(o.elGroups)S.elGroups=Object.assign({el:true,ere:true,sm:true,sp:true},o.elGroups);
   if(isFinite(o.dens))S.dens=clamp(Math.round(o.dens),18,112);
   if(isFinite(o.level))S.level=clamp(+o.level,-100,100);
@@ -797,7 +1020,17 @@ $('x-json').onclick=()=>{dl(new Blob([JSON.stringify(pack(),null,2)],{type:'appl
 $('x-load').onclick=()=>$('loadFile').click();
 $('loadFile').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
   const fr=new FileReader();
-  fr.onload=()=>{try{apply(JSON.parse(fr.result));syncAll();rebuild();io('loaded '+f.name);}
+  fr.onload=()=>{try{
+        const o=JSON.parse(fr.result);
+        apply(o);syncAll();rebuild();
+        const F=fusedOut();
+        let msg='loaded '+f.name;
+        if(o.fused&&F){
+          const ok=Math.abs(F.IM-o.fused.IM)<1e-9&&F.phase===o.fused.phase;
+          msg+=ok?` · IM ${F.IM.toFixed(6)} ${F.phase}, matches the record`
+                 :` · record says IM ${o.fused.IM} ${o.fused.phase}, this build reads ${F.IM.toFixed(6)} ${F.phase}`;
+        }
+        io(msg);}
                  catch(err){io('that file did not read as a toneform');}};
   fr.readAsText(f);e.target.value='';};
 $('x-link').onclick=()=>{const u=location.origin+location.pathname+'#t='+encodeURIComponent(JSON.stringify(pack()));
