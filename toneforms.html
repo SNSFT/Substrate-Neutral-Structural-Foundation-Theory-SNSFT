@@ -273,6 +273,9 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
     <div class="kv"><span id="k-sl">Spacing</span><span id="k-s">—</span></div>
     <div class="kv"><span>TL-cells stored</span><span id="k-n">—</span></div>
     <div class="kv"><span>TL-cells lit</span><span id="k-l">—</span></div>
+    <div class="kv"><span>Relative density</span><span id="k-rd">—</span></div>
+    <div class="note l-only" style="margin-top:6px">Relative density is how much of the ball the figure fills. A low number is a light, open structure; a high number is a dense one.</div>
+    <div class="note r-only" style="margin-top:6px">Relative density is the lit fraction of the stored cells, read over the whole ball independently of the peel. It is the same quantity a lattice design calls relative density, a block copolymer phase diagram calls volume fraction and a photonic band calculation calls fill fraction — the level-set parameter. Here it is an output of the substrate's torsion rather than a dial.</div>
     <div class="kv" id="kv-el" style="display:none"><span>Entry</span><span id="k-el">—</span></div>
     <div class="kv" id="kv-pnba" style="display:none"><span>P · N · B · A</span><span id="k-pnba">—</span></div>
     <div class="kv" id="kv-tau" style="display:none"><span>τ = B/P</span><span id="k-tau">—</span></div>
@@ -514,7 +517,10 @@ const S={form:'spiral',tone:K.OMEGA0,dens:52,level:0,band:100,res:false,peel:100
          cam:'orbit',rot:true,dist:2.00,yaw:0.62,pitch:0.42,pos:[0,0,0],invert:false,
          col:'tone',light:false,pxMul:2,
          elGroups:{el:true,ere:true,sm:true,sp:true},elSym:'',elRead:'tau',
-         beams:[],bmView:'overlap',designation:''};
+         beams:[],bmView:'overlap',designation:'',
+         /* the opening figure is an example; CLEAR empties the view and it
+            stays empty until an entry or a beam is loaded */
+         cleared:false};
 let G=null,NLIVE=0,PROJ=null,NPROJ=0;
 const cv=$('gl'),gx=cv.getContext('2d');let W=1180,H=860;
 const t0=performance.now();
@@ -556,6 +562,16 @@ const NB=96,bk=[];for(let i=0;i<NB;i++)bk.push([]);
 function draw(){
   if(!G)return;
   gx.clearRect(0,0,W,H);
+  /* CLEAR empties the view: with no entry and no beams the canvas stays
+     empty until something is loaded, rather than falling back to the level */
+  if(S.cleared&&!currentEl()&&!S.beams.length){
+    NLIVE=0;NPROJ=0;
+    $('k-l').textContent='0';
+    $('k-rd').textContent='0.00 %';
+    $('bm-share').textContent='\u2014';
+    $('b-s').textContent='view cleared \u00b7 load an entry or a beam';
+    $('z-v').textContent=Math.hypot.apply(null,CAM.eye(CAM.basis())).toFixed(2);
+    return;}
   const b=CAM.basis(),e=CAM.eye(b),St=K.STRIDE,cells=G.cells;
   const fx=b.f[0],fy=b.f[1],fz=b.f[2],rx=b.r[0],ry=b.r[1],rz=b.r[2],ux=b.u[0],uy=b.u[1],uz=b.u[2];
   const focal=(Math.min(W,H)*0.5)/Math.tan(K.FOV/2),cx=W/2,cy=H/2,near=K.NEAR;
@@ -577,19 +593,24 @@ function draw(){
   for(let i=0;i<NB;i++)bk[i].length=0;
   const stride=G.n>K.DRAWCAP?Math.ceil(G.n/K.DRAWCAP):1;
   if(!PROJ||PROJ.length<K.DRAWCAP*6)PROJ=new Float32Array(K.DRAWCAP*6);
-  let live=0,np=0;
+  let live=0,np=0,seen=0,inBand=0;
   for(let i=0;i<G.n;i+=stride){
     const k=i*St,v=cells[k+3],r=cells[k+4];
-    if(r<pIn||r>pOut)continue;
-    let depth=0;
+    /* the band test stands on its own so relative density reads the whole
+       ball at the same sampling, whether or not a peel is open */
+    seen++;
+    let depth=0,lit;
     if(useBeams){
       for(let q=0;q<nbeam;q++)if(v>=BLV[q]-bw&&v<=BLV[q]+bw)depth++;
-      if(!depth)continue;
-      if(depth===nbeam)allShared++;
+      lit=depth>0;
     }else{
       const L0=useFused?fusedLvl+bOsc:lvl;
-      if(v<L0-bw||v>L0+bw)continue;
+      lit=!(v<L0-bw||v>L0+bw);
     }
+    if(lit)inBand++;
+    if(r<pIn||r>pOut)continue;
+    if(!lit)continue;
+    if(useBeams&&depth===nbeam)allShared++;
     live++;
     const dx=cells[k]-e[0],dy=cells[k+1]-e[1],dz=cells[k+2]-e[2];
     const vz=dx*fx+dy*fy+dz*fz;if(vz<=near)continue;
@@ -623,6 +644,7 @@ function draw(){
   else if(nbeam<2)$('bm-share').textContent='—';
   $('b-s').textContent=`${live.toLocaleString()} TL-cells lit · ${S.cam==='orbit'?'orbit':'walk'}${d<1?' · inside':''}${stride>1?' · every '+stride:''}`;
   $('k-l').textContent=live.toLocaleString();
+  $('k-rd').textContent=seen?(100*inBand/seen).toFixed(2)+' %':'—';
   $('z-v').textContent=d.toFixed(2);
 }
 
@@ -811,6 +833,7 @@ function parseLean(txt){
 function loadLean(txt){
   const P=parseLean(txt);
   if(!P.beams.length){$('lean-note').innerHTML='<span style="color:var(--gold)">no beam lines found in that text</span>';return;}
+  S.cleared=false;
   S.beams=P.beams.slice(0,8).map(b=>{
     const e=C.all().find(x=>x.sym===b.sym&&Math.abs(x.P-b.P)<1e-6&&Math.abs(x.B-b.B)<1e-6);
     return e?e.grp+':'+e.sym:{grp:'file',sym:b.sym,name:b.sym+' from file',P:b.P,N:b.N,B:b.B,A:b.A};});
@@ -826,9 +849,10 @@ function loadLean(txt){
       (agree?'<span style="color:#00ffc8">agree</span>':'<span style="color:var(--gold)">differ</span>'):'')+
     (P.phase?`<br>file phase ${P.phase} \u00b7 page ${F?F.phase:'\u2014'}`:'');}
 const fusedOut=()=>{const L=beamList();return L.length>=2?C.fuseN(L):null;};
-function addBeam(k){if(k&&S.beams.length<8){S.beams.push(k);syncAll();readouts();draw();}}
+function addBeam(k){if(k&&S.beams.length<8){S.beams.push(k);S.cleared=false;syncAll();readouts();draw();}}
 function setBeams(syms){
   S.beams=syms.map(s=>{const e=C.all().find(x=>x.sym===s);return e?e.grp+':'+e.sym:null;}).filter(Boolean);
+  if(S.beams.length)S.cleared=false;
   syncAll();readouts();draw();}
 function pushTone(){                       /* one-shot: send the chosen reading to the tone */
   const e=currentEl();if(!e)return;
@@ -854,14 +878,14 @@ $('rot').onclick=()=>{S.rot=!S.rot;$('rot').classList.toggle('on',S.rot);};
 seg('elgrp',(v,b)=>{S.elGroups[v]=!S.elGroups[v];b.classList.toggle('on',S.elGroups[v]);
   if(!elList().some(e=>e.grp+':'+e.sym===S.elSym))S.elSym='';
   buildElSel();readouts();});
-$('elsel').onchange=e=>{S.elSym=e.target.value;pickEl();};
+$('elsel').onchange=e=>{S.elSym=e.target.value;if(S.elSym)S.cleared=false;pickEl();};
 seg('elread',v=>{S.elRead=v;
   $('elread').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   notes();});
 $('el-push').onclick=pushTone;
 $('bm-add').onclick=()=>addBeam(S.elSym);
-$('bm-pre').onchange=e=>{if(e.target.value)setBeams(e.target.value.split(','));};
-$('bm-clear').onclick=()=>{S.beams=[];$('lean-note').innerHTML='';syncAll();readouts();draw();};
+$('bm-pre').onchange=e=>{if(e.target.value){S.cleared=false;setBeams(e.target.value.split(','));}};
+$('bm-clear').onclick=()=>{S.beams=[];S.cleared=true;$('lean-note').innerHTML='';syncAll();readouts();draw();};
 $('bm-paste').onclick=()=>{const b=$('lean-box');
   b.style.display=b.style.display==='none'?'block':'none';
   if(b.style.display==='block')$('lean-txt').focus();};
@@ -869,7 +893,7 @@ $('lean-go').onclick=()=>loadLean($('lean-txt').value);
 seg('bmview',v=>{S.bmView=v;
   $('bmview').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   draw();});
-$('el-clear').onclick=()=>{S.elSym='';S.level=0;syncAll();readouts();draw();};
+$('el-clear').onclick=()=>{S.elSym='';S.level=0;S.cleared=true;syncAll();readouts();draw();};
 
 // ── pointer
 let drag=false,lx=0,ly=0;
