@@ -103,9 +103,15 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
 
 <div id="left">
   <div class="sec">
-    <div class="st">FORM</div>
+    <div class="st">FORM &middot; LEGACY &mdash; the nets the record named</div>
     <div class="seg" id="form"><button class="btn on" data-v="spiral">STEPPED SHELLS</button><button class="btn" data-v="gyroid">GYROID</button></div>
     <div class="seg" id="form2"><button class="btn" data-v="schwarz">SCHWARZ P</button><button class="btn" data-v="diamond">DIAMOND</button></div>
+    <div class="st" style="margin-top:9px">FORM &middot; TL &mdash; the row continued off b&#8320;</div>
+    <div class="seg" id="form3"><button class="btn" data-v="chain">CHAIN &middot; B2</button><button class="btn" data-v="iwp">I-WP &middot; B8</button></div>
+    <div class="seg" id="form4"><button class="btn" data-v="frd">F-RD &middot; B12</button></div>
+    <div class="st" style="margin-top:9px">RUNG &middot; P = B &middot; b&#8320;&#8319;</div>
+    <div class="seg" id="rung"><button class="btn on" data-v="0">0</button><button class="btn" data-v="1">1 &middot; &radic;TL</button><button class="btn" data-v="2">2 &middot; TL</button><button class="btn" data-v="3">3</button></div>
+    <div class="note" id="rung-note" style="margin-top:4px"></div>
     <div class="note" id="form-note" style="margin-top:4px"></div>
     <div class="note l-only"><p>Every form here is made of tiny cubes called <b>TL-cells</b>, the same cells that fill a planet in IMatter. A cell lights up when the tone's wave passes through zero at that spot, so what you see is the shape the tone draws in a solid ball.</p></div>
     <div class="note r-only"><p>Each form is a scalar field sampled on a cubic grid clipped to the unit ball. A TL-cell carries its own field value and its own radius, so the level, the band and the peel are read per frame off the stored cells rather than rebuilt. Stepped shells carry the angular residue as the cell value; the three surfaces carry the normalized nodal function.</p></div>
@@ -332,26 +338,41 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
 // ════════════════════════════════════════════════════════════
 const ToneFormsCore=(()=>{
   const K={OMEGA0:1.36899099984016,TL:0.136899099984016,TL_IVA:0.12047120798593408,S_RUN:1.04,
+           B0:2.702711586879570,SQRT_TL:0.369998783760185,
            FLOOR:0.88,PHI_DEG:137.50776405003785,
            BASE:1.36899099984016*1.15,CELLCAP:240000,DRAWCAP:110000,STORE:0.46,
            NEAR:0.02,FOV:60*Math.PI/180,PMAX:Math.PI/2,STRIDE:5};
   const POOL={
-    spiral:{name:'Stepped shells',kind:'step',vmax:0.5,shells:22,band:100,
+    spiral:{name:'Stepped shells',kind:'step',vmax:0.5,shells:22,band:100,grp:'legacy',
       eq:'nested shells, each stepped by the tone',
       blurb:'Points march around nested shells, turning by the tone each time.'},
-    gyroid:{name:'Gyroid',kind:'field',vmax:1.5,band:6,
+    gyroid:{name:'Gyroid',kind:'field',vmax:1.5,band:6,b:3,net:'srs',grp:'legacy',
       eq:'sin x cos y + sin y cos z + sin z cos x = 0',
       blurb:'The gyroid: one surface, two channels, no straight lines anywhere in it.',
       f:(x,y,z)=>Math.sin(x)*Math.cos(y)+Math.sin(y)*Math.cos(z)+Math.sin(z)*Math.cos(x)},
-    schwarz:{name:'Schwarz P',kind:'field',vmax:3.0,band:6,
+    schwarz:{name:'Schwarz P',kind:'field',vmax:3.0,band:6,b:6,net:'pcu',grp:'legacy',
       eq:'cos x + cos y + cos z = 0',
       blurb:'Schwarz P: the simplest of them, a lattice of round openings on every face.',
       f:(x,y,z)=>Math.cos(x)+Math.cos(y)+Math.cos(z)},
-    diamond:{name:'Diamond',kind:'field',vmax:2.0,band:6,
+    diamond:{name:'Diamond',kind:'field',vmax:2.0,band:6,b:4,net:'dia',grp:'legacy',
       eq:'four-term diamond surface = 0',
       blurb:'Schwarz D: each of its two channels traces the diamond lattice itself.',
       f:(x,y,z)=>{const sx=Math.sin(x),sy=Math.sin(y),sz=Math.sin(z),cx=Math.cos(x),cy=Math.cos(y),cz=Math.cos(z);
-        return sx*sy*sz+sx*cy*cz+cx*sy*cz+cx*cy*sz;}}
+        return sx*sy*sz+sx*cy*cz+cx*sy*cz+cx*cy*sz;}},
+    chain:{name:'Chain',kind:'field',vmax:1.0,band:9,b:2,net:'—',grp:'tl',
+      eq:'cos z = 0  ·  B = 2',
+      blurb:'Coordination two: the degenerate end of the row, a stack of sheets.',
+      f:(x,y,z)=>Math.cos(z)},
+    iwp:{name:'I-WP',kind:'field',vmax:5.0,band:11,b:8,net:'bcu',grp:'tl',
+      eq:'2(cos x cos y + cos y cos z + cos z cos x) − (cos 2x + cos 2y + cos 2z) = 0  ·  B = 8',
+      blurb:'Coordination eight, the body-centred net: one labyrinth of fat pillars, one of thin.',
+      f:(x,y,z)=>{const cx=Math.cos(x),cy=Math.cos(y),cz=Math.cos(z);
+        return 2*(cx*cy+cy*cz+cz*cx)-(Math.cos(2*x)+Math.cos(2*y)+Math.cos(2*z));}},
+    frd:{name:'F-RD',kind:'field',vmax:7.0,band:6,b:12,net:'fcu',grp:'tl',
+      eq:'4 cos x cos y cos z − (cos2x cos2y + cos2y cos2z + cos2z cos2x) = 0  ·  B = 12',
+      blurb:'Coordination twelve, the close-packed net: the densest rung the row reaches.',
+      f:(x,y,z)=>{const c2x=Math.cos(2*x),c2y=Math.cos(2*y),c2z=Math.cos(2*z);
+        return 4*Math.cos(x)*Math.cos(y)*Math.cos(z)-(c2x*c2y+c2y*c2z+c2z*c2x);}}
   };
   const clamp=(v,a,b)=>v<a?a:(v>b?b:v);
   const C={K,POOL,clamp};
@@ -476,13 +497,18 @@ const ToneFormsCore=(()=>{
     return t>=K.TL?'SHATTER':(t>=K.TL_IVA?'IVA_PEAK':'LOCKED');};
   C.PHCOL={NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA_PEAK:'var(--iva)',SHATTER:'var(--shatter)'};
   /* tone 0 is the Noble limit: spacing runs to the ceiling */
-  C.scaleOf=tone=>tone>0?clamp(Math.PI*K.BASE/tone,0.2*Math.PI,14*Math.PI):14*Math.PI;
-  C.periods=tone=>C.scaleOf(tone)/Math.PI;
+  C.scaleOf=(tone,rung)=>{const base=tone>0?clamp(Math.PI*K.BASE/tone,0.2*Math.PI,14*Math.PI):14*Math.PI;
+    return base*Math.pow(K.B0,rung||0);};
+  C.periods=(tone,rung)=>C.scaleOf(tone,rung)/Math.PI;
+  /* the energy ladder [9,9,8,12]: tau_A = b0^-n, eta = TL^n/2, P = B*b0^n */
+  C.tauA=n=>Math.pow(K.B0,-n);
+  C.eta=n=>Math.pow(K.TL,n)/2;
+  C.patternAt=(b,n)=>b*Math.pow(K.B0,n);
   C.cf=(x,n)=>{const a=[];let v=x;for(let i=0;i<n;i++){const w=Math.floor(v);a.push(w);const f=v-w;if(f<1e-11)break;v=1/f;}return a;};
   C.convergents=a=>{let p0=1,q0=0,p1=a[0],q1=1;const o=[];for(let i=1;i<a.length;i++){const p2=a[i]*p1+p0,q2=a[i]*q1+q0;p0=p1;q0=q1;p1=p2;q1=q2;o.push(q1);}return o;};
   C.drift=(q,tone)=>{let r=(q*tone)%360;if(r>180)r-=360;if(r<-180)r+=360;return r;};
   // fill: one pass, writes x y z value radius per cell
-  C.fill=(form,tone,n)=>{
+  C.fill=(form,tone,n,rung)=>{
     const P=POOL[form],cap=K.CELLCAP,S=K.STRIDE,buf=new Float32Array(cap*S);let c=0;
     if(P.kind==='step'){
       const shells=P.shells,total=n*n*8,wsum=(shells+1)*(2*shells+1)/(6*shells);let idx=0;
@@ -494,7 +520,7 @@ const ToneFormsCore=(()=>{
           buf[c*S+3]=v/P.vmax;buf[c*S+4]=rad;c++;}}
       return {cells:buf,n:c,h:2/Math.cbrt(Math.max(c,1)),grid:n};
     }
-    const sc=C.scaleOf(tone),f=P.f,iv=P.vmax,st=K.STORE;
+    const sc=C.scaleOf(tone,rung),f=P.f,iv=P.vmax,st=K.STORE;
     outer:
     for(let i=0;i<n;i++){const x=(i/(n-1))*2-1;
       for(let j=0;j<n;j++){const y=(j/(n-1))*2-1;
@@ -513,7 +539,7 @@ const ToneFormsCore=(()=>{
 // UI
 // ════════════════════════════════════════════════════════════
 const $=id=>document.getElementById(id),C=ToneFormsCore,K=C.K,clamp=C.clamp;
-const S={form:'spiral',tone:K.OMEGA0,dens:52,level:0,band:100,res:false,peel:100,core:0,
+const S={form:'spiral',tone:K.OMEGA0,dens:52,level:0,band:100,res:false,peel:100,core:0,rung:0,
          cam:'orbit',rot:true,dist:2.00,yaw:0.62,pitch:0.42,pos:[0,0,0],invert:false,
          col:'tone',light:false,pxMul:2,
          elGroups:{el:true,ere:true,sm:true,sp:true},elSym:'',elRead:'tau',
@@ -662,7 +688,7 @@ function readouts(){
     $('k-h').textContent=G?G.h.toFixed(4)+' of the radius':'—';
     $('k-p').textContent='—';$('k-sp').textContent='—';
   }else{
-    const per=C.periods(S.tone),sp=S.dens/Math.max(per,1e-9);
+    const per=C.periods(S.tone,S.rung),sp=S.dens/Math.max(per,1e-9);
     $('k-sl').textContent='Spacing';
     $('k-s').innerHTML=per>=13.999
       ? `14.000 π <span style="color:var(--gold)">at the ceiling</span>`
@@ -720,11 +746,16 @@ function readouts(){
     $('el-ph').textContent='—';$('el-lv').textContent='—';
   }
   if(!F&&!e)$('b-m').textContent=q[0].toLocaleString()+' arms';
-  $('caption').innerHTML=`<b>${P.name}</b> · ${P.blurb} Tone ${S.tone}${P.kind==='step'?'° per step':', spacing '+C.periods(S.tone).toFixed(2)+'π'}. `+
+  $('caption').innerHTML=`<b>${P.name}</b> · ${P.blurb} Tone ${S.tone}${P.kind==='step'?'° per step':', spacing '+C.periods(S.tone,S.rung).toFixed(2)+'π'}. `+
     `Arm counts ${q.join(', ')} come straight off the continued fraction ${'['+a.slice(0,5).join(', ')+'…]'}; the first misses a full turn by ${C.drift(q[0],S.tone).toFixed(4)}°, and that miss is what winds the arms.`;
   $('form-note').innerHTML=`<b>${P.name}:</b> ${P.eq}`;
+  if(P.kind==='field'&&P.b){
+    const n=S.rung,Pat=C.patternAt(P.b,n);
+    $('rung-note').innerHTML=`Rung ${n} &middot; &tau;<sub>A</sub> = ${C.tauA(n).toFixed(8)} &middot; &eta; = ${(100*C.eta(n)).toFixed(5)}% &middot; `+
+      `<b>P = ${P.b} &middot; b&#8320;<sup>${n}</sup> = ${Pat.toFixed(4)}</b> &middot; &tau; = B/P = ${(P.b/Pat).toFixed(8)}`;
+  } else $('rung-note').innerHTML='The rung acts on the nodal surfaces. Stepped shells take the tone directly.';
   $('tone-v').textContent=S.tone===0?(P.kind==='step'?'0° — the shells register with zero drift':'spacing at the ceiling')
-    :(P.kind==='step'?S.tone.toFixed(6)+'° per step':C.periods(S.tone).toFixed(3)+'π spacing');
+    :(P.kind==='step'?S.tone.toFixed(6)+'° per step':C.periods(S.tone,S.rung).toFixed(3)+'π spacing');
   $('tone-k').textContent=S.tone===0?'zero impedance · the Noble limit':
     S.tone===K.OMEGA0?'Sovereign Anchor Constant':S.tone===K.TL?'Torsion Limit':
     S.tone===K.TL_IVA?'IVA floor':S.tone===K.PHI_DEG?'golden angle':'custom';
@@ -748,7 +779,7 @@ function legend(){
 // ── build
 function rebuild(){
   $('busy').style.display='block';
-  setTimeout(()=>{G=C.fill(S.form,S.tone,S.dens);readouts();draw();$('busy').style.display='none';},20);
+  setTimeout(()=>{G=C.fill(S.form,S.tone,S.dens,S.rung);readouts();draw();$('busy').style.display='none';},20);
 }
 let reT=null;const rebuildSoon=()=>{if(reT)clearTimeout(reT);reT=setTimeout(()=>{reT=null;rebuild();},130);};
 
@@ -772,7 +803,8 @@ function syncAll(){
   $('res').checked=S.res;$('light').checked=S.light;$('inv').checked=S.invert;
   document.body.classList.toggle('lightbg',S.light);
   $('rot').classList.toggle('on',S.rot);
-  ['form','form2'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.form)));
+  ['form','form2','form3','form4'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.form)));
+  $('rung').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.rung));
   ['tpre','tpre2','tpre3'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.tone)));
   ['col','col2'].forEach(g=>$(g).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.col)));
   $('elgrp').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',!!S.elGroups[b.dataset.v]));
@@ -783,7 +815,8 @@ function syncAll(){
 
 // ── controls
 function seg(id,fn){$(id).querySelectorAll('.btn').forEach(b=>b.onclick=()=>fn(b.dataset.v,b));}
-['form','form2'].forEach(id=>seg(id,v=>{S.form=v;S.band=C.POOL[v].band;syncAll();rebuild();}));
+['form','form2','form3','form4'].forEach(id=>seg(id,v=>{S.form=v;S.band=C.POOL[v].band;syncAll();rebuild();}));
+seg('rung',v=>{S.rung=+v;syncAll();rebuild();});
 function setTone(v){
   const x=parseFloat(v);
   if(!isFinite(x)||x<0)return;            /* 0 is the Noble limit, so it is allowed */
@@ -953,7 +986,7 @@ function walkStep(){
 // ── export
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;
   document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);}
-const stem=()=>'toneform-'+S.form+'-'+String(S.tone).replace(/[^0-9]/g,'').slice(0,10);
+const stem=()=>'toneform-'+S.form+(S.rung?'-r'+S.rung:'')+'-'+String(S.tone).replace(/[^0-9]/g,'').slice(0,10);
 const io=m=>$('io-note').textContent=m||'';
 function pack(){
   const BL=beamList(), F=BL.length>=2?C.fuseN(BL):null;
