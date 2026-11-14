@@ -109,6 +109,11 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
     <div class="st" style="margin-top:9px">FORM &middot; TL &mdash; the row continued off b&#8320;</div>
     <div class="seg" id="form3"><button class="btn" data-v="chain">CHAIN &middot; B2</button><button class="btn" data-v="iwp">I-WP &middot; B8</button></div>
     <div class="seg" id="form4"><button class="btn" data-v="frd">F-RD &middot; B12</button></div>
+    <div class="st" style="margin-top:9px">FORM &middot; TL UNIFIED &mdash; the collision drawn as its own surface</div>
+    <div class="seg" id="form5"><button class="btn" data-v="tlu">PAIR SURFACE &middot; 4 / 8 BEAM</button></div>
+    <div class="seg" id="tlumode"><button class="btn on" data-v="sym">SYMMETRIZED</button><button class="btn" data-v="ord">ORDERED</button></div>
+    <div class="note l-only"><p>Load four or eight beams and the collision draws its own shape. Every pair of beams that couples adds one wave to the surface, as strong as the pair's coupling, so nothing on this form is set by hand. <b>Symmetrized</b> gives one shape per recipe, the same in every direction. <b>Ordered</b> lets the loading order set the direction, for parts that should carry load or flow one way.</p></div>
+    <div class="note r-only"><p>Beams sit on fixed slots: the four tetrahedral directions at four beams, the eight &lang;111&rang; directions at five to eight, with empty slots at B = 0. Each pair contributes min(B&#7522;, B&#11388;)&middot;cos(&Delta;k&middot;x) with &Delta;k half the slot difference, so the form shares the 2&pi; period of the other forms, the amplitudes sum to k_max and B = 0 beams add no term. Symmetrized sums each pair class over the cubic group, which lands on the lead terms of the record's own surfaces: edge pairs weight cos x + cos y + cos z (Schwarz P), face pairs weight &Sigma;cos x cos y (I-WP), opposite pairs weight cos x cos y cos z (F-RD). The level is set by &tau;_out, so a Noble output sits on the node exactly.</p></div>
     <div class="st" style="margin-top:9px">RUNG &middot; P = B &middot; b&#8320;&#8319;</div>
     <div class="seg" id="rung"><button class="btn on" data-v="0">0</button><button class="btn" data-v="1">1 &middot; &radic;TL</button><button class="btn" data-v="2">2 &middot; TL</button><button class="btn" data-v="3">3</button></div>
     <div class="note" id="rung-note" style="margin-top:4px"></div>
@@ -336,6 +341,21 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
     <div class="kv"><span>Pieces &middot; one body?</span><span id="k-pc">&mdash;</span></div>
     <div class="kv"><span>Agreement &middot; wall</span><span id="k-ag">&mdash;</span></div>
     <div class="note" id="k-gate" style="margin-top:5px">&mdash;</div>
+    <div class="st" style="margin-top:9px">ZONE AXIS <small>type any [hkl]</small></div>
+    <div class="seg" style="align-items:center">
+      <input id="za-h" type="number" value="1" style="width:40px;background:transparent;border:1px solid var(--border);color:var(--anchor);font-family:inherit;font-size:.55rem;padding:3px;border-radius:3px;text-align:center">
+      <input id="za-k" type="number" value="1" style="width:40px;background:transparent;border:1px solid var(--border);color:var(--anchor);font-family:inherit;font-size:.55rem;padding:3px;border-radius:3px;text-align:center">
+      <input id="za-l" type="number" value="1" style="width:40px;background:transparent;border:1px solid var(--border);color:var(--anchor);font-family:inherit;font-size:.55rem;padding:3px;border-radius:3px;text-align:center">
+      <button class="btn" id="za-go" style="flex:0 0 auto;padding:.4rem .7rem">SNAP</button>
+    </div>
+    <div class="seg"><button class="btn" data-za="1,0,0">[100]</button><button class="btn" data-za="1,1,0">[110]</button><button class="btn" data-za="1,1,1">[111]</button></div>
+    <div class="kv"><span>Viewing down</span><span id="za-now">&mdash;</span></div>
+    <div class="kv"><span>Off axis by</span><span id="za-off">&mdash;</span></div>
+    <div class="kv"><span>d-spacing</span><span id="za-d">&mdash;</span></div>
+    <canvas id="stereo" width="300" height="300" style="width:100%;aspect-ratio:1;margin-top:6px;border:1px solid var(--border);border-radius:6px;background:rgba(5,5,8,.6)"></canvas>
+    <div class="note" style="margin-top:4px">Stereogram of this net&rsquo;s bond directions in the current view. Filled poles point toward you, open ones away. The centre is the axis you are looking down.</div>
+    <div class="note r-only" style="margin-top:5px">Type any [hkl] and the view snaps to it with no tween. The lattice is cubic in every form here, so the plane spacing is d = a / &radic;(h&sup2;+k&sup2;+l&sup2;) off the unit cell in millimetres &mdash; the quantity a diffraction measurement on a printed part would return.</div>
+
     <div class="st" style="margin-top:9px">PROCESS LIMITS <small>yours, not the corpus</small></div>
     <div class="lbl"><span>Min wall</span><b><input id="pl-w" type="number" value="" placeholder="&mdash;" style="width:62px;background:transparent;border:1px solid var(--border);color:var(--anchor);font-family:inherit;font-size:.52rem;padding:2px 4px;border-radius:3px"> &micro;m</b></div>
     <div class="lbl"><span>Min pore</span><b><input id="pl-p" type="number" value="" placeholder="&mdash;" style="width:62px;background:transparent;border:1px solid var(--border);color:var(--anchor);font-family:inherit;font-size:.52rem;padding:2px 4px;border-radius:3px"> &micro;m</b></div>
@@ -379,33 +399,37 @@ const ToneFormsCore=(()=>{
     spiral:{name:'Stepped shells',kind:'step',vmax:0.5,shells:22,band:100,grp:'legacy',
       eq:'nested shells, each stepped by the tone',
       blurb:'Points march around nested shells, turning by the tone each time.'},
-    gyroid:{name:'Gyroid',kind:'field',vmax:1.5,band:6,b:3,net:'srs',grp:'legacy',
+    gyroid:{name:'Gyroid',kind:'field',vmax:1.5,band:6,b:3,net:'srs',grp:'legacy',dirs:[[1,1,0],[0,1,1],[1,0,1],[-1,-1,0],[0,-1,-1],[-1,0,-1]],
       eq:'sin x cos y + sin y cos z + sin z cos x = 0',
       blurb:'The gyroid: one surface, two channels, no straight lines anywhere in it.',
       f:(x,y,z)=>Math.sin(x)*Math.cos(y)+Math.sin(y)*Math.cos(z)+Math.sin(z)*Math.cos(x)},
-    schwarz:{name:'Schwarz P',kind:'field',vmax:3.0,band:6,b:6,net:'pcu',grp:'legacy',
+    schwarz:{name:'Schwarz P',kind:'field',vmax:3.0,band:6,b:6,net:'pcu',grp:'legacy',dirs:[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]],
       eq:'cos x + cos y + cos z = 0',
       blurb:'Schwarz P: the simplest of them, a lattice of round openings on every face.',
       f:(x,y,z)=>Math.cos(x)+Math.cos(y)+Math.cos(z)},
-    diamond:{name:'Diamond',kind:'field',vmax:2.0,band:6,b:4,net:'dia',grp:'legacy',
+    diamond:{name:'Diamond',kind:'field',vmax:2.0,band:6,b:4,net:'dia',grp:'legacy',dirs:[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]],
       eq:'four-term diamond surface = 0',
       blurb:'Schwarz D: each of its two channels traces the diamond lattice itself.',
       f:(x,y,z)=>{const sx=Math.sin(x),sy=Math.sin(y),sz=Math.sin(z),cx=Math.cos(x),cy=Math.cos(y),cz=Math.cos(z);
         return sx*sy*sz+sx*cy*cz+cx*sy*cz+cx*cy*sz;}},
-    chain:{name:'Chain',kind:'field',vmax:1.0,band:9,b:2,net:'—',grp:'tl',
+    chain:{name:'Chain',kind:'field',vmax:1.0,band:9,b:2,net:'—',grp:'tl',dirs:[[0,0,1],[0,0,-1]],
       eq:'cos z = 0  ·  B = 2',
       blurb:'Coordination two: the degenerate end of the row, a stack of sheets.',
       f:(x,y,z)=>Math.cos(z)},
-    iwp:{name:'I-WP',kind:'field',vmax:5.0,band:22,b:8,net:'bcu',grp:'tl',
+    iwp:{name:'I-WP',kind:'field',vmax:5.0,band:22,b:8,net:'bcu',grp:'tl',dirs:[[1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1]],
       eq:'2(cos x cos y + cos y cos z + cos z cos x) − (cos 2x + cos 2y + cos 2z) = 0  ·  B = 8',
       blurb:'Coordination eight, the body-centred net: one labyrinth of fat pillars, one of thin.',
       f:(x,y,z)=>{const cx=Math.cos(x),cy=Math.cos(y),cz=Math.cos(z);
         return 2*(cx*cy+cy*cz+cz*cx)-(Math.cos(2*x)+Math.cos(2*y)+Math.cos(2*z));}},
-    frd:{name:'F-RD',kind:'field',vmax:7.0,band:6,b:12,net:'fcu',grp:'tl',
+    frd:{name:'F-RD',kind:'field',vmax:7.0,band:6,b:12,net:'fcu',grp:'tl',dirs:[[1,1,0],[1,-1,0],[-1,1,0],[-1,-1,0],[0,1,1],[0,1,-1],[0,-1,1],[0,-1,-1],[1,0,1],[1,0,-1],[-1,0,1],[-1,0,-1]],
       eq:'4 cos x cos y cos z − (cos2x cos2y + cos2y cos2z + cos2z cos2x) = 0  ·  B = 12',
       blurb:'Coordination twelve, the close-packed net: the densest rung the row reaches.',
       f:(x,y,z)=>{const c2x=Math.cos(2*x),c2y=Math.cos(2*y),c2z=Math.cos(2*z);
-        return 4*Math.cos(x)*Math.cos(y)*Math.cos(z)-(c2x*c2y+c2y*c2z+c2z*c2x);}}
+        return 4*Math.cos(x)*Math.cos(y)*Math.cos(z)-(c2x*c2y+c2y*c2z+c2z*c2x);}},
+    tlu:{name:'TL Unified Pair Surface',kind:'field',vmax:1.0,band:6,b:null,net:'pair',grp:'tlu',dirs:[],
+      eq:'&Sigma; min(B&#7522;,B&#11388;)&middot;cos(&Delta;k&middot;x) over C(n,2) pairs',
+      blurb:'The collision drawn as its own surface: one wave per coupled pair, as strong as the coupling.',
+      f:()=>9}
   };
   const clamp=(v,a,b)=>v<a?a:(v>b?b:v);
   const C={K,POOL,clamp};
@@ -526,6 +550,44 @@ const ToneFormsCore=(()=>{
     if(B1<1||B2<1||Math.abs(a.B-B1)>1e-9||Math.abs(b.B-B2)>1e-9)return null;
     const gcd=(x,y)=>y?gcd(y,x%y):x, g=gcd(B1,B2);
     return {n1:B2/g,n2:B1/g,sym1:a.sym,sym2:b.sym};};
+  /* TL unified pair surface. Beams sit on fixed slots (tetrahedral at 4,
+     <111> at 5 to 8, empty slots B = 0). Pair (i,j) adds min(Bi,Bj)·cos(dk·x),
+     dk = slot_i - slot_j, so the amplitudes sum to k_max. Symmetrized mode sums
+     each pair class over the cubic group: edge (1 sign differs) -> {200},
+     face (2) -> {220}, opposite (3) -> {222}. Returns the normalized terms. */
+  C.SLOT4=[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+  C.SLOT8=[[1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1]];
+  C.pairTerms=function(L,mode){
+    const n=L.length;
+    if(n<4)return {terms:[],k:0,cls:{edge:0,face:0,opposite:0},slots:[],n};
+    const D=n===4?C.SLOT4:C.SLOT8, B=D.map((_,i)=>i<n?L[i].B:0);
+    const cls={edge:0,face:0,opposite:0},raw=[];let k=0;
+    for(let i=0;i<D.length;i++)for(let j=i+1;j<D.length;j++){
+      const c=Math.min(B[i],B[j]);if(!(c>0))continue;k+=c;
+      const s=(D[i][0]!==D[j][0])+(D[i][1]!==D[j][1])+(D[i][2]!==D[j][2]);
+      cls[s===1?'edge':(s===2?'face':'opposite')]+=c;
+      /* half the slot difference, so the form shares the 2π period of every other form */
+      raw.push([(D[i][0]-D[j][0])/2,(D[i][1]-D[j][1])/2,(D[i][2]-D[j][2])/2,c]);}
+    let terms=[];
+    if(k>0){
+      if(mode==='ord')terms=raw.map(t=>[t[0],t[1],t[2],t[3]/k]);
+      else{
+        /* edge -> cos x + cos y + cos z (the Schwarz P term), face -> cos(x±y)...
+           = 2Σcos x cos y (the I-WP lead term), opposite -> Σcos(x±y±z)
+           = 4 cos x cos y cos z (the F-RD lead term) */
+        const E=[[1,0,0],[0,1,0],[0,0,1]],
+              F=[[1,1,0],[1,-1,0],[0,1,1],[0,1,-1],[1,0,1],[1,0,-1]],
+              O=[[1,1,1],[1,1,-1],[1,-1,1],[-1,1,1]];
+        E.forEach(v=>terms.push([...v,cls.edge/(3*k)]));
+        F.forEach(v=>terms.push([...v,cls.face/(6*k)]));
+        O.forEach(v=>terms.push([...v,cls.opposite/(4*k)]));
+        terms=terms.filter(t=>t[3]>0);}}
+    return {terms,k,cls,slots:D.slice(0,Math.max(n,D.length===4?4:n)),n};};
+  C.pairField=function(T){
+    if(!T.terms.length)return ()=>9;          /* no coupling: nothing lights */
+    const m=T.terms.length,a=new Float64Array(m*4);
+    T.terms.forEach((t,i)=>{a[i*4]=t[0];a[i*4+1]=t[1];a[i*4+2]=t[2];a[i*4+3]=t[3];});
+    return (x,y,z)=>{let s=0;for(let i=0;i<m;i++){const o=i*4;s+=a[o+3]*Math.cos(a[o]*x+a[o+1]*y+a[o+2]*z);}return s;};};
   C.phaseOf=(P,B)=>{if(B===0)return'NOBLE';const t=C.tau(P,B);
     return t>=K.TL?'SHATTER':(t>=K.TL_IVA?'IVA_PEAK':'LOCKED');};
   C.PHCOL={NOBLE:'var(--noble)',LOCKED:'var(--locked)',IVA_PEAK:'var(--iva)',SHATTER:'var(--shatter)'};
@@ -572,11 +634,11 @@ const ToneFormsCore=(()=>{
 // UI
 // ════════════════════════════════════════════════════════════
 const $=id=>document.getElementById(id),C=ToneFormsCore,K=C.K,clamp=C.clamp;
-const S={form:'spiral',tone:K.OMEGA0,dens:52,level:0,band:100,res:false,peel:100,core:0,rung:0,partMM:20,
+const S={form:'spiral',tone:K.OMEGA0,dens:52,level:0,band:100,res:false,peel:100,core:0,rung:0,partMM:20,zone:[1,1,1],
          cam:'orbit',rot:true,dist:2.00,yaw:0.62,pitch:0.42,pos:[0,0,0],invert:false,
          col:'tone',light:false,pxMul:2,
          elGroups:{el:true,ere:true,sm:true,sp:true},elSym:'',elRead:'tau',
-         beams:[],bmView:'overlap',designation:'',
+         beams:[],bmView:'overlap',designation:'',tluMode:'sym',
          /* the opening figure is an example; CLEAR empties the view and it
             stays empty until an entry or a beam is loaded */
          cleared:false};
@@ -604,9 +666,51 @@ CAM.setDist=d=>{S.dist=clamp(d,0.04,6);
     else{const k=S.dist/L;S.pos=[p[0]*k,p[1]*k,p[2]*k];}}};
 CAM.move=(fwd,side,up)=>{const b=CAM.basis();for(let i=0;i<3;i++)S.pos[i]+=b.f[i]*fwd+b.r[i]*side+b.u[i]*up;};
 CAM.toWalk=()=>{const b=CAM.basis();S.pos=[-S.dist*b.f[0],-S.dist*b.f[1],-S.dist*b.f[2]];S.cam='walk';};
+/* Look down [hkl]: put the eye on that direction and the forward vector
+   opposite it. f = [cos(p)sin(y), sin(p), cos(p)cos(y)], eye = -dist*f. */
+CAM.zone=(h,k,l)=>{
+  const L=Math.hypot(h,k,l); if(L<1e-9)return false;
+  const n=[h/L,k/L,l/L], f=[-n[0],-n[1],-n[2]];
+  S.cam='orbit';
+  S.pitch=clamp(Math.asin(clamp(f[1],-1,1)),-K.PMAX,K.PMAX);
+  S.yaw=Math.atan2(f[0],f[2]);
+  S.zone=[h,k,l]; syncCam(); return true;};
+/* Which low-index direction the camera is nearest, so the readout names the
+   view rather than leaving it to be counted off the render. */
+CAM.nearestZone=()=>{
+  const b=CAM.basis(), v=[-b.f[0],-b.f[1],-b.f[2]];
+  let best=null,bd=-2;
+  for(let h=-3;h<=3;h++)for(let k=-3;k<=3;k++)for(let l=-3;l<=3;l++){
+    if(!h&&!k&&!l)continue;
+    const g=(a,b2)=>b2?g(b2,a%b2):Math.abs(a);
+    if(g(g(Math.abs(h),Math.abs(k)),Math.abs(l))!==1)continue;
+    const L=Math.hypot(h,k,l),d=(v[0]*h+v[1]*k+v[2]*l)/L;
+    if(d>bd){bd=d;best=[h,k,l];}}
+  return {hkl:best,cos:bd,offDeg:Math.acos(clamp(bd,-1,1))*180/Math.PI};};
+CAM.dSpacing=(h,k,l)=>{const q=scaleOf_mm();
+  const L=Math.hypot(h,k,l); return L>0&&q.cellMM>0?q.cellMM/L:0;};
 CAM.VIEWS={top:{yaw:0,pitch:-K.PMAX},front:{yaw:0,pitch:0},side:{yaw:Math.PI/2,pitch:0},free:{yaw:0.62,pitch:0.42}};
 CAM.view=name=>{const v=CAM.VIEWS[name]||CAM.VIEWS.free;S.cam='orbit';S.yaw=v.yaw;S.pitch=v.pitch;
   if(name==='free')S.dist=2.00;syncCam();};
+
+// ── fused level and the TL unified form
+/* tau_out to level: the same mapping the fused view has always used */
+function fusedLevel(FO){
+  if(!FO)return 0;
+  const r=FO.tau/K.TL;
+  return Math.round(100*(r<=0?0:(r<1?0.30*r:0.30+0.16*Math.tanh(Math.log10(r)/1.5))))/100;}
+let TLU={terms:[],k:0,cls:{edge:0,face:0,opposite:0},slots:[],n:0};
+function tluBuild(){
+  TLU=C.pairTerms(beamList(),S.tluMode);
+  const P=C.POOL.tlu;
+  P.f=C.pairField(TLU);
+  P.dirs=TLU.n>=4?(TLU.n===4?C.SLOT4:C.SLOT8):[];}
+const tluKey=()=>S.form==='tlu'?JSON.stringify([S.tluMode,beamList().map(e=>[e.sym,e.B])]):'';
+/* the level a static read uses: the fused level on the unified form, the slider elsewhere */
+function staticLvl(){
+  if(S.form==='tlu'){const BL=beamList();return BL.length>=2?fusedLevel(C.fuseN(BL)):0;}
+  return S.level/100;}
+function tluRefresh(){if(S.form==='tlu')rebuild();}
 
 // ── live window
 function win(){
@@ -643,10 +747,11 @@ function draw(){
   const bOsc=osc*Math.min(bw*2,K.STORE);
   const BLV=BL.map(e=>elLevel(e)/100+bOsc);
   const FO=nbeam>=2?C.fuseN(BL):null;
-  const fusedLvl=FO?Math.round(100*(FO.tau/K.TL<=0?0:(FO.tau/K.TL<1?0.30*FO.tau/K.TL:
-                 0.30+0.16*Math.tanh(Math.log10(FO.tau/K.TL)/1.5))))/100:0;
-  const useBeams=nbeam>=2&&S.bmView==='overlap';
-  const useFused=nbeam>=2&&S.bmView==='fused';
+  const fusedLvl=fusedLevel(FO);
+  /* the unified form always reads the fused output: it is the collision's own surface */
+  const isTLU=S.form==='tlu';
+  const useBeams=nbeam>=2&&S.bmView==='overlap'&&!isTLU;
+  const useFused=nbeam>=2&&(S.bmView==='fused'||isTLU);
   let allShared=0;
   const DEPTH=[[60,90,140],[123,79,255],[240,192,96],[255,140,60],[255,245,210]];
   for(let i=0;i<NB;i++)bk[i].length=0;
@@ -781,7 +886,15 @@ function readouts(){
   if(!F&&!e)$('b-m').textContent=q[0].toLocaleString()+' arms';
   $('caption').innerHTML=`<b>${P.name}</b> · ${P.blurb} Tone ${S.tone}${P.kind==='step'?'° per step':', spacing '+C.periods(S.tone,S.rung).toFixed(2)+'π'}. `+
     `Arm counts ${q.join(', ')} come straight off the continued fraction ${'['+a.slice(0,5).join(', ')+'…]'}; the first misses a full turn by ${C.drift(q[0],S.tone).toFixed(4)}°, and that miss is what winds the arms.`;
-  $('form-note').innerHTML=`<b>${P.name}:</b> ${P.eq}`;
+  $('form-note').innerHTML=`<b>${P.name}:</b> ${P.eq}`+(S.form==='tlu'
+    ? (TLU.n<4
+        ? `<br><span style="color:var(--gold)">load four or eight beams to draw the pair surface</span>`
+        : (TLU.k>0
+            ? `<br>${S.tluMode==='ord'?'ordered':'symmetrized'} &middot; ${TLU.n===4?'tetrahedral':'&lang;111&rang;'} slots &middot; ${TLU.terms.length} terms<br>`+
+              `k_max ${TLU.k.toFixed(6)} &middot; edge ${TLU.cls.edge.toFixed(6)} &middot; face ${TLU.cls.face.toFixed(6)} &middot; opposite ${TLU.cls.opposite.toFixed(6)}<br>`+
+              `level ${staticLvl().toFixed(2)} from &tau;_out`
+            : `<br><span style="color:var(--gold)">every beam reads B = 0, so no pair couples and nothing lights</span>`))
+    : '');
   if(P.kind==='field'&&P.b){
     const n=S.rung,Pat=C.patternAt(P.b,n);
     $('rung-note').innerHTML=`Rung ${n} &middot; &tau;<sub>A</sub> = ${C.tauA(n).toFixed(8)} &middot; &eta; = ${(100*C.eta(n)).toFixed(5)}% &middot; `+
@@ -813,7 +926,7 @@ function legend(){
 // ── build
 function rebuild(){
   $('busy').style.display='block';
-  setTimeout(()=>{G=C.fill(S.form,S.tone,S.dens,S.rung);readouts();draw();$('busy').style.display='none';},20);
+  setTimeout(()=>{if(S.form==='tlu')tluBuild();G=C.fill(S.form,S.tone,S.dens,S.rung);readouts();draw();$('busy').style.display='none';},20);
 }
 let reT=null;const rebuildSoon=()=>{if(reT)clearTimeout(reT);reT=setTimeout(()=>{reT=null;rebuild();},130);};
 
@@ -837,7 +950,8 @@ function syncAll(){
   $('res').checked=S.res;$('light').checked=S.light;$('inv').checked=S.invert;
   document.body.classList.toggle('lightbg',S.light);
   $('rot').classList.toggle('on',S.rot);
-  ['form','form2','form3','form4'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.form)));
+  ['form','form2','form3','form4','form5'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.form)));
+  $('tlumode').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.tluMode));
   $('rung').querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.rung));
   ['tpre','tpre2','tpre3'].forEach(id=>$(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.tone)));
   ['col','col2'].forEach(g=>$(g).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===S.col)));
@@ -849,7 +963,8 @@ function syncAll(){
 
 // ── controls
 function seg(id,fn){$(id).querySelectorAll('.btn').forEach(b=>b.onclick=()=>fn(b.dataset.v,b));}
-['form','form2','form3','form4'].forEach(id=>seg(id,v=>{S.form=v;S.band=C.POOL[v].band;syncAll();rebuild();}));
+['form','form2','form3','form4','form5'].forEach(id=>seg(id,v=>{S.form=v;S.band=C.POOL[v].band;syncAll();rebuild();}));
+seg('tlumode',v=>{S.tluMode=v;syncAll();tluRefresh();});
 seg('rung',v=>{S.rung=+v;syncAll();rebuild();});
 function plOut(){
   const q=scaleOf_mm(),w=parseFloat($('pl-w').value),pz=parseFloat($('pl-p').value);
@@ -860,6 +975,12 @@ function plOut(){
   if(isFinite(pz)&&q.poreUm>0)bits.push(`pore ${q.poreUm.toFixed(0)} \u00b5m vs ${pz} ${m(q.poreUm>=pz)}`);
   $('pl-out').innerHTML=bits.join(' &middot; ')||'—';}
 $('pl-w').oninput=plOut;$('pl-p').oninput=plOut;
+const zaSnap=(h,k,l)=>{if(CAM.zone(h,k,l)){readouts();draw();}};
+$('za-go').onclick=()=>zaSnap(+$('za-h').value||0,+$('za-k').value||0,+$('za-l').value||0);
+['za-h','za-k','za-l'].forEach(id=>$(id).onkeydown=e=>{if(e.key==='Enter')$('za-go').click();});
+document.querySelectorAll('.btn[data-za]').forEach(b=>b.onclick=()=>{
+  const v=b.dataset.za.split(',').map(Number);
+  $('za-h').value=v[0];$('za-k').value=v[1];$('za-l').value=v[2];zaSnap(v[0],v[1],v[2]);});
 $('pm').oninput=e=>{S.partMM=+e.target.value;
   document.querySelectorAll('.seg .btn[data-v="10"],.seg .btn[data-v="20"],.seg .btn[data-v="50"]').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.partMM));
   scaleOut();};
@@ -922,7 +1043,7 @@ function loadLean(txt){
     return e?e.grp+':'+e.sym:{grp:'file',sym:b.sym,name:b.sym+' from file',P:b.P,N:b.N,B:b.B,A:b.A};});
   S.designation=P.des||'';
   const known=S.beams.filter(b=>typeof b==='string').length;
-  syncAll();readouts();draw();
+  syncAll();readouts();draw();tluRefresh();
   const F=fusedOut();
   const agree=F&&P.im?Math.abs(F.IM-parseFloat(P.im))<5e-6:null;
   $('lean-note').innerHTML=
@@ -932,11 +1053,11 @@ function loadLean(txt){
       (agree?'<span style="color:#00ffc8">agree</span>':'<span style="color:var(--gold)">differ</span>'):'')+
     (P.phase?`<br>file phase ${P.phase} \u00b7 page ${F?F.phase:'\u2014'}`:'');}
 const fusedOut=()=>{const L=beamList();return L.length>=2?C.fuseN(L):null;};
-function addBeam(k){if(k&&S.beams.length<8){S.beams.push(k);S.cleared=false;syncAll();readouts();draw();}}
+function addBeam(k){if(k&&S.beams.length<8){S.beams.push(k);S.cleared=false;syncAll();readouts();draw();tluRefresh();}}
 function setBeams(syms){
   S.beams=syms.map(s=>{const e=C.all().find(x=>x.sym===s);return e?e.grp+':'+e.sym:null;}).filter(Boolean);
   if(S.beams.length)S.cleared=false;
-  syncAll();readouts();draw();}
+  syncAll();readouts();draw();tluRefresh();}
 function pushTone(){                       /* one-shot: send the chosen reading to the tone */
   const e=currentEl();if(!e)return;
   setTone(elReading(e));}
@@ -968,7 +1089,7 @@ seg('elread',v=>{S.elRead=v;
 $('el-push').onclick=pushTone;
 $('bm-add').onclick=()=>addBeam(S.elSym);
 $('bm-pre').onchange=e=>{if(e.target.value){S.cleared=false;setBeams(e.target.value.split(','));}};
-$('bm-clear').onclick=()=>{S.beams=[];S.cleared=true;$('lean-note').innerHTML='';syncAll();readouts();draw();};
+$('bm-clear').onclick=()=>{S.beams=[];S.cleared=true;$('lean-note').innerHTML='';syncAll();readouts();draw();tluRefresh();};
 $('bm-paste').onclick=()=>{const b=$('lean-box');
   b.style.display=b.style.display==='none'?'block':'none';
   if(b.style.display==='block')$('lean-txt').focus();};
@@ -1072,7 +1193,10 @@ function pack(){
   fused:F?{n:F.n,pairs:F.pairs,sumB:F.sB,k_max:F.k,P_out:F.P,N_out:F.N,B_out:F.B,A_out:F.A,
            tau_out:F.tau,phase:F.phase,IM:F.IM,rescue:F.rescue,spread:F.spread}:null,
   form:S.form,tone:S.tone,dens:S.dens,level:S.level,band:S.band,res:S.res,peel:S.peel,core:S.core,
-  col:S.col,light:S.light,invert:S.invert,elSym:S.elSym,elRead:S.elRead,elGroups:S.elGroups,beams:S.beams.slice(),bmView:S.bmView,
+  col:S.col,light:S.light,invert:S.invert,elSym:S.elSym,elRead:S.elRead,elGroups:S.elGroups,beams:S.beams.slice(),bmView:S.bmView,tluMode:S.tluMode,
+  tlu:S.form==='tlu'?{mode:S.tluMode==='ord'?'ordered':'symmetrized',slots:TLU.n===4?'tetrahedral':'<111>',
+       k_max:TLU.k,edge:TLU.cls.edge,face:TLU.cls.face,opposite:TLU.cls.opposite,terms:TLU.terms.length,
+       level:staticLvl()}:null,
   cam:S.cam,rot:S.rot,dist:S.dist,yaw:S.yaw,pitch:S.pitch,pos:S.pos.slice()};}
 function apply(o){
   if(!o||typeof o!=='object')return false;
@@ -1091,6 +1215,7 @@ function apply(o){
   }
   if(typeof o.designation==='string')S.designation=o.designation;
   if(o.bmView)S.bmView=o.bmView;
+  if(o.tluMode==='sym'||o.tluMode==='ord')S.tluMode=o.tluMode;
   if(o.elGroups)S.elGroups=Object.assign({el:true,ere:true,sm:true,sp:true},o.elGroups);
   if(isFinite(o.dens))S.dens=clamp(Math.round(o.dens),18,112);
   if(isFinite(o.level))S.level=clamp(+o.level,-100,100);
@@ -1116,11 +1241,11 @@ function apply(o){
    is reported beside the median rather than averaged away. */
 let GEO=null,GEOKEY='';
 function geom(){
-  const P=C.POOL[S.form],key=[S.form,S.tone,S.rung,S.band,S.level].join('|');
+  const P=C.POOL[S.form],key=[S.form,S.tone,S.rung,S.band,S.level,tluKey()].join('|');
   if(GEOKEY===key&&GEO)return GEO;
   if(P.kind!=='field'){GEO=null;GEOKEY=key;return null;}
   const sc=C.scaleOf(S.tone,S.rung),f=P.f,vm=P.vmax,
-        beta=S.band/100, lvl=S.level/100,   /* exactly what win() hands the fill */
+        beta=S.band/100, lvl=staticLvl(),   /* exactly what win() hands the fill */
         M=160000, e=1e-5, ts=[];
   let inBand=0,tot=0,seed=20260101;
   const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
@@ -1147,7 +1272,7 @@ function geom(){
    against the geometric figure it is a resolution check, not a second opinion. */
 let MET=null,METKEY='';
 function metrics(){
-  const key=[S.form,S.tone,S.dens,S.rung,S.level,S.band,S.peel,S.core,S.invert].join('|');
+  const key=[S.form,S.tone,S.dens,S.rung,S.level,S.band,S.peel,S.core,S.invert,tluKey()].join('|');
   if(METKEY===key&&MET)return MET;
   const g=G?G.grid:0; if(!g){MET=null;METKEY=key;return null;}
   const V=visible(1e9),a=V.a,n=V.n,h=G.h,occ=new Uint8Array(g*g*g);
@@ -1206,6 +1331,14 @@ function scaleOut(){
   $('g-rd').textContent=q.gRho>0?(100*q.gRho).toFixed(2)+' %':'—';
   const ratio=q.gWallUm>0&&q.wallUm>0?q.wallUm/q.gWallUm:0;
   if(typeof plOut==='function')plOut();
+  const nz=CAM.nearestZone(),dd=CAM.dSpacing(nz.hkl[0],nz.hkl[1],nz.hkl[2]);
+  const fmt=v=>v<0?'\u0305'+Math.abs(v):''+v;
+  $('za-now').textContent='['+nz.hkl.map(fmt).join('')+']';
+  $('za-off').innerHTML=nz.offDeg<1.5
+    ? nz.offDeg.toFixed(2)+'\u00b0 <b style="color:var(--noble)">on axis</b>'
+    : nz.offDeg.toFixed(1)+'\u00b0';
+  $('za-d').textContent=dd>0?(dd<1?(dd*1000).toFixed(0)+' \u00b5m':dd.toFixed(3)+' mm'):'\u2014';
+  drawStereo();
   $('k-ag').innerHTML=ratio?(ratio.toFixed(2)+'\u00d7'+(Math.abs(ratio-1)<=0.15
       ? ' <b style="color:var(--noble)">grid resolves it</b>'
       : ' <b style="color:var(--iva)">grid too coarse</b>')):'—';
@@ -1217,8 +1350,37 @@ function scaleOut(){
       (g1?'':' &mdash; widen BAND until the piece count reads 1, or a slicer sees loose bodies.')
     : 'Set a level and a band that light cells, then the readings resolve.';}
 
+function drawStereo(){
+  const cv2=$('stereo'); if(!cv2)return;
+  const g=cv2.getContext('2d'),W2=cv2.width,H2=cv2.height,R=W2*0.44,cx=W2/2,cy=H2/2;
+  g.clearRect(0,0,W2,H2);
+  g.strokeStyle='rgba(0,255,200,0.22)';g.lineWidth=1.5;
+  g.beginPath();g.arc(cx,cy,R,0,7);g.stroke();
+  g.beginPath();g.moveTo(cx-R,cy);g.lineTo(cx+R,cy);g.moveTo(cx,cy-R);g.lineTo(cx,cy+R);
+  g.strokeStyle='rgba(0,255,200,0.10)';g.stroke();
+  const P=C.POOL[S.form]; if(!P||!P.dirs)return;
+  const b=CAM.basis();
+  for(const d of P.dirs){
+    const L=Math.hypot(d[0],d[1],d[2]); if(L<1e-9)continue;
+    const n=[d[0]/L,d[1]/L,d[2]/L];
+    /* into camera frame: right, up, and toward the viewer (-forward) */
+    const X=n[0]*b.r[0]+n[1]*b.r[1]+n[2]*b.r[2],
+          Y=n[0]*b.u[0]+n[1]*b.u[1]+n[2]*b.u[2],
+          Z=-(n[0]*b.f[0]+n[1]*b.f[1]+n[2]*b.f[2]);
+    const up=Z>=0, den=1+Math.abs(Z);
+    const px=cx+X/den*R, py=cy-Y/den*R;
+    g.beginPath();g.arc(px,py,4.5,0,7);
+    if(up){g.fillStyle='#00ffc8';g.fill();}
+    else{g.strokeStyle='rgba(240,192,96,0.85)';g.lineWidth=1.6;g.stroke();}
+    g.fillStyle=up?'rgba(232,232,240,0.80)':'rgba(240,192,96,0.65)';
+    g.font='10px monospace';g.textAlign='center';
+    g.fillText(d.map(v=>v<0?'\u0305'+Math.abs(v):''+v).join(''),px,py-8);
+  }}
+
 function visible(cap){
-  const {lvl,bw,pOut,pIn}=win(),St=K.STRIDE,c=G.cells,out=[];
+  const W0=win(),{bw,pOut,pIn}=W0,St=K.STRIDE,c=G.cells,out=[];
+  /* the unified form exports the cells it draws: the fused level, not the slider */
+  const lvl=S.form==='tlu'?staticLvl():W0.lvl;
   for(let i=0;i<G.n;i++){const k=i*St,v=c[k+3],r=c[k+4];
     if(r<pIn||r>pOut)continue;if(v<lvl-bw||v>lvl+bw)continue;
     out.push(c[k],c[k+1],c[k+2]);}
