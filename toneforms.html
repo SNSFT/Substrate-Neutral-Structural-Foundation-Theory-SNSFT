@@ -302,7 +302,8 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
     <div class="kv"><span>Field value</span><span id="p-v">—</span></div>
     <div class="kv"><span>Radius</span><span id="p-r">—</span></div>
     <div class="kv"><span>Distance from level</span><span id="p-d">—</span></div>
-    <div class="note" style="margin-top:5px">Every cell carries its own value and its own radius. Hover any one of them to read what it holds.</div>
+    <div class="kv"><span>Sites</span><span id="p-s">—</span></div>
+    <div class="note" style="margin-top:5px">Every cell carries its own value and its own radius. Hover any one of them to read what it holds. With beams loaded, Sites names which of them reach that cell — the same test the shared-sites colouring runs, so the label and the colour never disagree. A site is a cell a beam satisfies, not an atom sitting there: the surface runs through the zero and the lobes are what the atoms occupy.</div>
   </div>
 
   <div class="sec">
@@ -323,9 +324,24 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
     <div class="kv"><span>TL-cell edge</span><span id="k-eu">&mdash;</span></div>
     <div class="kv"><span>Unit cell &middot; one period</span><span id="k-uc">&mdash;</span></div>
     <div class="kv"><span>Cells across</span><span id="k-ca">&mdash;</span></div>
-    <div class="kv"><span>Wall &middot; measured</span><span id="k-wl">&mdash;</span></div>
-    <div class="kv"><span>Pore &middot; measured</span><span id="k-po">&mdash;</span></div>
+
+    <div class="st" style="margin-top:9px">GEOMETRIC <small>off the field</small></div>
+    <div class="kv"><span>Wall thickness</span><span id="g-wl">&mdash;</span></div>
+    <div class="kv"><span>Wall spread &middot; p5&ndash;p95</span><span id="g-ws">&mdash;</span></div>
+    <div class="kv"><span>Relative density</span><span id="g-rd">&mdash;</span></div>
+
+    <div class="st" style="margin-top:9px">MEASURED <small>off the cells</small></div>
+    <div class="kv"><span>Wall &middot; chord</span><span id="k-wl">&mdash;</span></div>
+    <div class="kv"><span>Pore &middot; chord</span><span id="k-po">&mdash;</span></div>
+    <div class="kv"><span>Pieces &middot; one body?</span><span id="k-pc">&mdash;</span></div>
+    <div class="kv"><span>Agreement &middot; wall</span><span id="k-ag">&mdash;</span></div>
     <div class="note" id="k-gate" style="margin-top:5px">&mdash;</div>
+    <div class="st" style="margin-top:9px">PROCESS LIMITS <small>yours, not the corpus</small></div>
+    <div class="lbl"><span>Min wall</span><b><input id="pl-w" type="number" value="" placeholder="&mdash;" style="width:62px;background:transparent;border:1px solid var(--border);color:var(--anchor);font-family:inherit;font-size:.52rem;padding:2px 4px;border-radius:3px"> &micro;m</b></div>
+    <div class="lbl"><span>Min pore</span><b><input id="pl-p" type="number" value="" placeholder="&mdash;" style="width:62px;background:transparent;border:1px solid var(--border);color:var(--anchor);font-family:inherit;font-size:.52rem;padding:2px 4px;border-radius:3px"> &micro;m</b></div>
+    <div class="note" id="pl-out" style="margin-top:4px">Enter the limits your process and application actually carry, and the geometric wall and pore are checked against them.</div>
+    <div class="note r-only" style="margin-top:5px">These are Layer 2. They belong to a machine, a material and an application, they change as processes change, and they are not derived from anything above. They are kept out of the constants block for that reason, and nothing on this page supplies a default for them: a number that looks authoritative because a tool printed it is the hazard. Cite whatever you enter.</div>
+
     <div class="note r-only" style="margin-top:5px">The ball is unit-radius in model space and one unit is one centimetre, the same unit IMatter writes, so the figure drops into Unreal at 1 uu = 1 cm and into Blender at 1:1 with no scale step. Every real length here resolves off the part diameter alone. Wall and pore are measured as the median run of solid and of void along each grid axis — the mean intercept length — rather than estimated from relative density. A test part wants three to five cells across so the lattice behaves as a material instead of a single object; the rung is the fastest way to get there.</div>
   </div>
 
@@ -355,7 +371,7 @@ const ToneFormsCore=(()=>{
            B0:2.702711586879570,SQRT_TL:0.369998783760185,
            /* unit standard, shared with IMatter: 1 unit = 1 cm. The ball is
               unit-radius in model space, so 2 units across = 20 mm at 1:1. */
-           UNIT_CM:1,PART_MM:20,PORE_MIN_UM:100,WALL_MIN_UM:300,
+           UNIT_CM:1,PART_MM:20,
            FLOOR:0.88,PHI_DEG:137.50776405003785,
            BASE:1.36899099984016*1.15,CELLCAP:240000,DRAWCAP:110000,STORE:0.46,
            NEAR:0.02,FOV:60*Math.PI/180,PMAX:Math.PI/2,STRIDE:5};
@@ -380,7 +396,7 @@ const ToneFormsCore=(()=>{
       eq:'cos z = 0  ·  B = 2',
       blurb:'Coordination two: the degenerate end of the row, a stack of sheets.',
       f:(x,y,z)=>Math.cos(z)},
-    iwp:{name:'I-WP',kind:'field',vmax:5.0,band:11,b:8,net:'bcu',grp:'tl',
+    iwp:{name:'I-WP',kind:'field',vmax:5.0,band:22,b:8,net:'bcu',grp:'tl',
       eq:'2(cos x cos y + cos y cos z + cos z cos x) − (cos 2x + cos 2y + cos 2z) = 0  ·  B = 8',
       blurb:'Coordination eight, the body-centred net: one labyrinth of fat pillars, one of thin.',
       f:(x,y,z)=>{const cx=Math.cos(x),cy=Math.cos(y),cz=Math.cos(z);
@@ -835,6 +851,15 @@ function syncAll(){
 function seg(id,fn){$(id).querySelectorAll('.btn').forEach(b=>b.onclick=()=>fn(b.dataset.v,b));}
 ['form','form2','form3','form4'].forEach(id=>seg(id,v=>{S.form=v;S.band=C.POOL[v].band;syncAll();rebuild();}));
 seg('rung',v=>{S.rung=+v;syncAll();rebuild();});
+function plOut(){
+  const q=scaleOf_mm(),w=parseFloat($('pl-w').value),pz=parseFloat($('pl-p').value);
+  if(!isFinite(w)&&!isFinite(pz)){$('pl-out').textContent='Enter the limits your process and application actually carry, and the geometric wall and pore are checked against them.';return;}
+  const m=(ok)=>ok?'<b style="color:var(--noble)">clears</b>':'<b style="color:var(--shatter)">under</b>';
+  const bits=[];
+  if(isFinite(w)&&q.gWallUm>0)bits.push(`wall ${q.gWallUm.toFixed(0)} \u00b5m vs ${w} ${m(q.gWallUm>=w)}`);
+  if(isFinite(pz)&&q.poreUm>0)bits.push(`pore ${q.poreUm.toFixed(0)} \u00b5m vs ${pz} ${m(q.poreUm>=pz)}`);
+  $('pl-out').innerHTML=bits.join(' &middot; ')||'—';}
+$('pl-w').oninput=plOut;$('pl-p').oninput=plOut;
 $('pm').oninput=e=>{S.partMM=+e.target.value;
   document.querySelectorAll('.seg .btn[data-v="10"],.seg .btn[data-v="20"],.seg .btn[data-v="50"]').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.partMM));
   scaleOut();};
@@ -982,12 +1007,20 @@ function probe(e){
   for(let i=0;i<NPROJ;i++){const dx=PROJ[i*6]-mx,dy=PROJ[i*6+1]-my,d=dx*dx+dy*dy;if(d<bd){bd=d;best=i;}}
   const P=$('probe');
   if(best<0){P.style.display='none';return;}
-  const v=PROJ[best*6+3],r=PROJ[best*6+4],{lvl}=win();
-  P.innerHTML=`<b style="color:var(--gold)">TL-cell</b><br>field value ${v.toFixed(4)}<br>radius ${r.toFixed(4)}<br>from level ${Math.abs(v-lvl).toFixed(4)}`;
+  const v=PROJ[best*6+3],r=PROJ[best*6+4],{lvl,bw,osc}=win();
+  /* the same arithmetic the draw loop uses for the shared-sites depth, so a
+     label can never name a beam the colouring did not count */
+  const BLs=beamList(), bOsc=osc*Math.min(bw*2,K.STORE);
+  const hit=BLs.filter(e=>{const L=elLevel(e)/100+bOsc;return v>=L-bw&&v<=L+bw;});
+  const sites=BLs.length?(hit.length?hit.map(e=>e.sym).join(' \u00b7 ')+
+      (hit.length===BLs.length&&BLs.length>1?'  (all '+BLs.length+')':''):'none of the '+BLs.length):'\u2014';
+  P.innerHTML=`<b style="color:var(--gold)">TL-cell</b><br>field value ${v.toFixed(4)}<br>radius ${r.toFixed(4)}<br>from level ${Math.abs(v-lvl).toFixed(4)}`+
+    (BLs.length?`<br>sites ${sites}`:'');
   P.style.display='block';
   P.style.left=Math.min(b.width-150,e.clientX-b.left+14)+'px';P.style.top=(e.clientY-b.top+14)+'px';
   $('p-x').textContent='on a cell';$('p-v').textContent=v.toFixed(5);
   $('p-r').textContent=r.toFixed(5);$('p-d').textContent=Math.abs(v-lvl).toFixed(5);
+  $('p-s').textContent=sites;
 }
 
 // ── keyboard
@@ -1023,7 +1056,12 @@ function pack(){
   tl_cell_edge_um:q.edgeUm||null,
   unit_cell_mm:q.cellMM||null,
   cells_across:q.per||null,
-  wall_um_measured:q.wallUm||null,
+  geometric:{wall_um:q.gWallUm||null,wall_um_p5:q.gWallLoUm||null,wall_um_p95:q.gWallHiUm||null,
+             relative_density:q.gRho||null,
+             note:'off the field and its gradient, independent of the display grid'},
+  measured:{wall_um_chord:q.wallUm||null,pore_um_chord:q.poreUm||null,
+            face_connected_pieces:q.pieces||null,grid:G?G.grid:null,
+            note:'counted off the stored cells; a chord returns whole TL-cells'},
   pore_um_measured:q.poreUm||null,
   saved:new Date().toISOString(),
   engine:'GAM Collider v15 n-body [9,9,2,3] · P_out = n/(sum 1/Pi) at every beam count',
@@ -1067,8 +1105,46 @@ function apply(o){
   S.res=!!o.res;S.light=!!o.light;S.invert=!!o.invert;S.rot=o.rot!==false;
   if(Array.isArray(o.pos)&&o.pos.length===3)S.pos=o.pos.slice();
   return true;}
-/* Wall and pore come off the lit set by mean intercept length — the runs of
-   solid and of void along each grid axis — not from a density formula. */
+/* GEOMETRIC. Taken off the field itself, not off the stored cells, so it does
+   not move when the resolution does. The band is a half-width in field value;
+   dividing by the gradient magnitude turns field value into length:
+
+       t = 2 · beta · vmax / (sc · |grad F|)
+
+   Relative density is the volume fraction inside the band, sampled densely and
+   independently of the display grid. A TPMS wall is not uniform, so the spread
+   is reported beside the median rather than averaged away. */
+let GEO=null,GEOKEY='';
+function geom(){
+  const P=C.POOL[S.form],key=[S.form,S.tone,S.rung,S.band,S.level].join('|');
+  if(GEOKEY===key&&GEO)return GEO;
+  if(P.kind!=='field'){GEO=null;GEOKEY=key;return null;}
+  const sc=C.scaleOf(S.tone,S.rung),f=P.f,vm=P.vmax,
+        beta=S.band/100, lvl=S.level/100,   /* exactly what win() hands the fill */
+        M=160000, e=1e-5, ts=[];
+  let inBand=0,tot=0,seed=20260101;
+  const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+  for(let i=0;i<M;i++){
+    const x=rnd()*2-1,y=rnd()*2-1,z=rnd()*2-1;
+    if(x*x+y*y+z*z>1)continue; tot++;
+    const u=x*sc,v2=y*sc,w=z*sc, val=f(u,v2,w)/vm;
+    if(Math.abs(val-lvl)<=beta){inBand++;
+      if(ts.length<30000&&Math.abs(val-lvl)<=0.01){
+        const gx=(f(u+e,v2,w)-f(u-e,v2,w))/(2*e),
+              gy=(f(u,v2+e,w)-f(u,v2-e,w))/(2*e),
+              gz=(f(u,v2,w+e)-f(u,v2,w-e))/(2*e),
+              g=Math.sqrt(gx*gx+gy*gy+gz*gz);
+        if(g>1e-9)ts.push(2*beta*vm/(sc*g));}}}
+  if(!tot){GEO=null;GEOKEY=key;return null;}
+  ts.sort((a,b)=>a-b);
+  const pick=q=>ts.length?ts[Math.min(ts.length-1,Math.floor(q*ts.length))]:0;
+  GEO={rho:inBand/tot, tMed:pick(0.5), tLo:pick(0.05), tHi:pick(0.95), nSurf:ts.length};
+  GEOKEY=key; return GEO;}
+
+/* MEASURED. The same quantities counted off the stored cells — runs of solid and
+   of void along each grid axis, and the face-connected piece count. A chord count
+   returns whole TL-cells, so it cannot resolve a wall thinner than one cell. Read
+   against the geometric figure it is a resolution check, not a second opinion. */
 let MET=null,METKEY='';
 function metrics(){
   const key=[S.form,S.tone,S.dens,S.rung,S.level,S.band,S.peel,S.core,S.invert].join('|');
@@ -1087,7 +1163,21 @@ function metrics(){
   walk((u,v2,w)=>occ[u*g*g+w*g+v2]);
   walk((u,v2,w)=>occ[w*g*g+u*g+v2]);
   const med=arr=>{if(!arr.length)return 0;arr.sort((x,y)=>x-y);return arr[arr.length>>1];};
-  MET={solidCells:med(sRun),voidCells:med(vRun)};METKEY=key;return MET;}
+  /* face-connected pieces: what a slicer sees as separate bodies */
+  let pieces=0,largest=0;const seen=new Uint8Array(g*g*g),stack=[];
+  for(let i0=0;i0<occ.length;i0++){
+    if(!occ[i0]||seen[i0])continue;
+    pieces++;let c=0;stack.length=0;stack.push(i0);seen[i0]=1;
+    while(stack.length){const q2=stack.pop();c++;
+      const z=q2%g,y=((q2-z)/g)%g,x=Math.floor(q2/(g*g));
+      if(x>0)   {const t=q2-g*g; if(occ[t]&&!seen[t]){seen[t]=1;stack.push(t);}}
+      if(x<g-1) {const t=q2+g*g; if(occ[t]&&!seen[t]){seen[t]=1;stack.push(t);}}
+      if(y>0)   {const t=q2-g;   if(occ[t]&&!seen[t]){seen[t]=1;stack.push(t);}}
+      if(y<g-1) {const t=q2+g;   if(occ[t]&&!seen[t]){seen[t]=1;stack.push(t);}}
+      if(z>0)   {const t=q2-1;   if(occ[t]&&!seen[t]){seen[t]=1;stack.push(t);}}
+      if(z<g-1) {const t=q2+1;   if(occ[t]&&!seen[t]){seen[t]=1;stack.push(t);}}}
+    if(c>largest)largest=c;}
+  MET={solidCells:med(sRun),voidCells:med(vRun),pieces,largest,lit:n};METKEY=key;return MET;}
 
 /* Every real length resolves off one number: the part diameter. */
 function scaleOf_mm(){
@@ -1096,7 +1186,10 @@ function scaleOf_mm(){
   const per=C.periods(S.tone,S.rung);                /* periods across the ball */
   const cellMM=per>0?D/per:0;                        /* one period, millimetres */
   const m=metrics();
-  return {D,r,edgeUm,per,cellMM,
+  const gm=geom();
+  return {D,r,edgeUm,per,cellMM,pieces:m?m.pieces:0,largest:m?m.largest:0,lit:m?m.lit:0,
+          gRho:gm?gm.rho:0, gWallUm:gm?gm.tMed*r*1000:0,
+          gWallLoUm:gm?gm.tLo*r*1000:0, gWallHiUm:gm?gm.tHi*r*1000:0,
           wallUm:m?m.solidCells*G.h*r*1000:0,
           poreUm:m?m.voidCells*G.h*r*1000:0};}
 
@@ -1108,11 +1201,21 @@ function scaleOut(){
   $('k-ca').textContent=q.per>0?q.per.toFixed(2)+(q.per>=3&&q.per<=5?'  \u2713':''):'—';
   $('k-wl').textContent=f(q.wallUm,'\u00b5m');
   $('k-po').textContent=f(q.poreUm,'\u00b5m');
-  const gw=q.wallUm>=K.WALL_MIN_UM,gp=q.poreUm>=K.PORE_MIN_UM,gc=q.per>=3&&q.per<=5;
-  const mark=b=>b?'<b style="color:var(--noble)">pass</b>':'<b style="color:var(--shatter)">under</b>';
-  $('k-gate').innerHTML=q.wallUm>0
-    ? `Wall \u2265 ${K.WALL_MIN_UM} \u00b5m ${mark(gw)} \u00b7 pore \u2265 ${K.PORE_MIN_UM} \u00b5m ${mark(gp)} \u00b7 3\u20135 cells across ${mark(gc)}`
-    : 'Set a level and a band that light cells, then the wall and pore read out.';}
+  $('g-wl').textContent=f(q.gWallUm,'\u00b5m');
+  $('g-ws').textContent=q.gWallLoUm>0?q.gWallLoUm.toFixed(0)+'\u2013'+q.gWallHiUm.toFixed(0)+' \u00b5m':'—';
+  $('g-rd').textContent=q.gRho>0?(100*q.gRho).toFixed(2)+' %':'—';
+  const ratio=q.gWallUm>0&&q.wallUm>0?q.wallUm/q.gWallUm:0;
+  if(typeof plOut==='function')plOut();
+  $('k-ag').innerHTML=ratio?(ratio.toFixed(2)+'\u00d7'+(Math.abs(ratio-1)<=0.15
+      ? ' <b style="color:var(--noble)">grid resolves it</b>'
+      : ' <b style="color:var(--iva)">grid too coarse</b>')):'—';
+  $('k-pc').textContent=q.pieces?(q.pieces===1?'1  \u2713':q.pieces.toLocaleString()+'  ('+(100*q.largest/Math.max(q.lit,1)).toFixed(1)+'% largest)'):'—';
+  const g1=q.pieces===1,gc=q.per>=3&&q.per<=5;
+  const mark=b=>b?'<b style="color:var(--noble)">yes</b>':'<b style="color:var(--shatter)">no</b>';
+  $('k-gate').innerHTML=q.gWallUm>0
+    ? `One body ${mark(g1)} \u00b7 3\u20135 cells across ${mark(gc)}`+
+      (g1?'':' &mdash; widen BAND until the piece count reads 1, or a slicer sees loose bodies.')
+    : 'Set a level and a band that light cells, then the readings resolve.';}
 
 function visible(cap){
   const {lvl,bw,pOut,pIn}=win(),St=K.STRIDE,c=G.cells,out=[];
@@ -1128,8 +1231,12 @@ $('x-png').onclick=()=>{const m=S.pxMul,oc=document.createElement('canvas');
   o.drawImage(cv,0,0,oc.width,oc.height);
   oc.toBlob(b=>{dl(b,stem()+'-'+m+'x.png');io(m+'× PNG written');});};
 $('x-obj').onclick=()=>{io('writing OBJ…');setTimeout(()=>{
-  const V=visible(400000),a=V.a,L=['# ToneForms '+C.POOL[S.form].name+'  tone '+S.tone+'  '+V.n+' TL-cells'];
-  for(let i=0;i<a.length;i+=3)L.push('v '+a[i].toFixed(5)+' '+a[i+1].toFixed(5)+' '+a[i+2].toFixed(5));
+  const V=visible(400000),a=V.a,q=scaleOf_mm(),mm=q.r,
+    L=['# ToneForms '+C.POOL[S.form].name+'  tone '+S.tone+(S.rung?'  rung '+S.rung:'')+'  '+V.n+' TL-cells',
+       '# unit: 1 unit = 1 cm   ·   written in millimetres',
+       '# part diameter '+q.D+' mm   ·   TL-cell edge '+q.edgeUm.toFixed(0)+' um   ·   unit cell '+q.cellMM.toFixed(3)+' mm',
+       '# point cloud, not a solid — for a printable body use MESH STL'];
+  for(let i=0;i<a.length;i+=3)L.push('v '+(a[i]*mm).toFixed(5)+' '+(a[i+1]*mm).toFixed(5)+' '+(a[i+2]*mm).toFixed(5));
   for(let i=0;i<V.n;i++)L.push('p '+(i+1));
   dl(new Blob([L.join('\n')],{type:'text/plain'}),stem()+'.obj');
   io(`OBJ written · ${V.n.toLocaleString()} cells${V.thin>1?', every '+V.thin:''}`);},20);};
