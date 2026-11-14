@@ -315,6 +315,20 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
     <div class="note r-only" style="margin-top:5px">The surface spacing tops out at 14 π, which the grid can still sample, so a tone below τ = 0.112453 reads at that ceiling — Noble and most of Locked share one surface picture. The stepped shells take the tone directly as degrees with no ceiling, so that form separates the whole τ range and is the one to read the low end on.</div>
   </div>
 
+  <div class="sec">
+    <div class="st">SCALE <small>1 unit = 1 cm</small></div>
+    <div class="lbl"><span>Part diameter</span><b><span id="pm-v">20</span> mm</b></div>
+    <input type="range" id="pm" min="2" max="120" step="1" value="20">
+    <div class="seg" style="margin-top:5px"><button class="btn" data-v="10">10 mm</button><button class="btn on" data-v="20">20 mm &middot; 1:1</button><button class="btn" data-v="50">50 mm</button></div>
+    <div class="kv"><span>TL-cell edge</span><span id="k-eu">&mdash;</span></div>
+    <div class="kv"><span>Unit cell &middot; one period</span><span id="k-uc">&mdash;</span></div>
+    <div class="kv"><span>Cells across</span><span id="k-ca">&mdash;</span></div>
+    <div class="kv"><span>Wall &middot; measured</span><span id="k-wl">&mdash;</span></div>
+    <div class="kv"><span>Pore &middot; measured</span><span id="k-po">&mdash;</span></div>
+    <div class="note" id="k-gate" style="margin-top:5px">&mdash;</div>
+    <div class="note r-only" style="margin-top:5px">The ball is unit-radius in model space and one unit is one centimetre, the same unit IMatter writes, so the figure drops into Unreal at 1 uu = 1 cm and into Blender at 1:1 with no scale step. Every real length here resolves off the part diameter alone. Wall and pore are measured as the median run of solid and of void along each grid axis — the mean intercept length — rather than estimated from relative density. A test part wants three to five cells across so the lattice behaves as a material instead of a single object; the rung is the fastest way to get there.</div>
+  </div>
+
   <div class="sec r-only">
     <div class="st">BUILT FROM</div>
     <ul class="src">
@@ -339,6 +353,9 @@ span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-heigh
 const ToneFormsCore=(()=>{
   const K={OMEGA0:1.36899099984016,TL:0.136899099984016,TL_IVA:0.12047120798593408,S_RUN:1.04,
            B0:2.702711586879570,SQRT_TL:0.369998783760185,
+           /* unit standard, shared with IMatter: 1 unit = 1 cm. The ball is
+              unit-radius in model space, so 2 units across = 20 mm at 1:1. */
+           UNIT_CM:1,PART_MM:20,PORE_MIN_UM:100,WALL_MIN_UM:300,
            FLOOR:0.88,PHI_DEG:137.50776405003785,
            BASE:1.36899099984016*1.15,CELLCAP:240000,DRAWCAP:110000,STORE:0.46,
            NEAR:0.02,FOV:60*Math.PI/180,PMAX:Math.PI/2,STRIDE:5};
@@ -539,7 +556,7 @@ const ToneFormsCore=(()=>{
 // UI
 // ════════════════════════════════════════════════════════════
 const $=id=>document.getElementById(id),C=ToneFormsCore,K=C.K,clamp=C.clamp;
-const S={form:'spiral',tone:K.OMEGA0,dens:52,level:0,band:100,res:false,peel:100,core:0,rung:0,
+const S={form:'spiral',tone:K.OMEGA0,dens:52,level:0,band:100,res:false,peel:100,core:0,rung:0,partMM:20,
          cam:'orbit',rot:true,dist:2.00,yaw:0.62,pitch:0.42,pos:[0,0,0],invert:false,
          col:'tone',light:false,pxMul:2,
          elGroups:{el:true,ere:true,sm:true,sp:true},elSym:'',elRead:'tau',
@@ -759,6 +776,7 @@ function readouts(){
   $('tone-k').textContent=S.tone===0?'zero impedance · the Noble limit':
     S.tone===K.OMEGA0?'Sovereign Anchor Constant':S.tone===K.TL?'Torsion Limit':
     S.tone===K.TL_IVA?'IVA floor':S.tone===K.PHI_DEG?'golden angle':'custom';
+  scaleOut();
   legend();
 }
 function legend(){
@@ -817,6 +835,13 @@ function syncAll(){
 function seg(id,fn){$(id).querySelectorAll('.btn').forEach(b=>b.onclick=()=>fn(b.dataset.v,b));}
 ['form','form2','form3','form4'].forEach(id=>seg(id,v=>{S.form=v;S.band=C.POOL[v].band;syncAll();rebuild();}));
 seg('rung',v=>{S.rung=+v;syncAll();rebuild();});
+$('pm').oninput=e=>{S.partMM=+e.target.value;
+  document.querySelectorAll('.seg .btn[data-v="10"],.seg .btn[data-v="20"],.seg .btn[data-v="50"]').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.partMM));
+  scaleOut();};
+document.querySelectorAll('.seg .btn[data-v="10"],.seg .btn[data-v="20"],.seg .btn[data-v="50"]').forEach(b=>b.onclick=()=>{
+  S.partMM=+b.dataset.v;$('pm').value=S.partMM;
+  document.querySelectorAll('.seg .btn[data-v="10"],.seg .btn[data-v="20"],.seg .btn[data-v="50"]').forEach(x=>x.classList.toggle('on',x===b));
+  scaleOut();});
 function setTone(v){
   const x=parseFloat(v);
   if(!isFinite(x)||x<0)return;            /* 0 is the Noble limit, so it is allowed */
@@ -990,7 +1015,16 @@ const stem=()=>'toneform-'+S.form+(S.rung?'-r'+S.rung:'')+'-'+String(S.tone).rep
 const io=m=>$('io-note').textContent=m||'';
 function pack(){
   const BL=beamList(), F=BL.length>=2?C.fuseN(BL):null;
+  const q=scaleOf_mm();
   return {v:2,tool:'ToneForms by AxiomForge',url:'https://uuia.app/toneforms',
+  unit:'1 unit = 1 cm',
+  part_diameter_mm:q.D,
+  tl_cell_edge_cm:G?G.h*q.r/10:null,
+  tl_cell_edge_um:q.edgeUm||null,
+  unit_cell_mm:q.cellMM||null,
+  cells_across:q.per||null,
+  wall_um_measured:q.wallUm||null,
+  pore_um_measured:q.poreUm||null,
   saved:new Date().toISOString(),
   engine:'GAM Collider v15 n-body [9,9,2,3] · P_out = n/(sum 1/Pi) at every beam count',
   designation:S.designation||'',
@@ -1033,6 +1067,53 @@ function apply(o){
   S.res=!!o.res;S.light=!!o.light;S.invert=!!o.invert;S.rot=o.rot!==false;
   if(Array.isArray(o.pos)&&o.pos.length===3)S.pos=o.pos.slice();
   return true;}
+/* Wall and pore come off the lit set by mean intercept length — the runs of
+   solid and of void along each grid axis — not from a density formula. */
+let MET=null,METKEY='';
+function metrics(){
+  const key=[S.form,S.tone,S.dens,S.rung,S.level,S.band,S.peel,S.core,S.invert].join('|');
+  if(METKEY===key&&MET)return MET;
+  const g=G?G.grid:0; if(!g){MET=null;METKEY=key;return null;}
+  const V=visible(1e9),a=V.a,n=V.n,h=G.h,occ=new Uint8Array(g*g*g);
+  const ix=v=>Math.min(g-1,Math.max(0,Math.round((v+1)/h-0.5)));
+  for(let i=0;i<n;i++)occ[ix(a[i*3])*g*g+ix(a[i*3+1])*g+ix(a[i*3+2])]=1;
+  let sRun=[],vRun=[];
+  const walk=(get)=>{for(let u=0;u<g;u++)for(let v2=0;v2<g;v2++){
+    let run=0,cur=-1;
+    for(let w=0;w<g;w++){const o=get(u,v2,w);
+      if(o===cur)run++; else{if(cur===1&&run)sRun.push(run);else if(cur===0&&run)vRun.push(run);cur=o;run=1;}}
+    if(cur===1&&run)sRun.push(run);else if(cur===0&&run)vRun.push(run);}};
+  walk((u,v2,w)=>occ[u*g*g+v2*g+w]);
+  walk((u,v2,w)=>occ[u*g*g+w*g+v2]);
+  walk((u,v2,w)=>occ[w*g*g+u*g+v2]);
+  const med=arr=>{if(!arr.length)return 0;arr.sort((x,y)=>x-y);return arr[arr.length>>1];};
+  MET={solidCells:med(sRun),voidCells:med(vRun)};METKEY=key;return MET;}
+
+/* Every real length resolves off one number: the part diameter. */
+function scaleOf_mm(){
+  const D=Math.max(0.1,S.partMM||K.PART_MM), r=D/2;
+  const edgeUm=G?G.h*r*1000:0;                       /* TL-cell edge, microns */
+  const per=C.periods(S.tone,S.rung);                /* periods across the ball */
+  const cellMM=per>0?D/per:0;                        /* one period, millimetres */
+  const m=metrics();
+  return {D,r,edgeUm,per,cellMM,
+          wallUm:m?m.solidCells*G.h*r*1000:0,
+          poreUm:m?m.voidCells*G.h*r*1000:0};}
+
+function scaleOut(){
+  const q=scaleOf_mm(),f=(x,u)=>x>0?x.toFixed(x<10?2:(x<100?1:0))+' '+u:'—';
+  $('pm-v').textContent=q.D;
+  $('k-eu').textContent=f(q.edgeUm,'\u00b5m');
+  $('k-uc').textContent=f(q.cellMM,'mm');
+  $('k-ca').textContent=q.per>0?q.per.toFixed(2)+(q.per>=3&&q.per<=5?'  \u2713':''):'—';
+  $('k-wl').textContent=f(q.wallUm,'\u00b5m');
+  $('k-po').textContent=f(q.poreUm,'\u00b5m');
+  const gw=q.wallUm>=K.WALL_MIN_UM,gp=q.poreUm>=K.PORE_MIN_UM,gc=q.per>=3&&q.per<=5;
+  const mark=b=>b?'<b style="color:var(--noble)">pass</b>':'<b style="color:var(--shatter)">under</b>';
+  $('k-gate').innerHTML=q.wallUm>0
+    ? `Wall \u2265 ${K.WALL_MIN_UM} \u00b5m ${mark(gw)} \u00b7 pore \u2265 ${K.PORE_MIN_UM} \u00b5m ${mark(gp)} \u00b7 3\u20135 cells across ${mark(gc)}`
+    : 'Set a level and a band that light cells, then the wall and pore read out.';}
+
 function visible(cap){
   const {lvl,bw,pOut,pIn}=win(),St=K.STRIDE,c=G.cells,out=[];
   for(let i=0;i<G.n;i++){const k=i*St,v=c[k+3],r=c[k+4];
@@ -1053,7 +1134,8 @@ $('x-obj').onclick=()=>{io('writing OBJ…');setTimeout(()=>{
   dl(new Blob([L.join('\n')],{type:'text/plain'}),stem()+'.obj');
   io(`OBJ written · ${V.n.toLocaleString()} cells${V.thin>1?', every '+V.thin:''}`);},20);};
 $('x-stl').onclick=()=>{io('writing STL…');setTimeout(()=>{
-  const V=visible(45000),a=V.a,n=V.n,h=0.9/Math.max(S.dens,18);
+  const V=visible(45000),a=V.a,n=V.n,mm=Math.max(0.1,S.partMM||K.PART_MM)/2,
+        h=0.9/Math.max(S.dens,18)*mm;
   const ntri=n*12,buf=new ArrayBuffer(84+ntri*50),dv=new DataView(buf);
   const hdr='ToneForms '+C.POOL[S.form].name+' tone '+S.tone;
   for(let q=0;q<80;q++)dv.setUint8(q,q<hdr.length?hdr.charCodeAt(q)&0x7f:32);
@@ -1067,9 +1149,9 @@ $('x-stl').onclick=()=>{io('writing STL…');setTimeout(()=>{
       for(let tj=0;tj<2;tj++){
         dv.setFloat32(o,fd[0],true);dv.setFloat32(o+4,fd[1],true);dv.setFloat32(o+8,fd[2],true);
         for(let c2=0;c2<3;c2++){const ci=fd[3+tj*3+c2];
-          dv.setFloat32(o+12+c2*12,x+((ci&4)?h:-h),true);
-          dv.setFloat32(o+16+c2*12,y+((ci&2)?h:-h),true);
-          dv.setFloat32(o+20+c2*12,z+((ci&1)?h:-h),true);}
+          dv.setFloat32(o+12+c2*12,x*mm+((ci&4)?h:-h),true);
+          dv.setFloat32(o+16+c2*12,y*mm+((ci&2)?h:-h),true);
+          dv.setFloat32(o+20+c2*12,z*mm+((ci&1)?h:-h),true);}
         dv.setUint16(o+48,0,true);o+=50;}}}
   dl(new Blob([buf],{type:'model/stl'}),stem()+'.stl');
   io(`STL written · ${n.toLocaleString()} cubes, ${ntri.toLocaleString()} triangles${V.thin>1?', every '+V.thin:''}`);},20);};
