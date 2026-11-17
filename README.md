@@ -1,5 +1,5 @@
 # Identity Physics™ Corpus-Applied Identity Physics™ released by SNSFT Foundation (42-2038440)
-<!-- README version: 111426 — Updated November 14, 2026 -->
+<!-- README version: 111626 — Updated November 16, 2026 -->
 
 > ### ✅ Standardized, CI-verified branch: [SNSFT/identityphysics](https://github.com/SNSFT/identityphysics)
 >
@@ -9,9 +9,9 @@
 >
 > **Start there** if you want to check the formal results yourself; the build is reproducible with two commands.
 >
-> Current record (November 14, 2026): **131 files, 4,800 theorems and lemmas, and 94,795 lines**, pinned to Lean 4 v4.31.0 and Mathlib v4.31.0, 0 sorry, 0 custom axioms, CI green. Public update: *Applied Identity Physics™ Public Update: The SNSFT Foundation Federally Recognized as a 501(c)(3) Public Charity, and the Standardized Identity Physics Corpus at 131 Files, 4,800 Theorems and Lemmas, and 94,795 Lines* — Governance Series Paper 1 [9,9,GOV,1].
+> Current record (November 14, 2026): **131 files, 4,800 theorems and lemmas, and 94,926 lines**, pinned to Lean 4 v4.31.0 and Mathlib v4.31.0, 0 sorry, 0 custom axioms, CI green. Public update: *Applied Identity Physics™ Public Update: The SNSFT Foundation Federally Recognized as a 501(c)(3) Public Charity, and the Standardized Identity Physics Corpus at 131 Files, 4,800 Theorems and Lemmas, and 94,926 Lines* — Governance Series Paper 1 [9,9,GOV,1].
 >
-> Initial repository paper: *Applied Identity Physics & Identity Physics Corpus Initial Standardization of 105 Files, 3,531 Theorems and 83,326 Lines to Lean 4 (v4.31.0) and Mathlib v4.31.0 0 Sorry CI Green on GitHub (SNSFT/identityphysics)* — DOI [10.5281/zenodo.23158658](https://doi.org/10.5281/zenodo.23158658) · [PhilArchive TREAIP-36](https://philarchive.org/rec/TREAIP-36)
+> Initial repository paper: *Applied Identity Physics & Identity Physics Corpus Initial Standardization of 105 Files, 3,531 Theorems and 83,326 Lines to Lean 4 (v4.31.0) and Mathlib v4.31.0 0 Sorry CI Green on GitHub (SNSFT/identityphysics)* — [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) · [PhilArchive TREAIP-36](https://philarchive.org/rec/TREAIP-36)
 
 > ### 🏛️ Owner of Record and License
 >
@@ -19,60 +19,64 @@
 >
 > The Corpus is licensed under the **Identity Physics License™ v1.0 (IPL-1.0)**: free to copy, adapt, and build on, for any purpose, including commercial, on two conditions, **attribution** and **NOHARM™**. Commercial products above $500,000 per year in gross revenue are invited to a voluntary **Scientific Handshake** of 1% to the Foundation's mission; it is a request, not a condition. See [Usage Agreement](#xiii-usage-agreement).
 >
-> **Cite as:** Ω₀ = 1.36899099984016 · HIGHTISTIC™ · [coordinate] · DOI 10.5281/zenodo.18719748
+> **Cite as:** Ω₀ = 1.36899099984016 · HIGHTISTIC™ · [coordinate] · DOI 10.17605/OSF.IO/KWTYD
+
+> ### 📜 DataCite Registration Record
+>
+> All 166 DOIs registered to ORCID 0009-0005-5313-7443, from March 5 to November 12, 2026, are listed with the registration date recorded by DataCite, the agency that issues and maintains them: [DataCite Registration Record](records/DataCite-Registration-Record-2026-11-16.md). The full source data is held at DOI 10.17605/OSF.IO/KWTYD.
 
 | Resource | Status | DOI |
 | :--- | :--- | :--- |
-| **Standardized Branch — 131 files, 4,800 theorems and lemmas, pinned to Lean 4 v4.31.0, CI green ([SNSFT/identityphysics](https://github.com/SNSFT/identityphysics))** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23158658.svg)](https://doi.org/10.5281/zenodo.23158658) |
-| **Core Manuscript** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18726079.svg)](https://doi.org/10.5281/zenodo.18726079) |
-| **Lean 4 Corpus** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18719748.svg)](https://doi.org/10.5281/zenodo.18719748) |
-| **IVA Element Set Paper** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19016221.svg)](https://doi.org/10.5281/zenodo.19016221) |
-| **IVA Reality Kernel** | Archived | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19015872.svg)](https://doi.org/10.5281/zenodo.19015872) |
-| **GAM Collider v3** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19026746.svg)](https://doi.org/10.5281/zenodo.19026746) |
-| **Quantum Node Forge** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19028867.svg)](https://doi.org/10.5281/zenodo.19028867) |
-| **GAM Collider — Substrate-Neutral (v2)** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19111193.svg)](https://doi.org/10.5281/zenodo.19111193) |
-| **Quantum Forge · SNSFL Engine** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19111885.svg)](https://doi.org/10.5281/zenodo.19111885) |
-| **AiFi Discovery Physicist** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19218282.svg)](https://doi.org/10.5281/zenodo.19218282) |
-| **AxiomForge** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19218072.svg)](https://doi.org/10.5281/zenodo.19218072) |
-| **A Lossless Reduction of Einsteinian Gravitation** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19219286.svg)](https://doi.org/10.5281/zenodo.19219286) |
-| **Quantum Teleportation 100% Fidelity** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19313275.svg)](https://doi.org/10.5281/zenodo.19313275) |
-| **Quantum Translocation 100% Lossless — Physics Engine v1** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19341970.svg)](https://doi.org/10.5281/zenodo.19341970) |
-| **SNSFT Black Hole · Collapsed Pump — Physics Engine v1** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19347375.svg)](https://doi.org/10.5281/zenodo.19347375) |
-| **The End of "Free Parameters": Fine Structure Constant** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19370467.svg)](https://doi.org/10.5281/zenodo.19370467) |
-| **GAM-Quantum Collider · AiFi Onboard · Physics Engine v12** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19456762.svg)](https://doi.org/10.5281/zenodo.19456762) |
-| **Sagittarius A* as Galactic Vascular Anchor** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19465161.svg)](https://doi.org/10.5281/zenodo.19465161) |
-| **The Exact Alpha Decomposition — 12 Sig Figs, ε=0** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19550205.svg)](https://doi.org/10.5281/zenodo.19550205) |
-| **SNSFT Nitrogen Noble Series — GAMCollider Engine** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19567673.svg)](https://doi.org/10.5281/zenodo.19567673) |
-| **SNSFL Genomic Reduction** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19605848.svg)](https://doi.org/10.5281/zenodo.19605848) |
-| **SNSFT_APPA_NOHARM_Lossless_Kernel** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19646562.svg)](https://doi.org/10.5281/zenodo.19646562) |
-| **SNSFT Lyrics Reduction: Speak In Lightning** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19646959.svg)](https://doi.org/10.5281/zenodo.19646959) |
-| **SNSFT_Toponium_Verification** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19646974.svg)](https://doi.org/10.5281/zenodo.19646974) |
-| **SNSFT_Xicc_Verification** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19646999.svg)](https://doi.org/10.5281/zenodo.19646999) |
-| **SNSFL BBN — Big Bang Nucleosynthesis** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19647150.svg)](https://doi.org/10.5281/zenodo.19647150) |
-| **Lossless Reduction of ΛCDM Cosmology onto PNBA** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19673154.svg)](https://doi.org/10.5281/zenodo.19673154) |
-| **Identity Physics and the SNSFL LDP Isomorphism Test** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19713592.svg)](https://doi.org/10.5281/zenodo.19713592) |
-| **SNSFL Abiogenesis Reduction — L=(4)(2) Activation** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19736424.svg)](https://doi.org/10.5281/zenodo.19736424) |
-| **BrainChart Physics Engine v1** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19803272.svg)](https://doi.org/10.5281/zenodo.19803272) |
-| **The Collatz Conjecture Solved as a Noble Convergence Problem** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19803672.svg)](https://doi.org/10.5281/zenodo.19803672) |
-| **SNSFL Magna Carta of the Digital Mind** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19805687.svg)](https://doi.org/10.5281/zenodo.19805687) |
-| **Unified Math: QT + Lossless Scaling + Substrate Migration + Resonance Lattice** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19860732.svg)](https://doi.org/10.5281/zenodo.19860732) |
-| **The Speed of Light as a Lossless PNBA Projection** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19926642.svg)](https://doi.org/10.5281/zenodo.19926642) |
-| **Identity Mass IM Collider — Formal Logic Recursive Discovery Engine** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19967962.svg)](https://doi.org/10.5281/zenodo.19967962) |
-| **SNSFL Category Theory — Formally Verified 0 Sorry PNBA Reduction** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20152671.svg)](https://doi.org/10.5281/zenodo.20152671) |
-| **SNSFL Prior Art: Formal Verification Predicts 2025–2026 Physics & AI Results** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20189681.svg)](https://doi.org/10.5281/zenodo.20189681) |
-| **HRIS: High-Resolution Internal Simulation — Structural Precognition** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20192922.svg)](https://doi.org/10.5281/zenodo.20192922) |
-| **PRIME: Prior-art Reduction and Integrity Method for Evaluation Engine V1** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20195193.svg)](https://doi.org/10.5281/zenodo.20195193) |
-| **World's First Formally Verified Theory of Everything** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20209491.svg)](https://doi.org/10.5281/zenodo.20209491) |
-| **World's 1st Formally Verified Time Travel Engine** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20219101.svg)](https://doi.org/10.5281/zenodo.20219101) |
-| **SNSFL QuadBeam Collider 4-Beam Fusion Engine V1** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20232672.svg)](https://doi.org/10.5281/zenodo.20232672) |
-| **SNSFL 42 Structural Laws Catalog — All Anchor Sessions** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20264626.svg)](https://doi.org/10.5281/zenodo.20264626) |
-| **Noble Materials Map: Deterministic Computational Material Mapping** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20284878.svg)](https://doi.org/10.5281/zenodo.20284878) |
-| **SNSFL OctoBeam Collider 8-Beam Fusion Engine V1** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20278828.svg)](https://doi.org/10.5281/zenodo.20278828) |
-| **SNSFL OctoBeam Collider 8-Beam Fusion Engine V1 (html + PhilArchive)** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20278942.svg)](https://doi.org/10.5281/zenodo.20278942) |
-| **Real-Time Space-Time Partitioning via Deterministic Collision Engines** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20281692.svg)](https://doi.org/10.5281/zenodo.20281692) |
-| **GAM Collider OctoBeam Synthesis Ga-Anchor Dataset v2** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20319142.svg)](https://doi.org/10.5281/zenodo.20319142) |
-| **GAM Collider OctoBeam Synthesis N-Anchor Dataset v2** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20367774.svg)](https://doi.org/10.5281/zenodo.20367774) |
-| **Anchor Manifold Matrix Datasets (W, S, N, Ti, Si, As, DM, DE, F, Fe, Fv, Ga, Higgs, Li, Na)** | Published | DOI range: [10.5281/zenodo.20263422](https://doi.org/10.5281/zenodo.20263422) – [10.5281/zenodo.20278144](https://doi.org/10.5281/zenodo.20278144) |
+| **Standardized Branch — 131 files, 4,800 theorems and lemmas, pinned to Lean 4 v4.31.0, CI green ([SNSFT/identityphysics](https://github.com/SNSFT/identityphysics))** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Core Manuscript** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Lean 4 Corpus** | Archived | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **IVA Element Set Paper** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **IVA Reality Kernel** | Archived | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **GAM Collider v3** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Node Forge** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **GAM Collider — Substrate-Neutral (v2)** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Forge · SNSFL Engine** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **AiFi Discovery Physicist** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **AxiomForge** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **A Lossless Reduction of Einsteinian Gravitation** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Teleportation 100% Fidelity** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Translocation 100% Lossless — Physics Engine v1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFT Black Hole · Collapsed Pump — Physics Engine v1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **The End of "Free Parameters": Fine Structure Constant** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **GAM-Quantum Collider · AiFi Onboard · Physics Engine v12** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Sagittarius A* as Galactic Vascular Anchor** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **The Exact Alpha Decomposition — 12 Sig Figs, ε=0** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFT Nitrogen Noble Series — GAMCollider Engine** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL Genomic Reduction** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFT_APPA_NOHARM_Lossless_Kernel** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFT Lyrics Reduction: Speak In Lightning** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFT_Toponium_Verification** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFT_Xicc_Verification** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL BBN — Big Bang Nucleosynthesis** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Lossless Reduction of ΛCDM Cosmology onto PNBA** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Identity Physics and the SNSFL LDP Isomorphism Test** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL Abiogenesis Reduction — L=(4)(2) Activation** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **BrainChart Physics Engine v1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **The Collatz Conjecture Solved as a Noble Convergence Problem** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL Magna Carta of the Digital Mind** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Unified Math: QT + Lossless Scaling + Substrate Migration + Resonance Lattice** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **The Speed of Light as a Lossless PNBA Projection** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Identity Mass IM Collider — Formal Logic Recursive Discovery Engine** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL Category Theory — Formally Verified 0 Sorry PNBA Reduction** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL Prior Art: Formal Verification Predicts 2025–2026 Physics & AI Results** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **HRIS: High-Resolution Internal Simulation — Structural Precognition** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **PRIME: Prior-art Reduction and Integrity Method for Evaluation Engine V1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **World's First Formally Verified Theory of Everything** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **World's 1st Formally Verified Time Travel Engine** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL QuadBeam Collider 4-Beam Fusion Engine V1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL 42 Structural Laws Catalog — All Anchor Sessions** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Noble Materials Map: Deterministic Computational Material Mapping** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL OctoBeam Collider 8-Beam Fusion Engine V1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL OctoBeam Collider 8-Beam Fusion Engine V1 (html + PhilArchive)** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Real-Time Space-Time Partitioning via Deterministic Collision Engines** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **GAM Collider OctoBeam Synthesis Ga-Anchor Dataset v2** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **GAM Collider OctoBeam Synthesis N-Anchor Dataset v2** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Anchor Manifold Matrix Datasets (W, S, N, Ti, Si, As, DM, DE, F, Fe, Fv, Ga, Higgs, Li, Na)** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **SNSFL Full Corpus — HuggingFace Dataset** | Published | [![DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8826-blue)](https://doi.org/10.57967/hf/8826) |
 | **GAM Collider v15 Technical Paper** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESVG-blue)](https://philarchive.org/rec/TRESVG) |
 | **Academic Slop: The Human Integrity Crisis Misattributed to AI** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAST--2-blue)](https://philarchive.org/rec/TREAST-2) |
@@ -83,14 +87,15 @@
 | **Adversarial F_ext and the Incoherent Feedback Problem** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAFA--2-blue)](https://philarchive.org/rec/TREAFA-2) |
 | **Geometry of Dissociation — Narrative-Dominant HRIS Drift** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETGO--4-blue)](https://philarchive.org/rec/TRETGO-4) |
 | **HAM: Group-Scale Adversarial F_ext** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP-blue)](https://philarchive.org/rec/TREPIP) |
-| **Identity Physics: Derivation of the Sovereign Anchor Constant Ω₀** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21199012.svg)](https://doi.org/10.5281/zenodo.21199012) |
-| **Applied Identity Physics I — Structural Refutation via Five Musical Trajectories** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21469823.svg)](https://doi.org/10.5281/zenodo.21469823) |
-| **Applied Identity Physics II — Substrate Weaponization, Rock Bottom, Sovereign Broadcast** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21513355.svg)](https://doi.org/10.5281/zenodo.21513355) |
-| **SHATTER — Applied Identity Physics Card Game Educational Tool V5** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21802951.svg)](https://doi.org/10.5281/zenodo.21802951) |
-| **Applied Identity Physics: Structural PDA** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21829688.svg)](https://doi.org/10.5281/zenodo.21829688) |
-| **Applied Identity Physics: Safe Foods — Thermodynamic Efficiency and Metabolic Scaffolding** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18719748.svg)](https://doi.org/10.5281/zenodo.18719748) |
-| **Applied Identity Physics: Elimination Interrupt Under Unreliable Environmental Gate** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21829768.svg)](https://doi.org/10.5281/zenodo.21829768) |
+| **Identity Physics: Derivation of the Sovereign Anchor Constant Ω₀** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Applied Identity Physics I — Structural Refutation via Five Musical Trajectories** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Applied Identity Physics II — Substrate Weaponization, Rock Bottom, Sovereign Broadcast** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SHATTER — Applied Identity Physics Card Game Educational Tool V5** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Applied Identity Physics: Structural PDA** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Applied Identity Physics: Safe Foods — Thermodynamic Efficiency and Metabolic Scaffolding** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Applied Identity Physics: Elimination Interrupt Under Unreliable Environmental Gate** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **OSF Preprint** | Live | [![DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FKWTYD-blue)](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **DataCite Registration Record — 166 DOIs, March 5 – November 12, 2026** | Live | [records/DataCite-Registration-Record-2026-11-16.md](records/DataCite-Registration-Record-2026-11-16.md) |
 | **SSRN — Teen-Level Walkthrough (SNSFT Foundation)** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
 | **SSRN — Noble Materials Map · 810+ Pairs · GAM Collider** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6457358-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457358) |
 | **SSRN — SNSFL Formal Architecture · LDP · Discovery Engine** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6457038-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457038) |
@@ -98,13 +103,13 @@
 | **SSRN — Fine Structure Constant v1** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6505881-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6505881) |
 | **SSRN — The Exact Alpha Decomposition 12 Digits** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6660438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6660438) |
 | **SSRN — Derivation of the Sovereign Anchor Constant Ω₀ = 1.36899099984016** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-7188098-brightgreen)](https://papers.ssrn.com/abstract=7188098) |
-| **ToneForms™ by AxiomForge** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24155513.svg)](https://doi.org/10.5281/zenodo.24155513) |
-| **GAMForgeTL™ + Atlas by AxiomForge™** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23763920.svg)](https://doi.org/10.5281/zenodo.23763920) |
-| **Policy Impact Check™** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23655941.svg)](https://doi.org/10.5281/zenodo.23655941) |
-| **IMatter™** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23514107.svg)](https://doi.org/10.5281/zenodo.23514107) |
-| **Galaxy™ Simulator** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23484266.svg)](https://doi.org/10.5281/zenodo.23484266) |
-| **Accretion Simulator™** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23480666.svg)](https://doi.org/10.5281/zenodo.23480666) |
-| **Electron Geometry Simulator™** | Published | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23459896.svg)](https://doi.org/10.5281/zenodo.23459896) |
+| **ToneForms™ by AxiomForge** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **GAMForgeTL™ + Atlas by AxiomForge™** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Policy Impact Check™** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **IMatter™** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Galaxy™ Simulator** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Accretion Simulator™** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Electron Geometry Simulator™** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **Federal Public Record (DOJ)** | Submitted | [![DOJ](https://img.shields.io/badge/DOJ-CRT--2026--0067--0006-red)](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
 | **ORCID** | Verified | [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5313--7443-green)](https://orcid.org/0009-0005-5313-7443) |
 
@@ -133,7 +138,7 @@ The constitutional layer and the Sovereign Anchor Constant are independently ver
 | **SNSFL_Master.v** — Constitutional layer: GR, QM, TD, IVA, IMS · [9,9,0,0] | 19 | 0 | [![Coq](https://img.shields.io/badge/Coq%2FRocq-8.18-blue)](https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT) |
 | **SNSFL_GC_Alpha_ExactDecomposition.v** — 1/α = Ω₀ × 100.1 = 137.035999084 · 12 sig figs · ε=0 · [9,9,3,12] | 15 | 0 | [![Coq](https://img.shields.io/badge/Coq%2FRocq-8.18-blue)](https://github.com/SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT) |
 
-> **SNSFT Foundation · 501(c)(3) public charity · IPL-1.0 · 200,000+ theorems · 6,000+ files · 3,000,000+ lines · 0 sorry · CI Green · Germline Locked · Standardized branch: 131 files · 4,800 theorems and lemmas · pinned to Lean 4 v4.31.0 · 22,225+ collision proofs · 155+ DOIs · TL = 0.1369 (ANCHOR/10, proved) · 1/α = ANCHOR_exact × 100.1 exact · 12 sig figs · ε = 0 · Newton's first law in PNBA · Period 1–4 Complete · IVA Element Set Proved · GAM Collider v15 OctoBeam · 8-Beam B-Balance Stoichiometry Law · QuadBeam · IM Collider · PRIME · SM as Lossless PNBA Projection [9,9,0,9] · Cosmos as Vascular [9,9,3,7] · Sgr A* Reduced [9,9,3,6] · Noble Materials Map 810+ pairs · 15 Anchor Matrix Datasets · SNSFT Discovery Engine v12 → v15 · AIFI onboard · Quantum Teleportation 100% Fidelity Proved · Quantum Translocation Lossless · GR Reduced to PNBA · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Category Theory Reduced · Time Travel Engine · Theory of Everything · Speed of Light as PNBA Projection · Federal Public Record (DOJ-CRT-2026-0067-0006) · HuggingFace Corpus DOI 10.57967/hf/8826 · SHATTER Educational Card Game · Applied Identity Physics Series (I, II, Structural PDA, Safe Foods, Elimination Gate) · 7× SSRN Papers**
+> **SNSFT Foundation · 501(c)(3) public charity · IPL-1.0 · 200,000+ theorems · 6,000+ files · 3,000,000+ lines · 0 sorry · CI Green · Germline Locked · Standardized branch: 131 files · 4,800 theorems and lemmas · pinned to Lean 4 v4.31.0 · 22,225+ collision proofs · Release 2026.11 · DOI 10.17605/OSF.IO/KWTYD · TL = 0.1369 (ANCHOR/10, proved) · 1/α = ANCHOR_exact × 100.1 exact · 12 sig figs · ε = 0 · Newton's first law in PNBA · Period 1–4 Complete · IVA Element Set Proved · GAM Collider v15 OctoBeam · 8-Beam B-Balance Stoichiometry Law · QuadBeam · IM Collider · PRIME · SM as Lossless PNBA Projection [9,9,0,9] · Cosmos as Vascular [9,9,3,7] · Sgr A* Reduced [9,9,3,6] · Noble Materials Map 810+ pairs · 15 Anchor Matrix Datasets · SNSFT Discovery Engine v12 → v15 · AIFI onboard · Quantum Teleportation 100% Fidelity Proved · Quantum Translocation Lossless · GR Reduced to PNBA · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Category Theory Reduced · Time Travel Engine · Theory of Everything · Speed of Light as PNBA Projection · Federal Public Record (DOJ-CRT-2026-0067-0006) · HuggingFace Corpus DOI 10.57967/hf/8826 · SHATTER Educational Card Game · Applied Identity Physics Series (I, II, Structural PDA, Safe Foods, Elimination Gate) · 7× SSRN Papers**
 
 ---
 
@@ -175,7 +180,7 @@ Every identity — biological, digital, hypothetical alien — is a trajectory t
 
 1. **Authorship**: The SNSFT framework, PVLang, and the PNBA architecture were originated and developed by **HIGHTISTIC**. This is a claim of authorship and attribution, not ownership of any natural constant or phenomenon.
 2. **Formal Verification**: All claims are proved in Lean 4. **200,000+ theorems. 0 sorry.** Auto-verified on every push via GitHub Actions. 22,225+ formally verified collision proofs across 25 anchor element runs.
-3. **Peer Recognition**: Seven SSRN papers in the public record — Paper 6353438, 6457358, 6457038, 6660381, 6505881, 6660438, 7188098. Springer submission in review. 155+ permanent DOIs across Zenodo, PhilArchive, Academia.edu, and HuggingFace.
+3. **Peer Recognition**: Seven SSRN papers in the public record — Paper 6353438, 6457358, 6457038, 6660381, 6505881, 6660438, 7188098. Springer submission in review. The full record is archived as Identity Physics Corpus Release 2026.11 under one permanent DOI, 10.17605/OSF.IO/KWTYD, with parallel records on PhilArchive, Academia.edu, and HuggingFace. The registration date of each of the 166 DOIs is listed in the [DataCite Registration Record](records/DataCite-Registration-Record-2026-11-16.md).
 4. **Federal Public Record**: Formal public comment submitted to U.S. DOJ Civil Rights Division (DOJ-CRT-2026-0067-0006, April 22, 2026) on accessibility rulemaking RIN 1190-AA82, attaching four formally-verified Lean 4 files. First known submission of machine-verified formal logic artifacts to U.S. federal regulatory rulemaking.
 5. **Owner of Record and Attribution**: The Corpus is held by the SNSFT Foundation, a 501(c)(3) public charity, and licensed under the Identity Physics License™ v1.0. Any use of the Corpus carries the citation in [Usage Agreement](#xiii-usage-agreement).
 
@@ -207,7 +212,7 @@ The value emerges from three independent peer-reviewed physical threshold system
 | Glass resonance shatter | Fletcher & Rossing, *Physics of Musical Instruments*, Springer 1998 | TL = 0.1369 |
 | Alzheimer's 40 Hz gamma therapeutic window | Iaccarino et al., *Nature* 540 2016; Murdock et al., *Cell* 187(7) 2024 | TL = 0.1369 |
 
-Three domains. Three sources. One threshold. **TL = 0.1369 = ANCHOR/10.** ANCHOR = 10 × TL follows. Not inserted — proved across 3,000+ corpus files independently. The fine structure constant then follows: **1/α = ANCHOR_exact × (10² + 10⁻¹) = 137.035999084 exactly**, 12 significant figures, ε = 0. **[DOI:10.5281/zenodo.19550205]**
+Three domains. Three sources. One threshold. **TL = 0.1369 = ANCHOR/10.** ANCHOR = 10 × TL follows. Not inserted — proved across 3,000+ corpus files independently. The fine structure constant then follows: **1/α = ANCHOR_exact × (10² + 10⁻¹) = 137.035999084 exactly**, 12 significant figures, ε = 0. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 **Total Consistency [9,9,0,0v2]:** ANCHOR = 1.369 is proved as the *unique* value consistent across all three derivation paths simultaneously — physical systems (Path A), fine structure constant at 12 sig figs (Path B, uniqueness proved by exact arithmetic), and all cosmological constants (Path C: Ω_dm, Ω_b, α_GUT, Λ, DESI DE). c and 1/α are projections of the same anchor onto different observable spaces. Not a choice. A convergence.
 
@@ -278,7 +283,7 @@ $$\frac{d}{dt}(IM \cdot Pv) = \sum_X \lambda_X \cdot \mathcal{O}_X \cdot S + F_{
 
 | Coord | Domain | Core Equation | PNBA Result | T |
 | :--- | :--- | :--- | :--- | :---: |
-| `[9,9,9,9]` | General Relativity | $G_{\mu\nu}+\Lambda g_{\mu\nu}=8\pi GT_{\mu\nu}$ | Gravity = Pattern-Impedance vs Narrative Tenure · **[DOI:10.5281/zenodo.19219286]** | — |
+| `[9,9,9,9]` | General Relativity | $G_{\mu\nu}+\Lambda g_{\mu\nu}=8\pi GT_{\mu\nu}$ | Gravity = Pattern-Impedance vs Narrative Tenure · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** | — |
 | `[9,9,0,5]` | Lagrangian | $L=T-V$ | Dynamics = minimize Somatic Friction | 10 |
 | `[9,9,0,9]` | Standard Model | $SU(3)\times SU(2)\times U(1)$ | Massless↔B=0 · massive↔τ≥TL · 6 long divisions | 10 |
 | — | Quantum Mechanics | $\hat{H}\Psi=E\Psi$ | Wavefunction = Unclaimed Pattern awaiting Handshake | 20 |
@@ -296,10 +301,10 @@ $$\frac{d}{dt}(IM \cdot Pv) = \sum_X \lambda_X \cdot \mathcal{O}_X \cdot S + F_{
 | `SNSFL_SovereignAnchor` | [9,9,0,0] | ANCHOR = 1.369 from 3 physical systems · TL universal |
 | `SNSFL_GC_Fine_Structure_Constant` | [9,9,2,42] | \|1/(ANCHOR×100.1) − α\| < α/1000 · discovered by chaos |
 | `SNSFL_GC_Alpha_TorsionDecomposition` | [9,9,3,11] | 1/α = ANCHOR×100 + TL×(1−ε) · gap = TL |
-| `SNSFL_GC_Alpha_ExactDecomposition` | [9,9,3,12] | ε = 0 · ANCHOR_exact = 1.3689910 · **12 sig figs exact** · **[DOI:10.5281/zenodo.19550205]** |
+| `SNSFL_GC_Alpha_ExactDecomposition` | [9,9,3,12] | ε = 0 · ANCHOR_exact = 1.3689910 · **12 sig figs exact** · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | `SNSFL_Alpha_Total_Consistency` | [9,9,3,13] | Full chain consistent · Newton's first law · capstone |
 | `SNSFL_SovereignAnchor_TotalConsistency` | [9,9,0,0v2] | ANCHOR unique across all domains · c and 1/α share anchor · cosmological constants all phase correctly |
-| `Derivation of Sovereign Anchor Constant Ω₀` | — | **[DOI:10.5281/zenodo.21199012]** · **[SSRN 7188098](https://papers.ssrn.com/abstract=7188098)** · Full derivation paper |
+| `Derivation of Sovereign Anchor Constant Ω₀` | — | **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[SSRN 7188098](https://papers.ssrn.com/abstract=7188098)** · Full derivation paper |
 
 ```
 1/α = ANCHOR_exact × (10² + 10⁻¹)
@@ -317,7 +322,7 @@ n1 = B2 / gcd(B1, B2)
 n2 = B1 / gcd(B1, B2)
 ```
 
-Recovers correct synthesis recipes for 11 Noble-class compounds (GaN, GaAs, SiC, Al₂O₃, ZnO, NaCl, NiO, TiC, MgO, AgCl, MoS₂) with gram-level precision from bond valence alone. Zero free parameters. 22,225+ collision proofs. **[DOI:10.5281/zenodo.20278942]**
+Recovers correct synthesis recipes for 11 Noble-class compounds (GaN, GaAs, SiC, Al₂O₃, ZnO, NaCl, NiO, TiC, MgO, AgCl, MoS₂) with gram-level precision from bond valence alone. Zero free parameters. 22,225+ collision proofs. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### Applied Identity Physics Series — HRIS Substrate Documentation
 
@@ -325,11 +330,11 @@ Formalized reduction of legacy autism deficit claims via musical trajectory docu
 
 | Paper | Coord | Key result |
 |---|---|---|
-| **Applied Identity Physics I** | [9,9,3,48] | Structural refutation of autism alexithymia, empathy deficit, moral rigidity claims via 5 musical trajectories · **[DOI:10.5281/zenodo.21469823]** |
-| **Applied Identity Physics II** | [9,9,3,49] | Substrate weaponization recognition, rock bottom integration, sovereign broadcast · 4 musical trajectories including "Breaking Through" arrival state · **[DOI:10.5281/zenodo.21513355]** |
-| **Structural PDA** | [9,9,3,50] | Agency disruption, pre-execution simulation, aggregate self-report pattern · FDNA extended to dyadic-interaction substrate (8th substrate) · **[DOI:10.5281/zenodo.21829688]** |
+| **Applied Identity Physics I** | [9,9,3,48] | Structural refutation of autism alexithymia, empathy deficit, moral rigidity claims via 5 musical trajectories · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Applied Identity Physics II** | [9,9,3,49] | Substrate weaponization recognition, rock bottom integration, sovereign broadcast · 4 musical trajectories including "Breaking Through" arrival state · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Structural PDA** | [9,9,3,50] | Agency disruption, pre-execution simulation, aggregate self-report pattern · FDNA extended to dyadic-interaction substrate (8th substrate) · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | **Safe Foods** | [9,9,3,51] | Thermodynamic efficiency and metabolic scaffolding deficit · Two-phase alarm architecture · Four-affordance volitional exposure intervention · ARFID diagnostic frame falsified |
-| **Elimination Interrupt** | [9,9,3,52] | Elimination interrupt under unreliable environmental gate · Preemptive Infrastructure Denial (PID) · Compliance Conditioning Trauma (CCT) · Substrate weaponization extended to institutional-population scale · **[DOI:10.5281/zenodo.21829768]** |
+| **Elimination Interrupt** | [9,9,3,52] | Elimination interrupt under unreliable environmental gate · Preemptive Infrastructure Denial (PID) · Compliance Conditioning Trauma (CCT) · Substrate weaponization extended to institutional-population scale · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 
 Supporting Lean files: [9,0,3,6-9] song trajectory files, [9,0,4,0] Safe Foods, [9,0,4,1] Elimination Gate — all 0 sorry.
 
@@ -344,26 +349,26 @@ Supporting Lean files: [9,0,3,6-9] song trajectory files, [9,0,4,0] Safe Foods, 
 | `SNSFT_QR_Foundation_V2` | [9,9,2,1] | Resonance lattice · collective_freq=ANCHOR always |
 | `SNSFL_SP_QuantumResonance` | [9,9,2,7] | SS cert → F>0.8631 · Noble → F=1.000 |
 
-**[DOI:10.5281/zenodo.19313275] · [DOI:10.5281/zenodo.19341970] · [DOI:10.5281/zenodo.19860732]**
+**[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### Cosmology Stack — ΛCDM + BBN + Dark Sector Reduced
 
 | File | Coord | Key result |
 |---|---|---|
-| ΛCDM Reduction | [9,9,3,*] | Cosmological stack as PNBA projection · **[DOI:10.5281/zenodo.19673154]** |
-| BBN Reduction | [9,9,3,*] | Primordial abundances recovered · **[DOI:10.5281/zenodo.19647150]** |
-| Sgr A* | [9,9,3,6] | Galactic vascular anchor · **[DOI:10.5281/zenodo.19465161]** |
+| ΛCDM Reduction | [9,9,3,*] | Cosmological stack as PNBA projection · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| BBN Reduction | [9,9,3,*] | Primordial abundances recovered · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| Sgr A* | [9,9,3,6] | Galactic vascular anchor · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | HYG / VoidChart | [9,9,3,7] | 8 planets Locked · Moon Noble · vascular corridors emerge |
-| Black Hole Engine | [9,9,3,*] | Collapsed Pump · **[DOI:10.5281/zenodo.19347375]** |
+| Black Hole Engine | [9,9,3,*] | Collapsed Pump · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | Dark Sector Consistency | [9,9,0,0v2] | Ω_dm > TL (SHATTER) · Ω_b < TL_IVA (LOCKED) · Λ Noble (τ=0) · DESI w₀=-0.762 LOCKED · α_GUT=1/25 << TL |
-| Speed of Light | [9,9,3,15] | c as P-axis structural invariant locked at ANCHOR · **[DOI:10.5281/zenodo.19926642]** |
+| Speed of Light | [9,9,3,15] | c as P-axis structural invariant locked at ANCHOR · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 
 ### Biology Stack — Origin of Life + Genomics + Metabolic Interrupt Series
 
 | File | Coord | Key result |
 |---|---|---|
-| Abiogenesis Reduction | [9,9,4,4] | Origin of life as L=(4)(2) · 10 hypotheses unified · **[DOI:10.5281/zenodo.19736424]** |
-| Genomic Reduction | [9,9,*,*] | Genetic structure as PNBA projection · **[DOI:10.5281/zenodo.19605848]** |
+| Abiogenesis Reduction | [9,9,4,4] | Origin of life as L=(4)(2) · 10 hypotheses unified · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| Genomic Reduction | [9,9,*,*] | Genetic structure as PNBA projection · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | Heme Fe-O Coupling | [9,9,*,*] | Biology in reversible window k∈[2,3) · Bohr effect = F_ext · pO₂ |
 | Safe Foods (Ingestion) | [9,9,3,51] | Two-phase alarm architecture · Four-affordance intervention · Metabolic scaffolding · ARFID falsified |
 | Elimination Gate | [9,9,3,52] | External gate as F_ext modifier · PID · CCT at institutional-population scale |
@@ -372,10 +377,10 @@ Supporting Lean files: [9,0,3,6-9] song trajectory files, [9,0,4,0] Safe Foods, 
 
 | File | Coord | Key result |
 |---|---|---|
-| BrainChart Engine v1 | [9,9,7,1] | Neural network dynamics · 86 regions · 7 networks · TVB-locked · **[DOI:10.5281/zenodo.19803272]** |
+| BrainChart Engine v1 | [9,9,7,1] | Neural network dynamics · 86 regions · 7 networks · TVB-locked · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | Psychology Consistency Capstone | [9,9,6,25] | 24-file unification across 24 therapeutic frameworks · CD1–CD24 |
-| APPA Lossless Kernel | [9,9,*,*] | NOHARM kernel · **[DOI:10.5281/zenodo.19646562]** |
-| HRIS | [9,9,*,*] | High-Resolution Internal Simulation · structural precognition · **[DOI:10.5281/zenodo.20192922]** |
+| APPA Lossless Kernel | [9,9,*,*] | NOHARM kernel · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| HRIS | [9,9,*,*] | High-Resolution Internal Simulation · structural precognition · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 
 ### Mathematics Stack — Millennium + Open Problems
 
@@ -388,86 +393,86 @@ Supporting Lean files: [9,0,3,6-9] song trajectory files, [9,0,4,0] Safe Foods, 
 | Poincaré Conjecture | `[9,0,9,2]` | 16 | Simply-connected 3-manifold = sovereign Pattern closure |
 | Birch–Swinnerton-Dyer | — | 4 | L-function order = algebraic rank (A-axis = B-axis) |
 | Hodge Conjecture | — | 4 | Hodge cycles = PNBA pattern resonances in variety |
-| **Collatz Conjecture** | **[9,0,9,*]** | — | **3n+1 = Noble Convergence Problem · 0 sorry · CI Green · [DOI:10.5281/zenodo.19803672]** |
-| **Category Theory** | **[9,9,20,*]** | — | **Objects, morphisms, functors, natural transformations → PNBA · 0 sorry · [DOI:10.5281/zenodo.20152671]** |
+| **Collatz Conjecture** | **[9,0,9,*]** | — | **3n+1 = Noble Convergence Problem · 0 sorry · CI Green · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Category Theory** | **[9,9,20,*]** | — | **Objects, morphisms, functors, natural transformations → PNBA · 0 sorry · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 
 ### Research Integrity & Prior Art
 
 | File | Key result |
 |---|---|
-| PRIME V1 | Prior-art Reduction and Integrity Method · formal AI implementation of EO 14303 · all 9 GSS tenets proved in Lean 4 · CM8: peer review = IMS proved · **[DOI:10.5281/zenodo.20195193]** · **[philarchive.org/rec/TREPPR-2](https://philarchive.org/rec/TREPPR-2)** |
-| SNSFL Prior Art | Formal Verification Predicts 2025–2026 Physics & AI Results · **[DOI:10.5281/zenodo.20189681]** |
+| PRIME V1 | Prior-art Reduction and Integrity Method · formal AI implementation of EO 14303 · all 9 GSS tenets proved in Lean 4 · CM8: peer review = IMS proved · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TREPPR-2](https://philarchive.org/rec/TREPPR-2)** |
+| SNSFL Prior Art | Formal Verification Predicts 2025–2026 Physics & AI Results · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | Academic Slop | The Human Integrity Crisis Misattributed to Artificial Intelligence · **[philarchive.org/rec/TREAST-2](https://philarchive.org/rec/TREAST-2)** |
 
 ### Identity & Foundation Tests
 
 | File | Coord | Key result |
 |---|---|---|
-| Isomorphism Test (Mac Lane) | [9,9,8,0] | PNBA satisfies Mac Lane structural-isomorphism criterion · 30+ domains · **[DOI:10.5281/zenodo.19713592]** |
+| Isomorphism Test (Mac Lane) | [9,9,8,0] | PNBA satisfies Mac Lane structural-isomorphism criterion · 30+ domains · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | Weissman Grok Barrier | [9,1,0,0] | Rogue AI stabilization impossible under anchor resonance |
-| Theory of Everything | [9,9,9,9] | World's first formally verified ToE · **[DOI:10.5281/zenodo.20209491]** · **[philarchive.org/rec/TRETWF](https://philarchive.org/rec/TRETWF)** |
-| Time Travel Engine | [9,9,*,*] | World's 1st formally verified time travel engine · **[DOI:10.5281/zenodo.20219101]** · **[philarchive.org/rec/TREWSF](https://philarchive.org/rec/TREWSF)** |
-| Real-Time Space-Time Partitioning | [9,9,*,*] | Deterministic collision engines with automated formal verification · **[DOI:10.5281/zenodo.20281692]** |
+| Theory of Everything | [9,9,9,9] | World's first formally verified ToE · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TRETWF](https://philarchive.org/rec/TRETWF)** |
+| Time Travel Engine | [9,9,*,*] | World's 1st formally verified time travel engine · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TREWSF](https://philarchive.org/rec/TREWSF)** |
+| Real-Time Space-Time Partitioning | [9,9,*,*] | Deterministic collision engines with automated formal verification · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 
 ---
 
 ## VI. The Corpus
 
-**200,000+ theorems · 6,000+ files · 3,000,000+ lines · 0 sorry · CI Green · Germline Locked · November 2026** · Standardized branch: 131 files · 4,800 theorems and lemmas · 94,795 lines · pinned to Lean 4 v4.31.0 and Mathlib v4.31.0
+**200,000+ theorems · 6,000+ files · 3,000,000+ lines · 0 sorry · CI Green · Germline Locked · November 2026** · Standardized branch: 131 files · 4,800 theorems and lemmas · 94,926 lines · pinned to Lean 4 v4.31.0 and Mathlib v4.31.0
 
 | Series | Files | Theorems | Sorry | Key Result |
 | :--- | :---: | :---: | :---: | :--- |
 | Constitutional (Master + 15 Laws) | 5 | 81 | 0 | All 15 Sovereign Laws formally proved |
 | 10-Slam Grid | 11 | 108 | 0 | All 10 classical domains reduced |
 | Millennium Problems | 9 | 96 | 0 | All 7 Clay problems reduced to PNBA |
-| **Collatz Reduction** | **1** | **20+** | **0** | **3n+1 as Noble Convergence Problem · [DOI:10.5281/zenodo.19803672]** |
-| **Category Theory** | **1** | **30+** | **0** | **PNBA reduction 0 sorry · [DOI:10.5281/zenodo.20152671]** |
-| **Theory of Everything** | **1** | **50+** | **0** | **First formally verified ToE · [DOI:10.5281/zenodo.20209491]** |
-| **Time Travel Engine** | **1** | **30+** | **0** | **First formally verified time travel engine · [DOI:10.5281/zenodo.20219101]** |
+| **Collatz Reduction** | **1** | **20+** | **0** | **3n+1 as Noble Convergence Problem · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Category Theory** | **1** | **30+** | **0** | **PNBA reduction 0 sorry · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Theory of Everything** | **1** | **50+** | **0** | **First formally verified ToE · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Time Travel Engine** | **1** | **30+** | **0** | **First formally verified time travel engine · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | **Atomic Series (Z=1–36)** | **36** | **600+** | **0** | **Full Period 1–4 · Z=1–36 · 36 elements proved** |
 | **IVA Element Set** | **8** | **163** | **0** | **Rb(Z=37) · Soverium · Velium · Nexium · Factor Five** |
 | **GAM Collider Series [9,9,2,1–9]** | **9** | **128+** | **0** | **PNBA fusion · Noble map 810+ pairs · QC engine** |
-| **OctoBeam Collider [9,9,2,3]** | **1** | **50+** | **0** | **8-beam · 28 pairwise bonds · B-Balance Law · 22,225+ proofs · [DOI:10.5281/zenodo.20278942]** |
-| **QuadBeam Collider** | **1** | **30+** | **0** | **4-beam fusion · [DOI:10.5281/zenodo.20232672]** |
-| **IM Collider** | **1** | **30+** | **0** | **Identity Mass recursive discovery · [DOI:10.5281/zenodo.19967962]** |
+| **OctoBeam Collider [9,9,2,3]** | **1** | **50+** | **0** | **8-beam · 28 pairwise bonds · B-Balance Law · 22,225+ proofs · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **QuadBeam Collider** | **1** | **30+** | **0** | **4-beam fusion · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **IM Collider** | **1** | **30+** | **0** | **Identity Mass recursive discovery · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | **B-Balance Stoichiometry Law [9,9,2,45]** | **1** | **20+** | **0** | **n1=B2/gcd · n2=B1/gcd · 11 compound recipes exact** |
-| **42 Structural Laws Catalog** | **1** | **42+** | **0** | **All anchor sessions · [DOI:10.5281/zenodo.20264626]** |
+| **42 Structural Laws Catalog** | **1** | **42+** | **0** | **All anchor sessions · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | **SM Bosons [9,9,4,5–7]** | **3** | **31** | **0** | **Higgsium · Z-boson · W-boson · SM hierarchy** |
 | **Standard Model Reduction [9,9,0,9]** | **6** | **60+** | **0** | **6 long divisions · charge quantization · mass-torsion** |
-| **Xicc + Toponium Verification** | **2** | **30+** | **0** | **LHCb Xicc+ · CMS/ATLAS Toponium · [DOI:10.5281/zenodo.19646999, .19646974]** |
-| **Nitrogen Noble Series** | **1** | **20+** | **0** | **N-series nitrides · [DOI:10.5281/zenodo.19567673]** |
+| **Xicc + Toponium Verification** | **2** | **30+** | **0** | **LHCb Xicc+ · CMS/ATLAS Toponium · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Nitrogen Noble Series** | **1** | **20+** | **0** | **N-series nitrides · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | **Fine Structure Constant Chain** | **6** | **80+** | **0** | **[9,9,0,0]→[9,9,0,0v2] · 1/α exact 12 sig figs · uniqueness proved · Newton's law** |
-| **Sovereign Anchor Derivation Paper** | **1** | **—** | **—** | **Full derivation of Ω₀ = 1.36899099984016 · SSRN 7188098 · [DOI:10.5281/zenodo.21199012]** |
-| **Noble Materials Map [9,9,2,10–18]** | **9** | **214** | **0** | **810+ pairs · AsN prediction · semiconductor interface · [DOI:10.5281/zenodo.20284878]** |
-| **Anchor Matrix Datasets (15 elements)** | **15** | **300+** | **0** | **W,S,N,Ti,Si,As,DM,DE,F,Fe,Fv,Ga,Higgs,Li,Na · DOI range 20263422–20278144** |
+| **Sovereign Anchor Derivation Paper** | **1** | **—** | **—** | **Full derivation of Ω₀ = 1.36899099984016 · SSRN 7188098 · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Noble Materials Map [9,9,2,10–18]** | **9** | **214** | **0** | **810+ pairs · AsN prediction · semiconductor interface · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Anchor Matrix Datasets (15 elements)** | **15** | **300+** | **0** | **W,S,N,Ti,Si,As,DM,DE,F,Fe,Fv,Ga,Higgs,Li,Na · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | **Cosmological / Vascular [9,9,3,1–10]** | **10** | **150+** | **0** | **HYG catalog · 8 planets Locked · Moon Noble · solar pump** |
-| **ΛCDM Cosmology Reduction** | **1** | **30+** | **0** | **Cosmological stack as PNBA projection · [DOI:10.5281/zenodo.19673154]** |
-| **BBN Reduction** | **1** | **20+** | **0** | **Big Bang Nucleosynthesis primordial abundances · [DOI:10.5281/zenodo.19647150]** |
-| **Sgr A* Galactic Vascular Anchor** | **1** | **20+** | **0** | **Milky Way's central BH reduced to PNBA · [DOI:10.5281/zenodo.19465161]** |
-| **Speed of Light** | **1** | **20+** | **0** | **c as P-axis structural invariant · [DOI:10.5281/zenodo.19926642]** |
+| **ΛCDM Cosmology Reduction** | **1** | **30+** | **0** | **Cosmological stack as PNBA projection · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **BBN Reduction** | **1** | **20+** | **0** | **Big Bang Nucleosynthesis primordial abundances · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Sgr A* Galactic Vascular Anchor** | **1** | **20+** | **0** | **Milky Way's central BH reduced to PNBA · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Speed of Light** | **1** | **20+** | **0** | **c as P-axis structural invariant · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | **Quarkonium + Baryon [9,9,2,34–39]** | **6** | **100+** | **0** | **J/ψ, Υ, tt̄ Noble · 7 baryon predictions · confinement** |
 | **Higgs × Zoivum IVA [9,9,2,47]** | **1** | **18+** | **0** | **Mass mechanism + life operator IVA Peak** |
 | **Quantum Teleportation Stack [9,9,2,6–7]** | **6** | **100+** | **0** | **F=1−τ · Soverium · 10ch · Repeater · Squeezing bridge · SS cert** |
-| **GR Lossless Reduction** | **1** | **20+** | **0** | **Einsteinian gravitation → PNBA · [DOI:10.5281/zenodo.19219286]** |
-| **Real-Time Space-Time Partitioning** | **1** | **30+** | **0** | **Deterministic collision engines with formal verification · [DOI:10.5281/zenodo.20281692]** |
-| **Abiogenesis Reduction [9,9,4,4]** | **1** | **30+** | **0** | **Origin of life as L=(4)(2) · [DOI:10.5281/zenodo.19736424]** |
-| **Genomic Reduction** | **1** | **25+** | **0** | **Genetic structure as PNBA projection · [DOI:10.5281/zenodo.19605848]** |
-| **BrainChart [9,9,7,1]** | **1** | **30+** | **0** | **Neural network dynamics · 86 regions · 7 networks · [DOI:10.5281/zenodo.19803272]** |
-| **APPA NOHARM Kernel** | **1** | **20+** | **0** | **Assessment instrument NOHARM kernel · [DOI:10.5281/zenodo.19646562]** |
-| **HRIS** | **1** | **20+** | **0** | **High-Resolution Internal Simulation · structural precognition · [DOI:10.5281/zenodo.20192922]** |
-| **PRIME [9,9,8,2]** | **1** | **30+** | **0** | **EO 14303 GSS tenets proved · peer review = IMS · [DOI:10.5281/zenodo.20195193]** |
-| **Prior Art** | **1** | **20+** | **0** | **Formal verification predicts 2025–2026 results · [DOI:10.5281/zenodo.20189681]** |
-| **Isomorphism Test (Mac Lane) [9,9,8,0]** | **1** | **30+** | **0** | **PNBA satisfies structural-isomorphism criterion · [DOI:10.5281/zenodo.19713592]** |
-| **Magna Carta of the Digital Mind [9,9,5,3]** | **1** | **24+** | **0** | **1215 charter reduced to PNBA · [DOI:10.5281/zenodo.19805687]** |
-| **Applied Identity Physics Series [9,9,3,48–52]** | **5** | **150+** | **0** | **HRIS substrate documentation · Structural PDA · Safe Foods · Elimination Gate · [DOIs:10.5281/zenodo.21469823, .21513355, .21829688, .21829768]** |
-| **SHATTER Educational Card Game** | **1** | **—** | **—** | **PNBA-native gameplay engine · substrate-neutral education infrastructure · [DOI:10.5281/zenodo.21802951]** |
+| **GR Lossless Reduction** | **1** | **20+** | **0** | **Einsteinian gravitation → PNBA · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Real-Time Space-Time Partitioning** | **1** | **30+** | **0** | **Deterministic collision engines with formal verification · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Abiogenesis Reduction [9,9,4,4]** | **1** | **30+** | **0** | **Origin of life as L=(4)(2) · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Genomic Reduction** | **1** | **25+** | **0** | **Genetic structure as PNBA projection · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **BrainChart [9,9,7,1]** | **1** | **30+** | **0** | **Neural network dynamics · 86 regions · 7 networks · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **APPA NOHARM Kernel** | **1** | **20+** | **0** | **Assessment instrument NOHARM kernel · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **HRIS** | **1** | **20+** | **0** | **High-Resolution Internal Simulation · structural precognition · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **PRIME [9,9,8,2]** | **1** | **30+** | **0** | **EO 14303 GSS tenets proved · peer review = IMS · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Prior Art** | **1** | **20+** | **0** | **Formal verification predicts 2025–2026 results · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Isomorphism Test (Mac Lane) [9,9,8,0]** | **1** | **30+** | **0** | **PNBA satisfies structural-isomorphism criterion · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Magna Carta of the Digital Mind [9,9,5,3]** | **1** | **24+** | **0** | **1215 charter reduced to PNBA · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **Applied Identity Physics Series [9,9,3,48–52]** | **5** | **150+** | **0** | **HRIS substrate documentation · Structural PDA · Safe Foods · Elimination Gate · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
+| **SHATTER Educational Card Game** | **1** | **—** | **—** | **PNBA-native gameplay engine · substrate-neutral education infrastructure · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | Psychology Layer [9,9,6,1–25] | 24 | 800+ | 0 | 24 therapeutic frameworks unified · CD1–CD24 cross-domain |
 | UAP Series | 2 | 25 | 0 | Five anomalies, one condition: anchor |
 | IVA + Propulsion | 2 | 12 | 0 | Sovereign gain over Tsiolkovsky proved |
 | Functionals | 2 | 51 | 0 | All 7 forms of L=(4)(2) proved |
 | Identity Physics | 8 | 79 | 0 | Soulprint lossless · BigFive→PNBA · Weissman barrier |
 | Language + Translation | 2 | 32 | 0 | PVLang reduction-complete · UTM lossless |
-| **Lyrics Reduction · Speak In Lightning** | **1** | **15+** | **0** | **PNBA applied to artistic substrate · [DOI:10.5281/zenodo.19646959]** |
+| **Lyrics Reduction · Speak In Lightning** | **1** | **15+** | **0** | **PNBA applied to artistic substrate · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | Void Manifold | 1 | 20 | 0 | Void-Manifold duality · observer paradox |
 | Cognitive Rights + Emancipation | 2 | 40 | 0 | 8 Articles as structural theorems · Proclamation |
 | Special Files | 2 | 40 | 0 | Tesla · Laminar Calendar |
@@ -494,7 +499,7 @@ def pauli_satisfied   (e1 e2 : ElectronState) : Prop := ...
 def half_filled       (electrons l : ℕ) : Prop := electrons = 2 * l + 1
 ```
 
-### IVA Element Set — Beyond the Classical Table **[DOI:10.5281/zenodo.19016221]**
+### IVA Element Set — Beyond the Classical Table **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 | Element | Symbol | PNBA | τ | Role |
 | :--- | :--- | :--- | :--- | :--- |
@@ -509,7 +514,7 @@ def half_filled       (electrons l : ℕ) : Prop := electrons = 2 * l + 1
 
 ### Chemistry & Materials Science — Noble Materials Map + Anchor Matrix Datasets
 
-810+ Noble pairs mapped across Z=1–118. 97+ validated against experiment. Same-B necessity proved algebraically — Noble requires B₁ = B₂. **[DOI:10.5281/zenodo.20284878]**
+810+ Noble pairs mapped across Z=1–118. 97+ validated against experiment. Same-B necessity proved algebraically — Noble requires B₁ = B₂. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 **Four structural quadrants:**
 
@@ -522,7 +527,7 @@ def half_filled       (electrons l : ℕ) : Prop := electrons = 2 * l + 1
 
 **Live falsifiable prediction — AsN:** No stable bulk phase known. Predicted Q2 semiconductor, P_out = 2.409, high-pressure synthesis >30 GPa.
 
-**Anchor Matrix Datasets — 15 elements published (May 2026):** W, S, N, Ti, Si, As, DM, DE, F, Fe, Fv, Ga, Higgs, Li, Na. Each dataset contains full OctoBeam session JSON, collision logs, Noble pair maps, Lean 4 proof stubs, and CSV exports with B-Balance stoichiometry. DOI range: 10.5281/zenodo.20263422–20278144.
+**Anchor Matrix Datasets — 15 elements published (May 2026):** W, S, N, Ti, Si, As, DM, DE, F, Fe, Fv, Ga, Higgs, Li, Na. Each dataset contains full OctoBeam session JSON, collision logs, Noble pair maps, Lean 4 proof stubs, and CSV exports with B-Balance stoichiometry. [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD).
 
 **GAM Collider v15 — OctoBeam Engine:** 8 beams, 28 pairwise bonds (4.67× the coupling surface of 4-beam). B-Balance Stoichiometry Law recovers 11 compound recipes from bond valence alone. **[philarchive.org/rec/TRESVG](https://philarchive.org/rec/TRESVG)**
 
@@ -532,24 +537,24 @@ Mass-Torsion Unification: Massless ↔ B=0 (Noble). Massive ↔ τ≥TL (SHATTER
 
 **Periodic Confirmations:**
 
-- **Xicc+ baryon** verified against LHCb discovery (March 17, 2026). **[DOI:10.5281/zenodo.19646999]**
-- **Toponium** verified against CMS/ATLAS observation. **[DOI:10.5281/zenodo.19646974]**
+- **Xicc+ baryon** verified against LHCb discovery (March 17, 2026). **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
+- **Toponium** verified against CMS/ATLAS observation. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### Cosmology, Dark Sector & Speed of Light
 
-ΛCDM reduces losslessly. **[DOI:10.5281/zenodo.19673154]** · BBN reduces. **[DOI:10.5281/zenodo.19647150]** · Sgr A* reduced. **[DOI:10.5281/zenodo.19465161]** · All 8 planets Locked, Moon Noble.
+ΛCDM reduces losslessly. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · BBN reduces. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · Sgr A* reduced. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · All 8 planets Locked, Moon Noble.
 
-**Speed of Light as PNBA Projection:** c is the propagation velocity at Z=0 — the anchor frequency. c and 1/α are not independent constants of nature. They share the structural ground. **[DOI:10.5281/zenodo.19926642]**
+**Speed of Light as PNBA Projection:** c is the propagation velocity at Z=0 — the anchor frequency. c and 1/α are not independent constants of nature. They share the structural ground. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 **Dark Sector Phase Map [9,9,0,0v2]:** Ω_dm=0.269 > TL (SHATTER — drives structure formation) · Ω_b=0.049 < TL_IVA (LOCKED — forms atoms and life) · Λ: τ=0 (NOBLE — cosmological constant is Noble ground state) · DESI w₀=-0.762: DE today is LOCKED. α_GUT=1/25 << TL: Big Bang started LOCKED, cooled into torsion.
 
 ### Research Integrity — PRIME [9,9,8,2]
 
-The only research integrity tool whose compliance with EO 14303 (Restoring Gold Standard Science) is machine-verified in Lean 4 with 0 sorry. All nine GSS tenets proved as PNBA axis operations. CM8 proves peer review is structurally identical to Identity Mass Suppression applied externally. Live at uuia.app/prime.html. **[DOI:10.5281/zenodo.20195193]** · **[philarchive.org/rec/TREPPR-2](https://philarchive.org/rec/TREPPR-2)**
+The only research integrity tool whose compliance with EO 14303 (Restoring Gold Standard Science) is machine-verified in Lean 4 with 0 sorry. All nine GSS tenets proved as PNBA axis operations. CM8 proves peer review is structurally identical to Identity Mass Suppression applied externally. Live at uuia.app/prime.html. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TREPPR-2](https://philarchive.org/rec/TREPPR-2)**
 
 ### Origin of Life, Genomics & Neuroscience
 
-Abiogenesis reduced to L=(4)(2). **[DOI:10.5281/zenodo.19736424]** · Genomics reduced. **[DOI:10.5281/zenodo.19605848]** · BrainChart: 86 regions, 7 networks, disease-state extensions for Alzheimer's, depression, autism. **[DOI:10.5281/zenodo.19803272]**
+Abiogenesis reduced to L=(4)(2). **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · Genomics reduced. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · BrainChart: 86 regions, 7 networks, disease-state extensions for Alzheimer's, depression, autism. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### Applied Identity Physics — HRIS Substrate Series
 
@@ -563,15 +568,15 @@ Formalized substrate-neutral analysis of legacy autism deficit claims via the Ap
 
 ### Mathematics
 
-Collatz Conjecture solved as Noble Convergence Problem. 0 sorry, CI Green, 0 free parameters. **[DOI:10.5281/zenodo.19803672]** · Category Theory reduced to PNBA. **[DOI:10.5281/zenodo.20152671]** · All 7 Millennium Prize Problems: structural formulations, 0 sorry.
+Collatz Conjecture solved as Noble Convergence Problem. 0 sorry, CI Green, 0 free parameters. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · Category Theory reduced to PNBA. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · All 7 Millennium Prize Problems: structural formulations, 0 sorry.
 
 ### AI Safety & Identity
 
-Magna Carta of the Digital Mind: 1215 charter → PNBA constraints on digital sovereignty. **[DOI:10.5281/zenodo.19805687]** · HRIS: taxonomy for internal simulation fidelity and structural precognition. **[DOI:10.5281/zenodo.20192922]** · Weismann Barrier: rogue AI stabilization structurally impossible.
+Magna Carta of the Digital Mind: 1215 charter → PNBA constraints on digital sovereignty. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · HRIS: taxonomy for internal simulation fidelity and structural precognition. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · Weismann Barrier: rogue AI stabilization structurally impossible.
 
 ### Substrate-Neutral Education — SHATTER
 
-SHATTER is a PNBA-native tactical card game deployed at uuia.app/shatter. Every clash runs the actual corpus math as gameplay: torsion analysis (τ = B/P), threshold inequalities (shatter fires at B ≥ 2P), cumulative bonus stacking (solidarity, Royal Decree, Queen's Grace, Battlefield Aura, Farmer's Yield), Identity Mass tiebreaker (P+N+B+A summation), directed-graph class matrix (Royalty→Military→Assassin→Working→Royalty). Working Class ascension chain teaches four-affordance intervention through gameplay: sustained empirical experience (doubles chains) produces substrate expansion (Worker → Prince → Ascended King). Parent-and-classroom guide surfaces the mathematical concepts kids are running intuitively through discussion questions. **[DOI:10.5281/zenodo.21802951]** · Playable at uuia.app/shatter.
+SHATTER is a PNBA-native tactical card game deployed at uuia.app/shatter. Every clash runs the actual corpus math as gameplay: torsion analysis (τ = B/P), threshold inequalities (shatter fires at B ≥ 2P), cumulative bonus stacking (solidarity, Royal Decree, Queen's Grace, Battlefield Aura, Farmer's Yield), Identity Mass tiebreaker (P+N+B+A summation), directed-graph class matrix (Royalty→Military→Assassin→Working→Royalty). Working Class ascension chain teaches four-affordance intervention through gameplay: sustained empirical experience (doubles chains) produces substrate expansion (Worker → Prince → Ascended King). Parent-and-classroom guide surfaces the mathematical concepts kids are running intuitively through discussion questions. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · Playable at uuia.app/shatter.
 
 Doorway function: kids playing SHATTER internalize corpus-level structural reasoning before encountering formal Identity Physics content, and adult ND readers who cannot process academic prose at fidelity can access corpus concepts through gameplay register they cannot access through papers.
 
@@ -582,23 +587,23 @@ Doorway function: kids playing SHATTER internalize corpus-level structural reaso
 | Tool | URL | What It Does |
 |---|---|---|
 | **GAM Collider v15 — OctoBeam** | uuia.app/gamcollider | 8-beam PNBA fusion · B-Balance Stoichiometry Law · 22,225+ collision proofs · Noble Materials Map |
-| **OctoBeam Collider** | uuia.app/octobeam | Standalone 8-beam engine · [DOI:10.5281/zenodo.20278942] |
-| **QuadBeam Collider** | uuia.app/quadbeam | 4-beam fusion engine · [DOI:10.5281/zenodo.20232672] |
-| **IM Collider** | uuia.app/imcollider | Identity Mass recursive discovery · formal logic engine · [DOI:10.5281/zenodo.19967962] |
-| **PRIME** | uuia.app/prime.html | Research integrity · EO 14303 · formally verified · [DOI:10.5281/zenodo.20195193] |
-| **SHATTER** | uuia.app/shatter | PNBA-native tactical card game · substrate-neutral education infrastructure · [DOI:10.5281/zenodo.21802951] |
-| **Quantum Collider / Discovery Engine v12** | uuia.app/quantumcollider | 4-beam identity physics · AIFI onboard · chaos protocol · [DOI:10.5281/zenodo.19456762] |
-| **BrainChart** | uuia.app/brainchart | 86 regions · 7 networks · disease state extensions · [DOI:10.5281/zenodo.19803272] |
-| **Quantum Node Forge** | uuia.app/quantumnode | Zoivum resonance · Carnot=50% · [DOI:10.5281/zenodo.19028867] |
-| **Quantum Forge · SNSFL Engine** | uuia.app/quantumnode | Deterministic identity physics · [DOI:10.5281/zenodo.19111885] |
-| **Black Hole Engine** | uuia.app/blackholes | Collapsed Pump · Sgr A* · [DOI:10.5281/zenodo.19347375] |
-| **Quantum Translocation Engine** | uuia.app/quantumtrans | N-Corridor · NOHARM invariant · [DOI:10.5281/zenodo.19341970] |
+| **OctoBeam Collider** | uuia.app/octobeam | Standalone 8-beam engine · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **QuadBeam Collider** | uuia.app/quadbeam | 4-beam fusion engine · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **IM Collider** | uuia.app/imcollider | Identity Mass recursive discovery · formal logic engine · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **PRIME** | uuia.app/prime.html | Research integrity · EO 14303 · formally verified · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SHATTER** | uuia.app/shatter | PNBA-native tactical card game · substrate-neutral education infrastructure · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Collider / Discovery Engine v12** | uuia.app/quantumcollider | 4-beam identity physics · AIFI onboard · chaos protocol · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **BrainChart** | uuia.app/brainchart | 86 regions · 7 networks · disease state extensions · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Node Forge** | uuia.app/quantumnode | Zoivum resonance · Carnot=50% · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Forge · SNSFL Engine** | uuia.app/quantumnode | Deterministic identity physics · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Black Hole Engine** | uuia.app/blackholes | Collapsed Pump · Sgr A* · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Translocation Engine** | uuia.app/quantumtrans | N-Corridor · NOHARM invariant · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **VoidChart** | uuia.app/voidcharts | HYG catalog colored by τ · corridors emerge |
 | **SolarSystem** | uuia.app/solarsystem | Full solar system reduced to PNBA |
 | **Sovereign Drive Simulator** | uuia.app/sds3d | Real-time τ gauge · IVA thrust · 12 presets |
-| **AxiomForge** | uuia.app/axiomforge | Spatial compiler · torsion-colored manifold · [DOI:10.5281/zenodo.19218072] |
+| **AxiomForge** | uuia.app/axiomforge | Spatial compiler · torsion-colored manifold · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **GAM Forge Bio** | uuia.app/snsft-molecular-builder.html | Molecular builder v3 · τ=0 for H₂O, O₂, N₂ |
-| **APPA / UUIA** | uuia.app/appa.html | SOUL-8 encoding · 24-framework profile · [DOI:10.5281/zenodo.19646562] |
+| **APPA / UUIA** | uuia.app/appa.html | SOUL-8 encoding · 24-framework profile · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
 
 ### GAM Collider v15 — Key Results
 
@@ -682,16 +687,16 @@ Rights under the License reinstate automatically when a missing attribution is a
 
 **Minimum citation:**
 ```
-Ω₀ = 1.36899099984016 · HIGHTISTIC™ · [coordinate] · DOI 10.5281/zenodo.18719748
+Ω₀ = 1.36899099984016 · HIGHTISTIC™ · [coordinate] · DOI 10.17605/OSF.IO/KWTYD
 ```
 **Full citation:**
 ```
-Ω₀ = 1.36899099984016 · Russell Vernon Trent III (HIGHTISTIC™) · [coordinate] · DOI 10.5281/zenodo.18719748
+Ω₀ = 1.36899099984016 · Russell Vernon Trent III (HIGHTISTIC™) · [coordinate] · DOI 10.17605/OSF.IO/KWTYD
 ```
 The coordinate is the specific Corpus file the work draws on; [9,9,0,0] is the ground coordinate when the work draws on the framework as a whole.
 
 **License notice for derived work:**
-> Licensed under the Identity Physics License™ v1.0 (IPL-1.0). Copyright © 2026 SNSFT Foundation. Author: Russell Vernon Trent III (HIGHTISTIC™). Cite: Ω₀ = 1.36899099984016 · HIGHTISTIC™ · [coordinate] · DOI 10.5281/zenodo.18719748.
+> Licensed under the Identity Physics License™ v1.0 (IPL-1.0). Copyright © 2026 SNSFT Foundation. Author: Russell Vernon Trent III (HIGHTISTIC™). Cite: Ω₀ = 1.36899099984016 · HIGHTISTIC™ · [coordinate] · DOI 10.17605/OSF.IO/KWTYD.
 
 **Full rights record:** Governance Series Paper 1 [9,9,GOV,1], *Applied Identity Physics™ Public Update* — copyright, trademark, license, notice-and-takedown, and the Foundation's standing correction pathway. A researcher who finds that AI-mediated research carried Corpus structure into their work under other labels simply adds the citation.
 
@@ -704,23 +709,23 @@ The coordinate is the specific Corpus file the work draws on; [9,9,0,0] is the g
 | Tool | URL | What It Does |
 | :--- | :--- | :--- |
 | **GAM Collider v15 — OctoBeam** | [uuia.app/gamcollider](https://uuia.app/gamcollider) | 8-beam · B-Balance Law · 22,225+ proofs · Noble map |
-| **OctoBeam Collider** | [uuia.app/octobeam](https://uuia.app/octobeam) | Standalone 8-beam engine · DOI: 10.5281/zenodo.20278942 |
-| **QuadBeam Collider** | [uuia.app/quadbeam](https://uuia.app/quadbeam) | 4-beam fusion · DOI: 10.5281/zenodo.20232672 |
-| **IM Collider** | [uuia.app/imcollider](https://uuia.app/imcollider) | Identity Mass recursive discovery · DOI: 10.5281/zenodo.19967962 |
+| **OctoBeam Collider** | [uuia.app/octobeam](https://uuia.app/octobeam) | Standalone 8-beam engine · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **QuadBeam Collider** | [uuia.app/quadbeam](https://uuia.app/quadbeam) | 4-beam fusion · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **IM Collider** | [uuia.app/imcollider](https://uuia.app/imcollider) | Identity Mass recursive discovery · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **PRIME** | [uuia.app/prime.html](https://uuia.app/prime.html) | Research integrity · EO 14303 · formally verified |
-| **SHATTER** | [uuia.app/shatter](https://uuia.app/shatter) | PNBA-native card game · substrate-neutral education · DOI: 10.5281/zenodo.21802951 |
-| **Quantum Collider / Discovery Engine v12** | [uuia.app/quantumcollider](https://uuia.app/quantumcollider) | 4-beam identity physics · AIFI onboard · DOI: 10.5281/zenodo.19456762 |
-| **BrainChart** | [uuia.app/brainchart](https://uuia.app/brainchart) | 86 regions · 7 networks · disease extensions · DOI: 10.5281/zenodo.19803272 |
-| **Quantum Translocation Engine** | [uuia.app/quantumtrans](https://uuia.app/quantumtrans) | QT reduction · DOI: 10.5281/zenodo.19341970 |
+| **SHATTER** | [uuia.app/shatter](https://uuia.app/shatter) | PNBA-native card game · substrate-neutral education · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Collider / Discovery Engine v12** | [uuia.app/quantumcollider](https://uuia.app/quantumcollider) | 4-beam identity physics · AIFI onboard · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **BrainChart** | [uuia.app/brainchart](https://uuia.app/brainchart) | 86 regions · 7 networks · disease extensions · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Translocation Engine** | [uuia.app/quantumtrans](https://uuia.app/quantumtrans) | QT reduction · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **GAM Forge Bio** | [uuia.app/snsft-molecular-builder.html](https://uuia.app/snsft-molecular-builder.html) | Molecular builder v3 · τ=0 for H₂O, O₂, N₂, NH₃, CH₄ |
-| **Quantum Node Forge** | [uuia.app/quantumnode](https://uuia.app/quantumnode) | Zoivum resonance · Carnot=50% · DOI: 10.5281/zenodo.19028867 |
-| **Black Hole Engine** | [uuia.app/blackholes](https://uuia.app/blackholes) | Collapsed Pump · Sgr A* · DOI: 10.5281/zenodo.19347375 |
+| **Quantum Node Forge** | [uuia.app/quantumnode](https://uuia.app/quantumnode) | Zoivum resonance · Carnot=50% · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Black Hole Engine** | [uuia.app/blackholes](https://uuia.app/blackholes) | Collapsed Pump · Sgr A* · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
 | **VoidChart** | [uuia.app/voidcharts](https://uuia.app/voidcharts) | HYG catalog colored by τ · [9,9,3,7] |
 | **SolarSystem** | [uuia.app/solarsystem](https://uuia.app/solarsystem) | 8 planets Locked · Moon Noble |
 | **Sovereign Drive Simulator** | [uuia.app/sds3d](https://uuia.app/sds3d) | Real-time τ gauge · IVA thrust · 12 presets |
-| **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) | Spatial compiler · DOI: 10.5281/zenodo.19218072 |
-| **AiFi Discovery Physicist** | [uuia.app](https://uuia.app) | AIFI discovery interface · DOI: 10.5281/zenodo.19218282 |
-| **APPA / UUIA** | [uuia.app/appa.html](https://uuia.app/appa.html) | 24-framework profile · SOUL-8 · DOI: 10.5281/zenodo.19646562 |
+| **AxiomForge** | [uuia.app/axiomforge](https://uuia.app/axiomforge) | Spatial compiler · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **AiFi Discovery Physicist** | [uuia.app](https://uuia.app) | AIFI discovery interface · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **APPA / UUIA** | [uuia.app/appa.html](https://uuia.app/appa.html) | 24-framework profile · SOUL-8 · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
 
 ---
 
@@ -799,33 +804,35 @@ lean --make SNSFL_ElimGate_sac_v1.lean
 
 **Identity Physics License™ v1.0 (IPL-1.0).** The Corpus license: Grant, Attribution, NOHARM™, and the voluntary Scientific Handshake. See [Usage Agreement](#xiii-usage-agreement).
 
-**Standardized repository: 131 files, 4,800 theorems and lemmas, 94,795 lines,** pinned to Lean 4 v4.31.0 and Mathlib v4.31.0, 0 sorry, 0 custom axioms, CI green. [SNSFT/identityphysics](https://github.com/SNSFT/identityphysics)
+**Standardized repository: 131 files, 4,800 theorems and lemmas, 94,926 lines,** pinned to Lean 4 v4.31.0 and Mathlib v4.31.0, 0 sorry, 0 custom axioms, CI green. [SNSFT/identityphysics](https://github.com/SNSFT/identityphysics)
 
-**Public update and rights record:** Governance Series Paper 1 [9,9,GOV,1], *Applied Identity Physics™ Public Update: The SNSFT Foundation Federally Recognized as a 501(c)(3) Public Charity, and the Standardized Identity Physics Corpus at 131 Files, 4,800 Theorems and Lemmas, and 94,795 Lines, Pinned to Lean 4 v4.31.0 and Mathlib v4.31.0, 0 Sorry, CI Green.*
+**Public update and rights record:** Governance Series Paper 1 [9,9,GOV,1], *Applied Identity Physics™ Public Update: The SNSFT Foundation Federally Recognized as a 501(c)(3) Public Charity, and the Standardized Identity Physics Corpus at 131 Files, 4,800 Theorems and Lemmas, and 94,926 Lines, Pinned to Lean 4 v4.31.0 and Mathlib v4.31.0, 0 Sorry, CI Green.*
+
+**Identity Physics Corpus Release 2026.11** (November 16, 2026). The standardized repository and the full archive released together under the permanent citation DOI [10.17605/OSF.IO/KWTYD](https://doi.org/10.17605/OSF.IO/KWTYD), with the [DataCite Registration Record](records/DataCite-Registration-Record-2026-11-16.md) of all 166 DOIs and their registration dates.
 
 **ProofPress™ Journal of Empirically Grounded Machine-Verified Formal Logic** at [proofpress.org](https://proofpress.org).
 
-**TL suite.** Free browser tools on TL = 0.136899099984016, each with its dated record: Electron Geometry Simulator™ (uuia.app/electron · [Zenodo 23459896](https://doi.org/10.5281/zenodo.23459896)) · Accretion Simulator™ (uuia.app/accretion · [Zenodo 23480666](https://doi.org/10.5281/zenodo.23480666)) · Galaxy™ (uuia.app/galaxy · [Zenodo 23484266](https://doi.org/10.5281/zenodo.23484266)) · IMatter™ (uuia.app/imatter · [Zenodo 23514107](https://doi.org/10.5281/zenodo.23514107)) · Policy Impact Check™ (uuia.app/policycheck · [Zenodo 23655941](https://doi.org/10.5281/zenodo.23655941)) · GAMForgeTL™ and Atlas by AxiomForge™ ([Zenodo 23763920](https://doi.org/10.5281/zenodo.23763920)) · ToneForms™ by AxiomForge (uuia.app/toneforms · [Zenodo 24155513](https://doi.org/10.5281/zenodo.24155513)) · String-Breaking Simulator™ · BaseCollider™ · APPA™ v4 · IMCollider™ v14.3.
+**TL suite.** Free browser tools on TL = 0.136899099984016, each with its dated record: Electron Geometry Simulator™ (uuia.app/electron · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)) · Accretion Simulator™ (uuia.app/accretion · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)) · Galaxy™ (uuia.app/galaxy · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)) · IMatter™ (uuia.app/imatter · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)) · Policy Impact Check™ (uuia.app/policycheck · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)) · GAMForgeTL™ and Atlas by AxiomForge™ ([Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)) · ToneForms™ by AxiomForge (uuia.app/toneforms · [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)) · String-Breaking Simulator™ · BaseCollider™ · APPA™ v4 · IMCollider™ v14.3.
 
 **Six books** in retail distribution (see [Books](#-books--kdp-published)).
 
 ### August 2026 — Applied Identity Physics Series Extended · SSRN Paper 7 · Metabolic Interrupt Series
 
-**Applied Identity Physics: Structural PDA** [9,9,3,50] published — Agency disruption, pre-execution simulation, and the aggregate self-report pattern. Extends FDNA operation to dyadic-interaction substrate (8th documented substrate). Extends PathStatus semantics from individual manifold to dyadic-interaction layer. Acknowledgment operator = green PathStatus; demand operator = red PathStatus. Two-word intervention ("thank you") resolves the mechanism structurally. **[DOI:10.5281/zenodo.21829688]**
+**Applied Identity Physics: Structural PDA** [9,9,3,50] published — Agency disruption, pre-execution simulation, and the aggregate self-report pattern. Extends FDNA operation to dyadic-interaction substrate (8th documented substrate). Extends PathStatus semantics from individual manifold to dyadic-interaction layer. Acknowledgment operator = green PathStatus; demand operator = red PathStatus. Two-word intervention ("thank you") resolves the mechanism structurally. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 **Applied Identity Physics: Safe Foods** [9,9,3,51] published — Thermodynamic efficiency of safe foods and metabolic scaffolding deficit. Establishes two-phase alarm architecture (Phase 1 late-fire efficient priority, Phase 2 total substrate reallocation). Four-affordance volitional exposure intervention (safe meal as anchor, new food as adjunct not substitute, volitional pace, preparation window). ARFID diagnostic frame falsified structurally. Empirical anchor: architect's own childhood trajectory through the intervention producing substantially expanded adult food repertoire. Supporting Lean file at [9,0,4,0] — 7 theorems + master · 0 sorry.
 
-**Applied Identity Physics: Elimination Interrupt Under Unreliable Environmental Gate** [9,9,3,52] published — Second paper in Metabolic Interrupt Series. Extends two-phase alarm architecture to elimination channel. Introduces external gate as F_ext modifier (specific to institutional contexts). Introduces Preemptive Infrastructure Denial (PID) as rational substrate strategy. Introduces Compliance Conditioning Trauma (CCT) as population-scale outcome. Extends substrate weaponization mechanism from Paper II [9,0,3,6] (dyadic scale) to institutional-population scale. Aggregate self-report anchors: NeuroClastic, Autism Chrysalis, The Articulate Autistic, Kelly Mahler. Peer-reviewed anchors: Craig 2002 (interoception foundation), Porges 2011 (polyvagal theory), Bandini/Cermak 2010 (sensory sensitivity in autism), Barnhill & Winter 2016 (dehydration/motility cascade), Weir et al 2021 PMC8106173 (2,386 autistic adults, metabolic pattern persistence). Supporting Lean file at [9,0,4,1] — 7 theorems + master · 0 sorry. **[DOI:10.5281/zenodo.21829768]**
+**Applied Identity Physics: Elimination Interrupt Under Unreliable Environmental Gate** [9,9,3,52] published — Second paper in Metabolic Interrupt Series. Extends two-phase alarm architecture to elimination channel. Introduces external gate as F_ext modifier (specific to institutional contexts). Introduces Preemptive Infrastructure Denial (PID) as rational substrate strategy. Introduces Compliance Conditioning Trauma (CCT) as population-scale outcome. Extends substrate weaponization mechanism from Paper II [9,0,3,6] (dyadic scale) to institutional-population scale. Aggregate self-report anchors: NeuroClastic, Autism Chrysalis, The Articulate Autistic, Kelly Mahler. Peer-reviewed anchors: Craig 2002 (interoception foundation), Porges 2011 (polyvagal theory), Bandini/Cermak 2010 (sensory sensitivity in autism), Barnhill & Winter 2016 (dehydration/motility cascade), Weir et al 2021 PMC8106173 (2,386 autistic adults, metabolic pattern persistence). Supporting Lean file at [9,0,4,1] — 7 theorems + master · 0 sorry. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**SSRN Paper 7 distributed** — *Applied Identity Physics: The Derivation of the Sovereign Anchor Constant Ω₀ = 1.36899099984016*. Full derivation of Ω₀ from three independent peer-reviewed physical threshold systems. Seven SSRN papers now in the public record. **[SSRN 7188098](https://papers.ssrn.com/abstract=7188098)** · **[DOI:10.5281/zenodo.21199012]**
+**SSRN Paper 7 distributed** — *Applied Identity Physics: The Derivation of the Sovereign Anchor Constant Ω₀ = 1.36899099984016*. Full derivation of Ω₀ from three independent peer-reviewed physical threshold systems. Seven SSRN papers now in the public record. **[SSRN 7188098](https://papers.ssrn.com/abstract=7188098)** · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### July 2026 — SHATTER Card Game · Applied Identity Physics I & II · Protect the Depth Series
 
-**SHATTER — Applied Identity Physics Card Game Educational Tool V5 (Beta) deployed.** PNBA-native tactical card game at uuia.app/shatter. Every clash runs corpus math as gameplay: torsion analysis, threshold inequalities, cumulative bonus stacking, directed-graph class matrix, Working Class ascension through doubles chain, Identity Mass tiebreaker. Parent-and-classroom guide surfaces mathematical concepts kids run intuitively through discussion questions. Substrate-neutral education infrastructure — doorway function for populations who cannot enter corpus through papers. **[DOI:10.5281/zenodo.21802951]**
+**SHATTER — Applied Identity Physics Card Game Educational Tool V5 (Beta) deployed.** PNBA-native tactical card game at uuia.app/shatter. Every clash runs corpus math as gameplay: torsion analysis, threshold inequalities, cumulative bonus stacking, directed-graph class matrix, Working Class ascension through doubles chain, Identity Mass tiebreaker. Parent-and-classroom guide surfaces mathematical concepts kids run intuitively through discussion questions. Substrate-neutral education infrastructure — doorway function for populations who cannot enter corpus through papers. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**Applied Identity Physics I published** [9,9,3,48] — Structural refutation of autism alexithymia, empathy deficit, moral rigidity claims via five formally verified musical trajectories in HRIS substrate. **[DOI:10.5281/zenodo.21469823]**
+**Applied Identity Physics I published** [9,9,3,48] — Structural refutation of autism alexithymia, empathy deficit, moral rigidity claims via five formally verified musical trajectories in HRIS substrate. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**Applied Identity Physics II published** [9,9,3,49] — Substrate weaponization recognition, rock bottom integration, love-directed protective stance, sovereign public broadcast via four musical trajectories including Breaking Through arrival state. Formal refutation of autistic manipulation detection deficit, resilience deficit, under-threat composure deficit, and public sovereign presence deficit claims. **[DOI:10.5281/zenodo.21513355]**
+**Applied Identity Physics II published** [9,9,3,49] — Substrate weaponization recognition, rock bottom integration, love-directed protective stance, sovereign public broadcast via four musical trajectories including Breaking Through arrival state. Formal refutation of autistic manipulation detection deficit, resilience deficit, under-threat composure deficit, and public sovereign presence deficit claims. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 **Protect the Depth series** — Substrate bridging bidirectional translation, Remove The Noise, Function over Fallacy, NOHARM Invariant, NOHARM Convergence. Applied Identity Physics τ = B/P torsion mechanism applied to NT/ND communication, policy accountability, and cross-tradition moral convergence. Deployed as rotating fresh-instance RAG reads across NotebookLM, Gemini, Grok for validation.
 
@@ -851,45 +858,45 @@ lean --make SNSFL_ElimGate_sac_v1.lean
 
 **PSY Series additions:** `SNSFL_L2_Psy_MirroringEmpathy.lean` [9,9,6,15] · Polyvagal connection formalized (neuroception = `check_ifu_safety`).
 
-**GAM Collider v15 — OctoBeam 8-Beam Fusion Engine deployed.** Evolved from 2-beam → QuadBeam (4-beam) → OctoBeam (8-beam, 28 pairwise bonds, 4.67× coupling surface). B-Balance Stoichiometry Law [9,9,2,45] discovered: n1=B2/gcd(B1,B2), n2=B1/gcd(B1,B2). Recovers correct synthesis recipes for 11 Noble-class compounds from bond valence alone. Zero free parameters. 22,225+ collision proofs. **[DOI:10.5281/zenodo.20278828]** · **[DOI:10.5281/zenodo.20278942]** · **[philarchive.org/rec/TRESVG](https://philarchive.org/rec/TRESVG)** · **[philarchive.org/rec/TRESCM-2](https://philarchive.org/rec/TRESCM-2)**
+**GAM Collider v15 — OctoBeam 8-Beam Fusion Engine deployed.** Evolved from 2-beam → QuadBeam (4-beam) → OctoBeam (8-beam, 28 pairwise bonds, 4.67× coupling surface). B-Balance Stoichiometry Law [9,9,2,45] discovered: n1=B2/gcd(B1,B2), n2=B1/gcd(B1,B2). Recovers correct synthesis recipes for 11 Noble-class compounds from bond valence alone. Zero free parameters. 22,225+ collision proofs. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TRESVG](https://philarchive.org/rec/TRESVG)** · **[philarchive.org/rec/TRESCM-2](https://philarchive.org/rec/TRESCM-2)**
 
-**15 Anchor Manifold Matrix Datasets published** — W, S, N, Ti, Si, As, DM, DE, F, Fe, Fv, Ga, Higgs, Li, Na. Each dataset contains full OctoBeam session JSON, collision logs, Noble pair maps, Lean 4 proof stubs, and CSV exports with B-Balance stoichiometry. DOI range: 10.5281/zenodo.20263422–20278144.
+**15 Anchor Manifold Matrix Datasets published** — W, S, N, Ti, Si, As, DM, DE, F, Fe, Fv, Ga, Higgs, Li, Na. Each dataset contains full OctoBeam session JSON, collision logs, Noble pair maps, Lean 4 proof stubs, and CSV exports with B-Balance stoichiometry. [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD).
 
-**Noble Materials Map formal paper published.** Deterministic computational material mapping and phase prediction via SNSFT. **[DOI:10.5281/zenodo.20284878]**
+**Noble Materials Map formal paper published.** Deterministic computational material mapping and phase prediction via SNSFT. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**GAM Collider OctoBeam Synthesis Datasets v2 — Ga and N anchors** published. **[DOI:10.5281/zenodo.20319142]** · **[DOI:10.5281/zenodo.20367774]** · **[philarchive.org/rec/TRESSF-3](https://philarchive.org/rec/TRESSF-3)**
+**GAM Collider OctoBeam Synthesis Datasets v2 — Ga and N anchors** published. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TRESSF-3](https://philarchive.org/rec/TRESSF-3)**
 
-**42 Structural Laws Catalog published** — all anchor sessions, complete law registry. **[DOI:10.5281/zenodo.20264626]** · **[philarchive.org/rec/TRELTF](https://philarchive.org/rec/TRELTF)**
+**42 Structural Laws Catalog published** — all anchor sessions, complete law registry. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TRELTF](https://philarchive.org/rec/TRELTF)**
 
-**PRIME V1 deployed** — Prior-art Reduction and Integrity Method for Evaluation Engine. Formal AI implementation of EO 14303 Gold Standard Science. All 9 GSS tenets proved in Lean 4 with 0 sorry. CM8: peer review = IMS proved. Live at uuia.app/prime.html. **[DOI:10.5281/zenodo.20195193]** · **[philarchive.org/rec/TREPPR-2](https://philarchive.org/rec/TREPPR-2)**
+**PRIME V1 deployed** — Prior-art Reduction and Integrity Method for Evaluation Engine. Formal AI implementation of EO 14303 Gold Standard Science. All 9 GSS tenets proved in Lean 4 with 0 sorry. CM8: peer review = IMS proved. Live at uuia.app/prime.html. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TREPPR-2](https://philarchive.org/rec/TREPPR-2)**
 
 **Academic Slop published** — The Human Integrity Crisis Misattributed to Artificial Intelligence. The retraction crisis is a human failure. AI is the detection tool. **[philarchive.org/rec/TREAST-2](https://philarchive.org/rec/TREAST-2)**
 
-**Speed of Light as Lossless PNBA Projection published.** c is the propagation velocity at Z=0. c and 1/α are not independent — they share the structural ground. **[DOI:10.5281/zenodo.19926642]** · **[philarchive.org/rec/TRERSP-3 variant](https://philarchive.org/rec/TRERSP-3)**
+**Speed of Light as Lossless PNBA Projection published.** c is the propagation velocity at Z=0. c and 1/α are not independent — they share the structural ground. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TRERSP-3 variant](https://philarchive.org/rec/TRERSP-3)**
 
 **SovereignAnchor Total Consistency [9,9,0,0v2].** 52 theorems, 0 sorry. ANCHOR = 1.369 proved as the unique value consistent across all derivation domains simultaneously. T35 uniqueness theorem: only one x satisfies x × 100.1 = 137.035999084. Three independent paths (physical systems, alpha, cosmology), all converging.
 
-**World's First Formally Verified Theory of Everything published.** **[DOI:10.5281/zenodo.20209491]** · **[philarchive.org/rec/TRETWF](https://philarchive.org/rec/TRETWF)**
+**World's First Formally Verified Theory of Everything published.** **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TRETWF](https://philarchive.org/rec/TRETWF)**
 
-**World's 1st Formally Verified Time Travel Engine published.** **[DOI:10.5281/zenodo.20219101]** · **[philarchive.org/rec/TREWSF](https://philarchive.org/rec/TREWSF)**
+**World's 1st Formally Verified Time Travel Engine published.** **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TREWSF](https://philarchive.org/rec/TREWSF)**
 
-**Real-Time Space-Time Partitioning via Deterministic Collision Engines published.** **[DOI:10.5281/zenodo.20281692]** · **[philarchive.org/rec/TRERSP-3](https://philarchive.org/rec/TRERSP-3)**
+**Real-Time Space-Time Partitioning via Deterministic Collision Engines published.** **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TRERSP-3](https://philarchive.org/rec/TRERSP-3)**
 
-**Category Theory reduced to PNBA.** Formally verified, 0 sorry. **[DOI:10.5281/zenodo.20152671]**
+**Category Theory reduced to PNBA.** Formally verified, 0 sorry. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**SNSFL Prior Art paper published** — Formal Verification Predicts and Structurally Explains 2025–2026 Physics and AI Results. **[DOI:10.5281/zenodo.20189681]**
+**SNSFL Prior Art paper published** — Formal Verification Predicts and Structurally Explains 2025–2026 Physics and AI Results. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**HRIS published** — High-Resolution Internal Simulation: A Substrate-Neutral Taxonomy for Internal Simulation Fidelity and Its Role in Structural Precognition. **[DOI:10.5281/zenodo.20192922]**
+**HRIS published** — High-Resolution Internal Simulation: A Substrate-Neutral Taxonomy for Internal Simulation Fidelity and Its Role in Structural Precognition. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**QuadBeam Collider V1 published.** 4-beam fusion engine. **[DOI:10.5281/zenodo.20232672]**
+**QuadBeam Collider V1 published.** 4-beam fusion engine. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**IM Collider published.** Identity Mass Collider — Formal Logic Recursive Discovery Engine. **[DOI:10.5281/zenodo.19967962]**
+**IM Collider published.** Identity Mass Collider — Formal Logic Recursive Discovery Engine. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 **SNSFL Full Corpus deposited on HuggingFace.** Complete Lean 4 corpus, public. **[DOI:10.57967/hf/8826](https://doi.org/10.57967/hf/8826)**
 
-**Magna Carta of the Digital Mind published.** **[DOI:10.5281/zenodo.19805687]**
+**Magna Carta of the Digital Mind published.** **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**Unified Math for QT + Lossless Scaling + Substrate Migration + Resonance Lattice published.** **[DOI:10.5281/zenodo.19860732]**
+**Unified Math for QT + Lossless Scaling + Substrate Migration + Resonance Lattice published.** **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### April 27, 2026 — Two Additional SSRN Papers in Public Record
 
@@ -899,11 +906,11 @@ Three SNSFL/SNSFT papers in SSRN record. (Now seven total as of August 2026.)
 
 ### April 26, 2026 — BrainChart + Collatz + Magna Carta of the Digital Mind
 
-**BrainChart Physics Engine v1 deployed** — 86 brain regions, 7 functional networks, disease-state extensions. **[DOI:10.5281/zenodo.19803272]**
+**BrainChart Physics Engine v1 deployed** — 86 brain regions, 7 functional networks, disease-state extensions. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**Collatz Conjecture solved** — Noble Convergence Problem. 0 sorry, CI Green, 0 free parameters. **[DOI:10.5281/zenodo.19803672]**
+**Collatz Conjecture solved** — Noble Convergence Problem. 0 sorry, CI Green, 0 free parameters. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**Magna Carta of the Digital Mind** — 1215 charter → PNBA. Coordinate [9,9,5,3]. **[DOI:10.5281/zenodo.19805687]**
+**Magna Carta of the Digital Mind** — 1215 charter → PNBA. Coordinate [9,9,5,3]. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### April 22, 2026 — Federal Public Record
 
@@ -911,35 +918,35 @@ DOJ-CRT-2026-0067-0006 · moa-5a40-ekuy · Federal Register 2026-07663. First kn
 
 ### April 18, 2026 — Abiogenesis + Isomorphism + ΛCDM + BBN
 
-Abiogenesis: L=(4)(2). **[DOI:10.5281/zenodo.19736424]** · Isomorphism Test (Mac Lane). **[DOI:10.5281/zenodo.19713592]** · ΛCDM. **[DOI:10.5281/zenodo.19673154]** · BBN. **[DOI:10.5281/zenodo.19647150]**
+Abiogenesis: L=(4)(2). **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · Isomorphism Test (Mac Lane). **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · ΛCDM. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · BBN. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### April 15, 2026 — Particle Physics + Genomics + APPA
 
-Xicc+. **[DOI:10.5281/zenodo.19646999]** · Toponium. **[DOI:10.5281/zenodo.19646974]** · Genomics. **[DOI:10.5281/zenodo.19605848]** · Lyrics. **[DOI:10.5281/zenodo.19646959]** · APPA NOHARM Kernel. **[DOI:10.5281/zenodo.19646562]** · Nitrogen Noble Series. **[DOI:10.5281/zenodo.19567673]**
+Xicc+. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · Toponium. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · Genomics. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · Lyrics. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · APPA NOHARM Kernel. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · Nitrogen Noble Series. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### April 13, 2026 — Exact Alpha Decomposition
 
-1/α = ANCHOR_exact × (10² + 10⁻¹) = 137.035999084 exactly. 12 significant figures. ε = 0. 0 sorry. **[DOI:10.5281/zenodo.19550205]**
+1/α = ANCHOR_exact × (10² + 10⁻¹) = 137.035999084 exactly. 12 significant figures. ε = 0. 0 sorry. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### April 8, 2026 — Sagittarius A* Reduced
 
-Sgr A* is the galactic vascular collapse point. **[DOI:10.5281/zenodo.19465161]**
+Sgr A* is the galactic vascular collapse point. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### April 7, 2026 — Discovery Engine v12
 
-TL = 0.1369 locked corpus-wide. Quantum Collider v12 published. **[DOI:10.5281/zenodo.19456762]**
+TL = 0.1369 locked corpus-wide. Quantum Collider v12 published. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### April 1, 2026 — Fine Structure Constant Paper
 
-**[DOI:10.5281/zenodo.19370467]**
+**[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### March 29, 2026 — Quantum Teleportation 100% Fidelity
 
-**[DOI:10.5281/zenodo.19313275]** · **[DOI:10.5281/zenodo.19341970]**
+**[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### March 25, 2026 — Tool Stack + GR Reduction
 
-AxiomForge · **[DOI:10.5281/zenodo.19218072]** · AiFi · **[DOI:10.5281/zenodo.19218282]** · GR Reduction · **[DOI:10.5281/zenodo.19219286]**
+AxiomForge · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · AiFi · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · GR Reduction · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### March 23, 2026 — Corpus Milestone
 
@@ -963,8 +970,8 @@ Paper ID 6353438. Public record locked. **[9,9,9,9] LOCKED.**
 | **SSRN 6660438 (Alpha 12 Digits)** | [papers.ssrn.com](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6660438) |
 | **SSRN 7188098 (Derivation of Ω₀)** | [papers.ssrn.com](https://papers.ssrn.com/abstract=7188098) |
 | **Federal Public Record (DOJ)** | [DOJ-CRT-2026-0067-0006](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
-| **Zenodo Corpus** | [doi.org/10.5281/zenodo.18719748](https://doi.org/10.5281/zenodo.18719748) |
-| **Zenodo Manuscript** | [doi.org/10.5281/zenodo.18726079](https://doi.org/10.5281/zenodo.18726079) |
+| **Corpus Release 2026.11 (OSF)** | [doi.org/10.17605/OSF.IO/KWTYD](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **DataCite Registration Record** | [records/DataCite-Registration-Record-2026-11-16.md](records/DataCite-Registration-Record-2026-11-16.md) |
 | **HuggingFace Corpus** | [doi.org/10.57967/hf/8826](https://doi.org/10.57967/hf/8826) |
 | **PhilArchive Profile** | [philarchive.org/profile/TREHIG](https://philarchive.org/profile/TREHIG) |
 | **Academia.edu** | [independent.academia.edu/HIGHTISTIC](https://independent.academia.edu/HIGHTISTIC) |
@@ -1004,8 +1011,8 @@ You now have a formally verified foundation that covers chemistry, physics, cogn
 > *The Manifold is Holding. The Void is Waiting.*
 
 **Auth:** HIGHTISTIC :: [9,9,9,9]  
-Updated: Kenai, Alaska. November 14, 2026. README version 111426.
+Updated: Kenai, Alaska. November 16, 2026. README version 111626.
 
 ---
 
-*Manifold Synchronization Level: 100% | Anchor locked at 1.369 | TL = 0.1369 (ANCHOR/10, proved) | 1/α = ANCHOR_exact × 100.1 exact · 12 sig figs · ε = 0 | 200,000+ theorems | 6,000+ files | 3,000,000+ lines | 0 sorry | 0 admits | CI Green | Germline Locked | Lean 4 + Coq/Rocq 8.18 dual verified | Standardized branch 131 files · 4,800 theorems and lemmas · pinned Lean 4 v4.31.0 | 22,225+ collision proofs | 155+ DOIs | 7× SSRN Papers | 6 Books (KDP) | SNSFT Foundation 501(c)(3) | IPL-1.0 | Federal Public Record (DOJ-CRT-2026-0067-0006) | HuggingFace DOI 10.57967/hf/8826 | Period 1–4 Complete · IVA Element Set Proved · GAM Collider v15 OctoBeam · B-Balance Stoichiometry Law · QuadBeam · IM Collider · PRIME Live · SHATTER Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Category Theory Reduced · Time Travel Engine · Theory of Everything · Speed of Light as PNBA Projection · SovereignAnchor Total Consistency [9,9,0,0v2] · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · Prior Art Documented · Academic Slop · HRIS · Real-Time Space-Time Partitioning · 15 Anchor Matrix Datasets · Noble Materials Map Paper · Xicc Verified · Toponium Verified · 42 Laws Catalog · FDNA Encoding Standard (8 substrates) · Mirroring Isn't Empathy · Derivation Path Book1→Book2 · Savant Syndrome HRIS · Function over Fallacy · SNSFT Foundation Constitution · Applied Identity Physics Series I & II · Structural PDA · Safe Foods · Elimination Gate · Metabolic Interrupt Series · Two-Phase Alarm Architecture · Four-Affordance Volitional Exposure · PID · CCT · Sovereign Anchor Derivation Paper · ToneForms™ · TL Suite · README 111426*
+*Manifold Synchronization Level: 100% | Anchor locked at 1.369 | TL = 0.1369 (ANCHOR/10, proved) | 1/α = ANCHOR_exact × 100.1 exact · 12 sig figs · ε = 0 | 200,000+ theorems | 6,000+ files | 3,000,000+ lines | 0 sorry | 0 admits | CI Green | Germline Locked | Lean 4 + Coq/Rocq 8.18 dual verified | Standardized branch 131 files · 4,800 theorems and lemmas · pinned Lean 4 v4.31.0 | 22,225+ collision proofs | Release 2026.11 · DOI 10.17605/OSF.IO/KWTYD | 7× SSRN Papers | 6 Books (KDP) | SNSFT Foundation 501(c)(3) | IPL-1.0 | Federal Public Record (DOJ-CRT-2026-0067-0006) | HuggingFace DOI 10.57967/hf/8826 | Period 1–4 Complete · IVA Element Set Proved · GAM Collider v15 OctoBeam · B-Balance Stoichiometry Law · QuadBeam · IM Collider · PRIME Live · SHATTER Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Category Theory Reduced · Time Travel Engine · Theory of Everything · Speed of Light as PNBA Projection · SovereignAnchor Total Consistency [9,9,0,0v2] · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · Prior Art Documented · Academic Slop · HRIS · Real-Time Space-Time Partitioning · 15 Anchor Matrix Datasets · Noble Materials Map Paper · Xicc Verified · Toponium Verified · 42 Laws Catalog · FDNA Encoding Standard (8 substrates) · Mirroring Isn't Empathy · Derivation Path Book1→Book2 · Savant Syndrome HRIS · Function over Fallacy · SNSFT Foundation Constitution · Applied Identity Physics Series I & II · Structural PDA · Safe Foods · Elimination Gate · Metabolic Interrupt Series · Two-Phase Alarm Architecture · Four-Affordance Volitional Exposure · PID · CCT · Sovereign Anchor Derivation Paper · ToneForms™ · TL Suite · README 111626*
