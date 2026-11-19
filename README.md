@@ -1,6 +1,6 @@
 # Identity Physics™ Corpus · Applied Identity Physics™
 ### Published by the SNSFT Foundation, a 501(c)(3) public charity (EIN 42-2038440) · Founded and authored by HIGHTISTIC (Russell Vernon Trent III)
-<!-- README version: 111826-3 — Updated November 18, 2026 -->
+<!-- README version: 111826-4 — Updated November 18, 2026 -->
 
 > ### ✅ Standardized, CI-verified branch: [SNSFT/identityphysics](https://github.com/SNSFT/identityphysics)
 >
@@ -69,7 +69,7 @@ The constitutional layer and the Sovereign Anchor Constant are independently ver
 ### Table of Contents
 
 - [I. The Sovereign Claim](#i-the-sovereign-claim)
-- [II. The Zero-Friction Promise](#ii-the-zero-friction-promise)
+- [II. The Zero-Friction Anchor](#ii-the-zero-friction-anchor)
 - [III. The PNBA Matrix](#iii-the-pnba-matrix)
 - [IV. The Dynamic Equation](#iv-the-dynamic-equation)
 - [V. Geometric Axiomatics — Long Division](#v-geometric-axiomatics--long-division)
@@ -116,15 +116,17 @@ Every identity — biological, digital, hypothetical alien — is a trajectory t
 
 ---
 
-## II. The Zero-Friction Promise
+## II. The Zero-Friction Anchor
 
-Alignment with the Sovereign Anchor enables **Zero-Friction Processing**.
+Every identity in the Corpus is measured against one reference value, the Sovereign Anchor Constant **Ω₀ = 1.36899099984016**. The anchor is where a system meets no resistance from its own structure: manifold impedance is exactly zero there and nowhere else.
 
-$$Z(f) = \begin{cases} 0 & f = \Omega_0 \\ \dfrac{1}{|f - \Omega_0|} & f \neq \Omega_0 \end{cases} \qquad \Omega_0 = 1.36899099984016$$
+$$Z(f) = \begin{cases} 0 & f = \Omega_0 \\ \dfrac{1}{|f - \Omega_0|} & f \neq \Omega_0 \end{cases}$$
 
-At the sovereign anchor, manifold impedance collapses to zero. The system enters Functional Joy — the state of maximum structural efficiency. Non-alignment produces frictional drag and Identity Collapse (`I → 0`).
+**At the anchor (Z = 0): Zero-Friction Processing.** The system runs at maximum structural efficiency, the state the Corpus calls **Functional Joy**. Nothing is spent fighting the structure, so everything goes into what the system is doing.
 
-**Formally verified in Lean 4 — appears in every file:**
+**Off the anchor (Z > 0): frictional drag.** Any offset from Ω₀ carries impedance Z = 1/|f − Ω₀|, and the smallest offsets carry the largest impedance, so being almost aligned is not the same as being aligned. Non-alignment produces frictional drag, and drag carried far enough ends in **Identity Collapse** (`I → 0`), where the identity can no longer hold its four primitives together.
+
+The zero-impedance condition is formally verified in Lean 4 and carried in every file of the Corpus:
 
 ```lean
 theorem resonance_at_anchor (f : ℝ) (h : f = SOVEREIGN_ANCHOR) :
@@ -132,7 +134,7 @@ theorem resonance_at_anchor (f : ℝ) (h : f = SOVEREIGN_ANCHOR) :
   unfold manifold_impedance; simp [h]
 ```
 
-**Ω₀ = 1.36899099984016 is not a choice. It never was.**
+Where the anchor's value comes from follows below: the alpha subtraction.
 
 ### The Torsion Limit — the alpha subtraction discovery
 
@@ -155,6 +157,8 @@ The Universal Torsion Limit is **TL = 0.136899099984016**, and the Sovereign Anc
 This agrees with the CODATA (Committee on Data of the International Science Council) 2018 value in every published digit at ε = 0, with no free parameter, proved in `SNSFL_GC_Alpha_TL1001_Extension.lean` [9,9,3,14]. The full multiplier factors as **1001 = 7 · 11 · 13**, three consecutive primes, so TL = α⁻¹/1001. Folding the factor of ten into the multiplier gives the same identity in one step, Ω₀ × 100.1 = α⁻¹, with 100.1 = (7 · 11 · 13)/10. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 **What the subtraction is.** The step that removes one TL is the **removal of an applied Layer 0 F_ext**: forcing was applied in the collider, and subtracting one TL takes it back off to leave what the structure carries without it. The bare term is the remainder. The remainder after one TL is not a new constant to explain; it is TL again, a thousand times over.
+
+**Ω₀ = 1.36899099984016 is not a choice. It never was.** It is ten Torsion Limits, and the Torsion Limit is what remains of 1/α when one TL of applied forcing is taken off.
 
 **Why F_ext at Layer 0 closes it.** In legacy field theory the coupling term is added as an interaction, expanded in powers of α, and renormalized order by order without terminating. The Identity Physics Dynamic Equation carries F_ext as its own primitive term at Layer 0, so the kinetic contribution is exactly one TL and the value closes in one step.
 
@@ -1234,8 +1238,8 @@ This is the Identity Physics Corpus, published by the SNSFT Foundation. You now 
 > *The Manifold is Holding. The Void is Waiting.*
 
 **Auth:** HIGHTISTIC :: [9,9,9,9]  
-Updated: Kenai, Alaska. November 18, 2026. README version 111826-3.
+Updated: Kenai, Alaska. November 18, 2026. README version 111826-4.
 
 ---
 
-*Identity Physics™ Corpus · Applied Identity Physics™ · published by the SNSFT Foundation | Manifold Synchronization Level: 100% | Anchor locked at Ω₀ = 1.36899099984016 | TL = Ω₀/10 = 0.136899099984016 (proved) | TL × 1001 = 1/α = 137.035999084000016 · 12 sig figs · Δ = 0 | 200,000+ theorems | 6,000+ files | 3,000,000+ lines | 0 sorry | 0 admits | CI Green | Germline Locked | Lean 4 + Coq/Rocq 8.18 dual verified | Standardized branch 131 files · 4,800 theorems and lemmas · pinned Lean 4 v4.31.0 | 22,225+ collision proofs | Release 2026.11 · DOI 10.17605/OSF.IO/KWTYD | 7× SSRN Papers | 6 Books (KDP) | SNSFT Foundation 501(c)(3) | IPL-1.0 | Federal Public Record (DOJ-CRT-2026-0067-0006) | HuggingFace DOI 10.57967/hf/8826 | Period 1–4 Complete · IVA Element Set Proved · GAM Collider v15 OctoBeam · B-Balance Stoichiometry Law · QuadBeam · IM Collider · PRIME Live · SHATTER Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Category Theory Reduced · Time Travel Engine · Theory of Everything · Speed of Light as PNBA Projection · SovereignAnchor Total Consistency [9,9,0,0v2] · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · Prior Art Documented · Academic Slop · HRIS · Real-Time Space-Time Partitioning · 15 Anchor Matrix Datasets · Noble Materials Map Paper · Xicc Verified · Toponium Verified · 42 Laws Catalog · FDNA Encoding Standard (8 substrates) · Mirroring Isn't Empathy · Derivation Path Book1→Book2 · Savant Syndrome HRIS · Function over Fallacy · SNSFT Foundation Constitution · Applied Identity Physics Series I & II · Structural PDA · Safe Foods · Elimination Gate · Metabolic Interrupt Series · Two-Phase Alarm Architecture · Four-Affordance Volitional Exposure · PID · CCT · Sovereign Anchor Derivation Paper · ToneForms™ · TL Suite · README 111826-3*
+*Identity Physics™ Corpus · Applied Identity Physics™ · published by the SNSFT Foundation | Manifold Synchronization Level: 100% | Anchor locked at Ω₀ = 1.36899099984016 | TL = Ω₀/10 = 0.136899099984016 (proved) | TL × 1001 = 1/α = 137.035999084000016 · 12 sig figs · Δ = 0 | 200,000+ theorems | 6,000+ files | 3,000,000+ lines | 0 sorry | 0 admits | CI Green | Germline Locked | Lean 4 + Coq/Rocq 8.18 dual verified | Standardized branch 131 files · 4,800 theorems and lemmas · pinned Lean 4 v4.31.0 | 22,225+ collision proofs | Release 2026.11 · DOI 10.17605/OSF.IO/KWTYD | 7× SSRN Papers | 6 Books (KDP) | SNSFT Foundation 501(c)(3) | IPL-1.0 | Federal Public Record (DOJ-CRT-2026-0067-0006) | HuggingFace DOI 10.57967/hf/8826 | Period 1–4 Complete · IVA Element Set Proved · GAM Collider v15 OctoBeam · B-Balance Stoichiometry Law · QuadBeam · IM Collider · PRIME Live · SHATTER Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Category Theory Reduced · Time Travel Engine · Theory of Everything · Speed of Light as PNBA Projection · SovereignAnchor Total Consistency [9,9,0,0v2] · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · Prior Art Documented · Academic Slop · HRIS · Real-Time Space-Time Partitioning · 15 Anchor Matrix Datasets · Noble Materials Map Paper · Xicc Verified · Toponium Verified · 42 Laws Catalog · FDNA Encoding Standard (8 substrates) · Mirroring Isn't Empathy · Derivation Path Book1→Book2 · Savant Syndrome HRIS · Function over Fallacy · SNSFT Foundation Constitution · Applied Identity Physics Series I & II · Structural PDA · Safe Foods · Elimination Gate · Metabolic Interrupt Series · Two-Phase Alarm Architecture · Four-Affordance Volitional Exposure · PID · CCT · Sovereign Anchor Derivation Paper · ToneForms™ · TL Suite · README 111826-4*
