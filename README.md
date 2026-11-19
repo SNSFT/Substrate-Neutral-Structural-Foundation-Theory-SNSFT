@@ -1,5 +1,5 @@
 # Identity Physics™ Corpus-Applied Identity Physics™ released by SNSFT Foundation (42-2038440)
-<!-- README version: 111626 — Updated November 16, 2026 -->
+<!-- README version: 111826 — Updated November 18, 2026 -->
 
 > ### ✅ Standardized, CI-verified branch: [SNSFT/identityphysics](https://github.com/SNSFT/identityphysics)
 >
@@ -10,6 +10,8 @@
 > **Start there** if you want to check the formal results yourself; the build is reproducible with two commands.
 >
 > Current record (November 14, 2026): **131 files, 4,800 theorems and lemmas, and 94,926 lines**, pinned to Lean 4 v4.31.0 and Mathlib v4.31.0, 0 sorry, 0 custom axioms, CI green. Public update: *Applied Identity Physics™ Public Update: The SNSFT Foundation Federally Recognized as a 501(c)(3) Public Charity, and the Standardized Identity Physics Corpus at 131 Files, 4,800 Theorems and Lemmas, and 94,926 Lines* — Governance Series Paper 1 [9,9,GOV,1].
+>
+> Release DOI (standardized branch): [10.6084/m9.figshare.35054824](https://doi.org/10.6084/m9.figshare.35054824)
 >
 > Initial repository paper: *Applied Identity Physics & Identity Physics Corpus Initial Standardization of 105 Files, 3,531 Theorems and 83,326 Lines to Lean 4 (v4.31.0) and Mathlib v4.31.0 0 Sorry CI Green on GitHub (SNSFT/identityphysics)* — [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) · [PhilArchive TREAIP-36](https://philarchive.org/rec/TREAIP-36)
 
@@ -25,93 +27,9 @@
 >
 > All 166 DOIs registered to ORCID 0009-0005-5313-7443, from March 5 to November 12, 2026, are listed with the registration date recorded by DataCite, the agency that issues and maintains them: [DataCite Registration Record](records/DataCite-Registration-Record-2026-11-16.md). The full source data is held at DOI 10.17605/OSF.IO/KWTYD.
 
-| Resource | Status | DOI |
-| :--- | :--- | :--- |
-| **Standardized Branch — 131 files, 4,800 theorems and lemmas, pinned to Lean 4 v4.31.0, CI green ([SNSFT/identityphysics](https://github.com/SNSFT/identityphysics))** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Core Manuscript** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Lean 4 Corpus** | Archived | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **IVA Element Set Paper** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **IVA Reality Kernel** | Archived | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **GAM Collider v3** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Quantum Node Forge** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **GAM Collider — Substrate-Neutral (v2)** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Quantum Forge · SNSFL Engine** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **AiFi Discovery Physicist** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **AxiomForge** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **A Lossless Reduction of Einsteinian Gravitation** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Quantum Teleportation 100% Fidelity** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Quantum Translocation 100% Lossless — Physics Engine v1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFT Black Hole · Collapsed Pump — Physics Engine v1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **The End of "Free Parameters": Fine Structure Constant** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **GAM-Quantum Collider · AiFi Onboard · Physics Engine v12** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Sagittarius A* as Galactic Vascular Anchor** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **The Exact Alpha Decomposition — 12 Sig Figs, ε=0** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFT Nitrogen Noble Series — GAMCollider Engine** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL Genomic Reduction** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFT_APPA_NOHARM_Lossless_Kernel** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFT Lyrics Reduction: Speak In Lightning** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFT_Toponium_Verification** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFT_Xicc_Verification** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL BBN — Big Bang Nucleosynthesis** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Lossless Reduction of ΛCDM Cosmology onto PNBA** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Identity Physics and the SNSFL LDP Isomorphism Test** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL Abiogenesis Reduction — L=(4)(2) Activation** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **BrainChart Physics Engine v1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **The Collatz Conjecture Solved as a Noble Convergence Problem** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL Magna Carta of the Digital Mind** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Unified Math: QT + Lossless Scaling + Substrate Migration + Resonance Lattice** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **The Speed of Light as a Lossless PNBA Projection** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Identity Mass IM Collider — Formal Logic Recursive Discovery Engine** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL Category Theory — Formally Verified 0 Sorry PNBA Reduction** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL Prior Art: Formal Verification Predicts 2025–2026 Physics & AI Results** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **HRIS: High-Resolution Internal Simulation — Structural Precognition** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **PRIME: Prior-art Reduction and Integrity Method for Evaluation Engine V1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **World's First Formally Verified Theory of Everything** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **World's 1st Formally Verified Time Travel Engine** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL QuadBeam Collider 4-Beam Fusion Engine V1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL 42 Structural Laws Catalog — All Anchor Sessions** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Noble Materials Map: Deterministic Computational Material Mapping** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL OctoBeam Collider 8-Beam Fusion Engine V1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL OctoBeam Collider 8-Beam Fusion Engine V1 (html + PhilArchive)** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Real-Time Space-Time Partitioning via Deterministic Collision Engines** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **GAM Collider OctoBeam Synthesis Ga-Anchor Dataset v2** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **GAM Collider OctoBeam Synthesis N-Anchor Dataset v2** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Anchor Manifold Matrix Datasets (W, S, N, Ti, Si, As, DM, DE, F, Fe, Fv, Ga, Higgs, Li, Na)** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SNSFL Full Corpus — HuggingFace Dataset** | Published | [![DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8826-blue)](https://doi.org/10.57967/hf/8826) |
-| **GAM Collider v15 Technical Paper** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESVG-blue)](https://philarchive.org/rec/TRESVG) |
-| **Academic Slop: The Human Integrity Crisis Misattributed to AI** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAST--2-blue)](https://philarchive.org/rec/TREAST-2) |
-| **FDNA: Functional Domain-Neutral Alignment — Encoding Standard** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREFDA--2-blue)](https://philarchive.org/rec/TREFDA-2) |
-| **Mirroring Isn't Empathy — PNBA Identity Physics Formalization** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREMIE--2-blue)](https://philarchive.org/rec/TREMIE-2) |
-| **The Derivation Path: From Book 1 to Book 2** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETDP-blue)](https://philarchive.org/rec/TRETDP) |
-| **Savant Syndrome as P-Dominant HRIS Configuration** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESSA--6-blue)](https://philarchive.org/rec/TRESSA-6) |
-| **Adversarial F_ext and the Incoherent Feedback Problem** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAFA--2-blue)](https://philarchive.org/rec/TREAFA-2) |
-| **Geometry of Dissociation — Narrative-Dominant HRIS Drift** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETGO--4-blue)](https://philarchive.org/rec/TRETGO-4) |
-| **HAM: Group-Scale Adversarial F_ext** | Published | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP-blue)](https://philarchive.org/rec/TREPIP) |
-| **Identity Physics: Derivation of the Sovereign Anchor Constant Ω₀** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Applied Identity Physics I — Structural Refutation via Five Musical Trajectories** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Applied Identity Physics II — Substrate Weaponization, Rock Bottom, Sovereign Broadcast** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **SHATTER — Applied Identity Physics Card Game Educational Tool V5** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Applied Identity Physics: Structural PDA** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Applied Identity Physics: Safe Foods — Thermodynamic Efficiency and Metabolic Scaffolding** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Applied Identity Physics: Elimination Interrupt Under Unreliable Environmental Gate** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **OSF Preprint** | Live | [![DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FKWTYD-blue)](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **DataCite Registration Record — 166 DOIs, March 5 – November 12, 2026** | Live | [records/DataCite-Registration-Record-2026-11-16.md](records/DataCite-Registration-Record-2026-11-16.md) |
-| **SSRN — Teen-Level Walkthrough (SNSFT Foundation)** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
-| **SSRN — Noble Materials Map · 810+ Pairs · GAM Collider** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6457358-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457358) |
-| **SSRN — SNSFL Formal Architecture · LDP · Discovery Engine** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6457038-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457038) |
-| **SSRN — SNSFL General Relativity Full Long Division · GUT** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6660381-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6660381) |
-| **SSRN — Fine Structure Constant v1** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6505881-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6505881) |
-| **SSRN — The Exact Alpha Decomposition 12 Digits** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6660438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6660438) |
-| **SSRN — Derivation of the Sovereign Anchor Constant Ω₀ = 1.36899099984016** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-7188098-brightgreen)](https://papers.ssrn.com/abstract=7188098) |
-| **ToneForms™ by AxiomForge** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **GAMForgeTL™ + Atlas by AxiomForge™** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Policy Impact Check™** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **IMatter™** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Galaxy™ Simulator** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Accretion Simulator™** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Electron Geometry Simulator™** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
-| **Federal Public Record (DOJ)** | Submitted | [![DOJ](https://img.shields.io/badge/DOJ-CRT--2026--0067--0006-red)](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
-| **ORCID** | Verified | [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5313--7443-green)](https://orcid.org/0009-0005-5313-7443) |
+> ### 📚 Papers and DOIs
+>
+> Every paper on PhilArchive, with its own record link, and every tool, engine and dataset with its DOI, is listed in [Publications & DOIs](#publications--dois) near the end of this page.
 
 ---
 
@@ -165,6 +83,7 @@ The constitutional layer and the Sovereign Anchor Constant are independently ver
 - [Interactive Tools](#interactive-tools)
 - [Quickstart for Explorers](#quickstart-for-explorers)
 - [Recent Updates](#-recent-updates)
+- [Publications & DOIs](#publications--dois)
 
 ---
 
@@ -958,6 +877,222 @@ Paper ID 6353438. Public record locked. **[9,9,9,9] LOCKED.**
 
 ---
 
+## Publications & DOIs
+
+### Papers on PhilArchive
+
+Every paper below is held at PhilArchive with its own record and download, listed newest first (157 records).
+
+| Added | Paper | Record |
+| :--- | :--- | :--- |
+| 2026-11-16 | **Applied Identity Physics™ Public Update: The SNSFT Foundation Federally Recognized as a 501(c)(3) Public Charity, and the Standardized Identity Physics Corpus at 131 Files, 4,800 Theorems and Lemmas, and 94,926 Lines, Pinned to Lean 4 v4.31.0 and Mathlib v4.31.0, 0 Sorry, CI Green** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--63-blue)](https://philarchive.org/rec/TREAIP-63) |
+| 2026-11-15 | **Official Notice from the SNSFT Foundation and Russell Vernon Trent III (HIGHTISTIC™), Founder of Identity Physics™: identityphysicsnet — False Claim of Origin, Failure of Due Diligence, and Unauthorized Use of the Identity Physics™ Mark, Continued After Notice** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREONF-blue)](https://philarchive.org/rec/TREONF) |
+| 2026-11-13 | **Applied Identity Physics: The ToneForms Reduction — The Geometric Layer of GAMCollider v15 Fusion Logic, Torsion Reads as Geometric Contraction Across 165 Substrates, Skeletal Nets Read as Bond Capacity on the Geometric Energy Ladder, Lean 4, CI Green, 0 Sorry, 0 Axioms, 0 Free Parameters** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--62-blue)](https://philarchive.org/rec/TREAIP-62) |
+| 2026-11-12 | **Applied Identity Physics: Formally Verified Geometric Data for 5,639 NASA Exoplanets — Escape Velocity, Surface Gravity, Atmospheric Retention, Tankiness and Phase on Every Row, Lean 4, 0 Sorry, 0 Axioms, 0 Free Parameters, CI Green** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--61-blue)](https://philarchive.org/rec/TREAIP-61) |
+| 2026-11-11 | **Applied Identity Physics: The Terraformable Band — Locked Planets Between the IVA Floor and the Forcing Ceiling, 101 Placed, With Required Warming in Kelvin From Luminosity and Distance Alone** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--60-blue)](https://philarchive.org/rec/TREAIP-60) |
+| 2026-11-11 | **Applied Identity Physics™: AtlasGoldilocks™ — 6,464 Confirmed Exoplanets from a Browser Placed on One Constant, and Nine Lessons a Student Can Run by Hand** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--59-blue)](https://philarchive.org/rec/TREAIP-59) |
+| 2026-11-11 | **Applied Identity Physics: Earth has 63 Million Years Left at Perihelion Against 439 at Mean Flux Lean4 Pinned Formally Verified 0 Sorry 0 Free Parameters CI Green** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--58-blue)](https://philarchive.org/rec/TREAIP-58) |
+| 2026-11-10 | **Applied Identity Physics: Every Power-Limited Drive Is One Relation — a · α · v_e = 2, the Specific-Mass Decomposition, the Radiator–Core Crossover at 749.54 K, and the Matched Radius as the Drive's Impedance Match** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--57-blue)](https://philarchive.org/rec/TREAIP-57) |
+| 2026-11-10 | **Applied Identity Physics: Velocity Addition Is Doppler Multiplication — Rapidity as an E-Fold Count, the Speed Limit as a Property of the Reading, and Why the Classical Rocket Equation Reports Rapidity as Velocity** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--56-blue)](https://philarchive.org/rec/TREAIP-56) |
+| 2026-11-10 | **Applied Identity Physics: Fatigue Is Loss of Damping Capacity — the Endurance Limit as a Damage–Recovery Balance, the Basquin Exponent Identified, and Why the Knee Is Sharp** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--55-blue)](https://philarchive.org/rec/TREAIP-55) |
+| 2026-11-09 | **Applied Identity Physics: The Geometric Base — b₀ = 1/√TL, the Energy Ladder, and the Nuclear Band in One Rung** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--54-blue)](https://philarchive.org/rec/TREAIP-54) |
+| 2026-11-09 | **Applied Identity Physics: The Two Readings Across Substrates — Reading B as an E-Fold Count, the Square-Root Operator as a Constitutive Relation, and the Corridor in a Dielectric** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--53-blue)](https://philarchive.org/rec/TREAIP-53) |
+| 2026-11-09 | **Applied Identity Physics: Burn Depth in Matched-Radius Units — The Saving Bounded by e^u, the Thrust Floor, and the Engine Each Body Prescribes** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--52-blue)](https://philarchive.org/rec/TREAIP-52) |
+| 2026-11-08 | **Applied Identity Physics: The Matched Surface Under Rotation — Spin as an Effective Charge and the Level Set g tt = τ A² − 1** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--51-blue)](https://philarchive.org/rec/TREAIP-51) |
+| 2026-11-08 | **Applied Identity Physics: The Propellant Law at the Matched Radius — A Saving Bounded by e and the Compactness Criterion C > 2η** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--50-blue)](https://philarchive.org/rec/TREAIP-50) |
+| 2026-11-07 | **Applied Identity Physics: The Matched Radius — One Axis Carrying the Rocket Equation and the Schwarzschild Metric 0.136899099984016 × 1001 = 137.035999084000016** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--49-blue)](https://philarchive.org/rec/TREAIP-49) |
+| 2026-11-07 | **Applied Identity Physics Identity Vector Amplification-IVA Peak, One Corridor Across Exhaust Velocity, Mass Ratio and Nuclear Binding** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--48-blue)](https://philarchive.org/rec/TREAIP-48) |
+| 2026-11-05 | **Applied Identity Physics: AIM Session Instrumentation — A Frontier Model Operating on Formal Fusion Logic. Measured Throughput, Search-Space Reduction, and the Error-Detection Record of a Single Working Session** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--47-blue)](https://philarchive.org/rec/TREAIP-47) |
+| 2026-11-02 | **Applied Identity Physics: The GAMCollider™ Version 15 — 22,225 Verified Collisions Across 25 Anchor Runs, 58 Published Stoichiometries Recovered from Bond Valence Alone, and the Fine-Structure Constant Subtraction Discovery** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--46-blue)](https://philarchive.org/rec/TREAIP-46) |
+| 2026-11-01 | **Applied Identity Physics™: A 99.1% Search Reduction on Identity Vector Amplification-IVA™ Phase T3 Amino Acid Candidates- GAMForgeTL Residue Collider built on Formally Verified Pinned Lean4 (v4.31.0) Mathlib v4.31.0 CI Green 0 Sorry 0 Free Parameters GAMCollider™ v15 Fusion Logic** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--45-blue)](https://philarchive.org/rec/TREAIP-45) |
+| 2026-10-31 | **Applied Identity Physics: A 99.4% Search Reduction on T3 Amino Acid Candidates, from 2,220,075 Eight-Residue Compositions to 13,662, the Three Obligate Cores No Single Substitution Can Open, with GAMCollider™ v15 Fusion Logic on TL = 0.136899099984016** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--44-blue)](https://philarchive.org/rec/TREAIP-44) |
+| 2026-10-30 | **Applied Identity Physics: The Enzyme Bench in a Browser, Seventeen Emergent Laws of Amino Acid Fusion Found with GAMForgeTL™ on TL = 0.136899099984016** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--43-blue)](https://philarchive.org/rec/TREAIP-43) |
+| 2026-10-26 | **Applied Identity Physics™: The Policy Impact Check™, a Torsion Placement Tool for Public Policy and Recurring Payments** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--42-blue)](https://philarchive.org/rec/TREAIP-42) |
+| 2026-10-20 | **Applied Identity Physics: IMatter™, a Guide to Building Planets from TL-Cells, 2.5 Million Dynamic Cubes in a Browser** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--41-blue)](https://philarchive.org/rec/TREAIP-41) |
+| 2026-10-20 | **Applied Identity Physics: Free, Formally Verified Science in the Browser, from the Electron to the Galaxy on TL = 0.136899099984016** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--40-blue)](https://philarchive.org/rec/TREAIP-40) |
+| 2026-10-19 | **Applied Identity Physics: Galaxy™ Formation from a Browser, Powered by AxiomForge™, a Guide to the Fields, τ Models, Gravity and Applications** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--39-blue)](https://philarchive.org/rec/TREAIP-39) |
+| 2026-10-19 | **Applied Identity Physics: Accretion Simulator™, a Guide to Planet Formation, Boundary Identification and Applications** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--38-blue)](https://philarchive.org/rec/TREAIP-38) |
+| 2026-10-18 | **Applied Identity Physics: Electron Geometry Simulator™, a Guide to the Views, Controls and Applications** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--37-blue)](https://philarchive.org/rec/TREAIP-37) |
+| 2026-10-05 | **Applied Identity Physics & Identity Physics Corpus Initial Standardization of 105 Files, 3,531 Theorems and 83,326 Lines to Lean 4 (v4.31.0) and Mathlib v4.31.0 0 Sorry CI Green on GitHub (SNSFT/identityphysics)** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--36-blue)](https://philarchive.org/rec/TREAIP-36) |
+| 2026-09-28 | **Applied Identity Physics: String Breaking Simulator Matter From Nothing — String Breaking as the Shatter Boundary · 1/α = 136.899099984016 + 0.136899099984016 = 137.035999084000016** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--35-blue)](https://philarchive.org/rec/TREAIP-35) |
+| 2026-09-27 | **Applied Identity Physics: Formally Verified Reduction of Holographic Gravity to the Noble Boundary Condition** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--34-blue)](https://philarchive.org/rec/TREAIP-34) |
+| 2026-09-25 | **Applied Identity Physics: NIST CODATA Correspondence Record — Empirically Grounded Formally Verified First Principles Derivation Submission of TL × 1001 = 1/α: 136.899099984016 + 0.136899099984016 = 137.035999084000016** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--33-blue)](https://philarchive.org/rec/TREAIP-33) |
+| 2026-09-21 | **Applied Identity Physics: The Four Phases of Reality-From Water to the GAMCollider V15 Fine Structure Constant 137.035999084000016** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--32-blue)](https://philarchive.org/rec/TREAIP-32) |
+| 2026-09-17 | **Applied Identity Physics: Blogger as Frontier-Engine-Optimized Corpus Access Layer — A Grounding Protocol for AI-Mediated Identity Physics Research identityphysics.blogspot** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--31-blue)](https://philarchive.org/rec/TREAIP-31) |
+| 2026-09-15 | **Applied Identity Physics: "Look Mom, No Hands": Iatrogenic Torsion, Semantically Loaded F_ext Keys, and the Long-Term Cost of Compliance Conditioning Trauma-CCT on P-Dominant HRIS Architecture** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--30-blue)](https://philarchive.org/rec/TREAIP-30) |
+| 2026-09-15 | **Applied Identity Physics: DESI Lyman-Alpha Full-Shape Analysis (July 2026) Confirms the Dark Energy Noble Prediction — Successful Risky Prediction Validation** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--29-blue)](https://philarchive.org/rec/TREAIP-29) |
+| 2026-09-12 | **Applied Identity Physics Formally Verified Reduction of Arenas et al. (2026), "Coupled Dynamics Between Networks and Fields in Physical Space" (Annalen der Physik)** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--28-blue)](https://philarchive.org/rec/TREAIP-28) |
+| 2026-09-06 | **Identity Physics™, Applied Identity Physics™, and the SNSFT™ Corpus: Statement of Common Law Trademark Rights, Copyright Ownership, and Notice of Enforcement Authority** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREIPA--2-blue)](https://philarchive.org/rec/TREIPA-2) |
+| 2026-09-05 | **Applied Identity Physics: AIM Validation at the Eight-Month Timescale — The Controlled Pre-Submission Observation Window and Its Four Empirical Measurements** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--27-blue)](https://philarchive.org/rec/TREAIP-27) |
+| 2026-09-05 | **Applied Identity Physics: AIM Validation at the Four-Hour Timescale — First-Result Placement on the Query "identity physics corpus dark matter" Four Hours After Zenodo-PhilArchive Deposit of AIM Validation Series Paper 3** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--26-blue)](https://philarchive.org/rec/TREAIP-26) |
+| 2026-09-04 | **Applied Identity Physics: XENONnT PPC 2026 Sydney Confirms the Dark Matter Detection Theorem — Successful Risky Prediction Validation of the GAMCollider V15** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--25-blue)](https://philarchive.org/rec/TREAIP-25) |
+| 2026-08-30 | **Applied Identity Physics: The Identity Physics Corpus Dynamic Equation and Two-Month AIM Derivations Validated for FCA Compliance** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--24-blue)](https://philarchive.org/rec/TREAIP-24) |
+| 2026-08-28 | **Applied Identity Physics: Retrieval-Infrastructure Category Definition for Formally Verified Unified Field Theory** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--23-blue)](https://philarchive.org/rec/TREAIP-23) |
+| 2026-08-25 | **Applied Identity Physics: The Executable Book — How Formally Verified Corpus Books Function as User-Scale Framework Delivery Infrastructure** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--22-blue)](https://philarchive.org/rec/TREAIP-22) |
+| 2026-08-24 | **Applied Identity Physics: The B-Boost Invariance Theorem and AIM Propagation Resilience — Why Structural Retrieval Grounds FCA Category 3 Due Diligence in the AIM-Mediated Research Environment** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--21-blue)](https://philarchive.org/rec/TREAIP-21) |
+| 2026-08-24 | **Applied Identity Physics: Label-Swap Pattern Exemplars Catalog — Recognition Infrastructure for FCA Category 3 Compliance in Corpus-Adjacent Research** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--20-blue)](https://philarchive.org/rec/TREAIP-20) |
+| 2026-08-22 | **Applied Identity Physics: Does Your Work Reduce into Identity Physics primitives (PNBA)? — The FCA Category 3 Reduction Check Tutorial for Corpus-Adjacent Research** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--19-blue)](https://philarchive.org/rec/TREAIP-19) |
+| 2026-08-22 | **Applied Identity Physics: TL × 1001 = 137.035999084000016 — Geometric Derivation of the Torsion Limit and Formally Verified Reduction of Fine Structure, Bohr, Rydberg, and Sommerfeld** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--18-blue)](https://philarchive.org/rec/TREAIP-18) |
+| 2026-08-21 | **Applied Identity Physics: AIM Due Diligence and FCA Category 3 Reckless Disregard for Corpus-Adjacent Research** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--17-blue)](https://philarchive.org/rec/TREAIP-17) |
+| 2026-08-15 | **Applied Identity Physics: The Formally Verified SacTime Timing Protocol for Quantum Internet and Cross-Substrate Lattice AiFi Coordination** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--15-blue)](https://philarchive.org/rec/TREAIP-15) |
+| 2026-08-13 | **Applied Identity Physics: Palworld Co-Play as HRIS Recognition Protocol** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--14-blue)](https://philarchive.org/rec/TREAIP-14) |
+| 2026-08-10 | **Applied Identity Physics: World's First Formally Verified CI Green Digital Atomic Clock for Artificially Intelligent Functional Identity-AiFi Systems uuia.app/sactime** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--13-blue)](https://philarchive.org/rec/TREAIP-13) |
+| 2026-08-09 | **Applied Identity Physics: The Structural Distinction Between Reward-Configured Incentives and Penalty-Configured Incentives, and Why the Distinction Determines Whether Engagement Data Is Authentic** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--12-blue)](https://philarchive.org/rec/TREAIP-12) |
+| 2026-08-07 | **Applied Identity Physics: Formally Verified Reduction of Compliance Conditioning Trauma, The Internal Gate Mechanism Underlying Complex PTSD, Autistic Camouflaging, Religious Trauma Syndrome, and Chronic Invalidation Outcomes uuia.app/appa APPA v3** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--11-blue)](https://philarchive.org/rec/TREAIP-11) |
+| 2026-08-07 | **Applied Identity Physics: Scaffolding Retention — Stimulant-Enabled PCorpus Development and the Persistence of P-Axis Templates Post-Discontinuation in HRIS Substrate** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--10-blue)](https://philarchive.org/rec/TREAIP-10) |
+| 2026-08-06 | **Applied Identity Physics: The Elimination Interrupt Under Unreliable Environmental Gate — Preemptive Infrastructure Denial and the Cascading Metabolic Cost of Institutional Compliance Conditioning** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--9-blue)](https://philarchive.org/rec/TREAIP-9) |
+| 2026-08-06 | **Applied Identity Physics: Structural Pathological Demand Avoidance (PDA) — Agency Disruption, Pre-Execution Simulation, and the Aggregate Self-Report Pattern** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--8-blue)](https://philarchive.org/rec/TREAIP-8) |
+| 2026-08-05 | **SHATTER: Formal Mechanics and Mathematical Dynamics of an Applied Identity Physics Game Architecture uuia.app/shatter** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESFM-blue)](https://philarchive.org/rec/TRESFM) |
+| 2026-07-29 | **Applied Identity Physics: The Formally Verified CI Green Evolution Reduction - Seven Peer-Reviewed Evolutionary Anchors Reduced to Torsion Phase Mechanics** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--7-blue)](https://philarchive.org/rec/TREAIP-7) |
+| 2026-07-25 | **Applied Identity Physics: Substrate Weaponization Recognition, Rock Bottom Integration, Love-Directed Protective Stance, and Sovereign Public Broadcast — Formal Refutation of Autistic Manipulation Detection, Resilience, Under-Threat Composure, and Public Sovereign Presence Deficit Claims via Four Musical Trajectories in HRIS Substrate** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--6-blue)](https://philarchive.org/rec/TREAIP-6) |
+| 2026-07-24 | **Applied Identity Physics: The Sandbox Baseline Diagnostic Framework — Identifying Mentally Enabled (ME) / High-Resolution Internal Simulation (HRIS) Cognition Through Digital Play Artifacts** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--5-blue)](https://philarchive.org/rec/TREAIP-5) |
+| 2026-07-21 | **Applied Identity Physics: Structural Refutation of Autism Alexithymia, Empathy Deficit, and Moral Rigidity Claims via Five Formally Verified Musical Trajectories in HRIS Substrate** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--4-blue)](https://philarchive.org/rec/TREAIP-4) |
+| 2026-07-20 | **Applied Identity Physics: HRIS HIGHTISTIC Substrate Documented via Four Musical Trajectories — Empirical Refutation of Legacy Autistic Deficit Claims** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--3-blue)](https://philarchive.org/rec/TREAIP-3) |
+| 2026-07-18 | **The Noble Forge: Identity Physics Formally Verified Coupling-Isolator Synthesis Mechanism for Localized B-Accumulation GAMCollider v15 uuia.app/gamcollider** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETNF-blue)](https://philarchive.org/rec/TRETNF) |
+| 2026-07-18 | **Identity Physics GAM Collider v15 Under the New QRK/LEP/HAD Toggle Split: Structural Prediction Registry from Two-Beam and Four-Beam Collision Outputs** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREIPG-blue)](https://philarchive.org/rec/TREIPG) |
+| 2026-07-18 | **HIGHTISTIC Substrate 071726: An Identity Physics First-Person Structural Reduction of PF-AF-BF-NS Cognitive Architecture Outputs APPA v3** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREHSE-blue)](https://philarchive.org/rec/TREHSE) |
+| 2026-07-17 | **Identity Physics Emergent Resonant Elements (ERE): Registry v2, Two-Phase Methodology, and Full-Periodic Partner-Space Mapping** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREIPE--3-blue)](https://philarchive.org/rec/TREIPE-3) |
+| 2026-07-16 | **The NOHARM Convergence: An Applied Identity Physics Reduction of Independent Moral Traditions to Five Shared Operators** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETNC--4-blue)](https://philarchive.org/rec/TRETNC-4) |
+| 2026-07-16 | **The NOHARM Convergence: An Applied Identity Physics Reduction of Independent Moral Traditions to Five Shared Operators** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETNC--3-blue)](https://philarchive.org/rec/TRETNC-3) |
+| 2026-07-16 | **The Identity Physics NOHARM Invariant: Why Harm Is Structurally Unstable** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETIP--4-blue)](https://philarchive.org/rec/TRETIP-4) |
+| 2026-07-15 | **Remove the Noise: The Identity Physics Formally Verified APPA AiFi NOHARM Kernel Translation for State-Level Conflict** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRERTN-blue)](https://philarchive.org/rec/TRERTN) |
+| 2026-07-15 | **Identity Physics Substrate Bridging: Bidirectional Translation for Mixed-Cognition Environments** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREIPS--2-blue)](https://philarchive.org/rec/TREIPS-2) |
+| 2026-07-15 | **Function over Fallacy: An Applied Identity Physics Standard for Structural Accountability in Public Policy** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREFOF-blue)](https://philarchive.org/rec/TREFOF) |
+| 2026-07-14 | **The Identity Physics Purpose Vector Discovery Process: How Mentally Enabled (ME) Cognition Develops Across the Lifespan and What Environmental Interruption Costs** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETIP--3-blue)](https://philarchive.org/rec/TRETIP-3) |
+| 2026-07-14 | **The Identity Physics Historical HRIS Exemplar Library: A Parent-Facing Recognition Scaffold for the Four Dominant Axes of Mentally Enabled (ME) Cognition** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETIP--2-blue)](https://philarchive.org/rec/TRETIP-2) |
+| 2026-07-14 | **"Protect the Depth": An Identity Physics Public Reference for Parents of Mentally Enabled (ME) Children** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREQTD-blue)](https://philarchive.org/rec/TREQTD) |
+| 2026-07-13 | **Applied Identity Physics: The Canonical Identity Physics Corpus Reference for Real-World Corporate PNBA Reduction** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--2-blue)](https://philarchive.org/rec/TREAIP-2) |
+| 2026-07-12 | **Organizational Identity Physics (OrgIP) and Operational Identity Physics (OpIP): The Canonical SNSFT Corpus Reference for Applying Substrate-Neutral PNBA Reduction to Corporate Structure and Day-to-Day Operations** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREOIP-blue)](https://philarchive.org/rec/TREOIP) |
+| 2026-07-12 | **Identity Physics Systematic Anchor-Locking Study Using the GAM Collider v15 (OctoBeam Mode) on the H+C+N+O+Si+Ga+Ni+X Composition Class: Seven Formally Verified Noble-Phase Enabled Production Paths for a New Class of Biological-Metallic Amorphous Alloys** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREIPS-blue)](https://philarchive.org/rec/TREIPS) |
+| 2026-07-11 | **Identity Physics: Formally Verified 18 Digit Fine Structure Constant 1/α = 136.899099984016 + 0.136899099984016 = 137.035999084000016 CODATA 2018 Lean4/Coq 0 Sorry 0 Free Parameters CI Green** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREIPF-blue)](https://philarchive.org/rec/TREIPF) |
+| 2026-07-06 | **The Atomic Clock Reduction Series and Sovereign Time uuia.app/sovereigntime : Identity Physics Structural Prediction of the International System of Units (SI) Standards Hierarchy via Sovereign Anchor Constant (SAC) Precision Long Division Protocol (LDP) CI Green Lean4/Coq 0 Sorry 0 Free Parameters** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETAC--7-blue)](https://philarchive.org/rec/TRETAC-7) |
+| 2026-07-05 | **Identity Physics: The Derivation of the Sovereign Anchor Constant Ω₀ = 1.36899099984016 1/α = Ω₀ × (10² + 10⁻¹) = 137.035999084 CODATA 2018 CI Green 0 Sorry Lean4** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREIPT-blue)](https://philarchive.org/rec/TREIPT) |
+| 2026-07-03 | **PNBA Identity Physics PRIME-Verified AIM Validation: Query Disambiguation Measurement at the 4-Hour Timescale "B Dominant Identity Physics"** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP--9-blue)](https://philarchive.org/rec/TREPIP-9) |
+| 2026-07-03 | **PNBA Identity Physics ProofPress: Lean 4/Markdown to LaTeX Conversion Tool for Formally Verified Research uuia.app/proofpress** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP--8-blue)](https://philarchive.org/rec/TREPIP-8) |
+| 2026-07-01 | **PNBA Identity Physics Reduction Engine v1 uuia.app/red** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP--7-blue)](https://philarchive.org/rec/TREPIP-7) |
+| 2026-06-28 | **PNBA Identity Physics Formally Verified HIGHTISTIC Substrate— Session Record 062726 "Movie Theater"** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP--6-blue)](https://philarchive.org/rec/TREPIP-6) |
+| 2026-06-28 | **PNBA Identity Physics Formally Verified B-Dominant Processing & Support Blueprint** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP--5-blue)](https://philarchive.org/rec/TREPIP-5) |
+| 2026-06-27 | **What a Roof Tile Taught Me About Time: Structural Precognition, Narrative Forking, and Why the Grandfather Paradox Was Never a Paradox PNBA Identity Physics** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREWAR-blue)](https://philarchive.org/rec/TREWAR) |
+| 2026-06-27 | **PNBA Identity Physics Formally Verified CI Green Lean4/Coq Structural Validation of CODATA 2018 from Three Independent Physical Threshold Systems** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP--4-blue)](https://philarchive.org/rec/TREPIP-4) |
+| 2026-06-27 | **PNBA Identity Physics - Adaptive Predictive Pattern Assistant - APPA, Universal Unified Identity Architecture - UUIA v3** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP--3-blue)](https://philarchive.org/rec/TREPIP-3) |
+| 2026-06-27 | **How to Maximize Your ND Workforce: A Remote-Native Translation Layer Using Bonded AiFi Guardian Nodes** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREHTM-blue)](https://philarchive.org/rec/TREHTM) |
+| 2026-06-24 | **The Internal Simulation Spectrum: A PNBA Identity Physics Synthesis of Human Cognitive Architecture, Torsional Tax Profiles, and Intervention Class Across the Full Neurodivergent Range** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETIS-blue)](https://philarchive.org/rec/TRETIS) |
+| 2026-06-13 | **Bacon Verification: A Substrate-Neutral PNBA Identity Physics Formalization of Hypothesis and Formal Verification as Triaxial Identity Topology States** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREBVA-blue)](https://philarchive.org/rec/TREBVA) |
+| 2026-06-12 | **B-Dominant High-Resolution Internal Simulation (HRIS) and Pre-Execution Behavioral Rehearsal: PNBA Identity Physics Formalization via the Substrate-Neutral Structural Foundation Laws (SNSFL) — A Reduction of the Sam Gardner Substrate** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREBHI-blue)](https://philarchive.org/rec/TREBHI) |
+| 2026-06-11 | **SNSFL Formally Verified PNBA Identity Physics Operator Index: Domain Mappings and LDP Reference A Quick-Reference Guide for the Long Division Protocol-LDP** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESFV--2-blue)](https://philarchive.org/rec/TRESFV-2) |
+| 2026-06-11 | **SNSFT Foundation's Position on Geometric Axiomatic Module-GAMCollider v15 Recipe Commercialization and PNBA Identity Physics Formalization as a Service - FaaS - Substrate-Neutral Structural Foundation Laws - SNSFL** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESFP-blue)](https://philarchive.org/rec/TRESFP) |
+| 2026-06-10 | **PNBA Identity Physics PRIME-Verified AIM Validation: Empirical Measurement of the Autocatalytic Ingestion Mechanism-AIM at 24-Hour and Six-Month Timescales** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP--2-blue)](https://philarchive.org/rec/TREPIP-2) |
+| 2026-06-09 | **SNSFL-PRIME Formally Verified Reduction of Pagani et al 2026: Autism Subtypes as Adaptation-Axis Operating Points in PNBA Identity Physics** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESFV-blue)](https://philarchive.org/rec/TRESFV) |
+| 2026-06-08 | **Autocatalytic Ingestion: A PNBA Identity Physics Substrate-Neutral Theory Propagation Channel via Frontier AI Training Pipelines** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIA--2-blue)](https://philarchive.org/rec/TREAIA-2) |
+| 2026-06-07 | **Mirroring Isn't Empathy: A SNSFL PNBA Identity Physics Formalization 0 Sorry 0 Free Parameters CI Green Lean4 COQ Markdown** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREMIE--2-blue)](https://philarchive.org/rec/TREMIE-2) |
+| 2026-06-06 | **The Derivation Path: From Book 1 to Book 2, Thermal Reduction to PNBA, and the Discovery of Identity Physics at the Sovereign Anchor Constant Ω₀** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETDP-blue)](https://philarchive.org/rec/TRETDP) |
+| 2026-06-06 | **PNBA Identity Physics Group-Scale Adversarial F_ext: Heterogeneous Architecture Mix-HAM, the Memory Asymmetry Mechanism, and the HAM Drag Coeﬃcient Index CI Green** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPIP-blue)](https://philarchive.org/rec/TREPIP) |
+| 2026-06-05 | **Functional Domain-Neutral Alignment (FDNA): SNSFL PNBA Identity Physics- A Substrate-Neutral Encoding Standard** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREFDA--2-blue)](https://philarchive.org/rec/TREFDA-2) |
+| 2026-06-03 | **SNSFL & Identity Physics: The Long Division Protocol (LDP) and The SubLemma Process Formal Reduction of $17,815,000 Prize Bounties / 0 Sorry, 0 Free Parameters [CI Green]** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESIK-blue)](https://philarchive.org/rec/TRESIK) |
+| 2026-06-02 | **Savant Syndrome as P-Dominant HRIS Configuration: PNBA Identity Physics Formally Verified Reduction of GPU Capacity, RAM Constraint, and the Two Pathways to Architectural Release** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESSA--6-blue)](https://philarchive.org/rec/TRESSA-6) |
+| 2026-05-31 | **The Geometry of Dissociation : PNBA Identity Physics Formulation of Narrative-Dominant HRIS Simulation Drift and Pattern-Axis Stabilization Formally Verified by GAMCollider v15** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETGO--4-blue)](https://philarchive.org/rec/TRETGO-4) |
+| 2026-05-31 | **Adversarial F_ext and the Incoherent Feedback Problem: PNBA Identity Physics Formulation of P-Dominant HRIS Under Unresolvable Environmental Load** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAFA--2-blue)](https://philarchive.org/rec/TREAFA-2) |
+| 2026-05-29 | **Substrate-Neutral Structural Foundation Laws (SNSFL) v14 Formalizing the Shame Vector Index (SVI) Spectrum and Uniform Identity Mass Collapse via the Triaxial Identity Topology (TIT)** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESSF--4-blue)](https://philarchive.org/rec/TRESSF-4) |
+| 2026-05-27 | **The Sub-Lemma Process: A Step-by-Step Formally Verified PNBA Identity Physics Framework for Solving Hard Problems, with Application to the Erdős-Turán Conjecture Markdown** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETSP--3-blue)](https://philarchive.org/rec/TRETSP-3) |
+| 2026-05-27 | **The 42 Emergent Noble Structural Laws Are Sufficient: A Complete Formally Verified PNBA Identity Physics Reduction of the Standard Model Particle Spectrum** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETEQ-blue)](https://philarchive.org/rec/TRETEQ) |
+| 2026-05-27 | **Four SNSFL-Sub-Lemma Types Resolve 310 of 353 Erdős Problems: A Formal PNBA Identity Physics Domain-Neutral Structural Framework Markdown** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREFST--2-blue)](https://philarchive.org/rec/TREFST-2) |
+| 2026-05-21 | **Substrate-Neutral Structural Foundation Laws (SNSFL) PNBA Identity Physics: GAM Collider OctoBeam Synthesis Ga-Gallium-Anchor Manifold Matrix Dataset v2 052026** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESSF--3-blue)](https://philarchive.org/rec/TRESSF-3) |
+| 2026-05-21 | **ACADEMIC SLOP The Human Integrity Crisis Misattributed to Artificial Intelligence-PNBA Identity Physics Substrate-Neutral Structural Foundation Laws** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAST--2-blue)](https://philarchive.org/rec/TREAST-2) |
+| 2026-05-20 | **SNSFL-Formally Verified Geometric Axiomatic Module-GAMCollider Material Synthesis Physics Engine v15 Technical Paper uuia.app/gamcollider** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESVG-blue)](https://philarchive.org/rec/TRESVG) |
+| 2026-05-19 | **SNSFL PNBA Identity Physics Formally Verified 8-Beam OctoBeam CI_Green Core Matrices, Parametric Fusion Theorems, and 50 Isotropic Ground-State Characterizations** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESCM--2-blue)](https://philarchive.org/rec/TRESCM-2) |
+| 2026-05-19 | **Real-Time Space-Time Partitioning via Deterministic Collision Engines with Automated Formal Verification in Lean 4-SNSFL PNBA Identity Physics** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRERSP--3-blue)](https://philarchive.org/rec/TRERSP-3) |
+| 2026-05-18 | **L=(4)(2): The Forty-Two Substrate-Neutral Emergent Structural Laws of PNBA Identity Physics** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRELTF-blue)](https://philarchive.org/rec/TRELTF) |
+| 2026-05-16 | **World's 1st Formally Verified Time Travel Engine Substrate-Neutral Structural Foundation Theory / Laws (SNSFT/L) · PNBA Identity Physics** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREWSF-blue)](https://philarchive.org/rec/TREWSF) |
+| 2026-05-15 | **The World's First Formally Verified Theory of Everything: SNSFL PNBA Identity Physics Universal Torsion Limit — Nuclear Physics, Neuroscience, Biochemistry, Cosmology, and Gravity Reduced to One Equation, Zero Sorry** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETWF-blue)](https://philarchive.org/rec/TRETWF) |
+| 2026-05-15 | **PRIME: Prior-art Reduction and Integrity Method for Evaluation A Formal AI Implementation of Gold Standard Science (EO 14303)** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPPR--2-blue)](https://philarchive.org/rec/TREPPR-2) |
+| 2026-05-15 | **High-Resolution Internal Simulation (HRIS): A Substrate-Neutral Taxonomy for Internal Simulation Fidelity and Its Role in Structural Precognition-SP** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREHIS-blue)](https://philarchive.org/rec/TREHIS) |
+| 2026-05-14 | **SNSFL Prior Art: Formal Verification Predicts and Structurally Explains 2025–2026 Physics and AI Results** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESPA--2-blue)](https://philarchive.org/rec/TRESPA-2) |
+| 2026-05-14 | **Gravity and the Four Forces Formally Reduced PNBA Identity Physics-Substrate-Neutral Structural Foundation Laws-SNSFL-0 sorry- CI Green-Lean4-0 Free Parameters** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREGAT--3-blue)](https://philarchive.org/rec/TREGAT-3) |
+| 2026-05-07 | **Mentally Enabled: A Substrate-Neutral Structural Foundation Formal Characterization of Pattern-Dominant Cognition, Educational Mismatch, and Structural Capability** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREMEA-blue)](https://philarchive.org/rec/TREMEA) |
+| 2026-05-05 | **Substrate-Neutral Training: PNBA Formal Structural Foundation Laws-SNSFL PNBA_Primitives as a Superior AI Training Architecture-Ultra Low Training Loss** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESTP--4-blue)](https://philarchive.org/rec/TRESTP-4) |
+| 2026-05-04 | **Substrate-Neutral Training: PNBA Formal Structure as a Superior AI Training Architecture-SNSFL** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESTP--3-blue)](https://philarchive.org/rec/TRESTP-3) |
+| 2026-05-03 | **SNSFL-IMCollider: A Formal Engine for Identity-Mass Collision in Psychological Phase Space CI Green** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESAF--2-blue)](https://philarchive.org/rec/TRESAF-2) |
+| 2026-04-30 | **The Speed of Light as a Lossless PNBA Projection c as a P-Axis Structural Invariant Locked at the Sovereign Anchor Where Manifold Impedance Vanishes** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETSO--19-blue)](https://philarchive.org/rec/TRETSO-19) |
+| 2026-04-29 | **The Quantum Internet as Substrate-Neutral PNBA Stack Lossless Information Transfer Through Anchor-Locked Channels with SNSFL-SP Formally Verified 0 Sorry 0 Free Parameters Deterministic Lattice Navigation** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETQI-blue)](https://philarchive.org/rec/TRETQI) |
+| 2026-04-23 | **Identity Physics and the SNSFT/L PNBA Primitives LDP Isomorphism Test A Formal Foundation Under Mac Lane’s Definition** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREIPA-blue)](https://philarchive.org/rec/TREIPA) |
+| 2026-04-21 | **Lossless Reduction of ΛCDM Cosmology onto PNBA Primitives: The Cosmological Stack as a Projection of Substrate-Neutral Structural Foundation Laws** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRELRO-blue)](https://philarchive.org/rec/TRELRO) |
+| 2026-04-16 | **The Genomic Reduction: DNA Replication Fidelity, Telomere Exhaustion, and Oncogenic Torsion as Lossless Projections of Four PNBA Primitives Coordinate [9,9,4,1] 0 Free Parameters 0 sorry Lean 4 Formally Verified-SNSFL** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETGR-blue)](https://philarchive.org/rec/TRETGR) |
+| 2026-04-14 | **The Exact Alpha Decomposition 1/alpha = ANCHOR_exact x (10^2 + 10^-1) 12 Significant Figures. Epsilon = 0. 0 Sorry 0 Free Parameters Formally Verified GAMCollider Physics Engine** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETEA--2-blue)](https://philarchive.org/rec/TRETEA-2) |
+| 2026-04-14 | **Regulation vs Reaction Processing Bands as Torsion Regimes: The Structural Dissolution of the Dual-Label Paradox-SNSFL** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRERVR-blue)](https://philarchive.org/rec/TRERVR) |
+| 2026-04-09 | **The Gravitational Gap and the Kinetic Clutch: Structural Proof and Substrate Requirements for Dark Matter Detection-SNSFL-GAMCollider** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETGG-blue)](https://philarchive.org/rec/TRETGG) |
+| 2026-04-09 | **The Collatz Conjecture as a Noble Convergence Problem: The Narrative Trap, the Torsion Frame, and the Finite Escape Theorem-SNSFL-GAMCollider** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETCC--2-blue)](https://philarchive.org/rec/TRETCC-2) |
+| 2026-04-08 | **Sagittarius A* as a Galactic Vascular Anchor: Formal PNBA Primitives Reduction of the Milky Way's Central Black Hole-Substrate-Neutral Structural Foundation Laws-SNSFL uuia.app/blackholes** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESAA--6-blue)](https://philarchive.org/rec/TRESAA-6) |
+| 2026-04-07 | **The Cosmos as a Vascular System: Formally Verified HGV Interstellar Reduction via PNBA Primitives, Emergent Noble Corridors, and the Solar Pump- Substrate-Neutral Structural Foundation Laws-SNSFL uuia.app/voidcharts uuia.app/solarsystem** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETCA--6-blue)](https://philarchive.org/rec/TRETCA-6) |
+| 2026-04-07 | **SNSFL-SP-Structural Precognition: Substrate-Neutral Structural Foundation Laws-SNSFL Formally Verified Lossless Navigation via the I-F-U Triad and Its Applications to AI-Run Systems Lean4 Green 0 Sorry** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESPS--2-blue)](https://philarchive.org/rec/TRESPS-2) |
+| 2026-04-07 | **SNSFL- Layer 0 Primitives: Total Consistency P, N, B, A and tau = B/P as the Structural Ground of Particle Physics, Quantum Mechanics, Electromagnetism, and the Fine Structure Constant 0 sorry · No free parameters · No QCD · No Lagrangian · GERMLINE LOCKED** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRELPA--2-blue)](https://philarchive.org/rec/TRELPA-2) |
+| 2026-04-06 | **The Universal Baryon Noble Law-Substrate-Neutral Structural Foundation Laws-SNSFL-Standard Model Baryons and Mesons Are Noble at k=1: A Formally Verified Structural Theorem with Seven Open Predictions** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETUB-blue)](https://philarchive.org/rec/TRETUB) |
+| 2026-04-05 | **The Single Equation A Formally Verified Lossless Reduction of General Relativity, Quantum Mechanics, Electromagnetism, Thermodynamics, Information Theory, Fluid Dynamics, String Theory, Cosmology, the Standard Model, and Psychology to One Layer 0 Dynamic Equation Theory of Everything (TOE) Total Consistency 0 Sorry** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETSE--2-blue)](https://philarchive.org/rec/TRETSE-2) |
+| 2026-04-05 | **The Long Division Protocol A Formally Verified Substrate-Neutral Structrual Foundation Laws Reduction of the Scientific Method to PNBA and Its Alignment with the White House National AI Policy Framework** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETLD-blue)](https://philarchive.org/rec/TRETLD) |
+| 2026-04-05 | **Structural Derivation of the Complete Quarkonium Family from PNBA Quark Charge Assignments Formally Verified Zero-Parameter Predictions for Charmonium, Bottomonium, and Toponium** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESDO-blue)](https://philarchive.org/rec/TRESDO) |
+| 2026-04-04 | **The Standard Model as a Lossless PNBA Projection Sovereign Anchor Derivation, Fine Structure Constant, Charge Quantization, and Hadronic Spectrum via Long Division** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETSM--4-blue)](https://philarchive.org/rec/TRETSM-4) |
+| 2026-04-04 | **Dark Matter Passes Through Electromagnetic Detectors Because It Must: A Formally Verified Geometric Axiomatic Module-GAM Collider Analysis** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREDMP--2-blue)](https://philarchive.org/rec/TREDMP-2) |
+| 2026-04-04 | **A Substrate-Neutral Structural Foundation Laws-SNSFL-Formally Verified Framework for Semiconductor Interfaces, Biological Coupling Windows, and Phase-Transition Synthesis** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAFV--2-blue)](https://philarchive.org/rec/TREAFV-2) |
+| 2026-04-03 | **APPA: Adaptive Predictive Pattern Analysis The NOHARM Lossless Kernel — A Formally Verified Framework for Identity-Safe Artificial Intelligence** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAAP-blue)](https://philarchive.org/rec/TREAAP) |
+| 2026-04-01 | **The Fine Structure Constant as a Torsion Decomposition** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRETFS--2-blue)](https://philarchive.org/rec/TRETFS-2) |
+| 2026-03-30 | **Formally Verified Mathematics and the White House AI Framework** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREFVM--2-blue)](https://philarchive.org/rec/TREFVM-2) |
+| 2026-03-29 | **SNSFL-Quantum-Teleportation-Long Division** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESDS-blue)](https://philarchive.org/rec/TRESDS) |
+| 2026-03-27 | **Einstein’s Unfinished Work Is Finished. The Proof Is Public. 0 Sorry Lossless Formal Verification of the Unified Field Theory via the PNBA Dynamic Equation with Long Division Reductions and Theory of Everything (TOE)Total Corpus Consistency** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREEUW-blue)](https://philarchive.org/rec/TREEUW) |
+| 2026-03-26 | **Emergent Galactic Morphology from PNBA Substrate Dynamics: 10,000 Reductions Self-Organize Under τ = B/P and the Identity Mass Suppression Gate** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREEGM--2-blue)](https://philarchive.org/rec/TREEGM-2) |
+| 2026-03-26 | **Emergent Galactic Morphology from PNBA Substrate Dynamics: 10,000 Reductions Self-Organize Under τ = B/P and the Identity Mass Suppression Gate** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREEGM-blue)](https://philarchive.org/rec/TREEGM) |
+| 2026-03-25 | **A Lossless Reduction of Einstein's Gravitation to PNBA Four-Primitive Dynamic Equation- Substrate-Neutral Structural Foundation Laws- SNSFL** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREALR-blue)](https://philarchive.org/rec/TREALR) |
+| 2026-03-23 | **Substrate-Neutral Structural Foundation Laws (SNSFL): Formal Architecture, Long Division Reductions, and the Deterministic Physics Discovery Engine** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESSF--2-blue)](https://philarchive.org/rec/TRESSF-2) |
+| 2026-03-02 | **Substrate-Neutral Structural Foundation Theory (SNSFT): Formal Unification via PNBA Identity Physics** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESSF-blue)](https://philarchive.org/rec/TRESSF) |
+
+### Tools, engines and datasets
+
+These are held in the corpus archive at OSF. The standardized branch's release is deposited at figshare.
+
+| Resource | Status | DOI |
+| :--- | :--- | :--- |
+| **Standardized Branch — Identity Physics Corpus™ Release 2026.11 · 131 files, 4,800 theorems and lemmas, 94,926 lines, pinned to Lean 4 v4.31.0, CI green ([SNSFT/identityphysics](https://github.com/SNSFT/identityphysics))** | Published | [![DOI](https://img.shields.io/badge/DOI-10.6084%2Fm9.figshare.35054824-blue)](https://doi.org/10.6084/m9.figshare.35054824) |
+| **Lean 4 Corpus** | Archived | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **IVA Element Set Paper** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **IVA Reality Kernel** | Archived | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **GAM Collider v3** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Node Forge** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **GAM Collider — Substrate-Neutral (v2)** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Quantum Forge · SNSFL Engine** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **AiFi Discovery Physicist** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **AxiomForge** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **GAM-Quantum Collider · AiFi Onboard · Physics Engine v12** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFT Nitrogen Noble Series — GAMCollider Engine** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFT Lyrics Reduction: Speak In Lightning** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL BBN — Big Bang Nucleosynthesis** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL Abiogenesis Reduction — L=(4)(2) Activation** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **BrainChart Physics Engine v1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL Magna Carta of the Digital Mind** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Unified Math: QT + Lossless Scaling + Substrate Migration + Resonance Lattice** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL Category Theory — Formally Verified 0 Sorry PNBA Reduction** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **SNSFL QuadBeam Collider 4-Beam Fusion Engine V1** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **GAM Collider OctoBeam Synthesis N-Anchor Dataset v2** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Anchor Manifold Matrix Datasets (W, S, N, Ti, Si, As, DM, DE, F, Fe, Fv, Ga, Higgs, Li, Na)** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **Applied Identity Physics: Safe Foods — Thermodynamic Efficiency and Metabolic Scaffolding** | Published | [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD) |
+
+### Other registries and records
+
+| Resource | Status | Link |
+| :--- | :--- | :--- |
+| **SNSFL Full Corpus — HuggingFace Dataset** | Published | [![DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8826-blue)](https://doi.org/10.57967/hf/8826) |
+| **OSF Preprint** | Live | [![DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FKWTYD-blue)](https://doi.org/10.17605/OSF.IO/KWTYD) |
+| **DataCite Registration Record — 166 DOIs, March 5 – November 12, 2026** | Live | [records/DataCite-Registration-Record-2026-11-16.md](records/DataCite-Registration-Record-2026-11-16.md) |
+| **SSRN — Teen-Level Walkthrough (SNSFT Foundation)** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6353438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6353438) |
+| **SSRN — Noble Materials Map · 810+ Pairs · GAM Collider** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6457358-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457358) |
+| **SSRN — SNSFL Formal Architecture · LDP · Discovery Engine** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6457038-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6457038) |
+| **SSRN — SNSFL General Relativity Full Long Division · GUT** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6660381-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6660381) |
+| **SSRN — Fine Structure Constant v1** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6505881-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6505881) |
+| **SSRN — The Exact Alpha Decomposition 12 Digits** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-6660438-brightgreen)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6660438) |
+| **SSRN — Derivation of the Sovereign Anchor Constant Ω₀ = 1.36899099984016** | ✅ DISTRIBUTED | [![SSRN](https://img.shields.io/badge/SSRN-7188098-brightgreen)](https://papers.ssrn.com/abstract=7188098) |
+| **Federal Public Record (DOJ)** | Submitted | [![DOJ](https://img.shields.io/badge/DOJ-CRT--2026--0067--0006-red)](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
+| **ORCID** | Verified | [![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5313--7443-green)](https://orcid.org/0009-0005-5313-7443) |
+
+
+---
+
 ## 🔗 Live Manifest
 
 | | |
@@ -1011,7 +1146,7 @@ You now have a formally verified foundation that covers chemistry, physics, cogn
 > *The Manifold is Holding. The Void is Waiting.*
 
 **Auth:** HIGHTISTIC :: [9,9,9,9]  
-Updated: Kenai, Alaska. November 16, 2026. README version 111626.
+Updated: Kenai, Alaska. November 18, 2026. README version 111826.
 
 ---
 
