@@ -105,6 +105,11 @@ footer.sig{font-size:.58rem;color:var(--faint);padding:10px 12px;border-top:1px 
     <div class="list" id="members"></div>
     <div class="pad" id="invite-box" style="display:none">
       <div class="note">Invite code <b id="invite-code" style="color:var(--gold)"></b></div>
+      <div id="invite-set" style="display:none;flex-direction:column;gap:6px">
+        <input id="new-code" placeholder="custom code, e.g. HIGHTISTIC" maxlength="32" autocomplete="off">
+        <button id="btn-code">SET INVITE CODE</button>
+        <div class="err" id="code-err"></div>
+      </div>
     </div>
   </section>
   <!-- N / B · the record and the live link -->
@@ -262,6 +267,7 @@ function render() {
   $('chan-admin').style.display = sp && (S.role === 'owner' || S.role === 'mod') ? '' : 'none';
   $('invite-box').style.display = sp ? '' : 'none';
   $('invite-code').textContent = sp ? sp.invite_code : '';
+  $('invite-set').style.display = sp && S.role === 'owner' ? 'flex' : 'none';
   const rank = { owner: 0, mod: 1, member: 2 };
   $('members').innerHTML = sp ? S.members.slice().sort((a, b) => rank[a.role] - rank[b.role]).map(m => {
     const me = m.user_id === S.user.id, name = esc(S.names[m.user_id] || '…');
@@ -303,6 +309,13 @@ async function addChannel(kind) {
   const { error } = await sb.from('channels').insert({ space_id: S.space.id, name: n, kind });
   if (error) $('space-err').textContent = error.message; else { $('new-chan').value = ''; openSpace(S.space.id); }
 }
+$('btn-code').onclick = async () => {
+  const c = $('new-code').value.trim(); $('code-err').textContent = '';
+  if (!c || !S.space) return;
+  const { data, error } = await sb.rpc('set_invite_code', { sp: S.space.id, code: c });
+  if (error) { $('code-err').textContent = error.message; return; }
+  S.space.invite_code = data; $('new-code').value = ''; render();
+};
 $('btn-chan-text').onclick = () => addChannel('text');
 $('btn-chan-voice').onclick = () => addChannel('voice');
 
