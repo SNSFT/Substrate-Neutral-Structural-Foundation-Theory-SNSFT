@@ -105,6 +105,13 @@ footer.sig{font-size:.58rem;color:var(--faint);padding:10px 12px;border-top:1px 
     <div class="list" id="members"></div>
     <div class="pad" id="invite-box" style="display:none">
       <div class="note">Invite code <b id="invite-code" style="color:var(--gold)"></b></div>
+      <div class="row" style="flex-wrap:wrap">
+        <button id="inv-share" style="display:none">SHARE</button>
+        <button id="inv-email">EMAIL</button>
+        <button id="inv-text">TEXT</button>
+        <button id="inv-copy">COPY LINK</button>
+      </div>
+      <div class="note" id="inv-note"></div>
       <div id="invite-set" style="display:none;flex-direction:column;gap:6px">
         <input id="new-code" placeholder="custom code, e.g. HIGHTISTIC" maxlength="32" autocomplete="off">
         <button id="btn-code">SET INVITE CODE</button>
@@ -236,7 +243,9 @@ $('btn-join').onclick = async () => {
   if (!c) return;
   const { data, error } = await sb.rpc('join_space', { code: c });
   if (error) { $('space-err').textContent = error.message; return; }
-  $('invite').value = ''; await loadSpaces(); openSpace(data);
+  $('invite').value = ''; $('space-err').style.color = ''; $('space-err').textContent = '';
+  if (location.search) history.replaceState(null, '', location.pathname);
+  await loadSpaces(); openSpace(data);
 };
 
 async function openSpace(id) {
@@ -316,6 +325,27 @@ $('btn-code').onclick = async () => {
   if (error) { $('code-err').textContent = error.message; return; }
   S.space.invite_code = data; $('new-code').value = ''; render();
 };
+// ── invites: a link that carries the code, sent through the person's own apps ──
+const inviteLink = () => location.origin + location.pathname + '?join=' + encodeURIComponent(S.space.invite_code);
+const inviteText = () => `Join me in "${S.space.name}" on SacMeet: ${inviteLink()}  (invite code ${S.space.invite_code})`;
+if (navigator.share) $('inv-share').style.display = '';
+$('inv-share').onclick = async () => { if (!S.space) return;
+  try { await navigator.share({ title: 'SacMeet invite', text: inviteText(), url: inviteLink() }); } catch (e) {} };
+$('inv-email').onclick = () => { if (!S.space) return;
+  location.href = 'mailto:?subject=' + encodeURIComponent('Join me on SacMeet') + '&body=' + encodeURIComponent(inviteText()); };
+$('inv-text').onclick = () => { if (!S.space) return;
+  location.href = 'sms:?&body=' + encodeURIComponent(inviteText()); };
+$('inv-copy').onclick = async () => { if (!S.space) return;
+  try { await navigator.clipboard.writeText(inviteLink()); $('inv-note').textContent = 'Link copied.'; }
+  catch (e) { $('inv-note').textContent = inviteLink(); } };
+/* an invite link fills in the code; joining stays one click by the person invited */
+(function readInvite() {
+  const c = new URLSearchParams(location.search).get('join');
+  if (!c) return;
+  $('invite').value = c.slice(0, 32);
+  $('space-err').style.color = 'var(--gold)';
+  $('space-err').textContent = 'Invite code filled in. Sign in, then press JOIN BY CODE.';
+})();
 $('btn-chan-text').onclick = () => addChannel('text');
 $('btn-chan-voice').onclick = () => addChannel('voice');
 
