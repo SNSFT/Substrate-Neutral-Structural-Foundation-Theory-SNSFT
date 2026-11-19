@@ -183,10 +183,10 @@ async function setUser(u) {
   $('auth').style.display = u ? 'none' : 'flex';
   $('btn-out').style.display = u ? '' : 'none';
   if (!u) { $('who').textContent = 'signed out'; return; }
-  const { data: prof } = await sb.from('profiles').select('handle').eq('id', u.id).maybeSingle();
+  const { data: prof } = await sb.from('sacmeet_profiles').select('handle').eq('id', u.id).maybeSingle();
   if (!prof) {
     const h = (localStorage.getItem('sacmeetHandle') || u.email.split('@')[0]).slice(0, 32);
-    await sb.from('profiles').insert({ id: u.id, handle: h });
+    await sb.from('sacmeet_profiles').insert({ id: u.id, handle: h });
     S.handle = h;
   } else S.handle = prof.handle;
   $('who').textContent = S.handle;
@@ -246,7 +246,7 @@ async function openSpace(id) {
   S.channels = ch || []; S.members = mem || [];
   const ids = S.members.map(m => m.user_id);
   if (ids.length) {
-    const { data: profs } = await sb.from('profiles').select('id,handle').in('id', ids);
+    const { data: profs } = await sb.from('sacmeet_profiles').select('id,handle').in('id', ids);
     (profs || []).forEach(p => S.names[p.id] = p.handle);
   }
   S.role = (S.members.find(m => m.user_id === S.user.id) || {}).role || null;
