@@ -151,12 +151,16 @@ footer.sig{font-size:.58rem;color:var(--faint);padding:10px 12px;border-top:1px 
 <div id="auth">
   <div class="box">
     <div class="title"><em>Sac</em>Meet</div>
-    <div class="note">Sign in or create an account.</div>
-    <input id="a-email" type="email" placeholder="email" autocomplete="email">
-    <input id="a-pass" type="password" placeholder="password (8+ characters)" autocomplete="current-password">
-    <input id="a-handle" placeholder="handle (new accounts)" maxlength="32">
-    <div class="row"><button id="a-in" class="primary">SIGN IN</button><button id="a-up">CREATE ACCOUNT</button></div>
+    <div class="note" id="a-lead">Pick a handle to come in. No email needed.</div>
+    <input id="a-handle" placeholder="handle, 2 to 32 characters" maxlength="32" autocomplete="nickname">
+    <button id="a-go" class="primary">ENTER</button>
     <div class="err" id="a-err"></div>
+    <div id="a-email-box" style="display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+      <div class="note">Have an email account here already? Sign in with it.</div>
+      <input id="a-email" type="email" placeholder="email" autocomplete="email">
+      <input id="a-pass" type="password" placeholder="password" autocomplete="current-password">
+      <button id="a-in">SIGN IN WITH EMAIL</button>
+    </div>
   </div>
 </div>
 
@@ -189,34 +193,53 @@ async function boot() {
   setUser(data.session ? data.session.user : null);
   sb.auth.onAuthStateChange((_e, session) => setUser(session ? session.user : null));
 }
+/* Identity is a handle. Entering creates a real account on the server
+   (its own id, its own spaces and roles) with no email; the browser keeps
+   the session, so the same person comes back as themselves. */
+let pendingHandle = '';
 async function setUser(u) {
-  if ((u && S.user && u.id === S.user.id)) return;
+  if (u && S.user && u.id === S.user.id && S.handle) return;
   S.user = u;
-  $('auth').style.display = u ? 'none' : 'flex';
   $('btn-out').style.display = u ? '' : 'none';
-  if (!u) { $('who').textContent = 'signed out'; return; }
+  if (!u) { S.handle = ''; $('who').textContent = 'signed out'; showAuth('start'); return; }
   const { data: prof } = await sb.from('sacmeet_profiles').select('handle').eq('id', u.id).maybeSingle();
-  if (!prof) {
-    const h = (localStorage.getItem('sacmeetHandle') || u.email.split('@')[0]).slice(0, 32);
-    await sb.from('sacmeet_profiles').insert({ id: u.id, handle: h });
-    S.handle = h;
-  } else S.handle = prof.handle;
-  $('who').textContent = S.handle;
-  Kernel.emit('user', { id: u.id, handle: S.handle });
+  if (prof) return ready(prof.handle);
+  const h = pendingHandle || (u.email ? u.email.split('@')[0] : '');
+  if (h && await saveHandle(h)) return;
+  showAuth('handle');
+}
+function showAuth(mode) {
+  $('auth').style.display = 'flex';
+  $('a-email-box').style.display = mode === 'start' ? 'flex' : 'none';
+  $('a-lead').textContent = mode === 'start' ? 'Pick a handle to come in. No email needed.' : 'Pick your handle.';
+  $('a-go').textContent = mode === 'start' ? 'ENTER' : 'SAVE HANDLE';
+}
+async function saveHandle(h) {
+  const { error } = await sb.from('sacmeet_profiles').insert({ id: S.user.id, handle: h });
+  if (error) { $('a-err').style.color = ''; $('a-err').textContent = /duplicate|unique/i.test(error.message) ? `"${h}" is taken. Pick another handle.` : error.message; return false; }
+  ready(h); return true;
+}
+function ready(h) {
+  S.handle = h; pendingHandle = '';
+  $('auth').style.display = 'none'; $('a-err').textContent = '';
+  $('who').textContent = h;
+  Kernel.emit('user', { id: S.user.id, handle: h });
   loadSpaces();
 }
+$('a-go').onclick = async () => {
+  $('a-err').style.color = ''; $('a-err').textContent = '';
+  const h = $('a-handle').value.trim();
+  if (!/^[A-Za-z0-9_.-]{2,32}$/.test(h)) { $('a-err').textContent = 'Use 2 to 32 letters, numbers, dots, dashes or underscores.'; return; }
+  if (S.user) { await saveHandle(h); return; }
+  pendingHandle = h;
+  const { error } = await sb.auth.signInAnonymously();
+  if (error) { pendingHandle = ''; $('a-err').textContent = error.message; }
+};
+$('a-handle').addEventListener('keydown', e => { if (e.key === 'Enter') $('a-go').click(); });
 $('a-in').onclick = async () => {
-  $('a-err').textContent = '';
+  $('a-err').style.color = ''; $('a-err').textContent = '';
   const { error } = await sb.auth.signInWithPassword({ email: $('a-email').value.trim(), password: $('a-pass').value });
   if (error) $('a-err').textContent = error.message;
-};
-$('a-up').onclick = async () => {
-  $('a-err').textContent = '';
-  const h = $('a-handle').value.trim();
-  if (h.length < 2) { $('a-err').textContent = 'pick a handle of 2 to 32 characters'; return; }
-  try { localStorage.setItem('sacmeetHandle', h); } catch (e) {}
-  const { error } = await sb.auth.signUp({ email: $('a-email').value.trim(), password: $('a-pass').value });
-  $('a-err').textContent = error ? error.message : 'Account created. If email confirmation is on, confirm, then sign in.';
 };
 $('btn-out').onclick = async () => { await leaveVoice(); await sb.auth.signOut(); S.space = S.channel = null; render(); };
 
