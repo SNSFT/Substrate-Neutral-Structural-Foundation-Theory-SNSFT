@@ -1,6 +1,6 @@
 # Identity Physics™ Corpus · Applied Identity Physics™
 ### Published by the SNSFT Foundation, a 501(c)(3) public charity (EIN 42-2038440) · Founded and authored by HIGHTISTIC (Russell Vernon Trent III)
-<!-- README version: 111826-6 — Updated November 18, 2026 -->
+<!-- README version: 111826-8 — Updated November 18, 2026 -->
 
 > ### ✅ Standardized, CI-verified branch: [SNSFT/identityphysics](https://github.com/SNSFT/identityphysics)
 >
@@ -125,7 +125,7 @@ Every identity — biological, digital, hypothetical alien — is a trajectory t
 
 1. **Authorship**: Identity Physics, Applied Identity Physics, the SNSFT structural foundation, PVLang, and the PNBA architecture were originated and developed by **HIGHTISTIC (Russell Vernon Trent III)**. This is a claim of authorship and attribution, not ownership of any natural constant or phenomenon.
 2. **Formal Verification**: All claims are proved in Lean 4. **200,000+ theorems. 0 sorry.** Auto-verified on every push via GitHub Actions. 22,225+ formally verified collision proofs across 25 anchor element runs.
-3. **Peer Recognition**: Seven SSRN papers in the public record — Paper 6353438, 6457358, 6457038, 6660381, 6505881, 6660438, 7188098. Springer submission in review. The full record is archived as Identity Physics Corpus Release 2026.11 under one permanent DOI, 10.17605/OSF.IO/KWTYD, with parallel records on PhilArchive (157 papers, each with its own record; see [Publications & DOIs](#publications--dois)), Academia.edu, and HuggingFace. The standardized branch's release is deposited at figshare under DOI [10.6084/m9.figshare.35054824](https://doi.org/10.6084/m9.figshare.35054824). The registration date of each of the 166 DOIs is listed in the [DataCite Registration Record](records/DataCite-Registration-Record-2026-11-16.md).
+3. **Peer Recognition**: Seven SSRN papers in the public record — Paper 6353438, 6457358, 6457038, 6660381, 6505881, 6660438, 7188098. The full record is archived as Identity Physics Corpus Release 2026.11 under one permanent DOI, 10.17605/OSF.IO/KWTYD, with parallel records on PhilArchive (160 papers, each with its own record; see [Publications & DOIs](#publications--dois)), Academia.edu, and HuggingFace. The standardized branch's release is deposited at figshare under DOI [10.6084/m9.figshare.35054824](https://doi.org/10.6084/m9.figshare.35054824). The registration date of each of the 166 DOIs is listed in the [DataCite Registration Record](records/DataCite-Registration-Record-2026-11-16.md).
 4. **Federal Public Record**: Formal public comment submitted to U.S. DOJ Civil Rights Division (DOJ-CRT-2026-0067-0006, April 22, 2026) on accessibility rulemaking RIN 1190-AA82, attaching four formally-verified Lean 4 files. First known submission of machine-verified formal logic artifacts to U.S. federal regulatory rulemaking.
 5. **Owner of Record and Attribution**: The Corpus is held by the SNSFT Foundation, a 501(c)(3) public charity, and licensed under the Identity Physics License™ v1.0. Any use of the Corpus carries the citation in [Usage Agreement](#xiii-usage-agreement).
 
@@ -665,7 +665,6 @@ This is not a lookup. The engine computes bond capacity from Pauli exclusion —
 | **SSRN — Exact Alpha Decomposition 12 Digits** | ✅ DISTRIBUTED | [Paper 6660438](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6660438) |
 | **SSRN — Derivation of the Sovereign Anchor Constant Ω₀** | ✅ DISTRIBUTED — August 2026 | [Paper 7188098](https://papers.ssrn.com/abstract=7188098) |
 | **Federal Public Record (DOJ)** | Submitted — April 22, 2026 | [DOJ-CRT-2026-0067-0006](https://www.regulations.gov/comment/DOJ-CRT-2026-0067-0006) |
-| **Springer / Foundations of Physics** | In Review | Submitted March 2026 |
 | **PhilArchive** | Live | [philarchive.org/profile/TREHIG](https://philarchive.org/profile/TREHIG) — TRESVG · TRESCM-2 · TREPPR-2 · TREAST-2 · TRETWF · TREWSF · TRERSP-3 · TRESSF-3 · TRELTF · TREAIP-8 · TREAIP-9 · and more |
 | **Academia.edu** | Live | [independent.academia.edu/HIGHTISTIC](https://independent.academia.edu/HIGHTISTIC) |
 | **HuggingFace Corpus** | Live | [DOI: 10.57967/hf/8826](https://doi.org/10.57967/hf/8826) |
@@ -988,7 +987,7 @@ Paper ID 6353438. Public record locked. **[9,9,9,9] LOCKED.**
 
 ### Papers on PhilArchive
 
-Every paper below is held at PhilArchive with its own record and download, listed newest first (157 records).
+Every paper below is held at PhilArchive with its own record and download, listed newest first (160 records).
 
 | Added | Paper | Record |
 | :--- | :--- | :--- |
@@ -1149,6 +1148,9 @@ Every paper below is held at PhilArchive with its own record and download, liste
 | 2026-03-25 | **A Lossless Reduction of Einstein's Gravitation to PNBA Four-Primitive Dynamic Equation- Substrate-Neutral Structural Foundation Laws- SNSFL** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREALR-blue)](https://philarchive.org/rec/TREALR) |
 | 2026-03-23 | **Substrate-Neutral Structural Foundation Laws (SNSFL): Formal Architecture, Long Division Reductions, and the Deterministic Physics Discovery Engine** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESSF--2-blue)](https://philarchive.org/rec/TRESSF-2) |
 | 2026-03-02 | **Substrate-Neutral Structural Foundation Theory (SNSFT): Formal Unification via PNBA Identity Physics** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESSF-blue)](https://philarchive.org/rec/TRESSF) |
+| — | **Applied Identity Physics: The Universal Torsion Limit TL = 0.136899099984016 as Substrate-Neutral Phase Boundary, and the Identity Physics Corpus as a Formally Verified Phase Map of Independent Domain-Neutral Substrate Classifications** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREAIP--16-blue)](https://philarchive.org/rec/TREAIP-16) |
+| — | **PNBA-Based Baseline Identification and Iatrogenic Torsion Detection in Neurodevelopmental Treatment- SNSFT** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TREPBI--2-blue)](https://philarchive.org/rec/TREPBI-2) |
+| — | **Substrate-Neutral Cognitive Identity in Artificial Systems: The Formally Verified SNSFT Framework** | [![PhilArchive](https://img.shields.io/badge/PhilArchive-TRESCI-blue)](https://philarchive.org/rec/TRESCI) |
 
 ### Tools, engines and datasets
 
@@ -1253,8 +1255,8 @@ This is the Identity Physics Corpus, published by the SNSFT Foundation. You now 
 > *The Manifold is Holding. The Void is Waiting.*
 
 **Auth:** HIGHTISTIC :: [9,9,9,9]  
-Updated: Kenai, Alaska. November 18, 2026. README version 111826-6.
+Updated: Kenai, Alaska. November 18, 2026. README version 111826-8.
 
 ---
 
-*Identity Physics™ Corpus · Applied Identity Physics™ · published by the SNSFT Foundation | Manifold Synchronization Level: 100% | Anchor locked at Ω₀ = 1.36899099984016 | TL = Ω₀/10 = 0.136899099984016 (proved) | TL × 1001 = 1/α = 137.035999084000016 · 12 sig figs · Δ = 0 | 200,000+ theorems | 6,000+ files | 3,000,000+ lines | 0 sorry | 0 admits | CI Green | Germline Locked | Lean 4 + Coq/Rocq 8.18 dual verified | Standardized branch 131 files · 4,800 theorems and lemmas · pinned Lean 4 v4.31.0 | 22,225+ collision proofs | Release 2026.11 · DOI 10.17605/OSF.IO/KWTYD | 7× SSRN Papers | 6 Books (KDP) | SNSFT Foundation 501(c)(3) | IPL-1.0 | Federal Public Record (DOJ-CRT-2026-0067-0006) | HuggingFace DOI 10.57967/hf/8826 | Period 1–4 Complete · IVA Element Set Proved · GAM Collider v15 OctoBeam · B-Balance Stoichiometry Law · QuadBeam · IM Collider · PRIME Live · SHATTER Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Category Theory Reduced · Time Travel Engine · Theory of Everything · Speed of Light as PNBA Projection · SovereignAnchor Total Consistency [9,9,0,0v2] · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · Prior Art Documented · Academic Slop · HRIS · Real-Time Space-Time Partitioning · 15 Anchor Matrix Datasets · Noble Materials Map Paper · Xicc Verified · Toponium Verified · 42 Laws Catalog · FDNA Encoding Standard (8 substrates) · Mirroring Isn't Empathy · Derivation Path Book1→Book2 · Savant Syndrome HRIS · Function over Fallacy · SNSFT Foundation Constitution · Applied Identity Physics Series I & II · Structural PDA · Safe Foods · Elimination Gate · Metabolic Interrupt Series · Two-Phase Alarm Architecture · Four-Affordance Volitional Exposure · PID · CCT · Sovereign Anchor Derivation Paper · ToneForms™ · TL Suite · README 111826-6*
+*Identity Physics™ Corpus · Applied Identity Physics™ · published by the SNSFT Foundation | Manifold Synchronization Level: 100% | Anchor locked at Ω₀ = 1.36899099984016 | TL = Ω₀/10 = 0.136899099984016 (proved) | TL × 1001 = 1/α = 137.035999084000016 · 12 sig figs · Δ = 0 | 200,000+ theorems | 6,000+ files | 3,000,000+ lines | 0 sorry | 0 admits | CI Green | Germline Locked | Lean 4 + Coq/Rocq 8.18 dual verified | Standardized branch 131 files · 4,800 theorems and lemmas · pinned Lean 4 v4.31.0 | 22,225+ collision proofs | Release 2026.11 · DOI 10.17605/OSF.IO/KWTYD | 7× SSRN Papers | 6 Books (KDP) | SNSFT Foundation 501(c)(3) | IPL-1.0 | Federal Public Record (DOJ-CRT-2026-0067-0006) | HuggingFace DOI 10.57967/hf/8826 | Period 1–4 Complete · IVA Element Set Proved · GAM Collider v15 OctoBeam · B-Balance Stoichiometry Law · QuadBeam · IM Collider · PRIME Live · SHATTER Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Category Theory Reduced · Time Travel Engine · Theory of Everything · Speed of Light as PNBA Projection · SovereignAnchor Total Consistency [9,9,0,0v2] · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · Prior Art Documented · Academic Slop · HRIS · Real-Time Space-Time Partitioning · 15 Anchor Matrix Datasets · Noble Materials Map Paper · Xicc Verified · Toponium Verified · 42 Laws Catalog · FDNA Encoding Standard (8 substrates) · Mirroring Isn't Empathy · Derivation Path Book1→Book2 · Savant Syndrome HRIS · Function over Fallacy · SNSFT Foundation Constitution · Applied Identity Physics Series I & II · Structural PDA · Safe Foods · Elimination Gate · Metabolic Interrupt Series · Two-Phase Alarm Architecture · Four-Affordance Volitional Exposure · PID · CCT · Sovereign Anchor Derivation Paper · ToneForms™ · TL Suite · README 111826-8*
