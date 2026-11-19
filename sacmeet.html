@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SacMeet™ · Spaces, voice rooms and plugins on one small kernel · SNSFT Foundation</title>
+<meta name="description" content="SacMeet: spaces, text channels, drop-in voice rooms and plugins, built on a small kernel whose authority is enforced by the database. Identity Physics · SNSFT Foundation · uuia.app">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#050508;--surface:#0b0b12;--surface2:#10101a;--border:rgba(0,255,200,.12);--anchor:#00ffc8;--gold:#f0c060;
+--noble:#00ffc8;--locked:#7b4fff;--iva:#f0c060;--shatter:#ff3a3a;--text:#e8e8f0;--dim:rgba(232,232,240,.55);--faint:rgba(232,232,240,.28)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',ui-monospace,monospace;font-size:13px}
+button{font-family:'Syne',sans-serif;font-weight:800;font-size:.68rem;letter-spacing:.04em;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;padding:.45rem .7rem;cursor:pointer}
+button:hover{color:var(--text);border-color:rgba(0,255,200,.3)}
+button.on,button.primary{border-color:var(--anchor);color:var(--anchor);background:rgba(0,255,200,.07)}
+button.danger{border-color:rgba(255,58,58,.4);color:var(--shatter)}
+input,textarea,select{font-family:'Space Mono',monospace;font-size:.8rem;background:#0a0a10;color:var(--text);border:1px solid var(--border);border-radius:5px;padding:.5rem .6rem;width:100%}
+input:focus,textarea:focus{outline:none;border-color:var(--anchor)}
+#app{display:grid;grid-template-rows:56px 1fr;height:100%}
+header{display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);gap:12px}
+.title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem}
+.title em{font-style:normal;color:var(--anchor)}
+.title i{font-style:normal;font-size:.62rem;color:var(--dim);font-weight:700;margin-left:6px}
+.hr{font-size:.6rem;color:var(--dim);text-align:right}
+main{display:grid;grid-template-columns:200px 220px 1fr 300px;min-height:0}
+main>section{border-right:1px solid var(--border);min-height:0;display:flex;flex-direction:column}
+main>section:last-child{border-right:none}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.62rem;color:var(--anchor);letter-spacing:.08em;padding:12px 12px 6px;display:flex;justify-content:space-between;align-items:center}
+.st small{font-family:'Space Mono';font-weight:400;color:var(--faint);letter-spacing:0}
+.list{overflow:auto;padding:0 8px 8px}
+.item{padding:7px 8px;border-radius:5px;cursor:pointer;color:var(--dim);display:flex;justify-content:space-between;gap:6px;align-items:center}
+.item:hover{background:rgba(0,255,200,.04);color:var(--text)}
+.item.on{background:rgba(0,255,200,.08);color:var(--anchor)}
+.item small{color:var(--faint);font-size:.62rem}
+.pad{padding:8px 12px;display:flex;flex-direction:column;gap:6px}
+.row{display:flex;gap:6px}
+.note{font-size:.68rem;color:var(--dim);line-height:1.6}
+.err{color:var(--shatter);font-size:.68rem;min-height:1em}
+#feed{flex:1;overflow:auto;padding:10px 16px;display:flex;flex-direction:column;gap:8px}
+.msg{line-height:1.5}
+.msg b{color:var(--anchor);font-weight:400;margin-right:6px}
+.msg time{color:var(--faint);font-size:.6rem;margin-right:6px}
+.msg .del{border:none;padding:0 4px;font-size:.6rem;color:var(--faint)}
+#composer{border-top:1px solid var(--border);padding:10px 16px;display:flex;gap:8px}
+#voice{flex:1;overflow:auto;padding:16px;display:none;flex-direction:column;gap:12px}
+.peers{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.peer{border:1px solid var(--border);border-radius:8px;padding:10px;background:var(--surface)}
+.peer video{width:100%;aspect-ratio:4/3;background:#000;border-radius:5px;object-fit:cover}
+.peer .nm{font-size:.7rem;margin-top:6px;display:flex;justify-content:space-between}
+.peer .lv{height:3px;background:rgba(255,255,255,.06);margin-top:5px}
+.peer .lv i{display:block;height:100%;width:0;background:var(--anchor)}
+#plugins{overflow:auto}
+.plug{border:1px solid var(--border);border-radius:8px;margin:0 10px 10px;background:var(--surface)}
+.plug h4{font-family:'Syne',sans-serif;font-size:.68rem;letter-spacing:.06em;padding:8px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+.plug h4 small{font-family:'Space Mono';font-weight:400;color:var(--faint)}
+.plug .body{padding:10px}
+.kv{display:flex;justify-content:space-between;font-size:.66rem;color:var(--dim);padding:2px 0}
+.kv b{font-weight:400;color:var(--text)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.grid2 label{font-size:.6rem;color:var(--faint)}
+#auth{position:fixed;inset:0;background:rgba(5,5,8,.96);display:none;align-items:center;justify-content:center;z-index:10}
+#auth .box{width:min(380px,92vw);border:1px solid var(--border);border-radius:10px;padding:20px;background:var(--surface);display:flex;flex-direction:column;gap:8px}
+.empty{color:var(--faint);text-align:center;padding:40px 10px;font-size:.75rem}
+footer.sig{font-size:.58rem;color:var(--faint);padding:10px 12px;border-top:1px solid var(--border);line-height:1.6}
+@media(max-width:900px){main{grid-template-columns:1fr}main>section{border-right:none;border-bottom:1px solid var(--border)}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <div>
+    <div class="title"><em>Sac</em>Meet<span style="font-size:.55em;vertical-align:super">™</span><i>spaces · voice rooms · plugins · SNSFT Foundation</i></div>
+  </div>
+  <div class="row" style="align-items:center">
+    <span class="note" id="who">signed out</span>
+    <button id="btn-out" style="display:none">SIGN OUT</button>
+  </div>
+  <div class="hr">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation<br>uuia.app · Ω₀ = 1.36899099984016</div>
+</header>
+<main>
+  <!-- P · spaces -->
+  <section>
+    <div class="st">SPACES</div>
+    <div class="list" id="spaces"></div>
+    <div class="pad">
+      <input id="new-space" placeholder="new space name" maxlength="64">
+      <button id="btn-create" class="primary">CREATE SPACE</button>
+      <input id="invite" placeholder="invite code" maxlength="32">
+      <button id="btn-join">JOIN BY CODE</button>
+      <div class="err" id="space-err"></div>
+    </div>
+  </section>
+  <!-- channels + members -->
+  <section>
+    <div class="st">CHANNELS <small id="role"></small></div>
+    <div class="list" id="channels"></div>
+    <div class="pad" id="chan-admin" style="display:none">
+      <input id="new-chan" placeholder="channel name" maxlength="48">
+      <div class="row"><button id="btn-chan-text">+ TEXT</button><button id="btn-chan-voice">+ VOICE</button></div>
+    </div>
+    <div class="st">MEMBERS</div>
+    <div class="list" id="members"></div>
+    <div class="pad" id="invite-box" style="display:none">
+      <div class="note">Invite code <b id="invite-code" style="color:var(--gold)"></b></div>
+    </div>
+  </section>
+  <!-- N / B · the record and the live link -->
+  <section>
+    <div class="st"><span id="chan-title">—</span><small id="chan-kind"></small></div>
+    <div id="feed"><div class="empty">Pick a space and a channel.</div></div>
+    <div id="composer" style="display:none">
+      <input id="msg" placeholder="message" maxlength="4000" autocomplete="off">
+      <button id="btn-send" class="primary">SEND</button>
+    </div>
+    <div id="voice">
+      <div class="row">
+        <button id="btn-voice-join" class="primary">JOIN VOICE</button>
+        <button id="btn-voice-cam">CAMERA OFF</button>
+        <button id="btn-voice-mute">MIC ON</button>
+        <button id="btn-voice-share">SHARE SCREEN</button>
+        <button id="btn-voice-leave" class="danger">LEAVE</button>
+      </div>
+      <div class="note" id="voice-note">Voice and video run peer to peer between the people in the room. Small rooms (about 4 to 6 on video, more on voice only) work best.</div>
+      <div class="peers" id="peers"></div>
+    </div>
+  </section>
+  <!-- plugins -->
+  <section>
+    <div class="st">PLUGINS <small id="plug-count"></small></div>
+    <div id="plugins"></div>
+    <footer class="sig">Kernel authority is enforced by the database: roles, membership and message limits hold no matter what a page or plugin asks for. Plugins get capabilities, never keys.<br>[9,9,9,9] · SNSFT Foundation · Kenai, Alaska</footer>
+  </section>
+</main>
+</div>
+
+<div id="auth">
+  <div class="box">
+    <div class="title"><em>Sac</em>Meet</div>
+    <div class="note">Sign in or create an account.</div>
+    <input id="a-email" type="email" placeholder="email" autocomplete="email">
+    <input id="a-pass" type="password" placeholder="password (8+ characters)" autocomplete="current-password">
+    <input id="a-handle" placeholder="handle (new accounts)" maxlength="32">
+    <div class="row"><button id="a-in" class="primary">SIGN IN</button><button id="a-up">CREATE ACCOUNT</button></div>
+    <div class="err" id="a-err"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════════════
+const K = { ANCHOR: 1.36899099984016, TL: 0.136899099984016, TL_IVA: 0.12047120798593408 };
+const phaseOf = (P, B) => B === 0 ? 'NOBLE' : (P > 0 && B / P >= K.TL ? 'SHATTER' : (P > 0 && B / P >= K.TL_IVA ? 'IVA_PEAK' : 'LOCKED'));
+const PHCOL = { NOBLE: 'var(--noble)', LOCKED: 'var(--locked)', IVA_PEAK: 'var(--iva)', SHATTER: 'var(--shatter)' };
+
+// The project this page talks to. Its publishable key only reaches what the
+// row-level security rules in sacmeet_schema allow.
+const SUPABASE_URL = 'https://rsadsojivuagxptdlwak.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_FvDg0nsEuxH_HmyD0RL1LA_E4QpGfOs';
+/* with no connection the kernel can't be reached; plugins still run */
+const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const S = { user: null, handle: '', space: null, role: null, channel: null, spaces: [], channels: [], members: [], names: {}, sub: null };
+
+// ════════════════════════════════════════════════════════════
+// KERNEL CLIENT — sign-in, spaces, channels, members, messages
+// ════════════════════════════════════════════════════════════
+async function boot() {
+  if (!sb) { $('auth').style.display = 'none'; $('who').textContent = 'offline';
+    $('feed').innerHTML = '<div class="empty">No connection to the SacMeet server. Spaces, channels and voice need a connection; the plugins on the right still work.</div>'; return; }
+  const { data } = await sb.auth.getSession();
+  setUser(data.session ? data.session.user : null);
+  sb.auth.onAuthStateChange((_e, session) => setUser(session ? session.user : null));
+}
+async function setUser(u) {
+  if ((u && S.user && u.id === S.user.id)) return;
+  S.user = u;
+  $('auth').style.display = u ? 'none' : 'flex';
+  $('btn-out').style.display = u ? '' : 'none';
+  if (!u) { $('who').textContent = 'signed out'; return; }
+  const { data: prof } = await sb.from('profiles').select('handle').eq('id', u.id).maybeSingle();
+  if (!prof) {
+    const h = (localStorage.getItem('sacmeetHandle') || u.email.split('@')[0]).slice(0, 32);
+    await sb.from('profiles').insert({ id: u.id, handle: h });
+    S.handle = h;
+  } else S.handle = prof.handle;
+  $('who').textContent = S.handle;
+  Kernel.emit('user', { id: u.id, handle: S.handle });
+  loadSpaces();
+}
+$('a-in').onclick = async () => {
+  $('a-err').textContent = '';
+  const { error } = await sb.auth.signInWithPassword({ email: $('a-email').value.trim(), password: $('a-pass').value });
+  if (error) $('a-err').textContent = error.message;
+};
+$('a-up').onclick = async () => {
+  $('a-err').textContent = '';
+  const h = $('a-handle').value.trim();
+  if (h.length < 2) { $('a-err').textContent = 'pick a handle of 2 to 32 characters'; return; }
+  try { localStorage.setItem('sacmeetHandle', h); } catch (e) {}
+  const { error } = await sb.auth.signUp({ email: $('a-email').value.trim(), password: $('a-pass').value });
+  $('a-err').textContent = error ? error.message : 'Account created. If email confirmation is on, confirm, then sign in.';
+};
+$('btn-out').onclick = async () => { await leaveVoice(); await sb.auth.signOut(); S.space = S.channel = null; render(); };
+
+async function loadSpaces() {
+  const { data, error } = await sb.from('spaces').select('id,name,invite_code,owner').order('created_at');
+  if (error) { $('space-err').textContent = error.message; return; }
+  S.spaces = data || [];
+  renderSpaces();
+}
+function renderSpaces() {
+  $('spaces').innerHTML = S.spaces.map(s => `<div class="item${S.space && S.space.id === s.id ? ' on' : ''}" data-id="${s.id}">${esc(s.name)}</div>`).join('')
+    || '<div class="note" style="padding:8px">No spaces yet. Create one or join with a code.</div>';
+}
+$('spaces').onclick = e => { const it = e.target.closest('.item'); if (it) openSpace(it.dataset.id); };
+$('btn-create').onclick = async () => {
+  const n = $('new-space').value.trim(); $('space-err').textContent = '';
+  if (!n) return;
+  const { data, error } = await sb.rpc('create_space', { space_name: n });
+  if (error) { $('space-err').textContent = error.message; return; }
+  $('new-space').value = ''; await loadSpaces(); openSpace(data);
+};
+$('btn-join').onclick = async () => {
+  const c = $('invite').value.trim(); $('space-err').textContent = '';
+  if (!c) return;
+  const { data, error } = await sb.rpc('join_space', { code: c });
+  if (error) { $('space-err').textContent = error.message; return; }
+  $('invite').value = ''; await loadSpaces(); openSpace(data);
+};
+
+async function openSpace(id) {
+  await leaveVoice();
+  S.space = S.spaces.find(s => s.id === id) || null; S.channel = null;
+  renderSpaces();
+  if (!S.space) return render();
+  const [{ data: ch }, { data: mem }] = await Promise.all([
+    sb.from('channels').select('id,name,kind').eq('space_id', id).order('created_at'),
+    sb.from('members').select('user_id,role').eq('space_id', id)
+  ]);
+  S.channels = ch || []; S.members = mem || [];
+  const ids = S.members.map(m => m.user_id);
+  if (ids.length) {
+    const { data: profs } = await sb.from('profiles').select('id,handle').in('id', ids);
+    (profs || []).forEach(p => S.names[p.id] = p.handle);
+  }
+  S.role = (S.members.find(m => m.user_id === S.user.id) || {}).role || null;
+  Kernel.emit('space', { id: S.space.id, name: S.space.name, role: S.role, members: S.members.length });
+  render();
+  const first = S.channels.find(c => c.kind === 'text') || S.channels[0];
+  if (first) openChannel(first.id);
+}
+function render() {
+  const sp = S.space;
+  $('role').textContent = sp ? (S.role || '') : '';
+  $('channels').innerHTML = sp ? S.channels.map(c => `<div class="item${S.channel && S.channel.id === c.id ? ' on' : ''}" data-id="${c.id}"><span>${c.kind === 'voice' ? '◉' : '#'} ${esc(c.name)}</span>${S.role === 'owner' || S.role === 'mod' ? `<small data-delc="${c.id}">✕</small>` : ''}</div>`).join('') : '';
+  $('chan-admin').style.display = sp && (S.role === 'owner' || S.role === 'mod') ? '' : 'none';
+  $('invite-box').style.display = sp ? '' : 'none';
+  $('invite-code').textContent = sp ? sp.invite_code : '';
+  const rank = { owner: 0, mod: 1, member: 2 };
+  $('members').innerHTML = sp ? S.members.slice().sort((a, b) => rank[a.role] - rank[b.role]).map(m => {
+    const me = m.user_id === S.user.id, name = esc(S.names[m.user_id] || '…');
+    let ctl = '';
+    if (S.role === 'owner' && !me && m.role !== 'owner') ctl += `<small data-mod="${m.user_id}">${m.role === 'mod' ? 'unmod' : 'mod'}</small>`;
+    if (!me && m.role !== 'owner' && (S.role === 'owner' || (S.role === 'mod' && m.role === 'member'))) ctl += ` <small data-kick="${m.user_id}">kick</small>`;
+    if (me && m.role !== 'owner') ctl += `<small data-kick="${m.user_id}">leave</small>`;
+    return `<div class="item"><span>${name} <small>${m.role === 'member' ? '' : m.role}</small></span><span>${ctl}</span></div>`;
+  }).join('') : '';
+  if (!S.channel) {
+    $('chan-title').textContent = sp ? sp.name : '—'; $('chan-kind').textContent = '';
+    $('feed').style.display = 'flex'; $('feed').innerHTML = `<div class="empty">${sp ? 'Pick a channel.' : 'Pick a space and a channel.'}</div>`;
+    $('composer').style.display = 'none'; $('voice').style.display = 'none';
+  }
+}
+$('channels').onclick = async e => {
+  const d = e.target.closest('[data-delc]');
+  if (d) { e.stopPropagation(); if (confirmInline(d)) { await sb.from('channels').delete().eq('id', d.dataset.delc); openSpace(S.space.id); } return; }
+  const it = e.target.closest('.item'); if (it) openChannel(it.dataset.id);
+};
+/* two-step confirm on the control itself, no browser dialog */
+function confirmInline(el) { if (el.dataset.armed) return true; el.dataset.armed = '1'; el.textContent = 'sure?'; return false; }
+$('members').onclick = async e => {
+  const m = e.target.closest('[data-mod]'), k = e.target.closest('[data-kick]');
+  if (m) {
+    const cur = S.members.find(x => x.user_id === m.dataset.mod);
+    const { error } = await sb.from('members').update({ role: cur.role === 'mod' ? 'member' : 'mod' }).eq('space_id', S.space.id).eq('user_id', m.dataset.mod);
+    if (error) $('space-err').textContent = error.message; else openSpace(S.space.id);
+  }
+  if (k && confirmInline(k)) {
+    const { error } = await sb.from('members').delete().eq('space_id', S.space.id).eq('user_id', k.dataset.kick);
+    if (error) $('space-err').textContent = error.message;
+    else if (k.dataset.kick === S.user.id) { S.space = null; await loadSpaces(); render(); }
+    else openSpace(S.space.id);
+  }
+};
+async function addChannel(kind) {
+  const n = $('new-chan').value.trim(); if (!n) return;
+  const { error } = await sb.from('channels').insert({ space_id: S.space.id, name: n, kind });
+  if (error) $('space-err').textContent = error.message; else { $('new-chan').value = ''; openSpace(S.space.id); }
+}
+$('btn-chan-text').onclick = () => addChannel('text');
+$('btn-chan-voice').onclick = () => addChannel('voice');
+
+// ── the record (N) ──────────────────────────────────────────
+async function openChannel(id) {
+  if (S.channel && S.channel.id === id) return;
+  await leaveVoice();
+  if (S.sub) { sb.removeChannel(S.sub); S.sub = null; }
+  S.channel = S.channels.find(c => c.id === id) || null;
+  render();
+  if (!S.channel) return;
+  $('chan-title').textContent = (S.channel.kind === 'voice' ? '◉ ' : '# ') + S.channel.name;
+  $('chan-kind').textContent = S.channel.kind === 'voice' ? 'voice room' : 'text channel';
+  Kernel.emit('channel', { id: S.channel.id, name: S.channel.name, kind: S.channel.kind });
+  if (S.channel.kind === 'voice') {
+    $('feed').style.display = 'none'; $('composer').style.display = 'none'; $('voice').style.display = 'flex';
+    $('peers').innerHTML = ''; return;
+  }
+  $('voice').style.display = 'none'; $('feed').style.display = 'flex'; $('composer').style.display = 'flex';
+  const { data } = await sb.from('messages').select('id,author,body,created_at').eq('channel_id', id).order('created_at', { ascending: false }).limit(200);
+  $('feed').innerHTML = '';
+  (data || []).reverse().forEach(addMsg);
+  S.sub = sb.channel('msgs:' + id)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'channel_id=eq.' + id }, p => addMsg(p.new))
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'messages' }, p => { const el = document.querySelector(`[data-mid="${p.old.id}"]`); if (el) el.remove(); })
+    .subscribe();
+}
+function addMsg(m) {
+  if (document.querySelector(`[data-mid="${m.id}"]`)) return;
+  const feed = $('feed'), atBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 40;
+  const t = new Date(m.created_at);
+  const canDel = m.author === S.user.id || S.role === 'owner' || S.role === 'mod';
+  const d = document.createElement('div'); d.className = 'msg'; d.dataset.mid = m.id;
+  d.innerHTML = `<time>${t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</time><b>${esc(S.names[m.author] || '…')}</b>${esc(m.body)}${canDel ? ` <button class="del" data-del="${m.id}">✕</button>` : ''}`;
+  if (feed.querySelector('.empty')) feed.innerHTML = '';
+  feed.appendChild(d);
+  /* follow new messages only when the reader is already at the bottom */
+  if (atBottom) feed.scrollTop = feed.scrollHeight;
+  Kernel.emit('message', { id: m.id, author: S.names[m.author] || '', body: m.body, at: m.created_at });
+}
+$('feed').onclick = async e => { const b = e.target.closest('[data-del]'); if (b && confirmInline(b)) await sb.from('messages').delete().eq('id', b.dataset.del); };
+async function send() {
+  const body = $('msg').value.trim(); if (!body || !S.channel) return;
+  const { error } = await sb.from('messages').insert({ channel_id: S.channel.id, body });
+  if (error) { $('space-err').textContent = /rate_limited/.test(error.message) ? 'Slow down: more than 8 messages in 10 seconds.' : error.message; return; }
+  $('msg').value = '';
+}
+$('btn-send').onclick = send;
+$('msg').addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+
+// ════════════════════════════════════════════════════════════
+// THE LIVE LINK (B) — peer-to-peer voice, video and screen share.
+// Signaling (offer / answer / ICE) rides a Realtime channel per room;
+// who is in the room comes from Realtime presence.
+// ════════════════════════════════════════════════════════════
+const ICE = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }] };
+const V = { room: null, local: null, peers: {}, cam: false, mic: true, share: null };
+async function joinVoice() {
+  if (V.room || !S.channel || S.channel.kind !== 'voice') return;
+  try { V.local = await navigator.mediaDevices.getUserMedia({ audio: true, video: false }); }
+  catch (e) { $('voice-note').textContent = 'Microphone permission is needed to join.'; return; }
+  tile(S.user.id, S.handle + ' (you)', V.local, true);
+  V.room = sb.channel('voice:' + S.channel.id, { config: { presence: { key: S.user.id }, broadcast: { self: false } } });
+  V.room.on('presence', { event: 'sync' }, () => {
+    const here = Object.keys(V.room.presenceState());
+    here.forEach(id => { if (id !== S.user.id && !V.peers[id] && S.user.id < id) connect(id, true); });
+    Object.keys(V.peers).forEach(id => { if (!here.includes(id)) drop(id); });
+    Kernel.emit('voice', { room: S.channel.id, present: here.length });
+  });
+  V.room.on('broadcast', { event: 'signal' }, ({ payload: p }) => { if (p.to === S.user.id) onSignal(p); });
+  V.room.subscribe(async st => { if (st === 'SUBSCRIBED') await V.room.track({ handle: S.handle }); });
+  $('btn-voice-join').classList.remove('primary');
+}
+function connect(id, initiator) {
+  const pc = new RTCPeerConnection(ICE);
+  V.peers[id] = { pc };
+  V.local.getTracks().forEach(t => pc.addTrack(t, V.local));
+  if (V.share) V.share.getTracks().forEach(t => pc.addTrack(t, V.share));
+  pc.onicecandidate = e => { if (e.candidate) sig(id, { kind: 'ice', candidate: e.candidate }); };
+  pc.ontrack = e => tile(id, (V.room.presenceState()[id] || [{}])[0].handle || '…', e.streams[0], false);
+  pc.onnegotiationneeded = async () => { if (!initiator && !V.peers[id].ready) return; await offer(id); };
+  pc.onconnectionstatechange = () => { if (['failed', 'closed'].includes(pc.connectionState)) drop(id); };
+  /* the initiator's first offer comes from negotiationneeded once its tracks are added */
+  if (initiator) V.peers[id].ready = true;
+  return pc;
+}
+async function offer(id) { const pc = V.peers[id].pc; await pc.setLocalDescription(await pc.createOffer()); sig(id, { kind: 'sdp', sdp: pc.localDescription }); }
+async function onSignal(p) {
+  let peer = V.peers[p.from];
+  if (!peer) { connect(p.from, false); peer = V.peers[p.from]; }
+  const pc = peer.pc;
+  if (p.kind === 'sdp') {
+    await pc.setRemoteDescription(p.sdp);
+    if (p.sdp.type === 'offer') { await pc.setLocalDescription(await pc.createAnswer()); sig(p.from, { kind: 'sdp', sdp: pc.localDescription }); peer.ready = true; }
+  } else if (p.kind === 'ice') { try { await pc.addIceCandidate(p.candidate); } catch (e) {} }
+}
+function sig(to, body) { V.room.send({ type: 'broadcast', event: 'signal', payload: { to, from: S.user.id, ...body } }); }
+function tile(id, name, stream, muted) {
+  let el = document.querySelector(`.peer[data-pid="${id}"]`);
+  if (!el) { el = document.createElement('div'); el.className = 'peer'; el.dataset.pid = id;
+    el.innerHTML = `<video autoplay playsinline ${muted ? 'muted' : ''}></video><div class="nm"><span>${esc(name)}</span></div><div class="lv"><i></i></div>`;
+    $('peers').appendChild(el); meter(stream, el.querySelector('.lv i')); }
+  el.querySelector('video').srcObject = stream;
+}
+/* a level bar per person: it moves only with that person's audio */
+function meter(stream, bar) {
+  try { const ac = new AudioContext(), an = ac.createAnalyser(); an.fftSize = 256;
+    ac.createMediaStreamSource(stream).connect(an); const buf = new Uint8Array(an.frequencyBinCount);
+    (function tick() { if (!bar.isConnected) { ac.close(); return; } an.getByteFrequencyData(buf);
+      let s = 0; for (const v of buf) s += v; bar.style.width = Math.min(100, s / buf.length * 1.6) + '%'; requestAnimationFrame(tick); })();
+  } catch (e) {}
+}
+function drop(id) { const p = V.peers[id]; if (p) { try { p.pc.close(); } catch (e) {} delete V.peers[id]; }
+  const el = document.querySelector(`.peer[data-pid="${id}"]`); if (el) el.remove(); }
+async function leaveVoice() {
+  if (!V.room) return;
+  Object.keys(V.peers).forEach(drop);
+  [V.local, V.share].forEach(s => s && s.getTracks().forEach(t => t.stop()));
+  await sb.removeChannel(V.room);
+  V.room = V.local = V.share = null; V.cam = false; V.mic = true;
+  $('peers').innerHTML = ''; $('btn-voice-join').classList.add('primary');
+  $('btn-voice-cam').textContent = 'CAMERA OFF'; $('btn-voice-mute').textContent = 'MIC ON'; $('btn-voice-share').textContent = 'SHARE SCREEN';
+}
+$('btn-voice-join').onclick = joinVoice;
+$('btn-voice-leave').onclick = leaveVoice;
+$('btn-voice-mute').onclick = () => { if (!V.local) return; V.mic = !V.mic;
+  V.local.getAudioTracks().forEach(t => t.enabled = V.mic); $('btn-voice-mute').textContent = V.mic ? 'MIC ON' : 'MIC OFF'; };
+$('btn-voice-cam').onclick = async () => {
+  if (!V.local) return;
+  if (!V.cam) { try { const cam = await navigator.mediaDevices.getUserMedia({ video: true });
+      const t = cam.getVideoTracks()[0]; V.local.addTrack(t); Object.values(V.peers).forEach(p => p.pc.addTrack(t, V.local)); V.cam = true; }
+    catch (e) { $('voice-note').textContent = 'Camera permission is needed for video.'; return; } }
+  else { V.local.getVideoTracks().forEach(t => { Object.values(V.peers).forEach(p => { const s = p.pc.getSenders().find(x => x.track === t); if (s) p.pc.removeTrack(s); }); t.stop(); V.local.removeTrack(t); }); V.cam = false; }
+  $('btn-voice-cam').textContent = V.cam ? 'CAMERA ON' : 'CAMERA OFF';
+};
+$('btn-voice-share').onclick = async () => {
+  if (!V.local) return;
+  if (!V.share) { try { V.share = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const t = V.share.getVideoTracks()[0]; Object.values(V.peers).forEach(p => p.pc.addTrack(t, V.share));
+      t.onended = () => $('btn-voice-share').click(); $('btn-voice-share').textContent = 'STOP SHARING'; } catch (e) {} }
+  else { V.share.getTracks().forEach(t => { Object.values(V.peers).forEach(p => { const s = p.pc.getSenders().find(x => x.track === t); if (s) p.pc.removeTrack(s); }); t.stop(); });
+    V.share = null; $('btn-voice-share').textContent = 'SHARE SCREEN'; }
+};
+
+// ════════════════════════════════════════════════════════════
+// PLUGIN INTERFACE
+// A plugin is handed capabilities, never the database client or keys.
+// Each plugin runs in its own error boundary (a failure stays inside it)
+// and under a call budget: past the budget it is clamped for a cooldown
+// and the host keeps running — suppress_collapse on the client side.
+// ════════════════════════════════════════════════════════════
+const Kernel = {
+  plugins: [], listeners: {},
+  BUDGET: 30, WINDOW_MS: 10000, COOLDOWN_MS: 15000,
+  register(def) {
+    const p = { def, calls: [], clamped: 0, el: null, state: 'locked' };
+    const box = document.createElement('div'); box.className = 'plug';
+    box.innerHTML = `<h4><span>${esc(def.name)}</span><small>${esc(def.coord || '')}</small></h4><div class="body"></div>`;
+    $('plugins').appendChild(box); p.el = box.querySelector('.body');
+    const api = {
+      ui: p.el,
+      user: () => S.user ? { id: S.user.id, handle: S.handle } : null,
+      space: () => S.space ? { id: S.space.id, name: S.space.name, role: S.role } : null,
+      on: (ev, fn) => (Kernel.listeners[ev] = Kernel.listeners[ev] || []).push({ p, fn }),
+      constants: { ...K }, phaseOf
+    };
+    this.plugins.push(p);
+    this.guard(p, () => def.mount(api));
+    $('plug-count').textContent = this.plugins.length + ' loaded';
+  },
+  guard(p, fn) {
+    const now = Date.now();
+    if (p.clamped > now) return;
+    p.calls = p.calls.filter(t => now - t < this.WINDOW_MS); p.calls.push(now);
+    if (p.calls.length > this.BUDGET) { p.clamped = now + this.COOLDOWN_MS; this.mark(p, 'clamped for 15 s: too many calls'); return; }
+    try { fn(); } catch (e) { this.mark(p, 'stopped: ' + e.message); p.clamped = now + this.COOLDOWN_MS; }
+  },
+  mark(p, msg) { const n = document.createElement('div'); n.className = 'err'; n.textContent = msg; p.el.prepend(n); setTimeout(() => n.remove(), this.COOLDOWN_MS); },
+  emit(ev, data) { (this.listeners[ev] || []).forEach(({ p, fn }) => this.guard(p, () => fn(Object.freeze({ ...data })))); }
+};
+
+// ════════════════════════════════════════════════════════════
+// PLUGIN · Social Manifold [9,0,8,0–3]
+// Platform activity reduced to P·N·B·A, τ = B/P, IM = Ω₀(P+N+B+A).
+// Twitter/X [9,0,8,1] · TikTok [9,0,8,2] · GitHub [9,0,8,3]
+// ════════════════════════════════════════════════════════════
+const SocialManifold = {
+  name: 'Social Manifold', coord: '[9,0,8,0]',
+  mount(api) {
+    const R = {
+      twitter: { label: 'Twitter / X', fields: [['original_tweets', 'original posts'], ['total_tweets', 'total posts'], ['thread_depth', 'thread depth'], ['engagement_rate', 'engagement rate'], ['reply_ratio', 'reply ratio']],
+        reduce: d => { const P = (d.original_tweets / Math.max(d.total_tweets, 1)) * 10, N = d.thread_depth || 1, B = d.engagement_rate * 10, A = (d.reply_ratio || 0.5) * 5; return { P, N, B, A }; } },
+      tiktok: { label: 'TikTok', fields: [['original_videos', 'original videos'], ['total_videos', 'total videos'], ['avg_completion', 'avg completion 0–1'], ['series_depth', 'series depth'], ['views', 'views'], ['duets_given', 'duets given'], ['duets_received', 'duets received']],
+        reduce: d => { const P = (d.original_videos / Math.max(d.total_videos, 1)) * 10, c = d.avg_completion || 0.5, N = c * (d.series_depth || 1), B = d.views * (1 - c) / 1000, A = d.duets_received > 0 ? d.duets_given / d.duets_received * 5 : 5; return { P, N, B, A }; } },
+      github: { label: 'GitHub', fields: [['prs_merged', 'PRs merged'], ['prs_total', 'PRs total'], ['commits_to_main', 'commits to main'], ['fork_count', 'forks'], ['commit_chain', 'commit chain'], ['stars', 'stars'], ['issues_opened', 'issues opened'], ['issues_closed', 'issues closed']],
+        reduce: d => { const P = (d.prs_merged / Math.max(d.prs_total, 1)) * (d.commits_to_main || 1) * 10, N = d.fork_count * (d.commit_chain || 1), B = d.stars + d.issues_opened * 0.1, A = d.issues_opened > 0 ? d.issues_closed / d.issues_opened * 5 : 5; return { P, N, B, A }; } }
+    };
+    const SAMPLE = { twitter: { original_tweets: 340, total_tweets: 500, thread_depth: 4.2, engagement_rate: 0.08, reply_ratio: 0.6 },
+      tiktok: { original_videos: 45, total_videos: 60, avg_completion: 0.72, series_depth: 3, views: 125000, duets_given: 8, duets_received: 12 },
+      github: { prs_merged: 23, prs_total: 28, commits_to_main: 4.1, fork_count: 12, commit_chain: 3.2, stars: 89, issues_opened: 15, issues_closed: 13 } };
+    let cur = 'twitter';
+    const draw = () => {
+      const r = R[cur];
+      api.ui.innerHTML = `<div class="row" style="margin-bottom:8px">${Object.keys(R).map(k => `<button data-p="${k}" class="${k === cur ? 'on' : ''}">${R[k].label}</button>`).join('')}</div>
+        <div class="grid2">${r.fields.map(([k, l]) => `<div><label>${l}</label><input data-k="${k}" type="number" step="any" value="${SAMPLE[cur][k]}"></div>`).join('')}</div>
+        <div style="margin-top:8px"><button data-go class="primary">REDUCE</button></div><div data-out style="margin-top:8px"></div>`;
+      api.ui.querySelectorAll('[data-p]').forEach(b => b.onclick = () => { cur = b.dataset.p; draw(); });
+      api.ui.querySelector('[data-go]').onclick = () => {
+        const d = {}; api.ui.querySelectorAll('[data-k]').forEach(i => d[i.dataset.k] = +i.value || 0);
+        const o = r.reduce(d), C = api.constants, ph = api.phaseOf(o.P, o.B), tau = o.P > 0 ? o.B / o.P : Infinity;
+        const IM = (o.P + o.N + o.B + o.A) * C.ANCHOR, col = PHCOL[ph];
+        api.ui.querySelector('[data-out]').innerHTML =
+          ['P', 'N', 'B', 'A'].map(k => `<div class="kv"><span>${k}</span><b>${o[k].toFixed(4)}</b></div>`).join('') +
+          `<div class="kv"><span>τ = B/P</span><b style="color:${col}">${isFinite(tau) ? tau.toFixed(6) : '∞'}</b></div>` +
+          `<div class="kv"><span>phase</span><b style="color:${col}">${ph === 'IVA_PEAK' ? 'IVA PEAK' : ph}</b></div>` +
+          `<div class="kv"><span>IM = Ω₀(P+N+B+A)</span><b>${IM.toFixed(6)}</b></div>`;
+      };
+    };
+    draw();
+  }
+};
+
+// ════════════════════════════════════════════════════════════
+// PLUGIN · Room Pulse — reads the record and the live link as
+// P·N·B·A for the open space: members, messages, voice presence.
+// ════════════════════════════════════════════════════════════
+const RoomPulse = {
+  name: 'Room Pulse', coord: 'SacMeet',
+  mount(api) {
+    const st = { members: 0, msgs: 0, voice: 0, space: '' };
+    const draw = () => {
+      if (!st.space) { api.ui.innerHTML = '<div class="note">Open a space to read its pulse.</div>'; return; }
+      const P = Math.max(st.members, 1), N = st.msgs, B = st.voice, A = 1;
+      const ph = api.phaseOf(P, B), col = PHCOL[ph];
+      api.ui.innerHTML = `<div class="note" style="margin-bottom:6px">${esc(st.space)}: members as P, messages seen this visit as N, people in voice as B.</div>` +
+        `<div class="kv"><span>P members</span><b>${P}</b></div><div class="kv"><span>N messages</span><b>${N}</b></div>` +
+        `<div class="kv"><span>B in voice</span><b>${B}</b></div><div class="kv"><span>τ = B/P</span><b style="color:${col}">${(B / P).toFixed(6)}</b></div>` +
+        `<div class="kv"><span>phase</span><b style="color:${col}">${ph === 'IVA_PEAK' ? 'IVA PEAK' : ph}</b></div>`;
+    };
+    api.on('space', d => { st.space = d.name; st.members = d.members; st.msgs = 0; st.voice = 0; draw(); });
+    api.on('message', () => { st.msgs++; draw(); });
+    api.on('voice', d => { st.voice = d.present; draw(); });
+    draw();
+  }
+};
+
+Kernel.register(SocialManifold);
+Kernel.register(RoomPulse);
+boot();
+</script>
+</body>
+</html>
