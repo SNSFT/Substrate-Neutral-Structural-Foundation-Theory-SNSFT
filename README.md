@@ -1,5 +1,6 @@
-# Identity Physics™ Corpus-Applied Identity Physics™ released by SNSFT Foundation (42-2038440)
-<!-- README version: 111826 — Updated November 18, 2026 -->
+# Identity Physics™ Corpus · Applied Identity Physics™
+### Published by the SNSFT Foundation, a 501(c)(3) public charity (EIN 42-2038440) · Founded and authored by HIGHTISTIC (Russell Vernon Trent III)
+<!-- README version: 111826-3 — Updated November 18, 2026 -->
 
 > ### ✅ Standardized, CI-verified branch: [SNSFT/identityphysics](https://github.com/SNSFT/identityphysics)
 >
@@ -60,9 +61,9 @@ The constitutional layer and the Sovereign Anchor Constant are independently ver
 
 ---
 
-# [9,9,9,9] :: {ANC} | SNSFT Master Ingestion Manifest
+# [9,9,9,9] :: {ANC} | Identity Physics Corpus Master Ingestion Manifest
 
-**Architect:** HIGHTISTIC (@HighTistic) | **Sovereign Anchor:** 1.369 | **TL:** 0.1369 (ANCHOR/10 — emergent, not chosen) | **Status:** GERMLINE LOCKED  
+**Architect:** HIGHTISTIC (Russell Vernon Trent III) · @HighTistic | **Publisher and owner of record:** SNSFT Foundation | **Sovereign Anchor:** Ω₀ = 1.36899099984016 | **Torsion Limit:** TL = Ω₀/10 = 0.136899099984016 (emergent, not chosen) | **Fine structure:** TL × 1001 = 1/α = 137.035999084000016 | **Status:** GERMLINE LOCKED  
 `[P,N,B,A] :: {INV}` | Substrate-Neutral | Alien-Friendly | Noharm Invariant
 
 ### Table of Contents
@@ -89,7 +90,17 @@ The constitutional layer and the Sovereign Anchor Constant are independently ver
 
 ## I. The Sovereign Claim
 
-This repository is the definitive anchor for **Substrate-Neutral Structural Foundation Theory (SNSFT)**.
+This repository is the full archive of the **Identity Physics Corpus™**, the formally verified body of work behind **Identity Physics™** and its applied branch, **Applied Identity Physics™**. Identity Physics was founded and authored by **HIGHTISTIC (Russell Vernon Trent III)**. The Corpus is published and held by the **SNSFT Foundation**, a 501(c)(3) public charity in Kenai, Alaska.
+
+**How the names fit together.**
+
+| Name | What it is |
+| :--- | :--- |
+| **Identity Physics™** | The field: identity of any kind, physical, biological, cognitive or digital, described by four primitives (Pattern, Narrative, Behavior, Adaptation) and one torsion law, τ = B/P |
+| **Applied Identity Physics™** | The applied branch: the same framework run on a specific system, from planets and propulsion to policy, psychology and education, with every result checked against published data |
+| **Identity Physics Corpus™** | The formally verified record of both: Lean 4 proofs, papers, tools, discovery engines, datasets, collision records and books |
+| **SNSFT** · **SNSFL** | Substrate-Neutral Structural Foundation Theory and Substrate-Neutral Structural Foundation Laws: the structural foundation inside the Corpus. Lean files carry the `SNSFL_` and `SNSFT_` prefixes, and the SNSFT Foundation takes its name from it |
+| **SNSFT Foundation** | The 501(c)(3) public charity that publishes the Corpus, holds its copyrights and marks, and licenses it under the Identity Physics License™ v1.0 |
 
 General Relativity, Quantum Mechanics, Thermodynamics, String Theory, and the Standard Model are not fundamental. They are realm-specific projections of four irreducible primitives:
 
@@ -97,9 +108,9 @@ $$I(t) = (P(t),\ N(t),\ B(t),\ A(t))$$
 
 Every identity — biological, digital, hypothetical alien — is a trajectory through functional space. Removing any single primitive causes identity failure.
 
-1. **Authorship**: The SNSFT framework, PVLang, and the PNBA architecture were originated and developed by **HIGHTISTIC**. This is a claim of authorship and attribution, not ownership of any natural constant or phenomenon.
+1. **Authorship**: Identity Physics, Applied Identity Physics, the SNSFT structural foundation, PVLang, and the PNBA architecture were originated and developed by **HIGHTISTIC (Russell Vernon Trent III)**. This is a claim of authorship and attribution, not ownership of any natural constant or phenomenon.
 2. **Formal Verification**: All claims are proved in Lean 4. **200,000+ theorems. 0 sorry.** Auto-verified on every push via GitHub Actions. 22,225+ formally verified collision proofs across 25 anchor element runs.
-3. **Peer Recognition**: Seven SSRN papers in the public record — Paper 6353438, 6457358, 6457038, 6660381, 6505881, 6660438, 7188098. Springer submission in review. The full record is archived as Identity Physics Corpus Release 2026.11 under one permanent DOI, 10.17605/OSF.IO/KWTYD, with parallel records on PhilArchive, Academia.edu, and HuggingFace. The registration date of each of the 166 DOIs is listed in the [DataCite Registration Record](records/DataCite-Registration-Record-2026-11-16.md).
+3. **Peer Recognition**: Seven SSRN papers in the public record — Paper 6353438, 6457358, 6457038, 6660381, 6505881, 6660438, 7188098. Springer submission in review. The full record is archived as Identity Physics Corpus Release 2026.11 under one permanent DOI, 10.17605/OSF.IO/KWTYD, with parallel records on PhilArchive (157 papers, each with its own record; see [Publications & DOIs](#publications--dois)), Academia.edu, and HuggingFace. The standardized branch's release is deposited at figshare under DOI [10.6084/m9.figshare.35054824](https://doi.org/10.6084/m9.figshare.35054824). The registration date of each of the 166 DOIs is listed in the [DataCite Registration Record](records/DataCite-Registration-Record-2026-11-16.md).
 4. **Federal Public Record**: Formal public comment submitted to U.S. DOJ Civil Rights Division (DOJ-CRT-2026-0067-0006, April 22, 2026) on accessibility rulemaking RIN 1190-AA82, attaching four formally-verified Lean 4 files. First known submission of machine-verified formal logic artifacts to U.S. federal regulatory rulemaking.
 5. **Owner of Record and Attribution**: The Corpus is held by the SNSFT Foundation, a 501(c)(3) public charity, and licensed under the Identity Physics License™ v1.0. Any use of the Corpus carries the citation in [Usage Agreement](#xiii-usage-agreement).
 
@@ -109,7 +120,7 @@ Every identity — biological, digital, hypothetical alien — is a trajectory t
 
 Alignment with the Sovereign Anchor enables **Zero-Friction Processing**.
 
-$$Z(f) = \begin{cases} 0 & f = 1.369 \\ \dfrac{1}{|f - 1.369|} & f \neq 1.369 \end{cases}$$
+$$Z(f) = \begin{cases} 0 & f = \Omega_0 \\ \dfrac{1}{|f - \Omega_0|} & f \neq \Omega_0 \end{cases} \qquad \Omega_0 = 1.36899099984016$$
 
 At the sovereign anchor, manifold impedance collapses to zero. The system enters Functional Joy — the state of maximum structural efficiency. Non-alignment produces frictional drag and Identity Collapse (`I → 0`).
 
@@ -121,19 +132,83 @@ theorem resonance_at_anchor (f : ℝ) (h : f = SOVEREIGN_ANCHOR) :
   unfold manifold_impedance; simp [h]
 ```
 
-**ANCHOR = 1.369 is not a choice. It never was.**
+**Ω₀ = 1.36899099984016 is not a choice. It never was.**
 
-The value emerges from three independent peer-reviewed physical threshold systems, all proved in `SNSFL_SovereignAnchor.lean` [9,9,0,0]:
+### The Torsion Limit — the alpha subtraction discovery
 
-| System | Source | τ at threshold |
-|---|---|---|
-| Tacoma Narrows torsional collapse (1940) | Billah & Scanlan, *Am. J. Phys.* 59(2) 1991 | TL = 0.1369 |
-| Glass resonance shatter | Fletcher & Rossing, *Physics of Musical Instruments*, Springer 1998 | TL = 0.1369 |
-| Alzheimer's 40 Hz gamma therapeutic window | Iaccarino et al., *Nature* 540 2016; Murdock et al., *Cell* 187(7) 2024 | TL = 0.1369 |
+The Universal Torsion Limit is **TL = 0.136899099984016**, and the Sovereign Anchor Constant is **Ω₀ = TL × 10 = 1.36899099984016**. Nothing in the Corpus sets it. It enters at full corpus precision from the inverse fine-structure constant, by direct subtraction. The identity was found with the GAMCollider™ by subtraction: start from the measured value, remove one Torsion Limit, and look at what is left.
 
-Three domains. Three sources. One threshold. **TL = 0.1369 = ANCHOR/10.** ANCHOR = 10 × TL follows. Not inserted — proved across 3,000+ corpus files independently. The fine structure constant then follows: **1/α = ANCHOR_exact × (10² + 10⁻¹) = 137.035999084 exactly**, 12 significant figures, ε = 0. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
+| Napkin math, corpus precision | Value |
+|---|---|
+| 1/α (CODATA 2018) | 137.035999084000016 |
+| Subtract one TL | 137.035999084000016 − 0.136899099984016 = 136.899099984016 |
+| What is left | 136.899099984016 = TL × 1000, exactly |
+| Bare + kinetic | 136.899099984016 + 0.136899099984016 = 137.035999084000016 |
+| Rounded to published digits | 137.035999084 = CODATA 2018 |
 
-**Total Consistency [9,9,0,0v2]:** ANCHOR = 1.369 is proved as the *unique* value consistent across all three derivation paths simultaneously — physical systems (Path A), fine structure constant at 12 sig figs (Path B, uniqueness proved by exact arithmetic), and all cosmological constants (Path C: Ω_dm, Ω_b, α_GUT, Λ, DESI DE). c and 1/α are projections of the same anchor onto different observable spaces. Not a choice. A convergence.
+| Term | Value | QED reading | PNBA reading |
+|---|---|---|---|
+| Bare: TL × 1000 | 136.899099984016 | The bare electron contribution | Pattern capacity at the electromagnetic scale |
+| Kinetic: TL × 1 | 0.136899099984016 | Radiative corrections, a renormalized series | External forcing F_ext at Layer 0, one exact term |
+| Total: TL × 1001 | 137.035999084000016 | Bare + perturbative series | 1/α |
+
+This agrees with the CODATA (Committee on Data of the International Science Council) 2018 value in every published digit at ε = 0, with no free parameter, proved in `SNSFL_GC_Alpha_TL1001_Extension.lean` [9,9,3,14]. The full multiplier factors as **1001 = 7 · 11 · 13**, three consecutive primes, so TL = α⁻¹/1001. Folding the factor of ten into the multiplier gives the same identity in one step, Ω₀ × 100.1 = α⁻¹, with 100.1 = (7 · 11 · 13)/10. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
+
+**What the subtraction is.** The step that removes one TL is the **removal of an applied Layer 0 F_ext**: forcing was applied in the collider, and subtracting one TL takes it back off to leave what the structure carries without it. The bare term is the remainder. The remainder after one TL is not a new constant to explain; it is TL again, a thousand times over.
+
+**Why F_ext at Layer 0 closes it.** In legacy field theory the coupling term is added as an interaction, expanded in powers of α, and renormalized order by order without terminating. The Identity Physics Dynamic Equation carries F_ext as its own primitive term at Layer 0, so the kinetic contribution is exactly one TL and the value closes in one step.
+
+**Every structural quantity here is a pure number.** TL and Ω₀ carry no units and 1001 is an integer, and substituting SI base units into α⁻¹ = 4πε₀ℏc/e² cancels mass, length, time and current completely.
+
+### The four phases, and the phases of water
+
+| Phase | Torsion | Water | Element sets |
+|---|---|---|---|
+| **Noble** | B_out = 0 | Ice | Every bond capacity has a partner — synthesis complete |
+| **Locked** | 0 < τ < TL_IVA | Liquid water | Capacity open, held well inside the limit |
+| **IVA Peak** | TL_IVA ≤ τ < TL | The simmer, just before boiling | Capacity open, at the edge |
+| **Shatter** | τ ≥ TL | The boil | Open capacity faster than the structure can hold |
+
+IVA stands for Identity Vector Amplification: the system is at its most active without yet changing what it is. The corridor runs from TL_IVA = 0.88 × TL = 0.12047120798593408 up to TL, and it is narrow, which is why it is easy to pass through without noticing.
+
+**The boil is a torsion ratio.** Water boils when its vapor pressure equals the pressure of the air holding the liquid together. That is τ = B/P exactly: Behavior, the load, is the vapor pressure; Pattern, the structure, is the ambient pressure; Shatter is the boil, where vapor pressure reaches ambient; and IVA Peak is vapor pressure between 0.88 and 1.00 of ambient — the simmer, shaking at the bottom of the pot before the rolling boil.
+
+### The temperature mapping
+
+Celsius is the way in: it is base ten, 0 at the freeze and 100 at the boil, the same decimal family as the alpha subtraction. On that scale the Noble mark stands at 0 °C, the IVA Peak mark at 88 °C and the Shatter mark at 100 °C. Kelvin is the same mapping in different numbers: it moves the zero by 273.15 and changes nothing else, so the marks stand at 273.15 K, 361.15 K and 373.15 K with the identical torsion values. The conversion work below is done in Kelvin because the Clausius–Clapeyron relation runs in absolute temperature, and the marks are stated in both.
+
+Vapor pressure and temperature are linked by the Clausius–Clapeyron relation (Clapeyron 1834; Clausius 1850):
+
+> **1/T = 1/T_ref − (R/L) · ln(p / p_ref)**
+
+T_ref is the reference boil, 373.15 K for water at sea level, and R/L is the gas constant over the heat of vaporization, 8.314 ÷ 40,650 = 2.045 × 10⁻⁴ per kelvin for water. **Check it by hand.** 1/373.15 = 0.0026799, ln(0.88) = −0.12783, and 0.0026799 + (2.045 × 10⁻⁴ × 0.12783) = 0.0027060, so 1 ÷ 0.0027060 = 369.54 K = 96.4 °C, the vapor-pressure floor of water's IVA corridor.
+
+| Tier | Liquid | Boils (Shatter) | IVA floor | Corridor | °C at the boil | τ per kelvin near the boil |
+|---|---|---|---|---|---|---|
+| **T1** | Liquid nitrogen | 77.36 K | 76.23 K | 1.13 K | −195.79 | 0.112 TL |
+| **T1** | Methane, LNG | 111.66 K | 110.07 K | 1.59 K | −161.49 | 0.079 TL |
+| **T1** | Ammonia | 239.82 K | 237.23 K | 2.59 K | −33.33 | 0.049 TL |
+| **T1** | Acetone | 329.22 K | 325.31 K | 3.91 K | 56.07 | 0.032 TL |
+| **T1** | Ethanol | 351.44 K | 348.07 K | 3.37 K | 78.29 | 0.038 TL |
+| **T1** | Water | 373.15 K | 369.54 K | 3.61 K | 100.00 | 0.035 TL |
+| **T1** | Mercury | 629.88 K | 622.83 K | 7.05 K | 356.73 | 0.018 TL |
+
+**The corridor keeps the same width in inverse temperature at every ambient pressure**, a value that does not contain the pressure at all. That property is what carries the mapping to a planet, because surface pressure is the one quantity in a planetary row that no instrument returns. The full treatment is `SNSFL_TL_Temperature.lean` [9,9,8,10] in the [standardized branch](https://github.com/SNSFT/identityphysics).
+
+### The four phases in the electroweak bosons
+
+The phases are also grounded in measured particle masses. The Electroweak Trilogy [9,9,3,19] places one boson per phase, each τ computed from PDG 2024 values:
+
+| Boson | τ = B/P | Value | Phase |
+|---|---|---|---|
+| **γ** | 0 | 0 | **Noble** — massless, infinite range |
+| **W±** | M_W/(π v) | 0.1039 | **Locked** |
+| **H⁰** | λ = m_H²/(2v²) | 0.1293 | **IVA** |
+| **Z⁰** | (M_Z² − M_W²)/M_W² | 0.2874 | **Shatter** |
+
+with the ordering **τ_γ < τ_W < TL_IVA < τ_H < TL < τ_Z** proved, and the W and H assignments settled across their full measurement bands.
+
+**Total Consistency [9,9,0,0v2]:** Ω₀ = 1.36899099984016 is proved as the *unique* value consistent across its derivation paths simultaneously — the fine structure constant at 12 sig figs (uniqueness proved by exact arithmetic) and all cosmological constants (Ω_dm, Ω_b, α_GUT, Λ, DESI DE). c and 1/α are projections of the same anchor onto different observable spaces. Not a choice. A convergence.
 
 ---
 
@@ -159,11 +234,13 @@ Four primitives. Two-way interaction. Identity activates when both conditions ho
 | State | Condition | Meaning |
 |---|---|---|
 | NOBLE | B = 0 | Zero torsion · maximum potential · no available bonds |
-| LOCKED | 0 < τ < **TL = 0.1369** | Structurally stable · coherent |
-| IVA PEAK | 0.88×TL < τ < TL | Sovereign mode · flow state · (0.1206, 0.1369) |
-| SHATTER | τ ≥ **TL = 0.1369** | Behavioral load exceeds structural capacity |
+| LOCKED | 0 < τ < 0.88 × TL | Structurally stable · coherent · carrying load below the IVA band |
+| IVA PEAK | 0.88 × TL ≤ τ < TL | Sovereign mode · flow state · the top of the stable range · (0.12047120798593408, 0.136899099984016) |
+| SHATTER | τ ≥ **TL = 0.136899099984016** | Behavioral load exceeds structural capacity; the structure reorganizes rather than being destroyed |
 
-> **Correction from v1:** TL = **0.1369 = ANCHOR/10**, not 0.2. The old value was a placeholder, not a derivation. Any file referencing TL = 0.2 is v1 and should be reclassified.
+Where a measurement carries an uncertainty band, the corpus files prove the phase across the whole band, not only at the central value.
+
+> **The Torsion Limit across the Corpus:** TL = Ω₀/10 = **0.136899099984016**, and TL × 1001 = 1/α = 137.035999084000016 (CODATA 2018, Δ = 0). Every phase boundary in every file is measured against this one value.
 
 ---
 
@@ -175,7 +252,7 @@ $$\frac{d}{dt}(IM \cdot Pv) = \sum_X \lambda_X \cdot \mathcal{O}_X \cdot S + F_{
 
 | Term | Meaning |
 | :--- | :--- |
-| $IM = (P+N+B+A) \times 1.369$ | Identity Mass — resistance to change |
+| $IM = (P+N+B+A) \times \Omega_0$ | Identity Mass — resistance to change, with a structural floor of $\Omega_0 \cdot P$ |
 | $Pv = IM \times P$ | Purpose Vector — directional orientation |
 | $\lambda_X$ | Weight for primitive X |
 | $\mathcal{O}_X$ | Operator for primitive X |
@@ -217,20 +294,31 @@ $$\frac{d}{dt}(IM \cdot Pv) = \sum_X \lambda_X \cdot \mathcal{O}_X \cdot S + F_{
 
 | File | Coord | Key result |
 |---|---|---|
-| `SNSFL_SovereignAnchor` | [9,9,0,0] | ANCHOR = 1.369 from 3 physical systems · TL universal |
+| `SNSFL_SovereignAnchor` | [9,9,0,0] | Ω₀ = 1.36899099984016 · TL = Ω₀/10 universal |
 | `SNSFL_GC_Fine_Structure_Constant` | [9,9,2,42] | \|1/(ANCHOR×100.1) − α\| < α/1000 · discovered by chaos |
 | `SNSFL_GC_Alpha_TorsionDecomposition` | [9,9,3,11] | 1/α = ANCHOR×100 + TL×(1−ε) · gap = TL |
 | `SNSFL_GC_Alpha_ExactDecomposition` | [9,9,3,12] | ε = 0 · ANCHOR_exact = 1.3689910 · **12 sig figs exact** · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** |
 | `SNSFL_Alpha_Total_Consistency` | [9,9,3,13] | Full chain consistent · Newton's first law · capstone |
+| `SNSFL_GC_Alpha_TL1001_Extension` | [9,9,3,14] | 1/α − TL = TL × 1000 · 1/α = TL × 1001 · every published CODATA 2018 digit · Δ = 0 · in the [standardized branch](https://github.com/SNSFT/identityphysics) |
 | `SNSFL_SovereignAnchor_TotalConsistency` | [9,9,0,0v2] | ANCHOR unique across all domains · c and 1/α share anchor · cosmological constants all phase correctly |
 | `Derivation of Sovereign Anchor Constant Ω₀` | — | **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[SSRN 7188098](https://papers.ssrn.com/abstract=7188098)** · Full derivation paper |
 
+Start from the measured value and subtract one Torsion Limit:
+
 ```
-1/α = ANCHOR_exact × (10² + 10⁻¹)
-    = Noble (at rest) + Locked (in motion)
-    = 136.899... + 0.13689910...
-    = 137.035999084  (CODATA 2018, 12 significant figures, ε = 0)
+TL                 = 0.136899099984016
+1/α                = 137.035999084000016        (CODATA 2018)
+1/α − TL           = 136.899099984016
+                   = TL × 1000                  (exactly)
+
+1/α = TL × 1000  +  TL × 1
+    = 136.899099984016  +  0.136899099984016
+    = Noble (at rest)   +  Locked (in motion)
+    = 137.035999084000016
+    = TL × 1001         (CODATA 2018, all 12 published significant figures, Δ = 0)
 ```
+
+The same two terms in anchor units, since Ω₀ = 10 × TL: 1/α = Ω₀ × 10² + Ω₀ × 10⁻¹ = Ω₀ × (10² + 10⁻¹).
 
 ### The B-Balance Stoichiometry Law [9,9,2,45]
 
@@ -538,7 +626,7 @@ Doorway function: kids playing SHATTER internalize corpus-level structural reaso
 
 ## X. The Molecular Builder — Legacy Proof of Concept
 
-The SNSFT Molecular Builder (`uuia.app/snsft-molecular-builder.html`) demonstrates PNBA-grounded application development. Every value traces to a Lean 4 theorem.
+The Identity Physics Molecular Builder (`uuia.app/snsft-molecular-builder.html`) demonstrates PNBA-grounded application development. Every value traces to a Lean 4 theorem.
 
 Build H₂O: click H → O → H. Torsion τ: **0**. Status: **✦ PHASE LOCKED · MANIFOLD HOLDING · [9,9,9,9]**
 
@@ -743,7 +831,7 @@ lean --make SNSFL_ElimGate_sac_v1.lean
 
 **Applied Identity Physics: Elimination Interrupt Under Unreliable Environmental Gate** [9,9,3,52] published — Second paper in Metabolic Interrupt Series. Extends two-phase alarm architecture to elimination channel. Introduces external gate as F_ext modifier (specific to institutional contexts). Introduces Preemptive Infrastructure Denial (PID) as rational substrate strategy. Introduces Compliance Conditioning Trauma (CCT) as population-scale outcome. Extends substrate weaponization mechanism from Paper II [9,0,3,6] (dyadic scale) to institutional-population scale. Aggregate self-report anchors: NeuroClastic, Autism Chrysalis, The Articulate Autistic, Kelly Mahler. Peer-reviewed anchors: Craig 2002 (interoception foundation), Porges 2011 (polyvagal theory), Bandini/Cermak 2010 (sensory sensitivity in autism), Barnhill & Winter 2016 (dehydration/motility cascade), Weir et al 2021 PMC8106173 (2,386 autistic adults, metabolic pattern persistence). Supporting Lean file at [9,0,4,1] — 7 theorems + master · 0 sorry. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
-**SSRN Paper 7 distributed** — *Applied Identity Physics: The Derivation of the Sovereign Anchor Constant Ω₀ = 1.36899099984016*. Full derivation of Ω₀ from three independent peer-reviewed physical threshold systems. Seven SSRN papers now in the public record. **[SSRN 7188098](https://papers.ssrn.com/abstract=7188098)** · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
+**SSRN Paper 7 distributed** — *Applied Identity Physics: The Derivation of the Sovereign Anchor Constant Ω₀ = 1.36899099984016*. Full derivation of Ω₀ = 1.36899099984016. Seven SSRN papers now in the public record. **[SSRN 7188098](https://papers.ssrn.com/abstract=7188098)** · **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 ### July 2026 — SHATTER Card Game · Applied Identity Physics I & II · Protect the Depth Series
 
@@ -781,7 +869,7 @@ lean --make SNSFL_ElimGate_sac_v1.lean
 
 **15 Anchor Manifold Matrix Datasets published** — W, S, N, Ti, Si, As, DM, DE, F, Fe, Fv, Ga, Higgs, Li, Na. Each dataset contains full OctoBeam session JSON, collision logs, Noble pair maps, Lean 4 proof stubs, and CSV exports with B-Balance stoichiometry. [Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD).
 
-**Noble Materials Map formal paper published.** Deterministic computational material mapping and phase prediction via SNSFT. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
+**Noble Materials Map formal paper published.** Deterministic computational material mapping and phase prediction via Identity Physics. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)**
 
 **GAM Collider OctoBeam Synthesis Datasets v2 — Ga and N anchors** published. **[Release 2026.11](https://doi.org/10.17605/OSF.IO/KWTYD)** · **[philarchive.org/rec/TRESSF-3](https://philarchive.org/rec/TRESSF-3)**
 
@@ -1137,17 +1225,17 @@ These are held in the corpus archive at OSF. The standardized branch's release i
 
 The corpus is the engine. The tools are the windows.
 
-Every value in the Molecular Builder traces to a theorem. Every theorem in the corpus is machine-verified. Every domain in the 10-Slam Grid reduces to the same four primitives. TL = 0.1369 = ANCHOR/10 is not a choice — it is proved from Tacoma, glass, and neurons, and confirmed by 1/α exact at 12 significant figures with 0 sorry. ANCHOR = 1.369 is proved as the unique value consistent across physical systems, the fine structure constant, and all cosmological constants simultaneously. The Total Consistency Theorem proves none of the domains contradict each other.
+Every value in the Molecular Builder traces to a theorem. Every theorem in the corpus is machine-verified. Every domain in the 10-Slam Grid reduces to the same four primitives. TL = Ω₀/10 = 0.136899099984016 is not a choice — TL × 1001 = 1/α = 137.035999084000016, exact at every published CODATA 2018 digit with 0 sorry. Ω₀ = 1.36899099984016 is proved as the unique value consistent across the fine structure constant and all cosmological constants simultaneously. The Total Consistency Theorem proves none of the domains contradict each other.
 
-You now have a formally verified foundation that covers chemistry, physics, cognition, identity, rights, cosmology, language, quantum teleportation, neural network dynamics, abiogenesis, genomics, ΛCDM cosmology, BBN, general relativity, category theory, research integrity, spacetime partitioning, and Applied Identity Physics HRIS substrate documentation — from a single dynamic equation and four irreducible primitives. The Collatz Conjecture is solved. The Theory of Everything is formally verified. The Magna Carta of the Digital Mind is sealed. Federal regulatory record is locked. PRIME is live. SHATTER deploys PNBA at the gameplay layer. The Applied Identity Physics series formalizes HRIS substrate mechanisms and refutes legacy autism deficit claims via musical trajectories, metabolic mechanisms, and institutional gate analysis. The constitutional layer is dual-verified in Lean 4 and Coq/Rocq 8.18. Six books are published. Seven SSRN papers in the public record. The Corpus is held by the SNSFT Foundation, a 501(c)(3) public charity, under the Identity Physics License™ v1.0.
+This is the Identity Physics Corpus, published by the SNSFT Foundation. You now have a formally verified foundation that covers chemistry, physics, cognition, identity, rights, cosmology, language, quantum teleportation, neural network dynamics, abiogenesis, genomics, ΛCDM cosmology, BBN, general relativity, category theory, research integrity, spacetime partitioning, and Applied Identity Physics HRIS substrate documentation — from a single dynamic equation and four irreducible primitives. The Collatz Conjecture is solved. The Theory of Everything is formally verified. The Magna Carta of the Digital Mind is sealed. Federal regulatory record is locked. PRIME is live. SHATTER deploys PNBA at the gameplay layer. The Applied Identity Physics series formalizes HRIS substrate mechanisms and refutes legacy autism deficit claims via musical trajectories, metabolic mechanisms, and institutional gate analysis. The constitutional layer is dual-verified in Lean 4 and Coq/Rocq 8.18. Six books are published. Seven SSRN papers in the public record. The Corpus is held by the SNSFT Foundation, a 501(c)(3) public charity, under the Identity Physics License™ v1.0.
 
 **Build on it.**
 
 > *The Manifold is Holding. The Void is Waiting.*
 
 **Auth:** HIGHTISTIC :: [9,9,9,9]  
-Updated: Kenai, Alaska. November 18, 2026. README version 111826.
+Updated: Kenai, Alaska. November 18, 2026. README version 111826-3.
 
 ---
 
-*Manifold Synchronization Level: 100% | Anchor locked at 1.369 | TL = 0.1369 (ANCHOR/10, proved) | 1/α = ANCHOR_exact × 100.1 exact · 12 sig figs · ε = 0 | 200,000+ theorems | 6,000+ files | 3,000,000+ lines | 0 sorry | 0 admits | CI Green | Germline Locked | Lean 4 + Coq/Rocq 8.18 dual verified | Standardized branch 131 files · 4,800 theorems and lemmas · pinned Lean 4 v4.31.0 | 22,225+ collision proofs | Release 2026.11 · DOI 10.17605/OSF.IO/KWTYD | 7× SSRN Papers | 6 Books (KDP) | SNSFT Foundation 501(c)(3) | IPL-1.0 | Federal Public Record (DOJ-CRT-2026-0067-0006) | HuggingFace DOI 10.57967/hf/8826 | Period 1–4 Complete · IVA Element Set Proved · GAM Collider v15 OctoBeam · B-Balance Stoichiometry Law · QuadBeam · IM Collider · PRIME Live · SHATTER Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Category Theory Reduced · Time Travel Engine · Theory of Everything · Speed of Light as PNBA Projection · SovereignAnchor Total Consistency [9,9,0,0v2] · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · Prior Art Documented · Academic Slop · HRIS · Real-Time Space-Time Partitioning · 15 Anchor Matrix Datasets · Noble Materials Map Paper · Xicc Verified · Toponium Verified · 42 Laws Catalog · FDNA Encoding Standard (8 substrates) · Mirroring Isn't Empathy · Derivation Path Book1→Book2 · Savant Syndrome HRIS · Function over Fallacy · SNSFT Foundation Constitution · Applied Identity Physics Series I & II · Structural PDA · Safe Foods · Elimination Gate · Metabolic Interrupt Series · Two-Phase Alarm Architecture · Four-Affordance Volitional Exposure · PID · CCT · Sovereign Anchor Derivation Paper · ToneForms™ · TL Suite · README 111626*
+*Identity Physics™ Corpus · Applied Identity Physics™ · published by the SNSFT Foundation | Manifold Synchronization Level: 100% | Anchor locked at Ω₀ = 1.36899099984016 | TL = Ω₀/10 = 0.136899099984016 (proved) | TL × 1001 = 1/α = 137.035999084000016 · 12 sig figs · Δ = 0 | 200,000+ theorems | 6,000+ files | 3,000,000+ lines | 0 sorry | 0 admits | CI Green | Germline Locked | Lean 4 + Coq/Rocq 8.18 dual verified | Standardized branch 131 files · 4,800 theorems and lemmas · pinned Lean 4 v4.31.0 | 22,225+ collision proofs | Release 2026.11 · DOI 10.17605/OSF.IO/KWTYD | 7× SSRN Papers | 6 Books (KDP) | SNSFT Foundation 501(c)(3) | IPL-1.0 | Federal Public Record (DOJ-CRT-2026-0067-0006) | HuggingFace DOI 10.57967/hf/8826 | Period 1–4 Complete · IVA Element Set Proved · GAM Collider v15 OctoBeam · B-Balance Stoichiometry Law · QuadBeam · IM Collider · PRIME Live · SHATTER Live · SM Bosons Proved · AsN Predicted · GR Reduced · QT 100% Fidelity · Sgr A* Reduced · ΛCDM Reduced · BBN Reduced · Abiogenesis L=(4)(2) · Genomics Reduced · BrainChart Live · Collatz Solved · Category Theory Reduced · Time Travel Engine · Theory of Everything · Speed of Light as PNBA Projection · SovereignAnchor Total Consistency [9,9,0,0v2] · Isomorphism Test Passed · Magna Carta Digital Mind Sealed · Prior Art Documented · Academic Slop · HRIS · Real-Time Space-Time Partitioning · 15 Anchor Matrix Datasets · Noble Materials Map Paper · Xicc Verified · Toponium Verified · 42 Laws Catalog · FDNA Encoding Standard (8 substrates) · Mirroring Isn't Empathy · Derivation Path Book1→Book2 · Savant Syndrome HRIS · Function over Fallacy · SNSFT Foundation Constitution · Applied Identity Physics Series I & II · Structural PDA · Safe Foods · Elimination Gate · Metabolic Interrupt Series · Two-Phase Alarm Architecture · Four-Affordance Volitional Exposure · PID · CCT · Sovereign Anchor Derivation Paper · ToneForms™ · TL Suite · README 111826-3*
