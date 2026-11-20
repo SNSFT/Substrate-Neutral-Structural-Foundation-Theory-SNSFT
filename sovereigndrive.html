@@ -3,980 +3,872 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sovereign Drive™ · Identity Physics™ Simulator · uuia.app</title>
+<title>Sovereign Drive™ · Powered by AxiomForge™ · Applied Identity Physics™ · uuia.app/sovereigndrive</title>
+<meta name="description" content="Sovereign Drive™, powered by AxiomForge™: any drive against any body. Reading A τ_A = v_e/c and Reading B τ_B = ln(m₀/m_f), the IVA corridor, the matched radius r = r_s/τ_A², burn depth and the e^u saving, the thrust floor, the matched surface under charge and rotation, and the power-limited drive a·α·v_e = 2.">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
-:root {
-  --bg:#020407; --panel:#060b10; --border:#0c1a26;
-  --glow:#00e5ff; --locked:#00ffcc; --shatter:#ff3355;
-  --noble:#aa88ff; --warn:#ffaa00; --text:#7aa4be;
-  --bright:#cce8f5; --aifi:#dd44ff; --iva:#ff8800;
-  --elem:#00d4aa; --bio:#88ffcc; --ere:#ffcc44;
+:root{
+  --anchor:#00ffc8; --locked:#7b4fff; --gold:#f0c060; --shatter:#ff3a3a; --rose:#ff6b8a;
+  --bg:#050508; --surface:#0d0d14; --border:rgba(0,255,200,0.12);
+  --text:#e8e8f0; --dim:rgba(232,232,240,0.5); --faint:rgba(232,232,240,0.26);
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;height:100vh;overflow:hidden;}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
-
-#app{display:grid;grid-template-columns:280px 1fr 280px;grid-template-rows:44px 1fr 120px;height:100vh;position:relative;z-index:1;}
-
-#hdr{grid-column:1/-1;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(6,11,16,.95);}
-.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:14px;letter-spacing:.1em;color:var(--glow);text-shadow:0 0 20px rgba(0,229,255,.4);}
-.logo span{font-size:8px;color:var(--locked);display:inline-block;margin-left:8px;letter-spacing:.2em;}
-.hdr-mid{font-size:9px;color:#2a4050;letter-spacing:.15em;text-align:center;}
-.hdr-mid b{color:var(--glow);}
-.hdr-right{font-size:8px;color:#1a3040;text-align:right;letter-spacing:.1em;}
-
-#left{border-right:1px solid var(--border);background:rgba(6,11,16,.9);overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:10px;}
-#canvas-wrap{position:relative;background:#000;}
-canvas{display:block;width:100%;height:100%;}
-#overlay{position:absolute;inset:0;pointer-events:none;}
-#right{border-left:1px solid var(--border);background:rgba(6,11,16,.9);overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:10px;}
-#bottom{grid-column:1/-1;border-top:1px solid var(--border);background:rgba(6,11,16,.95);display:flex;align-items:center;gap:16px;padding:0 16px;overflow-x:auto;}
-
-.sec{border:1px solid var(--border);background:rgba(2,4,7,.6);padding:10px;}
-.sec-title{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:.3em;color:#1a3040;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-.sec-title span{color:var(--glow);}
-
-.ctrl-row{display:flex;align-items:center;justify-content:space-between;font-size:9px;margin-bottom:6px;}
-.ctrl-label{color:#2a5060;letter-spacing:.1em;}
-.ctrl-val{color:var(--bright);font-family:'Orbitron',monospace;font-size:10px;min-width:48px;text-align:right;}
-input[type=range]{width:100%;accent-color:var(--glow);height:3px;margin:4px 0 8px;}
-
-/* ── PRESET BUTTONS ── */
-.btn{font-family:'Orbitron',monospace;font-size:7.5px;letter-spacing:.12em;padding:5px 8px;background:transparent;cursor:pointer;border:1px solid var(--border);color:#2a5060;width:100%;margin-bottom:3px;transition:all .15s;text-align:left;}
-.btn:hover{color:var(--text);border-color:#1a4050;}
-.btn-run{border-color:var(--locked);color:var(--locked);}
-.btn-run:hover{background:rgba(0,255,204,.08);}
-.btn-stop{border-color:var(--shatter);color:var(--shatter);}
-.btn-stop:hover{background:rgba(255,51,85,.08);}
-.btn-reset{border-color:var(--warn);color:var(--warn);}
-.btn-reset:hover{background:rgba(255,170,0,.08);}
-.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-
-/* Category-colored preset buttons */
-.btn-phase{border-color:#1a4050;color:#4a8898;}
-.btn-phase:hover{border-color:var(--locked);color:var(--locked);}
-.btn-elem{border-color:#0a3028;color:var(--elem);}
-.btn-elem:hover{background:rgba(0,212,170,.06);}
-.btn-bio{border-color:#0a3020;color:var(--bio);}
-.btn-bio:hover{background:rgba(136,255,204,.06);}
-.btn-ere{border-color:#2a2800;color:var(--ere);}
-.btn-ere:hover{background:rgba(255,204,68,.06);}
-
-.cat-label{font-family:'Orbitron',monospace;font-size:6.5px;letter-spacing:.25em;padding:4px 0 3px;margin-bottom:2px;border-bottom:1px solid var(--border);}
-.cat-elem{color:var(--elem);}
-.cat-bio{color:var(--bio);}
-.cat-ere{color:var(--ere);}
-.cat-phase{color:#4a8898;}
-
-/* ── GAUGES ── */
-.gauge-wrap{margin-bottom:8px;}
-.gauge-label{font-size:8px;color:#2a5060;letter-spacing:.15em;margin-bottom:3px;display:flex;justify-content:space-between;}
-.gauge-label span{color:var(--bright);}
-.gauge-bar{height:3px;background:#0c1a26;position:relative;}
-.gauge-fill{height:100%;transition:width .15s,background .15s;}
-
-/* ── READOUTS ── */
-.readout{display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid rgba(12,26,38,.4);}
-.readout-key{color:#2a5060;letter-spacing:.1em;}
-.readout-val{font-family:'Orbitron',monospace;font-size:9px;}
-
-/* ── STATE BADGE ── */
-.state-badge{font-family:'Orbitron',monospace;font-size:14px;letter-spacing:.2em;text-align:center;padding:8px;margin:4px 0;}
-.state-NOBLE{color:var(--noble);border:1px solid rgba(170,136,255,.3);background:rgba(170,136,255,.06);}
-.state-LOCKED{color:var(--locked);border:1px solid rgba(0,255,204,.3);background:rgba(0,255,204,.06);}
-.state-SHATTER{color:var(--shatter);border:1px solid rgba(255,51,85,.3);background:rgba(255,51,85,.06);animation:shatter-pulse .4s infinite;}
-.state-IVA{color:var(--iva);border:1px solid rgba(255,136,0,.3);background:rgba(255,136,0,.06);}
-@keyframes shatter-pulse{0%,100%{opacity:1}50%{opacity:.6}}
-
-/* ── CATEGORY BADGE ── */
-.cat-badge{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.2em;text-align:center;padding:3px;margin-bottom:4px;border:1px solid;}
-.cat-badge-phase{color:#4a8898;border-color:#1a4050;}
-.cat-badge-elem{color:var(--elem);border-color:#0a3028;}
-.cat-badge-bio{color:var(--bio);border-color:#0a3020;}
-.cat-badge-ere{color:var(--ere);border-color:#2a2800;}
-
-/* ── FEED ── */
-.feed{height:90px;overflow-y:auto;font-size:8px;line-height:1.7;scrollbar-width:thin;}
-.fl{padding:1px 0;}
-.fl-noble{color:var(--noble);}
-.fl-locked{color:var(--locked);}
-.fl-shatter{color:var(--shatter);}
-.fl-info{color:#2a5060;}
-.fl-iva{color:var(--iva);}
-.fl-elem{color:var(--elem);}
-.fl-bio{color:var(--bio);}
-.fl-ere{color:var(--ere);}
-.fl-t{color:#1a3040;margin-right:4px;}
-
-/* ── BOTTOM STATS ── */
-.bstat{display:flex;flex-direction:column;align-items:center;min-width:80px;}
-.bstat-label{font-size:7px;color:#1a3040;letter-spacing:.2em;}
-.bstat-val{font-family:'Orbitron',monospace;font-size:16px;color:var(--bright);}
-
-::-webkit-scrollbar{width:4px;height:4px;}
-::-webkit-scrollbar-track{background:var(--bg);}
-::-webkit-scrollbar-thumb{background:var(--border);}
-
-#hud{position:absolute;top:12px;left:12px;font-size:9px;color:#2a5060;pointer-events:none;line-height:2;letter-spacing:.1em;}
-#hud b{color:var(--glow);}
-#cat-hud{position:absolute;top:12px;right:12px;font-size:8px;pointer-events:none;text-align:right;letter-spacing:.1em;}
-#phase-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .3s;}
-@keyframes noble-ring{0%{transform:translate(-50%,-50%) scale(.8);opacity:.8}100%{transform:translate(-50%,-50%) scale(2);opacity:0}}
-.ring-flash{animation:noble-ring .6s ease-out forwards;}
-
-@media(max-width:900px){
-  #app{grid-template-columns:1fr;grid-template-rows:44px 1fr 1fr 120px;}
-  #left,#right{display:none;}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;overflow:hidden}
+#app{display:grid;grid-template-columns:300px 1fr 340px;grid-template-rows:54px 1fr;height:100vh}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.94);gap:12px}
+.h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--anchor)}
+.h-title i{font-style:normal;font-size:.62rem;color:var(--dim);font-weight:700}
+.h-sub{font-size:.5rem;color:var(--dim);margin-top:2px}
+.h-right{font-size:.46rem;color:var(--faint);text-align:right;line-height:1.6}
+.mode{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
+.mode button{font-family:'Syne',sans-serif;font-weight:800;font-size:.56rem;padding:.4rem .85rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.mode button.on{background:var(--anchor);color:#000}
+#left,#right{overflow-y:auto;padding:10px;background:rgba(13,13,20,.88);display:flex;flex-direction:column;gap:9px}
+#left{border-right:1px solid var(--border)} #right{border-left:1px solid var(--border)}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:9px}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.58rem;color:var(--anchor);letter-spacing:.08em;margin-bottom:7px;display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.st a{font-family:'Space Mono',monospace;font-weight:400;font-size:.44rem;color:var(--gold);text-decoration:none;letter-spacing:0;white-space:nowrap}
+.st a:hover{text-decoration:underline}
+.seg{display:flex;gap:4px;margin-bottom:5px;flex-wrap:wrap}
+.seg button,.btn{flex:1;font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:.42rem .3rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.seg button.on{border-color:var(--anchor);color:var(--anchor);background:rgba(0,255,200,.08)}
+.seg button:disabled{opacity:.3;cursor:default}
+.btn.run{border-color:rgba(0,255,200,.5);color:var(--anchor)}
+.btn.run.on{border-color:var(--shatter);color:var(--shatter)}
+.lbl{display:flex;justify-content:space-between;font-size:.5rem;color:var(--dim);margin:5px 0 2px;gap:6px}
+.lbl b{color:var(--anchor);font-weight:400;text-align:right}
+input[type=range]{width:100%;accent-color:#00ffc8}
+select,.num{width:100%;background:#0a0a12;border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.52rem;padding:4px;border-radius:3px}
+.mix{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;text-align:center;font-size:.46rem;color:var(--dim)}
+.mix input{width:100%;background:#0a0a12;border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.52rem;padding:3px;border-radius:3px;text-align:center}
+.note{font-size:.5rem;color:var(--dim);line-height:1.6}
+.note b{color:var(--text);font-weight:400}
+.mission{display:block;width:100%;text-align:left;font-family:'Space Mono',monospace;font-size:.5rem;padding:5px 7px;margin-bottom:4px;background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--text);cursor:pointer;line-height:1.45}
+.mission span{display:block;color:var(--dim);font-size:.44rem}
+.mission:hover,.mission.on{border-color:var(--anchor);background:rgba(0,255,200,.06)}
+#view{position:relative;overflow:hidden;background:#000}
+#c3d{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+.tag{position:absolute;font-size:.46rem;letter-spacing:.08em;pointer-events:none;transform:translate(-50%,-50%);white-space:nowrap;text-shadow:0 0 6px #000,0 0 3px #000}
+#legend{position:absolute;top:10px;left:10px;background:rgba(5,5,8,.85);border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:.46rem;pointer-events:none;line-height:1.55}
+#legend .bar{height:5px;border-radius:3px;margin:4px 0;background:linear-gradient(90deg,#00ffc8,#7b4fff 50%,#f0c060 88%,#ff3a3a 100%);width:190px}
+#legend .row{display:flex;justify-content:space-between;width:190px}
+#caption{position:absolute;left:12px;right:12px;bottom:10px;font-size:.6rem;line-height:1.65;background:rgba(5,5,8,.86);border:1px solid var(--border);border-radius:8px;padding:8px 12px;pointer-events:none}
+#caption b{color:var(--anchor);font-weight:400}
+table{width:100%;border-collapse:collapse;font-size:.5rem}
+th{font-weight:400;color:var(--faint);font-size:.44rem;text-align:right;padding:2px}
+td{text-align:right;padding:3px 2px}
+th:first-child,td:first-child{text-align:left}
+.chip{font-size:.42rem;padding:1px 6px;border-radius:100px;border:1px solid;white-space:nowrap}
+.ph-n{color:#00ffc8;border-color:rgba(0,255,200,.5)}
+.ph-l{color:#9b7dff;border-color:rgba(123,79,255,.6)}
+.ph-i{color:#f0c060;border-color:rgba(240,192,96,.6)}
+.ph-s{color:#ff3a3a;border-color:rgba(255,58,58,.6)}
+.ph-c{color:#ffffff;border-color:rgba(255,255,255,.6)}
+.ok{color:var(--anchor);border-color:rgba(0,255,200,.45)}
+.no{color:var(--rose);border-color:rgba(255,107,138,.45)}
+canvas.chart{width:100%;height:150px;display:block}
+.kv{display:flex;justify-content:space-between;font-size:.52rem;padding:3px 0;border-bottom:1px solid rgba(0,255,200,.06);gap:8px}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--dim)}
+.kv span:last-child{text-align:right}
+.thm{font-size:.42rem;color:var(--faint);margin-top:4px;line-height:1.5;word-break:break-word}
+.r-only{display:none} body.res .r-only{display:block} body.res .l-only{display:none}
+.src a{display:block;font-size:.5rem;color:var(--text);text-decoration:none;padding:4px 0;border-bottom:1px solid rgba(0,255,200,.06);line-height:1.45}
+.src a:hover{color:var(--anchor)}
+.src a span{display:block;color:var(--faint);font-size:.44rem}
+.foot{font-size:.42rem;color:var(--faint);line-height:1.6;text-align:center;padding:4px 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media(max-width:1000px){
+  html,body{overflow:auto;height:auto}
+  #app{grid-template-columns:1fr;grid-template-rows:auto 64vh auto auto;height:auto}
+  #view{grid-row:2} #left{grid-row:3} #right{grid-row:4}
+  #left,#right{border:none;overflow:visible}
+  .h-right{display:none} #hdr{flex-wrap:wrap;padding:8px 16px}
+  #legend{display:none}
 }
-span.tm{display:inline !important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400;}
 </style>
 </head>
 <body>
 <div id="app">
-
-<!-- HEADER -->
 <div id="hdr">
   <div>
-    <span class="logo">Sovereign Drive<span class="tm">™</span><span>Identity Physics<span class="tm">™</span> SIMULATOR · v2.0</span></span>
+    <div class="h-title">Sovereign Drive<span class="tm">™</span> <i>· Powered by AxiomForge<span class="tm">™</span></i></div>
+    <div class="h-sub">Applied Identity Physics<span class="tm">™</span> · Δv = c · τ_A · τ_B · r_match = r_s / τ_A² · TL = 0.136899099984016 · TL_IVA = 0.88 × TL</div>
   </div>
-  <div class="hdr-mid">
-    ANCHOR <b>1.369 GHz</b> · τ = B/P · TL = 0.1369 · IM = (P+N+B+A)×1.369
-  </div>
-  <div class="hdr-right">
-    Russell Vernon Trent III-HIGHTISTIC · Published by SNSFT Foundation<br>
-    SOLDOTNA ALASKA · [9,9,9,9] :: {ANC}
-  </div>
+  <div class="mode"><button id="m-l" class="on" onclick="setMode('learner')">LEARNER</button><button id="m-r" onclick="setMode('res')">RESEARCHER</button></div>
+  <div class="h-right">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska<br>uuia.app/sovereigndrive · [9,9,2,0] · [9,9,0,17–20] · [9,9,2,54]</div>
 </div>
 
-<!-- LEFT PANEL -->
+<!-- LEFT: controls -->
 <div id="left">
-
-  <!-- PNBA INPUTS -->
   <div class="sec">
-    <div class="sec-title"><span>PNBA STATE · LAYER 0</span></div>
-    <div class="ctrl-row"><span class="ctrl-label">P · PATTERN</span><span class="ctrl-val" id="v-P">1.500</span></div>
-    <input type="range" id="s-P" min="0.0001" max="10" step="0.001" value="1.5">
-    <div class="ctrl-row"><span class="ctrl-label">N · NARRATIVE</span><span class="ctrl-val" id="v-N">2.000</span></div>
-    <input type="range" id="s-N" min="0.5" max="14" step="0.01" value="2.0">
-    <div class="ctrl-row"><span class="ctrl-label">B · BEHAVIOR</span><span class="ctrl-val" id="v-B">0.100</span></div>
-    <input type="range" id="s-B" min="0" max="5" step="0.001" value="0.1">
-    <div class="ctrl-row"><span class="ctrl-label">A · ADAPTATION</span><span class="ctrl-val" id="v-A">0.500</span></div>
-    <input type="range" id="s-A" min="0" max="15" step="0.01" value="0.5">
+    <div class="st">WORKED MISSIONS</div>
+    <div id="missions"></div>
+    <div class="note l-only">Each one loads a case worked in a ProofPress article. Change anything after loading.</div>
   </div>
 
-  <!-- DRIVE PARAMS -->
   <div class="sec">
-    <div class="sec-title"><span>DRIVE PARAMETERS</span></div>
-    <div class="ctrl-row"><span class="ctrl-label">F_EXT · EXTERNAL</span><span class="ctrl-val" id="v-F">0.000</span></div>
-    <input type="range" id="s-F" min="0" max="3" step="0.001" value="0">
-    <div class="ctrl-row"><span class="ctrl-label">IVA GAIN g_r</span><span class="ctrl-val" id="v-gr">1.500</span></div>
-    <input type="range" id="s-gr" min="0" max="5" step="0.01" value="1.5">
-    <div class="ctrl-row"><span class="ctrl-label">ANCHOR LOCK</span>
-      <label style="cursor:pointer;font-size:9px;color:var(--locked);">
-        <input type="checkbox" id="cb-anchor" checked style="accent-color:var(--locked);"> ON
-      </label>
+    <div class="st">DRIVE · READING A <a href="https://proofpress.org/proofpressorg-propulsion-corridor.html" target="_blank" rel="noopener">[9,9,2,0] ↗</a></div>
+    <select id="drive" onchange="pickDrive(this.value)"></select>
+    <div class="lbl"><span>Exhaust velocity v_e</span><b id="ve-v"></b></div>
+    <input type="range" id="ve" min="0" max="1" step="0.0001" oninput="onVe()">
+    <div class="mix" style="grid-template-columns:1fr 1fr;margin-top:4px">
+      <div>v_e m/s<input id="ve-n" type="number" step="any" onchange="onVeNum()"></div>
+      <div>Isp s<input id="isp-n" type="number" step="any" onchange="onIspNum()"></div>
     </div>
-    <div class="ctrl-row"><span class="ctrl-label">FIELD LINES</span>
-      <label style="cursor:pointer;font-size:9px;color:var(--glow);">
-        <input type="checkbox" id="cb-field" checked style="accent-color:var(--glow);"> ON
-      </label>
+    <div class="lbl"><span>Resonance gain g_r</span><b id="g-v"></b></div>
+    <input type="range" id="g" min="0" max="1" step="0.0001" value="0" oninput="onG()">
+    <div class="seg" style="margin-top:4px"><button id="lk-on" class="on" onclick="setLock(true)">ANCHOR LOCK · GREEN</button><button id="lk-off" onclick="setLock(false)">DRIFT · RED</button></div>
+    <div class="note l-only">The gain multiplies exhaust velocity. It exists only at anchor lock; off anchor the vehicle is classical.</div>
+    <div class="note r-only">(1 + g_r)·τ_A = τ_A((1 + g_r)·v_e) identically; cap g_r &lt; c/v_e − 1 (t41_gain_is_exhaust_multiplier). Off anchor the gain is one (t81_off_anchor_gain_is_one).</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">VEHICLE · READING B</div>
+    <div class="seg"><button id="vm-r" class="on" onclick="setVM('ratio')">SET MASS RATIO</button><button id="vm-t" onclick="setVM('target')">SET TARGET SPEED</button></div>
+    <div id="vm-ratio">
+      <div class="lbl"><span>Mass ratio m₀/m_f</span><b id="mr-v"></b></div>
+      <input type="range" id="mr" min="0" max="1" step="0.0001" oninput="onMR()">
+    </div>
+    <div id="vm-target" style="display:none">
+      <div class="lbl"><span>Target v_∞ (m/s)</span></div>
+      <input class="num" id="vinf" type="number" step="any" value="3000" onchange="onVinf()">
+    </div>
+    <div class="note l-only" style="margin-top:4px">Set how much of the vehicle is propellant, or set the speed you want to leave with and let the tool find the propellant.</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">BODY · THE WELL <a href="https://proofpress.org/proofpressorg-propellant-law.html" target="_blank" rel="noopener">[9,9,0,18] ↗</a></div>
+    <select id="body" onchange="pickBody(this.value)"></select>
+    <div class="mix" style="grid-template-columns:1fr 1fr;margin-top:6px">
+      <div>GM m³/s²<input id="gm-n" type="number" step="any" onchange="onBodyNum()"></div>
+      <div>Radius R m<input id="r-n" type="number" step="any" onchange="onBodyNum()"></div>
     </div>
   </div>
 
-  <!-- PRESETS -->
   <div class="sec">
-    <div class="sec-title"><span>PRESETS</span></div>
-
-    <div class="cat-label cat-phase">PHASE STATES</div>
-    <button class="btn btn-phase" onclick="loadPreset('noble')">◆ NOBLE · τ=0</button>
-    <button class="btn btn-phase" onclick="loadPreset('locked')">■ LOCKED · τ&lt;TL</button>
-    <button class="btn btn-phase" onclick="loadPreset('iva')">▲ IVA PEAK · τ≈TL</button>
-    <button class="btn btn-phase" onclick="loadPreset('shatter')">✕ SHATTER · τ≥TL</button>
-
-    <div class="cat-label cat-elem" style="margin-top:6px;">ELEMENTS · PERIODIC TABLE</div>
-    <button class="btn btn-elem" onclick="loadPreset('hydrogen')">H · Hydrogen · SHATTER</button>
-    <button class="btn btn-elem" onclick="loadPreset('helium')">He · Helium · NOBLE</button>
-    <button class="btn btn-elem" onclick="loadPreset('carbon')">C · Carbon · SHATTER</button>
-    <button class="btn btn-elem" onclick="loadPreset('oxygen')">O · Oxygen · SHATTER</button>
-    <button class="btn btn-elem" onclick="loadPreset('neon')">Ne · Neon · NOBLE</button>
-    <button class="btn btn-elem" onclick="loadPreset('silicon')">Si · Silicon · SHATTER</button>
-    <button class="btn btn-elem" onclick="loadPreset('iron')">Fe · Iron · SHATTER</button>
-    <button class="btn btn-elem" onclick="loadPreset('zinc')">Zn · Zinc · NOBLE</button>
-    <button class="btn btn-elem" onclick="loadPreset('gold')">Au · Gold · SHATTER</button>
-    <button class="btn btn-elem" onclick="loadPreset('uranium')">U · Uranium · SHATTER</button>
-
-    <div class="cat-label cat-bio" style="margin-top:6px;">BIOFUSE · MOLECULAR</div>
-    <button class="btn btn-bio" onclick="loadPreset('h2o')">H₂O · Water · NOBLE</button>
-    <button class="btn btn-bio" onclick="loadPreset('co2')">CO₂ · Carbon Dioxide · NOBLE</button>
-    <button class="btn btn-bio" onclick="loadPreset('nh3')">NH₃ · Ammonia · NOBLE</button>
-    <button class="btn btn-bio" onclick="loadPreset('feo')">Fe-O · Heme-like · SHATTER</button>
-
-    <div class="cat-label cat-ere" style="margin-top:6px;">EREs · EXOTIC RESONANCE</div>
-    <button class="btn btn-ere" onclick="loadPreset('soverium')">Soverium · Noble vacuum</button>
-    <button class="btn btn-ere" onclick="loadPreset('lumium')">Lumium · Photon field</button>
-    <button class="btn btn-ere" onclick="loadPreset('zoivum')">Zoivum · Life operator</button>
-    <button class="btn btn-ere" onclick="loadPreset('higgs')">Higgs · Noble VEV</button>
-    <button class="btn btn-ere" onclick="loadPreset('w_boson')">W⁺ · Weak carrier · LOCKED</button>
-    <button class="btn btn-ere" onclick="loadPreset('z_boson')">Z⁰ · Neutral weak · LOCKED</button>
-    <button class="btn btn-ere" onclick="loadPreset('xicc')">Ξcc⁺ · cc diquark · NOBLE</button>
-    <button class="btn btn-ere" onclick="loadPreset('toponium')">Toponium tt̄ · NOBLE</button>
-    <button class="btn btn-ere" onclick="loadPreset('coherent')">Coherent state · NOBLE</button>
-    <button class="btn btn-ere" onclick="loadPreset('dirac')">Dirac fermion · unbound e⁻</button>
+    <div class="st">BURN DEPTH u <a href="https://proofpress.org/proofpressorg-burn-depth-thrust-floor.html" target="_blank" rel="noopener">[9,9,0,20] ↗</a></div>
+    <div class="lbl"><span>Depth u = √(r_match / r)</span><b id="u-v"></b></div>
+    <input type="range" id="u" min="0" max="1" step="0.0001" oninput="onU()">
+    <div class="seg" style="margin-top:4px"><button class="btn" onclick="setU(1)">u = 1 · MATCHED RADIUS</button><button class="btn" onclick="setUmax()">u_max · SURFACE</button></div>
+    <div class="mix" style="grid-template-columns:1fr 1fr">
+      <div>Burn altitude km<input id="alt-n" type="number" step="any" onchange="onAlt()"></div>
+      <div>Impulsive share f<input id="f-n" type="number" step="0.01" value="0.1" onchange="onF()"></div>
+    </div>
+    <div class="note l-only" style="margin-top:4px">Burn where the well is deep. u = 1 is the matched radius; deeper is always better until you run out of body.</div>
   </div>
 
-  <!-- CONTROLS -->
   <div class="sec">
-    <div class="sec-title"><span>SIMULATION</span></div>
-    <div class="btn-row">
-      <button class="btn btn-run" onclick="startSim()">▶ RUN</button>
-      <button class="btn btn-stop" onclick="stopSim()">■ STOP</button>
-    </div>
-    <button class="btn btn-reset" onclick="resetSim()">↺ RESET</button>
-    <div class="ctrl-row" style="margin-top:4px;"><span class="ctrl-label">SIM SPEED</span><span class="ctrl-val" id="v-speed">5</span></div>
-    <input type="range" id="s-speed" min="1" max="10" step="1" value="5">
+    <div class="st">METRIC · CHARGE AND SPIN <a href="https://proofpress.org/proofpressorg-matched-surface-rotation.html" target="_blank" rel="noopener">[9,9,0,19] ↗</a></div>
+    <div class="lbl"><span>Charge q = r_Q / r_s</span><b id="q-v"></b></div>
+    <input type="range" id="q" min="0" max="0.5" step="0.001" value="0" oninput="onMetric()">
+    <div class="lbl"><span>Spin ã = a / r_s</span><b id="a-v"></b></div>
+    <input type="range" id="a" min="0" max="0.5" step="0.001" value="0" oninput="onMetric()">
+    <div class="lbl"><span>Polar angle θ</span><b id="th-v"></b></div>
+    <input type="range" id="th" min="0" max="90" step="0.5" value="90" oninput="onMetric()">
+    <div class="note l-only">Charge and spin reshape the matched surface. θ = 90° is the equator.</div>
   </div>
 
-</div>
-
-<!-- CANVAS -->
-<div id="canvas-wrap">
-  <canvas id="c"></canvas>
-  <div id="overlay">
-    <div id="hud">
-      τ = <b id="h-tau">0.0000</b> · STATE: <b id="h-state">INIT</b><br>
-      IM = <b id="h-im">0.0000</b> · Z = <b id="h-z">0.0000</b><br>
-      Pv = <b id="h-pv">0.0000</b> · t = <b id="h-t">0.0000</b>
+  <div class="sec">
+    <div class="st">POWER-LIMITED DRIVE <a href="https://proofpress.org/proofpressorg-power-limited-drive.html" target="_blank" rel="noopener">[9,9,2,54] ↗</a></div>
+    <div class="mix">
+      <div>P_th kW<input id="pth" type="number" step="any" value="1000" onchange="onPow()"></div>
+      <div>η<input id="eta" type="number" step="0.01" value="0.25" onchange="onPow()"></div>
+      <div>m_dry kg<input id="mdry" type="number" step="any" value="1230" onchange="onPow()"></div>
     </div>
-    <div id="cat-hud"></div>
-    <div id="phase-ring"></div>
+    <div class="mix" style="grid-template-columns:1fr 1fr;margin-top:4px">
+      <div>Burn time yr<input id="tburn" type="number" step="any" value="30" onchange="onPow()"></div>
+      <div>κ<input id="kappa" type="number" step="0.005" value="0.785" onchange="onPow()"></div>
+    </div>
+    <div class="seg" style="margin-top:6px"><button class="btn" onclick="useOptVe()">USE v_e(opt) AS THE DRIVE</button></div>
+    <div class="note l-only">A drive limited by its power plant, not its propellant. η = 1/4 is the radiator optimum; κ runs 0.60 to 0.97 (midpoint shown).</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">VIEW</div>
+    <div class="seg"><button class="btn run" id="b-fly" onclick="fly()">▶ FLY THE DIVE</button><button id="b-loop" onclick="toggleLoop()">LOOP OFF</button></div>
+    <div class="seg"><button id="v-top" onclick="setCam('top')">TOP</button><button id="v-orb" class="on" onclick="setCam('orbit')">ORBIT</button><button id="v-edge" onclick="setCam('edge')">EDGE-ON</button><button id="v-fit" onclick="fitCam()">FIT</button></div>
+    <div class="seg"><button id="b-lb" class="on" onclick="toggleLabels()">LABELS ON</button><button id="b-ar" onclick="toggleAuto()">AUTO-ROTATE</button></div>
+    <div class="note">Radius is drawn on a log scale so the horizon and a planet fit in one view. Every number in the readouts is exact. Drag to turn, scroll to zoom, FIT frames the body and the matched radius.</div>
   </div>
 </div>
 
-<!-- RIGHT PANEL -->
+<!-- CENTER -->
+<div id="view">
+  <canvas id="c3d"></canvas>
+  <div id="tags"></div>
+  <div id="legend">
+    <div style="color:var(--anchor)">PHASE OF THE DRIVE · τ</div>
+    <div class="bar"></div>
+    <div class="row"><span style="color:#00ffc8">Noble 0</span><span style="color:#7b4fff">Locked</span><span style="color:#f0c060">IVA</span><span style="color:#ff3a3a">≥ TL</span></div>
+    <div style="margin-top:5px;color:var(--dim)">log radius · 1 ring step = ×10 in r/r_s</div>
+  </div>
+  <div id="caption"></div>
+</div>
+
+<!-- RIGHT: readouts -->
 <div id="right">
-
   <div class="sec">
-    <div class="sec-title"><span>IDENTITY STATE</span></div>
-    <div id="cat-badge" class="cat-badge cat-badge-phase">PHASE STATE</div>
-    <div id="state-badge" class="state-badge state-LOCKED">LOCKED</div>
-    <div class="gauge-wrap">
-      <div class="gauge-label">TORSION τ = B/P<span id="g-tau-val">0.000</span></div>
-      <div class="gauge-bar"><div id="g-tau" class="gauge-fill" style="width:0%;background:var(--noble);"></div></div>
-    </div>
-    <div class="gauge-wrap">
-      <div class="gauge-label">IDENTITY MASS IM<span id="g-im-val">0.000</span></div>
-      <div class="gauge-bar"><div id="g-im" class="gauge-fill" style="width:50%;background:var(--glow);"></div></div>
-    </div>
-    <div class="gauge-wrap">
-      <div class="gauge-label">PURPOSE VECTOR Pv<span id="g-pv-val">0.000</span></div>
-      <div class="gauge-bar"><div id="g-pv" class="gauge-fill" style="width:0%;background:var(--locked);"></div></div>
-    </div>
-    <div class="gauge-wrap">
-      <div class="gauge-label">IVA OUTPUT Δv<span id="g-iva-val">0.000</span></div>
-      <div class="gauge-bar"><div id="g-iva" class="gauge-fill" style="width:0%;background:var(--iva);"></div></div>
-    </div>
+    <div class="st">READING A · THE DRIVE</div>
+    <div class="kv"><span>τ_A = v_e / c</span><span id="o-ta"></span></div>
+    <div class="kv"><span>gained (1 + g_r)·τ_A</span><span id="o-tg"></span></div>
+    <div class="kv"><span>Phase</span><span id="o-pa"></span></div>
+    <div class="kv"><span>Against the corridor</span><span id="o-short"></span></div>
+    <div class="kv"><span>Gain cap g_r &lt; c/v_e − 1</span><span id="o-cap"></span></div>
+    <div class="kv"><span>Conversion fraction η = τ²/2</span><span id="o-eta"></span></div>
+    <div class="kv"><span>On the energy ladder</span><span id="o-ladder"></span></div>
+    <div class="thm r-only">t13_reading_A_window · t44_tau_A_squared_is_conversion · t46_energy_ladder · t48_eta_is_packing_fraction</div>
   </div>
 
   <div class="sec">
-    <div class="sec-title"><span>LIVE READOUTS</span></div>
-    <div class="readout"><span class="readout-key">τ (torsion)</span><span class="readout-val" id="r-tau" style="color:var(--noble)">0.0000</span></div>
-    <div class="readout"><span class="readout-key">IM</span><span class="readout-val" id="r-im" style="color:var(--glow)">0.0000</span></div>
-    <div class="readout"><span class="readout-key">Pv</span><span class="readout-val" id="r-pv" style="color:var(--locked)">0.0000</span></div>
-    <div class="readout"><span class="readout-key">Z (impedance)</span><span class="readout-val" id="r-z" style="color:var(--glow)">0.0000</span></div>
-    <div class="readout"><span class="readout-key">Δv sovereign</span><span class="readout-val" id="r-dv" style="color:var(--iva)">0.0000</span></div>
-    <div class="readout"><span class="readout-key">Δv classical</span><span class="readout-val" id="r-dvc" style="color:#2a5060">0.0000</span></div>
-    <div class="readout"><span class="readout-key">IVA gain</span><span class="readout-val" id="r-gain" style="color:var(--iva)">—</span></div>
-    <div class="readout"><span class="readout-key">IMS gate</span><span class="readout-val" id="r-ims">GREEN</span></div>
-    <div class="readout"><span class="readout-key">F_ext</span><span class="readout-val" id="r-fext" style="color:#2a5060">0.0000</span></div>
-    <div class="readout"><span class="readout-key">t (sim time)</span><span class="readout-val" id="r-t" style="color:#2a5060">0.0000</span></div>
+    <div class="st">READING B · Δv</div>
+    <div class="kv"><span>τ_B = ln(m₀/m_f)</span><span id="o-tb"></span></div>
+    <div class="kv"><span>Phase</span><span id="o-pb"></span></div>
+    <div class="kv"><span>Mass ratio · propellant</span><span id="o-mr"></span></div>
+    <div class="kv"><span>Δv = c · τ_A · τ_B</span><span id="o-dv"></span></div>
+    <div class="kv"><span>Δv without the gain</span><span id="o-dvc"></span></div>
+    <div class="thm r-only">t38_bridge · t26_reading_B_window · t88_gain_leaves_mass_ratio_fixed</div>
   </div>
 
   <div class="sec">
-    <div class="sec-title"><span>EVENT LOG</span></div>
-    <div class="feed" id="feed"></div>
+    <div class="st">MATCHED RADIUS <a href="https://proofpress.org/proofpressorg-matched-radius.html" target="_blank" rel="noopener">[9,9,0,17] ↗</a></div>
+    <div class="kv"><span>r_match / r_s = 1/τ²</span><span id="o-xm"></span></div>
+    <div class="kv"><span>r_match for this body</span><span id="o-rm"></span></div>
+    <div class="kv"><span>Phase on radius</span><span id="o-pr"></span></div>
+    <div class="kv"><span>Dilation √(1 − 2η), both kinds</span><span id="o-dil"></span></div>
+    <div class="kv"><span>Redshift z = γ(v_e) − 1</span><span id="o-z"></span></div>
+    <div class="kv"><span>Well worth</span><span>τ_B = 1 · mass ratio e</span></div>
+    <div class="kv"><span>Oberth at r_match √(1 + 2/τ_B)</span><span id="o-ob"></span></div>
+    <div class="kv"><span>Saturation burns n_max</span><span id="o-nmax"></span></div>
+    <div class="thm r-only">t8_matched_radius_matches · t9_mass_cancels · t14_equivalence · t18_cap_is_horizon · t28_well_is_one_efold · t39_exhaust_cancels · t60_budget_is_matched_radius</div>
   </div>
 
   <div class="sec">
-    <div class="sec-title"><span>DYNAMIC EQUATION · LAYER 1</span></div>
-    <div style="font-size:8px;color:#2a5060;line-height:2.1;">
-      d/dt(IM·Pv) = Σλ·O·S + F_ext<br>
-      <span style="color:#1a4060;">τ = B/P · TL = ANCHOR/10 = 0.1369</span><br>
-      <span style="color:#1a4060;">IM = (P+N+B+A)×1.369</span><br>
-      <span style="color:var(--noble);">NOBLE: τ=0 · zero torsion · ground state</span><br>
-      <span style="color:var(--locked);">LOCKED: 0&lt;τ&lt;TL · phase-locked</span><br>
-      <span style="color:var(--iva);">IVA: τ≈TL · sovereign flow state</span><br>
-      <span style="color:var(--shatter);">SHATTER: τ≥TL · pattern genesis</span>
-    </div>
+    <div class="st">AVAILABILITY · C &gt; τ_A²</div>
+    <div class="kv"><span>r_s = 2GM/c²</span><span id="o-rs"></span></div>
+    <div class="kv"><span>Compactness C = r_s / R</span><span id="o-c"></span></div>
+    <div class="kv"><span>τ_surface = √C · phase</span><span id="o-ts"></span></div>
+    <div class="kv"><span>Usable here</span><span id="o-av"></span></div>
+    <div class="kv"><span>u_max = τ_surface / τ_A</span><span id="o-umax"></span></div>
+    <div class="kv"><span>Engine this body prescribes</span><span id="o-pres"></span></div>
+    <div class="thm r-only">C &gt; τ_A² = 2η · r_match &gt; R ⟺ C &gt; r_s/r_match · τ_surface = √C · prescribed Isp = τ_surface·c/g₀</div>
   </div>
 
+  <div class="sec">
+    <div class="st">THE BURN AT DEPTH u</div>
+    <div class="kv"><span>Burn radius r_match / u²</span><span id="o-rb"></span></div>
+    <div class="kv"><span>Altitude above the surface</span><span id="o-alt"></span></div>
+    <div class="kv"><span>v_∞ = v_e√(τ_B(τ_B + 2u))</span><span id="o-vinf"></span></div>
+    <div class="kv"><span>Same burn in free space</span><span id="o-vfree"></span></div>
+    <div class="kv"><span>Propellant · ideal rocket</span><span id="o-prop"></span></div>
+    <div class="kv"><span>Saving S · bound e^u</span><span id="o-sav"></span></div>
+    <div class="thm r-only">S(x,u) = exp(x − √(u² + x²) + u) &lt; e^u · τ_B = √(u² + x²) − u · at u = 1: S = e·exp(x − √(1 + x²)) &lt; e</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">THRUST FLOOR</div>
+    <div class="kv"><span>t_char = 2√2·GM/(c³τ³u³)</span><span id="o-tc"></span></div>
+    <div class="kv"><span>F/m floor</span><span id="o-fm"></span></div>
+    <div class="kv"><span>Thrust-to-weight at g₀</span><span id="o-tw"></span></div>
+    <div class="lbl"><span>Engine thrust (kN)</span></div>
+    <input class="num" id="thr" type="number" step="any" onchange="onThr()">
+    <div class="kv" style="margin-top:4px"><span>Vehicle mass it supports</span><span id="o-msup"></span></div>
+    <div class="kv"><span>Propellant carried</span><span id="o-mprop"></span></div>
+    <div class="thm r-only">F/m ≥ (1 − e^−τ_B) c⁴τ_A⁴u³ / (2√2 f GM)</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">MATCHED SURFACE · KERR–NEWMAN</div>
+    <div class="kv"><span>q_eff² = q² + τ²ã²cos²θ</span><span id="o-qe"></span></div>
+    <div class="kv"><span>Outer root r₊ / r_s at θ</span><span id="o-rp"></span></div>
+    <div class="kv"><span>Inner root r₋ / r_s</span><span id="o-rmn"></span></div>
+    <div class="kv"><span>Horizons r_H± / r_s</span><span id="o-hz"></span></div>
+    <div class="kv"><span>Share F = [1 + √(1 − 4q_eff²τ²)]/2</span><span id="o-F"></span></div>
+    <div class="kv"><span>Flattening, pole against equator</span><span id="o-flat"></span></div>
+    <div class="note" id="o-metnote" style="margin-top:4px"></div>
+    <div class="thm r-only">g_tt = τ_A² − 1 · equatorial r₊ is the Schwarzschild matched radius at every spin · at τ_A = 1 the surface is the ergosphere · F(1 − F) = q²τ_A²</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">POWER · a · α · v_e = 2</div>
+    <div class="kv"><span>Electric power P_e = ηP_th</span><span id="o-pe"></span></div>
+    <div class="kv"><span>Specific mass α</span><span id="o-al"></span></div>
+    <div class="kv"><span>Thrust F = 2P_e/v_e</span><span id="o-F2"></span></div>
+    <div class="kv"><span>Acceleration · a·α·v_e</span><span id="o-acc"></span></div>
+    <div class="kv"><span>Dry-mass burn time T₀</span><span id="o-t0"></span></div>
+    <div class="kv"><span>Δv over the burn</span><span id="o-pdv"></span></div>
+    <div class="kv"><span>Reach s = v_e·t − T₀·Δv</span><span id="o-reach"></span></div>
+    <div class="kv"><span>v_e(opt) = κ√(2t/α) · phase</span><span id="o-vopt"></span></div>
+    <div class="kv"><span>α window for the corridor</span><span id="o-awin"></span></div>
+    <div class="thm r-only">α = 4k_core + k_conv + 3k_rad/T_c⁴ at η = 1/4, T_c/T_h = 3/4 · α_hi/α_lo = (TL/TL_IVA)² = 625/484 · photon drive a = 2/(αc)</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">ONE AXIS · DRIVES AND BODIES</div>
+    <canvas class="chart" id="ladder"></canvas>
+    <div class="note" style="margin-top:4px">Above the line: the published drives at τ_A = v_e/c. Below: each body's τ_surface = √C, the drive whose matched radius is that body's own surface. The gold band is the IVA corridor; no drive has flown in it and no stable body sits in it.</div>
+  </div>
+
+  <div class="sec src">
+    <div class="st">READ THE PROOFS · PROOFPRESS</div>
+    <a href="https://proofpress.org/proofpressorg-propulsion-corridor.html" target="_blank" rel="noopener">One Corridor Across Exhaust Velocity, Mass Ratio and Nuclear Binding<span>[9,9,2,0] · Readings A and B, the catalog, the energy ladder · <u>.md</u></span></a>
+    <a href="https://proofpress.org/proofpressorg-matched-radius.html" target="_blank" rel="noopener">The Matched Radius<span>[9,9,0,17] · [9,9,0,17.1] · the rocket equation and the Schwarzschild metric on one axis</span></a>
+    <a href="https://proofpress.org/proofpressorg-propellant-law.html" target="_blank" rel="noopener">The Propellant Law at the Matched Radius<span>[9,9,0,18] · the saving bounded by e and the compactness criterion C &gt; 2η</span></a>
+    <a href="https://proofpress.org/proofpressorg-matched-surface-rotation.html" target="_blank" rel="noopener">The Matched Surface Under Rotation<span>[9,9,0,19] · spin as an effective charge, g_tt = τ_A² − 1</span></a>
+    <a href="https://proofpress.org/proofpressorg-burn-depth-thrust-floor.html" target="_blank" rel="noopener">Burn Depth in Matched-Radius Units<span>[9,9,0,20] · the saving bounded by e^u, the thrust floor, the engine each body prescribes</span></a>
+    <a href="https://proofpress.org/proofpressorg-power-limited-drive.html" target="_blank" rel="noopener">Every Power-Limited Drive Is One Relation<span>[9,9,2,54] · a·α·v_e = 2, the radiator–core crossover, constant-thrust reach</span></a>
+    <a href="https://proofpress.org/proofpressorg-universal-pump.html" target="_blank" rel="noopener">The Universal Pump<span>[9,9,3,2] · one compactness ladder from planets to black holes</span></a>
+    <div class="note r-only" style="margin-top:5px">Every article has a Markdown twin at the same address ending in .md, with the full Lean 4 source. Verified source: github.com/SNSFT/identityphysics</div>
+  </div>
+
+  <div class="sec">
+    <div class="st">EXPORT</div>
+    <div class="seg"><button class="btn" onclick="exportJSON()">JSON</button><button class="btn" onclick="exportCSV()">CSV</button><button class="btn" id="b-link" onclick="copyLink()">COPY LINK</button></div>
+    <div class="note">The link carries every setting, so anyone who opens it sees this exact drive, body and burn.</div>
+  </div>
+  <div class="foot">Sovereign Drive™, AxiomForge™, Identity Physics™, Applied Identity Physics™, SNSFT™, PNBA™, the Sovereign Anchor Constant™, the Torsion Limit™ and NOHARM™ are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation. © 2026 HIGHTISTIC / SNSFT Foundation · DOI 10.17605/OSF.IO/KWTYD · uuia.app/sovereigndrive</div>
 </div>
-
-<!-- BOTTOM BAR -->
-<div id="bottom">
-  <div class="bstat"><span class="bstat-label">CYCLES</span><span class="bstat-val" id="bs-cycles">0</span></div>
-  <div class="bstat"><span class="bstat-label">NOBLE EVENTS</span><span class="bstat-val" id="bs-noble" style="color:var(--noble)">0</span></div>
-  <div class="bstat"><span class="bstat-label">SHATTER EVENTS</span><span class="bstat-val" id="bs-shatter" style="color:var(--shatter)">0</span></div>
-  <div class="bstat"><span class="bstat-label">IVA PEAKS</span><span class="bstat-val" id="bs-iva" style="color:var(--iva)">0</span></div>
-  <div class="bstat"><span class="bstat-label">MAX Pv</span><span class="bstat-val" id="bs-maxpv" style="color:var(--locked)">0.000</span></div>
-  <div class="bstat"><span class="bstat-label">MAX IVA Δv</span><span class="bstat-val" id="bs-maxiva" style="color:var(--iva)">0.000</span></div>
-  <div class="bstat"><span class="bstat-label">LOADED</span><span class="bstat-val" id="bs-loaded" style="color:var(--ere);font-size:10px;">LOCKED</span></div>
-  <div style="margin-left:auto;font-size:8px;color:#1a3040;letter-spacing:.1em;text-align:right;">
-    Russell Vernon Trent III-HIGHTISTIC · Published by SNSFT Foundation<br>
-    DOI: 10.5281/zenodo.18719748 · 0 SORRY · v2.0
-  </div>
-</div>
-
-<div style="max-width:900px;margin:10px auto 0;padding:0 16px 20px;font-size:7px;color:#1a3040;text-align:center;letter-spacing:.05em;line-height:1.7;">
-  Sovereign Drive&trade;, Identity Physics&trade;, Applied Identity Physics&trade;, SNSFT&trade;, PNBA&trade;, the Sovereign Anchor Constant&trade;, the Torsion Limit&trade;, the Long Division Protocol&trade; (LDP&trade;), NOHARM&trade;, and HIGHTISTIC&trade; are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation.<br>
-  &copy; 2026 HIGHTISTIC (Russell Vernon Trent III) / SNSFT Foundation. All rights reserved.
-</div>
-
 </div>
 
 <script>
-// ════════════════════════════════════════════════════
-// CONSTANTS
-// ════════════════════════════════════════════════════
-const ANCHOR = 1.369;
-const TL     = ANCHOR / 10;   // 0.1369 — emergent
-const IVA_TL = 0.005;         // IVA corridor width
-const ALPHA  = 1/137.036;
+// ════════════════════════════════════════════════════════════
+// CORPUS CONSTANTS (Layer 0)
+// ════════════════════════════════════════════════════════════
+const TL = 0.136899099984016;            // Torsion Limit
+const TL_IVA = 0.88 * TL;                // IVA corridor floor
+const OMEGA0 = TL * 10;                  // Sovereign Anchor Constant Ω₀ = 1.36899099984016
+const ALPHA_INV = TL * 1001;             // 1/α = TL × 1001 = 137.035999084 (CODATA 2018)
 
-// ════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════
+// SI DEFINING AND MEASURED VALUES (Layer 2, reduced through LDP in the cited articles)
+// ════════════════════════════════════════════════════════════
+const C = 299792458;                     // m/s, SI defining
+const G0 = 9.80665;                      // m/s², standard gravity
+const GM_SUN = 1.32712440018e20;         // m³/s², IAU nominal
+const R_SUN = 6.957e8;                   // m, IAU 2015 Resolution B3 (Prša et al. 2016)
+const AU = 1.495978707e11, YR = 3.15576e7, DAY = 86400;
+const RS_SUN = 2*GM_SUN/(C*C);
+
+// Published drive catalog, exhaust velocity in m/s ([9,9,2,0]; burn-depth engines from [9,9,0,20])
+const DRIVES = [
+  ['none','Unpropelled body · Noble',0,null],
+  ['coldgas','Cold gas N₂',700,null],
+  ['hydrazine','Monopropellant hydrazine',2300,null],
+  ['f1','Saturn V F-1, sea level',2580,6770],
+  ['srb','Shuttle solid rocket booster',2640,12500],
+  ['merlin','Merlin 1D, vacuum',3050,981],
+  ['merlinB','Merlin 1D vacuum · Isp 348 s',348*G0,981],
+  ['raptor2','Raptor 2, vacuum',3730,2640],
+  ['raptorB','Raptor vacuum · Isp 380 s',380*G0,2640],
+  ['j2','Saturn V J-2, vacuum',4130,1033],
+  ['rs25','RS-25, vacuum',4420,2279],
+  ['ssme','Shuttle main engine, vacuum',4440,2279],
+  ['rl10','RL10B-2 · best flown chemical',4650,110],
+  ['rl10B','RL10 hydrolox · Isp 465 s',465*G0,110],
+  ['nervaB','NERVA-class · Isp 850 s',850*G0,334],
+  ['nerva','NERVA nuclear thermal',8300,334],
+  ['spt100','SPT-100 Hall thruster',16000,0.083],
+  ['nstar','NSTAR ion, Deep Space 1',30000,0.092],
+  ['nextc','NEXT-C ion · best flown electric',41000,0.236],
+  ['vasimr','VASIMR, design figure',50000,5.7],
+  ['orion','Orion nuclear pulse concept',100000,null],
+  ['daedalus','Daedalus fusion concept',10600000,null],
+  ['floor','Corridor floor · TL_IVA · c',TL_IVA*C,null],
+  ['center','Corridor center · √0.88 · TL · c',Math.sqrt(0.88)*TL*C,null],
+  ['ceiling','Corridor ceiling · TL · c',TL*C,null],
+  ['antimatter','Antimatter beam core concept',1e8,null],
+  ['photon','Photon drive · v_e = c',C,null],
+  ['custom','Custom',null,null]
+];
+// Published bodies: GM in m³/s², R in m ([9,9,0,18], [9,9,0,20])
+const BODIES = [
+  ['moon','The Moon',4.9048695e12,1.7374e6],
+  ['mars','Mars',4.282837e13,3.3895e6],
+  ['earth','Earth',3.986004418e14,6.371e6],
+  ['jupiter','Jupiter',1.26686534e17,6.9911e7],
+  ['sun','The Sun',GM_SUN,R_SUN],
+  ['giant','Red giant · 1 M☉ at 100 R☉',GM_SUN,100*R_SUN],
+  ['wd','White dwarf · 0.6 M☉',0.6*GM_SUN,0.6*RS_SUN/1.279742e-3],
+  ['ns','Neutron star · 1.4 M☉ at 12 km',1.4*GM_SUN,12000],
+  ['bh','Black hole · 10 M☉',10*GM_SUN,10*RS_SUN],
+  ['custom','Custom',null,null]
+];
+const LADDER = [['U-235 fission',0.00093],['D–T fusion',0.00376],['H → He',0.00711852],['H → Fe',0.00891711],['annihilation',1]];
+
+// ════════════════════════════════════════════════════════════
 // STATE
-// ════════════════════════════════════════════════════
-let P = 1.5, N = 2.0, B = 0.1, A = 0.5;
-let F_ext = 0, g_r = 1.5;
-let anchorLocked = true, showField = true;
-let simRunning = false, simSpeed = 5;
-let t = 0, Pv = 0;
-let lastState = '';
-let currentCategory = 'phase';
-let currentPresetName = 'locked';
-let stats = {cycles:0, noble:0, shatter:0, iva:0, maxPv:0, maxIva:0};
+// ════════════════════════════════════════════════════════════
+const S = {drive:'raptorB', ve:380*G0, g:0, lock:true, vm:'ratio', tauB:TL, vinf:3000,
+  body:'earth', GM:3.986004418e14, R:6.371e6, u:1, f:0.1, thrust:2640,
+  q:0, a:0, th:90, pth:1000, eta:0.25, mdry:1230, tburn:30, kappa:0.785};
+let mode='learner', labelsOn=true, autoRot=false, loopOn=false, O={};
 
-// ════════════════════════════════════════════════════
-// PHYSICS
-// ════════════════════════════════════════════════════
-function torsion(P,B){ return P > 0 ? B/P : 999; }
-function identityMass(P,N,B,A){ return (P+N+B+A)*ANCHOR; }
-function manifoldImpedance(f){ return f===ANCHOR ? 0 : 1/Math.abs(f-ANCHOR); }
-function imsGate(){ return anchorLocked ? 1 : 0; }
-
-// FIXED classify — IVA branch is now reachable
-function classify(tau){
-  if (tau === 0)                            return 'NOBLE';
-  if (tau < TL * (1 - IVA_TL))             return 'LOCKED';
-  if (tau < TL)                             return 'IVA';   // ← was unreachable before
-  return 'SHATTER';
+// ════════════════════════════════════════════════════════════
+// PHASES (Forge four bands)
+// ════════════════════════════════════════════════════════════
+const PH = {n:['Noble','ph-n','#00ffc8'], l:['Locked','ph-l','#9b7dff'], i:['IVA Peak','ph-i','#f0c060'], s:['Shatter','ph-s','#ff3a3a'], c:['cap','ph-c','#ffffff']};
+function phaseOf(t, capped){ if(t===0)return 'n'; if(t<TL_IVA)return 'l'; if(t<TL)return 'i'; if(capped&&t>=1)return 'c'; return 's'; }
+function chip(k){ return `<span class="chip ${PH[k][1]}">${PH[k][0]}</span>`; }
+function tauColor(t){
+  if(t===0)return new THREE.Color(0x00ffc8);
+  if(t<TL*0.5)return new THREE.Color(0x00ffc8).lerp(new THREE.Color(0x7b4fff),t/(TL*0.5));
+  if(t<TL)return new THREE.Color(0x7b4fff).lerp(new THREE.Color(0xf0c060),(t-TL*0.5)/(TL*0.5));
+  if(t>=1)return new THREE.Color(0xffffff);
+  return new THREE.Color(0xff3a3a);
 }
 
-function deltaV_sovereign(P,N,B,A,gr){
-  const ve = Math.sqrt(identityMass(P,N,B,A));
-  const ratio = (P+A) / Math.max(B, 0.0001);
-  return ve * (1 + gr) * Math.log(Math.max(ratio, 1.001));
+// ════════════════════════════════════════════════════════════
+// FORMATTING
+// ════════════════════════════════════════════════════════════
+function sci(v,d=4){ if(v===Infinity)return '∞'; if(!isFinite(v))return '—'; if(v===0)return '0'; const a=Math.abs(v); if(a>=1e-3&&a<1e6)return +v.toPrecision(d+2)+''; const e=Math.floor(Math.log10(a)),m=v/Math.pow(10,e); return m.toFixed(d-1)+' × 10'+sup(e); }
+function sup(e){ return String(e).split('').map(c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'['0123456789'.indexOf(c)]||(c==='-'?'⁻':c)).join(''); }
+function fx(v,d){ return isFinite(v)?v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}):'—'; }
+function pct(v,d=3){ return isFinite(v)?(100*v).toFixed(d)+'%':'—'; }
+function len(m){ if(!isFinite(m))return '∞'; const a=Math.abs(m); if(a>=0.1*AU)return fx(m/AU,a>=100*AU?1:4)+' AU'; if(a>=1e3)return fx(m/1e3,a>=1e6?0:3)+' km'; return fx(m,a>=1?3:6)+' m'; }
+function speed(v){ if(!isFinite(v))return '—'; const a=Math.abs(v); if(a>=1e6)return fx(v/1e3,1)+' km/s'; if(a>=1e4)return fx(v/1e3,3)+' km/s'; return fx(v,1)+' m/s'; }
+function dur(s){ if(!isFinite(s))return '—'; if(s>=YR)return fx(s/YR,4)+' yr'; if(s>=DAY)return fx(s/DAY,3)+' d'; if(s>=1)return fx(s,3)+' s'; return sci(s,4)+' s'; }
+function mass(kg){ if(!isFinite(kg))return '—'; return kg>=1e3?fx(kg/1e3,1)+' t':fx(kg,1)+' kg'; }
+
+// ════════════════════════════════════════════════════════════
+// THE REDUCTION
+// ════════════════════════════════════════════════════════════
+function compute(){
+  const o={};
+  o.tauA=S.ve/C;
+  o.gcap=o.tauA>0?1/o.tauA-1:Infinity;
+  o.gEff=S.lock?Math.min(S.g,o.gcap*0.999999):0;
+  o.tau=(1+o.gEff)*o.tauA;                        // gained Reading A
+  o.vEff=o.tau*C;
+  o.phA=phaseOf(o.tau,true);
+  o.eta=o.tau*o.tau/2;
+  o.rs=2*S.GM/(C*C); o.C=o.rs/S.R; o.tauS=Math.sqrt(o.C); o.phS=phaseOf(o.tauS,true);
+  o.xm=o.tau>0?1/(o.tau*o.tau):Infinity; o.rm=o.rs*o.xm;
+  o.dil=o.tau<1?Math.sqrt(1-o.tau*o.tau):0; o.z=o.tau<1?1/o.dil-1:Infinity;
+  o.avail=o.tau>0&&o.C>o.tau*o.tau; o.availF=o.tau>0?o.C/(o.tau*o.tau):Infinity;
+  o.umax=o.tau>0?o.tauS/o.tau:Infinity;
+  o.presIsp=o.tauS*C/G0;
+  // depth
+  o.u=o.tau>0?Math.min(S.u,o.umax):0;
+  o.rb=o.u>0?o.rm/(o.u*o.u):Infinity; o.alt=o.rb-S.R;
+  // vehicle
+  if(S.vm==='target'&&o.tau>0){ o.x=S.vinf/o.vEff; o.tauB=Math.sqrt(o.u*o.u+o.x*o.x)-o.u; o.vinf=S.vinf; }
+  else { o.tauB=S.tauB; o.vinf=o.vEff*Math.sqrt(o.tauB*(o.tauB+2*o.u)); o.x=o.vEff>0?o.vinf/o.vEff:0; }
+  o.phB=phaseOf(o.tauB,false);
+  o.mr=Math.exp(o.tauB); o.prop=1-Math.exp(-o.tauB);
+  o.dv=C*o.tau*o.tauB; o.dvc=C*o.tauA*o.tauB;
+  o.vfree=o.vEff*o.tauB;
+  o.propIdeal=1-Math.exp(-o.x);
+  o.S=Math.exp(o.x-Math.sqrt(o.u*o.u+o.x*o.x)+o.u); o.Sbound=Math.exp(o.u);
+  o.ob=o.tauB>0?Math.sqrt(1+2/o.tauB):Infinity;
+  o.nmax=o.tauB>0?o.xm/(o.tauB*(2+o.tauB)):Infinity;
+  // thrust floor
+  o.tchar=o.tau>0&&o.u>0?2*Math.SQRT2*S.GM/(Math.pow(C,3)*Math.pow(o.tau,3)*Math.pow(o.u,3)):Infinity;
+  o.fm=o.tau>0?o.prop*Math.pow(o.vEff,4)*Math.pow(o.u,3)/(2*Math.SQRT2*S.f*S.GM):0;
+  o.tw=o.fm/G0;
+  o.msup=S.thrust>0&&o.fm>0?S.thrust*1e3/o.fm:NaN; o.mprop=o.msup*o.prop;
+  // metric: Kerr–Newman matched surface
+  const ct=Math.cos(S.th*Math.PI/180), t2=o.tau*o.tau;
+  const qe2=(th)=>S.q*S.q+t2*S.a*S.a*th*th;
+  const roots=(qq)=>{const d=1-4*qq*t2; if(d<0||t2===0)return null; const s=Math.sqrt(d); return {p:(1+s)/(2*t2),m:(1-s)/(2*t2),F:(1+s)/2};};
+  o.qe2=qe2(ct); o.root=roots(o.qe2); o.rootEq=roots(qe2(0)); o.rootPole=roots(qe2(1));
+  const hd=1-4*(S.q*S.q+S.a*S.a); o.hz=hd>=0?[(1+Math.sqrt(hd))/2,(1-Math.sqrt(hd))/2]:null;
+  o.flat=o.rootEq&&o.rootPole?1-o.rootPole.p/o.rootEq.p:NaN;
+  // power-limited drive
+  o.pe=S.eta*S.pth*1e3; o.alpha=o.pe>0?S.mdry/o.pe:NaN;
+  o.F2=o.vEff>0?2*o.pe/o.vEff:NaN; o.acc=o.F2/S.mdry; o.aav=o.acc*o.alpha*o.vEff;
+  o.T0=o.pe>0&&o.vEff>0?S.mdry*o.vEff*o.vEff/(2*o.pe):NaN;
+  const tb=S.tburn*YR; o.pdv=o.vEff*Math.log(1+tb/o.T0); o.reach=o.vEff*tb-o.T0*o.pdv; o.pmr=1+tb/o.T0;
+  o.vopt=S.kappa*Math.sqrt(2*tb/o.alpha); o.phOpt=phaseOf(o.vopt/C,true);
+  o.alo=2*tb*S.kappa*S.kappa/Math.pow(TL*C,2); o.ahi=2*tb*S.kappa*S.kappa/Math.pow(TL_IVA*C,2);
+  return o;
 }
 
-function deltaV_classical(P,N,B,A){
-  const ve = Math.sqrt(identityMass(P,N,B,A));
-  const ratio = (P+A) / Math.max(B, 0.0001);
-  return ve * Math.log(Math.max(ratio, 1.001));
+// ════════════════════════════════════════════════════════════
+// READOUTS
+// ════════════════════════════════════════════════════════════
+const $=id=>document.getElementById(id);
+function set(id,h){ $(id).innerHTML=h; }
+function render(){
+  O=compute(); const o=O;
+  set('o-ta', sci(o.tauA,6));
+  set('o-tg', S.lock&&o.gEff>0?sci(o.tau,6):'— (no gain)');
+  set('o-pa', chip(o.phA));
+  set('o-short', o.tau===0?'no velocity of its own':o.tau<TL_IVA?'short of floor ×'+sci(TL_IVA/o.tau,4):o.tau<TL?'inside the corridor':o.tau<1?'over ceiling ×'+sci(o.tau/TL,4):'the horizon cap');
+  set('o-cap', o.tauA>0?(isFinite(o.gcap)?sci(o.gcap,5):'∞')+(S.g>o.gcap?' <span class="chip no">CAPPED</span>':''):'—');
+  set('o-eta', o.eta>=1e-6?pct(o.eta,6):sci(100*o.eta,4)+'%');
+  let lad='below fission'; for(const [n,e] of LADDER){ if(o.eta>=e) lad='at or above '+n; } if(o.tau>=TL_IVA&&o.tau<TL)lad+=' · in the iron-peak band';
+  set('o-ladder', o.eta>0?lad:'—');
+  set('o-tb', sci(o.tauB,6)); set('o-pb', chip(o.phB));
+  set('o-mr', fx(o.mr,6)+' · '+pct(o.prop,3));
+  set('o-dv', speed(o.dv)+' · '+pct(o.dv/C,4)+' c');
+  set('o-dvc', o.gEff>0?speed(o.dvc)+' · same mass ratio':'— (no gain)');
+  set('o-xm', o.tau>0?sci(o.xm,9):'unbounded · flat space');
+  set('o-rm', len(o.rm));
+  const pr=o.tau===0?'n':o.tau>=1?'c':phaseOf(o.tau,true);
+  set('o-pr', chip(pr)+' '+(pr==='l'?'far field':pr==='i'?'the corridor shell':pr==='s'?'inside the corridor':pr==='c'?'the horizon':'no radius'));
+  set('o-dil', o.tau>0&&o.tau<1?o.dil.toFixed(12):'—');
+  set('o-z', o.tau>0&&o.tau<1?o.z.toExponential(9):'—');
+  set('o-ob', o.tauB>0?o.ob.toFixed(6):'—');
+  set('o-nmax', o.tau>0&&o.tauB>0?sci(o.nmax,6):'—');
+  set('o-rs', len(o.rs));
+  set('o-c', sci(o.C,6));
+  set('o-ts', sci(o.tauS,6)+' '+chip(o.phS));
+  set('o-av', o.tau===0?'—':o.avail?`<span class="chip ok">YES · ${sci(o.availF,4)}×</span>`:`<span class="chip no">NO · ${sci(o.availF,4)}×</span>`);
+  set('o-umax', o.tau>0?sci(o.umax,5):'—');
+  set('o-pres', o.C<1?fx(o.presIsp,0)+' s · '+speed(o.tauS*C):'v_e = c · photon drive');
+  set('o-rb', o.tau>0?len(o.rb)+' · '+sci(o.rb/o.rs,5)+' r_s':'—');
+  set('o-alt', o.tau>0?(Math.abs(o.alt)<1e-3*S.R?'at the surface':len(o.alt)):'—');
+  set('o-vinf', o.tau>0?speed(o.vinf):'—');
+  set('o-vfree', o.tau>0?speed(o.vfree)+' · ×'+(o.vinf/o.vfree).toFixed(4):'—');
+  set('o-prop', o.tau>0?pct(o.prop,2)+' · '+pct(o.propIdeal,2):'—');
+  set('o-sav', o.tau>0?o.S.toFixed(6)+' · '+sci(o.Sbound,5):'—');
+  set('o-tc', o.tau>0?dur(o.tchar):'—');
+  set('o-fm', o.tau>0?sci(o.fm,4)+' N/kg':'—');
+  set('o-tw', o.tau>0?sci(o.tw,4):'—');
+  set('o-msup', isFinite(o.msup)?mass(o.msup):'—');
+  set('o-mprop', isFinite(o.mprop)?mass(o.mprop):'—');
+  set('o-qe', o.tau>0?sci(o.qe2,5):'—');
+  set('o-rp', o.root?o.root.p.toFixed(9):'—');
+  set('o-rmn', o.root?o.root.m.toFixed(9):'—');
+  set('o-hz', o.hz?o.hz[0].toFixed(6)+' · '+o.hz[1].toFixed(6):'naked · no horizon');
+  set('o-F', o.root?o.root.F.toFixed(12):'—');
+  set('o-flat', isFinite(o.flat)?pct(o.flat,6):'—');
+  set('o-metnote', o.tau>=1?'At Reading A = 1 the matched surface is the static limit surface: the ergosphere in Kerr, the horizon in Schwarzschild.':S.q*S.q+S.a*S.a>0.25?'q² + ã² above 1/4: no horizon in Kerr–Newman.':'The equatorial outer root equals the Schwarzschild matched radius at every spin; only charge moves it on the equator.');
+  set('o-pe', fx(o.pe/1e3,2)+' kW_e');
+  set('o-al', fx(o.alpha*1e3,3)+' kg/kW_e');
+  set('o-F2', isFinite(o.F2)?sci(o.F2,6)+' N':'—');
+  set('o-acc', isFinite(o.acc)?sci(o.acc,4)+' m/s² · '+o.aav.toFixed(9):'—');
+  set('o-t0', dur(o.T0));
+  set('o-pdv', speed(o.pdv)+' · ratio '+fx(o.pmr,5));
+  set('o-reach', len(o.reach));
+  set('o-vopt', isFinite(o.vopt)?speed(o.vopt)+' · Isp '+fx(o.vopt/G0,0)+' s '+chip(o.phOpt):'—');
+  set('o-awin', fx(o.alo*1e3,4)+' to '+fx(o.ahi*1e3,4)+' kg/kW_e');
+  // left-panel labels
+  set('ve-v', S.ve>0?speed(S.ve)+' · '+chip(phaseOf(S.ve/C,true)):'0 · Noble');
+  set('g-v', S.lock?'g_r = '+o.gEff.toFixed(4):'off anchor · 1×');
+  set('mr-v', fx(Math.exp(S.tauB),6)+' · τ_B '+S.tauB.toFixed(6));
+  set('u-v', o.tau>0?o.u.toFixed(4)+(o.u>=o.umax-1e-12?' · at surface':''):'—');
+  set('q-v', S.q.toFixed(3)); set('a-v', S.a.toFixed(3)); set('th-v', S.th.toFixed(1)+'°');
+  $('isp-n').value=S.ve>0?+(S.ve/G0).toPrecision(9):0; $('ve-n').value=+S.ve.toPrecision(10);
+  $('gm-n').value=S.GM; $('r-n').value=+S.R.toPrecision(10);
+  $('alt-n').value=o.tau>0&&isFinite(o.alt)?+(o.alt/1e3).toPrecision(8):'';
+  $('thr').value=S.thrust||'';
+  syncU(); caption(); drawLadder(); buildScene(); writeHash();
 }
 
-// ════════════════════════════════════════════════════
-// CATEGORY VISUALS
-// ════════════════════════════════════════════════════
-const CAT_COLORS = {
-  phase:   { core: 0x00e5ff, wire: 0x00ffcc, field: 0x00e5ff, particle: 0x00ffcc },
-  elem:    { core: 0x00d4aa, wire: 0x00ffaa, field: 0x00d4aa, particle: 0x00ffaa },
-  bio:     { core: 0x88ffcc, wire: 0xaaffdd, field: 0x88ffcc, particle: 0xaaffdd },
-  ere:     { core: 0xffcc44, wire: 0xffdd88, field: 0xffcc44, particle: 0xffdd88 },
-};
+// ════════════════════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════════════════════
+const VE_LO=Math.log10(100), VE_HI=Math.log10(C);
+function veToSlider(v){ return v<=0?0:(Math.log10(v)-VE_LO)/(VE_HI-VE_LO); }
+function pickDrive(k){ S.drive=k; const d=DRIVES.find(x=>x[0]===k); if(d&&d[2]!==null){S.ve=d[2]; if(d[3]!==null)S.thrust=d[3];} $('ve').value=veToSlider(S.ve); clearMission(); render(); }
+function onVe(){ const s=+$('ve').value; S.ve=s<=0?0:Math.pow(10,VE_LO+s*(VE_HI-VE_LO)); S.drive='custom'; $('drive').value='custom'; clearMission(); render(); }
+function onVeNum(){ S.ve=Math.max(0,Math.min(C,+$('ve-n').value||0)); S.drive='custom'; $('drive').value='custom'; $('ve').value=veToSlider(S.ve); render(); }
+function onIspNum(){ S.ve=Math.max(0,Math.min(C,(+$('isp-n').value||0)*G0)); S.drive='custom'; $('drive').value='custom'; $('ve').value=veToSlider(S.ve); render(); }
+function onG(){ const cap=S.ve>0?C/S.ve-1:0, s=+$('g').value; S.g=Math.min(cap,Math.pow(10,-3+5*s)-0.001); if(s===0)S.g=0; render(); }
+function setLock(on){ S.lock=on; $('lk-on').classList.toggle('on',on); $('lk-off').classList.toggle('on',!on); render(); }
+function setVM(m,sync){ S.vm=m; $('vm-r').classList.toggle('on',m==='ratio'); $('vm-t').classList.toggle('on',m==='target'); $('vm-ratio').style.display=m==='ratio'?'block':'none'; $('vm-target').style.display=m==='target'?'block':'none'; if(sync!==false){ if(m==='ratio'&&O.tauB!==undefined)S.tauB=O.tauB; if(m==='target'&&O.vinf)S.vinf=+O.vinf.toPrecision(8); } $('vinf').value=S.vinf; $('mr').value=mrToSlider(S.tauB); render(); }
+function mrToSlider(tb){ return Math.log10(Math.max(1e-4,tb)/1e-4)/Math.log10(10/1e-4); }
+function onMR(){ const s=+$('mr').value; S.tauB=1e-4*Math.pow(10,s*Math.log10(10/1e-4)); clearMission(); render(); }
+function onVinf(){ S.vinf=Math.max(0,+$('vinf').value||0); render(); }
+function pickBody(k){ S.body=k; const b=BODIES.find(x=>x[0]===k); if(b&&b[2]!==null){S.GM=b[2];S.R=b[3];} clearMission(); render(); }
+function onBodyNum(){ S.GM=Math.max(1,+$('gm-n').value||S.GM); const rs=2*S.GM/(C*C); S.R=Math.max(rs,+$('r-n').value||S.R); S.body='custom'; $('body').value='custom'; render(); }
+function uRange(){ const um=O.umax&&isFinite(O.umax)?O.umax:10; const hi=Math.log10(um), lo=Math.min(-2,hi-3); return [lo,hi]; }
+function syncU(){ const [lo,hi]=uRange(); $('u').value=O.u>0?(Math.log10(O.u)-lo)/(hi-lo):0; }
+function onU(){ const [lo,hi]=uRange(); S.u=Math.pow(10,lo+(+$('u').value)*(hi-lo)); render(); }
+function setU(u){ S.u=u; render(); }
+function setUmax(){ S.u=O.umax; render(); }
+function onAlt(){ const km=+$('alt-n').value; if(!isFinite(km)||O.tau<=0)return; S.u=Math.sqrt(O.rm/(S.R+km*1e3)); render(); }
+function onF(){ S.f=Math.max(1e-6,+$('f-n').value||0.1); render(); }
+function onThr(){ S.thrust=Math.max(0,+$('thr').value||0); render(); }
+function onMetric(){ S.q=+$('q').value; S.a=+$('a').value; const amax=Math.sqrt(Math.max(0,0.25-S.q*S.q)); if(S.a>amax){S.a=amax;$('a').value=amax;} S.th=+$('th').value; render(); }
+function onPow(){ S.pth=Math.max(0,+$('pth').value||0); S.eta=Math.min(1,Math.max(0,+$('eta').value||0)); S.mdry=Math.max(1e-3,+$('mdry').value||1); S.tburn=Math.max(0,+$('tburn').value||0); S.kappa=Math.max(0,+$('kappa').value||0); render(); }
+function useOptVe(){ if(isFinite(O.vopt)&&O.vopt>0){ S.ve=Math.min(C,O.vopt); S.g=0; $('g').value=0; S.drive='custom'; $('drive').value='custom'; $('ve').value=veToSlider(S.ve); render(); } }
+function setMode(m){ mode=m; document.body.classList.toggle('res',m==='res'); $('m-l').classList.toggle('on',m!=='res'); $('m-r').classList.toggle('on',m==='res'); caption(); }
 
-const CAT_GEOMETRY = {
-  phase:  'dodecahedron',  // 12 faces — digital soulprint
-  elem:   'octahedron',    // 8 faces — atomic structure
-  bio:    'icosahedron',   // 20 faces — biological complexity
-  ere:    'tetrahedron',   // 4 faces — quantum simplicity
-};
-
-// ════════════════════════════════════════════════════
-// THREE.JS SETUP
-// ════════════════════════════════════════════════════
-const canvas = document.getElementById('c');
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setClearColor(0x000000, 0);
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, 1, 0.01, 1000);
-camera.position.set(0, 0, 8);
-
-function resize(){
-  const wrap = document.getElementById('canvas-wrap');
-  const w = wrap.clientWidth, h = wrap.clientHeight;
-  renderer.setSize(w, h);
-  camera.aspect = w/h;
-  camera.updateProjectionMatrix();
+// ════════════════════════════════════════════════════════════
+// WORKED MISSIONS (from the articles)
+// ════════════════════════════════════════════════════════════
+const MISSIONS = [
+  {id:'raptor', name:'Raptor departure from Earth', sub:'[9,9,0,20] · 100 km perigee, v_∞ = 3 km/s, f = 0.1 → 10.14% propellant, 576 t supported',
+   set:{drive:'raptorB',ve:380*G0,thrust:2640,g:0,lock:true,body:'earth',vm:'target',vinf:3000,f:0.1,altKm:100}},
+  {id:'ns', name:'Corridor ceiling at a neutron star', sub:'[9,9,0,18] · C = 0.344546 clears C > τ_A² by 18.4×; τ_A = TL is the Shatter edge (t27_phase_of_edges)',
+   set:{drive:'ceiling',ve:TL*C,thrust:null,g:0,lock:true,body:'ns',vm:'ratio',tauB:TL,u:1}},
+  {id:'sun', name:'Corridor ceiling at the Sun', sub:'[9,9,0,18] · the matched radius lies inside the Sun: not available',
+   set:{drive:'ceiling',ve:TL*C,thrust:null,g:0,lock:true,body:'sun',vm:'ratio',tauB:TL,u:'max'}},
+  {id:'photon', name:'Photon drive at a black hole', sub:'[9,9,0,17] · v_e = c matches the horizon of every mass',
+   set:{drive:'photon',ve:C,thrust:null,g:0,lock:true,body:'bh',vm:'ratio',tauB:0.5,u:1}},
+  {id:'daedalus', name:'Daedalus at a neutron star', sub:'[9,9,0,17] · the fusion concept, Locked below the corridor, burned at its matched radius',
+   set:{drive:'daedalus',ve:10600000,thrust:null,g:0,lock:true,body:'ns',vm:'ratio',tauB:1,u:1}},
+  {id:'gain', name:'Floor drive carried by the gain', sub:'[9,9,2,0] · Daedalus with g_r lifting (1 + g_r)·τ_A to the corridor floor',
+   set:{drive:'daedalus',ve:10600000,thrust:null,g:TL_IVA*C/10600000-1,lock:true,body:'ns',vm:'ratio',tauB:TL,u:1}},
+  {id:'power', name:'Power-limited reference spec', sub:'[9,9,2,54] · 1,000 kW_th, η = 1/4, 1,230 kg, Isp 56,929 s → 448.93 km/s and 1,232 AU in 30 years',
+   set:{drive:'custom',ve:56929*G0,thrust:null,g:0,lock:true,body:'sun',vm:'ratio',tauB:TL,u:'max',pth:1000,eta:0.25,mdry:1230,tburn:30}},
+  {id:'noble', name:'Unpropelled body', sub:'[9,9,2,0] · Noble: no velocity of its own, so no matched radius',
+   set:{drive:'none',ve:0,thrust:null,g:0,lock:true,body:'sun',vm:'ratio',tauB:0,u:1}}
+];
+let curMission=null;
+function clearMission(){ curMission=null; document.querySelectorAll('.mission').forEach(b=>b.classList.remove('on')); }
+function loadMission(id){
+  const m=MISSIONS.find(x=>x.id===id); if(!m)return; const s=m.set;
+  Object.assign(S,{drive:s.drive,ve:s.ve,g:s.g,lock:s.lock,vm:s.vm});
+  if(s.thrust!==undefined)S.thrust=s.thrust;
+  const b=BODIES.find(x=>x[0]===s.body); S.body=s.body; S.GM=b[2]; S.R=b[3];
+  if(s.tauB!==undefined)S.tauB=s.tauB; if(s.vinf!==undefined)S.vinf=s.vinf; if(s.f!==undefined)S.f=s.f;
+  ['pth','eta','mdry','tburn'].forEach(k=>{ if(s[k]!==undefined){S[k]=s[k];$(k).value=s[k];} });
+  const t=S.ve/C*(1+(S.lock?S.g:0)), rs=2*S.GM/(C*C), rm=t>0?rs/(t*t):Infinity, umax=t>0?Math.sqrt(rs/S.R)/t:1;
+  if(s.altKm!==undefined)S.u=Math.sqrt(rm/(S.R+s.altKm*1e3)); else S.u=s.u==='max'?umax:s.u;
+  $('drive').value=S.drive; $('body').value=S.body; $('ve').value=veToSlider(S.ve); $('vinf').value=S.vinf; $('f-n').value=S.f;
+  $('g').value=S.g>0?(Math.log10(S.g+0.001)+3)/5:0; $('mr').value=mrToSlider(S.tauB);
+  setLock(S.lock); setVM(S.vm,false);
+  curMission=id; document.querySelectorAll('.mission').forEach(x=>x.classList.toggle('on',x.dataset.id===id));
+  render();
 }
-window.addEventListener('resize', resize);
-setTimeout(resize, 100);
 
-// ── CORE GEOMETRY (swappable by category) ──
-let coreMesh, wireMesh;
+// ════════════════════════════════════════════════════════════
+// SCENE · AxiomForge well on a log radius
+// ════════════════════════════════════════════════════════════
+const viewEl=$('view'), cv=$('c3d');
+const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setClearColor(0x000000,1);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,1,0.1,4000);
+scene.add(new THREE.AmbientLight(0x222233,1.4));
+const keyLight=new THREE.PointLight(0xf0c060,2.2,600); keyLight.position.set(120,160,80); scene.add(keyLight);
+const rim=new THREE.PointLight(0x00ffc8,1.2,700); rim.position.set(-160,120,-120); scene.add(rim);
+(function(){const g=new THREE.BufferGeometry(),p=[];for(let i=0;i<2500;i++){const r=700+Math.random()*900,t=Math.random()*6.2832,f=Math.acos(2*Math.random()-1);p.push(r*Math.sin(f)*Math.cos(t),r*Math.cos(f),r*Math.sin(f)*Math.sin(t));}
+g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xaaaacc,size:0.9,transparent:true,opacity:.5})));})();
 
-function buildCore(category) {
-  if (coreMesh) scene.remove(coreMesh);
-  if (wireMesh) scene.remove(wireMesh);
+const RHO0=4, KLOG=9, RMAX=140;
+function rho(x){ if(!isFinite(x))return RMAX; return Math.min(RMAX, RHO0+KLOG*Math.log10(Math.max(1,x))); }
+const SPH=new THREE.SphereGeometry(1,48,24), DOD=new THREE.DodecahedronGeometry(1,0);
+function ringMesh(color,op){ const m=new THREE.Mesh(new THREE.TorusGeometry(1,0.004,6,160),new THREE.MeshBasicMaterial({color,transparent:true,opacity:op})); m.rotation.x=Math.PI/2; scene.add(m); return m; }
+// decade grid rings
+const decade=[]; for(let k=0;k<=15;k++){ const m=ringMesh(0x1a3a40,0.35); decade.push(m); const r=rho(Math.pow(10,k)); m.scale.set(r,r,r); m.geometry=new THREE.TorusGeometry(1,0.0015,4,160); }
+// strong-field landmarks
+const hzRing=ringMesh(0xf0c060,0.9), psRing=ringMesh(0xff3a3a,0.55), iscoRing=ringMesh(0xff3a3a,0.75);
+[[hzRing,1],[psRing,1.5],[iscoRing,3]].forEach(([m,x])=>{const r=rho(x);m.scale.set(r,r,r);});
+// the IVA corridor band on radius: 53.357910 ≤ r/r_s ≤ 68.902260
+const cA=rho(1/(TL*TL)), cB=rho(1/(TL_IVA*TL_IVA));
+const corridor=new THREE.Mesh(new THREE.RingGeometry(cA,cB,160,1),new THREE.MeshBasicMaterial({color:0xf0c060,transparent:true,opacity:.55,side:THREE.DoubleSide}));
+corridor.rotation.x=-Math.PI/2; scene.add(corridor);
+const corridorShell=new THREE.Mesh(SPH,new THREE.MeshBasicMaterial({color:0xf0c060,wireframe:true,transparent:true,opacity:.06})); corridorShell.scale.setScalar((cA+cB)/2); scene.add(corridorShell);
+// the body
+const bodyMat=new THREE.MeshPhongMaterial({color:0x00ffc8,emissive:0x00ffc8,emissiveIntensity:.15,transparent:true,opacity:.22,shininess:60,depthWrite:false});
+const bodyMesh=new THREE.Mesh(SPH,bodyMat); scene.add(bodyMesh);
+const bodyWire=new THREE.Mesh(new THREE.SphereGeometry(1,24,12),new THREE.MeshBasicMaterial({color:0x00ffc8,wireframe:true,transparent:true,opacity:.07})); scene.add(bodyWire);
+const holeMesh=new THREE.Mesh(SPH,new THREE.MeshBasicMaterial({color:0x000000})); holeMesh.scale.setScalar(RHO0*0.98); scene.add(holeMesh);
+// matched surface and burn radius
+const matchMat=new THREE.MeshBasicMaterial({color:0xf0c060,wireframe:true,transparent:true,opacity:.2});
+const matchMesh=new THREE.Mesh(new THREE.SphereGeometry(1,40,20),matchMat); scene.add(matchMesh);
+const matchRing=ringMesh(0xf0c060,1); matchRing.geometry=new THREE.TorusGeometry(1,0.01,6,200);
+const burnRing=ringMesh(0xffffff,0.9); burnRing.geometry=new THREE.TorusGeometry(1,0.008,6,200);
+// vehicle, trail, plume
+const vehMat=new THREE.MeshPhongMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:.5,shininess:120});
+const vehicle=new THREE.Mesh(DOD,vehMat); vehicle.scale.setScalar(1.6); vehicle.visible=false; scene.add(vehicle);
+const vehWire=new THREE.Mesh(DOD,new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,transparent:true,opacity:.9})); vehWire.scale.setScalar(1.65); vehWire.visible=false; scene.add(vehWire);
+const TRAIL_N=600, trailGeo=new THREE.BufferGeometry(); trailGeo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(TRAIL_N*3),3)); trailGeo.setDrawRange(0,0);
+const trail=new THREE.Line(trailGeo,new THREE.LineBasicMaterial({color:0xffdd00,transparent:true,opacity:.8})); scene.add(trail);
+const plume=new THREE.Mesh(new THREE.ConeGeometry(1,1,12,1,true),new THREE.MeshBasicMaterial({color:0xf0c060,transparent:true,opacity:.7,side:THREE.DoubleSide})); plume.visible=false; scene.add(plume);
 
-  const geomType = CAT_GEOMETRY[category] || 'dodecahedron';
-  let geo, wireGeo;
-  const size = 0.5;
-  if (geomType === 'dodecahedron') {
-    geo     = new THREE.DodecahedronGeometry(size, 0);
-    wireGeo = new THREE.DodecahedronGeometry(size*1.02, 0);
-  } else if (geomType === 'octahedron') {
-    geo     = new THREE.OctahedronGeometry(size, 0);
-    wireGeo = new THREE.OctahedronGeometry(size*1.02, 0);
-  } else if (geomType === 'icosahedron') {
-    geo     = new THREE.IcosahedronGeometry(size, 0);
-    wireGeo = new THREE.IcosahedronGeometry(size*1.02, 0);
+// labels
+const TAGS=[['hz','HORIZON 1 r_s','#f0c060',180],['isco','ISCO 3 r_s','#ff6b8a',250],['cor','IVA CORRIDOR 53.36–68.90 r_s','#f0c060',320],['body','SURFACE','#00ffc8',130],['match','MATCHED RADIUS','#f0c060',60],['burn','BURN · u','#ffffff',95]];
+const tagEl={}; TAGS.forEach(([k,txt,col])=>{const d=document.createElement('div');d.className='tag';d.style.color=col;d.textContent=txt;$('tags').appendChild(d);tagEl[k]=d;});
+const tagR={hz:rho(1),isco:rho(3),cor:(cA+cB)/2,body:0,match:0,burn:0};
+
+let rhoBody=RHO0, rhoMatch=RMAX, rhoBurn=RMAX;
+function buildScene(){
+  const o=O, isHole=o.C>=1-1e-12;
+  rhoBody=isHole?RHO0:rho(1/o.C);
+  bodyMesh.visible=bodyWire.visible=!isHole; holeMesh.visible=true;
+  bodyMesh.scale.setScalar(rhoBody); bodyWire.scale.setScalar(rhoBody*1.002);
+  const bc=tauColor(o.tauS); bodyMat.color.copy(bc); bodyMat.emissive.copy(bc); bodyWire.material.color.copy(bc);
+  // landmarks inside the body are not part of the exterior metric: dim them
+  const inside=x=>!isHole&&rho(x)<rhoBody;
+  hzRing.material.opacity=inside(1)?0.15:0.9; psRing.material.opacity=inside(1.5)?0.1:0.55; iscoRing.material.opacity=inside(3)?0.1:0.75;
+  corridor.material.opacity=rho(68.9)<rhoBody?0.14:0.55;
+  rhoMatch=o.tau>0?rho(o.xm):RMAX;
+  const mc=tauColor(o.tau);
+  matchMesh.visible=matchRing.visible=o.tau>0; matchMesh.scale.setScalar(rhoMatch); matchRing.scale.set(rhoMatch,rhoMatch,rhoMatch);
+  matchMat.color.copy(mc); matchRing.material.color.copy(mc); matchMat.opacity=o.avail?.2:.08;
+  rhoBurn=o.tau>0?rho(o.rb/o.rs):RMAX;
+  burnRing.visible=o.tau>0&&o.u>0; burnRing.scale.set(rhoBurn,rhoBurn,rhoBurn);
+  plume.material.color.copy(mc);
+  tagR.body=rhoBody; tagR.match=rhoMatch; tagR.burn=rhoBurn;
+  tagEl.body.textContent=isHole?'HORIZON = SURFACE':'SURFACE · R = '+sci(1/o.C,4)+' r_s';
+  tagEl.match.textContent=o.tau>0?'MATCHED RADIUS · '+sci(o.xm,5)+' r_s':'';
+  tagEl.burn.textContent=o.tau>0?'BURN · u = '+o.u.toFixed(3):'';
+  tagEl.match.style.color='#'+mc.getHexString();
+  if(!flight.on)buildPath();
+}
+
+// flight path in display space: periapsis at the burn radius
+const flight={on:false,t:0,dur:7,path:[],burnIdx:0};
+function buildPath(){
+  const peri=Math.max(RHO0*1.15,Math.min(rhoBurn,RMAX*0.9)), phiM=1.7, n=TRAIL_N, pts=[];
+  for(let i=0;i<n;i++){ const s=-1+2*i/(n-1), phi=s*phiM, r=peri+(RMAX-peri)*Math.pow(Math.abs(s),1.5);
+    pts.push(new THREE.Vector3(r*Math.cos(phi+Math.PI/2),0.0,r*Math.sin(phi+Math.PI/2))); }
+  flight.path=pts; flight.burnIdx=Math.floor(n/2);
+}
+function fly(){ flight.on=true; flight.t=0; buildPath(); vehicle.visible=vehWire.visible=true; trailGeo.setDrawRange(0,0); }
+function toggleLoop(){ loopOn=!loopOn; const b=$('b-loop'); b.classList.toggle('on',loopOn); b.textContent=loopOn?'LOOP ON':'LOOP OFF'; if(loopOn&&!flight.on)fly(); }
+function tickFlight(dt){
+  if(!flight.on)return;
+  flight.t+=dt/flight.dur;
+  if(flight.t>=1){ flight.on=false; plume.visible=false; if(loopOn){fly();} return; }
+  // ease: slower through periapsis so the burn reads
+  const s=flight.t, e=0.5+Math.sign(s-0.5)*0.5*Math.pow(Math.abs(2*s-1),0.75);
+  const i=Math.min(TRAIL_N-1,Math.floor(e*(TRAIL_N-1))), p=flight.path[i];
+  vehicle.position.copy(p); vehWire.position.copy(p); vehicle.rotation.y+=0.03; vehWire.rotation.copy(vehicle.rotation);
+  const arr=trailGeo.attributes.position.array; for(let k=0;k<=i;k++){arr[3*k]=flight.path[k].x;arr[3*k+1]=flight.path[k].y;arr[3*k+2]=flight.path[k].z;}
+  trailGeo.attributes.position.needsUpdate=true; trailGeo.setDrawRange(0,i+1);
+  const burning=O.tau>0&&O.tauB>0&&Math.abs(i-flight.burnIdx)<TRAIL_N*0.035;
+  plume.visible=burning;
+  if(burning){ const nx=flight.path[Math.min(TRAIL_N-1,i+1)].clone().sub(p).normalize(); plume.position.copy(p).addScaledVector(nx,-3.2); plume.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),nx); plume.scale.set(1.1,4+6*Math.min(1,O.tauB),1.1); }
+  const vc=i>flight.burnIdx&&O.tauB>0?tauColor(O.tau):new THREE.Color(0xffffff); vehMat.color.copy(vc); vehMat.emissive.copy(vc); vehWire.material.color.copy(vc);
+}
+
+// camera
+let cam={r:300,th:.9,ph:1.05},tgtCam=null;
+function placeCam(){camera.position.set(cam.r*Math.sin(cam.ph)*Math.cos(cam.th),cam.r*Math.cos(cam.ph),cam.r*Math.sin(cam.ph)*Math.sin(cam.th));camera.lookAt(0,0,0);}
+function fitCam(){ const r=Math.max(rhoBody,Math.min(rhoMatch,RMAX*0.75),rhoBurn<RMAX?rhoBurn:0,RHO0*3); tgtCam={ph:cam.ph,r:Math.max(24,r*2.6)}; ['top','orb','edge'].forEach(k=>$('v-'+k).classList.remove('on')); }
+function setCam(v){
+  tgtCam=v==='top'?{ph:.04,r:300}:v==='edge'?{ph:1.53,r:310}:{ph:1.05,r:300};
+  ['top','orb','edge'].forEach(k=>$('v-'+k).classList.toggle('on',(k==='orb'?'orbit':k)===v));
+}
+let drag=false,lx=0,ly=0;
+cv.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointerup',()=>drag=false);
+cv.addEventListener('pointermove',e=>{if(!drag)return;tgtCam=null;cam.th+=(e.clientX-lx)*.005;cam.ph=Math.max(.03,Math.min(1.56,cam.ph-(e.clientY-ly)*.005));lx=e.clientX;ly=e.clientY;});
+cv.addEventListener('wheel',e=>{e.preventDefault();tgtCam=null;cam.r=Math.max(20,Math.min(900,cam.r*(1+e.deltaY*.001)));},{passive:false});
+function toggleLabels(){ labelsOn=!labelsOn; const b=$('b-lb'); b.classList.toggle('on',labelsOn); b.textContent=labelsOn?'LABELS ON':'LABELS OFF'; $('tags').style.display=labelsOn?'block':'none'; }
+function toggleAuto(){ autoRot=!autoRot; $('b-ar').classList.toggle('on',autoRot); }
+function placeTags(){
+  if(!labelsOn)return; const w=viewEl.clientWidth,h=viewEl.clientHeight;
+  for(const [k,,,deg] of TAGS){ const r=tagR[k], a=deg*Math.PI/180, v=new THREE.Vector3(r*Math.cos(a),0,r*Math.sin(a)).project(camera), el=tagEl[k];
+    const hide=v.z>1||!el.textContent||(k==='burn'&&!burnRing.visible)||(k==='match'&&!matchMesh.visible);
+    el.style.display=hide?'none':'block'; el.style.left=((v.x*.5+.5)*w)+'px'; el.style.top=((-v.y*.5+.5)*h)+'px'; }
+}
+
+// ════════════════════════════════════════════════════════════
+// LADDER CHART · drives and bodies on one τ axis
+// ════════════════════════════════════════════════════════════
+function sizeCanvas(c){const w=c.clientWidth,h=c.clientHeight;if(c.width!==w*devicePixelRatio){c.width=w*devicePixelRatio;c.height=h*devicePixelRatio;}const x=c.getContext('2d');x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);x.clearRect(0,0,w,h);return [x,w,h];}
+function drawLadder(){
+  const [x,w,h]=sizeCanvas($('ladder')); const L=8,Rp=8,lo=-6,hi=0.3,X=t=>L+(w-L-Rp)*(Math.log10(t)-lo)/(hi-lo),mid=h*0.5;
+  x.font='8px "Space Mono", monospace';
+  // corridor band
+  x.fillStyle='rgba(240,192,96,.22)'; x.fillRect(X(TL_IVA),6,X(TL)-X(TL_IVA),h-12);
+  x.strokeStyle='rgba(255,58,58,.6)'; x.beginPath(); x.moveTo(X(TL),6); x.lineTo(X(TL),h-6); x.stroke();
+  x.strokeStyle='rgba(255,255,255,.5)'; x.beginPath(); x.moveTo(X(1),6); x.lineTo(X(1),h-6); x.stroke();
+  // axis
+  x.strokeStyle='rgba(232,232,240,.35)'; x.beginPath(); x.moveTo(L,mid); x.lineTo(w-Rp,mid); x.stroke();
+  x.fillStyle='rgba(232,232,240,.4)'; for(let k=-6;k<=0;k++){ const xx=X(Math.pow(10,k)); x.fillRect(xx,mid-2,1,4); if(k%2===0)x.fillText('10'+sup(k),xx-8,mid+12); }
+  // drives above
+  const drv=DRIVES.filter(d=>d[2]>0&&!['merlinB','raptorB','rl10B','nervaB','floor','center','ceiling','custom'].includes(d[0]));
+  drv.forEach((d,i)=>{ const t=d[2]/C,xx=X(t),y=mid-8-(i%4)*9; x.fillStyle=PH[phaseOf(t,true)][2]; x.fillRect(xx-1,y,2,mid-y-1); });
+  x.fillStyle='rgba(232,232,240,.55)'; x.fillText('drives τ_A',L,12);
+  // bodies below
+  BODIES.filter(b=>b[2]).forEach((b,i)=>{ const t=Math.sqrt(2*b[2]/(C*C)/b[3]),xx=X(t),y=mid+16+(i%3)*9; x.fillStyle=PH[phaseOf(t,true)][2]; x.beginPath(); x.arc(xx,y,2.2,0,6.3); x.fill(); x.fillStyle='rgba(232,232,240,.35)'; x.fillRect(xx,mid+1,1,y-mid-3); });
+  x.fillStyle='rgba(232,232,240,.55)'; x.fillText('bodies τ_surface = √C',L,h-4);
+  // current drive and body
+  if(O.tau>0){ const xx=X(Math.max(1e-6,Math.min(2,O.tau))); x.fillStyle='#fff'; x.beginPath(); x.moveTo(xx,mid-3); x.lineTo(xx-5,mid-12); x.lineTo(xx+5,mid-12); x.fill(); x.fillText('drive',xx-10,mid-15>12?mid-48:mid-15); }
+  { const xx=X(Math.max(1e-6,Math.min(2,O.tauS))); x.strokeStyle='#fff'; x.lineWidth=1.5; x.beginPath(); x.arc(xx,mid+6,4,0,6.3); x.stroke(); x.lineWidth=1; }
+  x.fillStyle='rgba(240,192,96,.9)'; x.fillText('IVA',X(TL_IVA)-2,h-14);
+}
+
+// ════════════════════════════════════════════════════════════
+// CAPTION
+// ════════════════════════════════════════════════════════════
+function caption(){
+  const o=O; let c;
+  if(!o||o.tauA===undefined)return;
+  if(o.tau===0){
+    c=mode==='learner'
+      ?'This vehicle throws nothing, so it has <b>no velocity of its own</b>: that is <b>Noble</b> in this reading. Comets and asteroids live here, and the fastest of them still outrun every rocket ever flown. With no drive there is no matched radius to show.'
+      :'τ_A = 0: Noble is the vehicle that produces no velocity of its own (t18_noble_is_unfueled). r_match/r_s = 1/τ_A² is unbounded; the unpropelled catalog exceeds every published propulsive budget by 2.21× to 33.32× (t68).';
+  } else if(mode==='learner'){
+    const where=o.phA==='l'?'below the IVA corridor, like every engine humans have flown':o.phA==='i'?'inside the IVA corridor':o.phA==='c'?'at light speed, the cap':'above the corridor';
+    c=`The drive throws its exhaust at <b>${pct(o.tau,4)} of light speed</b>, ${where}. There is one distance from this body where falling in from far away gets you moving exactly as fast as your exhaust: the <b>matched radius</b>, ${sci(o.xm,4)} times the body's Schwarzschild radius. `+
+      (o.avail?`It lies outside the surface, so the well is usable: burn there and the well hands you up to <b>one e-fold</b> of propellant for free, and every step deeper (u) is worth another.`
+               :`For this body it lies <b>inside the surface</b> (C &lt; τ_A²), so the full matched-radius burn is not available here. You can still burn at the surface, at depth u = ${sci(o.umax,3)}.`)+
+      ` This burn leaves at <b>${speed(o.vinf)}</b> using ${pct(o.prop,2)} propellant, against ${pct(o.propIdeal,2)} for the same speed in empty space.`;
   } else {
-    // tetrahedron for EREs
-    geo     = new THREE.TetrahedronGeometry(size*1.3, 0);
-    wireGeo = new THREE.TetrahedronGeometry(size*1.32, 0);
+    c=`τ_A = ${sci(o.tau,6)} (${PH[o.phA][0]}), τ_B = ${sci(o.tauB,6)}, Δv = c·τ_A·τ_B = ${speed(o.dv)}. r_match/r_s = 1/τ_A² = ${sci(o.xm,8)}; dilation √(1 − 2η) = ${o.tau<1?o.dil.toFixed(10):'—'}. C = ${sci(o.C,5)} ${o.avail?'&gt;':'&lt;'} τ_A² = ${sci(o.tau*o.tau,5)}: ${o.avail?'available':'not available'} (u_max = ${sci(o.umax,4)}). At u = ${o.u.toFixed(4)}: v_∞ = v_e√(τ_B(τ_B + 2u)) = ${speed(o.vinf)}, S = ${o.S.toFixed(5)} &lt; e^u = ${sci(o.Sbound,4)}; F/m ≥ ${sci(o.fm,4)} N/kg (f = ${S.f}).`;
   }
-
-  const colors = CAT_COLORS[category] || CAT_COLORS.phase;
-  const mat = new THREE.MeshPhongMaterial({
-    color: colors.core,
-    emissive: new THREE.Color(colors.core).multiplyScalar(0.08),
-    wireframe: false, transparent: true, opacity: 0.85
-  });
-  coreMesh = new THREE.Mesh(geo, mat);
-  scene.add(coreMesh);
-
-  const wireMat = new THREE.MeshBasicMaterial({
-    color: colors.wire, wireframe: true, transparent: true, opacity: 0.25
-  });
-  wireMesh = new THREE.Mesh(wireGeo, wireMat);
-  scene.add(wireMesh);
+  $('caption').innerHTML=c;
 }
 
-buildCore('phase');
-
-// ── ANCHOR RING ──
-const ringGeo = new THREE.TorusGeometry(1.369, 0.015, 8, 64);
-const ringMat = new THREE.MeshBasicMaterial({color:0x00e5ff, transparent:true, opacity:0.5});
-const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-ringMesh.rotation.x = Math.PI/2;
-scene.add(ringMesh);
-
-// TL ring
-const tlRingGeo = new THREE.TorusGeometry(TL*8, 0.008, 6, 48);
-const tlRingMat = new THREE.MeshBasicMaterial({color:0xffaa00, transparent:true, opacity:0.4});
-const tlRingMesh = new THREE.Mesh(tlRingGeo, tlRingMat);
-tlRingMesh.rotation.x = Math.PI/2;
-scene.add(tlRingMesh);
-
-// ── FIELD LINES ──
-const fieldLines = [];
-const NUM_LINES = 24;
-for(let i=0; i<NUM_LINES; i++){
-  const angle = (i/NUM_LINES)*Math.PI*2;
-  const pts = [];
-  for(let r=0.6; r<=4; r+=0.3){
-    pts.push(new THREE.Vector3(
-      Math.cos(angle)*r, Math.sin(angle)*r*0.3, Math.sin(angle)*r
-    ));
-  }
-  const curve = new THREE.CatmullRomCurve3(pts);
-  const geo = new THREE.TubeGeometry(curve, 12, 0.005, 4, false);
-  const mat = new THREE.MeshBasicMaterial({color:0x002244, transparent:true, opacity:0.4});
-  const mesh = new THREE.Mesh(geo, mat);
-  scene.add(mesh);
-  fieldLines.push({mesh, mat, angle});
+// ════════════════════════════════════════════════════════════
+// LINK, EXPORT
+// ════════════════════════════════════════════════════════════
+const HASH_KEYS=['drive','ve','g','lock','vm','tauB','vinf','body','GM','R','u','f','thrust','q','a','th','pth','eta','mdry','tburn','kappa'];
+let hashTimer=null;
+const CANON='https://uuia.app/sovereigndrive.html';
+function hashStr(){ const p=new URLSearchParams(); HASH_KEYS.forEach(k=>p.set(k,typeof S[k]==='number'?+S[k].toPrecision(12):S[k])); return p.toString(); }
+function shareURL(){ return CANON+'#'+hashStr(); }
+function writeHash(){ clearTimeout(hashTimer); hashTimer=setTimeout(()=>{ try{ if(/^https?:$/.test(location.protocol)&&location.href.indexOf('about:')!==0)history.replaceState(null,'','#'+hashStr()); }catch(e){} },250); }
+function readHash(){
+  let h=''; try{ h=location.hash||''; }catch(e){}
+  if(h.length<2)return false; const p=new URLSearchParams(h.slice(1));
+  HASH_KEYS.forEach(k=>{ if(!p.has(k))return; const v=p.get(k); if(['drive','vm','body'].includes(k))S[k]=v; else if(k==='lock')S[k]=v==='true'; else if(isFinite(+v))S[k]=+v; });
+  return true;
+}
+function copyLink(){ const url=shareURL(); const b=$('b-link');
+  const done=ok=>{b.textContent=ok?'COPIED':'LINK IN EXPORT';setTimeout(()=>b.textContent='COPY LINK',1600);};
+  const fallback=()=>{ try{ const t=document.createElement('textarea'); t.value=url; t.style.position='fixed'; t.style.opacity='0'; document.body.appendChild(t); t.select(); const ok=document.execCommand('copy'); t.remove(); done(ok); }catch(e){ done(false); } };
+  try{ navigator.clipboard.writeText(url).then(()=>done(true),fallback); }catch(e){ fallback(); } }
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function snapshot(){
+  const o=O, r=v=>isFinite(v)?+(+v).toPrecision(12):(v===Infinity?'Infinity':null);
+  return {tool:'Sovereign Drive · powered by AxiomForge',url:shareURL(),generated:new Date().toISOString(),
+    constants:{TL,TL_IVA,OMEGA0,ALPHA_INV,c:C,g0:G0},
+    inputs:{...S},
+    readingA:{tau_A:r(o.tauA),gain:r(o.gEff),tau_gained:r(o.tau),phase:PH[o.phA][0],eta:r(o.eta),gain_cap:r(o.gcap)},
+    readingB:{tau_B:r(o.tauB),phase:PH[o.phB][0],mass_ratio:r(o.mr),propellant_fraction:r(o.prop),dv_mps:r(o.dv),dv_without_gain_mps:r(o.dvc)},
+    matchedRadius:{ratio_rs:r(o.xm),meters:r(o.rm),dilation:r(o.dil),redshift:r(o.z),oberth:r(o.ob),n_max:r(o.nmax)},
+    body:{GM:S.GM,R_m:S.R,r_s_m:r(o.rs),compactness:r(o.C),tau_surface:r(o.tauS),phase:PH[o.phS][0],available:o.avail,availability_factor:r(o.availF),u_max:r(o.umax),prescribed_isp_s:r(o.presIsp)},
+    burn:{u:r(o.u),burn_radius_m:r(o.rb),altitude_m:r(o.alt),v_inf_mps:r(o.vinf),free_space_mps:r(o.vfree),x:r(o.x),saving:r(o.S),saving_bound:r(o.Sbound),propellant:r(o.prop),ideal_propellant:r(o.propIdeal)},
+    thrustFloor:{f:S.f,t_char_s:r(o.tchar),F_per_m:r(o.fm),thrust_to_weight:r(o.tw),thrust_kN:S.thrust,mass_supported_kg:r(o.msup),propellant_kg:r(o.mprop)},
+    metric:{q:S.q,spin:S.a,theta_deg:S.th,q_eff_sq:r(o.qe2),r_plus:o.root?r(o.root.p):null,r_minus:o.root?r(o.root.m):null,share_F:o.root?r(o.root.F):null,horizons:o.hz,flattening:r(o.flat)},
+    power:{P_e_W:r(o.pe),alpha_kg_per_W:r(o.alpha),thrust_N:r(o.F2),accel:r(o.acc),a_alpha_ve:r(o.aav),T0_s:r(o.T0),dv_mps:r(o.pdv),reach_m:r(o.reach),mass_ratio:r(o.pmr),ve_opt:r(o.vopt),alpha_window_kg_per_W:[r(o.alo),r(o.ahi)]}};
+}
+function exportJSON(){ dl('sovereigndrive_session.json',JSON.stringify(snapshot(),null,2),'application/json'); }
+function exportCSV(){
+  const s=snapshot(), rows=['section,key,value'];
+  for(const [sec,obj] of Object.entries(s)){ if(typeof obj!=='object'||obj===null){rows.push(`meta,${sec},"${obj}"`);continue;} for(const [k,v] of Object.entries(obj))rows.push(`${sec},${k},"${Array.isArray(v)?v.join(' '):v}"`); }
+  dl('sovereigndrive_session.csv',rows.join('\n'),'text/csv');
 }
 
-// ── PARTICLES ──
-const NUM_PARTICLES = 200;
-const partGeo = new THREE.BufferGeometry();
-const partPositions = new Float32Array(NUM_PARTICLES*3);
-const partSpeeds = [], partPhases = [];
-for(let i=0; i<NUM_PARTICLES; i++){
-  const r = 0.6 + Math.random()*3.5;
-  const theta = Math.random()*Math.PI*2;
-  const phi = (Math.random()-0.5)*Math.PI;
-  partPositions[i*3]   = r*Math.cos(theta)*Math.cos(phi);
-  partPositions[i*3+1] = r*Math.sin(phi);
-  partPositions[i*3+2] = r*Math.sin(theta)*Math.cos(phi);
-  partSpeeds.push(0.5+Math.random()*2);
-  partPhases.push(Math.random()*Math.PI*2);
+// ════════════════════════════════════════════════════════════
+// INIT AND LOOP
+// ════════════════════════════════════════════════════════════
+DRIVES.forEach(([k,n,v])=>{const o=document.createElement('option');o.value=k;o.textContent=n+(v>0?' · '+(v>=1e5?(v/1e3).toLocaleString('en-US',{maximumFractionDigits:0})+' km/s':Math.round(v).toLocaleString('en-US')+' m/s'):'');$('drive').appendChild(o);});
+BODIES.forEach(([k,n])=>{const o=document.createElement('option');o.value=k;o.textContent=n;$('body').appendChild(o);});
+MISSIONS.forEach(m=>{const b=document.createElement('button');b.className='mission';b.dataset.id=m.id;b.innerHTML=m.name+'<span>'+m.sub+'</span>';b.onclick=()=>loadMission(m.id);$('missions').appendChild(b);});
+function resize(){const w=viewEl.clientWidth,h=viewEl.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();drawLadder();}
+window.addEventListener('resize',resize);
+let last=performance.now();
+function loop(){
+  requestAnimationFrame(loop);
+  const now=performance.now(),dt=Math.min(.05,(now-last)/1000); last=now;
+  if(tgtCam){cam.ph+=(tgtCam.ph-cam.ph)*.08;cam.r+=(tgtCam.r-cam.r)*.08;if(Math.abs(tgtCam.ph-cam.ph)<.002&&Math.abs(tgtCam.r-cam.r)<.5)tgtCam=null;}
+  if(autoRot)cam.th+=.0015;
+  placeCam(); tickFlight(dt); renderer.render(scene,camera); placeTags();
 }
-partGeo.setAttribute('position', new THREE.BufferAttribute(partPositions, 3));
-const partMat = new THREE.PointsMaterial({color:0x00ffcc, size:0.04, transparent:true, opacity:0.6});
-const particles = new THREE.Points(partGeo, partMat);
-scene.add(particles);
-
-// ── PNBA SHELLS ──
-const shells = [];
-const shellColors = [0x00e5ff, 0x7744ff, 0xff8800, 0x00ffcc];
-const shellRadii = [2.0, 2.5, 3.0, 3.5];
-for(let i=0; i<4; i++){
-  const geo = new THREE.SphereGeometry(shellRadii[i], 16, 8);
-  const mat = new THREE.MeshBasicMaterial({
-    color:shellColors[i], wireframe:true, transparent:true, opacity:0.08
-  });
-  const mesh = new THREE.Mesh(geo, mat);
-  scene.add(mesh);
-  shells.push({mesh, mat});
-}
-
-// ── TORSION CONE ──
-const coneGeo = new THREE.ConeGeometry(0.3, 1.5, 8, 1, true);
-const coneMat = new THREE.MeshBasicMaterial({
-  color:0xaa88ff, wireframe:true, transparent:true, opacity:0.0
-});
-const coneMesh = new THREE.Mesh(coneGeo, coneMat);
-coneMesh.position.y = 0.75;
-scene.add(coneMesh);
-
-// ── IVA PLUME ──
-const plumeGeo = new THREE.ConeGeometry(0.2, 2, 6, 1, true);
-const plumeMat = new THREE.MeshBasicMaterial({
-  color:0xff8800, wireframe:true, transparent:true, opacity:0
-});
-const plumeMesh = new THREE.Mesh(plumeGeo, plumeMat);
-plumeMesh.position.y = -1.5;
-plumeMesh.rotation.z = Math.PI;
-scene.add(plumeMesh);
-
-// ── LIGHTING ──
-scene.add(new THREE.AmbientLight(0x111122, 2));
-const pt = new THREE.PointLight(0x00e5ff, 1.5, 10);
-pt.position.set(3,3,3); scene.add(pt);
-const pt2 = new THREE.PointLight(0xaa88ff, 0.8, 10);
-pt2.position.set(-2,-2,2); scene.add(pt2);
-
-// ── CAMERA CONTROLS ──
-let mouseDown = false, lastMouse = {x:0,y:0};
-let camTheta = 0, camPhi = 0.3, camR = 8;
-canvas.addEventListener('mousedown', e=>{mouseDown=true; lastMouse={x:e.clientX,y:e.clientY};});
-canvas.addEventListener('mouseup', ()=>mouseDown=false);
-canvas.addEventListener('mousemove', e=>{
-  if(!mouseDown) return;
-  camTheta -= (e.clientX-lastMouse.x)*0.008;
-  camPhi   -= (e.clientY-lastMouse.y)*0.008;
-  camPhi = Math.max(-1.4, Math.min(1.4, camPhi));
-  lastMouse={x:e.clientX,y:e.clientY};
-  camera.position.x = camR*Math.cos(camTheta)*Math.cos(camPhi);
-  camera.position.y = camR*Math.sin(camPhi);
-  camera.position.z = camR*Math.sin(camTheta)*Math.cos(camPhi);
-  camera.lookAt(0,0,0);
-});
-canvas.addEventListener('wheel', e=>{
-  camR = Math.max(2, Math.min(20, camR + e.deltaY*0.01));
-  camera.position.normalize().multiplyScalar(camR);
-  camera.lookAt(0,0,0);
-  e.preventDefault();
-}, {passive:false});
-
-// ════════════════════════════════════════════════════
-// ANIMATION
-// ════════════════════════════════════════════════════
-let frame = 0;
-let simInterval = null;
-
-function updatePhysics(){
-  const dt = 0.016 * simSpeed * 0.5;
-  t += dt;
-  stats.cycles++;
-
-  const tau  = torsion(P, B);
-  const IM   = identityMass(P, N, B, A);
-  const Z    = anchorLocked ? manifoldImpedance(ANCHOR) : manifoldImpedance(ANCHOR*1.05);
-  const gate = imsGate();
-  const drive = A * P * B * gate;
-  const dvdt = (drive - F_ext) / Math.max(IM, 0.001);
-  Pv += dvdt * dt;
-  Pv = Math.max(0, Pv);
-
-  const dv_sov = deltaV_sovereign(P,N,B,A,g_r) * gate;
-  const dv_cls = deltaV_classical(P,N,B,A);
-  const gain   = dv_cls > 0.001 ? dv_sov/dv_cls : 0;
-  const state  = classify(tau);
-
-  if(state !== lastState){
-    if(state==='NOBLE')  { stats.noble++;   flashRing('noble'); }
-    if(state==='SHATTER'){ stats.shatter++; flashRing('shatter'); }
-    if(state==='IVA')    { stats.iva++;     flashRing('iva'); }
-    logEvent(state, tau, IM, Pv);
-    lastState = state;
-  }
-
-  if(Pv > stats.maxPv) stats.maxPv = Pv;
-  if(dv_sov > stats.maxIva) stats.maxIva = dv_sov;
-
-  updateUI(tau, IM, Z, Pv, dv_sov, dv_cls, gain, state);
-  updateScene(tau, IM, Pv, state, dv_sov, gate);
-}
-
-function updateUI(tau, IM, Z, Pv, dv_sov, dv_cls, gain, state){
-  document.getElementById('h-tau').textContent   = tau > 999 ? '∞' : tau.toFixed(4);
-  document.getElementById('h-state').textContent = state;
-  document.getElementById('h-im').textContent    = IM.toFixed(4);
-  document.getElementById('h-z').textContent     = Z.toFixed(4);
-  document.getElementById('h-pv').textContent    = Pv.toFixed(4);
-  document.getElementById('h-t').textContent     = t.toFixed(2);
-
-  const badge = document.getElementById('state-badge');
-  badge.className = 'state-badge state-'+state;
-  badge.textContent = state;
-
-  // Category badge
-  const catNames = {phase:'PHASE STATE', elem:'ELEMENT', bio:'BIOFUSE', ere:'ERE · EXOTIC'};
-  const catBadge = document.getElementById('cat-badge');
-  catBadge.className = 'cat-badge cat-badge-'+currentCategory;
-  catBadge.textContent = catNames[currentCategory] || 'PHASE STATE';
-
-  const tauColor = state==='NOBLE'?'var(--noble)':state==='LOCKED'?'var(--locked)':state==='IVA'?'var(--iva)':'var(--shatter)';
-  const tauDisplay = Math.min(tau, 3); // cap display for extremes like Dirac
-  const tauPct = Math.min(100, (tauDisplay/TL)*50);
-
-  document.getElementById('g-tau').style.width = tauPct+'%';
-  document.getElementById('g-tau').style.background = tauColor;
-  document.getElementById('g-tau-val').textContent = tau > 999 ? '>>TL' : tau.toFixed(4);
-
-  document.getElementById('g-im').style.width = Math.min(100,(IM/50)*100)+'%';
-  document.getElementById('g-im-val').textContent = IM.toFixed(3);
-
-  document.getElementById('g-pv').style.width = Math.min(100,(Pv/5)*100)+'%';
-  document.getElementById('g-pv-val').textContent = Pv.toFixed(3);
-
-  document.getElementById('g-iva').style.width = Math.min(100,(dv_sov/10)*100)+'%';
-  document.getElementById('g-iva-val').textContent = dv_sov.toFixed(3);
-
-  document.getElementById('r-tau').style.color = tauColor;
-  document.getElementById('r-tau').textContent = tau > 999 ? tau.toFixed(0) : tau.toFixed(4);
-  document.getElementById('r-im').textContent  = IM.toFixed(4);
-  document.getElementById('r-pv').textContent  = Pv.toFixed(4);
-  document.getElementById('r-z').textContent   = Z.toFixed(4);
-  document.getElementById('r-dv').textContent  = dv_sov.toFixed(4);
-  document.getElementById('r-dvc').textContent = dv_cls.toFixed(4);
-  document.getElementById('r-gain').textContent = gain > 0.001 ? gain.toFixed(2)+'×' : '—';
-  document.getElementById('r-ims').textContent  = anchorLocked ? 'GREEN' : 'RED';
-  document.getElementById('r-ims').style.color  = anchorLocked ? 'var(--locked)' : 'var(--shatter)';
-  document.getElementById('r-fext').textContent = F_ext.toFixed(4);
-  document.getElementById('r-t').textContent    = t.toFixed(2);
-
-  document.getElementById('bs-cycles').textContent = stats.cycles;
-  document.getElementById('bs-noble').textContent  = stats.noble;
-  document.getElementById('bs-shatter').textContent= stats.shatter;
-  document.getElementById('bs-iva').textContent    = stats.iva;
-  document.getElementById('bs-maxpv').textContent  = stats.maxPv.toFixed(3);
-  document.getElementById('bs-maxiva').textContent = stats.maxIva.toFixed(3);
-}
-
-function updateScene(tau, IM, Pv, state, dv_sov, gate){
-  frame++;
-  const time = frame * 0.016;
-
-  const catColors = CAT_COLORS[currentCategory] || CAT_COLORS.phase;
-  const stateColors = {
-    NOBLE:   new THREE.Color(catColors.core).lerp(new THREE.Color(0xaa88ff), 0.3),
-    LOCKED:  new THREE.Color(catColors.core),
-    IVA:     new THREE.Color(catColors.core).lerp(new THREE.Color(0xff8800), 0.4),
-    SHATTER: new THREE.Color(catColors.core).lerp(new THREE.Color(0xff3355), 0.5),
-  };
-
-  const col = stateColors[state] || stateColors.LOCKED;
-  if (coreMesh) {
-    coreMesh.material.color.copy(col);
-    coreMesh.material.emissive.copy(col).multiplyScalar(0.08);
-  }
-  if (wireMesh) wireMesh.material.color.copy(col);
-
-  // Pulse at anchor freq
-  const anchorPulse = 0.5 + 0.5*Math.sin(time*ANCHOR*Math.PI*2);
-  const scalePulse  = 1.0 + anchorPulse * 0.15 * (1+Pv*0.2);
-  if (coreMesh) coreMesh.scale.setScalar(scalePulse);
-  if (wireMesh) wireMesh.scale.setScalar(scalePulse*1.02);
-
-  // Rotation rate depends on tau
-  const rot = 0.003 + Math.min(tau, 2)*0.015;
-  if (coreMesh) { coreMesh.rotation.y += rot; coreMesh.rotation.x += rot*0.4; }
-  if (wireMesh) { wireMesh.rotation.y += rot*1.1; wireMesh.rotation.x += rot*0.5; }
-
-  // Anchor ring
-  ringMesh.rotation.y += 0.004;
-  ringMat.opacity = 0.3 + anchorPulse*0.3;
-  const ringCol = new THREE.Color(catColors.core);
-  ringMat.color.copy(ringCol);
-
-  // TL ring proximity glow
-  const tlProx = 1 - Math.min(1, Math.abs(tau-TL)/TL);
-  tlRingMat.opacity = 0.1 + Math.max(0,tlProx)*0.6;
-  tlRingMesh.rotation.y -= 0.006;
-
-  // Field lines
-  fieldLines.forEach(({mat, angle}) => {
-    if(!showField){ mat.opacity = 0; return; }
-    const wave = 0.5 + 0.5*Math.sin(angle + time*0.5);
-    mat.color.set(catColors.field);
-    mat.opacity = gate * (0.1 + wave*0.2*(1+Pv*0.2));
-  });
-
-  // Particles
-  const pos = partGeo.attributes.position.array;
-  for(let i=0; i<NUM_PARTICLES; i++){
-    const speed = partSpeeds[i];
-    const phase = partPhases[i] + time*speed*(0.1+IM*0.015)*gate;
-    const r = 0.8 + (i/NUM_PARTICLES)*3;
-    pos[i*3]   = r*Math.cos(phase)*Math.cos(Math.sin(phase*0.37+i)*0.8);
-    pos[i*3+1] = r*Math.sin(Math.sin(phase*0.37+i)*0.8);
-    pos[i*3+2] = r*Math.sin(phase)*Math.cos(Math.sin(phase*0.37+i)*0.8);
-  }
-  partGeo.attributes.position.needsUpdate = true;
-  partMat.color.set(catColors.particle);
-  partMat.opacity = gate*(0.4 + Pv*0.1);
-  partMat.size    = 0.03 + Pv*0.01;
-
-  // PNBA shells
-  [P,N,B,A].forEach((v,i)=>{
-    shells[i].mesh.scale.setScalar(0.5+v*0.12);
-    shells[i].mat.opacity = 0.03 + Math.min(0.18, v*0.018);
-    shells[i].mesh.rotation.y += 0.001*(i+1);
-    shells[i].mesh.rotation.x += 0.0007*(i+1);
-  });
-
-  // Torsion cone
-  const tauCapped = Math.min(tau, 5);
-  if(tauCapped > 0.001){
-    const coneScale = Math.min(tauCapped/TL, 3);
-    coneMesh.scale.setScalar(coneScale);
-    coneMat.opacity = Math.min(0.5, tauCapped/TL*0.3);
-    coneMat.color.setHex(tau>=TL ? 0xff3355 : tau>=TL*0.8 ? 0xff8800 : 0xaa88ff);
-    coneMesh.rotation.y += 0.02;
-  } else {
-    coneMesh.scale.setScalar(0.01);
-    coneMat.opacity = 0;
-  }
-
-  // IVA plume
-  if(gate && Pv > 0.1){
-    const ps = Pv*(1+g_r)*0.3;
-    plumeMesh.scale.setScalar(ps);
-    plumeMat.opacity = Math.min(0.7, Pv*0.2);
-    plumeMat.color.setHex(state==='IVA' ? 0xffaa00 : new THREE.Color(catColors.core).getHex());
-    plumeMesh.position.y = -0.5 - ps*0.5;
-    plumeMesh.rotation.y += 0.05;
-  } else {
-    plumeMat.opacity = 0;
-  }
-
-  renderer.render(scene, camera);
-}
-
-// ════════════════════════════════════════════════════
-// RING FLASH
-// ════════════════════════════════════════════════════
-function flashRing(type){
-  const ring = document.getElementById('phase-ring');
-  const color = type==='noble'?'#aa88ff':type==='shatter'?'#ff3355':'#ff8800';
-  ring.innerHTML = `<svg width="200" height="200" viewBox="0 0 200 200">
-    <circle cx="100" cy="100" r="80" fill="none" stroke="${color}" stroke-width="3" opacity="0.8"/>
-    <circle cx="100" cy="100" r="60" fill="none" stroke="${color}" stroke-width="1.5" opacity="0.5"/>
-  </svg>`;
-  ring.classList.remove('ring-flash');
-  void ring.offsetWidth;
-  ring.classList.add('ring-flash');
-}
-
-// ════════════════════════════════════════════════════
-// EVENT LOG
-// ════════════════════════════════════════════════════
-function logEvent(state, tau, IM, Pv){
-  const cls = {NOBLE:'fl-noble',LOCKED:'fl-locked',IVA:'fl-iva',SHATTER:'fl-shatter'}[state]||'fl-info';
-  const now = new Date();
-  const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-  const feed = document.getElementById('feed');
-  const line = document.createElement('div');
-  line.className = `fl ${cls}`;
-  line.innerHTML = `<span class="fl-t">${ts}</span>${state} · τ=${tau > 999 ? tau.toFixed(0) : tau.toFixed(4)} · IM=${IM.toFixed(3)}`;
-  feed.appendChild(line);
-  feed.scrollTop = feed.scrollHeight;
-  if(feed.children.length > 100) feed.removeChild(feed.firstChild);
-}
-
-function feedLine(text, cls='fl-info'){
-  const feed = document.getElementById('feed');
-  const now = new Date();
-  const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-  const line = document.createElement('div');
-  line.className = `fl ${cls}`;
-  line.innerHTML = `<span class="fl-t">${ts}</span>${text}`;
-  feed.appendChild(line);
-  feed.scrollTop = feed.scrollHeight;
-  if(feed.children.length > 100) feed.removeChild(feed.firstChild);
-}
-
-// ════════════════════════════════════════════════════
-// RENDER LOOP
-// ════════════════════════════════════════════════════
-function renderLoop(){
-  requestAnimationFrame(renderLoop);
-  const tau   = torsion(P, B);
-  const IM    = identityMass(P, N, B, A);
-  const state = classify(tau);
-  const dv    = deltaV_sovereign(P,N,B,A,g_r)*imsGate();
-  updateScene(tau, IM, Pv, state, dv, imsGate());
-}
-renderLoop();
-
-// ════════════════════════════════════════════════════
-// SIM CONTROL
-// ════════════════════════════════════════════════════
-function startSim(){
-  if(simRunning) return;
-  simRunning = true;
-  feedLine('Simulation started · ANCHOR='+ANCHOR+' · TL='+TL.toFixed(4), 'fl-locked');
-  const ms = Math.max(16, 200-simSpeed*18);
-  simInterval = setInterval(updatePhysics, ms);
-}
-function stopSim(){
-  simRunning = false;
-  if(simInterval) clearInterval(simInterval);
-  feedLine('Simulation stopped', 'fl-info');
-}
-function resetSim(){
-  stopSim();
-  t=0; Pv=0; lastState=''; frame=0;
-  stats={cycles:0,noble:0,shatter:0,iva:0,maxPv:0,maxIva:0};
-  feedLine('Reset · counters cleared', 'fl-info');
-  const tau=torsion(P,B), IM=identityMass(P,N,B,A), state=classify(tau);
-  updateUI(tau,IM,0,0,0,0,0,state);
-}
-
-// ════════════════════════════════════════════════════
-// SLIDERS
-// ════════════════════════════════════════════════════
-function bindSlider(id, valId, cb){
-  document.getElementById(id).addEventListener('input', function(){
-    const v = parseFloat(this.value);
-    document.getElementById(valId).textContent = v.toFixed(3);
-    cb(v);
-  });
-}
-bindSlider('s-P','v-P', v=>{ P=v; });
-bindSlider('s-N','v-N', v=>{ N=v; });
-bindSlider('s-B','v-B', v=>{ B=v; });
-bindSlider('s-A','v-A', v=>{ A=v; });
-bindSlider('s-F','v-F', v=>{ F_ext=v; });
-bindSlider('s-gr','v-gr', v=>{ g_r=v; });
-bindSlider('s-speed','v-speed', v=>{
-  simSpeed=v;
-  document.getElementById('v-speed').textContent = v;
-  if(simRunning){ stopSim(); startSim(); }
-});
-document.getElementById('cb-anchor').addEventListener('change', function(){
-  anchorLocked = this.checked;
-  feedLine('IMS GATE: '+(anchorLocked?'ANCHOR LOCKED — GREEN':'DRIFT — RED'), anchorLocked?'fl-locked':'fl-shatter');
-});
-document.getElementById('cb-field').addEventListener('change', function(){ showField=this.checked; });
-
-// ════════════════════════════════════════════════════
-// PRESETS
-// ════════════════════════════════════════════════════
-function setSlider(id, val){
-  const el = document.getElementById(id);
-  el.value = val;
-  el.dispatchEvent(new Event('input'));
-}
-
-// ── PRESET DATA ──────────────────────────────────────
-// Format: { P, N, B, A, F, gr, cat, coord, note }
-const PRESETS = {
-  // ── PHASE STATES ──
-  noble:   {P:2.0,   N:3.0,  B:0.0,     A:0.5,  F:0,   gr:1.5, cat:'phase', coord:'',          note:'Noble state · τ=0 · zero torsion · maximum potential'},
-  locked:  {P:1.5,   N:2.0,  B:0.1,     A:0.5,  F:0,   gr:1.5, cat:'phase', coord:'',          note:'Locked · τ=0.067 · phase-locked below TL'},
-  iva:     {P:1.5,   N:2.0,  B:0.205,   A:0.5,  F:0.1, gr:2.5, cat:'phase', coord:'',          note:'IVA Peak · τ≈TL · sovereign flow state · maximum drive'},
-  shatter: {P:1.0,   N:2.0,  B:0.5,     A:0.5,  F:0.5, gr:0.5, cat:'phase', coord:'',          note:'Shatter · τ=0.5 >> TL · pattern genesis · torsion exceeded'},
-
-  // ── ELEMENTS ──
-  hydrogen:{P:1.000, N:2,    B:1.0,     A:13.60,F:0,   gr:1.5, cat:'elem',  coord:'[9,9,1,1]', note:'Hydrogen · Z=1 · 1 open bond · SHATTER · τ=1.000'},
-  helium:  {P:1.700, N:2,    B:0.0,     A:24.59,F:0,   gr:1.5, cat:'elem',  coord:'[9,9,1,2]', note:'Helium · Z=2 · Noble gas · B=0 · τ=0 · highest IE'},
-  carbon:  {P:3.250, N:4,    B:4.0,     A:11.26,F:0,   gr:1.5, cat:'elem',  coord:'[9,9,1,6]', note:'Carbon · Z=6 · 4 open bonds · SHATTER · life scaffold'},
-  oxygen:  {P:4.550, N:4,    B:2.0,     A:13.62,F:0,   gr:1.5, cat:'elem',  coord:'[9,9,1,8]', note:'Oxygen · Z=8 · 2 unpaired · SHATTER · τ=0.440'},
-  neon:    {P:5.850, N:4,    B:0.0,     A:21.56,F:0,   gr:1.5, cat:'elem',  coord:'[9,9,1,10]',note:'Neon · Z=10 · Noble gas · B=0 · highest IM of noble gases'},
-  silicon: {P:2.250, N:6,    B:4.0,     A:8.15, F:0,   gr:1.5, cat:'elem',  coord:'[9,9,1,14]',note:'Silicon · Z=14 · 4 open bonds · SHATTER · τ=1.778 · semiconductor'},
-  iron:    {P:3.750, N:8,    B:4.0,     A:7.90, F:0,   gr:1.5, cat:'elem',  coord:'[9,9,1,26]',note:'Iron · Z=26 · 4 unpaired d-electrons · SHATTER · Fe-56 binding peak'},
-  zinc:    {P:4.200, N:8,    B:0.0,     A:9.39, F:0,   gr:1.5, cat:'elem',  coord:'[9,9,1,30]',note:'Zinc · Z=30 · d10 filled · NOBLE · τ=0 · first Noble transition metal'},
-  gold:    {P:5.850, N:12,   B:1.0,     A:9.23, F:0,   gr:1.5, cat:'elem',  coord:'[9,9,1,79]',note:'Gold · Z=79 · 1 open s-bond · SHATTER · τ=0.171 · near-locked heavy metal'},
-  uranium: {P:4.800, N:14,   B:4.0,     A:6.19, F:0,   gr:1.5, cat:'elem',  coord:'[9,9,1,92]',note:'Uranium · Z=92 · 4 open f-bonds · SHATTER · τ=0.833 · actinide'},
-
-  // ── BIOFUSE ──
-  h2o:     {P:0.4505,N:8,    B:0.0,     A:13.62,F:0,   gr:1.5, cat:'bio',   coord:'[9,9,9,9]', note:'Water H₂O · NOBLE · τ=0 · all bonds satisfied · life solvent · T2 BiologicalAnalog'},
-  co2:     {P:1.3382,N:12,   B:0.0,     A:13.62,F:0,   gr:1.5, cat:'bio',   coord:'',          note:'CO₂ · NOBLE · τ=0 · C fully bonded to 2 O · carbon cycle molecule'},
-  nh3:     {P:0.3071,N:10,   B:0.0,     A:14.53,F:0,   gr:1.5, cat:'bio',   coord:'',          note:'Ammonia NH₃ · NOBLE · τ=0 · amino acid precursor · nitrogen fixation'},
-  feo:     {P:2.0557,N:12,   B:2.0,     A:13.62,F:0,   gr:1.5, cat:'bio',   coord:'',          note:'Fe-O heme-like · SHATTER · τ=0.973 · hemoglobin coupling · Fe binds O₂'},
-
-  // ── EREs ──
-  soverium:{P:Math.pow(1.369/1.4204,1/3), N:2.0, B:0.0, A:0.0,          F:0, gr:1.5, cat:'ere', coord:'[9,9,1,46]', note:'Soverium · quantum vacuum · Noble ground state · B=0 · zero coupling'},
-  lumium:  {P:Math.pow(1.369/1.4204,1/3), N:2.0, B:1/137.036, A:4.423,  F:0, gr:1.5, cat:'ere', coord:'[9,9,1,53]', note:'Lumium · photon field · B=1/α · LOCKED · τ=0.0074 · massless gauge'},
-  zoivum:  {P:1.369, N:2.0, B:0.1369*1.369/2, A:1.369/0.1369,           F:0, gr:1.5, cat:'ere', coord:'[9,9,1,56]', note:'Zoivum · life operator · LOCKED · τ=0.068 · Zo+qb at 93.6% TL'},
-  higgs:   {P:125.09/246.22, N:2.0, B:0.0, A:0.930,                     F:0, gr:1.5, cat:'ere', coord:'[9,9,4,5]',  note:'Higgs condensate · Noble VEV ground state · Hi+Hi → B_out=0 · τ=0'},
-  w_boson: {P:0.520,  N:4.0, B:0.052, A:2.500,                          F:0, gr:1.5, cat:'ere', coord:'[9,9,4,6]',  note:'W⁺ boson · weak force carrier · LOCKED · τ=0.100 · 80.4 GeV'},
-  z_boson: {P:0.590,  N:4.0, B:0.059, A:2.500,                          F:0, gr:1.5, cat:'ere', coord:'[9,9,4,7]',  note:'Z⁰ boson · neutral weak · LOCKED · τ=0.100 · 91.2 GeV'},
-  xicc:    {P:1.359,  N:3.0, B:0.0,   A:0.118,                          F:0, gr:1.5, cat:'ere', coord:'[9,9,2,33]', note:'Ξcc⁺ baryon · cc diquark · NOBLE · τ=0 · LHCb 2026'},
-  toponium:{P:0.700,  N:6.0, B:0.0,   A:0.118,                          F:0, gr:1.5, cat:'ere', coord:'[9,9,2,34]', note:'Toponium tt̄ · NOBLE · τ=0 · CMS/ATLAS 2026 · heaviest Noble'},
-  coherent:{P:1.369/2,N:4.0, B:0.0,   A:1.369/0.1369,                  F:0, gr:1.5, cat:'ere', coord:'[9,9,1,57]', note:'Coherent state · Zoivum condensate · NOBLE · laser-like phase lock'},
-  dirac:   {P:0.000545,N:2.0,B:1.0,   A:0.01360,                        F:0, gr:0.5, cat:'ere', coord:'',           note:'Dirac fermion · free electron · τ=1835 · deep SHATTER · unbound fermionic mode'},
-};
-
-function loadPreset(name){
-  const p = PRESETS[name];
-  if(!p) return;
-  stopSim(); resetSim();
-
-  currentCategory  = p.cat;
-  currentPresetName = name;
-
-  setSlider('s-P', p.P);
-  setSlider('s-N', p.N);
-  setSlider('s-B', p.B);
-  setSlider('s-A', p.A);
-  setSlider('s-F', p.F);
-  setSlider('s-gr', p.gr);
-
-  // Rebuild core geometry for category
-  buildCore(p.cat);
-
-  // Update bottom loaded badge
-  document.getElementById('bs-loaded').textContent = name.toUpperCase().replace('_',' ');
-  const catTextColors = {phase:'var(--locked)', elem:'var(--elem)', bio:'var(--bio)', ere:'var(--ere)'};
-  document.getElementById('bs-loaded').style.color = catTextColors[p.cat] || 'var(--locked)';
-
-  // Update canvas category HUD
-  const catHud = document.getElementById('cat-hud');
-  const catLabels = {phase:'PHASE STATE', elem:'ELEMENT', bio:'BIOFUSE · MOLECULAR', ere:'ERE · EXOTIC RESONANCE'};
-  const catCols   = {phase:'#4a8898', elem:'var(--elem)', bio:'var(--bio)', ere:'var(--ere)'};
-  catHud.innerHTML = `<span style="color:${catCols[p.cat]};font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.2em;">${catLabels[p.cat]}</span><br>
-    <span style="color:#2a5060;font-size:8px;">${p.coord || ''}</span>`;
-
-  const catCls = {phase:'fl-info', elem:'fl-elem', bio:'fl-bio', ere:'fl-ere'};
-  feedLine(`PRESET: ${name.toUpperCase()} · ${p.note}`, catCls[p.cat]||'fl-info');
-}
-
-// ════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════
-loadPreset('locked');
-feedLine('SNSFT Sovereign Drive Simulator · v2.0', 'fl-locked');
-feedLine('Drag to orbit · Scroll to zoom · Select preset to load', 'fl-info');
-feedLine('ANCHOR='+ANCHOR+' · TL='+TL.toFixed(4)+' · classify() fixed · IVA reachable', 'fl-info');
-feedLine('Categories: PHASE · ELEMENT · BIOFUSE · ERE', 'fl-ere');
+const fromLink=readHash();
+if(fromLink){
+  $('drive').value=DRIVES.some(d=>d[0]===S.drive)?S.drive:'custom'; $('body').value=BODIES.some(b=>b[0]===S.body)?S.body:'custom';
+  $('ve').value=veToSlider(S.ve); $('mr').value=mrToSlider(S.tauB); $('vinf').value=S.vinf; $('f-n').value=S.f;
+  $('g').value=S.g>0?(Math.log10(S.g+0.001)+3)/5:0; $('q').value=S.q; $('a').value=S.a; $('th').value=S.th;
+  ['pth','eta','mdry','tburn','kappa'].forEach(k=>$(k).value=S[k]);
+  setLock(S.lock); setVM(S.vm,false);
+} else { $('drive').value=S.drive; $('body').value=S.body; $('ve').value=veToSlider(S.ve); $('mr').value=mrToSlider(S.tauB); }
+resize(); setMode('learner'); placeCam();
+if(fromLink)render(); else loadMission('raptor');
+loop();
 </script>
 </body>
 </html>
