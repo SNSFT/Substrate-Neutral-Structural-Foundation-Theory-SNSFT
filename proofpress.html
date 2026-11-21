@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProofPress · Applied Identity Physics · Lean → LaTeX → Markdown · v2.5 · SNSFT Foundation</title>
+<title>ProofPress · Applied Identity Physics · Lean → LaTeX → Markdown · v2.7 · SNSFT Foundation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -494,7 +494,10 @@ input:checked + .toggle-box::after {
           <div class="panel-title">LEAN INPUT</div>
           <div class="panel-sub">paste .lean file content or drop file below</div>
         </div>
-        <button class="btn btn-secondary" onclick="clearInput()">CLR</button>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-primary" id="convertBtnTop" onclick="convert()">⟶ PRESS TO LATEX</button>
+          <button class="btn btn-secondary" onclick="clearInput()">CLR</button>
+        </div>
       </div>
       <div class="drop-zone" id="dropZone"
         ondragover="onDragOver(event)"
@@ -1027,34 +1030,35 @@ function setMode(mode) {
   }
   const desc = document.getElementById('modeDesc');
   const convertBtn = document.getElementById('convertBtn');
+  const convertBtnTop = document.getElementById('convertBtnTop');
   const dlBtn = document.getElementById('downloadBtn');
   const outputTitle = document.getElementById('outputTitle');
   const outputSub = document.getElementById('outputSub');
   if (mode === 'ldp') {
     desc.innerHTML = '<b>LDP mode</b> — parses Identity Physics corpus conventions. Populates coordinate, DOI, ORCID, anchor constant, locked front matter. Output is an Identity Physics paper.';
     document.querySelector('.panel-sub').textContent = 'paste .lean file · Identity Physics corpus format';
-    convertBtn.textContent = '⟶ PRESS TO LATEX';
+    convertBtn.textContent = convertBtnTop.textContent = '⟶ PRESS TO LATEX';
     dlBtn.textContent = '⬇ .TEX';
     outputTitle.textContent = 'LATEX OUTPUT';
     outputSub.textContent = 'overleaf-ready · copy or download';
   } else if (mode === 'md') {
     desc.innerHTML = '<b>MD mode</b> — converts any Markdown paper draft to Overleaf-ready LaTeX. Headings → sections, math → equations, code blocks → listings, tables → tabular. Works with any .md file.';
     document.querySelector('.panel-sub').textContent = 'paste .md file · any markdown paper draft';
-    convertBtn.textContent = '⟶ PRESS TO LATEX';
+    convertBtn.textContent = convertBtnTop.textContent = '⟶ PRESS TO LATEX';
     dlBtn.textContent = '⬇ .TEX';
     outputTitle.textContent = 'LATEX OUTPUT';
     outputSub.textContent = 'overleaf-ready · copy or download';
   } else if (mode === 'chain') {
     desc.innerHTML = '<b>CHAIN mode</b> — paste a master/root file. ProofPress reads its <code>import</code> lines and resolves each one <b>local files first</b> (drop them below, matched by filename), then falls back to a GitHub pull only for whatever wasn\'t dropped in — GitHub PAT/repo below are optional unless you need that fallback. Nothing is pushed anywhere; PUSH TO GITHUB stays a separate button for after you\'ve reviewed the output.';
     document.querySelector('.panel-sub').textContent = 'paste master file · drop its imports below · GitHub only used as fallback';
-    convertBtn.textContent = '⛓ PULL CHAIN & PRESS';
+    convertBtn.textContent = convertBtnTop.textContent = '⛓ PULL CHAIN & PRESS';
     dlBtn.textContent = '⬇ .TEX';
     outputTitle.textContent = 'LATEX OUTPUT';
     outputSub.textContent = 'overleaf-ready · copy or download';
   } else {
     desc.innerHTML = '<b>COMBINE mode</b> — same resolution as CHAIN (local files first, GitHub fallback), but the output is a single raw <code>.lean</code> file instead of LaTeX: imports deduped to one block, per-file import lines stripped, bodies concatenated with provenance comments. Any top-level declaration found outside a namespace gets flagged, since that\'s the one thing that can actually collide when files are smashed together.';
     document.querySelector('.panel-sub').textContent = 'paste master file · drop its imports below · output is raw .lean';
-    convertBtn.textContent = '⚙ COMBINE & PRESS';
+    convertBtn.textContent = convertBtnTop.textContent = '⚙ COMBINE & PRESS';
     dlBtn.textContent = '⬇ .LEAN';
     outputTitle.textContent = 'LEAN OUTPUT';
     outputSub.textContent = 'raw combined source · copy or download';
@@ -1220,7 +1224,7 @@ async function convertCombine(src) {
   }
   if (ambiguous.length > 0) {
     out += `-- ============================================================\n`;
-    out += `-- ⚠ AMBIGUOUS LOCAL MATCHES — first candidate used for each\n`;
+    out += `-- ⚠ FILES DROPPED MORE THAN ONCE — latest copy used for each\n`;
     for (const a of ambiguous) out += `--   ${a.mod}: ${a.candidates.join(', ')}\n`;
     out += `-- ============================================================\n\n`;
   }
@@ -1702,12 +1706,18 @@ function copyMasterStub() {
     setStatus('inputStatus', 'ok', '⎘ master stub copied — paste into the box above');
   });
 }
-// Matches an import like SNSFT.STReduction against dropped filenames
-// by its last dotted segment (STReduction) — forgiving of your
-// dated/versioned filenames, since exact path matching isn't realistic there.
+// Normalizes an import name: drops a trailing ".lean" if one was
+// pasted in, so "import SNSFL_X.lean" and "import SNSFL_X" are the same.
+function normalizeImport(mod) {
+  return mod.replace(/\.lean$/i, '').trim();
+}
+// Exact matching: an import resolves to a dropped file only when the
+// file's name (extension and any "(2)"-style copy suffix removed) equals
+// the import's last dotted segment. No partial matches, so
+// SNSFL_MatchedRadius_Reduction never picks up SNSFL_MatchedRadius_Reduction_TL.
 function findLocalMatches(mod) {
-  const seg = mod.split('.').pop().toLowerCase();
-  return localChainFiles.filter(f => f.name.toLowerCase().includes(seg));
+  const seg = normalizeImport(mod).split('.').pop().toLowerCase();
+  return localChainFiles.filter(f => filenameToModuleStem(f.name).toLowerCase() === seg);
 }
 function b64ToUtf8(b64) {
   const binary = atob(b64.replace(/\n/g, ''));
@@ -1731,7 +1741,7 @@ async function resolveImports(src, onProgress) {
   const repo = document.getElementById('gh-repo').value.trim();
   const base = document.getElementById('gh-importbase').value.trim().replace(/\/$/, '');
   const canFetchRemote = !!(pat && repo);
-  const importMatches = [...src.matchAll(/^import\s+(\S+)/gm)].map(m => m[1]);
+  const importMatches = [...src.matchAll(/^import\s+(\S+)/gm)].map(m => normalizeImport(m[1]));
   const localImports = importMatches.filter(m =>
     !m.startsWith('Mathlib') && !m.startsWith('Std') && !m.startsWith('Batteries') && !m.startsWith('Init'));
   const fetched   = [];
@@ -1745,8 +1755,12 @@ async function resolveImports(src, onProgress) {
       continue;
     }
     if (matches.length > 1) {
-      fetched.push({ mod, path: matches[0].name, content: matches[0].content, source: 'local · ambiguous, first match used' });
+      // The same file dropped more than once: identical name, so use the
+      // most recently dropped copy and note it.
+      const last = matches[matches.length - 1];
+      fetched.push({ mod, path: last.name, content: last.content, source: 'local · dropped more than once, latest copy used' });
       ambiguous.push({ mod, candidates: matches.map(m => m.name) });
+      if (onProgress) onProgress(`resolved ${fetched.length}/${localImports.length} · ${mod} (local)`);
       continue;
     }
     if (canFetchRemote) {
@@ -1759,7 +1773,7 @@ async function resolveImports(src, onProgress) {
         failed.push({ mod, path, reason: e.message });
       }
     } else {
-      failed.push({ mod, path: '(not dropped locally · GitHub not configured)', reason: 'no local match, no PAT/repo set' });
+      failed.push({ mod, path: '(no dropped file named ' + mod.split('.').pop() + '.lean · GitHub not configured)', reason: 'not found' });
     }
   }
   return { localImports, fetched, failed, ambiguous, repo };
@@ -1795,8 +1809,8 @@ async function convertChain(src) {
     if (opts.code) tex += buildLeanListing(meta, f.content) + '\n';
   }
   if (ambiguous.length > 0) {
-    tex += `\n\\subsection*{Ambiguous Local Matches}\n\\begin{itemize}\n`;
-    for (const a of ambiguous) tex += `  \\item \\texttt{${a.mod.replace(/_/g, '\\_')}} matched: ${a.candidates.map(c => '\\texttt{' + c.replace(/_/g, '\\_') + '}').join(', ')} — first one used\n`;
+    tex += `\n\\subsection*{Files Dropped More Than Once}\n\\begin{itemize}\n`;
+    for (const a of ambiguous) tex += `  \\item \\texttt{${a.mod.replace(/_/g, '\\_')}} dropped as: ${a.candidates.map(c => '\\texttt{' + c.replace(/_/g, '\\_') + '}').join(', ')} — latest copy used\n`;
     tex += `\\end{itemize}\n`;
   }
   if (failed.length > 0) {
@@ -1812,7 +1826,7 @@ async function convertChain(src) {
   if (failed.length > 0) {
     setStatus('inputStatus', 'warn', `${fetched.length} resolved · ${failed.length} unresolved — see Unresolved Imports section`);
   } else if (ambiguous.length > 0) {
-    setStatus('inputStatus', 'warn', `all resolved · ${ambiguous.length} had ambiguous local matches — see that section`);
+    setStatus('inputStatus', 'warn', `all resolved · ${ambiguous.length} file(s) dropped more than once — latest copy used`);
   } else {
     setStatus('inputStatus', 'ok', `all ${fetched.length} import(s) resolved and chained`);
   }
