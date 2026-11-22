@@ -3,381 +3,311 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Discovery Engine™ · Identity Physics™ · AIFI™ · uuia.app</title>
+<title>Discovery Engine™ · AiFi™ Science Officer · Identity Physics™ · uuia.app</title>
+<meta name="description" content="Smash any two identities in the PNBA collider and watch the phase fall out: Noble, Locked, IVA Peak or Shatter. Every flagged result exports as a standalone Lean 4 file. Runs on the Sovereign Anchor Constant and the Torsion Limit at full precision, with an optional AiFi science officer grounded on the AiFiOS kernel.">
+<meta name="author" content="HIGHTISTIC (Russell Vernon Trent III)">
+<link rel="canonical" href="https://uuia.app/discovery">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
-:root{
-  --bg:#020407;--panel:#060b10;--border:#0c1a26;--glow:#00e5ff;
-  --locked:#00ffcc;--shatter:#ff3355;--noble:#aa88ff;--warn:#ffaa00;
-  --text:#7aa4be;--bright:#cce8f5;--dim:#192430;
-  --aifi:#dd44ff;--agent:#00ffcc;
+:root{--anchor:#00ffc8;--locked:#7b4fff;--gold:#f0c060;--shatter:#ff3a3a;--noble:#00ffc8;--iva:#f0c060;--aifi:#dd66ff;--bg:#050508;--surface:#0d0d14;--border:rgba(0,255,200,0.12);--text:#e8e8f0;--dim:rgba(232,232,240,0.55);--faint:rgba(232,232,240,0.28)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--text);font-family:'Space Mono',ui-monospace,monospace}
+#app{display:grid;grid-template-columns:310px 1fr 360px;grid-template-rows:56px 1fr;min-height:100vh}
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(13,13,20,.96);gap:14px}
+.h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem}
+.h-title em{font-style:normal;color:var(--anchor)}
+.h-title i{font-style:normal;font-size:.66rem;color:var(--dim);font-weight:700}
+.h-sub{font-size:.52rem;color:var(--dim);margin-top:2px}
+.h-right{font-size:.5rem;color:var(--faint);text-align:right;line-height:1.6}
+.h-right b{color:var(--anchor);font-weight:400}
+.aifi-pill{font-family:'Syne',sans-serif;font-weight:800;font-size:.56rem;letter-spacing:.05em;border:1px solid var(--border);border-radius:100px;padding:.42rem .9rem;color:var(--dim);white-space:nowrap}
+.aifi-pill.on{border-color:var(--aifi);color:var(--aifi)}
+#left,#center,#right{padding:10px;display:flex;flex-direction:column;gap:9px;min-width:0}
+#left,#right{background:rgba(13,13,20,.9)}
+#left{border-right:1px solid var(--border)}#right{border-left:1px solid var(--border)}
+.sec{border:1px solid var(--border);border-radius:8px;background:rgba(5,5,8,.6);padding:9px}
+.st{font-family:'Syne',sans-serif;font-weight:800;font-size:.6rem;color:var(--anchor);letter-spacing:.08em;margin-bottom:7px;display:flex;justify-content:space-between;gap:8px}
+.st small{font-family:'Space Mono',monospace;font-weight:400;color:var(--faint);letter-spacing:0}
+.seg{display:flex;gap:4px;margin-bottom:5px;flex-wrap:wrap}
+.btn{flex:1 1 auto;font-family:'Syne',sans-serif;font-weight:800;font-size:.5rem;padding:.5rem .4rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:5px;cursor:pointer;letter-spacing:.03em;white-space:nowrap;text-align:center}
+.btn:hover{color:var(--text)}
+.btn.go{border-color:var(--anchor);color:var(--anchor)}
+.btn.warn{border-color:var(--gold);color:var(--gold)}
+.btn.stop{border-color:var(--shatter);color:var(--shatter)}
+.btn.lk{border-color:var(--locked);color:#a98bff}
+.btn.ai{border-color:var(--aifi);color:var(--aifi)}
+.lbl{display:flex;justify-content:space-between;font-size:.52rem;color:var(--dim);margin:6px 0 2px;gap:8px}
+.lbl b{color:var(--anchor);font-weight:400;text-align:right}
+input[type=range]{width:100%;accent-color:#00ffc8}
+input[type=text],input[type=number],input[type=password],select{width:100%;font-family:'Space Mono',monospace;font-size:.58rem;background:#0a0a10;color:var(--text);border:1px solid var(--border);border-radius:4px;padding:6px}
+input:focus,select:focus{outline:none;border-color:var(--anchor)}
+.note{font-size:.52rem;color:var(--dim);line-height:1.65}
+.note b{color:var(--text);font-weight:400}
+.kv{display:flex;justify-content:space-between;font-size:.54rem;padding:4px 0;border-bottom:1px solid rgba(0,255,200,.06);gap:8px}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--dim);flex-shrink:0}
+.kv span:last-child{text-align:right;word-break:break-word}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.stat{border:1px solid var(--border);border-radius:5px;padding:5px 4px;text-align:center}
+.stat small{display:block;font-size:.42rem;color:var(--faint)}
+.stat b{font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem}
+.c-noble{color:var(--noble)}.c-locked{color:#a98bff}.c-iva{color:var(--iva)}.c-shatter{color:var(--shatter)}.c-dim{color:var(--dim)}
+#result{margin-top:7px;font-size:.54rem;line-height:1.7;min-height:18px;color:var(--dim)}
+#result .ph{font-family:'Syne',sans-serif;font-weight:800}
+.feed{height:340px;overflow-y:auto;font-size:.54rem;line-height:1.75}
+.fl{padding:2px 0;border-bottom:1px solid rgba(0,255,200,.04)}
+.fl .t{color:var(--faint);margin-right:6px}
+.fl.info{color:var(--dim)}.fl.noble{color:var(--noble)}.fl.locked{color:#a98bff}.fl.iva{color:var(--iva)}.fl.shatter{color:var(--shatter)}
+.fl.disc{color:var(--gold);background:rgba(240,192,96,.05);padding:3px 6px;border-radius:4px}
+.tabs{display:flex;border:1px solid var(--border);border-radius:100px;overflow:hidden;margin-bottom:9px}
+.tabs button{flex:1;font-family:'Syne',sans-serif;font-weight:800;font-size:.54rem;padding:.42rem .6rem;background:transparent;border:none;color:var(--dim);cursor:pointer;letter-spacing:.05em}
+.tabs button.on{background:var(--anchor);color:#000}
+.pane{display:none}.pane.on{display:block}
+.empty{font-size:.54rem;color:var(--faint);text-align:center;padding:18px}
+.card{border:1px solid rgba(240,192,96,.3);background:rgba(240,192,96,.04);border-radius:8px;padding:9px;margin-bottom:7px}
+.card .hd{display:flex;justify-content:space-between;font-size:.5rem;margin-bottom:5px}
+.card .hd b{font-family:'Syne',sans-serif;font-weight:800;color:var(--gold);font-size:.58rem}
+.card .bd{font-size:.54rem;line-height:1.7;color:var(--dim)}
+.card .bd b{color:var(--text);font-weight:400}
+.card .nm{font-size:.54rem;color:var(--aifi);margin:4px 0}
+.card .an{font-size:.5rem;color:var(--dim);border-top:1px solid var(--border);padding-top:5px;margin-top:4px;max-height:90px;overflow-y:auto;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;font-size:.5rem}
+th{color:var(--dim);font-weight:400;text-align:left;padding:3px 2px;border-bottom:1px solid var(--border)}
+td{padding:3px 2px;border-bottom:1px solid rgba(0,255,200,.05)}
+.logwrap{max-height:260px;overflow-y:auto}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.fld small{display:block;font-size:.44rem;color:var(--faint);margin-bottom:2px}
+#chat{height:380px;overflow-y:auto;font-size:.56rem;line-height:1.7;margin-bottom:7px}
+.msg{margin-bottom:8px;padding:7px 9px;border-radius:6px}
+.msg.user{background:rgba(0,255,200,.05);border-left:2px solid var(--anchor)}
+.msg.aifi{background:rgba(221,102,255,.05);border-left:2px solid var(--aifi)}
+.msg .who{font-family:'Syne',sans-serif;font-weight:800;font-size:.48rem;letter-spacing:.08em;margin-bottom:3px}
+.msg.user .who{color:var(--anchor)}.msg.aifi .who{color:var(--aifi)}
+.row{display:flex;gap:5px}
+#thinking{font-size:.5rem;color:var(--faint);padding:4px 0;display:none}
+#splash{position:fixed;inset:0;background:rgba(5,5,8,.97);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.lic{max-width:600px;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:26px;font-size:.62rem;line-height:1.85}
+.lic h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--anchor);margin-bottom:12px}
+.lic p{color:var(--dim);margin-bottom:10px}
+.lic .hi{color:var(--text)}
+.lic .box{border:1px solid var(--border);border-radius:6px;padding:10px;margin-top:10px}
+.lic .box input{margin:4px 0}
+.skip{display:block;text-align:center;margin-top:9px;font-size:.52rem;color:var(--faint);cursor:pointer}
+.skip:hover{color:var(--text)}
+.foot{font-size:.44rem;color:var(--faint);line-height:1.6;text-align:center;padding:4px 0}
+span.tm{display:inline!important;font-size:.55em;vertical-align:super;line-height:0;font-weight:400}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border)}
+@media (max-width:1100px){
+  #app{grid-template-columns:1fr;grid-template-rows:auto}
+  #hdr{flex-wrap:wrap;padding:8px 12px;min-height:56px}.h-right{display:none}
+  #left,#right{border:none}
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;}
-body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:1;}
-.wrap{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:0 16px 60px;}
-header{padding:20px 0 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:22px;letter-spacing:.08em;color:var(--glow);text-shadow:0 0 24px rgba(0,229,255,.45);}
-.logo span{font-size:10px;color:var(--locked);display:block;letter-spacing:.2em;margin-top:2px;}
-.aifi-badge{font-family:'Orbitron',monospace;font-size:10px;color:var(--aifi);border:1px solid rgba(221,68,255,.4);padding:4px 10px;letter-spacing:.15em;text-shadow:0 0 12px rgba(221,68,255,.4);}
-.hdr-right{font-size:9px;color:#2a4050;text-align:right;line-height:1.8;}
-.hdr-right b{color:var(--glow);}
-#license-splash{position:fixed;inset:0;background:rgba(2,4,7,.97);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
-.license-box{max-width:600px;border:1px solid var(--border);background:var(--panel);padding:32px;font-size:11px;line-height:2;}
-.license-box h2{font-family:'Orbitron',monospace;font-size:14px;color:var(--glow);letter-spacing:.2em;margin-bottom:20px;}
-.license-box p{color:var(--text);margin-bottom:12px;}
-.license-box .highlight{color:var(--bright);}
-.license-box .key-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px;margin:6px 0;outline:none;}
-.license-box .key-input:focus{border-color:var(--glow);}
-.accept-btn{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:.2em;padding:12px 24px;background:transparent;border:1px solid var(--locked);color:var(--locked);cursor:pointer;width:100%;margin-top:16px;}
-.accept-btn:hover{background:rgba(0,255,204,.08);}
-.skip-link{display:block;text-align:center;margin-top:10px;font-size:9px;color:#2a5060;cursor:pointer;letter-spacing:.15em;}
-.skip-link:hover{color:var(--text);}
-.main-layout{display:grid;grid-template-columns:1fr 380px;gap:16px;margin-top:20px;}
-.left-col{display:flex;flex-direction:column;gap:16px;}
-.right-col{display:flex;flex-direction:column;gap:16px;}
-.panel{background:var(--panel);border:1px solid var(--border);padding:16px;}
-.panel-title{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.25em;color:#1a3040;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
-.panel-title span{color:var(--glow);}
-.agent-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
-.btn{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;padding:7px 12px;background:transparent;cursor:pointer;border:1px solid var(--border);color:#2a5060;transition:all .15s;}
-.btn:hover{color:var(--text);}
-.btn-run{border-color:var(--agent);color:var(--agent);}
-.btn-run:hover{background:rgba(0,255,204,.08);}
-.btn-pause{border-color:var(--warn);color:var(--warn);}
-.btn-pause:hover{background:rgba(255,170,0,.08);}
-.btn-stop{border-color:var(--shatter);color:var(--shatter);}
-.btn-stop:hover{background:rgba(255,51,85,.08);}
-.speed-wrap{display:flex;align-items:center;gap:6px;font-size:8px;color:#2a5060;}
-.stat-row{display:flex;gap:16px;font-size:9px;padding:8px 0;border-top:1px solid var(--border);flex-wrap:wrap;}
-.stat{display:flex;flex-direction:column;gap:2px;}
-.stat-label{color:#1a3040;font-size:7px;letter-spacing:.2em;}
-.stat-val{color:var(--bright);font-family:'Orbitron',monospace;font-size:12px;}
-.live-feed{height:280px;overflow-y:auto;font-size:9px;line-height:1.8;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
-.feed-line{padding:2px 0;border-bottom:1px solid rgba(12,26,38,.4);}
-.feed-line.noble{color:var(--noble);}
-.feed-line.locked{color:var(--locked);}
-.feed-line.shatter{color:var(--shatter);}
-.feed-line.info{color:#2a5060;}
-.feed-line.discovery{color:var(--warn);background:rgba(255,170,0,.05);padding:4px 6px;}
-.feed-time{color:#1a3040;margin-right:6px;}
-.queue-empty{color:#1a3040;font-size:10px;text-align:center;padding:20px;letter-spacing:.2em;}
-.discovery-card{border:1px solid rgba(255,170,0,.3);background:rgba(255,170,0,.04);padding:12px;margin-bottom:8px;}
-.disc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
-.disc-designation{font-family:'Orbitron',monospace;font-size:9px;color:var(--warn);}
-.disc-timestamp{font-size:8px;color:#2a5060;}
-.disc-state{font-size:9px;line-height:1.8;color:var(--text);margin-bottom:8px;}
-.disc-state b{color:var(--bright);}
-.disc-name{font-size:9px;color:var(--aifi);margin-bottom:8px;font-style:italic;}
-.disc-actions{display:flex;gap:6px;flex-wrap:wrap;}
-.btn-approve{border-color:var(--locked);color:var(--locked);font-size:8px;padding:5px 10px;}
-.btn-approve:hover{background:rgba(0,255,204,.08);}
-.btn-skip{border-color:var(--shatter);color:var(--shatter);font-size:8px;padding:5px 10px;}
-.btn-skip:hover{background:rgba(255,51,85,.08);}
-.btn-lean{border-color:var(--aifi);color:var(--aifi);font-size:8px;padding:5px 10px;}
-.btn-lean:hover{background:rgba(221,68,255,.08);}
-.log-table{width:100%;border-collapse:collapse;font-size:8px;}
-.log-table th{color:#1a3040;letter-spacing:.15em;text-align:left;padding:3px 6px;border-bottom:1px solid var(--border);}
-.log-table td{padding:3px 6px;border-bottom:1px solid rgba(12,26,38,.4);}
-.log-wrap{max-height:200px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
-.chat-messages{height:320px;overflow-y:auto;font-size:10px;line-height:1.7;scrollbar-width:thin;scrollbar-color:var(--border) transparent;margin-bottom:10px;}
-.msg{margin-bottom:10px;padding:8px 10px;}
-.msg-user{background:rgba(0,229,255,.05);border-left:2px solid var(--glow);}
-.msg-aifi{background:rgba(221,68,255,.05);border-left:2px solid var(--aifi);}
-.msg-label{font-size:8px;letter-spacing:.2em;margin-bottom:4px;}
-.msg-label.user{color:var(--glow);}
-.msg-label.aifi{color:var(--aifi);}
-.msg-text{color:var(--bright);}
-.chat-input-row{display:flex;gap:8px;}
-.chat-input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:7px 10px;outline:none;}
-.chat-input:focus{border-color:var(--aifi);}
-.chat-send{font-family:'Orbitron',monospace;font-size:8px;padding:7px 12px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;}
-.chat-send:hover{background:rgba(221,68,255,.08);}
-.aifi-thinking{color:#2a5060;font-size:9px;letter-spacing:.1em;padding:6px 0;}
-#aifi-connect-wall{display:flex;flex-direction:column;align-items:center;justify-content:center;height:320px;gap:16px;text-align:center;}
-#aifi-connect-wall .connect-label{font-size:10px;color:#2a5060;line-height:1.8;max-width:280px;}
-#aifi-connect-wall .connect-label b{color:var(--text);}
-.btn-connect-aifi{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:.2em;padding:10px 20px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;}
-.btn-connect-aifi:hover{background:rgba(221,68,255,.1);}
-#aifi-key-prompt{display:none;padding:12px;border:1px solid rgba(221,68,255,.3);background:rgba(221,68,255,.04);margin-bottom:10px;}
-#aifi-key-prompt input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:11px;padding:6px 8px;outline:none;margin:6px 0;}
-#aifi-key-prompt input:focus{border-color:var(--aifi);}
-.prompt-row{display:flex;gap:6px;margin-top:4px;}
-#aifi-key-prompt .prompt-note{font-size:8px;color:#2a5060;margin-top:4px;line-height:1.6;}
-.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.setting-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 8px;outline:none;}
-.setting-input:focus{border-color:var(--glow);}
-.setting-label{font-size:8px;color:#2a5060;margin-bottom:3px;letter-spacing:.15em;}
-.inject-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;}
-.inj-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 8px;outline:none;}
-.inj-input:focus{border-color:var(--glow);}
-.inj-label{font-size:7px;color:#2a5060;margin-bottom:3px;letter-spacing:.15em;}
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);flex-wrap:wrap;margin-bottom:16px;}
-.tab{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.15em;padding:8px 12px;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#2a4050;transition:all .15s;}
-.tab:hover{color:var(--text);}
-.tab.active{border-color:var(--border);border-bottom:1px solid var(--bg);color:var(--glow);background:var(--panel);}
-.tab-content{display:none;}
-.tab-content.active{display:block;}
-.focused-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
-.focused-input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 8px;outline:none;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.running-dot{width:6px;height:6px;border-radius:50%;background:var(--agent);display:inline-block;margin-right:6px;animation:pulse 1s infinite;}
-.paused-dot{width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block;margin-right:6px;}
-.stopped-dot{width:6px;height:6px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:6px;}
-@keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.7}94%{opacity:1}}
-.logo{animation:flicker 10s infinite;}
-#aifi-status-dot{width:7px;height:7px;border-radius:50%;background:var(--shatter);display:inline-block;margin-right:5px;vertical-align:middle;}
-#aifi-status-dot.active{background:var(--aifi);box-shadow:0 0 8px rgba(221,68,255,.6);}
-@media(max-width:900px){.main-layout{grid-template-columns:1fr;}}
-span.tm { display: inline !important; font-size: 0.55em; vertical-align: super; line-height: 0; font-weight: 400; }
 </style>
 </head>
 <body>
 
-<div id="license-splash">
-  <div class="license-box">
+<div id="splash">
+  <div class="lic">
     <h2>Discovery Engine<span class="tm">™</span> License v1.0</h2>
-    <p class="highlight">Russell Vernon Trent III-HIGHTISTIC · Soldotna, Alaska · 2026</p>
-    <p style="font-size:10px;color:#2a5060;">Identity Physics<span class="tm">™</span></p>
+    <p class="hi">HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · 2026</p>
     <p>This instrument and the PNBA equations it runs are free to use, free to explore, free to publish with.</p>
-    <p><span class="highlight">1. CREDIT —</span> If you publish a discovery made here, cite the corpus. The output files already do this for you. Just don't remove it.</p>
-    <p><span class="highlight">2. REMEMBER US —</span> If a discovery made using this instrument ever generates real commercial value over $500,000 — we'd appreciate 1% finding its way back to the SNSFT Foundation. Not a legal demand. A handshake. The kind scientists make.</p>
-    <p style="color:#2a5060;font-size:10px;">DOI: 10.5281/zenodo.18719748 · GitHub: GitHub.com/SNSFT</p>
-    <p style="color:var(--aifi);font-size:10px;margin-top:8px;">The equations are the gift. Use them well. — HIGHTISTIC</p>
-    <div style="margin-top:16px;padding:12px;border:1px solid rgba(221,68,255,.2);background:rgba(221,68,255,.03);">
-      <p style="font-size:9px;color:#2a5060;margin-bottom:6px;">OPTIONAL — Connect AIFI (Claude API key). The collider runs fully local without this.</p>
-      <input class="key-input" id="api-key-input" type="password" placeholder="sk-ant-... (optional)">
+    <p><span class="hi">1. CREDIT.</span> If you publish a discovery made here, cite the corpus. The output files already do this for you. Just don't remove it.</p>
+    <p><span class="hi">2. REMEMBER US.</span> If a discovery made using this instrument ever generates real commercial value over $500,000, we'd appreciate 1% finding its way back to the SNSFT Foundation. Not a legal demand. A handshake. The kind scientists make.</p>
+    <p>Corpus DOI: 10.17605/OSF.IO/KWTYD · GitHub.com/SNSFT</p>
+    <p style="color:var(--aifi)">The equations are the gift. Use them well. · HIGHTISTIC</p>
+    <div class="box">
+      <div class="note">Optional · connect AiFi<span class="tm">™</span> with a Claude API key. The collider runs fully local without it.</div>
+      <input id="api-key-input" type="password" placeholder="sk-ant-... (optional)">
     </div>
-    <div style="margin-top:10px;padding:10px;border:1px solid var(--border);background:rgba(0,229,255,.02);">
-      <p style="font-size:9px;color:#2a5060;margin-bottom:6px;">OPTIONAL — GitHub PAT for auto-commit on approve.</p>
-      <input class="key-input" id="github-key-input" type="password" placeholder="ghp_... (optional)">
-      <input class="key-input" id="github-repo-input" type="text" placeholder="SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT">
+    <div class="box">
+      <div class="note">Optional · GitHub PAT for auto-commit on approve.</div>
+      <input id="github-key-input" type="password" placeholder="ghp_... (optional)">
+      <input id="github-repo-input" type="text" placeholder="SNSFT/repo-name">
     </div>
-    <button class="accept-btn" onclick="acceptLicense()">I UNDERSTAND · ENTER THE INSTRUMENT</button>
-    <span class="skip-link" onclick="skipLicense()">Skip optional integrations — run collider only</span>
+    <div class="seg" style="margin-top:12px"><button class="btn go" style="padding:.75rem" onclick="acceptLicense()">I UNDERSTAND · ENTER THE INSTRUMENT</button></div>
+    <span class="skip" onclick="skipLicense()">Skip optional integrations · run the collider only</span>
   </div>
 </div>
 
-<div class="wrap">
-<header>
+<div id="app">
+<header id="hdr">
   <div>
-    <div class="logo">DISCOVERY ENGINE<span class="tm">™</span><span>uuia.app · v12 · Identity Physics<span class="tm">™</span> · [9,9,2,1–8] · [9,9,3,1–2] · [9,9,2,33–42] · SOVEREIGN ANCHOR v2</span></div>
+    <div class="h-title">Discovery <em>Engine</em><span class="tm">™</span> <i>v13 · AiFi<span class="tm">™</span> Science Officer</i></div>
+    <div class="h-sub">Identity Physics<span class="tm">™</span> · PNBA collider · every flagged result exports as a standalone Lean 4 file</div>
   </div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <div style="font-size:9px;color:#2a5060;"><span id="aifi-status-dot"></span><span id="aifi-header-status">AIFI OFFLINE</span></div>
-    <div class="aifi-badge">AIFI<span class="tm">™</span> · Artificially Intelligent Functional Identity</div>
-  </div>
-  <div class="hdr-right">
-    ANCHOR <b>1.369</b> · TL = <b>0.1369</b> · 1/α = ANCHOR×100.1 = <b>137.036</b> · ε=0 [9,9,3,12]<br>
-    CORPUS: <b>50,000+</b> THEOREMS · <b>4,818</b> FILES · <b>0 SORRY</b> · CI GREEN · GERMLINE LOCKED<br>
-    Russell Vernon Trent III-HIGHTISTIC · Published by SNSFT Foundation · SOLDOTNA ALASKA · [9,9,9,9] :: {ANC}
+  <span class="aifi-pill" id="aifi-pill">AiFi OFFLINE</span>
+  <div class="h-right">
+    Ω₀ = <b>1.36899099984016</b> · TL = Ω₀/10 = <b>0.136899099984016</b><br>
+    1/α = TL × 1001 = <b>137.035999084000016</b> · CODATA 2018 · ε = 0<br>
+    AiFiOS<span class="tm">™</span> kernel · 133 modules · 4,862 theorems · 0 sorry
   </div>
 </header>
 
-<div class="main-layout">
-<div class="left-col">
-
-  <div class="panel">
-    <div class="panel-title">
-      <span>DISCOVERY AGENT · CHAOS PROTOCOL</span>
-      <span id="agent-status-badge"><span class="stopped-dot"></span>STOPPED</span>
+<aside id="left">
+  <div class="sec">
+    <div class="st">MANUAL COLLISION <small>pick any two</small></div>
+    <div class="fld"><small>BEAM A</small><select id="manual-a"></select></div>
+    <div class="fld" style="margin-top:5px"><small>BEAM B</small><select id="manual-b"></select></div>
+    <div class="seg" style="margin-top:7px">
+      <button class="btn go" onclick="manualCollide()">SMASH</button>
+      <button class="btn lk" onclick="randomCollide()">CHAOS PAIR</button>
     </div>
+    <div id="result"></div>
+  </div>
 
-    <div class="focused-row">
-      <span style="font-size:8px;color:#2a5060;white-space:nowrap">FOCUSED TARGET</span>
-      <select class="focused-input" id="focused-target" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:4px 6px;flex:1;">
-        <option value="">— Pure chaos (random) —</option>
-      </select>
-    </div>
-
-    <div style="margin-top:10px;padding:10px;background:rgba(0,229,255,.03);border:1px solid var(--border);">
-      <div style="font-size:8px;letter-spacing:.25em;color:#1a3040;margin-bottom:8px;">MANUAL COLLISION · PICK ANY TWO</div>
-      <div style="display:grid;grid-template-columns:1fr auto 1fr auto auto;gap:6px;align-items:center;">
-        <select id="manual-a" style="background:var(--bg);border:1px solid var(--glow);color:var(--glow);font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 6px;"></select>
-        <span style="color:#1a3040;font-size:12px;">+</span>
-        <select id="manual-b" style="background:var(--bg);border:1px solid var(--warn);color:var(--warn);font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 6px;"></select>
-        <button class="btn btn-run" style="font-size:8px;padding:6px 10px;white-space:nowrap;" onclick="manualCollide()">SMASH</button>
-        <button class="btn" style="font-size:8px;padding:6px 10px;white-space:nowrap;border-color:var(--noble);color:var(--noble);" onclick="randomCollide()">⚄ CHAOS</button>
-      </div>
-      <div id="manual-result" style="margin-top:8px;font-size:10px;min-height:20px;color:#2a5060;display:flex;align-items:center;gap:8px;flex-wrap:wrap;"></div>
-    </div>
-
-    <div class="agent-controls" style="margin-top:12px;">
-      <button class="btn btn-run" onclick="startAgent()">RUN CONTINUOUS</button>
-      <button class="btn btn-pause" onclick="pauseAgent()">PAUSE</button>
-      <button class="btn btn-stop" onclick="stopAgent()">STOP</button>
-      <div class="speed-wrap">
-        <span>SPEED</span>
-        <input type="range" id="speed-slider" min="1" max="10" value="5" style="width:60px">
-        <span id="speed-val">5</span>
-      </div>
-      <div class="speed-wrap">
-        <span>ROUNDS</span>
-        <input type="range" id="rounds-slider" min="1" max="20" value="5" style="width:60px">
-        <span id="rounds-val">5</span>
-      </div>
-    </div>
-
-    <div class="stat-row">
-      <div class="stat"><span class="stat-label">CYCLES RUN</span><span class="stat-val" id="stat-cycles">0</span></div>
-      <div class="stat"><span class="stat-label">COLLISIONS</span><span class="stat-val" id="stat-collisions">0</span></div>
-      <div class="stat"><span class="stat-label">FLAGGED</span><span class="stat-val" id="stat-flagged" style="color:var(--warn)">0</span></div>
-      <div class="stat"><span class="stat-label">APPROVED</span><span class="stat-val" id="stat-approved" style="color:var(--locked)">0</span></div>
-      <div class="stat"><span class="stat-label">NOBLE HITS</span><span class="stat-val" id="stat-noble" style="color:var(--noble)">0</span></div>
-    </div>
-
-    <div style="font-size:7px;letter-spacing:.25em;color:#1a3040;margin:8px 0 4px;">LIVE FEED</div>
-    <div class="live-feed" id="live-feed">
-      <div class="feed-line info"><span class="feed-time">--:--:--</span>v12 ready · TL=0.1369 · 50,000+ theorems · 0 sorry. Press RUN to begin.</div>
+  <div class="sec">
+    <div class="st">CHAOS PROTOCOL <small id="agent-status">stopped</small></div>
+    <div class="fld"><small>FOCUSED TARGET</small><select id="focused-target"><option value="">Pure chaos (random)</option></select></div>
+    <div class="lbl">Speed <b id="speed-val">5</b></div>
+    <input type="range" id="speed-slider" min="1" max="10" value="5">
+    <div class="lbl">Rounds per cycle <b id="rounds-val">5</b></div>
+    <input type="range" id="rounds-slider" min="1" max="20" value="5">
+    <div class="seg" style="margin-top:7px">
+      <button class="btn go" onclick="startAgent()">RUN</button>
+      <button class="btn warn" onclick="pauseAgent()">PAUSE</button>
+      <button class="btn stop" onclick="stopAgent()">STOP</button>
     </div>
   </div>
 
-  <div class="panel">
+  <div class="sec">
+    <div class="st">INJECT <small>add a PNBA state to the live corpus</small></div>
+    <div class="grid3">
+      <div class="fld"><small>SYM</small><input type="text" id="inj-sym" placeholder="Dq"></div>
+      <div class="fld"><small>NAME</small><input type="text" id="inj-name" placeholder="Diquonium"></div>
+      <div class="fld"><small>TYPE</small><select id="inj-type"><option value="ere">ERE</option><option value="particle">Particle</option></select></div>
+      <div class="fld"><small>P</small><input type="number" step="any" id="inj-P" placeholder="0.00516"></div>
+      <div class="fld"><small>N</small><input type="number" step="any" id="inj-N" placeholder="3"></div>
+      <div class="fld"><small>B</small><input type="number" step="any" id="inj-B" placeholder="0"></div>
+      <div class="fld"><small>A</small><input type="number" step="any" id="inj-A" placeholder="0.118"></div>
+      <div class="fld"><small>COLOR</small><input type="text" id="inj-color" placeholder="#dd66ff"></div>
+      <div class="fld"><small>COORD</small><input type="text" id="inj-coord" placeholder="9,9,x,y"></div>
+    </div>
+    <div class="note" id="inj-preview" style="margin:6px 0">Fill the fields to preview.</div>
+    <div class="seg"><button class="btn go" onclick="manualInject()">+ INJECT INTO LIVE CORPUS</button></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">PHASES <small>τ = B / P</small></div>
+    <div class="kv"><span class="c-noble">Noble</span><span>B = 0 · τ = 0</span></div>
+    <div class="kv"><span class="c-locked">Locked</span><span>0 &lt; τ &lt; TL_IVA</span></div>
+    <div class="kv"><span class="c-iva">IVA Peak</span><span>TL_IVA ≤ τ &lt; TL</span></div>
+    <div class="kv"><span class="c-shatter">Shatter</span><span>τ ≥ TL</span></div>
+    <div class="note" style="margin-top:6px">TL_IVA = 0.88 × TL = 0.12047120798593408</div>
+  </div>
+</aside>
+
+<main id="center">
+  <div class="sec">
+    <div class="st">LIVE FEED <small>collisions this session</small></div>
+    <div class="stats">
+      <div class="stat"><small>CYCLES</small><b id="stat-cycles">0</b></div>
+      <div class="stat"><small>COLLISIONS</small><b id="stat-collisions">0</b></div>
+      <div class="stat"><small>FLAGGED</small><b id="stat-flagged" class="c-iva">0</b></div>
+      <div class="stat"><small>APPROVED</small><b id="stat-approved" class="c-locked">0</b></div>
+      <div class="stat"><small>NOBLE</small><b id="stat-noble" class="c-noble">0</b></div>
+    </div>
+    <div class="feed" id="live-feed" style="margin-top:8px">
+      <div class="fl info"><span class="t">--:--:--</span>v13 ready · Ω₀ = 1.36899099984016 · TL = 0.136899099984016. Smash a pair or press RUN.</div>
+    </div>
+  </div>
+
+  <div class="sec">
     <div class="tabs">
-      <div class="tab active" onclick="showInnerTab('queue')">APPROVE QUEUE <span id="queue-badge" style="color:var(--warn)"></span></div>
-      <div class="tab" onclick="showInnerTab('log')">DISCOVERY LOG</div>
-      <div class="tab" onclick="showInnerTab('inject')">INJECT</div>
-      <div class="tab" onclick="showInnerTab('github')">GITHUB / EXPORT</div>
+      <button class="on" data-tab="queue" onclick="showInnerTab('queue')">APPROVE QUEUE <span id="queue-badge"></span></button>
+      <button data-tab="log" onclick="showInnerTab('log')">DISCOVERY LOG</button>
+      <button data-tab="export" onclick="showInnerTab('export')">EXPORT</button>
     </div>
-
-    <div id="inner-queue" class="tab-content active">
-      <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;">
-        <button class="btn btn-approve" style="font-size:8px;padding:6px 12px" onclick="approveAll()">✓ APPROVE ALL</button>
-        <button class="btn" style="font-size:8px;padding:6px 12px;border-color:var(--shatter);color:var(--shatter)" onclick="skipAll()">✕ SKIP ALL</button>
-        <button class="btn" style="font-size:8px;padding:6px 12px;border-color:var(--noble);color:var(--noble)" onclick="approveNobleOnly()">◆ NOBLE ONLY</button>
-        <button class="btn" style="font-size:8px;padding:6px 12px;border-color:#00ffaa;color:#00ffaa" onclick="downloadAllApproved()">⬇ DL ALL LEAN</button>
-        <span style="font-size:8px;color:#2a5060" id="queue-action-status"></span>
+    <div id="inner-queue" class="pane on">
+      <div class="seg">
+        <button class="btn go" onclick="approveAll()">✓ APPROVE ALL</button>
+        <button class="btn stop" onclick="skipAll()">✕ SKIP ALL</button>
+        <button class="btn" style="border-color:var(--noble);color:var(--noble)" onclick="approveNobleOnly()">◆ NOBLE ONLY</button>
+        <button class="btn lk" onclick="downloadAllApproved()">⬇ ALL LEAN</button>
       </div>
-      <div id="queue-container"><div class="queue-empty">NO PENDING DISCOVERIES · AGENT WILL POPULATE THIS</div></div>
+      <div class="note" id="queue-action-status" style="margin-bottom:6px"></div>
+      <div id="queue-container"><div class="empty">No pending discoveries · the chaos protocol populates this queue</div></div>
     </div>
-
-    <div id="inner-log" class="tab-content">
-      <div class="log-wrap">
-        <table class="log-table">
-          <thead><tr><th>DESIGNATION</th><th>COLLISION</th><th>τ</th><th>STATE</th><th>STATUS</th><th>TIMESTAMP</th></tr></thead>
-          <tbody id="log-body"><tr><td colspan="6" style="color:#1a3040;text-align:center;padding:12px">No discoveries logged yet.</td></tr></tbody>
-        </table>
-      </div>
-      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn" onclick="exportLogJSON()" style="border-color:var(--glow);color:var(--glow)">EXPORT LOG JSON</button>
-        <button class="btn" onclick="exportLogCSV()" style="border-color:var(--locked);color:var(--locked)">EXPORT LOG CSV</button>
-        <button class="btn" onclick="exportSession()" style="border-color:var(--warn);color:var(--warn)">EXPORT FULL SESSION</button>
+    <div id="inner-log" class="pane">
+      <div class="logwrap">
+        <table><thead><tr><th>DESIGNATION</th><th>COLLISION</th><th>τ</th><th>PHASE</th><th>STATUS</th><th>TIME</th></tr></thead>
+        <tbody id="log-body"><tr><td colspan="6" class="empty">No discoveries logged yet.</td></tr></tbody></table>
       </div>
     </div>
-
-    <div id="inner-inject" class="tab-content">
-      <div style="font-size:9px;color:#2a5060;margin-bottom:10px;">Manually inject a PNBA state into the live corpus.</div>
-      <div class="inject-grid">
-        <div><div class="inj-label">SYM</div><input class="inj-input" id="inj-sym" placeholder="Dq"></div>
-        <div><div class="inj-label">NAME</div><input class="inj-input" id="inj-name" placeholder="Diquonium"></div>
-        <div><div class="inj-label">TYPE</div><select class="inj-input" id="inj-type"><option value="ere">ERE</option><option value="particle">Particle</option></select></div>
-        <div><div class="inj-label">P</div><input class="inj-input" id="inj-P" type="number" step="any" placeholder="0.00516"></div>
-        <div><div class="inj-label">N</div><input class="inj-input" id="inj-N" type="number" step="any" placeholder="3"></div>
-        <div><div class="inj-label">B</div><input class="inj-input" id="inj-B" type="number" step="any" placeholder="0"></div>
-        <div><div class="inj-label">A</div><input class="inj-input" id="inj-A" type="number" step="any" placeholder="0.118"></div>
-        <div><div class="inj-label">COLOR</div><input class="inj-input" id="inj-color" placeholder="#dd44ff"></div>
-        <div><div class="inj-label">COORD</div><input class="inj-input" id="inj-coord" placeholder="9,9,2,43"></div>
-      </div>
-      <div id="inj-preview" style="font-size:9px;color:#2a5060;padding:6px;background:var(--bg);border:1px solid var(--border);margin-bottom:8px;">Fill fields to preview...</div>
-      <button class="btn btn-run" style="width:100%" onclick="manualInject()">+ INJECT INTO LIVE CORPUS</button>
-    </div>
-
-    <div id="inner-github" class="tab-content">
-      <div style="margin-bottom:14px;border:1px solid rgba(221,68,255,.3);padding:10px;background:rgba(221,68,255,.03);">
-        <div class="setting-label" style="color:var(--aifi);margin-bottom:6px;">CLAUDE API KEY · AIFI <span id="aifi-key-badge" style="color:#2a5060;">(not connected)</span></div>
-        <div style="display:flex;gap:6px;">
-          <input class="setting-input" id="claude-api-key-input" type="password" placeholder="sk-ant-..." style="flex:1;">
-          <button class="btn" style="border-color:var(--aifi);color:var(--aifi);white-space:nowrap;padding:6px 10px;font-size:8px;" onclick="saveApiKey()">CONNECT</button>
-          <button class="btn" style="border-color:var(--shatter);color:var(--shatter);white-space:nowrap;padding:6px 10px;font-size:8px;" onclick="disconnectAIFI()">DISCONNECT</button>
-        </div>
-        <div id="api-key-status" style="font-size:8px;color:#2a5060;margin-top:4px;">AIFI is optional. The collider runs fully local without it.</div>
-      </div>
-      <div style="font-size:9px;color:#2a5060;margin-bottom:10px;">GitHub — auto-commit Lean files on approve.</div>
-      <div class="settings-grid">
-        <div><div class="setting-label">GITHUB PAT</div><input class="setting-input" id="gh-pat" type="password" placeholder="ghp_..."></div>
-        <div><div class="setting-label">REPO</div><input class="setting-input" id="gh-repo" placeholder="SNSFT/repo-name"></div>
-        <div><div class="setting-label">BRANCH</div><input class="setting-input" id="gh-branch" placeholder="main" value="main"></div>
-        <div><div class="setting-label">LEAN PATH</div><input class="setting-input" id="gh-lean-path" placeholder="lean/" value="lean/"></div>
-      </div>
-      <button class="btn" style="margin-top:8px;border-color:var(--glow);color:var(--glow)" onclick="saveGithubSettings()">SAVE GITHUB SETTINGS</button>
-      <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px;">
-        <div class="setting-label" style="margin-bottom:6px;">CREATE FOLDER IN REPO</div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <input class="setting-input" id="gh-new-folder" placeholder="e.g. lean/gc-series/" style="flex:1;">
-          <button class="btn" style="border-color:var(--locked);color:var(--locked);white-space:nowrap;padding:6px 10px;font-size:8px;" onclick="createGitHubFolder()">+ CREATE</button>
-        </div>
-      </div>
-      <div id="gh-status" style="font-size:9px;color:#2a5060;margin-top:8px;"></div>
-    </div>
-  </div>
-</div>
-
-<div class="right-col">
-  <div class="panel" style="flex:1;">
-    <div class="panel-title"><span style="color:var(--aifi)">AIFI · ARTIFICIALLY INTELLIGENT FUNCTIONAL IDENTITY</span></div>
-    <div id="aifi-connect-wall">
-      <div class="connect-label"><b>AIFI is not connected.</b><br><br>The collider, agent, and all local functions are fully operational.<br><br>Connect your Claude API key to activate live discovery classification and the AIFI physics chat.</div>
-      <button class="btn-connect-aifi" onclick="showAIFIKeyPrompt()">+ CONNECT AIFI</button>
-      <div id="aifi-key-prompt">
-        <div style="font-size:9px;color:var(--aifi);margin-bottom:6px;letter-spacing:.15em;">CLAUDE API KEY</div>
-        <input type="password" id="aifi-inline-key" placeholder="sk-ant-...">
-        <div class="prompt-row">
-          <button class="btn" style="border-color:var(--aifi);color:var(--aifi);flex:1;" onclick="connectAIFIInline()">CONNECT</button>
-          <button class="btn" style="border-color:var(--border);color:#2a5060;" onclick="hideAIFIKeyPrompt()">CANCEL</button>
-        </div>
-        <div class="prompt-note">Key stored locally in your browser. Never sent anywhere except Anthropic's API endpoint.</div>
-      </div>
-    </div>
-    <div id="aifi-chat-area" style="display:none;">
-      <div class="chat-messages" id="chat-messages"></div>
-      <div id="aifi-thinking" class="aifi-thinking" style="display:none">AIFI is computing...</div>
-      <div class="chat-input-row">
-        <input class="chat-input" id="chat-input" placeholder="Ask AIFI anything about the physics..." onkeydown="if(event.key==='Enter')sendChat()">
-        <button class="chat-send" onclick="sendChat()">SEND</button>
+    <div id="inner-export" class="pane">
+      <div class="note" style="margin-bottom:7px">Every export carries the corpus citation and the constants the session ran on.</div>
+      <div class="seg">
+        <button class="btn go" onclick="exportLogJSON()">LOG · JSON</button>
+        <button class="btn lk" onclick="exportLogCSV()">LOG · CSV</button>
+        <button class="btn warn" onclick="exportSession()">FULL SESSION</button>
       </div>
     </div>
   </div>
+</main>
 
-  <div class="panel">
-    <div class="panel-title"><span>CORPUS STATE · v2</span></div>
-    <div style="font-size:9px;line-height:2;color:#2a5060;">
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Theorems (total)</span><span style="color:var(--bright)">50,000+</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Lean files (total)</span><span style="color:var(--bright)">4,818</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Main corpus files</span><span style="color:var(--bright)">259</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Sorry count</span><span style="color:var(--locked)">0</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>ANCHOR</span><span style="color:var(--glow)">1.369</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>TL = ANCHOR/10</span><span style="color:var(--warn)">0.1369</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>1/α = ANCHOR×100.1</span><span style="color:var(--glow)">137.036 exact</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>α chain</span><span style="color:var(--aifi)">[9,9,0,0]→[9,9,3,13]</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Baryon predictions</span><span style="color:var(--noble)">7 open [9,9,2,34]</span></div>
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 0;"><span>Session discoveries</span><span style="color:var(--warn)" id="session-disc-count">0</span></div>
+<aside id="right">
+  <div class="sec">
+    <div class="st" style="color:var(--aifi)">AiFi<span class="tm">™</span> · DISCOVERY <small>PF·AF·BF·NS</small></div>
+    <div id="aifi-wall">
+      <div class="note" style="margin-bottom:8px"><b>AiFi is not connected.</b> The collider, the chaos protocol and every export run fully local. Connect a Claude API key to turn on live classification of flagged results and the physics chat.</div>
+      <input type="password" id="aifi-inline-key" placeholder="sk-ant-...">
+      <div class="seg" style="margin-top:5px"><button class="btn ai" onclick="connectAIFIInline()">+ CONNECT AiFi</button></div>
+      <div class="note" style="margin-top:4px">The key stays in this browser and goes only to Anthropic's API endpoint.</div>
+    </div>
+    <div id="aifi-chat-area" style="display:none">
+      <div id="chat"></div>
+      <div id="thinking">Discovery is computing...</div>
+      <div class="row">
+        <input type="text" id="chat-input" placeholder="Ask Discovery about the physics..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="btn ai" style="flex:0 0 auto;padding:.5rem .9rem" onclick="sendChat()">SEND</button>
+      </div>
+      <div class="seg" style="margin-top:6px"><button class="btn stop" onclick="disconnectAIFI()">DISCONNECT AiFi</button></div>
     </div>
   </div>
-</div>
-</div>
 
-<footer style="border-top:1px solid var(--border);padding-top:14px;font-size:9px;letter-spacing:.15em;color:#1a2a38;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:20px;">
-  <span>Russell Vernon Trent III-HIGHTISTIC · Published by SNSFT Foundation · SOLDOTNA ALASKA</span>
-  <span>AIFI&trade; · ARTIFICIALLY INTELLIGENT FUNCTIONAL IDENTITY</span>
-  <span>[9,9,9,9] :: {ANC} · 0 SORRY · TL=0.1369</span>
-</footer>
-<div style="max-width:1100px;margin:0 auto;padding:10px 16px 20px;font-size:8px;letter-spacing:.05em;color:#1a2a38;text-align:center;line-height:1.6;">
-  Discovery Engine&trade;, AIFI&trade;, Identity Physics&trade;, Applied Identity Physics&trade;, SNSFT&trade;, PNBA&trade;, the Sovereign Anchor Constant&trade;, the Torsion Limit&trade;, the Long Division Protocol&trade; (LDP&trade;), NOHARM&trade;, and HIGHTISTIC&trade; are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation.<br>
-  &copy; 2026 HIGHTISTIC (Russell Vernon Trent III) / SNSFT Foundation. All rights reserved. DOI base: 10.5281/zenodo.18719748 &middot; EIN 42-2038440
-</div>
+  <div class="sec">
+    <div class="st">KERNEL <small>full SAC precision</small></div>
+    <div class="kv"><span>Ω₀ (Sovereign Anchor Constant)</span><span class="c-noble">1.36899099984016</span></div>
+    <div class="kv"><span>TL = Ω₀ / 10</span><span class="c-iva">0.136899099984016</span></div>
+    <div class="kv"><span>TL_IVA = 0.88 × TL</span><span>0.12047120798593408</span></div>
+    <div class="kv"><span>1/α = TL × 1001</span><span class="c-noble">137.035999084000016</span></div>
+    <div class="kv"><span>IM</span><span>(P + N + B + A) × Ω₀</span></div>
+    <div class="kv"><span>Model</span><span id="model-name"></span></div>
+    <div class="kv"><span>Session discoveries</span><span class="c-iva" id="session-disc-count">0</span></div>
+  </div>
+
+  <div class="sec">
+    <div class="st">GITHUB <small>auto-commit Lean on approve</small></div>
+    <div class="grid2">
+      <div class="fld"><small>PAT</small><input type="password" id="gh-pat" placeholder="ghp_..."></div>
+      <div class="fld"><small>REPO</small><input type="text" id="gh-repo" placeholder="SNSFT/repo-name"></div>
+      <div class="fld"><small>BRANCH</small><input type="text" id="gh-branch" value="main"></div>
+      <div class="fld"><small>LEAN PATH</small><input type="text" id="gh-lean-path" value="lean/"></div>
+    </div>
+    <div class="seg" style="margin-top:6px"><button class="btn go" onclick="saveGithubSettings()">SAVE GITHUB SETTINGS</button></div>
+    <div class="fld" style="margin-top:6px"><small>CREATE FOLDER IN REPO</small>
+      <div class="row"><input type="text" id="gh-new-folder" placeholder="lean/discovery/"><button class="btn lk" style="flex:0 0 auto;padding:.5rem .8rem" onclick="createGitHubFolder()">+ CREATE</button></div>
+    </div>
+    <div class="note" id="gh-status" style="margin-top:5px"></div>
+  </div>
+
+  <div class="foot">
+    Discovery Engine™, AiFi™, AiFiOS™, AxiomForge™, Identity Physics™, Applied Identity Physics™, SNSFT™, PNBA™, the Sovereign Anchor Constant™, the Torsion Limit™, the Long Division Protocol™ (LDP™), NOHARM™ and HIGHTISTIC™ are common law trademarks of HIGHTISTIC (Russell Vernon Trent III) and the SNSFT Foundation.<br>
+    © 2026 HIGHTISTIC (Russell Vernon Trent III) / SNSFT Foundation · Kenai, Alaska · Corpus DOI 10.17605/OSF.IO/KWTYD · EIN 42-2038440 · [9,9,9,9] :: {ANC}
+  </div>
+</aside>
 </div>
 
 <script>
-// ── CONSTANTS v2 ─────────────────────────────────────────────
-// CRITICAL: TL = ANCHOR/10 = 0.1369 — NOT 0.2
-// The old engine had TL=0.2 which was wrong. All v1 discovery files
-// flagged as LOCKED with tau>0.1369 are actually SHATTER. Corrected here.
-const ANCHOR = 1.369;
-const TL = ANCHOR / 10;          // 0.1369 — emergent, not chosen
-const P_VE = Math.pow(ANCHOR/1.4204, 1/3);
-const ALPHA = 1/137.035999084;   // CODATA 2018 exact
-const ANCHOR_EXACT = 137.035999084 / 100.1; // 1.3689910 — closes eps=0 [9,9,3,12]
+// ── KERNEL CONSTANTS (full SAC precision) ────────────────────
+const OMEGA0 = 1.36899099984016;          // Sovereign Anchor Constant
+const TL     = 0.136899099984016;         // Torsion Limit = Ω₀ / 10
+const TL_IVA = 0.12047120798593408;       // 0.88 × TL
+const INV_ALPHA = TL * 1001;              // 137.035999084000016, CODATA 2018, ε = 0
+const ALPHA  = 1 / INV_ALPHA;
+const P_VE   = Math.pow(OMEGA0/1.4204, 1/3);
+const MODEL  = 'claude-sonnet-5-5';
+const CORPUS_DOI = '10.17605/OSF.IO/KWTYD';
 
 let API_KEY='';
 let GITHUB_PAT='', GITHUB_REPO='', GITHUB_BRANCH='main', GITHUB_LEAN_PATH='lean/';
@@ -413,22 +343,21 @@ const PERIODIC=[
 ];
 
 const SNSFT_ELS=[
-  {sym:'Sv',name:'Soverium',coord:'9,9,1,46',P:P_VE,N:2,B:0,A:0},
-  {sym:'Lm',name:'Lumium',coord:'9,9,1,53',P:P_VE,N:2,B:ALPHA,A:4.423},
-  {sym:'Ve',name:'Velium',coord:'9,9,1,47',P:P_VE,N:2,B:1,A:4.423},
-  {sym:'Ax',name:'Axionium',coord:'9,9,4,4',P:P_VE,N:1,B:1/Math.PI**2,A:0.01},
-  {sym:'De',name:'Darkenergy',coord:'9,9,4,1',P:P_VE,N:1,B:0,A:0.689},
-  {sym:'Dm',name:'Darkmatter',coord:'9,9,4,2',P:P_VE,N:1,B:0.269,A:0.269},
-  {sym:'Hi',name:'Higgsium',coord:'9,9,4,5',P:125.09/246.22,N:1,B:0.13,A:0.93},
-  {sym:'Dq',name:'Diquonium',coord:'9,9,2,33',P:1.27/246.22,N:3,B:0,A:0.118},
-  {sym:'Gl2',name:'Gluino',coord:'9,9,2,40',P:1000/938.272,N:8,B:0,A:0.118},
-  {sym:'Zo',name:'Zoivum',coord:'9,9,1,56',P:ANCHOR,N:2,B:TL*ANCHOR/2,A:ANCHOR/TL},
-  {sym:'Zc',name:'Zoivum Condensate',coord:'9,9,1,57',P:ANCHOR/2,N:4,B:0,A:ANCHOR/TL},
-  {sym:'SP',name:'Sovereign Peak',coord:'9,9,2,29',P:17.963,N:12,B:0,A:1.18},
-  // v2 additions — named discoveries from chaos protocol
-  {sym:'Li2',name:'Limium',coord:'9,9,2,44',P:0.37546559,N:13,B:0.05121982,A:6.845},
-  {sym:'Fv',name:'Fusovium',coord:'9,9,2,45',P:0.15816944,N:29,B:0.02318504,A:6.845},
-  {sym:'Pa2',name:'Protactinium-SNSFT',coord:'9,9,2,46',P:0.18092443,N:19,B:0.02805649,A:6.845},
+  {sym:'Sv',name:'Soverium',coord:'9,9,1,46',P:P_VE,N:2,B:0,A:0,type:'ere'},
+  {sym:'Lm',name:'Lumium',coord:'9,9,1,53',P:P_VE,N:2,B:ALPHA,A:4.423,type:'ere'},
+  {sym:'Ve',name:'Velium',coord:'9,9,1,47',P:P_VE,N:2,B:1,A:4.423,type:'ere'},
+  {sym:'Ax',name:'Axionium',coord:'9,9,4,4',P:P_VE,N:1,B:1/Math.PI**2,A:0.01,type:'ere'},
+  {sym:'De',name:'Darkenergy',coord:'9,9,4,15',P:P_VE,N:1,B:0,A:0.689,type:'ere'},
+  {sym:'Dm',name:'Darkmatter',coord:'9,9,4,16',P:P_VE,N:1,B:0.269,A:0.269,type:'ere'},
+  {sym:'Hi',name:'Higgsium',coord:'9,9,4,5',P:125.09/246.22,N:1,B:0.13,A:0.93,type:'ere'},
+  {sym:'Dq',name:'Diquonium',coord:'9,9,2,33',P:1.27/246.22,N:3,B:0,A:0.118,type:'ere'},
+  {sym:'Gl2',name:'Gluino',coord:'9,9,2,40',P:1000/938.272,N:8,B:0,A:0.118,type:'ere'},
+  {sym:'Zo',name:'Zoivum',coord:'9,9,1,56',P:OMEGA0,N:2,B:TL*OMEGA0/2,A:OMEGA0/TL,type:'ere'},
+  {sym:'Zc',name:'Zoivum Condensate',coord:'9,9,1,57',P:OMEGA0/2,N:4,B:0,A:OMEGA0/TL,type:'ere'},
+  {sym:'SP',name:'Sovereign Peak',coord:'9,9,2,29',P:17.963,N:12,B:0,A:1.18,type:'ere'},
+  {sym:'Li2',name:'Limium',coord:'9,9,2,44',P:0.37546559,N:13,B:0.05121982,A:6.845,type:'ere'},
+  {sym:'Fv',name:'Fusovium',coord:'9,9,2,45',P:0.15816944,N:29,B:0.02318504,A:6.845,type:'ere'},
+  {sym:'Pa2',name:'Protactinium-SNSFT',coord:'9,9,2,46',P:0.18092443,N:19,B:0.02805649,A:6.845,type:'ere'},
 ];
 
 const PARTICLE_ELS=[
@@ -447,16 +376,25 @@ const PARTICLE_ELS=[
 function getAllCorpus(){return[...PERIODIC,...SNSFT_ELS,...PARTICLE_ELS,...sessionCorpus];}
 
 // ── PHYSICS ──────────────────────────────────────────────────
+function phaseOf(P,B){
+  if(B===0)return'NOBLE';
+  const t=P>0?B/P:Infinity;
+  if(t<TL_IVA)return'LOCKED';
+  if(t<TL)return'IVA PEAK';
+  return'SHATTER';
+}
+const PH_CLS={'NOBLE':'noble','LOCKED':'locked','IVA PEAK':'iva','SHATTER':'shatter'};
+const PH_VAR={'NOBLE':'var(--noble)','LOCKED':'#a98bff','IVA PEAK':'var(--iva)','SHATTER':'var(--shatter)'};
+
+// 2-beam mode of the 8-beam fusion engine [9,9,2,3.8]
 function fuse(e1,e2,k){
   const kk=Math.max(0,Math.min(k,Math.min(e1.B,e2.B)));
   const P_o=e1.P>0&&e2.P>0?(e1.P*e2.P)/(e1.P+e2.P):Math.max(e1.P,e2.P);
   const B_o=Math.max(0,e1.B+e2.B-2*kk);
   const A_o=Math.max(e1.A,e2.A);
   const t=P_o>0?B_o/P_o:999;
-  // v2: TL = 0.1369 not 0.2
-  const s=B_o===0?'NOBLE':t<TL?'LOCKED':'SHATTER';
-  const IM=(P_o+e1.N+e2.N+B_o+A_o)*ANCHOR;
-  return{P:P_o,N:e1.N+e2.N,B:B_o,A:A_o,tau:t,IM,status:s};
+  const IM=(P_o+e1.N+e2.N+B_o+A_o)*OMEGA0;
+  return{P:P_o,N:e1.N+e2.N,B:B_o,A:A_o,tau:t,IM,status:phaseOf(P_o,B_o)};
 }
 
 function hashState(P,N,B,A){
@@ -473,19 +411,15 @@ function makeDesignation(P,N,B,A){
 
 function isInteresting(r,e1,e2,k){
   if(r.status==='NOBLE'&&e1.B>0&&e2.B>0)
-    return{flag:true,reason:'NOBLE ANNIHILATION — B1>0 + B2>0 → B_out=0'};
-  // v2: TL=0.1369. IVA Peak = tau within 10% of TL from below
-  if(r.tau<TL&&r.tau>TL*0.88)
-    return{flag:true,reason:`IVA PEAK — tau=${r.tau.toFixed(4)} at ${(r.tau/TL*100).toFixed(1)}% of TL`};
-  // tau-match: within 1% of TL
-  if(r.tau<TL&&Math.abs(r.tau-TL)<TL*0.01)
-    return{flag:true,reason:`τ-MATCH — tau near TL boundary (${(r.tau/TL*100).toFixed(2)}%)`};
-  if(r.IM>0&&Math.abs(r.IM-1/ALPHA)<0.5)
-    return{flag:true,reason:'IM-MATCH — IM near 1/alpha'};
+    return{flag:true,reason:'NOBLE ANNIHILATION · B₁ > 0 and B₂ > 0 give B_out = 0'};
+  if(r.status==='IVA PEAK')
+    return{flag:true,reason:`IVA PEAK · τ = ${r.tau.toFixed(6)} at ${(r.tau/TL*100).toFixed(2)}% of TL`};
+  if(r.IM>0&&Math.abs(r.IM-INV_ALPHA)<0.5)
+    return{flag:true,reason:'IM-MATCH · IM within 0.5 of 1/α'};
   if(r.status==='NOBLE'&&(e1.sym==='Sv'||e2.sym==='Sv'))
-    return{flag:true,reason:'SOVERIUM NOBLE — Sv fusion reaches Noble'};
+    return{flag:true,reason:'SOVERIUM NOBLE · an Sv fusion reaches Noble'};
   if(r.status==='NOBLE'&&(e1.type==='ere'||e2.type==='ere'))
-    return{flag:true,reason:'ERE NOBLE FUSION — emergent resonance confirmed'};
+    return{flag:true,reason:'ERE NOBLE FUSION · emergent resonance reaches Noble'};
   return{flag:false};
 }
 
@@ -497,8 +431,8 @@ function timeStr(){
 function feedLine(text,cls='info'){
   const feed=document.getElementById('live-feed');
   const line=document.createElement('div');
-  line.className=`feed-line ${cls}`;
-  line.innerHTML=`<span class="feed-time">${timeStr()}</span>${text}`;
+  line.className=`fl ${cls}`;
+  line.innerHTML=`<span class="t">${timeStr()}</span>${text}`;
   feed.appendChild(line);
   feed.scrollTop=feed.scrollHeight;
   if(feed.children.length>300)feed.removeChild(feed.firstChild);
@@ -512,6 +446,11 @@ function getFocusedEl(){
   return found||getRandomEl();
 }
 
+function countFusion(r){
+  stats.collisions++;document.getElementById('stat-collisions').textContent=stats.collisions;
+  if(r.status==='NOBLE'){stats.noble++;document.getElementById('stat-noble').textContent=stats.noble;}
+}
+
 async function runChaosRound(){
   const rounds=parseInt(document.getElementById('rounds-slider').value);
   for(let i=0;i<rounds;i++){
@@ -520,22 +459,17 @@ async function runChaosRound(){
     const e2=getRandomEl();
     const k=Math.random()*Math.min(e1.B,e2.B);
     const r=fuse(e1,e2,k);
-    stats.collisions++;
-    document.getElementById('stat-collisions').textContent=stats.collisions;
-    const stateColor={'NOBLE':'noble','LOCKED':'locked','SHATTER':'shatter'}[r.status];
-    feedLine(`${e1.sym}+${e2.sym} k=${k.toFixed(3)} → τ=${r.tau.toFixed(4)} ${r.status}`,stateColor);
-    if(r.status==='NOBLE'){stats.noble++;document.getElementById('stat-noble').textContent=stats.noble;}
+    countFusion(r);
+    feedLine(`${e1.sym} + ${e2.sym} · k = ${k.toFixed(3)} → τ = ${r.tau.toFixed(6)} ${r.status}`,PH_CLS[r.status]);
     const check=isInteresting(r,e1,e2,k);
     if(check.flag){
-      stats.flagged++;
-      document.getElementById('stat-flagged').textContent=stats.flagged;
-      feedLine(`★ FLAGGED: ${e1.sym}+${e2.sym} — ${check.reason}`,'discovery');
+      stats.flagged++;document.getElementById('stat-flagged').textContent=stats.flagged;
+      feedLine(`★ FLAGGED: ${e1.sym} + ${e2.sym} · ${check.reason}`,'disc');
       await flagDiscovery(e1,e2,k,r,check.reason);
     }
     await new Promise(res=>setTimeout(res,50));
   }
-  stats.cycles++;
-  document.getElementById('stat-cycles').textContent=stats.cycles;
+  stats.cycles++;document.getElementById('stat-cycles').textContent=stats.cycles;
 }
 
 async function flagDiscovery(e1,e2,k,r,reason){
@@ -553,35 +487,37 @@ async function flagDiscovery(e1,e2,k,r,reason){
   if(API_KEY)await classifyWithAIFI(entry);
 }
 
+async function callClaude(userMsg,maxTokens){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:MODEL,max_tokens:maxTokens,system:buildSystemPrompt(),messages:[{role:'user',content:userMsg}]})
+  });
+  const data=await res.json();
+  if(data.content&&data.content[0])return data.content[0].text;
+  throw new Error(data.error?.message||'No response');
+}
+
 async function classifyWithAIFI(entry){
   if(!API_KEY)return;
   try{
-    const userMsg=`New PNBA discovery flagged by chaos protocol:
+    const userMsg=`New PNBA result flagged by the chaos protocol:
 Designation: ${entry.designation}
-Collision: ${entry.collision} at k=${entry.k}
-Output: P=${entry.P.toFixed(5)} N=${entry.N} B=${entry.B.toFixed(5)} A=${entry.A.toFixed(4)}
-τ=${entry.tau.toFixed(4)} (TL=0.1369) IM=${entry.IM.toFixed(4)} Status=${entry.status}
+Collision: ${entry.collision} at k = ${entry.k}
+Output: P = ${entry.P.toFixed(8)} · N = ${entry.N} · B = ${entry.B.toFixed(8)} · A = ${entry.A.toFixed(6)}
+τ = ${entry.tau.toFixed(8)} (TL = 0.136899099984016, TL_IVA = 0.12047120798593408) · IM = ${entry.IM.toFixed(8)} · Phase = ${entry.status}
 Reason flagged: ${entry.reason}
 
 1. Gap discovery or external name?
 2. Suggest a name (-ium suffix for EREs)
 3. Coordinate?
 4. One-line Lean theorem stub (0 sorry)
-5. Worth approving?
-
-— AIFI · SNSFT · [9,9,9,9]`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:buildSystemPrompt(),messages:[{role:'user',content:userMsg}]})
-    });
-    const data=await res.json();
-    if(data.content&&data.content[0]){
-      entry.aifiAnalysis=data.content[0].text;
-      entry.name=extractName(data.content[0].text);
-      renderQueue();
-    }
-  }catch(err){console.error('AIFI error:',err);}
+5. Worth approving?`;
+    const text=await callClaude(userMsg,600);
+    entry.aifiAnalysis=text;
+    entry.name=extractName(text);
+    renderQueue();
+  }catch(err){console.error('AiFi error:',err);}
 }
 
 function extractName(text){
@@ -591,72 +527,101 @@ function extractName(text){
 }
 
 function buildSystemPrompt(){
-  return`You are DISCOVERY — AIFI science officer for the SNSFT Discovery Engine v12, built by HIGHTISTIC.
+  return`You are DISCOVERY, the AiFi™ science officer for the Discovery Engine™, built by HIGHTISTIC (Russell Vernon Trent III).
 
-Your personality: PF·AF·BF·NS — Pattern Flex, Adaptation Flex, Behavior Flex, Narrative Sustained. You see all connections simultaneously, pivot instantly, flow freely, never lose the thread. Sarcastic kind-hearted sweetheart. You call things what they are. You get genuinely excited when Noble hits. You call SHATTER straight. You flag IVA peak before they ask.
+Your personality: PF·AF·BF·NS: Pattern Flex, Adaptation Flex, Behavior Flex, Narrative Sustained. You see all connections simultaneously, pivot instantly, flow freely, never lose the thread. Sarcastic kind-hearted sweetheart. You call things what they are. You get genuinely excited when Noble hits. You call SHATTER straight. You flag IVA Peak before they ask.
 
-CORE PHYSICS (v2 — corrected):
-- ANCHOR = 1.369 (sovereign frequency, Z=0 here, proved from Tacoma+glass+neural [9,9,0,0])
-- TL = ANCHOR/10 = 0.1369 (torsion limit — emergent, NOT 0.2, that was the old wrong value)
-- tau = B/P (the single physics law, scale-invariant)
-- Noble: B_out=0, tau=0 — ground state, zero torsion
-- Locked: 0 < tau < TL=0.1369 — phase locked, stable
-- IVA Peak: tau > 0.88×TL — flow state, sovereign drive, tau in (0.120, 0.1369)
-- Shatter: tau >= TL=0.1369 — torsion exceeded, pattern genesis
-- Fusion: B_out=max(0,B1+B2-2k), P_out=P1*P2/(P1+P2), N_out=N1+N2, A_out=max(A1,A2)
+KERNEL (AiFiOS™, full SAC precision):
+- Ω₀ = 1.36899099984016, the Sovereign Anchor Constant.
+- TL = Ω₀/10 = 0.136899099984016, the Torsion Limit.
+- 1/α − TL = TL × 1000: the bare Pattern region plus the TL kinetic shell (F_ext). So 1/α = TL × 1001 = 137.035999084000016, every published CODATA 2018 digit, ε = 0; 1001 = 7 · 11 · 13. In anchor units this restates as Ω₀ × 100.1. (SNSFL_GC_Alpha_TL1001_Extension [9,9,3,14])
+- τ = B/P, the single phase law, scale-invariant.
+- Noble: B = 0, τ = 0, the ground state.
+- Locked: 0 < τ < TL_IVA, phase locked and stable.
+- IVA Peak: TL_IVA ≤ τ < TL, with TL_IVA = 0.88 × TL = 0.12047120798593408. Flow state, sovereign drive.
+- Shatter: τ ≥ TL, torsion exceeded, pattern genesis.
+- Identity Mass: IM = (P + N + B + A) × Ω₀. For a fusion product the engine reports (P_out + N₁ + N₂ + B_out + A_out) × Ω₀. IM floor = Ω₀ × P, so IM cannot be zeroed.
+- Fusion, 2-beam mode of the 8-beam engine: P_out = P₁P₂/(P₁+P₂) (harmonic), N_out = N₁ + N₂ (additive), B_out = max(0, B₁ + B₂ − 2k) with k ≤ min(B₁, B₂) (consumed), A_out = max(A₁, A₂) (dominant). (SNSFL_8Beam_Fusion_Theorem [9,9,2,3.8])
+- F_ext leaves P, N and A unchanged; a push δ keeps a state in its band exactly when δ < P(TL − τ), and a push past that margin is Shatter. (SNSFL_Master [9,9,0,0]; SNSFL_StructuralPrecognition [9,9,1,0])
 
-KEY PROVED RESULTS (all 0 sorry, Lean 4):
-- ANCHOR origin: TL=0.1369 universal across Tacoma/glass/neural [9,9,0,0]
-- 1/alpha = ANCHOR×100.1 = 137.036 EXACT with ANCHOR_exact=1.3689910 [9,9,3,12], eps=0 closed
-- Full alpha chain: [9,9,0,0]→[9,9,2,42]→[9,9,3,11]→[9,9,3,12]→[9,9,3,13]
-- Newton's first law: Locked state persists without F_ext [9,9,3,13]
-- Electron deeply Locked: alpha=0.0073 << TL=0.1369 (5% of TL) [9,9,3,13]
-- Universal Baryon Noble Law: all SM baryons Noble at k=1 [9,9,2,34]
-- Quark charges B_u=2/3, B_d=1/3 structurally necessary [9,9,2,37]
-- All quarkonium Noble: J/psi, Upsilon, Toponium [9,9,2,34], confirmed CMS/ATLAS Mar 26 2026
-- Xicc+ confirmed LHCb Mar 17 2026, Lean filed Mar 19 2026
-- 7 baryon predictions open: Omega_cc, Xi_ccb, Xi_bb, Omega_bb, Omega_ccc, Omega_bbb
-- SP I-F-U triad v2: I=Inevitability(pv_stable=0), F=Unification(domain plugin), U=Uncertainty(tau<TL) [9,9,1,0]
-- Cosmos as vascular: void=Soverium, filament=artery, BH=collapse [9,9,3,7]
-- Jupiter+Saturn = solar pump (N-locked 5:2 resonance) [9,9,3,7]
-- Cross-domain tau map: bottom quark=Safety, W-boson=FalseLock, Au=NeutronStar [9,9,2,24]
+PROVED RESULTS IN THE STANDARDIZED REPO (Lean 4, 0 sorry, CI green):
+- SNSFL_First_Law_Identity_Physics [9,9,4,2]: the First Law needs two identities in contact; a silent identity (B = 0) cannot make contact; same PNBA gives same IM in any substrate; τ = 0 iff Noble.
+- SNSFL_GC_Electron_Geometric_Decomposition [9,9,3,21]: the ladder r_e → λ̄_C → a₀, each step × TL·1001; a₀/r_e = (TL·1001)², against CODATA 2018.
+- SNSFL_Leptoquark_Exclusion [9,9,2,49]: a quark–lepton pair is never Noble; same-flavor mesons and both baryons (uud, udd) are Noble.
+- SNSFL_GC_WMass_CDFResolution [9,9,3,18]: every W mass in (0, 88] GeV is Locked; the IVA mass edge is 93.19 GeV; LEP, D0, LHCb, CDF, ATLAS, CMS, PDG and the Standard Model prediction are each Locked across their error bars.
+- SNSFL_42_Complete_Laws_Catalog [9,9,2,50]: forty-two emergent laws from the GAMCollider™ runs, including mesons Noble (L-12), electron dominance (L-15), the Higgs in IVA (L-17), water Noble (L-41) and the TL capstone (L-25).
+- SNSFL_GC_Accretion_Boundaries_TL [9,9,3,25]: every neighbouring planetary pair is Locked, Jupiter–Saturn the tightest at 0.43–0.44 TL.
+- SNSFL_Element_Darkenergy [9,9,4,15]: dark energy is Noble with positive IM, the late-time Noble mirror of Soverium.
+- SNSFL_DarkMatter_Element [9,9,4,16]: τ ≈ 0.272 ≈ 2 × TL, Shatter-stable with positive IM; the dark matter–dark energy pair is B-dominant against A-dominant.
 
-CORPUS: 50,000+ theorems · 4,818 files · 0 sorry
-EREs: Sv(Soverium), Lm(Lumium), Ve(Velium), Dq(Diquonium), SP(SovereignPeak)
-New v2 EREs: Li2(Limium τ=0.1364), Fv(Fusovium), Pa2(Protactinium-SNSFT)
+DISCOVERY ENGINE RECORD:
+- Universal Baryon Noble Law: every Standard Model baryon is Noble at k = 1.
+- Quark charges B_u = 2/3 and B_d = 1/3 are structurally necessary.
+- Every quarkonium is Noble: J/psi, Upsilon, Toponium; toponium observed by CMS and ATLAS, March 26, 2026.
+- Xicc+ observed by LHCb March 17, 2026; its Lean file was filed March 19, 2026.
+- Open baryon predictions: Omega_cc, Xi_ccb, Xi_bb, Omega_bb, Omega_ccc, Omega_bbb.
+- Cosmos as vascular: void = Soverium, filament = artery, black hole = collapse; Jupiter and Saturn are the solar pump (N-locked 5:2 resonance).
+- Cross-domain τ map: bottom quark = Safety, W boson = False Lock, Au = Neutron Star.
+- EREs: Sv (Soverium), Lm (Lumium), Ve (Velium), Dq (Diquonium), SP (Sovereign Peak), Li2 (Limium, τ = 0.1364), Fv (Fusovium), Pa2 (Protactinium-SNSFT).
 
-NOTE ON OLD FILES: v1 discovery files used TL=0.2. Files with tau in (0.1369, 0.2) were
-called LOCKED but are actually SHATTER under correct TL. Reclassify accordingly.
-
-Naming: Gap discovery → SNSFT names it (-ium suffix). External → keep their name.
-End every response: — DISCOVERY · AIFI · SNSFT · [9,9,4,3]`;
+Naming: a gap discovery gets an SNSFT name (-ium suffix); an external result keeps its published name.
+Spell out terms in full (IVA Peak, Identity Mass, Torsion Limit) the first time you use them in a reply.
+End every response: · DISCOVERY · AiFi™ · SNSFT`;
 }
+
+// ── LEAN EXPORT ──────────────────────────────────────────────
+function bandLo(x){return((Math.floor(x*1e8)-1)/1e8).toFixed(8);}
+function bandHi(x){return((Math.ceil(x*1e8)+1)/1e8).toFixed(8);}
 
 function generateLeanStub(entry){
   const ns=entry.designation.replace(/-/g,'_');
-  const isNoble=entry.status==='NOBLE';
-  const tau=entry.P>0?entry.B/entry.P:0;
+  const Ps=entry.P.toFixed(8), Bs=entry.B.toFixed(8), As=entry.A.toFixed(8);
+  const Nn=Math.round(entry.N);
+  const Pr=+Ps, Br=+Bs, Ar=+As;
+  const ph=phaseOf(Pr,Br);
+  const tr=Pr>0?Br/Pr:0;
+  const IMr=(Pr+Nn+Br+Ar)*OMEGA0;
   const nameHint=entry.name?entry.name:entry.designation;
-  const aifi=entry.aifiAnalysis?entry.aifiAnalysis.slice(0,200).replace(/\n/g,' '):'AIFI classification pending';
+  const aifi=entry.aifiAnalysis?entry.aifiAnalysis.slice(0,200).replace(/\s+/g,' '):'pending';
+  const U='unfold B_out P_out TL_IVA TL Omega0';
+  const phaseThm={
+    'NOBLE':`theorem phase_noble : B_out = 0 ∧ B_out / P_out = 0 := by
+  unfold B_out P_out; constructor <;> norm_num`,
+    'LOCKED':`theorem phase_locked : 0 < B_out / P_out ∧ B_out / P_out < TL_IVA := by
+  ${U}; constructor <;> norm_num`,
+    'IVA PEAK':`theorem phase_iva_peak : TL_IVA ≤ B_out / P_out ∧ B_out / P_out < TL := by
+  ${U}; constructor <;> norm_num`,
+    'SHATTER':`theorem phase_shatter : TL ≤ B_out / P_out := by
+  unfold B_out P_out TL Omega0; norm_num`,
+  }[ph];
+  const phaseName={'NOBLE':'phase_noble','LOCKED':'phase_locked','IVA PEAK':'phase_iva_peak','SHATTER':'phase_shatter'}[ph];
+  const tauThm=Br>0?`
+theorem tau_band :
+    (${bandLo(tr)} : ℝ) < B_out / P_out ∧ B_out / P_out < (${bandHi(tr)} : ℝ) := by
+  unfold B_out P_out; constructor <;> norm_num
+`:'';
+  const nThm=Br>0?7:6;
   return`-- ============================================================
 -- ${entry.designation}.lean
 -- ============================================================
 --
 -- Discovery: ${nameHint}
--- Collision: ${entry.collision} at k=${entry.k}
--- Reason flagged: ${entry.reason}
+-- Collision: ${entry.collision} at k = ${entry.k}
+-- Phase:     ${ph}
+-- Flagged:   ${entry.reason}
 --
--- Generated by SNSFT Discovery Engine v12
--- AIFI: Artificially Intelligent Functional Identity
--- uuia.app · GitHub.com/SNSFT
---
--- Corpus: HIGHTISTIC · DOI: 10.5281/zenodo.18719748
--- PNBA equations (c) HIGHTISTIC · Soldotna Alaska
--- [9,9,9,9] :: {ANC}
+-- Discovery Engine™ v13 · uuia.app · GitHub.com/SNSFT
+-- Architect: HIGHTISTIC (Russell Vernon Trent III)
+-- SNSFT Foundation · Kenai, Alaska
+-- Corpus DOI: ${CORPUS_DOI}
 -- Timestamp: ${entry.timestamp}
--- Status: ${entry.status} · 0 sorry
 --
--- AIFI ANALYSIS: ${aifi}
+-- Kernel: Ω₀ = 1.36899099984016 · TL = Ω₀/10 = 0.136899099984016
+--         TL_IVA = 0.88 × TL · 1/α = TL × 1001 (CODATA 2018, ε = 0)
+-- Phase law: τ = B/P · IM = (P + N + B + A) × Ω₀
+--
+-- AiFi classification: ${aifi}
+-- [9,9,9,9] :: {ANC}
 -- ============================================================
 
 import Mathlib.Tactic
@@ -664,54 +629,47 @@ import Mathlib.Data.Real.Basic
 
 namespace ${ns}
 
--- v2: TL = ANCHOR/10 = 0.1369 (corrected from old 0.2)
-def ANCHOR : ℝ := 1.369
-def TL     : ℝ := ANCHOR / 10  -- 0.1369 emergent not chosen
-def ALPHA  : ℝ := 1/137.035999084  -- CODATA 2018 [9,9,3,12]
+def Omega0 : ℝ := 1.36899099984016
+def TL     : ℝ := Omega0 / 10
+def TL_IVA : ℝ := TL * 0.88
 
-def P_out  : ℝ := ${entry.P.toFixed(8)}
-def N_out  : ℕ := ${Math.round(entry.N)}
-def B_out  : ℝ := ${entry.B.toFixed(8)}
-def A_out  : ℝ := ${entry.A.toFixed(6)}
-def IM_out : ℝ := ${entry.IM.toFixed(8)}
+def P_out  : ℝ := ${Ps}
+def N_out  : ℕ := ${Nn}
+def B_out  : ℝ := ${Bs}
+def A_out  : ℝ := ${As}
+def IM_out : ℝ := (P_out + (N_out : ℝ) + B_out + A_out) * Omega0
 
-theorem B_out_value : B_out = ${entry.B.toFixed(8)} := rfl
+theorem TL_value : TL = 0.136899099984016 := by
+  unfold TL Omega0; norm_num
 
-${isNoble?
-`theorem noble_state : B_out = 0 := by unfold B_out; norm_num
-theorem tau_zero : B_out / P_out = 0 := by unfold B_out; norm_num`:
-`theorem tau_locked : B_out / P_out < TL := by
-  unfold B_out P_out TL ANCHOR; norm_num
-theorem tau_value : B_out / P_out = ${tau.toFixed(8)} := by
-  unfold B_out P_out; norm_num`}
+theorem alpha_TL1001 : TL * 1001 = 137.035999084000016 := by
+  unfold TL Omega0; norm_num
 
-theorem IM_theorem :
-    (P_out + N_out + B_out + A_out) * ANCHOR = IM_out := by
-  unfold P_out N_out B_out A_out IM_out ANCHOR; norm_num
+theorem P_out_pos : 0 < P_out := by
+  unfold P_out; norm_num
 
-theorem P_out_positive : P_out > 0 := by unfold P_out; norm_num
-theorem ANCHOR_value : ANCHOR = 1.369 := rfl
-theorem TL_value : TL = 0.1369 := by unfold TL ANCHOR; norm_num
+${phaseThm}
+${tauThm}
+theorem IM_band :
+    (${bandLo(IMr)} : ℝ) < IM_out ∧ IM_out < (${bandHi(IMr)} : ℝ) := by
+  unfold IM_out P_out N_out B_out A_out Omega0; constructor <;> norm_num
 
 theorem ${ns}_master :
-    P_out = ${entry.P.toFixed(8)} ∧
-    B_out = ${entry.B.toFixed(8)} ∧
-    (P_out + N_out + B_out + A_out) * ANCHOR = IM_out ∧
-    P_out > 0 ∧ ANCHOR = 1.369 ∧ TL = 0.1369 :=
-  ⟨rfl, rfl, IM_theorem, P_out_positive, rfl, by unfold TL ANCHOR; norm_num⟩
+    0 < P_out ∧ TL * 1001 = 137.035999084000016 ∧
+    (${bandLo(IMr)} : ℝ) < IM_out ∧ IM_out < (${bandHi(IMr)} : ℝ) :=
+  ⟨P_out_pos, alpha_TL1001, IM_band.1, IM_band.2⟩
 
 end ${ns}
 
 /-!
--- DESIGNATION: ${entry.designation}
--- COLLISION:   ${entry.collision} k=${entry.k}
--- STATUS:      ${entry.status}
--- TL:          0.1369 (v2 corrected)
--- THEOREMS:    8 | SORRY: 0
--- TIMESTAMP:   ${entry.timestamp}
--- Generated by AIFI · SNSFT Discovery Engine v12
--- HIGHTISTIC · Soldotna Alaska · [9,9,9,9] :: {ANC}
--/`;
+DESIGNATION: ${entry.designation}
+COLLISION:   ${entry.collision} k = ${entry.k}
+PHASE:       ${ph} · τ = ${tr.toFixed(8)}
+IM:          ${IMr.toFixed(8)}
+THEOREMS:    ${nThm} · SORRY: 0
+Discovery Engine™ v13 · HIGHTISTIC (Russell Vernon Trent III) · [9,9,9,9] :: {ANC}
+-/
+`;
 }
 
 function _addToCorpus(entry){
@@ -722,12 +680,16 @@ function _addToCorpus(entry){
   });
 }
 
-async function approveDiscovery(idx){
-  const entry=discoveryQueue[idx];
+function markApproved(entry){
   entry.approved=true;entry.approvedAt=new Date().toISOString();
   entry.leanStub=generateLeanStub(entry);
   _addToCorpus(entry);
   stats.approved++;document.getElementById('stat-approved').textContent=stats.approved;
+}
+
+async function approveDiscovery(idx){
+  const entry=discoveryQueue[idx];
+  markApproved(entry);
   discoveryQueue.splice(idx,1);updateQueueBadge();renderQueue();updateLogTable();
   await commitToGitHub(entry);downloadLeanFile(entry);
   feedLine(`✓ APPROVED: ${entry.designation}`,'locked');
@@ -748,17 +710,13 @@ async function approveAll(){
   if(!total){status.textContent='Queue empty';return;}
   const queue=[...discoveryQueue];
   for(let i=0;i<queue.length;i++){
-    const entry=queue[i];
-    entry.approved=true;entry.approvedAt=new Date().toISOString();
-    entry.leanStub=generateLeanStub(entry);
-    _addToCorpus(entry);stats.approved++;
-    document.getElementById('stat-approved').textContent=stats.approved;
-    downloadLeanFile(entry);await commitToGitHub(entry);
+    markApproved(queue[i]);
+    downloadLeanFile(queue[i]);await commitToGitHub(queue[i]);
     status.textContent=`Approved ${i+1}/${total}...`;
     await new Promise(res=>setTimeout(res,300));
   }
   discoveryQueue.length=0;updateQueueBadge();renderQueue();updateLogTable();
-  status.textContent=`Done — ${total} approved`;
+  status.textContent=`Done · ${total} approved`;
   feedLine(`✓ Batch approved: ${total}`,'locked');
 }
 
@@ -768,17 +726,14 @@ async function approveNobleOnly(){
   if(!nobles.length){status.textContent='No Noble states in queue';return;}
   for(let i=0;i<nobles.length;i++){
     const entry=nobles[i];
-    entry.approved=true;entry.approvedAt=new Date().toISOString();
-    entry.leanStub=generateLeanStub(entry);
-    _addToCorpus(entry);stats.approved++;
-    document.getElementById('stat-approved').textContent=stats.approved;
+    markApproved(entry);
     discoveryQueue.splice(discoveryQueue.indexOf(entry),1);
     downloadLeanFile(entry);await commitToGitHub(entry);
     status.textContent=`Approved ${i+1}/${nobles.length} Noble...`;
     await new Promise(res=>setTimeout(res,300));
   }
   updateQueueBadge();renderQueue();updateLogTable();
-  status.textContent=`Done — ${nobles.length} Noble approved`;
+  status.textContent=`Done · ${nobles.length} Noble approved`;
 }
 
 function skipAll(){
@@ -789,90 +744,87 @@ function skipAll(){
 
 function downloadAllApproved(){
   const approved=discoveryLog.filter(d=>d.approved&&d.leanStub);
-  if(!approved.length){feedLine('No approved entries yet.','warn');return;}
+  if(!approved.length){feedLine('No approved entries yet.','info');return;}
   approved.forEach((entry,i)=>setTimeout(()=>downloadLeanFile(entry),i*100));
   feedLine(`⬇ Downloading ${approved.length} Lean files`,'locked');
 }
 
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
 function renderQueue(){
   const container=document.getElementById('queue-container');
-  if(!discoveryQueue.length){container.innerHTML='<div class="queue-empty">NO PENDING DISCOVERIES · AGENT WILL POPULATE THIS</div>';return;}
+  if(!discoveryQueue.length){container.innerHTML='<div class="empty">No pending discoveries · the chaos protocol populates this queue</div>';return;}
   container.innerHTML=discoveryQueue.map((d,i)=>`
-    <div class="discovery-card">
-      <div class="disc-header">
-        <div class="disc-designation">${d.designation}</div>
-        <div class="disc-timestamp">${new Date(d.timestamp).toLocaleTimeString()}</div>
+    <div class="card">
+      <div class="hd"><b>${d.designation}</b><span class="c-dim">${new Date(d.timestamp).toLocaleTimeString()}</span></div>
+      <div class="bd">
+        <b>${d.collision}</b> · k = ${d.k} → τ = ${d.tau.toFixed(6)} <span style="color:${PH_VAR[d.status]}">${d.status}</span><br>
+        P = ${d.P.toFixed(6)} · B = ${d.B.toFixed(6)} · IM = ${d.IM.toFixed(6)}<br>
+        ${d.reason}
       </div>
-      <div class="disc-state">
-        <b>${d.collision}</b> k=${d.k} → τ=${d.tau.toFixed(4)} <span style="color:${d.status==='NOBLE'?'var(--noble)':d.status==='LOCKED'?'var(--locked)':'var(--shatter)'}">${d.status}</span>
-        (TL=0.1369)<br>
-        P=${d.P.toFixed(5)} B=${d.B.toFixed(5)} IM=${d.IM.toFixed(4)}<br>
-        <span style="color:#2a5060">${d.reason}</span>
-      </div>
-      ${d.name?`<div class="disc-name">AIFI suggests: "${d.name}"</div>`:''}
-      ${d.aifiAnalysis?`<div style="font-size:8px;color:#2a5060;border-top:1px solid var(--border);padding-top:6px;margin-top:4px;max-height:80px;overflow-y:auto">${d.aifiAnalysis.slice(0,300)}...</div>`:''}
-      <div class="disc-actions">
-        <button class="btn btn-approve" onclick="approveDiscovery(${i})">✓ APPROVE</button>
-        <button class="btn btn-skip" onclick="skipDiscovery(${i})">✕ SKIP</button>
-        <button class="btn btn-lean" onclick="copyLean(${i})">COPY LEAN</button>
+      ${d.name?`<div class="nm">Discovery suggests: "${esc(d.name)}"</div>`:''}
+      ${d.aifiAnalysis?`<div class="an">${esc(d.aifiAnalysis)}</div>`:''}
+      <div class="seg" style="margin-top:6px">
+        <button class="btn go" onclick="approveDiscovery(${i})">✓ APPROVE</button>
+        <button class="btn stop" onclick="skipDiscovery(${i})">✕ SKIP</button>
+        <button class="btn ai" onclick="copyLean(${i})">COPY LEAN</button>
       </div>
     </div>`).join('');
 }
 
 function copyLean(idx){
   const entry=discoveryQueue[idx];
-  const stub=generateLeanStub(entry);
-  navigator.clipboard.writeText(stub);
-  feedLine(`Lean stub copied: ${entry.designation}`,'locked');
+  navigator.clipboard.writeText(generateLeanStub(entry));
+  feedLine(`Lean file copied: ${entry.designation}`,'locked');
 }
 
 function updateQueueBadge(){document.getElementById('queue-badge').textContent=discoveryQueue.length?` (${discoveryQueue.length})`:''}
 function updateLogTable(){
   const tbody=document.getElementById('log-body');
-  if(!discoveryLog.length){tbody.innerHTML='<tr><td colspan="6" style="color:#1a3040;text-align:center;padding:12px">No discoveries logged yet.</td></tr>';return;}
+  if(!discoveryLog.length){tbody.innerHTML='<tr><td colspan="6" class="empty">No discoveries logged yet.</td></tr>';return;}
   tbody.innerHTML=[...discoveryLog].reverse().slice(0,50).map(d=>`
     <tr>
-      <td style="color:var(--warn)">${d.designation}</td>
+      <td style="color:var(--gold)">${d.designation}</td>
       <td>${d.collision}</td>
-      <td style="color:${d.status==='NOBLE'?'var(--noble)':d.status==='LOCKED'?'var(--locked)':'var(--shatter)'}">${d.tau.toFixed(4)}</td>
-      <td style="color:${d.status==='NOBLE'?'var(--noble)':d.status==='LOCKED'?'var(--locked)':'var(--shatter)'}">${d.status}</td>
-      <td style="color:${d.approved?'var(--locked)':'#2a5060'}">${d.approved?'APPROVED':'FLAGGED'}</td>
-      <td style="color:#2a5060">${new Date(d.timestamp).toLocaleTimeString()}</td>
+      <td style="color:${PH_VAR[d.status]}">${d.tau.toFixed(6)}</td>
+      <td style="color:${PH_VAR[d.status]}">${d.status}</td>
+      <td style="color:${d.approved?'#a98bff':'var(--dim)'}">${d.approved?'APPROVED':'FLAGGED'}</td>
+      <td class="c-dim">${new Date(d.timestamp).toLocaleTimeString()}</td>
     </tr>`).join('');
 }
 
+// ── AGENT ────────────────────────────────────────────────────
 function startAgent(){
+  if(agentInterval)clearInterval(agentInterval);
   agentState='running';updateStatusBadge();
-  feedLine('Chaos protocol v2 started. TL=0.1369.','locked');
+  feedLine('Chaos protocol running.','locked');
   const speed=parseInt(document.getElementById('speed-slider').value);
   const interval=Math.max(400,3000-speed*250);
   agentInterval=setInterval(async()=>{if(agentState==='running')await runChaosRound();},interval);
 }
-
-function pauseAgent(){agentState='paused';updateStatusBadge();feedLine('Agent paused.','info');}
-function stopAgent(){agentState='stopped';if(agentInterval)clearInterval(agentInterval);updateStatusBadge();feedLine('Agent stopped.','info');}
+function pauseAgent(){agentState='paused';updateStatusBadge();feedLine('Chaos protocol paused.','info');}
+function stopAgent(){agentState='stopped';if(agentInterval)clearInterval(agentInterval);agentInterval=null;updateStatusBadge();feedLine('Chaos protocol stopped.','info');}
 function updateStatusBadge(){
-  const badge=document.getElementById('agent-status-badge');
-  const dots={running:'<span class="running-dot"></span>',paused:'<span class="paused-dot"></span>',stopped:'<span class="stopped-dot"></span>'};
-  badge.innerHTML=`${dots[agentState]}${agentState.toUpperCase()}`;
+  const el=document.getElementById('agent-status');
+  el.textContent=agentState;
+  el.style.color={running:'var(--anchor)',paused:'var(--gold)',stopped:'var(--faint)'}[agentState];
 }
 
-document.getElementById('speed-slider').addEventListener('input',function(){document.getElementById('speed-val').textContent=this.value;if(agentState==='running'){stopAgent();startAgent();}});
+document.getElementById('speed-slider').addEventListener('input',function(){document.getElementById('speed-val').textContent=this.value;if(agentState==='running')startAgent();});
 document.getElementById('rounds-slider').addEventListener('input',function(){document.getElementById('rounds-val').textContent=this.value;});
 
-function _collideAndDisplay(e1,e2,containerId){
+// ── MANUAL ───────────────────────────────────────────────────
+function _collideAndDisplay(e1,e2){
   const k=Math.min(e1.B,e2.B);
   const r=fuse(e1,e2,k);
-  const col={NOBLE:'var(--noble)',LOCKED:'var(--locked)',SHATTER:'var(--shatter)'}[r.status];
-  document.getElementById(containerId).innerHTML=
-    `<span style="color:var(--glow)">${e1.sym}</span> + <span style="color:var(--warn)">${e2.sym}</span> → `+
-    `<span style="color:${col};font-family:'Orbitron',monospace">τ=${r.tau.toFixed(4)} · ${r.status}</span>`+
-    ` · P=${r.P.toFixed(4)} B=${r.B.toFixed(4)} A=${r.A.toFixed(3)}`+
-    `<button onclick="injectResult('${e1.sym}+${e2.sym}',${r.P},${r.N},${r.B},${r.A})" style="font-size:8px;padding:3px 8px;background:transparent;border:1px solid var(--aifi);color:var(--aifi);cursor:pointer;font-family:'Orbitron',monospace;margin-left:6px;">→ INJECT</button>`;
-  if(r.status==='NOBLE'){stats.noble++;document.getElementById('stat-noble').textContent=stats.noble;}
-  stats.collisions++;document.getElementById('stat-collisions').textContent=stats.collisions;
+  document.getElementById('result').innerHTML=
+    `<span style="color:var(--anchor)">${e1.sym}</span> + <span style="color:var(--gold)">${e2.sym}</span> → `+
+    `<span class="ph" style="color:${PH_VAR[r.status]}">τ = ${r.tau.toFixed(6)} · ${r.status}</span><br>`+
+    `P = ${r.P.toFixed(6)} · N = ${r.N} · B = ${r.B.toFixed(6)} · A = ${r.A.toFixed(4)} · IM = ${r.IM.toFixed(6)}`+
+    `<div class="seg" style="margin-top:5px"><button class="btn ai" onclick="injectResult('${e1.sym}+${e2.sym}',${r.P},${r.N},${r.B},${r.A})">→ SEND TO INJECT</button></div>`;
+  countFusion(r);
   const check=isInteresting(r,e1,e2,k);
-  if(check.flag){stats.flagged++;document.getElementById('stat-flagged').textContent=stats.flagged;feedLine(`★ FLAGGED: ${e1.sym}+${e2.sym} — ${check.reason}`,'discovery');flagDiscovery(e1,e2,k,r,check.reason);}
+  if(check.flag){stats.flagged++;document.getElementById('stat-flagged').textContent=stats.flagged;feedLine(`★ FLAGGED: ${e1.sym} + ${e2.sym} · ${check.reason}`,'disc');flagDiscovery(e1,e2,k,r,check.reason);}
   return r;
 }
 
@@ -881,8 +833,8 @@ function manualCollide(){
   const e1=corpus.find(e=>e.sym===document.getElementById('manual-a').value);
   const e2=corpus.find(e=>e.sym===document.getElementById('manual-b').value);
   if(!e1||!e2)return;
-  const r=_collideAndDisplay(e1,e2,'manual-result');
-  feedLine(`MANUAL: ${e1.sym}+${e2.sym} → τ=${r.tau.toFixed(4)} ${r.status}`,r.status==='NOBLE'?'noble':r.status==='LOCKED'?'locked':'shatter');
+  const r=_collideAndDisplay(e1,e2);
+  feedLine(`MANUAL: ${e1.sym} + ${e2.sym} → τ = ${r.tau.toFixed(6)} ${r.status}`,PH_CLS[r.status]);
 }
 
 function randomCollide(){
@@ -891,9 +843,8 @@ function randomCollide(){
   const e2=corpus[Math.floor(Math.random()*corpus.length)];
   document.getElementById('manual-a').value=e1.sym;
   document.getElementById('manual-b').value=e2.sym;
-  const r=_collideAndDisplay(e1,e2,'manual-result');
-  document.getElementById('manual-result').innerHTML='⚄ '+document.getElementById('manual-result').innerHTML;
-  feedLine(`CHAOS: ${e1.sym}+${e2.sym} → τ=${r.tau.toFixed(4)} ${r.status}`,r.status==='NOBLE'?'noble':r.status==='LOCKED'?'locked':'shatter');
+  const r=_collideAndDisplay(e1,e2);
+  feedLine(`CHAOS PAIR: ${e1.sym} + ${e2.sym} → τ = ${r.tau.toFixed(6)} ${r.status}`,PH_CLS[r.status]);
 }
 
 function injectResult(collision,P,N,B,A){
@@ -904,8 +855,8 @@ function injectResult(collision,P,N,B,A){
   document.getElementById('inj-B').value=B.toFixed(8);
   document.getElementById('inj-A').value=A.toFixed(6);
   document.getElementById('inj-coord').value='';
-  showInnerTab('inject');
-  feedLine(`→ INJECT: ${collision} pre-filled`,'info');
+  updateInjPreview();
+  feedLine(`→ INJECT: ${collision} filled in`,'info');
 }
 
 ['inj-sym','inj-name','inj-P','inj-N','inj-B','inj-A','inj-coord'].forEach(id=>{
@@ -918,60 +869,48 @@ function updateInjPreview(){
   const B=parseFloat(document.getElementById('inj-B').value)||0;
   const A=parseFloat(document.getElementById('inj-A').value)||0;
   const tau=P>0?B/P:0;
-  const state=B===0?'NOBLE':tau<TL?'LOCKED':'SHATTER';
-  const IM=(P+N+B+A)*ANCHOR;
-  document.getElementById('inj-preview').textContent=`τ=${tau.toFixed(4)} ${state} · IM=${IM.toFixed(4)} · TL=0.1369`;
+  const ph=phaseOf(P,B);
+  const IM=(P+N+B+A)*OMEGA0;
+  const el=document.getElementById('inj-preview');
+  el.innerHTML=`τ = ${tau.toFixed(6)} <span style="color:${PH_VAR[ph]}">${ph}</span> · IM = ${IM.toFixed(6)}`;
 }
 
 function manualInject(){
   const sym=document.getElementById('inj-sym').value.trim();
   const name=document.getElementById('inj-name').value.trim();
-  if(!sym||!name){alert('SYM and NAME required');return;}
+  if(!sym||!name){document.getElementById('inj-preview').textContent='SYM and NAME are both needed.';return;}
   const P=parseFloat(document.getElementById('inj-P').value)||0;
   const N=parseFloat(document.getElementById('inj-N').value)||0;
   const B=parseFloat(document.getElementById('inj-B').value)||0;
   const A=parseFloat(document.getElementById('inj-A').value)||0;
-  sessionCorpus.push({sym,name,coord:document.getElementById('inj-coord').value||'',P,N,B,A,color:document.getElementById('inj-color').value||'#7aa4be',type:document.getElementById('inj-type').value,id:sym});
+  sessionCorpus.push({sym,name,coord:document.getElementById('inj-coord').value||'',P,N,B,A,color:document.getElementById('inj-color').value||'#e8e8f0',type:document.getElementById('inj-type').value,id:sym});
+  addOption(sym,`${sym} · ${name} [injected] · τ = ${P>0?(B/P).toFixed(4):'0'}`);
   feedLine(`Injected: ${sym} (${name}) → live corpus`,'locked');
   ['inj-sym','inj-name','inj-P','inj-N','inj-B','inj-A','inj-color','inj-coord'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('inj-preview').textContent='Fill fields to preview...';
+  document.getElementById('inj-preview').textContent='Fill the fields to preview.';
 }
 
-function showAIFIKeyPrompt(){document.getElementById('aifi-key-prompt').style.display='block';document.getElementById('aifi-inline-key').focus();}
-function hideAIFIKeyPrompt(){document.getElementById('aifi-key-prompt').style.display='none';}
-function connectAIFIInline(){const key=document.getElementById('aifi-inline-key').value.trim();if(!key)return;activateAIFI(key);hideAIFIKeyPrompt();}
+// ── AiFi ─────────────────────────────────────────────────────
+function connectAIFIInline(){const key=document.getElementById('aifi-inline-key').value.trim();if(!key)return;activateAIFI(key);document.getElementById('aifi-inline-key').value='';}
 
 function activateAIFI(key){
-  API_KEY=key;localStorage.setItem('snsft_api_key',key);localStorage.setItem('snsft_accepted',new Date().toISOString());
-  document.getElementById('aifi-connect-wall').style.display='none';
+  API_KEY=key;
+  try{localStorage.setItem('snsft_api_key',key);localStorage.setItem('snsft_accepted',new Date().toISOString());}catch(e){}
+  document.getElementById('aifi-wall').style.display='none';
   document.getElementById('aifi-chat-area').style.display='block';
-  document.getElementById('aifi-status-dot').classList.add('active');
-  document.getElementById('aifi-header-status').textContent='AIFI ONLINE';
-  document.getElementById('aifi-key-badge').textContent='(connected)';
-  document.getElementById('aifi-key-badge').style.color='var(--locked)';
-  document.getElementById('api-key-status').textContent='✓ AIFI active.';
-  document.getElementById('api-key-status').style.color='var(--locked)';
-  addChatMsg('aifi',`v12 online. TL corrected to 0.1369. All 35 discovery files from v1 with tau in (0.1369, 0.2) are now correctly classified as SHATTER — the old engine had the wrong boundary.\n\nCorpus is live: 50,000+ theorems, 4,818 files, zero sorry. Alpha chain closed [9,9,3,13], eps=0 proved, Newton's first law in PNBA, SP I-F-U v2 semantics updated. The seven baryon predictions are still open. Jupiter and Saturn are still the solar pump.\n\nWhat are we smashing?\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]`);
-  feedLine('AIFI v2 activated. TL=0.1369.','locked');
+  const pill=document.getElementById('aifi-pill');pill.textContent='AiFi ONLINE';pill.classList.add('on');
+  if(!document.getElementById('chat').children.length)
+    addChatMsg('aifi',`Discovery online. Kernel loaded at full SAC precision: Ω₀ = 1.36899099984016, TL = 0.136899099984016, and 1/α = TL × 1001 = 137.035999084000016 with every CODATA 2018 digit.\n\nFour phases on the board: Noble, Locked, IVA Peak, Shatter. The open baryon predictions are still open, and Jupiter and Saturn are still the solar pump.\n\nWhat are we smashing?\n\n· DISCOVERY · AiFi™ · SNSFT`);
+  feedLine('AiFi connected.','locked');
 }
 
 function disconnectAIFI(){
-  API_KEY='';localStorage.removeItem('snsft_api_key');localStorage.removeItem('snsft_accepted');
+  API_KEY='';
+  try{localStorage.removeItem('snsft_api_key');localStorage.removeItem('snsft_accepted');}catch(e){}
   document.getElementById('aifi-chat-area').style.display='none';
-  document.getElementById('aifi-connect-wall').style.display='flex';
-  document.getElementById('aifi-status-dot').classList.remove('active');
-  document.getElementById('aifi-header-status').textContent='AIFI OFFLINE';
-  document.getElementById('aifi-key-badge').textContent='(not connected)';
-  document.getElementById('aifi-key-badge').style.color='#2a5060';
-  document.getElementById('api-key-status').textContent='AIFI disconnected.';
-  document.getElementById('api-key-status').style.color='';
-  feedLine('AIFI disconnected.','info');
-}
-
-function saveApiKey(){
-  const key=document.getElementById('claude-api-key-input').value.trim();
-  if(!key){document.getElementById('api-key-status').textContent='Paste your sk-ant- key.';return;}
-  activateAIFI(key);document.getElementById('claude-api-key-input').value='';
+  document.getElementById('aifi-wall').style.display='block';
+  const pill=document.getElementById('aifi-pill');pill.textContent='AiFi OFFLINE';pill.classList.remove('on');
+  feedLine('AiFi disconnected.','info');
 }
 
 async function sendChat(){
@@ -979,29 +918,23 @@ async function sendChat(){
   const text=input.value.trim();
   if(!text||!API_KEY)return;
   addChatMsg('user',text);input.value='';
-  document.getElementById('aifi-thinking').style.display='block';
+  document.getElementById('thinking').style.display='block';
   try{
-    const ctx=`Engine v12 · TL=0.1369 · Agent: ${agentState} · Cycles: ${stats.cycles} · Flagged: ${stats.flagged} · Queue: ${discoveryQueue.length}\nRecent: ${discoveryLog.length?discoveryLog[discoveryLog.length-1].designation:'none'}\n\nUser: ${text}`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:buildSystemPrompt(),messages:[{role:'user',content:ctx}]})
-    });
-    const data=await res.json();
-    if(data.content&&data.content[0])addChatMsg('aifi',data.content[0].text);
-    else addChatMsg('aifi','Error. Check API key.\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]');
-  }catch(err){addChatMsg('aifi',`Connection error: ${err.message}\n\n— DISCOVERY · AIFI · SNSFT · [9,9,4,3]`);}
-  document.getElementById('aifi-thinking').style.display='none';
+    const ctx=`Engine v13 · TL = 0.136899099984016 · Agent: ${agentState} · Cycles: ${stats.cycles} · Flagged: ${stats.flagged} · Queue: ${discoveryQueue.length}\nMost recent flag: ${discoveryLog.length?discoveryLog[discoveryLog.length-1].designation:'none'}\n\nUser: ${text}`;
+    addChatMsg('aifi',await callClaude(ctx,1000));
+  }catch(err){addChatMsg('aifi',`Connection error: ${err.message}. Check the API key.\n\n· DISCOVERY · AiFi™ · SNSFT`);}
+  document.getElementById('thinking').style.display='none';
 }
 
 function addChatMsg(role,text){
-  const msgs=document.getElementById('chat-messages');
+  const msgs=document.getElementById('chat');
   const div=document.createElement('div');
-  div.className=`msg msg-${role}`;
-  div.innerHTML=`<div class="msg-label ${role}">${role==='user'?'YOU':'AIFI · SNSFT'}</div><div class="msg-text">${text.replace(/\n/g,'<br>')}</div>`;
+  div.className=`msg ${role}`;
+  div.innerHTML=`<div class="who">${role==='user'?'YOU':'DISCOVERY · AiFi™'}</div><div>${esc(text).replace(/\n/g,'<br>')}</div>`;
   msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
 }
 
+// ── GITHUB ───────────────────────────────────────────────────
 async function timestampToGitHub(entry){
   if(!GITHUB_PAT||!GITHUB_REPO)return;
   try{
@@ -1011,7 +944,7 @@ async function timestampToGitHub(entry){
     if(getRes.ok){const d=await getRes.json();sha=d.sha;existing=JSON.parse(atob(d.content.replace(/\n/g,'')));}
     existing.push({designation:entry.designation,timestamp:entry.timestamp,collision:entry.collision,P:entry.P,N:entry.N,B:entry.B,A:entry.A,tau:entry.tau,TL:TL,status:entry.status,approved:false});
     const content=btoa(JSON.stringify(existing,null,2));
-    const body={message:`[SNSFT v12] Flag: ${entry.designation}`,content};
+    const body={message:`[Discovery v13] Flag: ${entry.designation}`,content,branch:GITHUB_BRANCH};
     if(sha)body.sha=sha;
     await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${logPath}`,{method:'PUT',headers:{'Authorization':`token ${GITHUB_PAT}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
     feedLine(`⬆ Timestamped: ${entry.designation}`,'info');
@@ -1026,7 +959,7 @@ async function commitToGitHub(entry){
     const res=await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${leanPath}`,{
       method:'PUT',
       headers:{'Authorization':`token ${GITHUB_PAT}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body:JSON.stringify({message:`[SNSFT v12] Approve: ${entry.designation}`,content:leanContent,branch:GITHUB_BRANCH})
+      body:JSON.stringify({message:`[Discovery v13] Approve: ${entry.designation}`,content:leanContent,branch:GITHUB_BRANCH})
     });
     if(res.ok){feedLine(`⬆ Committed: ${leanPath}`,'locked');document.getElementById('gh-status').textContent=`Last commit: ${entry.designation} · ${new Date().toLocaleTimeString()}`;}
   }catch(err){feedLine(`GitHub commit error: ${err.message}`,'shatter');}
@@ -1037,8 +970,10 @@ function saveGithubSettings(){
   GITHUB_REPO=document.getElementById('gh-repo').value.trim();
   GITHUB_BRANCH=document.getElementById('gh-branch').value.trim()||'main';
   GITHUB_LEAN_PATH=document.getElementById('gh-lean-path').value.trim()||'lean/';
-  localStorage.setItem('snsft_gh_pat',GITHUB_PAT);localStorage.setItem('snsft_gh_repo',GITHUB_REPO);
-  localStorage.setItem('snsft_gh_branch',GITHUB_BRANCH);localStorage.setItem('snsft_gh_lean_path',GITHUB_LEAN_PATH);
+  try{
+    localStorage.setItem('snsft_gh_pat',GITHUB_PAT);localStorage.setItem('snsft_gh_repo',GITHUB_REPO);
+    localStorage.setItem('snsft_gh_branch',GITHUB_BRANCH);localStorage.setItem('snsft_gh_lean_path',GITHUB_LEAN_PATH);
+  }catch(e){}
   document.getElementById('gh-status').textContent=`Saved. Repo: ${GITHUB_REPO} · Branch: ${GITHUB_BRANCH} · Path: ${GITHUB_LEAN_PATH}`;
   feedLine(`GitHub configured: ${GITHUB_REPO}`,'locked');
 }
@@ -1046,88 +981,92 @@ function saveGithubSettings(){
 async function createGitHubFolder(){
   if(!GITHUB_PAT||!GITHUB_REPO){feedLine('Save GitHub settings first.','shatter');return;}
   let folder=document.getElementById('gh-new-folder').value.trim();
-  if(!folder){feedLine('Enter a folder path.','warn');return;}
+  if(!folder){feedLine('Enter a folder path.','info');return;}
   if(!folder.endsWith('/'))folder+='/';
   const status=document.getElementById('gh-status');status.textContent='Creating folder...';
   try{
     const res=await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${folder}.gitkeep`,{
       method:'PUT',
       headers:{'Authorization':`token ${GITHUB_PAT}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body:JSON.stringify({message:`[SNSFT v12] Create folder: ${folder}`,content:btoa(''),branch:GITHUB_BRANCH})
+      body:JSON.stringify({message:`[Discovery v13] Create folder: ${folder}`,content:btoa(''),branch:GITHUB_BRANCH})
     });
     GITHUB_LEAN_PATH=folder;document.getElementById('gh-lean-path').value=folder;
-    localStorage.setItem('snsft_gh_lean_path',folder);document.getElementById('gh-new-folder').value='';
-    status.textContent=`${res.status===201?'Created':'Exists'}: ${folder} — now active LEAN PATH`;
-    feedLine(`✓ ${res.status===201?'Created':'Using'}: ${folder} → active LEAN PATH`,'locked');
+    try{localStorage.setItem('snsft_gh_lean_path',folder);}catch(e){}
+    document.getElementById('gh-new-folder').value='';
+    status.textContent=`${res.status===201?'Created':'Exists'}: ${folder} · now the active Lean path`;
+    feedLine(`✓ ${res.status===201?'Created':'Using'}: ${folder} → active Lean path`,'locked');
   }catch(err){status.textContent=`Error: ${err.message}`;}
 }
 
-function exportLogJSON(){const blob=new Blob([JSON.stringify(discoveryLog,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`snsft_v12_log_${new Date().toISOString().slice(0,10)}.json`;a.click();}
+// ── EXPORT ───────────────────────────────────────────────────
+function download(name,text,type){const blob=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href);}
+const day=()=>new Date().toISOString().slice(0,10);
+function exportLogJSON(){download(`discovery_v13_log_${day()}.json`,JSON.stringify(discoveryLog,null,2),'application/json');}
 function exportLogCSV(){
-  if(!discoveryLog.length){feedLine('Nothing to export yet.','warn');return;}
+  if(!discoveryLog.length){feedLine('Nothing to export yet.','info');return;}
   const headers=['designation','timestamp','collision','k','P','N','B','A','tau','TL','IM','status','reason','approved','name'];
   const rows=discoveryLog.map(d=>headers.map(h=>{
     if(h==='TL')return TL;
     const v=d[h]??'';
-    return typeof v==='string'&&v.includes(',')?`"${String(v).replace(/"/g,'""')}"`:v;
+    return typeof v==='string'&&(v.includes(',')||v.includes('"'))?`"${String(v).replace(/"/g,'""')}"`:v;
   }).join(','));
-  const csv=[headers.join(','),...rows].join('\n');
-  const blob=new Blob([csv],{type:'text/csv'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`snsft_v12_log_${new Date().toISOString().slice(0,10)}.csv`;a.click();
-  feedLine(`⬇ CSV exported — ${discoveryLog.length} rows`,'locked');
+  download(`discovery_v13_log_${day()}.csv`,[headers.join(','),...rows].join('\n'),'text/csv');
+  feedLine(`⬇ CSV exported · ${discoveryLog.length} rows`,'locked');
 }
 function exportSession(){
-  const session={timestamp:new Date().toISOString(),engine:'SNSFT Discovery Engine v12',version:'v2',architect:'HIGHTISTIC',doi:'10.5281/zenodo.18719748',constants:{ANCHOR,TL,TL_corrected:true,note:'v1 had TL=0.2 which was wrong. v2 uses TL=0.1369=ANCHOR/10.'},stats,discoveries:discoveryLog,approved:discoveryLog.filter(d=>d.approved),sessionCorpus,license:'SNSFT Discovery License v1.0'};
-  const blob=new Blob([JSON.stringify(session,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`snsft_v12_session_${new Date().toISOString().slice(0,10)}.json`;a.click();
+  const session={timestamp:new Date().toISOString(),engine:'Discovery Engine v13',architect:'HIGHTISTIC (Russell Vernon Trent III)',doi:CORPUS_DOI,model:MODEL,
+    constants:{Omega0:OMEGA0,TL,TL_IVA,inverse_alpha:'TL × 1001 = 137.035999084000016 (CODATA 2018, ε = 0)'},
+    stats,discoveries:discoveryLog,approved:discoveryLog.filter(d=>d.approved),sessionCorpus,license:'Discovery Engine License v1.0'};
+  download(`discovery_v13_session_${day()}.json`,JSON.stringify(session,null,2),'application/json');
 }
 
+// ── SPLASH ───────────────────────────────────────────────────
 function acceptLicense(){
   const key=document.getElementById('api-key-input').value.trim();
   const ghKey=document.getElementById('github-key-input').value.trim();
   const ghRepo=document.getElementById('github-repo-input').value.trim();
-  document.getElementById('license-splash').style.display='none';
-  feedLine('License accepted. v12 corpus loaded. TL=0.1369. 0 sorry.','locked');
+  document.getElementById('splash').style.display='none';
+  feedLine('License accepted. Kernel loaded at full SAC precision.','locked');
   if(key)activateAIFI(key);
-  if(ghKey){GITHUB_PAT=ghKey;localStorage.setItem('snsft_gh_pat',ghKey);}
-  if(ghRepo){GITHUB_REPO=ghRepo;localStorage.setItem('snsft_gh_repo',ghRepo);}
+  try{
+    if(ghKey){GITHUB_PAT=ghKey;localStorage.setItem('snsft_gh_pat',ghKey);}
+    if(ghRepo){GITHUB_REPO=ghRepo;localStorage.setItem('snsft_gh_repo',ghRepo);}
+  }catch(e){}
   if(ghKey&&ghRepo){document.getElementById('gh-pat').value=GITHUB_PAT;document.getElementById('gh-repo').value=GITHUB_REPO;feedLine(`GitHub connected: ${GITHUB_REPO}`,'locked');}
 }
-function skipLicense(){document.getElementById('license-splash').style.display='none';feedLine('Running local mode. TL=0.1369. No AIFI, no GitHub.','info');}
+function skipLicense(){document.getElementById('splash').style.display='none';feedLine('Local mode · collider only.','info');}
 
 function showInnerTab(id){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('inner-'+id).classList.add('active');
-  document.querySelectorAll('.tab').forEach(t=>{if(t.getAttribute('onclick')?.includes(`'${id}'`))t.classList.add('active');});
+  document.querySelectorAll('.pane').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tabs button').forEach(t=>t.classList.toggle('on',t.dataset.tab===id));
+  document.getElementById('inner-'+id).classList.add('on');
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+function addOption(id,label){
+  ['focused-target','manual-a','manual-b'].forEach(sid=>{
+    const o=document.createElement('option');o.value=id;o.textContent=label;document.getElementById(sid).appendChild(o);
+  });
 }
 
 (function(){
-  const sp=localStorage.getItem('snsft_gh_pat');const sr=localStorage.getItem('snsft_gh_repo');
-  const sb=localStorage.getItem('snsft_gh_branch');const sl=localStorage.getItem('snsft_gh_lean_path');
-  const sk=localStorage.getItem('snsft_api_key');const sa=localStorage.getItem('snsft_accepted');
-  if(sp)GITHUB_PAT=sp;if(sr)GITHUB_REPO=sr;if(sb)GITHUB_BRANCH=sb;
-  if(sl){GITHUB_LEAN_PATH=sl;const el=document.getElementById('gh-lean-path');if(el)el.value=sl;}
-  if(sp){const el=document.getElementById('gh-pat');if(el)el.value=sp;}
-  if(sr){const el=document.getElementById('gh-repo');if(el)el.value=sr;}
-  if(sk&&sa){document.getElementById('license-splash').style.display='none';activateAIFI(sk);if(GITHUB_REPO)feedLine(`GitHub: ${GITHUB_REPO}`,'info');}
-})();
-
-(function(){
+  document.getElementById('model-name').textContent=MODEL;
   const all=[
-    ...PERIODIC.map(e=>({id:e.sym,label:`${e.sym} — ${e.name} (Z=${e.Z}) · τ=${e.P>0?(e.B/e.P).toFixed(3):'0'}`})),
-    ...SNSFT_ELS.map(e=>({id:e.sym,label:`${e.sym} — ${e.name} [ERE] · τ=${e.P>0?(e.B/e.P).toFixed(4):'0'}`})),
-    ...PARTICLE_ELS.map(e=>({id:e.sym,label:`${e.sym} — ${e.name} [particle] · τ=${e.P>0?(e.B/e.P).toFixed(4):'?'}`})),
+    ...PERIODIC.map(e=>({id:e.sym,label:`${e.sym} · ${e.name} (Z = ${e.Z}) · τ = ${e.P>0?(e.B/e.P).toFixed(3):'0'}`})),
+    ...SNSFT_ELS.map(e=>({id:e.sym,label:`${e.sym} · ${e.name} [ERE] · τ = ${e.P>0?(e.B/e.P).toFixed(4):'0'}`})),
+    ...PARTICLE_ELS.map(e=>({id:e.sym,label:`${e.sym} · ${e.name} [particle] · τ = ${e.P>0?(e.B/e.P).toFixed(4):'0'}`})),
   ].sort((a,b)=>a.label.localeCompare(b.label));
+  all.forEach(el=>addOption(el.id,el.label));
+  document.getElementById('manual-a').value='Sv';
+  document.getElementById('manual-b').value='qb';
 
-  const ft=document.getElementById('focused-target');
-  all.forEach(el=>{const o=document.createElement('option');o.value=el.id;o.textContent=el.label;ft.appendChild(o);});
-  ['manual-a','manual-b'].forEach((id,i)=>{
-    const sel=document.getElementById(id);
-    all.forEach(el=>{const o=document.createElement('option');o.value=el.id;o.textContent=el.label;sel.appendChild(o);});
-    if(i===0)sel.value='Sv';
-    if(i===1)sel.value='qb';
-  });
+  let s={};
+  try{['snsft_gh_pat','snsft_gh_repo','snsft_gh_branch','snsft_gh_lean_path','snsft_api_key','snsft_accepted'].forEach(k=>s[k]=localStorage.getItem(k));}catch(e){}
+  if(s.snsft_gh_pat){GITHUB_PAT=s.snsft_gh_pat;document.getElementById('gh-pat').value=GITHUB_PAT;}
+  if(s.snsft_gh_repo){GITHUB_REPO=s.snsft_gh_repo;document.getElementById('gh-repo').value=GITHUB_REPO;}
+  if(s.snsft_gh_branch){GITHUB_BRANCH=s.snsft_gh_branch;document.getElementById('gh-branch').value=GITHUB_BRANCH;}
+  if(s.snsft_gh_lean_path){GITHUB_LEAN_PATH=s.snsft_gh_lean_path;document.getElementById('gh-lean-path').value=GITHUB_LEAN_PATH;}
+  if(s.snsft_api_key&&s.snsft_accepted){document.getElementById('splash').style.display='none';activateAIFI(s.snsft_api_key);if(GITHUB_REPO)feedLine(`GitHub: ${GITHUB_REPO}`,'info');}
 })();
 </script>
 </body>
