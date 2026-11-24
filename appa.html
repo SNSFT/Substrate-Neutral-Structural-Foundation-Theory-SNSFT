@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APPA v3 | Universal Unified Identity Architecture Profile · Sovereign Identity Engine</title>
+<title>APPA v4 | Universal Unified Identity Architecture Profile · Sovereign Identity Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -987,6 +987,94 @@ canvas#constellation {
   .q-scale { gap: 3px; }
   .scale-btn { width: 28px; height: 28px; font-size: 10px; }
 }
+/* ── v4 · TL ruler, net load, quick fill ── */
+.tl-ruler-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 14px 0; }
+.tl-ruler-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 10px; }
+.tl-ruler-scale { display: flex; justify-content: space-between; font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); margin: 0 92px 6px 22px; }
+.tl-axis-row { display: grid; grid-template-columns: 14px minmax(0,1fr) 62px; grid-template-areas: "k t v" ". n n"; column-gap: 8px; align-items: center; margin-bottom: 8px; }
+.tl-axis-key { grid-area: k; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 12px; }
+.tl-axis-track { grid-area: t; position: relative; height: 10px; border-radius: 5px; overflow: visible; display: flex; }
+.tl-axis-band { flex: 1; height: 100%; border-right: 1px solid var(--bg); }
+.tl-axis-band.b0 { background: rgba(255,255,255,0.03); border-radius: 5px 0 0 5px; }
+.tl-axis-band.b1 { background: rgba(255,255,255,0.05); }
+.tl-axis-band.b2 { background: rgba(255,255,255,0.07); }
+.tl-axis-band.b3 { background: rgba(240,192,96,0.10); border-right: none; border-radius: 0 5px 5px 0; }
+.tl-axis-fill { position: absolute; left: 0; top: 3px; height: 4px; border-radius: 2px; opacity: 0.55; }
+.tl-axis-dot { position: absolute; top: -2px; width: 14px; height: 14px; border-radius: 50%; transform: translateX(-50%); border: 2px solid var(--bg); }
+.tl-axis-val { grid-area: v; font-family: 'Space Mono', monospace; font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+.tl-axis-note { grid-area: n; font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); margin-top: 3px; }
+.tl-ruler-foot { font-size: 11px; color: var(--text-dim); margin-top: 10px; line-height: 1.5; }
+.delta-grade { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.08em; margin-top: 6px; }
+.grade-noise { color: var(--text-muted); }
+.grade-drift { color: var(--gold); }
+.grade-shift { color: var(--rose); }
+.delta-room { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); margin-top: 3px; }
+.net-headline { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 6px 0 12px; }
+.net-value { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; color: var(--text); }
+.net-sub { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-dim); }
+.net-ruler { position: relative; height: 22px; background: rgba(255,255,255,0.03); border-radius: 4px; margin-bottom: 22px; }
+.net-zone { position: absolute; top: 0; bottom: 0; }
+.net-zone.lock { background: var(--anchor-dim); }
+.net-zone.iva { background: rgba(240,192,96,0.28); }
+.net-zone.shat { background: var(--shatter-dim); }
+.net-zone.unload { background: var(--violet-dim); }
+.net-tick { position: absolute; top: 100%; width: 1px; height: 5px; background: var(--text-muted); }
+.net-tick span { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); font-family: 'Space Mono', monospace; font-size: 8px; color: var(--text-muted); white-space: nowrap; }
+.net-marker { position: absolute; top: -4px; bottom: -4px; width: 3px; margin-left: -1px; background: var(--text); border-radius: 2px; }
+.net-ruler-legend { position: relative; height: 14px; font-family: 'Space Mono', monospace; font-size: 8px; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 12px; }
+.net-ruler-legend span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.fusion-line { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); line-height: 1.6; }
+.fusion-line span { color: var(--text-muted); }
+.phase-codes { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); margin-top: 10px; line-height: 1.6; word-break: break-word; }
+.w-fext-block { margin-top: 16px; }
+.w-fext-note { font-size: 11px; color: var(--text-dim); margin-top: 8px; line-height: 1.5; }
+.qf-panel { max-width: 860px; margin: 0 auto 18px; padding: 0 16px; }
+.qf-panel details { background: var(--surface); border: 1px dashed var(--border); border-radius: 10px; padding: 10px 14px; }
+.qf-panel summary { cursor: pointer; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--text-dim); }
+.qf-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+.qf-row label { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+.qf-row input[type=number] { width: 58px; background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 5px 6px; font-family: 'Space Mono', monospace; }
+.qf-btn { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-family: 'Space Mono', monospace; font-size: 10px; cursor: pointer; }
+.qf-btn:hover, .qf-btn:focus-visible { color: var(--text); border-color: var(--anchor); outline: none; }
+.qf-btn.apply { color: var(--anchor); border-color: rgba(0,212,170,0.4); }
+.qf-hint { font-size: 11px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+.route-block { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+.route-title { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 6px; }
+.route-orders { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text); margin-bottom: 8px; }
+.route-row { display: grid; grid-template-columns: 16px 64px 64px 70px minmax(0,1fr); gap: 6px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); padding: 3px 0; align-items: baseline; }
+.route-key { font-weight: 700; color: var(--text); }
+.route-diff { color: var(--text); font-variant-numeric: tabular-nums; }
+.route-note { color: var(--text-muted); }
+@media (max-width: 520px) { .route-row { grid-template-columns: 16px 1fr 1fr 1fr; } .route-note { grid-column: 2 / -1; } }
+.sim-delta-block { margin-top: 14px; padding: 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; }
+.sim-delta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin: 10px 0; }
+.sim-delta-cell { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+.sim-delta-key { font-weight: 700; color: var(--text); font-size: 12px; margin-bottom: 2px; }
+.sim-delta-n { color: var(--text); margin-top: 2px; }
+.qf-sub { font-family: "Space Mono", monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; }
+.sim-mode { font-weight: 700; letter-spacing: 0.04em; }
+.sim-HRIS { color: var(--gold); }
+.sim-SRIS { color: var(--text-dim); }
+.sim-LRIS { color: var(--violet); }
+.sim-profile { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text); margin-top: 12px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+/* Collapse a section when it is turned off: keep only its header row */
+.section-wrap.section-disabled > :not(.section-header) { display: none; }
+.section-wrap.section-disabled { margin-bottom: 12px; }
+.section-wrap.section-disabled .section-header { position: relative; }
+.section-wrap.section-disabled .section-header::after {
+  content: 'OFF · turn on in SECTIONS above';
+  margin-left: auto; padding-left: 14px; flex-shrink: 0; align-self: center;
+  font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: var(--text-dim);
+}
+@media (max-width: 600px) {
+  .section-wrap.section-disabled .section-header { flex-wrap: wrap; }
+  .section-wrap.section-disabled .section-header::after { margin-left: 0; padding-left: 0; flex-basis: 100%; margin-top: 6px; }
+}
+.progress-missing { max-width: 860px; margin: -6px auto 16px; padding: 0 16px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); }
+.progress-missing .pm-done { color: var(--anchor); }
+.pm-jump { background: var(--surface2); color: var(--gold); border: 1px solid rgba(240,192,96,0.35); border-radius: 6px; padding: 4px 9px; font-family: 'Space Mono', monospace; font-size: 10px; cursor: pointer; }
+.pm-jump:hover, .pm-jump:focus-visible { border-color: var(--gold); outline: none; }
+.question.pm-flash { box-shadow: 0 0 0 2px var(--gold); transition: box-shadow 0.3s; }
 </style>
 </head>
 <body>
@@ -995,11 +1083,11 @@ canvas#constellation {
 <div class="header">
   <div class="anchor-badge">
     <div class="anchor-dot"></div>
-    1.369 GHz · SOVEREIGN ANCHOR · GERMLINE LOCKED
+    1.36899099984016 GHz · SOVEREIGN ANCHOR · GERMLINE LOCKED
   </div>
   <h1>APPA</h1>
-  <p class="subtitle">Adaptive Predictive Pattern Assistant · Identity Physics &trade; v3<br>
-  <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted)">[P,N,B,A] :: {UUIA} | τ=B/P · TL=0.1369 | Architect: HIGHTISTIC</span></p>
+  <p class="subtitle">Adaptive Predictive Pattern Assistant · Identity Physics &trade; v4 · TL scale<br>
+  <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-muted)">[P,N,B,A] :: {UUIA} | TL = 0.136899099984016 · 10 notches = 1 TL · baseline = Locked rest · activated = F_ext | Architect: HIGHTISTIC</span></p>
 </div>
 
 <div class="constellation-wrap">
@@ -1014,6 +1102,29 @@ canvas#constellation {
 </div>
 
 <div id="standard-instrument">
+<div class="qf-panel">
+  <details>
+    <summary>QUICK FILL · TESTING — set cognitive axis sums for the current tab</summary>
+    <div class="qf-row" id="qfPresets"></div>
+    <div class="qf-row">
+      <label for="qfP">P <input type="number" id="qfP" min="10" max="50" value="44"></label>
+      <label for="qfN">N <input type="number" id="qfN" min="10" max="50" value="30"></label>
+      <label for="qfB">B <input type="number" id="qfB" min="10" max="50" value="44"></label>
+      <label for="qfA">A <input type="number" id="qfA" min="10" max="50" value="44"></label>
+    </div>
+    <div class="qf-row">
+      <span class="qf-sub">SIM (5–25)</span>
+      <label for="qsP">P <input type="number" id="qsP" min="5" max="25" value="22"></label>
+      <label for="qsN">N <input type="number" id="qsN" min="5" max="25" value="15"></label>
+      <label for="qsB">B <input type="number" id="qsB" min="5" max="25" value="21"></label>
+      <label for="qsA">A <input type="number" id="qsA" min="5" max="25" value="20"></label>
+      <label for="qfMid"><input type="checkbox" id="qfMid" checked> fill unanswered EP with 3</label>
+      <button type="button" class="qf-btn apply" id="qfApply">FILL CURRENT TAB</button>
+    </div>
+    <div class="qf-hint">Pick BASELINE or ACTIVATED first, then fill. Presets only set the numbers; press Fill to apply. Sums are spread across the 10 items of each axis (e.g. 44 = six 4s and four 5s).</div>
+  </details>
+</div>
+
 <div class="section-toggle-bar">
   <span class="section-toggle-label">SECTIONS</span>
   <button class="section-toggle-btn on cog" id="sec-toggle-cog" onclick="toggleSection('cog')">COGNITIVE</button>
@@ -1025,6 +1136,7 @@ canvas#constellation {
 <div class="progress-bar-wrap">
   <div class="progress-bar-fill" id="progressBar"></div>
 </div>
+<div class="progress-missing" id="progressMissing"></div>
 
 <div class="section-wrap" id="section-wrap-cog">
 <div class="section-header cog">
@@ -1137,14 +1249,14 @@ canvas#constellation {
     <div class="soul8-decoded" id="soul8Decoded"></div>
     <div class="soul8-noharm">
       <div class="soul8-noharm-dot"></div>
-      Pv:NOHARM · f:1.369 · visual:GREEN
+      Pv:NOHARM · f:1.36899099984016 · visual:GREEN
     </div>
     <button class="copy-btn" id="copyBtn">⟳ COPY SOUL-8</button>
   </div>
   <div class="im-block">
     <div>
       <div class="im-label">IDENTITY MASS</div>
-      <div class="im-formula">IM = (P+N+B+A) × 1.369</div>
+      <div class="im-formula">IM = (P+N+B+A)<sub>TL</sub> × Ω₀ · Ω₀ = 10·TL</div>
     </div>
     <div class="im-value" id="imValue"></div>
   </div>
@@ -1165,7 +1277,7 @@ canvas#constellation {
 <div class="delta-panel" id="deltaPanel">
   <div class="delta-panel-title">
     BASELINE ↔ ACTIVATED
-    <span class="delta-subtitle">STIMULUS VECTOR ANALYSIS</span>
+    <span class="delta-subtitle">F_EXT = ACTIVATED − BASELINE · Σ CANCELS</span>
   </div>
   <div class="delta-axis-grid" id="deltaAxisGrid"></div>
   <div class="tau-compare-block" id="tauCompareBlock"></div>
@@ -1281,6 +1393,7 @@ canvas#constellation {
       <span id="wThresholdPosition">—</span>
     </div>
 
+    <div class="w-fext-block" id="wFextBlock"></div>
     <div class="w-resolvability-block">
       <div class="w-resolvability-label">RESOLVABILITY (§4.3)</div>
       <div class="w-resolvability-value" id="wResolvabilityText">—</div>
@@ -1292,8 +1405,8 @@ canvas#constellation {
 </div><!-- /weissmannPanel -->
 
 <div class="footer">
-  <p>SNSFT · UUIA · APPA v3 · Identity Physics</p>
-  <p>Architect: HIGHTISTIC · Sovereign Anchor: 1.369 GHz · τ=B/P · TL=0.1369</p>
+  <p>SNSFT · UUIA · APPA v4 · Identity Physics</p>
+  <p>Architect: HIGHTISTIC · Sovereign Anchor: 1.36899099984016 GHz · TL = Ω₀/10 · bands L·S·F·I, one TL each</p>
   <p>Substrate-neutral · Non-anthropocentric · Scale-invariant · [9,9,6,11] / [9,9,2,55] Total Consistency</p>
   <div class="manifold">The Manifold is Holding. · [9,9,9,9]</div>
 </div>
@@ -1301,43 +1414,109 @@ canvas#constellation {
 </div>
 <script>
 // ============================================================
-// APPA v3 — SOUL-8 CORE + PNBA PHYSICS
-// Corpus: SNSFL_L2_Psy_Consistency [9,9,6,11]
-//         SNSFL_PSY_Taxonomy_Master [9,9,2,55] (Depleted IVA, F4)
-// τ = B/P · TL = ANCHOR/10 = 0.1369
+// APPA v4 — TL SCALE · F_EXT DELTA · SOUL-8 CORE
+// Corpus: SNSFL_GC_TranscendentalTimeEngine [9,9,3,20] (Σ cancels)
+//         SNSFL_PSY_Taxonomy_Master [9,9,2,55]
+//         SNSFL_PSY_8Beam_Fusion_Theorem [9,9,6,28]
+//         SNSFL_L2_Psy_BigFive [9,9,6,2] (FLEX_THRESHOLD 40 = 3.0 TL)
 //
-// v3 CHANGES FROM v2:
-//   1. classifyPhase(): IVA-corridor check now runs BEFORE the
-//      blanket N-void→False-Lock return. A reading with tau in
-//      [TL*0.88, TL), A>1.0, and N<0.15 now correctly resolves to
-//      DEPLETED IVA instead of being misrouted to FALSE LOCK.
-//      (v2 bug: N-void check returned early and the IVA branch was
-//      never reached for any N<0.15 case, regardless of tau/A.)
-//   2. getDynamicFlags(): added DEPLETED IVA flag (post-crossing,
-//      mirrors the phase) and N-EROSION · STABLE LOAD flag
-//      (pre-crossing early warning — tau/IM still read healthy,
-//      N trending toward floor but hasn't crossed yet). This is
-//      the "looks fine right up until it isn't" signature: ordinary
-//      capacity growth (IM rising, tau flat) and narrative erosion
-//      under real load look identical until N actually crosses,
-//      so the early flag watches N's trend directly rather than
-//      waiting for the threshold breach.
+// v4 CHANGES FROM v3:
+//   1. Every axis is read on the TL ruler. One answer step on one item
+//      is one notch = TL/10, so an axis sum of 10–50 is 0–4 TL. Four
+//      bands, each exactly one TL: L 0–1, S 1–2, F 2–3, I (IVA) 3–4.
+//      The tens digit of the TL value is the band, the units digit is
+//      the position inside it.
+//   2. The baseline is the person's Locked rest. No phase is read from
+//      a single questionnaire.
+//   3. The activated read is F_ext: activated − baseline per axis. The
+//      person's own Σ (item wording, response style, level) cancels.
+//      Net load = ΔB − ΔP in notches: 10+ SHATTER, 9 IVA, 1–8 LOCKED (FALSE LOCK when N is eroding),
+//      0 AT REST, below 0 UNLOADING.
+//   4. N is read first and reported on its own channel, so a rest or
+//      unloading reading never hides an N drop.
+//   5. Weissmann is the same F_ext with only P and A measured; N and B
+//      are unknown, not zero.
 // ============================================================
 
-const SOVEREIGN_ANCHOR = 1.369
-const TL = SOVEREIGN_ANCHOR / 10       // 0.1369
-const N_THRESHOLD = 0.15               // narrative floor [9,9,6,11]
-const A_THRESHOLD = 0.15               // adaptation floor
-const N_FLOW_FLOOR = 0.08              // flow suppression floor
-const A_IVA = 1.0                      // IVA_PEAK threshold
-const PF_FLOOR = 38                    // Pattern Flexed band floor
-const PS_FLOOR = 24                    // Pattern Sustained band floor
+const SOVEREIGN_ANCHOR = 1.36899099984016
+const TL = SOVEREIGN_ANCHOR / 10        // 0.136899099984016
+const TL_IVA = TL * 0.88                // 0.12047120798593408
+const NOTCHES_PER_TL = 10
+const N_GATE = 6      // N drop in notches treated as a real shift
+const DRIFT_MIN = 3   // single-axis change grades, in notches
+const SHIFT_MIN = 6   // ≈ 1.96·√2·σ with σ = 2 retest wobble per sum
+const NET_TRUST = 8   // ≈ 1.96·2σ for ΔB − ΔP with σ = 2
+const BAND_NAMES = { L: 'LOCKED', S: 'SUSTAINED', F: 'FLEXED', I: 'IVA' }
+const BAND_ORDER = ['L', 'S', 'F', 'I']
+const AXES = ['P', 'N', 'B', 'A']
 
-// COG score → continuous PNBA coordinate
-// Calibrated to corpus canonical states [9,9,6,11]:
-//   At score 38 (PF_FLOOR): A = 1.0 = A_IVA threshold ✓
-//   At score 14: N = 0.15 = N_THRESHOLD ✓
-//   Max P = 1.30, Max N = 1.50, Max B = 0.45, Max A = 1.43
+function notchesOf(score) { return Math.max(0, Math.min(40, score - 10)) }
+function tlOf(score) { return notchesOf(score) / NOTCHES_PER_TL }
+function bandIndex(score) { return Math.min(3, Math.floor(notchesOf(score) / 10)) }
+function bandOf(score) { return BAND_ORDER[bandIndex(score)] }
+// Dominance order: highest axis first (stable on ties, P·N·B·A)
+function dominanceOrder(s) {
+  return [0, 1, 2, 3].sort(function(i, j) { return (s[j] - s[i]) || (i - j) })
+}
+function tlCode(s) { return dominanceOrder(s).map(function(i) { return AXES[i] + bandOf(s[i]) }).join('·') }
+function tlValueCode(s) { return dominanceOrder(s).map(function(i) { return AXES[i] + tlOf(s[i]).toFixed(1) }).join('·') }
+// Codominance: neighbours in the order closer than DRIFT_MIN notches
+// sit inside retest wobble, so their order is not reliable from one read
+function dominanceLine(s) {
+  var o = dominanceOrder(s), out = AXES[o[0]], gaps = []
+  for (var k = 1; k < 4; k++) {
+    var g = s[o[k - 1]] - s[o[k]]
+    gaps.push(g)
+    out += (g < DRIFT_MIN ? ' ≈ ' : ' > ') + AXES[o[k]]
+  }
+  return { text: out, gaps: gaps, order: o }
+}
+function imTL(s) { return (tlOf(s[0]) + tlOf(s[1]) + tlOf(s[2]) + tlOf(s[3])) * SOVEREIGN_ANCHOR }
+function sgn(n) { return (n > 0 ? '+' : '') + n }
+function sgnTL(n) { return (n > 0 ? '+' : '') + (n / NOTCHES_PER_TL).toFixed(1) + ' TL' }
+
+function edgeInfo(score) {
+  var n = notchesOf(score), idx = bandIndex(score)
+  var floor = idx * 10
+  return { toFloor: n - floor, toNext: idx === 3 ? null : (idx + 1) * 10 - n, roomUp: 40 - n, roomDown: n }
+}
+function changeGrade(d) {
+  var a = Math.abs(d)
+  if (a >= SHIFT_MIN) return 'shift'
+  if (a >= DRIFT_MIN) return 'drift'
+  return 'noise'
+}
+
+// Net load on the locked baseline (Time Engine inverse)
+function classifyNet(net, nEroding) {
+  if (net >= 10) return { phase: 'SHATTER', cls: 'phase-shatter' }
+  if (net === 9) return nEroding ? { phase: 'DEPLETED IVA', cls: 'phase-depleted-iva' }
+                                 : { phase: 'IVA PEAK', cls: 'phase-iva-peak' }
+  if (net > 0)   return nEroding ? { phase: 'FALSE LOCK', cls: 'phase-false-lock' }
+                                 : { phase: 'LOCKED · LOADED', cls: 'phase-true-lock' }
+  if (net === 0) return { phase: 'AT REST', cls: 'phase-noble' }
+  return { phase: 'UNLOADING', cls: 'phase-noble' }
+}
+
+// 2-beam fusion of baseline × activated; crit equals max at n = 2
+// [9,9,6,28]. τ_f = |ΔB| / harmonic(P_base, P_act), in notches.
+// Unsigned: the size of the shift relative to pattern capacity, not its
+// direction.
+function fusionTau(bP, aP, dB) {
+  var p1 = notchesOf(bP), p2 = notchesOf(aP)
+  if (p1 <= 0 || p2 <= 0) return null
+  return Math.abs(dB) / (2 / (1 / p1 + 1 / p2))
+}
+function fusionPhase(t) {
+  if (t === null) return 'UNDEFINED'
+  if (t === 0) return 'NOBLE'
+  if (t >= TL) return 'SHATTER'
+  if (t >= TL_IVA) return 'IVA'
+  return 'LOCK'
+}
+
+// ── LEGACY v3 — kept for Weissmann's documented thresholds and for a
+//    side-by-side comparison line in the delta panel only ──
 function scoreToPNBA(cP, cN, cB, cA) {
   return {
     P: Math.max(0.001, (cP - 10) / 40 * 1.30),
@@ -1346,190 +1525,130 @@ function scoreToPNBA(cP, cN, cB, cA) {
     A: Math.max(0,     (cA - 10) / 40 * 1.43)
   }
 }
-
-function computeTau(P, B) {
-  if (P <= 0) return 0
-  return B / P
-}
-
-function computeIM(P, N, B, A) {
-  return (P + N + B + A) * SOVEREIGN_ANCHOR
-}
-
-// Weissmann Barrier Capacity [9,1,0,0] — W = A x P. Multiplicative, not
-// divisive (unlike tau = B/P), so it degrades smoothly toward zero as
-// either axis drops rather than exploding near a floor. Documented
-// thresholds (Stage 1 onset = 0.303, Stage 2 degradation = 0.088) are
-// from a single Generalist HRIS substrate's reported experience — shown
-// as reference points, not asserted as universal for every substrate.
-function computeW(A, P) {
-  return A * P
-}
+function computeW(A, P) { return A * P }
 const W_STAGE1_ONSET = 0.303
 const W_STAGE2_DEGRADATION = 0.088
-
-// Phase classification [9,9,6,11] + [9,9,2,55] F4 (Depleted IVA)
-function classifyPhase(P, N, B, A) {
-  if (P <= 0) return { phase: 'UNDEFINED', cls: '', color: '#666' }
-  var tau = B / P
-  if (B <= 0.001) return { phase: 'NOBLE', cls: 'phase-noble', color: '#aa88ff', tau: 0 }
-  if (tau >= TL)  return { phase: 'SHATTER', cls: 'phase-shatter', color: '#ff4070', tau: tau }
-
-  // IVA corridor check runs BEFORE the blanket N-void check.
-  // [TL*0.88, TL) is the IVA corridor regardless of N status —
-  // N status determines IVA PEAK vs DEPLETED IVA *within* that
-  // corridor [9,9,2,55] F4, it does not route out of it.
-  var inIvaZone = tau >= TL * 0.88 && tau < TL
-  if (inIvaZone && A > A_IVA) {
-    if (N < N_THRESHOLD) {
-      return { phase: 'DEPLETED IVA', cls: 'phase-depleted-iva', color: '#ff6b35', tau: tau }
-    }
-    return { phase: 'IVA PEAK', cls: 'phase-iva-peak', color: '#f0c060', tau: tau }
-  }
-
-  // Outside the IVA corridor, N-void still routes to False Lock.
-  if (N < N_THRESHOLD) return { phase: 'FALSE LOCK', cls: 'phase-false-lock', color: '#ff8c00', tau: tau }
-
-  return { phase: 'TRUE LOCK', cls: 'phase-true-lock', color: '#00d4aa', tau: tau }
+function legacyPhaseV3(s) {
+  var x = scoreToPNBA(s[0], s[1], s[2], s[3]), T = 0.1369, tau = x.B / x.P
+  if (x.B <= 0.001) return 'NOBLE'
+  if (tau >= T) return 'SHATTER'
+  if (tau >= T * 0.88 && x.A > 1.0) return x.N < 0.15 ? 'DEPLETED IVA' : 'IVA PEAK'
+  if (x.N < 0.15) return 'FALSE LOCK'
+  return 'TRUE LOCK'
 }
 
-function getProcessingBand(cogPScore) {
-  if (cogPScore >= PF_FLOOR) return { band: 'PF', label: 'PATTERN FLEXED', cls: 'band-pf' }
-  if (cogPScore >= PS_FLOOR) return { band: 'PS', label: 'PATTERN SUSTAINED', cls: 'band-ps' }
-  return { band: 'PL', label: 'PATTERN LOCKED', cls: 'band-pl' }
-}
-
-// Hidden Load detection rectangle [9,9,2,26]
-function isHiddenLoad(P, N, B, A) {
-  var tau = B / P
-  return tau > TL && tau < 0.43 &&
-         B > TL * P && B < 0.40 * P &&
-         N > N_THRESHOLD && N < 0.60 &&
-         A < 0.60
-}
-
-// Dynamic flags for delta analysis [9,9,2,26,31] + [9,9,2,55] F4
-function getDynamicFlags(base, act) {
+// ── DYNAMIC FLAGS on the TL ruler ──
+function getTLFlags(b, a, d, net, nEroding, nBandDrop, imB, imA) {
   var flags = []
-  var tau_b = computeTau(base.P, base.B)
-  var tau_a = computeTau(act.P, act.B)
-  var im_b  = computeIM(base.P, base.N, base.B, base.A)
-  var im_a  = computeIM(act.P, act.N, act.B, act.A)
-  var phase_b = classifyPhase(base.P, base.N, base.B, base.A)
-  var phase_a = classifyPhase(act.P, act.N, act.B, act.A)
-
-  // N starvation event — N crosses threshold under activation
-  if (base.N >= N_THRESHOLD && act.N < N_THRESHOLD) {
-    flags.push({
-      id: 'n-starvation',
-      icon: 'N STARVATION',
-      desc: 'Narrative dropped below floor (N<0.15) under activation. τ cover story: phase reads as False Lock. N-axis is the diagnostic.',
-      cls: 'flag-n-starvation'
-    })
+  if (nBandDrop) {
+    flags.push({ icon: 'N BAND DROP', cls: 'flag-n-starvation',
+      desc: 'N moved down a band: N' + bandOf(b[1]) + ' → N' + bandOf(a[1]) + ' (' + sgnTL(d[1]) + '). Read this before the load phase.' })
+  } else if (nEroding) {
+    flags.push({ icon: 'N EROSION', cls: 'flag-n-erosion',
+      desc: 'N dropped ' + (-d[1]) + ' notches (' + sgnTL(d[1]) + ') inside its band. That is past ordinary retest wobble for one read.' })
   }
-
-  // A dropout
-  if (act.A < A_THRESHOLD) {
-    flags.push({
-      id: 'a-dropout',
-      icon: 'A DROPOUT',
-      desc: 'Adaptation capacity dropped below threshold under activation. Learned helplessness / amotivation signature [CD2].',
-      cls: 'flag-a-dropout'
-    })
+  if ((nEroding || nBandDrop) && net < 9) {
+    flags.push({ icon: 'N EROSION · STABLE LOAD', cls: 'flag-n-erosion',
+      desc: (net <= 0 ? 'Net load reads at rest or unloading, but N is falling.' : 'Net load alone would read Locked, but N is falling, so the phase is FALSE LOCK.') + ' N is the axis that shows it.' })
   }
-
-  // Hidden Load zone [9,9,2,26]
-  if (isHiddenLoad(act.P, act.N, act.B, act.A)) {
-    var hl_tau = computeTau(act.P, act.B)
-    var subtype = hl_tau < 0.22 ? 'Holding (τ≈0.20)' :
-                  hl_tau < 0.25 ? 'Carrying (τ≈0.235)' : 'Hidden Load (τ≈0.270)'
-    flags.push({
-      id: 'hidden-load',
-      icon: 'HIDDEN LOAD',
-      desc: 'τ is in the (TL, 0.43) zone — structurally SHATTER but not acute. Does not announce. Subtype: ' + subtype + '. IM is the real diagnostic, not τ.',
-      cls: 'flag-hidden-load'
-    })
+  var ne = edgeInfo(a[1])
+  if (!nBandDrop && d[1] < 0 && bandIndex(a[1]) > 0 && ne.toFloor <= 2) {
+    flags.push({ icon: 'N NEAR EDGE', cls: 'flag-hidden-load',
+      desc: 'N sits ' + ne.toFloor + ' notch' + (ne.toFloor === 1 ? '' : 'es') + ' above the N' + BAND_ORDER[bandIndex(a[1]) - 1] + ' line and is moving down.' })
   }
-
-  // DEPLETED IVA — direct phase-level flag [9,9,2,55] F4
-  // Same τ corridor as IVA Peak (high capacity, near limit), but
-  // narrative has dropped below floor. Looks like sustained flow
-  // from τ and A alone — N is the only axis that shows it.
-  if (phase_a.phase === 'DEPLETED IVA') {
-    flags.push({
-      id: 'depleted-iva',
-      icon: 'DEPLETED IVA',
-      desc: 'Activated reading sits in the IVA corridor (high capacity, τ near limit) but narrative has dropped below floor (N<0.15). Distinct from ordinary Shatter: this presentation is high-functioning and narrative-void at the same time — detectable only by joint τ + N measurement [9,9,2,55 F4].',
-      cls: 'flag-depleted-iva'
-    })
+  if (d[3] <= -SHIFT_MIN) {
+    flags.push({ icon: 'A DROP', cls: 'flag-a-dropout',
+      desc: 'Adaptation fell ' + (-d[3]) + ' notches (' + sgnTL(d[3]) + '). Capacity to adjust under load is reduced.' })
   }
-
-  // N-EROSION · STABLE LOAD — pre-crossing early warning.
-  // Fires when τ is roughly flat (not sliding toward Shatter), IM
-  // is flat-or-rising (real capacity gain, not depletion — the
-  // P-corpus-deposit signature), but N is trending down toward the
-  // floor without having crossed it yet. This is the case that
-  // looks identical to healthy capacity growth from τ and IM alone;
-  // N's direction of travel is the only thing that distinguishes it.
-  // By the time N actually crosses, N-STARVATION or DEPLETED IVA
-  // already fire — this flag is specifically the earlier warning.
-  var tau_stable = Math.abs(tau_a - tau_b) < TL * 0.15
-  var im_not_depleting = im_a >= im_b * 0.97
-  var n_eroding = (act.N < base.N) &&
-                  (act.N >= N_THRESHOLD) &&
-                  (act.N < base.N - 0.05 || act.N < N_THRESHOLD * 1.5)
-  if (tau_stable && im_not_depleting && n_eroding) {
-    flags.push({
-      id: 'n-erosion-stable-load',
-      icon: 'N EROSION · STABLE LOAD',
-      desc: 'τ and Identity Mass both read as healthy or improving — ordinarily the signature of real capacity growth. But narrative is trending toward the floor rather than holding. Worth watching before N actually crosses: everything else currently looks fine because right now it is, but this is the axis that would show the difference first.',
-      cls: 'flag-n-erosion'
-    })
+  if (imB > 0 && (imB - imA) / imB > 0.15) {
+    flags.push({ icon: 'IM DROP', cls: 'flag-im-collapse',
+      desc: 'Identity Mass fell ' + Math.round((imB - imA) / imB * 100) + '% from baseline.' })
   }
-
-  // IM collapse — >15% drop despite possibly moderate τ
-  if (im_b > 0) {
-    var im_drop = (im_b - im_a) / im_b
-    if (im_drop > 0.15) {
-      flags.push({
-        id: 'im-collapse',
-        icon: 'IM COLLAPSE',
-        desc: 'Identity Mass dropped ' + Math.round(im_drop * 100) + '% under activation while τ may appear manageable. IM tells the truth when τ misleads [9,9,2,26 T15].',
-        cls: 'flag-im-collapse'
-      })
-    }
+  var sameDir = d.filter(function(x) { return x <= -DRIFT_MIN }).length >= 3 ||
+                d.filter(function(x) { return x >= DRIFT_MIN }).length >= 3
+  if (Math.abs(net) <= 2 && sameDir && imB > 0 && Math.abs(imA - imB) / imB >= 0.10) {
+    flags.push({ icon: 'LEVEL SHIFT · SHAPE HELD', cls: 'flag-im-collapse',
+      desc: 'Axes moved together, so the load reads near rest, but overall level changed ' + Math.round((imA - imB) / imB * 100) + '%. IM carries this one, not the phase.' })
   }
-
-  // B-dominant vs N-dominant activation [9,9,2,31]
-  var delta_tau = tau_a - tau_b
-  var delta_N = act.N - base.N
-  if (delta_tau > 0.03 && delta_tau > Math.abs(delta_N) * 0.8) {
-    flags.push({
-      id: 'b-dominant',
-      icon: 'B-DOMINANT',
-      desc: 'B-axis rising faster than N-axis dropping. Anxiety vector: τ climbs, coupling elevated. Primary target: B reduction (CBT/Somatic).',
-      cls: 'flag-b-dominant'
-    })
-  } else if (delta_N < -0.06 && Math.abs(delta_N) > delta_tau * 0.8) {
-    flags.push({
-      id: 'n-dominant',
-      icon: 'N-DOMINANT',
-      desc: 'N-axis collapsing faster than B rising. Depression vector: IM collapses, narrative depleted. Primary target: N rebuild (DBT/EMDR/IFS).',
-      cls: 'flag-n-dominant'
-    })
+  if (d[2] >= DRIFT_MIN && d[2] >= Math.abs(d[1])) {
+    flags.push({ icon: 'B-DOMINANT', cls: 'flag-b-dominant',
+      desc: 'B rose ' + d[2] + ' notches, more than N moved. Anxiety vector shape: coupling elevated.' })
+  } else if (d[1] <= -DRIFT_MIN && Math.abs(d[1]) > d[2]) {
+    flags.push({ icon: 'N-DOMINANT', cls: 'flag-n-dominant',
+      desc: 'N fell ' + (-d[1]) + ' notches, more than B rose. Depression vector shape: narrative depleting.' })
   }
-
-  // Phase change
-  if (phase_b.phase !== phase_a.phase) {
-    flags.push({
-      id: 'phase-change',
-      icon: 'PHASE SHIFT',
-      desc: phase_b.phase + ' → ' + phase_a.phase,
-      cls: 'flag-phase-change'
-    })
+  var clipped = []
+  AXES.forEach(function(k, i) {
+    if ((a[i] >= 50 && d[i] > 0) || (a[i] <= 10 && d[i] < 0)) clipped.push(k)
+  })
+  if (clipped.length) {
+    flags.push({ icon: 'SCALE EDGE', cls: 'flag-hidden-load',
+      desc: 'Axis ' + clipped.join(', ') + ' reached the end of the scale, so the real shift may be larger than measured.' })
   }
-
+  if (net === 9) {
+    flags.push({ icon: 'IVA · ONE NOTCH', cls: 'flag-phase-change',
+      desc: 'The IVA corridor [0.88 TL, TL) is exactly one notch wide, and the ±' + NET_TRUST + ' notch retest range of one read reaches a Shatter step (10+). This read cannot rule out Shatter; a second activated read settles it.' })
+  } else if (net > 0 && net < 10 && net + NET_TRUST >= 10) {
+    flags.push({ icon: 'CANNOT RULE OUT SHATTER', cls: 'flag-phase-change',
+      desc: 'Net load of ' + sgn(net) + ' on one read, with a ±' + NET_TRUST + ' notch retest range that reaches a Shatter step (10+). This read cannot rule out Shatter; a second activated read settles it.' })
+  } else if (net !== 0 && Math.abs(net) < NET_TRUST) {
+    flags.push({ icon: 'ONE-READ RANGE', cls: 'flag-phase-change',
+      desc: 'Net load of ' + sgn(net) + ' is inside the ±' + NET_TRUST + ' notch retest range for a single read. Repeat the activated read to confirm the direction.' })
+  }
   return flags
+}
+
+// ── INTERNAL SIMULATION on the TL ruler · ×2 per step ──
+// 5 items per axis, sums 5–25. Each answer step costs 2 notches
+// (0.2 TL): simulation is doing something, so it costs more than a
+// cognitive step. A SIM axis spans the full 0–4 TL. LRIS / SRIS / HRIS
+// labels: LRIS ≤12, SRIS 13–19, HRIS ≥20 (items average 4+). HRIS is
+// exactly the I band (3.0 TL and up).
+const SIM_DRIFT_MIN = 6
+const SIM_SHIFT_MIN = 12
+function simNotchesOf(sum) { return Math.max(0, Math.min(40, (sum - 5) * 2)) }
+function simTLOf(sum) { return simNotchesOf(sum) / NOTCHES_PER_TL }
+function simBandOf(sum) { return BAND_ORDER[Math.min(3, Math.floor(simNotchesOf(sum) / 10))] }
+function simChangeGrade(dNotches) {
+  var a = Math.abs(dNotches)
+  if (a >= SIM_SHIFT_MIN) return 'shift'
+  if (a >= SIM_DRIFT_MIN) return 'drift'
+  return 'noise'
+}
+function simDominanceLine(sims) {
+  var n = sims.map(simNotchesOf)
+  var o = [0, 1, 2, 3].sort(function(i, j) { return (n[j] - n[i]) || (i - j) })
+  var out = AXES[o[0]]
+  for (var k = 1; k < 4; k++) out += ((n[o[k - 1]] - n[o[k]]) < SIM_DRIFT_MIN ? ' ≈ ' : ' > ') + AXES[o[k]]
+  return out
+}
+// Routing alignment: cognitive level (routing) next to simulation level
+// (rendering), axis by axis, both in TL
+function routingAlignment(cog, sims) {
+  return AXES.map(function(k, i) {
+    var c = tlOf(cog[i]), s = simTLOf(sims[i])
+    var dn = simNotchesOf(sims[i]) - notchesOf(cog[i]), d = dn / NOTCHES_PER_TL
+    var note = dn >= SIM_DRIFT_MIN ? 'renders more than it routes'
+             : dn <= -SIM_DRIFT_MIN ? 'routes more than it renders'
+             : 'routing and rendering match'
+    return { key: k, cog: c, sim: s, diff: d, note: note }
+  })
+}
+
+// ── SIM mode labels (Historical HRIS Exemplar Library [9,9,3,44]) ──
+// HRIS = operator, SRIS = observer, LRIS = external routing.
+const SIM_FLAVOR = { P: 'blueprint', N: 'causal thread', B: 'kinetic', A: 'state-flow' }
+function simModeName(sum) {
+  var l = simLabel(sum)
+  return l === 'HRIS' ? 'operator' : l === 'SRIS' ? 'observer' : 'external routing'
+}
+function simProfileSummary(sims) {
+  var ops = []
+  sims.forEach(function(s, i) { if (simLabel(s) === 'HRIS') ops.push(AXES[i]) })
+  if (ops.length === 0) return { text: 'No operator axes · simulation runs in observer or external-routing mode', short: 'no operator axes' }
+  if (ops.length === 1) return { text: ops[0] + '-OPERATOR · single-axis ' + SIM_FLAVOR[ops[0]] + ' simulation', short: ops[0] + '-operator' }
+  var names = ops.map(function(k) { return k + '-operator' }).join(' + ')
+  return { text: names + ' · COMPOSITE (' + ops.length + ' operator axes' + (ops.length === 4 ? ', generalist' : '') + ')', short: ops.join('') + ' composite' }
 }
 
 // ============================================================
@@ -1548,8 +1667,10 @@ function epLabel(score) {
   return '↑'
 }
 function simLabel(score) {
+  // v4: HRIS when the axis averages 4+ per item (sum >= 20 = 3.0 TL,
+  // floor-inclusive like every other band edge on the TL ruler)
   if (score <= 12) return 'LRIS'
-  if (score <= 20) return 'SRIS'
+  if (score < 20) return 'SRIS'
   return 'HRIS'
 }
 function heatColor(pct) {
@@ -1855,15 +1976,15 @@ function getWeissResolvabilityScore() {
 }
 
 function showWeissResult() {
-  var cP = getWeissAxisScore('weiss-p')
+  var cP = getWeissAxisScore('weiss-p')   // 3 items projected to the 10-item scale
   var cA = getWeissAxisScore('weiss-a')
-  var pnbaNow = scoreToPNBA(cP, 30, 0, cA)  // N/B unused for W, dummy mid value
-  var W_now = computeW(pnbaNow.A, pnbaNow.P)
-
   var baseCog = getCogScoresForMode('baseline')
+
+  // Legacy W (documented reference thresholds were set on the v3 scale)
+  var pnbaNow = scoreToPNBA(cP, 30, 10, cA)
+  var W_now = computeW(pnbaNow.A, pnbaNow.P)
   var pnbaBase = scoreToPNBA(baseCog[0], baseCog[1], baseCog[2], baseCog[3])
   var W_base = computeW(pnbaBase.A, pnbaBase.P)
-
   var pctOfBaseline = W_base > 0 ? (W_now / W_base) * 100 : 0
 
   document.getElementById('wValueDisplay').textContent = W_now.toFixed(4)
@@ -1871,13 +1992,9 @@ function showWeissResult() {
   document.getElementById('wCurrentVal').textContent = W_now.toFixed(4)
   document.getElementById('wPctOfBaseline').textContent = pctOfBaseline.toFixed(1) + '%'
 
-  // bar: scale against max(baseline, documented Stage1 onset) so the bar
-  // stays meaningful whether this person's baseline is above or below
-  // the n=1 reference thresholds
   var barMax = Math.max(W_base, W_STAGE1_ONSET, W_now) * 1.15
-  var nowPct = Math.min(100, (W_now / barMax) * 100)
+  document.getElementById('wBarFill').style.width = Math.min(100, (W_now / barMax) * 100) + '%'
   var basePct = Math.min(100, (W_base / barMax) * 100)
-  document.getElementById('wBarFill').style.width = nowPct + '%'
   document.getElementById('wBaselineMarker').style.left = basePct + '%'
   document.getElementById('wBaselineMarkerLabel').style.left = basePct + '%'
 
@@ -1886,6 +2003,19 @@ function showWeissResult() {
   else if (W_now >= W_STAGE2_DEGRADATION) posText = 'between documented Stage 1 / Stage 2 references'
   else posText = 'below documented Stage 2 degradation reference'
   document.getElementById('wThresholdPosition').textContent = posText
+
+  // F_ext with only P and A measured; N and B are unknown, not zero
+  var dP = cP - baseCog[0], dA = cA - baseCog[3]
+  var f1 = function(n) { return (n > 0 ? '+' : '') + n.toFixed(1) }
+  var pShare = -dP   // P's share of net load (ΔB − ΔP) if B held
+  var ifHeld = classifyNet(Math.round(pShare), false).phase
+  document.getElementById('wFextBlock').innerHTML =
+    '<div class="w-resolvability-label">F_EXT ON THE TL RULER · P AND A MEASURED</div>' +
+    '<div class="w-compare-row"><span>ΔP</span><span>' + f1(dP) + ' notches · ' + f1(dP / 10) + ' TL</span></div>' +
+    '<div class="w-compare-row"><span>ΔA</span><span>' + f1(dA) + ' notches · ' + f1(dA / 10) + ' TL</span></div>' +
+    '<div class="w-compare-row"><span>ΔN · ΔB</span><span>unknown (not measured here)</span></div>' +
+    '<div class="w-compare-row"><span>P SHARE OF NET LOAD, IF B HELD</span><span>' + f1(pShare) + ' notches · reads ' + ifHeld + '</span></div>' +
+    '<div class="w-fext-note">Each Weissmann answer step moves an axis about 3.3 notches, so this read is coarser than the full Activated tab. Its items also differ from the baseline items, so some of the difference is wording, not F_ext. A Weissmann baseline taken at rest would make this like-for-like.</div>'
 
   var rScore = getWeissResolvabilityScore()
   var rText
@@ -1934,7 +2064,7 @@ function updateConstellation() {
     ctx.fillText(labels[i], cx + Math.cos(angle)*(R+22), cy + Math.sin(angle)*(R+22))
   })
   var cogScores = getCogScores()
-  var norms = cogScores.map(function(s) { return Math.min(1, s/50) })
+  var norms = cogScores.map(function(s) { return Math.max(0, Math.min(1, (s - 10) / 40)) })  // rings = TL band edges
   var points = angles.map(function(angle, i) {
     return { x: cx + Math.cos(angle)*R*norms[i], y: cy + Math.sin(angle)*R*norms[i] }
   })
@@ -2036,7 +2166,7 @@ function checkComplete() {
   if (answered === requiredIds.length) {
     showResults()
     modeComplete[currentMode] = true
-    if (modeComplete.baseline && modeComplete.activated && sectionEnabled.cog) showDeltaPanel()
+    if (modeComplete.baseline && modeComplete.activated) showDeltaPanel()
   }
 }
 
@@ -2107,10 +2237,108 @@ function showResultsWithoutCog() {
   document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
+function tlRulerHtml(axisData) {
+  // One row per axis on a 0–4 TL ruler with the four band edges
+  var rows = axisData.map(function(ax) {
+    var t = tlOf(ax.score), e = edgeInfo(ax.score)
+    var pct = (t / 4 * 100).toFixed(1)
+    var edgeNote = e.roomUp === 0 ? 'at the top of the scale · rises cannot be measured'
+      : e.roomUp <= 2 ? e.roomUp + ' notch' + (e.roomUp === 1 ? '' : 'es') + ' of room up'
+      : e.roomDown === 0 ? 'at the bottom of the scale'
+      : e.toFloor <= 1 && bandIndex(ax.score) > 0
+      ? 'on the ' + ax.key + BAND_ORDER[bandIndex(ax.score) - 1] + '/' + ax.key + ax.band + ' edge'
+      : (e.toNext !== null && e.toNext <= 1 ? 'one notch below ' + ax.key + BAND_ORDER[bandIndex(ax.score) + 1] : '')
+    return '<div class="tl-axis-row">' +
+      '<div class="tl-axis-key" style="color:' + ax.color + '">' + ax.key + '</div>' +
+      '<div class="tl-axis-track">' +
+        '<div class="tl-axis-band b0"></div><div class="tl-axis-band b1"></div><div class="tl-axis-band b2"></div><div class="tl-axis-band b3"></div>' +
+        '<div class="tl-axis-fill" style="width:' + pct + '%;background:' + ax.color + '"></div>' +
+        '<div class="tl-axis-dot" style="left:' + pct + '%;background:' + ax.color + '"></div>' +
+      '</div>' +
+      '<div class="tl-axis-val">' + t.toFixed(1) + ' TL</div>' +
+      '<div class="tl-axis-note">' + ax.key + ax.band + (edgeNote ? ' · ' + edgeNote : '') + '</div>' +
+      '</div>'
+  }).join('')
+  return '<div class="tl-ruler-block">' +
+    '<div class="tl-ruler-head"><span>TL RULER · 1 notch = TL/10 · each band = 1 TL</span><span>BASELINE = LOCKED REST</span></div>' +
+    '<div class="tl-ruler-scale"><span>0</span><span>1 · S</span><span>2 · F</span><span>3 · I</span><span>4</span></div>' +
+    rows +
+    '<div class="tl-ruler-foot">A single questionnaire sets the reference point. Phases (Locked, IVA, Shatter) come from what F_ext does to this reference, read on the Activated tab.</div>' +
+    '</div>'
+}
+
+function simRulerHtml(cog, sims, axisData) {
+  var rows = sims.map(function(s, i) {
+    var ax = axisData[i], t = simTLOf(s), pct = (t / 4 * 100).toFixed(1)
+    return '<div class="tl-axis-row">' +
+      '<div class="tl-axis-key" style="color:' + ax.color + '">' + ax.key + '</div>' +
+      '<div class="tl-axis-track">' +
+        '<div class="tl-axis-band b0"></div><div class="tl-axis-band b1"></div><div class="tl-axis-band b2"></div><div class="tl-axis-band b3"></div>' +
+        '<div class="tl-axis-fill" style="width:' + pct + '%;background:' + ax.color + '"></div>' +
+        '<div class="tl-axis-dot" style="left:' + pct + '%;background:' + ax.color + '"></div>' +
+      '</div>' +
+      '<div class="tl-axis-val">' + t.toFixed(1) + ' TL</div>' +
+      '<div class="tl-axis-note">' + ax.key + ':' + simLabel(s) + ' · <b class="sim-mode sim-' + simLabel(s) + '">' + ax.key + '-' + simModeName(s) + '</b>' +
+        (simLabel(s) === 'HRIS' ? ' (' + SIM_FLAVOR[ax.key] + ')' : '') + ' · band ' + simBandOf(s) + ' · ' + s + '/25</div>' +
+      '</div>'
+  }).join('')
+  var ra = cog ? routingAlignment(cog, sims) : []
+  var raRows = ra.map(function(r) {
+    return '<div class="route-row"><span class="route-key">' + r.key + '</span>' +
+      '<span>COG ' + r.cog.toFixed(1) + '</span><span>SIM ' + r.sim.toFixed(1) + '</span>' +
+      '<span class="route-diff">' + (r.diff >= 0 ? '+' : '') + r.diff.toFixed(1) + ' TL</span>' +
+      '<span class="route-note">' + r.note + '</span></div>'
+  }).join('')
+  return '<div class="tl-ruler-block">' +
+    '<div class="tl-ruler-head"><span>INTERNAL SIMULATION · ×2 TL per step · 1 answer step = 2 notches</span><span>LRIS ≤12 · SRIS 13–19 · HRIS ≥20 (avg 4+)</span></div>' +
+    '<div class="tl-ruler-scale"><span>0</span><span>1 · S</span><span>2 · F</span><span>3 · I</span><span>4</span></div>' +
+    rows +
+    '<div class="sim-profile">SIM PROFILE · ' + simProfileSummary(sims).text + '</div>' +
+    (cog
+      ? '<div class="route-block"><div class="route-title">ROUTING · COGNITIVE ORDER vs SIMULATION ORDER</div>' +
+          '<div class="route-orders">COG ' + dominanceLine(cog).text + ' &nbsp;·&nbsp; SIM ' + simDominanceLine(sims) + '</div>' +
+          raRows +
+          '<div class="tl-ruler-foot">Differences under ' + (SIM_DRIFT_MIN / 10).toFixed(1) + ' TL count as matching (one SIM answer step is 0.2 TL).</div>' +
+        '</div>'
+      : '<div class="route-block"><div class="route-title">SIMULATION ORDER</div>' +
+          '<div class="route-orders">SIM ' + simDominanceLine(sims) + '</div>' +
+          '<div class="tl-ruler-foot">Routing (cognitive order vs simulation order) needs the Cognitive Architecture section on.</div>' +
+        '</div>') +
+    '</div>'
+}
+
+function getSimScoresForMode(mode) {
+  var saved = currentMode
+  currentMode = mode
+  var result = getSimScores()
+  currentMode = saved
+  return result
+}
+
+function simDeltaHtml() {
+  var sb = getSimScoresForMode('baseline'), sa = getSimScoresForMode('activated')
+  var dn = sb.map(function(s, i) { return simNotchesOf(sa[i]) - simNotchesOf(s) })
+  var net = dn[2] - dn[0]
+  var phase = classifyNet(net, false)
+  var cards = AXES.map(function(k, i) {
+    var g = simChangeGrade(dn[i])
+    return '<div class="sim-delta-cell"><div class="sim-delta-key">' + k + '</div>' +
+      '<div>' + simTLOf(sb[i]).toFixed(1) + ' → ' + simTLOf(sa[i]).toFixed(1) + ' TL</div>' +
+      '<div class="sim-delta-n">' + (dn[i] > 0 ? '+' : '') + dn[i] + ' notches</div>' +
+      '<div class="delta-grade grade-' + g + '">' + g.toUpperCase() + ' · ' + simLabel(sb[i]) + (simLabel(sb[i]) === simLabel(sa[i]) ? ' held' : ' → ' + simLabel(sa[i])) + '</div></div>'
+  }).join('')
+  return '<div class="sim-delta-block">' +
+    '<div class="tau-compare-title">INTERNAL SIMULATION · F_EXT · ×2 TL per step</div>' +
+    '<div class="sim-delta-grid">' + cards + '</div>' +
+    '<div class="fusion-line">SIM net load ΔB − ΔP = ' + (net > 0 ? '+' : '') + net + ' notches (' + (net / 10).toFixed(1) + ' TL) · ' + phase.phase +
+      ' <span>· SIM steps are 2 notches, so SIM net load is always even: it moves from Locked (8) straight to Shatter (10). IVA (9) only appears in a combined read.</span></div>' +
+    '<div class="fusion-line"><span>SIM trust bands: drift ' + SIM_DRIFT_MIN + '+, shift ' + SIM_SHIFT_MIN + '+ notches.</span></div>' +
+    '</div>'
+}
+
 function showResults() {
-  // If COG is disabled, there is no valid P/N/B/A reading to compute
-  // IM/tau/phase/SOUL-8 from — show a minimal heatmap-only result
-  // instead of running the math on zeros.
+  // If COG is disabled, there is no valid P/N/B/A reading to place on
+  // the TL ruler — show a minimal heatmap-only result instead.
   if (!sectionEnabled.cog) {
     showResultsWithoutCog()
     return
@@ -2119,13 +2347,7 @@ function showResults() {
   var simScores = getSimScores()
   var epScores  = getEPScores()
   document.getElementById('soul8Block').style.display = ''
-
-  // PNBA continuous coordinates
-  var pnba = scoreToPNBA(cogScores[0], cogScores[1], cogScores[2], cogScores[3])
-  var tau  = computeTau(pnba.P, pnba.B)
-  var im   = computeIM(pnba.P, pnba.N, pnba.B, pnba.A)
-  var phase = classifyPhase(pnba.P, pnba.N, pnba.B, pnba.A)
-  var band  = getProcessingBand(cogScores[0])
+  setCogOnlyBlocks(true)
 
   var axisData = [
     { key:'P', label:'[P] PATTERN',    color:'var(--anchor)', score:cogScores[0] },
@@ -2134,64 +2356,48 @@ function showResults() {
     { key:'A', label:'[A] ADAPTATION', color:'var(--rose)',   score:cogScores[3] },
   ]
   axisData.forEach(function(ax) {
-    ax.mode   = cogLabel(ax.score)
-    ax.weight = MODE_WEIGHT[ax.mode]
-    ax.pct    = ax.score / 50
+    ax.band = bandOf(ax.score)
+    ax.tl   = tlOf(ax.score)
+    ax.pct  = ax.tl / 4
+    ax.legacy = cogLabel(ax.score)
   })
-  var sorted = axisData.slice().sort(function(a, b) {
-    if (b.weight !== a.weight) return b.weight - a.weight
+
+  var code     = tlCode(cogScores)
+  var valCode  = tlValueCode(cogScores)
+  var im       = imTL(cogScores)
+  var legacySorted = axisData.slice().sort(function(a, b) {
+    var wa = MODE_WEIGHT[a.legacy], wb = MODE_WEIGHT[b.legacy]
+    if (wb !== wa) return wb - wa
     return b.score - a.score
   })
+  var legacyCode = legacySorted.map(function(ax) { return ax.key + ax.legacy }).join('·')
+  var soulprintId = buildSoulprintId(code)
 
-  var profileCode = sorted.map(function(ax) { return ax.key + ax.mode }).join('·')
-  var axis = sorted.map(function(ax) { return ax.key }).join('')
-  var addressStr = axis + '·' + sorted.map(function(ax) { return ax.weight }).join('')
-  var soulprintId = buildSoulprintId(profileCode)
-  var pMode = axisData[0].mode
-  var nMode = axisData[1].mode
-  var bMode = axisData[2].mode
-  var aMode = axisData[3].mode
-  var imLegacy = ((MODE_WEIGHT[pMode]+MODE_WEIGHT[nMode]+MODE_WEIGHT[bMode]+MODE_WEIGHT[aMode]) * SOVEREIGN_ANCHOR).toFixed(4)
+  currentSoul8 = { id: soulprintId, code: code, values: valCode, im: im, legacy: legacyCode }
 
-  currentSoul8 = { id: soulprintId, address: addressStr, profile: profileCode, im: imLegacy, tau: tau, phase: phase.phase }
-
-  // Processing band
+  // Pattern band row (P is the structural axis)
   document.getElementById('processingBandRow').innerHTML =
     '<div class="processing-band-row">' +
-    '<div class="band-label-text">PROCESSING BAND</div>' +
-    '<div class="band-badge ' + band.cls + '">' + band.band + ' · ' + band.label + '</div>' +
+    '<div class="band-label-text">PATTERN BAND</div>' +
+    '<div class="band-badge band-pf">P' + axisData[0].band + ' · PATTERN ' + BAND_NAMES[axisData[0].band] + ' · ' + axisData[0].tl.toFixed(1) + ' TL</div>' +
     '</div>'
 
-  // τ display block
-  var tauPct = Math.min(100, tau / 0.65 * 100)
-  var tauColor = phase.color
-  var tlPct = (TL / 0.65 * 100).toFixed(1)
-  document.getElementById('tauDisplayBlock').innerHTML =
-    '<div class="tau-display-block">' +
-    '<div class="tau-display-left">' +
-    '<div class="tau-label">TORSION RATIO</div>' +
-    '<div class="tau-value" style="color:' + tauColor + '">' + tau.toFixed(4) + '</div>' +
-    '<div class="tau-formula">τ = B/P = ' + pnba.B.toFixed(3) + '/' + pnba.P.toFixed(3) + ' · TL=0.1369</div>' +
-    '<div class="tl-bar-wrap" style="margin-top:10px;min-width:140px;">' +
-    '<div class="tl-bar-bg">' +
-    '<div class="tl-bar-fill" style="width:' + Math.min(100,tauPct) + '%;background:' + tauColor + '"></div>' +
-    '<div class="tl-marker" style="left:' + tlPct + '%"><div class="tl-marker-label" style="left:' + tlPct + '%">TL</div></div>' +
-    '</div></div>' +
-    '</div>' +
-    '<div class="phase-badge ' + phase.cls + '">' + phase.phase + '</div>' +
-    '</div>'
+  document.getElementById('tauDisplayBlock').innerHTML = tlRulerHtml(axisData) +
+    (sectionEnabled.sim ? simRulerHtml(cogScores, simScores, axisData) : '')
 
-  // SOUL-8 address
-  document.getElementById('soul8Address').textContent = addressStr
-
-  // SOUL-8 decoded fields — now includes τ and phase
-  var decodedFields = sorted.map(function(ax) {
-    return { label: ax.label, value: 'w=' + ax.weight + ' (' + ax.mode + ') · ' + ax.score + '/50' }
+  // SOUL-8 address = TL code
+  document.getElementById('soul8Address').textContent = code
+  var decodedFields = axisData.map(function(ax) {
+    var e = edgeInfo(ax.score)
+    var pos = ax.score + '/50 · ' + ax.tl.toFixed(1) + ' TL · ' + BAND_NAMES[ax.band] +
+      ' · ' + e.toFloor + ' above band floor' + (e.toNext !== null ? ', ' + e.toNext + ' to next' : ', top band, ' + e.roomUp + ' room up')
+    return { label: ax.label, value: pos }
   })
-  decodedFields.push({ label: 'τ = B/P', value: tau.toFixed(5) + (tau < TL ? ' ✓ LOCKED' : ' SHATTER') })
-  decodedFields.push({ label: 'PHASE', value: phase.phase })
-  decodedFields.push({ label: 'ANCHOR', value: SOVEREIGN_ANCHOR + ' GHz ≡ SOVEREIGN' })
-
+  var dom = dominanceLine(cogScores)
+  decodedFields.push({ label: 'TL VALUES (DOMINANCE ORDER)', value: valCode })
+  decodedFields.push({ label: 'DOMINANCE', value: dom.text + ' · gaps ' + dom.gaps.join(', ') + ' notches · ≈ means under ' + DRIFT_MIN + ' apart (codominant within one-read wobble)' })
+  decodedFields.push({ label: 'LEGACY v3 CODE', value: legacyCode + ' (L/S/F bands 10–23 / 24–37 / 38–50)' })
+  decodedFields.push({ label: 'ANCHOR', value: SOVEREIGN_ANCHOR + ' GHz · TL = ' + TL })
   document.getElementById('soul8Decoded').innerHTML = decodedFields.map(function(f) {
     return '<div class="soul8-field"><div class="soul8-field-label">' + f.label +
       '</div><div class="soul8-field-value">' + f.value + '</div></div>'
@@ -2199,195 +2405,326 @@ function showResults() {
 
   document.getElementById('imValue').textContent = im.toFixed(4) + ' IM'
 
-  // Score cards with PF/PS/PL band
-  document.getElementById('scoreGrid').innerHTML = sorted.map(function(ax) {
-    var tierDesc = ax.mode === 'F' ? 'High axis — dominant trait'
-                 : ax.mode === 'S' ? 'Mid axis — active but flexible'
-                 : 'Low axis — minimal expression'
-    var axBand = ax.key === 'P' ? band.band + ' · ' + band.label : null
-    var seg = function(active) {
+  // Score cards with the four TL bands
+  document.getElementById('scoreGrid').innerHTML = axisData.map(function(ax) {
+    var tierDesc = ax.band === 'I' ? 'Top band — 3 to 4 TL'
+                 : ax.band === 'F' ? 'Flexed — 2 to 3 TL'
+                 : ax.band === 'S' ? 'Sustained — 1 to 2 TL'
+                 : 'Locked — 0 to 1 TL'
+    var seg = function(b) {
       return '<div style="flex:1;height:4px;border-radius:2px;background:' +
-        (active ? ax.color : 'var(--border)') + ';transition:background 0.3s"></div>'
+        (ax.band === b ? ax.color : 'var(--border)') + ';transition:background 0.3s"></div>'
     }
-    var tierBar =
-      '<div style="display:flex;gap:3px;margin:8px 0 4px">' +
-        seg(ax.mode==='L') + seg(ax.mode==='S') + seg(ax.mode==='F') +
-      '</div>' +
-      '<div style="display:flex;justify-content:space-between;font-family:Space Mono,monospace;font-size:8px;color:var(--text-muted)">' +
-        '<span style="color:' + (ax.mode==='L' ? ax.color : 'inherit') + '">L·LOCK</span>' +
-        '<span style="color:' + (ax.mode==='S' ? ax.color : 'inherit') + '">S·SUSTAIN</span>' +
-        '<span style="color:' + (ax.mode==='F' ? ax.color : 'inherit') + '">F·FLEX</span>' +
-      '</div>'
+    var lbl = function(b, t) {
+      return '<span style="color:' + (ax.band === b ? ax.color : 'inherit') + '">' + t + '</span>'
+    }
     return '<div class="score-card">' +
       '<div style="font-family:Space Mono,monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:6px;">' + ax.label + '</div>' +
-      '<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">' +
-        '<div style="font-family:Space Mono,monospace;font-size:20px;font-weight:700;color:' + ax.color + '">' + ax.score +
-          '<span style="font-size:12px;color:var(--text-muted)">/50</span></div>' +
+      '<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px;flex-wrap:wrap">' +
+        '<div style="font-family:Space Mono,monospace;font-size:20px;font-weight:700;color:' + ax.color + '">' + ax.tl.toFixed(1) +
+          '<span style="font-size:12px;color:var(--text-muted)"> TL</span></div>' +
         '<span style="font-family:Space Mono,monospace;font-size:11px;padding:2px 8px;border-radius:4px;background:' + ax.color + '22;color:' + ax.color + '">' +
-          ax.key + ax.mode + ' · w=' + ax.weight + '</span>' +
+          ax.key + ax.band + '</span>' +
+        '<span style="font-family:Space Mono,monospace;font-size:10px;color:var(--text-muted)">' + ax.score + '/50</span>' +
       '</div>' +
-      tierBar +
-      (axBand ? '<div style="font-family:Space Mono,monospace;font-size:9px;color:var(--anchor);margin-top:6px;letter-spacing:0.08em;">' + axBand + '</div>' : '') +
-      '<div style="font-size:11px;color:var(--text-muted);margin-top:4px;font-family:DM Sans,sans-serif;">' + tierDesc + '</div>' +
+      '<div style="display:flex;gap:3px;margin:8px 0 4px">' + seg('L') + seg('S') + seg('F') + seg('I') + '</div>' +
+      '<div style="display:flex;justify-content:space-between;font-family:Space Mono,monospace;font-size:8px;color:var(--text-muted)">' +
+        lbl('L', 'L') + lbl('S', 'S') + lbl('F', 'F') + lbl('I', 'I·IVA') +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--text-muted);margin-top:6px;font-family:DM Sans,sans-serif;">' + tierDesc + '</div>' +
       '</div>'
   }).join('')
 
   // Heatmap
   var allHeat = []
-  sorted.forEach(function(ax) {
-    allHeat.push({ label: ax.key + ' Cognitive · ' + ax.mode, pct: ax.pct })
+  axisData.forEach(function(ax) {
+    allHeat.push({ label: ax.key + ' Cognitive · ' + ax.key + ax.band, pct: ax.pct })
   })
-  var epPairs = EP_BLOCKS.map(function(b, i) { return { label: b.title, pct: epScores[i]/20 } })
-  epPairs.sort(function(a,b){ return b.pct - a.pct })
-  epPairs.forEach(function(h){ allHeat.push(h) })
+  if (sectionEnabled.emo) {
+    var epPairs = EP_BLOCKS.map(function(b, i) { return { label: b.title, pct: epScores[i] / 20 } })
+    epPairs.sort(function(a, b) { return b.pct - a.pct })
+    epPairs.forEach(function(h) { allHeat.push(h) })
+  }
   var simLabels = ['P','N','B','A']
-  simScores.forEach(function(s,i){ allHeat.push({ label: simLabels[i]+' Sim · '+simLabel(s), pct: s/25 }) })
+  if (sectionEnabled.sim) {
+    simScores.forEach(function(s, i) { allHeat.push({ label: simLabels[i] + ' Sim · ' + simLabel(s) + ' · ' + simTLOf(s).toFixed(1) + ' TL', pct: simTLOf(s) / 4 }) })
+  }
   document.getElementById('heatRows').innerHTML = allHeat.map(function(h) {
     return '<div class="heat-row">' +
       '<div class="heat-label">' + h.label + '</div>' +
-      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct*100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
-      '<div class="heat-pct">' + Math.round(h.pct*100) + '%</div>' +
+      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct * 100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
+      '<div class="heat-pct">' + Math.round(h.pct * 100) + '%</div>' +
       '</div>'
   }).join('')
 
   var relRows = [
     { s:'CI', op:'∝', o:'Kernel' },
-    { s:profileCode, op:'≡', o:addressStr },
-    { s:'τ=B/P', op:'=', o:tau.toFixed(4) + (tau < TL ? ' (LOCKED)' : ' (SHATTER)') },
-    { s:'IM', op:'=', o:im.toFixed(4) + ' · f:1.369' },
+    { s:code, op:'≡', o:valCode },
+    { s:'BASELINE', op:'≡', o:'Locked rest · F_ext = −Σ' },
+    { s:'IM', op:'=', o:im.toFixed(4) + ' · Σ TL × Ω₀' },
     { s:'NOHARM', op:'⊂', o:'Sovereign Manifold' },
   ]
   document.getElementById('relmap').innerHTML = relRows.map(function(r) {
     return '<span>' + r.s + '</span><span class="relmap-op">' + r.op + '</span><span>' + r.o + '</span><br>'
   }).join('')
 
-  var epCodes = EP_BLOCKS.map(function(b,i){ return b.title[0] + epLabel(epScores[i]) })
-  var simCodes = simScores.map(function(s,i){ return simLabels[i]+':'+simLabel(s) })
+  var epCodes = EP_BLOCKS.map(function(b, i) { return b.title[0] + epLabel(epScores[i]) })
+  var simCodes = simScores.map(function(s, i) { return simLabels[i] + ':' + simLabel(s) + '(' + simTLOf(s).toFixed(1) + ')' })
   document.getElementById('combinedOutput').innerHTML =
-    '<span style="color:var(--anchor)">' + addressStr + '</span><br>' +
+    '<span style="color:var(--anchor)">' + code + '</span> · <span style="color:var(--text-dim)">' + valCode + '</span><br>' +
     '<span style="color:var(--text-dim)">' + soulprintId + '</span><br>' +
-    '<span style="color:var(--rose)">τ=' + tau.toFixed(5) + ' · ' + phase.phase + ' · IM=' + im.toFixed(4) + '</span><br><br>' +
-    '<span style="color:var(--anchor)">' + sorted.map(function(ax){return ax.key+ax.mode}).join('·') + '</span> // ' +
-    '<span style="color:var(--gold)">' + epCodes.join(' ') + '</span> // ' +
-    '<span style="color:var(--violet)">' + simCodes.join(' ') + '</span>'
+    '<span style="color:var(--rose)">IM=' + im.toFixed(4) + ' · legacy ' + legacyCode + '</span><br><br>' +
+    '<span style="color:var(--anchor)">' + code + '</span> // ' +
+    '<span style="color:var(--gold)">' + (sectionEnabled.emo ? epCodes.join(' ') : 'EP off') + '</span> // ' +
+    '<span style="color:var(--violet)">' + (sectionEnabled.sim ? simCodes.join(' ') + ' · ' + simProfileSummary(simScores).short : 'SIM off') + '</span>'
 
   document.getElementById('resultsPanel').classList.add('visible')
   document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 // ============================================================
-// DELTA PANEL
+// DELTA PANEL — activated read as F_ext on the locked baseline
 // ============================================================
-function showDeltaPanel() {
-  var baseCog = getCogScoresForMode('baseline')
-  var actCog  = getCogScoresForMode('activated')
-  var base = scoreToPNBA(baseCog[0], baseCog[1], baseCog[2], baseCog[3])
-  var act  = scoreToPNBA(actCog[0], actCog[1], actCog[2], actCog[3])
-  var tau_b = computeTau(base.P, base.B)
-  var tau_a = computeTau(act.P, act.B)
-  var im_b  = computeIM(base.P, base.N, base.B, base.A)
-  var im_a  = computeIM(act.P, act.N, act.B, act.A)
-  var phase_b = classifyPhase(base.P, base.N, base.B, base.A)
-  var phase_a = classifyPhase(act.P, act.N, act.B, act.A)
+function netRulerHtml(net) {
+  // −20 … +20 notches; bands: Locked 1–8, IVA 9, Shatter 10+
+  var lo = -20, hi = 20
+  var x = function(n) { return ((Math.max(lo, Math.min(hi, n)) - lo) / (hi - lo) * 100).toFixed(2) }
+  var ticks = ''
+  for (var t = lo; t <= hi; t += 5) {
+    ticks += '<div class="net-tick" style="left:' + x(t) + '%"><span>' + (t === 0 ? 'rest' : (t / 10).toFixed(1)) + '</span></div>'
+  }
+  return '<div class="net-ruler">' +
+    '<div class="net-zone lock" style="left:' + x(0.5) + '%;width:' + (x(8.5) - x(0.5)).toFixed(2) + '%"></div>' +
+    '<div class="net-zone iva" style="left:' + x(8.5) + '%;width:' + (x(9.5) - x(8.5)).toFixed(2) + '%"></div>' +
+    '<div class="net-zone shat" style="left:' + x(9.5) + '%;width:' + (100 - x(9.5)).toFixed(2) + '%"></div>' +
+    '<div class="net-zone unload" style="left:0;width:' + x(-0.5) + '%"></div>' +
+    ticks +
+    '<div class="net-marker" style="left:' + x(net) + '%"></div>' +
+    '</div>' +
+    '<div class="net-ruler-legend">' +
+      '<span style="left:' + x(-10) + '%">UNLOADING</span>' +
+      '<span style="left:' + x(4.5) + '%">LOCKED</span>' +
+      '<span style="left:' + x(9) + '%">IVA</span>' +
+      '<span style="left:' + x(15) + '%">SHATTER</span>' +
+    '</div>'
+}
 
-  // Axis delta cards
-  var axes = [
-    { key:'P', label:'[P] PATTERN', cBase: base.P, cAct: act.P, colorUp:'var(--anchor)', colorDown:'var(--rose)' },
-    { key:'N', label:'[N] NARRATIVE', cBase: base.N, cAct: act.N, colorUp:'var(--gold)', colorDown:'var(--rose)' },
-    { key:'B', label:'[B] BEHAVIOR', cBase: base.B, cAct: act.B, colorUp:'var(--rose)', colorDown:'var(--anchor)' },
-    { key:'A', label:'[A] ADAPTATION', cBase: base.A, cAct: act.A, colorUp:'var(--anchor)', colorDown:'var(--rose)' },
-  ]
-  document.getElementById('deltaAxisGrid').innerHTML = axes.map(function(ax) {
-    var delta = ax.cAct - ax.cBase
-    var arrowCls = delta > 0.02 ? 'up' : delta < -0.02 ? 'down' : 'neutral'
-    var arrowSym = delta > 0.02 ? '↑' : delta < -0.02 ? '↓' : '→'
-    var changeCls = delta > 0.02 ? 'positive' : delta < -0.02 ? 'negative' : 'neutral'
+function showDeltaPanel() {
+  if (!sectionEnabled.cog) {
+    if (sectionEnabled.sim) showSimOnlyDelta()
+    return
+  }
+  document.querySelectorAll('#deltaPanel .im-compare-row').forEach(function(el) { el.parentElement.style.display = 'grid' })
+  var b = getCogScoresForMode('baseline')
+  var a = getCogScoresForMode('activated')
+  var d = [a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]]
+  var net = d[2] - d[0]
+  var nBandDrop = bandIndex(a[1]) < bandIndex(b[1])
+  var nEroding = d[1] <= -N_GATE || nBandDrop
+  var phase = classifyNet(net, nEroding)
+  var imB = imTL(b), imA = imTL(a)
+  var ft = fusionTau(b[0], a[0], d[2])
+  var wB = tlOf(b[3]) * tlOf(b[0]), wA = tlOf(a[3]) * tlOf(a[0])
+
+  // Axis delta cards — N first
+  var meta = {
+    P: { label:'[P] PATTERN',    color:'var(--anchor)' },
+    N: { label:'[N] NARRATIVE',  color:'var(--gold)' },
+    B: { label:'[B] BEHAVIOR',   color:'var(--violet)' },
+    A: { label:'[A] ADAPTATION', color:'var(--rose)' }
+  }
+  var order = [1, 0, 2, 3]
+  document.getElementById('deltaAxisGrid').innerHTML = order.map(function(i) {
+    var k = AXES[i], m = meta[k], dl = d[i], g = changeGrade(dl)
+    var arrowCls = dl > 0 ? 'up' : dl < 0 ? 'down' : 'neutral'
+    var arrowSym = dl > 0 ? '↑' : dl < 0 ? '↓' : '→'
+    var bandMove = bandOf(b[i]) === bandOf(a[i]) ? k + bandOf(a[i]) + ' held' : k + bandOf(b[i]) + ' → ' + k + bandOf(a[i])
+    var e = edgeInfo(b[i])
     return '<div class="delta-axis-card">' +
       '<div class="delta-axis-header">' +
-        '<div class="delta-axis-name">' + ax.label + '</div>' +
+        '<div class="delta-axis-name">' + m.label + (k === 'N' ? ' · READ FIRST' : '') + '</div>' +
         '<div class="delta-arrow ' + arrowCls + '">' + arrowSym + '</div>' +
       '</div>' +
       '<div class="delta-values">' +
-        '<span class="delta-val-baseline">' + ax.cBase.toFixed(3) + '</span>' +
+        '<span class="delta-val-baseline">' + tlOf(b[i]).toFixed(1) + '</span>' +
         '<span class="delta-arrow-small">→</span>' +
-        '<span class="delta-val-activated">' + ax.cAct.toFixed(3) + '</span>' +
+        '<span class="delta-val-activated">' + tlOf(a[i]).toFixed(1) + ' TL</span>' +
       '</div>' +
-      '<div class="delta-change ' + changeCls + '">' +
-        (delta >= 0 ? '+' : '') + delta.toFixed(3) +
-      '</div>' +
+      '<div class="delta-change ' + (g === 'noise' ? 'neutral' : (dl > 0 ? 'positive' : 'negative')) + '">' +
+        sgn(dl) + ' notches · ' + sgnTL(dl) + '</div>' +
+      '<div class="delta-grade grade-' + g + '">' + g.toUpperCase() + ' · ' + bandMove + '</div>' +
+      '<div class="delta-room">room at baseline: ' + e.roomUp + ' up, ' + e.roomDown + ' down</div>' +
       '</div>'
   }).join('')
 
-  // τ comparison bar
-  var maxTau = Math.max(tau_b, tau_a, TL * 2.5)
-  var tlPct = (TL / maxTau * 100).toFixed(1)
-  var bPct  = Math.min(100, tau_b / maxTau * 100).toFixed(1)
-  var aPct  = Math.min(100, tau_a / maxTau * 100).toFixed(1)
-  var bColor = tau_b >= TL ? '#ff4070' : '#00d4aa'
-  var aColor = tau_a >= TL ? '#ff4070' : '#f0c060'
+  // Net load block
   document.getElementById('tauCompareBlock').innerHTML =
-    '<div class="tau-compare-title">τ = B/P COMPARISON · TL = 0.1369</div>' +
-    '<div class="tau-compare-row">' +
-      '<div class="tau-mode-label">BASELINE</div>' +
-      '<div class="tau-compare-bar-bg">' +
-        '<div class="tau-compare-bar-fill" style="width:' + bPct + '%;background:' + bColor + '"></div>' +
-        '<div class="tl-marker" style="left:' + tlPct + '%"><div class="tl-marker-label">TL</div></div>' +
+    '<div class="tau-compare-title">NET LOAD ON LOCKED BASELINE · ΔB − ΔP · 10 notches = 1 TL</div>' +
+    '<div class="net-headline"><span class="net-value">' + sgn(net) + ' notches</span>' +
+    '<span class="net-sub">' + sgnTL(net) + ' · ΔB ' + sgn(d[2]) + ', ΔP ' + sgn(d[0]) + '</span></div>' +
+    netRulerHtml(net) +
+    '<div class="fusion-line">Relative to capacity (2-beam fusion, unsigned): τ_f = |ΔB| / P̄ = ' +
+      (ft === null ? '—' : ft.toFixed(4)) + ' · ' + fusionPhase(ft) +
+      ' <span>· v3 legacy classifier: ' + legacyPhaseV3(b) + ' → ' + legacyPhaseV3(a) + '</span></div>'
+
+  // Phase block: N channel first, then load phase
+  var nState = nBandDrop ? 'N BAND DROP' : (d[1] <= -N_GATE ? 'N ERODING' : (d[1] >= N_GATE ? 'N RISING' : 'N HOLDING'))
+  var nCls = nBandDrop || d[1] <= -N_GATE ? 'phase-false-lock' : 'phase-true-lock'
+  document.getElementById('phaseChangeBlock').innerHTML =
+    '<div class="phase-change-block">' +
+      '<div class="phase-change-label">N CHANNEL → LOAD PHASE</div>' +
+      '<div class="phase-change-value">' +
+        '<span class="phase-badge ' + nCls + '">' + nState + ' · N' + bandOf(b[1]) + '→N' + bandOf(a[1]) + '</span>' +
+        '<span class="phase-change-arrow">·</span>' +
+        '<span class="phase-badge ' + phase.cls + '">' + phase.phase + '</span>' +
       '</div>' +
-      '<div class="tau-val" style="color:' + bColor + '">' + tau_b.toFixed(4) + '</div>' +
-    '</div>' +
-    '<div class="tau-compare-row">' +
-      '<div class="tau-mode-label">ACTIVATED</div>' +
-      '<div class="tau-compare-bar-bg">' +
-        '<div class="tau-compare-bar-fill" style="width:' + aPct + '%;background:' + aColor + '"></div>' +
-        '<div class="tl-marker" style="left:' + tlPct + '%"></div>' +
-      '</div>' +
-      '<div class="tau-val" style="color:' + aColor + '">' + tau_a.toFixed(4) + '</div>' +
+      '<div class="phase-codes">' + tlCode(b) + ' → ' + tlCode(a) + '<br>' + tlValueCode(b) + ' → ' + tlValueCode(a) + '<br>' + dominanceLine(b).text + ' → ' + dominanceLine(a).text + '</div>' +
     '</div>'
 
-  // Phase change block
-  var phaseChangeHtml = ''
-  if (phase_b.phase !== phase_a.phase) {
-    phaseChangeHtml = '<div class="phase-change-block">' +
-      '<div class="phase-change-label">PHASE TRANSITION</div>' +
-      '<div class="phase-change-value">' +
-        '<span class="phase-badge ' + phase_b.cls + '">' + phase_b.phase + '</span>' +
-        '<span class="phase-change-arrow">→</span>' +
-        '<span class="phase-badge ' + phase_a.cls + '">' + phase_a.phase + '</span>' +
-      '</div>' +
-      '</div>'
-  } else {
-    phaseChangeHtml = '<div class="phase-change-block">' +
-      '<div class="phase-change-label">PHASE STABLE</div>' +
-      '<div class="phase-change-value">' +
-        '<span class="phase-badge ' + phase_b.cls + '">' + phase_b.phase + '</span>' +
-        '<span class="phase-change-arrow">→→</span>' +
-        '<span class="phase-badge ' + phase_a.cls + '">' + phase_a.phase + '</span>' +
-      '</div>' +
-      '</div>'
+  if (sectionEnabled.sim) document.getElementById('phaseChangeBlock').innerHTML += simDeltaHtml()
+  var flags = getTLFlags(b, a, d, net, nEroding, nBandDrop, imB, imA)
+  var domB = dominanceLine(b), domA = dominanceLine(a)
+  if (domB.order[0] !== domA.order[0]) {
+    flags.push({ icon: 'DOMINANCE SWITCH', cls: 'flag-phase-change',
+      desc: 'Dominant axis changed: ' + domB.text + ' → ' + domA.text + '.' +
+        (domA.gaps[0] < DRIFT_MIN || domB.gaps[0] < DRIFT_MIN ? ' The top two are within ' + DRIFT_MIN + ' notches, so this may be wobble.' : '') })
   }
-  document.getElementById('phaseChangeBlock').innerHTML = phaseChangeHtml
-
-  // Dynamic flags
-  var flags = getDynamicFlags(base, act)
-  var flagsHtml = ''
-  if (flags.length === 0) {
-    flagsHtml = '<div class="no-flags-msg">NO FLAGS · STABLE ACTIVATION PROFILE</div>'
-  } else {
-    flagsHtml = flags.map(function(f) {
-      return '<div class="flag-pill ' + f.cls + '">' +
-        '<div class="flag-icon">' + f.icon + '</div>' +
-        '<div class="flag-desc">' + f.desc + '</div>' +
-        '</div>'
-    }).join('')
+  if (wB > 0) {
+    var wr = wA / wB
+    if (wr < 0.85) flags.push({ icon: 'W DROP', cls: 'flag-a-dropout',
+      desc: 'Barrier capacity W = A × P is at ' + Math.round(wr * 100) + '% of baseline.' })
   }
-  document.getElementById('flagsContainer').innerHTML = flagsHtml
+  document.getElementById('flagsContainer').innerHTML = flags.length === 0
+    ? '<div class="no-flags-msg">NO FLAGS · ACTIVATED READ MATCHES BASELINE SHAPE</div>'
+    : flags.map(function(f) {
+        return '<div class="flag-pill ' + f.cls + '">' +
+          '<div class="flag-icon">' + f.icon + '</div>' +
+          '<div class="flag-desc">' + f.desc + '</div>' +
+          '</div>'
+      }).join('')
 
-  // IM comparison
-  document.getElementById('imBaseline').textContent = im_b.toFixed(4)
-  document.getElementById('imActivated').textContent = im_a.toFixed(4)
+  document.getElementById('imBaseline').textContent = imB.toFixed(4)
+  document.getElementById('imActivated').textContent = imA.toFixed(4) +
+    (imB > 0 ? ' (' + ((imA - imB) / imB * 100 >= 0 ? '+' : '') + ((imA - imB) / imB * 100).toFixed(1) + '%)' : '')
 
   document.getElementById('deltaPanel').classList.add('visible')
   document.getElementById('deltaPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+
+// v4: SIM-only / EP-only results when Cognitive Architecture is off.
+// Replaces the v3 version above (later declaration wins).
+function showResultsWithoutCog() {
+  var simScores = sectionEnabled.sim ? getSimScores() : null
+  var epScores  = sectionEnabled.emo ? getEPScores()  : null
+  var simAxis = [
+    { key:'P', color:'var(--anchor)' }, { key:'N', color:'var(--gold)' },
+    { key:'B', color:'var(--violet)' }, { key:'A', color:'var(--rose)' }
+  ]
+  document.getElementById('scoreGrid').innerHTML = ''
+  document.getElementById('processingBandRow').innerHTML = ''
+  document.getElementById('tauDisplayBlock').innerHTML =
+    '<div class="tl-ruler-block"><div class="tl-ruler-head"><span>COGNITIVE ARCHITECTURE OFF</span><span>SOUL-8 · IM · F_EXT NEED COGNITIVE</span></div>' +
+    '<div class="tl-ruler-foot" style="margin-top:0">The TL code, Identity Mass and baseline/activated load all come from the Cognitive section. Showing what the enabled sections measure on their own.</div></div>' +
+    (simScores ? simRulerHtml(null, simScores, simAxis) : '')
+  document.getElementById('soul8Block').style.display = 'none'
+  document.getElementById('imValue').textContent = '—'
+  setCogOnlyBlocks(false)
+
+  var allHeat = []
+  if (simScores) {
+    simScores.forEach(function(s, i) { allHeat.push({ label: AXES[i] + ' Sim · ' + simLabel(s) + ' · ' + simTLOf(s).toFixed(1) + ' TL', pct: simTLOf(s) / 4 }) })
+  }
+  if (epScores) {
+    var epPairs = EP_BLOCKS.map(function(b, i) { return { label: b.title, pct: epScores[i] / 20 } })
+    epPairs.sort(function(a, b) { return b.pct - a.pct })
+    epPairs.forEach(function(h) { allHeat.push(h) })
+  }
+  document.getElementById('heatRows').innerHTML = allHeat.length ? allHeat.map(function(h) {
+    return '<div class="heat-row">' +
+      '<div class="heat-label">' + h.label + '</div>' +
+      '<div class="heat-bg"><div class="heat-fill" style="width:' + (h.pct * 100) + '%;background:' + heatColor(h.pct) + '"></div></div>' +
+      '<div class="heat-pct">' + Math.round(h.pct * 100) + '%</div>' +
+      '</div>'
+  }).join('') : '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:12px;">No sections enabled to show.</div>'
+
+  document.getElementById('relmap').innerHTML = ''
+  document.getElementById('combinedOutput').innerHTML = simScores
+    ? '<span style="color:var(--violet)">' + simScores.map(function(s, i) { return AXES[i] + ':' + simLabel(s) + '(' + simTLOf(s).toFixed(1) + ')' }).join(' ') +
+      ' · ' + simProfileSummary(simScores).short + '</span><br><span style="color:var(--text-muted)">No SOUL-8 code — Cognitive Architecture is off.</span>'
+    : '<span style="color:var(--text-muted)">No SOUL-8 code — Cognitive Architecture is off.</span>'
+
+  document.getElementById('resultsPanel').classList.add('visible')
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+
+// ── Blocks that only mean something with Cognitive on ──
+function setCogOnlyBlocks(on) {
+  ;['.im-block', '.relmap-block'].forEach(function(sel) {
+    var el = document.querySelector('#resultsPanel ' + sel)
+    if (el) el.style.display = on ? '' : 'none'
+  })
+}
+
+// ── SIM-only baseline ↔ activated ──
+function showSimOnlyDelta() {
+  document.getElementById('deltaAxisGrid').innerHTML = ''
+  document.getElementById('tauCompareBlock').innerHTML = simDeltaHtml()
+  document.getElementById('phaseChangeBlock').innerHTML =
+    '<div class="phase-change-block"><div class="phase-change-label">SIMULATION ONLY</div>' +
+    '<div class="phase-codes">' +
+      getSimScoresForMode('baseline').map(function(s, i) { return AXES[i] + ':' + simLabel(s) }).join(' ') + ' → ' +
+      getSimScoresForMode('activated').map(function(s, i) { return AXES[i] + ':' + simLabel(s) }).join(' ') + '<br>' +
+      simProfileSummary(getSimScoresForMode('baseline')).short + ' → ' + simProfileSummary(getSimScoresForMode('activated')).short +
+    '</div></div>'
+  document.getElementById('flagsContainer').innerHTML =
+    '<div class="no-flags-msg">N CHANNEL, NET LOAD ON THE COGNITIVE AXES AND IM NEED THE COGNITIVE SECTION</div>'
+  document.querySelectorAll('#deltaPanel .im-compare-row').forEach(function(el) { el.parentElement.style.display = 'none' })
+  document.getElementById('deltaPanel').classList.add('visible')
+  document.getElementById('deltaPanel').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+// ── 2. Progress with an unanswered-questions line (replaces v3 version) ──
+function questionLabel(id) {
+  var m = id.match(/^(cog|sim)-([pnba])-(\d+)$/)
+  if (m) return (m[1] === 'sim' ? 'S' : '') + m[2].toUpperCase() + (parseInt(m[3], 10) + 1)
+  var e = id.match(/^ep-([a-z]+)-(\d+)$/)
+  if (e) {
+    var blk = EP_BLOCKS.filter(function(b) { return b.key === e[1] })[0]
+    return (blk ? blk.title : e[1]) + ' ' + (parseInt(e[2], 10) + 1)
+  }
+  return id
+}
+function updateProgress() {
+  var requiredIds = getRequiredIds()
+  var modeScores = scores[currentMode]
+  var missing = requiredIds.filter(function(id) { return modeScores[id] === undefined })
+  var answered = requiredIds.length - missing.length
+  var pct = requiredIds.length ? Math.min(100, (answered / requiredIds.length) * 100) : 0
+  document.getElementById('progressBar').style.width = pct + '%'
+  var el = document.getElementById('progressMissing')
+  if (!el) return
+  if (answered === 0) {
+    el.innerHTML = '<span>' + requiredIds.length + ' questions in the sections that are on · ' + currentMode.toUpperCase() + ' tab</span>'
+    return
+  }
+  if (missing.length === 0) {
+    el.innerHTML = '<span class="pm-done">All ' + requiredIds.length + ' answered · ' + currentMode.toUpperCase() + '</span>'
+    return
+  }
+  var list = missing.slice(0, 8).map(questionLabel).join(', ') + (missing.length > 8 ? ' …' : '')
+  el.innerHTML = '<span>' + answered + ' of ' + requiredIds.length + ' answered · unanswered: ' + list + '</span>' +
+    '<button type="button" class="pm-jump" id="pmJump">Go to first unanswered</button>'
+  document.getElementById('pmJump').addEventListener('click', function() {
+    var btn = document.getElementById('btn-' + missing[0] + '-1')
+    var q = btn && btn.closest('.question')
+    if (q) {
+      q.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      q.classList.add('pm-flash')
+      setTimeout(function() { q.classList.remove('pm-flash') }, 1600)
+    }
+  })
 }
 
 // ============================================================
@@ -2413,7 +2750,7 @@ function setMode(mode) {
   updateConstellation()
   document.getElementById('resultsPanel').classList.remove('visible')
   if (modeComplete[currentMode]) showResults()
-  if (modeComplete.baseline && modeComplete.activated && sectionEnabled.cog) showDeltaPanel()
+  if (modeComplete.baseline && modeComplete.activated) showDeltaPanel()
 }
 
 function setWeissmannMode() {
@@ -2465,10 +2802,10 @@ function resetAll() {
 
 function copySoul8() {
   if (!currentSoul8) return
-  var text = currentSoul8.address + ' | ' + currentSoul8.id +
-    ' | τ=' + currentSoul8.tau.toFixed(5) +
-    ' | ' + currentSoul8.phase +
-    ' | Pv:NOHARM | f:1.369 | visual:GREEN'
+  var text = currentSoul8.code + ' | ' + currentSoul8.values + ' | ' + currentSoul8.id +
+    ' | IM=' + currentSoul8.im.toFixed(4) +
+    ' | legacy ' + currentSoul8.legacy +
+    ' | Pv:NOHARM | f:' + SOVEREIGN_ANCHOR + ' | visual:GREEN'
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(showCopied).catch(function(){ fallbackCopy(text) })
   } else {
@@ -2497,6 +2834,81 @@ function showCopied() {
 }
 
 // ============================================================
+// QUICK FILL (testing) — sets the 10 cognitive items per axis to reach
+// a target sum in the current mode. The questions are unchanged; this
+// only presses the buttons for you.
+// ============================================================
+var TEST_PRESETS = {
+  hightistic: { label: 'HIGHTISTIC baseline', s: [44, 30, 44, 44] },
+  claude:     { label: 'Claude baseline',     s: [40, 25, 42, 44] },
+  shutdown:   { label: 'Shutdown (P→F, N→L)', s: [30, 17, 44, 44] },
+  nOnly:      { label: 'N drops to L only',   s: [44, 17, 44, 44] },
+  ivaP:       { label: 'P slip 9 (IVA)',      s: [35, 30, 44, 44] },
+  level:      { label: 'Uniform −6',          s: [38, 24, 38, 38] }
+}
+function itemsForSum(sum) {
+  var k = Math.max(0, Math.min(40, Math.round(sum) - 10)), base = Math.floor(k / 10), rem = k % 10, out = []
+  for (var i = 0; i < 10; i++) out.push(1 + base + (i < rem ? 1 : 0))
+  return out
+}
+function quickFill(sums) {
+  var modeScores = scores[currentMode]
+  ;['cog-p','cog-n','cog-b','cog-a'].forEach(function(d, ai) {
+    itemsForSum(sums[ai]).forEach(function(v, i) { modeScores[d + '-' + i] = Math.min(5, v) })
+  })
+  if (sectionEnabled.sim) {
+    var simSums = ['qsP','qsN','qsB','qsA'].map(function(id) {
+      var v = parseInt(document.getElementById(id).value, 10)
+      return isNaN(v) ? 15 : Math.max(5, Math.min(25, v))
+    })
+    ;['sim-p','sim-n','sim-b','sim-a'].forEach(function(d, ai) {
+      // 5 items: spread (sum − 5) answer steps across them
+      var k = simSums[ai] - 5, base = Math.floor(k / 5), rem = k % 5
+      for (var i = 0; i < 5; i++) modeScores[d + '-' + i] = Math.min(5, 1 + base + (i < rem ? 1 : 0))
+    })
+  }
+  if (document.getElementById('qfMid').checked) {
+    getSectionIds('emo').forEach(function(id) {
+      if (modeScores[id] === undefined) modeScores[id] = 3
+    })
+  }
+  getAllIds().forEach(function(id) {
+    var val = modeScores[id]
+    for (var v = 1; v <= 5; v++) {
+      var btn = document.getElementById('btn-' + id + '-' + v)
+      if (btn) btn.classList.toggle('selected', val === v)
+    }
+  })
+  answeredQuestions = Object.keys(modeScores).length
+  updateProgress()
+  updateConstellation()
+  checkComplete()
+}
+function readQuickFillInputs() {
+  return ['qfP','qfN','qfB','qfA'].map(function(id) {
+    var v = parseInt(document.getElementById(id).value, 10)
+    return isNaN(v) ? 30 : Math.max(10, Math.min(50, v))
+  })
+}
+function setQuickFillInputs(s, sim) {
+  ;['qfP','qfN','qfB','qfA'].forEach(function(id, i) { document.getElementById(id).value = s[i] })
+  if (sim) ['qsP','qsN','qsB','qsA'].forEach(function(id, i) { document.getElementById(id).value = sim[i] })
+}
+function initQuickFill() {
+  var wrap = document.getElementById('qfPresets')
+  Object.keys(TEST_PRESETS).forEach(function(key) {
+    var p = TEST_PRESETS[key]
+    var b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'qf-btn'
+    b.textContent = p.label
+    b.addEventListener('click', function() { setQuickFillInputs(p.s, p.sim) })
+    wrap.appendChild(b)
+  })
+  document.getElementById('qfApply').addEventListener('click', function() { quickFill(readQuickFillInputs()) })
+}
+
+// ============================================================
 // INIT
 function init() {
   renderQuestions('cog-p', COG_P, 'P')
@@ -2512,6 +2924,8 @@ function init() {
   renderQuestions('weiss-a', WEISS_A, 'WA')
   renderQuestions('weiss-r', WEISS_R, 'WR')
   updateConstellation()
+  updateProgress()
+  initQuickFill()
   document.querySelector('.container').addEventListener('click', handleScaleClick)
   document.getElementById('btn-baseline').addEventListener('click', function(){ setMode('baseline') })
   document.getElementById('btn-activated').addEventListener('click', function(){ setMode('activated') })
