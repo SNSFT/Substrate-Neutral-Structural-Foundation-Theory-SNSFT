@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Repository Acquisition Panel · Applied Identity Physics</title>
-<meta name="description" content="Whole-repository acquisition by outside systems, day by day, against your own deposits and CI, placed against the Torsion Limit TL = 0.136899099984016.">
+<meta name="description" content="Whole-repository acquisition by outside systems, day by day, against your own deposits and CI, and AI crawler activity on uuia.app and proofpress.org by operator, placed against the Torsion Limit TL = 0.136899099984016.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -73,7 +73,7 @@ footer p{margin-bottom:.5rem}
   <div class="wrap">
     <div class="eyebrow">Applied Identity Physics™ · SNSFT Foundation</div>
     <h1>Repository Acquisition Panel</h1>
-    <p class="tag"><b>Whole-repository acquisition, day by day.</b> Outside systems that pull an entire repository register as clones. This panel separates those pulls from the repository's own CI, lines them up against each deposit, and places each day against the Torsion Limit TL = 0.136899099984016. It reads a traffic.json saved daily by the collector workflow; nothing you load leaves your browser.</p>
+    <p class="tag"><b>Whole-repository acquisition, day by day.</b> Outside systems that pull an entire repository register as clones. This panel separates those pulls from the repository's own CI, lines them up against each deposit, and places each day against the Torsion Limit TL = 0.136899099984016. The site section does the same for uuia.app and proofpress.org: every AI and search crawler by name and operator, the live assistant fetches made for people in a chat, and the pages they read. It reads a traffic.json and a cloudflare.json saved daily by the collector workflow; nothing you load leaves your browser.</p>
   </div>
 </header>
 
@@ -86,6 +86,7 @@ footer p{margin-bottom:.5rem}
     <div style="min-width:140px"><label for="branch">Data branch</label><input id="branch" value="traffic"></div>
     <button class="btn primary" id="load">Load</button>
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a traffic.json<input type="file" id="file" accept=".json,application/json" hidden></label>
+    <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a cloudflare.json<input type="file" id="cffile" accept=".json,application/json" hidden></label>
   </div>
   <p class="help" id="msg"></p>
 </section>
@@ -129,6 +130,33 @@ s_t = (outside_t − reference_t) / reference_t
 SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.120471207985934</div>
 </section>
 
+<section id="cfsec" hidden>
+  <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem">
+    <h2 style="margin:0">Site crawlers · uuia.app and proofpress.org</h2>
+    <div class="row" style="align-items:center">
+      <div class="ranges" id="cfsites" role="group" aria-label="Site"></div>
+      <div class="ranges" id="cfranges" role="group" aria-label="Date range"></div>
+    </div>
+  </div>
+  <div class="cards" id="cfcards"></div>
+  <ul class="plain" id="cfplain" style="margin-top:1rem"></ul>
+  <h3 class="band" style="margin:1rem 0 .3rem">Crawler requests per day, allowed</h3>
+  <div class="legend">
+    <span><span class="sw" style="background:var(--accent)"></span>crawl (bulk collection)</span>
+    <span><span class="sw" style="background:var(--locked)"></span>search indexing</span>
+    <span><span class="sw" style="background:var(--gold)"></span>assistant (live fetch for a person in a chat)</span>
+    <span><span class="sw" style="background:var(--border-2)"></span>link preview · archive</span>
+  </div>
+  <div id="cfchart"></div>
+  <h3 class="band" style="margin:1.2rem 0 .4rem">By crawler</h3>
+  <div class="tablewrap"><table id="cfops"><thead><tr><th>Operator</th><th>Crawler</th><th>Kind</th><th>Allowed</th><th>Unsuccessful</th><th>Data</th><th>Share of allowed</th></tr></thead><tbody></tbody></table></div>
+  <div class="grid2" style="margin-top:1.2rem">
+    <div><h3 class="band" style="margin-bottom:.4rem">Pages crawlers read most</h3><div class="tablewrap"><table id="cfpaths" style="min-width:0"><thead><tr><th>Path</th><th>Crawler</th><th>Requests</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Day by day</h3><div class="tablewrap"><table id="cfdays" style="min-width:0"><thead><tr><th>Date</th><th>Crawler requests</th><th>Assistant</th><th>Visits</th><th>Placement</th></tr></thead><tbody></tbody></table></div></div>
+  </div>
+  <div class="note">How to read this. Cloudflare sees every request to the two sites. Crawlers are matched by the name in their user agent and grouped by operator. A crawl request is bulk collection; an assistant request is a fetch the operator made live because a person in a chat asked for the page; search requests build a search index. Allowed means the page was served (status below 400); unsuccessful is mostly requests for pages that do not exist. Placement uses the same 7-day median reference and TL bands as the clone table, applied to allowed crawler requests.</div>
+</section>
+
 <section id="ctxsec" hidden>
   <h2>Context</h2>
   <div class="grid2">
@@ -145,8 +173,8 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
 
 <footer>
   <div class="wrap">
-    <p><b>Built from:</b> GitHub REST API traffic endpoints (views, clones, popular referrers and paths) and Actions workflow runs · the daily collector workflow (traffic.yml, traffic_snapshot.py) · Applied Identity Physics Economics reduction (ProofPress) · AIM Validation Series.</p>
-    <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · DOI base 10.5281/zenodo.18719748 · Free to use under the NOHARM invariant, with citation.</p>
+    <p><b>Built from:</b> GitHub REST API traffic endpoints (views, clones, popular referrers and paths) and Actions workflow runs · Cloudflare GraphQL Analytics API (HTTP requests by user agent, response status and path) · the daily collector workflow (traffic.yml, traffic_snapshot.py, cloudflare_snapshot.py) · Applied Identity Physics Economics reduction (ProofPress) · AIM Validation Series.</p>
+    <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · Identity Physics Corpus DOI 10.17605/OSF.IO/KWTYD · Free to use under the NOHARM invariant, with citation.</p>
     <p class="mono">[9,9,9,9] :: {ANC} · The Manifold is Holding</p>
   </div>
 </footer>
@@ -222,7 +250,7 @@ function render(D){
   const full=build(D);place(full);const depAll=depRows(full);
   const span=full.length,sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2];
   $('ranges').innerHTML=RANGES.map(([k,l,nd])=>`<button data-k="${k}" class="${k===sel[0]?'on':''}" ${nd!==Infinity&&nd>span*2&&k!==sel[0]?'disabled title="Not enough history yet"':''}>${l}</button>`).join('');
-  $('ranges').querySelectorAll('button').forEach(b=>b.onclick=()=>{RANGE=b.dataset.k;try{localStorage.setItem('acq-range',RANGE);}catch(_){}render(DATA);});
+  $('ranges').querySelectorAll('button').forEach(b=>b.onclick=()=>setRange(b.dataset.k));
   const rows=sel[2]===Infinity?full:full.slice(-sel[2]);
   const known=rows.filter(r=>r.ciKnown);
   const totOut=rows.reduce((a,r)=>a+r.out,0),totCI=known.reduce((a,r)=>a+r.ci,0);
@@ -285,6 +313,7 @@ async function loadRemote(){
   const repo=$('repo').value.trim().replace(/^https?:\/\/github\.com\//,'').replace(/\/$/,''),br=$('branch').value.trim()||'traffic';
   if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){$('msg').textContent='Enter the repository as owner/name.';return;}
   $('msg').textContent='Loading…';
+  loadCF(repo,br);
   try{
     const res=await fetch(`https://raw.githubusercontent.com/${repo}/${encodeURIComponent(br)}/traffic.json?t=${Date.now()}`,{cache:'no-store'});
     if(!res.ok)throw new Error(res.status===404?`No traffic.json on the ${br} branch of ${repo} yet. Run the collector workflow once.`:'GitHub returned '+res.status);
@@ -292,6 +321,83 @@ async function loadRemote(){
     try{history.replaceState(null,'',`?repo=${repo}&branch=${encodeURIComponent(br)}`);}catch(_){}
   }catch(e){$('msg').textContent=e.message||String(e);}
 }
+
+// ---------- Cloudflare site crawlers ----------
+let CF=null,CFSITE=(()=>{try{return localStorage.getItem('acq-site')||'all';}catch(_){return'all';}})();
+const KIND_COL={crawl:'var(--accent)',search:'var(--locked)',assistant:'var(--gold)',preview:'var(--border-2)',archive:'var(--border-2)'};
+const KIND_ORDER=['crawl','search','assistant','preview','archive'];
+const mb=b=>b>=1e6?(b/1e6).toFixed(2)+' MB':b>=1e3?(b/1e3).toFixed(1)+' kB':Math.round(b)+' B';
+function setRange(k){RANGE=k;try{localStorage.setItem('acq-range',RANGE);}catch(_){}if(DATA)render(DATA);if(CF)renderCF(CF);}
+function cfRows(C){
+  const names=Object.keys(C.zones||{}),sites=CFSITE==='all'?names:names.filter(n=>n===CFSITE);
+  const ds=new Set();sites.forEach(n=>Object.keys(C.zones[n].days).forEach(d=>ds.add(d)));
+  const sorted=[...ds].sort();if(!sorted.length)return{rows:[],sites};
+  const days=[];for(let d=sorted[0];d<=sorted[sorted.length-1];d=addDays(d,1))days.push(d);
+  const rows=days.map(d=>{const r={d,requests:0,visits:0,crawlers:{},paths:[],kinds:{}};
+    sites.forEach(n=>{const x=C.zones[n].days[d];if(!x)return;r.requests+=x.requests;r.visits+=x.visits;
+      Object.entries(x.crawlers).forEach(([k,v])=>{const c=r.crawlers[k]||(r.crawlers[k]={ok:0,fail:0,bytes:0});c.ok+=v.ok;c.fail+=v.fail;c.bytes+=v.bytes;});
+      x.paths.forEach(p=>r.paths.push({...p,site:n}));});
+    Object.entries(r.crawlers).forEach(([k,v])=>{const kd=(C.crawlers[k]||{}).kind||'crawl';r.kinds[kd]=(r.kinds[kd]||0)+v.ok;});
+    r.out=Object.values(r.crawlers).reduce((a,v)=>a+v.ok,0);r.assist=r.kinds.assistant||0;return r;});
+  return{rows,sites};
+}
+function cfChart(rows){
+  const n=rows.length,W=n<=30?Math.max(900,n*56):Math.max(1100,n*11),H=300,L=56,R=24,T=20,B=46;
+  const max=Math.max(1,...rows.map(r=>r.out)),bw=(W-L-R)/n,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-v/max);
+  const step=Math.pow(10,Math.floor(Math.log10(max/4)||0));const tick=[1,2,5].map(k=>k*step).find(k=>max/k<=5)||step*10;
+  let g='';for(let v=0;v<=max;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${v}</text>`;
+  rows.forEach((r,i)=>{let acc=0;const x=X(i)+bw*.15,w=bw*.7;
+    KIND_ORDER.forEach(k=>{const v=r.kinds[k]||0;if(!v)return;g+=`<rect x="${x}" y="${Y(acc+v)}" width="${w}" height="${Y(acc)-Y(acc+v)}" fill="${KIND_COL[k]}"><title>${r.d}: ${v} ${k}</title></rect>`;acc+=v;});
+    const every=n<=30?Math.max(1,Math.ceil(n/20)):7;
+    if(i%every===0||i===n-1){const dd=r.d.slice(8).replace(/^0/,''),newM=i===0||r.d.slice(5,7)!==rows[i-1].d.slice(5,7);
+      g+=`<text x="${X(i)+bw/2}" y="${H-24}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${dd}</text>`;
+      if(newM)g+=`<text x="${X(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="10.5" fill="var(--text)" font-family="Space Mono,monospace">${new Date(r.d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'})}</text>`;}});
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${n<=30?Math.min(W,n*40+100):Math.min(W,n*7+100)}px;display:block" role="img" aria-label="Allowed crawler requests per day, stacked by kind">${g}</svg></div>`;
+}
+function renderCF(C){
+  CF=C;const names=Object.keys(C.zones||{});
+  if(!names.length){$('cfsec').hidden=true;return;}
+  if(CFSITE!=='all'&&!names.includes(CFSITE))CFSITE='all';
+  $('cfsites').innerHTML=[['all','Both'],...names.map(n=>[n,n])].map(([k,l])=>`<button data-k="${esc(k)}" class="${k===CFSITE?'on':''}">${esc(l)}</button>`).join('');
+  $('cfsites').querySelectorAll('button').forEach(b=>b.onclick=()=>{CFSITE=b.dataset.k;try{localStorage.setItem('acq-site',CFSITE);}catch(_){}renderCF(CF);});
+  const {rows:full}=cfRows(C);if(!full.length){$('cfsec').hidden=true;return;}
+  place(full);
+  const sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2],span=full.length;
+  $('cfranges').innerHTML=RANGES.map(([k,l,nd])=>`<button data-k="${k}" class="${k===sel[0]?'on':''}" ${nd!==Infinity&&nd>span*2&&k!==sel[0]?'disabled title="Not enough history yet"':''}>${l}</button>`).join('');
+  $('cfranges').querySelectorAll('button').forEach(b=>b.onclick=()=>setRange(b.dataset.k));
+  const rows=sel[2]===Infinity?full:full.slice(-sel[2]),last=rows[rows.length-1];
+  const tot={};rows.forEach(r=>Object.entries(r.crawlers).forEach(([k,v])=>{const t=tot[k]||(tot[k]={ok:0,fail:0,bytes:0});t.ok+=v.ok;t.fail+=v.fail;t.bytes+=v.bytes;}));
+  const allOk=Object.values(tot).reduce((a,v)=>a+v.ok,0),allFail=Object.values(tot).reduce((a,v)=>a+v.fail,0);
+  const ops={};Object.entries(tot).forEach(([k,v])=>{const o=(C.crawlers[k]||{}).operator||'Other';const x=ops[o]||(ops[o]={ok:0,bytes:0});x.ok+=v.ok;x.bytes+=v.bytes;});
+  const opList=Object.entries(ops).sort((a,b)=>b[1].ok-a[1].ok),top=opList[0];
+  const assist=rows.reduce((a,r)=>a+r.assist,0),visits=rows.reduce((a,r)=>a+r.visits,0);
+  const asstBy={};Object.entries(tot).forEach(([k,v])=>{if((C.crawlers[k]||{}).kind==='assistant'&&v.ok)asstBy[k]=v.ok;});
+  $('cfcards').innerHTML=[
+    ['Crawler requests',fmt(allOk),`allowed, ${short(rows[0].d)} – ${short(last.d)}`],
+    ['Top operator',top?esc(top[0]):'—',top&&allOk?`${fmt(top[1].ok)} requests · ${(top[1].ok/allOk*100).toFixed(0)}% · ${mb(top[1].bytes)}`:''],
+    ['Assistant fetches',fmt(assist),'live, for a person in a chat'],
+    ['Visits',fmt(visits),'all visitors, Cloudflare count'],
+    ['Unsuccessful',fmt(allFail),'crawler requests, status ≥ 400']
+  ].map(([k,v,s])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+  const pl=[],siteName=CFSITE==='all'?names.join(' and '):CFSITE;
+  pl.push(`Crawlers were served ${fmt(allOk)} requests on ${esc(siteName)} over these ${rows.length} days`+(visits?`, against ${fmt(visits)} visits in total`:'')+'.');
+  if(opList.length)pl.push('By operator: '+opList.slice(0,6).map(([o,v])=>`${esc(o)} ${fmt(v.ok)} (${mb(v.bytes)})`).join(' · ')+'.');
+  pl.push(assist?`Assistant fetches: ${Object.entries(asstBy).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${esc(k)} ${fmt(v)}`).join(' · ')}. Each one is a person in a chat having an assistant open the page.`:'No assistant fetches in this range.');
+  const pk=rows.reduce((m,r)=>r.out>m.out?r:m,rows[0]);pl.push(`Peak day ${short(pk.d)}: ${fmt(pk.out)} crawler requests.`);
+  $('cfplain').innerHTML=pl.map(x=>`<li>${x}</li>`).join('');
+  $('cfchart').innerHTML=cfChart(rows);
+  $('cfops').tBodies[0].innerHTML=Object.entries(tot).sort((a,b)=>b[1].ok-a[1].ok).map(([k,v])=>{const m=C.crawlers[k]||{};
+    return`<tr><td>${esc(m.operator||'Other')}</td><td class="mono">${esc(k)}</td><td><span class="band">${esc(m.kind||'')}</span></td><td class="n"><b>${fmt(v.ok)}</b></td><td class="n">${fmt(v.fail)}</td><td class="n">${mb(v.bytes)}</td><td class="n">${allOk?(v.ok/allOk*100).toFixed(1)+'%':'—'}</td></tr>`;}).join('')||'<tr><td colspan="7" class="band">No crawler requests in this range.</td></tr>';
+  const pathTot={};rows.forEach(r=>r.paths.forEach(p=>{const key=(CFSITE==='all'?p.site:'')+p.path+'\u0000'+p.crawler;const x=pathTot[key]||(pathTot[key]={path:(CFSITE==='all'?p.site:'')+p.path,crawler:p.crawler,count:0});x.count+=p.count;}));
+  $('cfpaths').tBodies[0].innerHTML=Object.values(pathTot).sort((a,b)=>b.count-a.count).slice(0,25).map(p=>`<tr><td class="mono" style="word-break:break-all">${esc(p.path)}</td><td class="mono">${esc(p.crawler)}</td><td class="n">${fmt(p.count)}</td></tr>`).join('')||'<tr><td colspan="3" class="band">none</td></tr>';
+  $('cfdays').tBodies[0].innerHTML=rows.slice().reverse().map(r=>`<tr><td class="mono">${r.d}</td><td class="n"><b>${fmt(r.out)}</b></td><td class="n">${fmt(r.assist)}</td><td class="n">${fmt(r.visits)}</td><td>${chip(r)}</td></tr>`).join('');
+  $('cfsec').hidden=false;
+}
+async function loadCF(repo,br){
+  try{const res=await fetch(`https://raw.githubusercontent.com/${repo}/${encodeURIComponent(br)}/cloudflare.json?t=${Date.now()}`,{cache:'no-store'});
+    if(res.ok)renderCF(await res.json());}catch(_){}
+}
+$('cffile').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{renderCF(JSON.parse(t));}catch(err){$('msg').textContent='That file could not be read: '+err.message;}});e.target.value='';};
 let LAST=null;
 $('logscale').onchange=()=>{if(LAST)$('chart').innerHTML=chart(LAST);};
 $('load').onclick=loadRemote;
