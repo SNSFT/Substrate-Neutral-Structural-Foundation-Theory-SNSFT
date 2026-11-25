@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Repository Acquisition Panel · Applied Identity Physics</title>
-<meta name="description" content="Whole-repository acquisition by outside systems, day by day, against your own deposits and CI, and AI crawler activity on uuia.app and proofpress.org by operator, placed against the Torsion Limit TL = 0.136899099984016.">
+<meta name="description" content="Whole-repository acquisition by outside systems, day by day, against your own deposits and CI, AI crawler activity on uuia.app and proofpress.org by operator, and PhilPapers readership by paper, institution and referrer, placed against the Torsion Limit TL = 0.136899099984016.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -89,8 +89,28 @@ footer p{margin-bottom:.5rem}
     <button class="btn primary" id="load">Load</button>
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a traffic.json<input type="file" id="file" accept=".json,application/json" hidden></label>
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a cloudflare.json<input type="file" id="cffile" accept=".json,application/json" hidden></label>
+    <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a philpeople.json<input type="file" id="ppfile" accept=".json,application/json" hidden></label>
   </div>
   <p class="help" id="msg"></p>
+</section>
+
+<section id="idsec" hidden>
+  <h2>Identity read · baseline → activated</h2>
+  <div class="row" style="margin-bottom:.6rem">
+    <div><label for="bfrom">Baseline from</label><input type="date" id="bfrom"></div>
+    <div><label for="bto">Baseline to</label><input type="date" id="bto"></div>
+    <div><label for="afrom">Activated from</label><input type="date" id="afrom"></div>
+    <div><label for="ato">Activated to</label><input type="date" id="ato"></div>
+    <div class="ranges" id="idpresets" role="group" aria-label="Period presets">
+      <button data-p="month">Last month → this month</button><button data-p="30">30 days → 30 days</button><button data-p="7">7 days → 7 days</button>
+    </div>
+  </div>
+  <p class="help" id="idnote"></p>
+  <div class="tablewrap"><table id="idtable"><thead><tr><th>Axis</th><th>Measure</th><th>Source</th><th>Baseline</th><th>Activated</th><th>Change</th><th>Notches</th></tr></thead><tbody></tbody></table></div>
+  <div class="cards" id="idcards" style="margin-top:1rem"></div>
+  <div class="formula">notch = TL / 10 = 1.36899099984016 % change against the axis's own baseline · 10 notches = 1 TL
+net load = ΔB − ΔP · 10+ SHATTER · 9 IVA PEAK · 1–8 LOCKED (FALSE LOCK when N falls 6+ notches) · 0 AT REST · below 0 UNLOADING
+per-day measures are averaged over the days in each period, so periods of different length compare directly</div>
 </section>
 
 <section id="summary" hidden>
@@ -185,6 +205,41 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
   <div class="note">How to read this. A visit is a person (or program) arriving at the site from somewhere else; a page view is a page loaded; unique visitors are distinct addresses in a day, so one household on one connection counts once. Cloudflare records no names, accounts or cookies. Refused probes are automated scanners asking for files such as /.env or /.git/config that hold passwords on badly configured servers; Cloudflare refuses them and these sites have no such files. Placement uses the same 7-day median reference and TL bands as the other tables, applied to visits. A table that stays empty is a field Cloudflare does not provide on this plan.</div>
 </section>
 
+<section id="ppsec" hidden>
+  <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem">
+    <h2 style="margin:0">PhilPapers readership</h2>
+    <div class="row" style="align-items:center">
+      <label class="band" style="display:flex;gap:.4rem;align-items:center;text-transform:none;letter-spacing:0;font-family:inherit;font-size:.82rem;margin:0"><input type="checkbox" id="ppown" style="width:auto" checked> Leave out views from</label>
+      <input id="ppownlist" value="Kenai" style="width:170px" aria-label="Own locations, comma separated">
+      <div class="ranges" id="ppranges" role="group" aria-label="Date range"></div>
+    </div>
+  </div>
+  <div class="row" style="margin-bottom:.8rem">
+    <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Import a PhilPeople export (.txt)<input type="file" id="ppimport" accept=".txt,text/plain" hidden></label>
+    <button class="btn" id="ppdl" hidden>Download merged philpeople.json</button>
+    <span class="band" id="ppmsg"></span>
+  </div>
+  <div class="cards" id="ppcards"></div>
+  <ul class="plain" id="ppplain" style="margin-top:1rem"></ul>
+  <h3 class="band" style="margin:1rem 0 .3rem">Views per day</h3>
+  <div class="legend">
+    <span><span class="sw" style="background:var(--accent)"></span>single views</span>
+    <span><span class="sw" style="background:var(--gold)"></span>multi-paper bursts (one origin, 4 or more different papers within 10 minutes)</span>
+  </div>
+  <div id="ppchart"></div>
+  <h3 class="band" style="margin:1.2rem 0 .4rem">Papers <button class="btn" id="ppmore" style="margin-left:.6rem;padding:.2rem .5rem">Show all papers</button></h3>
+  <div class="tablewrap"><table id="pppapers"><thead><tr><th>Paper</th><th>Record</th><th>Views</th><th>Origins</th><th>Institutions</th><th>Main way in</th><th>Last viewed</th></tr></thead><tbody></tbody></table></div>
+  <div class="grid2" style="margin-top:1.2rem">
+    <div><h3 class="band" style="margin-bottom:.4rem">How readers arrived</h3><div class="tablewrap"><table id="ppref" style="min-width:0"><thead><tr><th>Way in</th><th>Views</th><th>Share</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Institutions</h3><div class="tablewrap"><table id="ppinst" style="min-width:0"><thead><tr><th>Institution</th><th>Views</th><th>Papers</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Origins</h3><div class="tablewrap"><table id="pporig" style="min-width:0"><thead><tr><th>Origin</th><th>Views</th><th>Papers</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Month by month</h3><div class="tablewrap"><table id="ppmon" style="min-width:0"><thead><tr><th>Month</th><th>Views</th><th>Papers viewed</th><th>Origins</th></tr></thead><tbody></tbody></table></div></div>
+  </div>
+  <details style="margin-top:1.2rem"><summary>Day by day</summary>
+  <div class="tablewrap" style="margin-top:.6rem"><table id="ppdays"><thead><tr><th>Date</th><th>Views</th><th>Bursts</th><th>Papers</th><th>Origins</th><th>Top paper</th><th>Placement (views)</th></tr></thead><tbody></tbody></table></div></details>
+  <div class="note">How to read this. PhilPeople logs each view of your profile and of your papers' pages on PhilPapers, with the visitor's city or institution and the page they came from. Times are as PhilPeople lists them. An export holds at most 10,000 rows, so each import is merged into the stored record, which keeps every row it already has; importing a newer export extends the record and never lowers it. "Unknown location" is a visitor whose place PhilPeople could not resolve. Placement uses the same 7-day median reference and TL bands as the other tables.</div>
+</section>
+
 <section id="ctxsec" hidden>
   <h2>Context</h2>
   <div class="grid2">
@@ -201,7 +256,7 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
 
 <footer>
   <div class="wrap">
-    <p><b>Built from:</b> GitHub REST API traffic endpoints (views, clones, popular referrers and paths) and Actions workflow runs · Cloudflare GraphQL Analytics API (HTTP requests by user agent, response status, path, country, referrer, device, browser, system and cache status; daily page views and unique visitors) · the daily collector workflow (traffic.yml, traffic_snapshot.py, cloudflare_snapshot.py) · Applied Identity Physics Economics reduction (ProofPress) · AIM Validation Series.</p>
+    <p><b>Built from:</b> GitHub REST API traffic endpoints (views, clones, popular referrers and paths) and Actions workflow runs · PhilPeople Web Analytics exports (views of the profile and of each paper's PhilPapers page, by origin and referrer) · Cloudflare GraphQL Analytics API (HTTP requests by user agent, response status, path, country, referrer, device, browser, system and cache status; daily page views and unique visitors) · the daily collector workflow (traffic.yml, traffic_snapshot.py, cloudflare_snapshot.py) · Applied Identity Physics Economics reduction (ProofPress) · AIM Validation Series.</p>
     <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · Identity Physics Corpus DOI 10.17605/OSF.IO/KWTYD · Free to use under the NOHARM invariant, with citation.</p>
     <p class="mono">[9,9,9,9] :: {ANC} · The Manifold is Holding</p>
   </div>
@@ -274,7 +329,7 @@ function chart(rows){
 const RANGES=[['7d','7 days',7],['14d','14 days',14],['30d','30 days',30],['90d','90 days',90],['6m','6 months',183],['1y','1 year',365],['all','All',Infinity]];
 let RANGE=(()=>{try{return localStorage.getItem('acq-range')||'30d';}catch(_){return'30d';}})(),DATA=null;
 function render(D){
-  DATA=D;
+  DATA=D;setTimeout(renderID,0);
   const full=build(D);place(full);const depAll=depRows(full);
   const span=full.length,sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2];
   $('ranges').innerHTML=RANGES.map(([k,l,nd])=>`<button data-k="${k}" class="${k===sel[0]?'on':''}" ${nd!==Infinity&&nd>span*2&&k!==sel[0]?'disabled title="Not enough history yet"':''}>${l}</button>`).join('');
@@ -356,7 +411,7 @@ let CF=null,CFSITE=(()=>{try{return localStorage.getItem('acq-site')||'all';}cat
 const KIND_COL={crawl:'var(--accent)',search:'var(--locked)',assistant:'var(--gold)',preview:'var(--border-2)',archive:'var(--border-2)'};
 const KIND_ORDER=['crawl','search','assistant','preview','archive'];
 const mb=b=>b>=1e6?(b/1e6).toFixed(2)+' MB':b>=1e3?(b/1e3).toFixed(1)+' kB':Math.round(b)+' B';
-function setRange(k){RANGE=k;try{localStorage.setItem('acq-range',RANGE);}catch(_){}if(DATA)render(DATA);if(CF){renderCF(CF);renderUse(CF);}}
+function setRange(k){RANGE=k;try{localStorage.setItem('acq-range',RANGE);}catch(_){}if(DATA)render(DATA);if(CF){renderCF(CF);renderUse(CF);}if(PP)renderPP(PP);}
 function cfRows(C){
   const names=Object.keys(C.zones||{}),sites=CFSITE==='all'?names:names.filter(n=>n===CFSITE);
   const ds=new Set();sites.forEach(n=>Object.keys(C.zones[n].days).forEach(d=>ds.add(d)));
@@ -384,7 +439,7 @@ function cfChart(rows){
   return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${n<=30?Math.min(W,n*40+100):Math.min(W,n*7+100)}px;display:block" role="img" aria-label="Allowed crawler requests per day, stacked by kind">${g}</svg></div>`;
 }
 function renderCF(C){
-  CF=C;const names=Object.keys(C.zones||{});
+  CF=C;setTimeout(renderID,0);const names=Object.keys(C.zones||{});
   if(!names.length){$('cfsec').hidden=true;return;}
   if(CFSITE!=='all'&&!names.includes(CFSITE))CFSITE='all';
   if(names.length<2)CFSITE='all';
@@ -426,7 +481,7 @@ function renderCF(C){
   $('cfsec').hidden=false;
 }
 async function loadCF(repo,br){
-  CF=null;$('cfsec').hidden=true;$('usesec').hidden=true;
+  CF=null;$('cfsec').hidden=true;$('usesec').hidden=true;loadPP(repo,br);
   try{const res=await fetch(`https://raw.githubusercontent.com/${repo}/${encodeURIComponent(br)}/cloudflare.json?t=${Date.now()}`,{cache:'no-store'});
     if(res.ok){const C=await res.json();renderCF(C);renderUse(C);rememberRepo(repo,Object.keys(C.zones||{}).join(', '));}}catch(_){}
 }
@@ -515,6 +570,202 @@ function fillRepos(current){const list=savedRepos();
   $('repolist').innerHTML=list.map(x=>`<option value="${esc(x.repo)}">${esc(x.site)}</option>`).join('');}
 $('reposel').onchange=()=>{$('repo').value=$('reposel').value;loadRemote();};
 $('repo').addEventListener('change',()=>{if(savedRepos().some(x=>x.repo===$('repo').value.trim()))loadRemote();});
+
+// ---------- PhilPapers readership ----------
+let PP=null,PPDIRTY=false,PPALL=false;
+const PPMON={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+const INST=/^(?!University not disclosed$).*(?:Universit|College\b(?! Station)|Institut|School|Academy|Laborator|Hospital|Polytechn|[EÉ]cole|Hochschule|Universidad|Università|Universidade)/i;
+function refGroup(ref){if(!ref)return'direct';let h='';try{h=new URL(ref).hostname.toLowerCase();}catch(_){h=ref.toLowerCase();}
+  if(h.includes('scholar.google'))return'Google Scholar';if(h.includes('philarchive'))return'PhilArchive';if(h.includes('philpapers'))return'PhilPapers';if(h.includes('philpeople'))return'PhilPeople';
+  if(/(^|\.)google\./.test(h))return'Google';if(/bing|yandex|baidu|yahoo|duckduckgo|ecosia|brave|naver|seznam|refseek/.test(h))return'Other search';
+  if(/facebook|threads|twitter|(^|\.)x\.com|t\.co|linkedin|reddit|instagram|tiktok|youtube/.test(h))return'Social';
+  if(/chatgpt|openai|perplexity|claude|gemini|copilot|rayyan|consensus|elicit|scite|semanticscholar|openalex/.test(h))return'AI and research tools';
+  if(/uuia\.app|proofpress\.org|github/.test(h))return'Your sites';return'Other sites';}
+function ppParse(text){
+  const lines=text.split(/\r?\n/);let end=null;
+  for(let i=0;i<lines.length-1;i++)if(lines[i].trim()==='To'&&/^\d{4}-\d\d-\d\d$/.test(lines[i+1].trim())){end=lines[i+1].trim();break;}
+  if(!end)end=new Date().toISOString().slice(0,10);
+  const ey=+end.slice(0,4),m=new Map();
+  for(const l of lines){const p=l.split('\t');if(p.length!==4||p[0].trim()==='Date and Time')continue;
+    const x=p[0].trim().match(/^(\d{1,2}) ([A-Z][a-z]{2}) (\d\d:\d\d)$/);if(!x||!PPMON[x[2]])continue;
+    let d=`${ey}-${String(PPMON[x[2]]).padStart(2,'0')}-${x[1].padStart(2,'0')}`;if(d>end)d=`${ey-1}${d.slice(4)}`;
+    const ref=p[3].trim()==='-'?'':p[3].trim(),k=[d,x[3],p[1].trim(),p[2].trim(),ref].join('\u0001');m.set(k,(m.get(k)||0)+1);}
+  return{m,end};
+}
+function ppExpand(D){const m=new Map();(D.rows||[]).forEach(([d,t,o,x,r,n])=>m.set([d,t,D.origins[o],D.docs[x],D.refs[r]].join('\u0001'),n));return m;}
+function ppPack(m,prev,end){
+  const tabs={origins:new Map(),docs:new Map(),refs:new Map()},ix=(t,v)=>{if(!tabs[t].has(v))tabs[t].set(v,tabs[t].size);return tabs[t].get(v);};
+  const keys=[...m.keys()].sort().reverse(),codes={...(prev&&prev.codes||{})},seen={};
+  const rows=keys.map(k=>{const [d,t,o,doc,ref]=k.split('\u0001'),n=m.get(k);
+    const c=ref.match(/phil(?:archive|papers)\.org\/rec\/([A-Z0-9-]+)/);if(c){const s=seen[doc]||(seen[doc]={});s[c[1]]=(s[c[1]]||0)+n;}
+    return[d,t,ix('origins',o),ix('docs',doc),ix('refs',ref),n];});
+  Object.entries(seen).forEach(([doc,s])=>{const e=Object.entries(s).sort((a,b)=>b[1]-a[1]),tot=e.reduce((a,x)=>a+x[1],0);if(e[0][1]/tot>=.6)codes[doc]=e[0][0];});
+  const days=keys.map(k=>k.split('\u0001')[0]).sort();
+  return{schema:2,source:'PhilPeople Web Analytics',codes,imports:[...(prev&&prev.imports||[]),{export_end:end,rows:[...m.values()].reduce((a,b)=>a+b,0)}],
+    first_day:days[0],last_day:days[days.length-1],rows,origins:[...tabs.origins.keys()],docs:[...tabs.docs.keys()],refs:[...tabs.refs.keys()]};
+}
+function ppViews(D){
+  const own=$('ppown').checked?$('ppownlist').value.split(',').map(x=>x.trim().toLowerCase()).filter(Boolean):[];
+  const V=[];let ownN=0;
+  D.rows.forEach(([d,t,o,x,r,n])=>{const org=D.origins[o];if(own.includes(org.toLowerCase())){ownN+=n;return;}V.push({d,t,o:org,doc:D.docs[x],ref:D.refs[r],n,burst:0});});
+  // multi-paper bursts: one known origin, 4+ different papers within 10 minutes
+  const by=new Map();V.forEach(v=>{if(v.o==='Unknown location')return;(by.get(v.o)||by.set(v.o,[]).get(v.o)).push(v);});
+  by.forEach(L=>{L.sort((a,b)=>(a.d+a.t)<(b.d+b.t)?-1:1);const ts=L.map(v=>Date.parse(v.d+'T'+v.t+':00Z'));let j=0;
+    for(let i=0;i<L.length;i++){while(ts[i]-ts[j]>600000)j++;const docs=new Set();for(let k=j;k<=i;k++)docs.add(L[k].doc);if(docs.size>=4)for(let k=j;k<=i;k++)L[k].burst=1;}});
+  return{V,ownN};
+}
+function ppChart(rows){
+  const n=rows.length,W=n<=30?Math.max(900,n*56):Math.max(1100,n*6),H=280,L=56,R=24,T=20,B=46;
+  const max=Math.max(1,...rows.map(r=>r.out)),bw=(W-L-R)/n,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-v/max);
+  const step=Math.pow(10,Math.floor(Math.log10(max/4)||0));const tick=[1,2,5].map(k=>k*step).find(k=>max/k<=5)||step*10;
+  let g='';for(let v=0;v<=max;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${v}</text>`;
+  rows.forEach((r,i)=>{const x=X(i)+bw*.12,w=Math.max(1,bw*.76),single=r.out-r.burst;
+    if(single)g+=`<rect x="${x}" y="${Y(single)}" width="${w}" height="${Y(0)-Y(single)}" fill="var(--accent)"><title>${r.d}: ${single} single views</title></rect>`;
+    if(r.burst)g+=`<rect x="${x}" y="${Y(r.out)}" width="${w}" height="${Y(single)-Y(r.out)}" fill="var(--gold)"><title>${r.d}: ${r.burst} views in multi-paper bursts</title></rect>`;
+    const every=n<=30?Math.max(1,Math.ceil(n/20)):7;
+    if(i%every===0||i===n-1){const dd=r.d.slice(8).replace(/^0/,''),newM=i===0||r.d.slice(5,7)!==rows[i-1].d.slice(5,7);
+      g+=`<text x="${X(i)+bw/2}" y="${H-24}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${dd}</text>`;
+      if(newM)g+=`<text x="${X(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="10.5" fill="var(--text)" font-family="Space Mono,monospace">${new Date(r.d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'})}</text>`;}});
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${n<=30?Math.min(W,n*40+100):Math.min(W,n*5+100)}px;display:block" role="img" aria-label="PhilPapers views per day, single views and multi-paper bursts">${g}</svg></div>`;
+}
+function renderPP(D){
+  PP=D;if(!D||!D.rows||!D.rows.length){$('ppsec').hidden=true;return;}
+  setTimeout(renderID,0);
+  const {V,ownN}=ppViews(D);
+  const dset=D.rows.map(r=>r[0]).sort(),first=dset[0],lastD=dset[dset.length-1],days=[];for(let d=first;d<=lastD;d=addDays(d,1))days.push(d);
+  const per=new Map(days.map(d=>[d,{d,out:0,burst:0,docs:new Map(),orig:new Set()}]));
+  V.forEach(v=>{const r=per.get(v.d);r.out+=v.n;if(v.burst)r.burst+=v.n;r.docs.set(v.doc,(r.docs.get(v.doc)||0)+v.n);r.orig.add(v.o);});
+  const full=[...per.values()];place(full);
+  const sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2],span=full.length;
+  $('ppranges').innerHTML=RANGES.map(([k,l,nd])=>`<button data-k="${k}" class="${k===sel[0]?'on':''}" ${nd!==Infinity&&nd>span*2&&k!==sel[0]?'disabled title="Not enough history yet"':''}>${l}</button>`).join('');
+  $('ppranges').querySelectorAll('button').forEach(b=>b.onclick=()=>setRange(b.dataset.k));
+  const rows=sel[2]===Infinity?full:full.slice(-sel[2]),from=rows[0].d,to=rows[rows.length-1].d;
+  const W=V.filter(v=>v.d>=from&&v.d<=to),S=a=>a.reduce((s,v)=>s+v.n,0);
+  const views=S(W),burst=S(W.filter(v=>v.burst)),profile=S(W.filter(v=>v.doc==='Profile'));
+  const papers=new Map();W.forEach(v=>{if(v.doc==='Profile')return;const p=papers.get(v.doc)||papers.set(v.doc,{doc:v.doc,n:0,orig:new Set(),inst:new Set(),ref:{},last:''}).get(v.doc);
+    p.n+=v.n;p.orig.add(v.o);if(INST.test(v.o))p.inst.add(v.o);const g=refGroup(v.ref);p.ref[g]=(p.ref[g]||0)+v.n;if(v.d+v.t>p.last)p.last=v.d+' '+v.t;});
+  const origins=new Map(),inst=new Map(),refs={};
+  W.forEach(v=>{const o=origins.get(v.o)||origins.set(v.o,{k:v.o,n:0,docs:new Set()}).get(v.o);o.n+=v.n;o.docs.add(v.doc);
+    if(INST.test(v.o)){const i=inst.get(v.o)||inst.set(v.o,{k:v.o,n:0,docs:new Set()}).get(v.o);i.n+=v.n;i.docs.add(v.doc);}
+    const g=refGroup(v.ref);refs[g]=(refs[g]||0)+v.n;});
+  const known=[...origins.values()].filter(o=>o.k!=='Unknown location');
+  $('ppcards').innerHTML=[
+    ['Views',fmt(views),`${short(from)} – ${short(to)}`],
+    ['Papers viewed',fmt(papers.size),`of ${fmt(D.docs.filter(x=>x!=='Profile').length)} in the record`],
+    ['Profile views',fmt(profile),'your PhilPeople profile'],
+    ['Origins',fmt(known.length),`cities and institutions · ${fmt(S(W.filter(v=>v.o==='Unknown location')))} views unresolved`],
+    ['Institutions',fmt(inst.size),'universities and institutes by name'],
+    ['Multi-paper bursts',views?(burst/views*100).toFixed(1)+'%':'—',`${fmt(burst)} views`]
+  ].map(([k,v,s])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+  const P=[...papers.values()].sort((a,b)=>b.n-a.n),O=known.sort((a,b)=>b.n-a.n),I=[...inst.values()].sort((a,b)=>b.n-a.n),RG=Object.entries(refs).sort((a,b)=>b[1]-a[1]);
+  const pl=[];
+  pl.push(`${fmt(views)} views of your PhilPapers pages over ${rows.length} days: ${fmt(views-profile)} on ${fmt(papers.size)} papers and ${fmt(profile)} on your profile, from ${fmt(known.length)} named origins.`+(ownN&&$('ppown').checked?` ${fmt(ownN)} views from ${esc($('ppownlist').value)} are left out across the whole record.`:''));
+  if(P.length)pl.push('Most read: '+P.slice(0,5).map(p=>`${esc(p.doc.length>70?p.doc.slice(0,68)+'…':p.doc)} (${fmt(p.n)})`).join(' · ')+'.');
+  const search=(refs['Google']||0)+(refs['Google Scholar']||0)+(refs['Other search']||0);
+  pl.push(`Ways in: ${RG.slice(0,6).map(([g,n])=>`${esc(g)} ${fmt(n)}`).join(' · ')}. Search engines brought ${fmt(search)} views (${views?(search/views*100).toFixed(0):0}%), Google Scholar ${fmt(refs['Google Scholar']||0)} of them.`);
+  if(I.length)pl.push(`Readers at ${fmt(I.length)} named institutions, led by `+I.slice(0,5).map(i=>`${esc(i.k)} (${fmt(i.n)} views, ${i.docs.size} papers)`).join(' · ')+'.');
+  const months={};W.forEach(v=>{const m=v.d.slice(0,7),x=months[m]||(months[m]={n:0,docs:new Set(),orig:new Set()});x.n+=v.n;x.docs.add(v.doc);x.orig.add(v.o);});
+  const ML=Object.entries(months).sort();if(ML.length>=2){const [lm,lv]=ML[ML.length-1],[pm,pv]=ML[ML.length-2];pl.push(`${new Date(lm+'-01T00:00:00Z').toLocaleDateString('en-US',{month:'long',timeZone:'UTC'})} so far: ${fmt(lv.n)} views against ${fmt(pv.n)} in ${new Date(pm+'-01T00:00:00Z').toLocaleDateString('en-US',{month:'long',timeZone:'UTC'})}.`);}
+  $('ppplain').innerHTML=pl.map(x=>`<li>${x}</li>`).join('');
+  $('ppchart').innerHTML=ppChart(rows);
+  $('ppmore').textContent=PPALL?'Show top 15':`Show all ${P.length} papers`;
+  $('pppapers').tBodies[0].innerHTML=P.slice(0,PPALL?P.length:15).map(p=>{const c=D.codes[p.doc],top=Object.entries(p.ref).sort((a,b)=>b[1]-a[1])[0];
+    return`<tr><td>${esc(p.doc)}</td><td class="mono">${c?`<a href="https://philarchive.org/rec/${esc(c)}" target="_blank" rel="noopener">${esc(c)}</a>`:'—'}</td><td class="n"><b>${fmt(p.n)}</b></td><td class="n">${p.orig.size}</td><td class="n">${p.inst.size}</td><td>${esc(top[0])}</td><td class="mono">${esc(p.last)}</td></tr>`;}).join('')||'<tr><td colspan="7" class="band">none</td></tr>';
+  $('ppref').tBodies[0].innerHTML=RG.map(([g,n])=>`<tr><td>${esc(g)}</td><td class="n">${fmt(n)}</td><td class="n">${views?(n/views*100).toFixed(1)+'%':'—'}</td></tr>`).join('');
+  $('ppinst').tBodies[0].innerHTML=I.slice(0,30).map(i=>`<tr><td>${esc(i.k)}</td><td class="n">${fmt(i.n)}</td><td class="n">${i.docs.size}</td></tr>`).join('')||'<tr><td colspan="3" class="band">none</td></tr>';
+  $('pporig').tBodies[0].innerHTML=O.slice(0,30).map(o=>`<tr><td>${esc(o.k)}</td><td class="n">${fmt(o.n)}</td><td class="n">${o.docs.size}</td></tr>`).join('');
+  $('ppmon').tBodies[0].innerHTML=ML.slice().reverse().map(([m,x])=>`<tr><td class="mono">${m}</td><td class="n"><b>${fmt(x.n)}</b></td><td class="n">${x.docs.size}</td><td class="n">${x.orig.size}</td></tr>`).join('');
+  $('ppdays').tBodies[0].innerHTML=rows.slice().reverse().map(r=>{const top=[...r.docs.entries()].sort((a,b)=>b[1]-a[1])[0];
+    return`<tr><td class="mono">${r.d}</td><td class="n"><b>${fmt(r.out)}</b></td><td class="n">${fmt(r.burst)}</td><td class="n">${r.docs.size}</td><td class="n">${r.orig.size}</td><td>${top?esc(top[0].length>60?top[0].slice(0,58)+'…':top[0]):'—'}</td><td>${chip(r)}</td></tr>`;}).join('');
+  $('ppdl').hidden=!PPDIRTY;
+  $('ppsec').hidden=false;
+}
+async function loadPP(repo,br){
+  PP=null;PPDIRTY=false;$('ppsec').hidden=true;
+  try{const res=await fetch(`https://raw.githubusercontent.com/${repo}/${encodeURIComponent(br)}/philpeople.json?t=${Date.now()}`,{cache:'no-store'});
+    if(res.ok)renderPP(await res.json());}catch(_){}
+}
+$('ppfile').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{PPDIRTY=false;renderPP(JSON.parse(t));}catch(err){$('msg').textContent='That file could not be read: '+err.message;}});e.target.value='';};
+$('ppimport').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{
+  const {m,end}=ppParse(t);if(!m.size){$('ppmsg').textContent='No visit rows found in that file.';return;}
+  const before=PP?ppExpand(PP):new Map(),merged=new Map(before);let added=0;
+  m.forEach((n,k)=>{const o=merged.get(k)||0;if(n>o){added+=n-o;merged.set(k,n);}});
+  PPDIRTY=true;renderPP(ppPack(merged,PP,end));
+  PPDIRTY=added>0;$('ppdl').hidden=!PPDIRTY;
+  $('ppmsg').textContent=added?`${fmt([...m.values()].reduce((a,b)=>a+b,0))} rows read, ${fmt(added)} new views added. Download the merged file and commit it to the traffic branch.`:`${fmt([...m.values()].reduce((a,b)=>a+b,0))} rows read; every one is already in the record.`;});e.target.value='';};
+$('ppdl').onclick=()=>{const b=new Blob([JSON.stringify(PP)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='philpeople.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);};
+$('ppmore').onclick=()=>{PPALL=!PPALL;if(PP)renderPP(PP);};
+$('ppown').onchange=()=>{if(PP)renderPP(PP);renderID();};
+$('ppownlist').addEventListener('change',()=>{if(PP)renderPP(PP);});
+
+// ---------- Identity read: every loaded source, two periods as filters ----------
+const NOTCH=TL/10;
+function dspan(a,b){return Math.round((Date.parse(b)-Date.parse(a))/864e5)+1;}
+function idDefaults(){
+  const days=[];if(PP)PP.rows.forEach(r=>days.push(r[0]));if(DATA)Object.keys(DATA.clones||{}).forEach(d=>days.push(d));
+  if(CF)Object.values(CF.zones||{}).forEach(z=>Object.keys(z.days).forEach(d=>days.push(d)));
+  days.sort();return days.length?{first:days[0],last:days[days.length-1]}:null;
+}
+function idPreset(p){const r=idDefaults();if(!r)return;const L=r.last;let bf,bt,af,at=L;
+  if(p==='month'){af=L.slice(0,8)+'01';bt=addDays(af,-1);bf=bt.slice(0,8)+'01';}
+  else{const n=+p;af=addDays(L,-(n-1));bt=addDays(af,-1);bf=addDays(bt,-(n-1));}
+  $('bfrom').value=bf;$('bto').value=bt;$('afrom').value=af;$('ato').value=at;renderID();}
+function idMeasures(f,t){
+  const out=[],days=dspan(f,t),inR=d=>d>=f&&d<=t;
+  if(PP){const {V}=ppViews(PP);
+    const W=V.filter(v=>inR(v.d)),prior=new Set(V.filter(v=>v.d<f&&v.o!=='Unknown location').map(v=>v.o));
+    const orig=new Set(W.filter(v=>v.o!=='Unknown location').map(v=>v.o));
+    const instNow=new Set(W.filter(v=>INST.test(v.o)).map(v=>v.o)),instPrior=new Set(V.filter(v=>v.d<f&&INST.test(v.o)).map(v=>v.o));
+    const works=new Set(V.filter(v=>v.d<=t&&v.doc!=='Profile').map(v=>v.doc));
+    let ret=0,nw=0;orig.forEach(o=>prior.has(o)?ret++:nw++);let ni=0;instNow.forEach(o=>{if(!instPrior.has(o))ni++;});
+    out.push({ax:'P',m:'works in the record',src:'PhilPeople',v:works.size,main:1});
+    out.push({ax:'N',m:'returning origins per day',src:'PhilPeople',v:ret/days,main:1});
+    out.push({ax:'B',m:'views per day',src:'PhilPeople',v:W.reduce((a,x)=>a+x.n,0)/days,main:1});
+    out.push({ax:'A',m:'new origins per day',src:'PhilPeople',v:nw/days,main:1});
+    out.push({ax:'A',m:'new institutions per day',src:'PhilPeople',v:ni/days});}
+  if(DATA){const c=DATA.clones||{},ci=DATA.ci_runs||{},pu=DATA.pushes||{};let cl=0,lean=0;
+    Object.entries(c).forEach(([d,x])=>{if(inR(d))cl+=Math.max(0,x.count-(ci[d]||0));});
+    Object.entries(pu).forEach(([d,x])=>{if(d<=t)lean+=x.lean_files||0;});
+    out.push({ax:'P',m:'.lean deposits in the record',src:'GitHub '+(DATA.repo||''),v:lean});
+    out.push({ax:'B',m:'outside clones per day',src:'GitHub '+(DATA.repo||''),v:cl/days});}
+  if(CF){const z=Object.keys(CF.zones||{});let ok=0,as=0,vi=0;const ops=new Set(),opsPrior=new Set();
+    z.forEach(n=>Object.entries(CF.zones[n].days).forEach(([d,x])=>{Object.entries(x.crawlers||{}).forEach(([k,v])=>{if(!v.ok)return;const op=(CF.crawlers[k]||{}).operator||k;
+      if(inR(d)){ok+=v.ok;ops.add(op);if((CF.crawlers[k]||{}).kind==='assistant')as+=v.ok;}else if(d<f)opsPrior.add(op);});if(inR(d))vi+=x.visits||0;}));
+    let back=0;ops.forEach(o=>{if(opsPrior.has(o))back++;});
+    out.push({ax:'N',m:'AI operators returning',src:'Cloudflare '+z.join(', '),v:back});
+    out.push({ax:'B',m:'crawler requests per day',src:'Cloudflare '+z.join(', '),v:ok/days});
+    out.push({ax:'B',m:'assistant fetches per day',src:'Cloudflare '+z.join(', '),v:as/days});
+    out.push({ax:'B',m:'visits per day',src:'Cloudflare '+z.join(', '),v:vi/days});}
+  return out;
+}
+function renderID(){
+  const r=idDefaults();if(!r){$('idsec').hidden=true;return;}
+  if(!$('ato').value){idPreset('month');return;}
+  const bf=$('bfrom').value,bt=$('bto').value,af=$('afrom').value,at=$('ato').value;
+  const B=idMeasures(bf,bt),A=idMeasures(af,at);
+  const rows=B.map((b,i)=>{const a=A[i],ch=b.v>0?(a.v-b.v)/b.v:null;return{...b,a:a.v,ch,n:ch===null?null:ch/NOTCH};});
+  const order={N:0,P:1,B:2,A:3};rows.sort((x,y)=>order[x.ax]-order[y.ax]||(y.main||0)-(x.main||0));
+  const f2=v=>v>=1000?fmt(v):v>=100?v.toFixed(1):v.toFixed(2);
+  $('idtable').tBodies[0].innerHTML=rows.map(x=>`<tr${x.main?' style="font-weight:600"':''}><td class="mono">${x.ax}</td><td>${esc(x.m)}${x.main?' <span class="band">· axis</span>':''}</td><td class="band">${esc(x.src)}</td><td class="n">${f2(x.v)}</td><td class="n">${f2(x.a)}</td><td class="n">${x.ch===null?'—':(x.ch>=0?'+':'')+(x.ch*100).toFixed(1)+'%'}</td><td class="n">${x.n===null?'—':(x.n>=0?'+':'')+x.n.toFixed(1)}</td></tr>`).join('');
+  const ax=k=>rows.find(x=>x.ax===k&&x.main);
+  const P=ax('P'),N=ax('N'),Bx=ax('B'),Ax=ax('A');
+  if(P&&Bx&&P.n!==null&&Bx.n!==null){
+    const net=Math.round(Bx.n-P.n),nEro=N&&N.n!==null&&N.n<=-6;
+    const ph=net>=10?'SHATTER':net===9?(nEro?'DEPLETED IVA':'IVA PEAK'):net>0?(nEro?'FALSE LOCK':'LOCKED · LOADED'):net===0?'AT REST':'UNLOADING';
+    const cls=net>=10?'shatter':net===9?'iva':net>0?'locked':'noble';
+    const nState=!N||N.n===null?'—':N.n<=-6?'N ERODING':N.n>=6?'N RISING':'N HOLDING';
+    const tl=x=>x===null?'—':((x>=0?'+':'')+(x/10).toFixed(2)+' TL');
+    $('idcards').innerHTML=[
+      ['N channel · read first',nState,N?`${tl(N.n)} · ${(N.n>=0?'+':'')+N.n.toFixed(1)} notches`:''],
+      ['Net load ΔB − ΔP',`${net>=0?'+':''}${net} notches`,`<span class="ph ${cls}">${ph}</span> ${(net/10).toFixed(1)} TL`],
+      ['ΔP',P?tl(P.n):'—','what is built'],['ΔB',Bx?tl(Bx.n):'—','coupling'],['ΔA',Ax?tl(Ax.n):'—','response']
+    ].map(([k,v,s2])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s2}</div></div>`).join('');
+  } else $('idcards').innerHTML='';
+  $('idnote').textContent=`Baseline ${bf} – ${bt} (${dspan(bf,bt)} days) · activated ${af} – ${at} (${dspan(af,at)} days) · record runs ${r.first} – ${r.last}. Every stored row is kept; the dates only choose which rows each period reads. Bold rows are the axis measures; the rest are the same axis read from other sources.`;
+  $('idsec').hidden=false;
+}
+['bfrom','bto','afrom','ato'].forEach(id=>$(id).addEventListener('change',renderID));
+$('idpresets').querySelectorAll('button').forEach(b=>b.onclick=()=>idPreset(b.dataset.p));
 let LAST=null;
 $('logscale').onchange=()=>{if(LAST)$('chart').innerHTML=chart(LAST);};
 $('load').onclick=loadRemote;
