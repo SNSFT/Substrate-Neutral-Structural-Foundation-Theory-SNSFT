@@ -127,6 +127,16 @@ per-day measures are averaged over the days in each period that the source cover
 <section id="iddaysec" hidden>
   <h2>Identity day by day · every source</h2>
   <p class="help">One interaction per contact, from every loaded source, added into the identity's day. Each source's column shows its share; a source counts from the first day it has data. Each day shows what it added and the identity's IM to date, the same way as every day table.</p>
+  <h3 style="margin:.6rem 0 .3rem;font-size:.95rem">IM growth · replay</h3>
+  <p class="help">Identity Mass to date across every loaded source, stacked by source, over the range selected above, with ▲ deposits (filled when the push carried .lean files) and ◆ figshare publications on the curve. IM at the start of the range is everything accumulated before it, so the range never restarts the count. Press play to replay the range day by day; the axes are fixed to the whole range first, so nothing rescales while it plays. The neural 3D view of the same growth is at <a href="/aimtimeline">uuia.app/aimtimeline</a>.</p>
+  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:.4rem 0">
+    <div class="ranges"><button id="implay" type="button">▶ Play</button><button id="imback" type="button">◀ day</button><button id="imfwd" type="button">day ▶</button></div>
+    <input type="range" id="imday" min="0" max="0" value="0" aria-label="Replay day" style="flex:1;min-width:180px;accent-color:var(--accent)">
+    <select id="imspeed" aria-label="Replay speed" style="width:auto;flex:none;background:var(--surface);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.3rem .4rem;font-family:'Space Mono',monospace;font-size:.72rem"><option value="600">0.5×</option><option value="300" selected>1×</option><option value="150">2×</option><option value="70">4×</option><option value="30">8×</option></select>
+  </div>
+  <div class="cards" id="imcards" style="margin:.5rem 0"></div>
+  <div id="imreplay"></div>
+  <h3 style="margin:1rem 0 .3rem;font-size:.95rem">Added each day</h3>
   <div class="legend" id="iddaylegend"></div>
   <div id="iddaychart"></div>
   <details style="margin-top:.8rem"><summary>Day by day</summary>
@@ -966,6 +976,7 @@ function renderIDDay(){
     const site=S.find(x=>x.fail);if(site&&site.rq[d])r.fail=site.fail[d]/site.rq[d];return r;});
   place(full);
   const sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2],rows=sel[2]===Infinity?full:full.slice(-sel[2]);
+  imReplay(full,rows,S);
   $('iddaylegend').innerHTML=S.map((x,i)=>`<span><span class="sw" style="background:${SRC_COL[i%SRC_COL.length]}"></span>${esc(x.k)}</span>`).join('')+'<span><span class="sw" style="background:transparent;border-top:2px dashed var(--muted);height:0"></span>established level (record high of the typical day)</span>';
   const n=rows.length,W=n<=30?Math.max(900,n*56):Math.max(1100,n*6),H=300,L=56,R=24,T=20,B=46;
   const max=Math.max(1,...rows.map(r=>Math.max(r.out,r.E||0))),bw=(W-L-R)/n,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-v/max);
@@ -985,6 +996,65 @@ function renderIDDay(){
   $('iddays').tBodies[0].innerHTML=dtApply(rows).map(r=>`<tr><td class="mono">${r.d}</td>${r.parts.map(v=>`<td class="n">${v===null?'—':fmt(v)}</td>`).join('')}<td class="n">${fmt(r.out)}</td><td class="n"><b>${fmt(r.IM)}</b></td><td class="n">${r.E===null?'—':fmt(r.E)}</td><td>${chip(r)}</td></tr>`).join('')||`<tr><td colspan="9" class="band">No peaks or level changes in this range.</td></tr>`;
   $('iddaysec').hidden=false;
 }
+
+// ---------- IM growth replay: cumulative IM by source over the selected range, played day by day ----------
+const IMR={rows:null,a:0,T:0,timer:null,x:null,y:null,bw:0};
+function imStop(){if(IMR.timer)clearTimeout(IMR.timer);IMR.timer=null;$('implay').textContent='▶ Play';$('implay').classList.remove('on');}
+function imReplay(full,rows,S){
+  imStop();
+  const a=full.length-rows.length,n=rows.length;if(!n){$('imreplay').innerHTML='';return;}
+  const cum=S.map(()=>[]),c=S.map(()=>0);full.forEach((r,i)=>r.parts.forEach((v,j)=>{c[j]+=v||0;cum[j][i]=c[j];}));
+  const deps=[];
+  if(DATA)Object.entries(DATA.pushes||{}).forEach(([d,p])=>deps.push({d,t:'git',lean:p.lean_files||0,txt:`${p.commits||0} commit${p.commits===1?'':'s'}, ${p.files||0} files${p.lean_files?`, ${p.lean_files} .lean`:''}`}));
+  if(FS)Object.entries(FS.items||{}).forEach(([id,it])=>{if(it.published)deps.push({d:it.published,t:'fig',txt:'figshare · '+(it.title||id)});});
+  const W=1100,H=330,L=64,R=18,T=16,B=40,top=Math.max(1,full[full.length-1].IM)*1.04;
+  const X=i=>L+(n===1?(W-L-R)/2:(i-a)*(W-L-R)/(n-1)),Y=v=>T+(H-T-B)*(1-v/top);
+  const step=Math.pow(10,Math.floor(Math.log10(top/4)||0)),tick=[1,2,2.5,5].map(k=>k*step).find(k=>top/k<=5)||step*10;
+  let g='';for(let v=0;v<=top;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${fmt(v)}</text>`;
+  const every=Math.max(1,Math.ceil(n/10));
+  rows.forEach((r,k)=>{if(k%every===0||k===n-1)g+=`<text x="${X(a+k)}" y="${H-14}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${r.d.slice(5)}</text>`;});
+  let areas='';const base=new Array(full.length).fill(0);
+  S.forEach((s,j)=>{const up=[],dn=[];for(let i=a;i<full.length;i++){const lo=base[i],hi=lo+cum[j][i];up.push(`${X(i).toFixed(1)},${Y(hi).toFixed(1)}`);dn.push(`${X(i).toFixed(1)},${Y(lo).toFixed(1)}`);base[i]=hi;}
+    if(n===1){up.push(`${X(a)+3},${up[0].split(',')[1]}`);dn.push(`${X(a)+3},${dn[0].split(',')[1]}`);}
+    areas+=`<polygon points="${up.join(' ')} ${dn.reverse().join(' ')}" fill="${SRC_COL[j%SRC_COL.length]}" fill-opacity=".8" stroke="${SRC_COL[j%SRC_COL.length]}" stroke-width="1"/>`;});
+  const ix=new Map(full.map((r,i)=>[r.d,i]));let mk='';
+  deps.forEach(d=>{const i=ix.get(d.d);if(i===undefined||i<a)return;const x=X(i),y=Y(full[i].IM);
+    mk+=d.t==='git'?`<path d="M${x},${y-15} l5,9 l-10,0 z" fill="${d.lean?'#f472b6':'var(--bg)'}" stroke="#f472b6" stroke-width="1.3"><title>${d.d}: deposit · ${esc(d.txt)}</title></path>`
+      :`<path d="M${x},${y-20} l4,4 l-4,4 l-4,-4 z" fill="var(--locked)" stroke="var(--bg)" stroke-width=".8"><title>${d.d}: ${esc(d.txt)}</title></path>`;});
+  rows.forEach((r,k)=>{if(r.event==='LEVEL RAISED')mk+=`<line x1="${X(a+k)}" x2="${X(a+k)}" y1="${H-B}" y2="${H-B+6}" stroke="var(--locked)" stroke-width="2"><title>${r.d}: LEVEL RAISED</title></line>`;});
+  $('imreplay').innerHTML=`<div style="overflow-x:auto"><svg id="imsvg" viewBox="0 0 ${W} ${H}" width="100%" style="min-width:620px;display:block" role="img" aria-label="Identity Mass to date stacked by source with deposit markers">
+    <defs><clipPath id="imclip"><rect id="imcliprect" x="0" y="0" width="${W}" height="${H}"/></clipPath></defs>${g}
+    <g opacity=".16">${areas}</g><g clip-path="url(#imclip)">${areas}${mk}</g><g opacity=".3">${mk}</g>
+    <line id="imph" y1="${T}" y2="${H-B}" stroke="var(--text)" stroke-width="1"/><circle id="imdot" r="4" fill="var(--bg)" stroke="var(--text)" stroke-width="2"/>
+    <rect id="imhit" x="${L}" y="0" width="${W-L-R}" height="${H}" fill="transparent" style="cursor:crosshair"/></svg></div>`;
+  Object.assign(IMR,{full,rows,a,S,cum,deps,X,Y,T:full.length-1});
+  $('imday').min=String(a);$('imday').max=String(full.length-1);$('imday').value=String(IMR.T);
+  const svg=$('imsvg');$('imhit').addEventListener('click',ev=>{const r=svg.getBoundingClientRect(),px=(ev.clientX-r.left)/r.width*W;
+    imStop();IMR.T=Math.max(a,Math.min(full.length-1,Math.round(a+(px-L)/((W-L-R)/Math.max(1,n-1)))));$('imday').value=String(IMR.T);imFrame();});
+  imFrame();
+}
+function imFrame(){
+  const {full,a,S,cum,deps,X,Y,T:i}=IMR;if(!full)return;const r=full[i];
+  $('imcliprect').setAttribute('width',String(X(i)+1));$('imph').setAttribute('x1',X(i));$('imph').setAttribute('x2',X(i));
+  $('imdot').setAttribute('cx',X(i));$('imdot').setAttribute('cy',Y(r.IM));
+  const start=a>0?full[a-1].IM:0,dTo=deps.filter(d=>d.d<=r.d),dIn=dTo.filter(d=>d.d>=full[a].d);
+  const raised=IMR.rows.slice(0,i-a+1).some(x=>x.event==='LEVEL RAISED');
+  $('imcards').innerHTML=[
+    ['IM to date',fmt(r.IM),r.d],
+    ['Added that day','+'+fmt(r.out),chip(r).replace(/ <span class="band mono">.*$/,'')],
+    ['Added in range','+'+fmt(r.IM-start),`from ${full[a].d} · start ${fmt(start)}`],
+    ['Level',r.E===null?'—':'+'+fmt(r.E)+'/day',raised?'<span class="ph locked">LEVEL RAISED</span> in range':'<span class="ph locked">LOCKED · HOLDING</span>'],
+    ...S.map((s,j)=>[s.k,fmt(cum[j][i]),`<span class="sw" style="background:${SRC_COL[j%SRC_COL.length]}"></span>+${fmt(r.parts[j]||0)} that day`]),
+    ['Deposits',fmt(dTo.length),`${dIn.length} in range`]
+  ].map(([k,v,s2])=>`<div class="card"><div class="k">${esc(k)}</div><div class="v">${v}</div><div class="s">${s2}</div></div>`).join('');
+}
+$('implay').onclick=()=>{if(!IMR.full)return;if(IMR.timer){imStop();return;}
+  if(IMR.T>=IMR.full.length-1)IMR.T=IMR.a;$('implay').textContent='❚❚ Pause';$('implay').classList.add('on');
+  const step=()=>{if(IMR.T>=IMR.full.length-1){imStop();return;}IMR.T++;$('imday').value=String(IMR.T);imFrame();IMR.timer=setTimeout(step,+$('imspeed').value);};
+  imFrame();IMR.timer=setTimeout(step,+$('imspeed').value);};
+$('imday').addEventListener('input',()=>{imStop();IMR.T=+$('imday').value;imFrame();});
+$('imback').onclick=()=>{if(!IMR.full)return;imStop();IMR.T=Math.max(IMR.a,IMR.T-1);$('imday').value=String(IMR.T);imFrame();};
+$('imfwd').onclick=()=>{if(!IMR.full)return;imStop();IMR.T=Math.min(IMR.full.length-1,IMR.T+1);$('imday').value=String(IMR.T);imFrame();};
 
 // ---------- day-table controls: order, rows shown, which days ----------
 const DT=(()=>{try{return Object.assign({order:'new',limit:'14',filter:'all'},JSON.parse(localStorage.getItem('acq-dt')||'{}'));}catch(_){return{order:'new',limit:'14',filter:'all'};}})();
