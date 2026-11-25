@@ -132,7 +132,7 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
 
 <section id="cfsec" hidden>
   <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem">
-    <h2 style="margin:0">Site crawlers · uuia.app and proofpress.org</h2>
+    <h2 style="margin:0" id="cftitle">Site crawlers</h2>
     <div class="row" style="align-items:center">
       <div class="ranges" id="cfsites" role="group" aria-label="Site"></div>
       <div class="ranges" id="cfranges" role="group" aria-label="Date range"></div>
@@ -358,6 +358,9 @@ function renderCF(C){
   CF=C;const names=Object.keys(C.zones||{});
   if(!names.length){$('cfsec').hidden=true;return;}
   if(CFSITE!=='all'&&!names.includes(CFSITE))CFSITE='all';
+  if(names.length<2)CFSITE='all';
+  $('cftitle').textContent='Site crawlers · '+names.join(' and ');
+  $('cfsites').style.display=names.length<2?'none':'';
   $('cfsites').innerHTML=[['all','Both'],...names.map(n=>[n,n])].map(([k,l])=>`<button data-k="${esc(k)}" class="${k===CFSITE?'on':''}">${esc(l)}</button>`).join('');
   $('cfsites').querySelectorAll('button').forEach(b=>b.onclick=()=>{CFSITE=b.dataset.k;try{localStorage.setItem('acq-site',CFSITE);}catch(_){}renderCF(CF);});
   const {rows:full}=cfRows(C);if(!full.length){$('cfsec').hidden=true;return;}
