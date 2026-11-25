@@ -144,13 +144,15 @@ per-day measures are averaged over the days in each period that the source cover
 
 <section id="daysec" hidden>
   <h2>Day by day</h2>
-  <p class="help">Each day's outside acquisition is placed against its own reference: the median of the previous seven days. A fall is a torsion τ placed Noble, Locked, IVA Peak or Shatter; a rise past TL is marked SURGE, a new acquisition wave.</p>
-  <div class="tablewrap"><table id="days"><thead><tr><th>Date</th><th>Clones</th><th>CI runs</th><th>Outside clones</th><th>Outside sources</th><th>Pushes</th><th>7-day reference</th><th>Placement</th></tr></thead><tbody></tbody></table></div>
+  <p class="help">Each day is placed by τ = B/P on the repository's acquisition identity. P is every outside clone acquired before the day, the reach already built; it only grows. B is the day's outside clones, which then join P. A quiet day sits near τ = 0 and reads Locked; Shatter is a day whose acquisition reaches TL of everything acquired before it. The lift against the 7-day median is shown beside the phase as a plain percentage.</p>
+  <div class="tablewrap"><table id="days"><thead><tr><th>Date</th><th>Clones</th><th>CI runs</th><th>Outside clones</th><th>Outside sources</th><th>Pushes</th><th>7-day median</th><th>Placement · τ = B/P</th></tr></thead><tbody></tbody></table></div>
   <div class="formula">outside_t   = max(0, clones_t − ci_runs_t)
-reference_t = median(outside over the 7 days before t)
-s_t = (outside_t − reference_t) / reference_t
-τ_t = max(0, −s_t)        fall: Noble (0) · Locked (< TL_IVA) · IVA Peak (< TL) · Shatter (≥ TL)
-SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.120471207985934</div>
+P_t         = Σ outside over every day before t        (reach already built; only grows)
+B_t         = outside_t
+τ_t         = B_t / P_t        Noble (B = 0) · Locked (< TL_IVA) · IVA Peak (< TL) · Shatter (≥ TL)
+P_(t+1)     = P_t + B_t        the day's acquisition joins the pattern it was read against
+lift_t      = (outside_t − median of the 7 days before t) / that median        shown, not placed
+TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.120471207985934 · one notch = TL / 10</div>
 </section>
 
 <section id="cfsec" hidden>
@@ -177,7 +179,7 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
     <div><h3 class="band" style="margin-bottom:.4rem">Pages crawlers read most</h3><div class="tablewrap"><table id="cfpaths" style="min-width:0"><thead><tr><th>Path</th><th>Crawler</th><th>Requests</th></tr></thead><tbody></tbody></table></div></div>
     <div><h3 class="band" style="margin-bottom:.4rem">Day by day</h3><div class="tablewrap"><table id="cfdays" style="min-width:0"><thead><tr><th>Date</th><th>Crawler requests</th><th>Assistant</th><th>Visits</th><th>Placement</th></tr></thead><tbody></tbody></table></div></div>
   </div>
-  <div class="note">How to read this. Cloudflare sees every request to the two sites. Crawlers are matched by the name in their user agent and grouped by operator. A crawl request is bulk collection; an assistant request is a fetch the operator made live because a person in a chat asked for the page; search requests build a search index. Allowed means the page was served (status below 400); unsuccessful is mostly requests for pages that do not exist. Placement uses the same 7-day median reference and TL bands as the clone table, applied to allowed crawler requests.</div>
+  <div class="note">How to read this. Cloudflare sees every request to the two sites. Crawlers are matched by the name in their user agent and grouped by operator. A crawl request is bulk collection; an assistant request is a fetch the operator made live because a person in a chat asked for the page; search requests build a search index. Allowed means the page was served (status below 400); unsuccessful is mostly requests for pages that do not exist. Placement uses the same τ = B/P as the clone table: the day's allowed crawler requests against every allowed crawler request before it.</div>
 </section>
 
 <section id="usesec" hidden>
@@ -203,7 +205,7 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
   </div>
   <h3 class="band" style="margin:1.2rem 0 .4rem">Day by day</h3>
   <div class="tablewrap"><table id="udays"><thead><tr><th>Date</th><th>Visits</th><th>Page views</th><th>Unique visitors</th><th>Requests</th><th>Data served</th><th>Placement (visits)</th></tr></thead><tbody></tbody></table></div>
-  <div class="note">How to read this. A visit is a person (or program) arriving at the site from somewhere else; a page view is a page loaded; unique visitors are distinct addresses in a day, so one household on one connection counts once. Cloudflare records no names, accounts or cookies. Refused probes are automated scanners asking for files such as /.env or /.git/config that hold passwords on badly configured servers; Cloudflare refuses them and these sites have no such files. Placement uses the same 7-day median reference and TL bands as the other tables, applied to visits. A table that stays empty is a field Cloudflare does not provide on this plan.</div>
+  <div class="note">How to read this. A visit is a person (or program) arriving at the site from somewhere else; a page view is a page loaded; unique visitors are distinct addresses in a day, so one household on one connection counts once. Cloudflare records no names, accounts or cookies. Refused probes are automated scanners asking for files such as /.env or /.git/config that hold passwords on badly configured servers; Cloudflare refuses them and these sites have no such files. Placement uses the same τ = B/P as the other tables: the day's visits against every visit before it. A table that stays empty is a field Cloudflare does not provide on this plan.</div>
 </section>
 
 <section id="fssec" hidden>
@@ -260,7 +262,7 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
   </div>
   <details style="margin-top:1.2rem"><summary>Day by day</summary>
   <div class="tablewrap" style="margin-top:.6rem"><table id="ppdays"><thead><tr><th>Date</th><th>Views</th><th>Bursts</th><th>Papers</th><th>Origins</th><th>Top paper</th><th>Placement (views)</th></tr></thead><tbody></tbody></table></div></details>
-  <div class="note">How to read this. PhilPeople logs each view of your profile and of your papers' pages on PhilPapers, with the visitor's city or institution and the page they came from. Times are as PhilPeople lists them. An export holds at most 10,000 rows, so each import is merged into the stored record, which keeps every row it already has; importing a newer export extends the record and never lowers it. "Unknown location" is a visitor whose place PhilPeople could not resolve. Placement uses the same 7-day median reference and TL bands as the other tables.</div>
+  <div class="note">How to read this. PhilPeople logs each view of your profile and of your papers' pages on PhilPapers, with the visitor's city or institution and the page they came from. Times are as PhilPeople lists them. An export holds at most 10,000 rows, so each import is merged into the stored record, which keeps every row it already has; importing a newer export extends the record and never lowers it. "Unknown location" is a visitor whose place PhilPeople could not resolve. Placement uses the same τ = B/P as the other tables: the day's views against every view in the record before it.</div>
 </section>
 
 <section id="ctxsec" hidden>
@@ -305,21 +307,29 @@ function build(D){
     return {d,clones:c.count,src:c.uniques,ci:r,ciKnown:has,out:Math.max(0,c.count-(r||0)),p};
   });
 }
+// Placement is τ = B/P on the identity being read. P is everything it has acquired before
+// the day (reach already built; it only grows, so it carries a floor like IM). B is the
+// day's acquisition, which then joins P. A quiet day sits near τ = 0; Shatter is a day whose
+// acquisition reaches TL of everything built before it. Lift against the 7-day median is
+// reported beside the phase as a plain percentage and does not set the phase.
 function place(rows){
+  let P=0;
   rows.forEach((r,i)=>{
     const prev=rows.slice(Math.max(0,i-7),i);
-    if(prev.length<3){r.ref=null;r.ph=null;return;}
-    const v=prev.map(x=>x.out).sort((a,b)=>a-b),m=v.length>>1;const ref=v.length%2?v[m]:(v[m-1]+v[m])/2;r.ref=ref;
-    if(ref===0){r.ph=r.out>0?{k:'surge',s:Infinity}:{k:'quiet'};return;}
-    const s=(r.out-ref)/ref;
-    if(s>=TL)r.ph={k:'surge',s};else{const t=Math.max(0,-s);r.ph={k:phase(t),t};}
+    if(prev.length>=3){const v=prev.map(x=>x.out).sort((a,b)=>a-b),m=v.length>>1;r.ref=v.length%2?v[m]:(v[m-1]+v[m])/2;}else r.ref=null;
+    r.lift=r.ref?(r.out-r.ref)/r.ref:null;r.P=P;
+    if(P===0)r.ph=r.out>0?{k:'genesis'}:{k:'quiet'};
+    else if(r.out===0)r.ph={k:'noble',t:0};
+    else{const t=r.out/P;r.ph={k:phase(t),t};}
+    P+=r.out;
   });
 }
 function chip(r){
-  if(!r.ph)return'<span class="band">needs 3 prior days</span>';
+  if(!r.ph)return'—';
+  const lift=r.lift===null||r.lift===undefined?'':` <span class="band mono">${r.lift>=0?'+':''}${(r.lift*100).toFixed(0)}% vs 7-day</span>`;
   if(r.ph.k==='quiet')return'<span class="ph quiet">QUIET</span>';
-  if(r.ph.k==='surge')return`<span class="ph surge">SURGE</span> <span class="band mono">${isFinite(r.ph.s)?'+'+(r.ph.s*100).toFixed(0)+'%':'from zero'}</span>`;
-  return`<span class="ph ${r.ph.k}">${PH[r.ph.k]}</span> <span class="band mono">τ ${r.ph.t.toFixed(3)}</span>`;
+  if(r.ph.k==='genesis')return'<span class="ph surge">GENESIS</span> <span class="band mono">first acquisition in the record</span>';
+  return`<span class="ph ${r.ph.k}">${PH[r.ph.k]}</span> <span class="band mono">τ ${r.ph.t<0.01?r.ph.t.toFixed(4):r.ph.t.toFixed(3)} · ${(r.ph.t/(TL/10)).toFixed(1)} notches</span>${lift}`;
 }
 
 function chart(rows){
