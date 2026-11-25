@@ -25,6 +25,7 @@ h1{font-size:clamp(1.6rem,3.6vw,2.3rem);font-weight:700;letter-spacing:-.02em;ma
 section{padding:1.4rem 0;border-bottom:1px solid var(--border)}
 h2{font-size:1.15rem;font-weight:700;margin-bottom:.8rem}
 label{display:block;font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+select{width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.5rem .6rem;font:inherit;font-size:.92rem}
 input{width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.5rem .6rem;font:inherit;font-size:.92rem}
 .btn{background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.45rem .8rem;font-family:'Space Mono',monospace;font-size:.74rem;letter-spacing:.04em;cursor:pointer;white-space:nowrap}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
@@ -82,7 +83,8 @@ footer p{margin-bottom:.5rem}
 <section>
   <h2>Data</h2>
   <div class="row">
-    <div style="flex:1;min-width:220px"><label for="repo">Repository (owner/name)</label><input id="repo" value="SNSFT/identityphysics"></div>
+    <div style="flex:1;min-width:260px"><label for="reposel">Repository</label><select id="reposel"></select></div>
+    <div style="flex:1;min-width:220px"><label for="repo">Search or add (owner/name)</label><input id="repo" list="repolist" placeholder="owner/name" value="SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT"><datalist id="repolist"></datalist></div>
     <div style="min-width:140px"><label for="branch">Data branch</label><input id="branch" value="traffic"></div>
     <button class="btn primary" id="load">Load</button>
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a traffic.json<input type="file" id="file" accept=".json,application/json" hidden></label>
@@ -157,6 +159,32 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
   <div class="note">How to read this. Cloudflare sees every request to the two sites. Crawlers are matched by the name in their user agent and grouped by operator. A crawl request is bulk collection; an assistant request is a fetch the operator made live because a person in a chat asked for the page; search requests build a search index. Allowed means the page was served (status below 400); unsuccessful is mostly requests for pages that do not exist. Placement uses the same 7-day median reference and TL bands as the clone table, applied to allowed crawler requests.</div>
 </section>
 
+<section id="usesec" hidden>
+  <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem">
+    <h2 style="margin:0" id="usetitle">Site usage</h2>
+    <span class="band">site and range follow the crawler section</span>
+  </div>
+  <div class="cards" id="usecards"></div>
+  <ul class="plain" id="useplain" style="margin-top:1rem"></ul>
+  <h3 class="band" style="margin:1rem 0 .3rem">Visits and page views per day</h3>
+  <div class="legend">
+    <span><span class="sw" style="background:var(--accent)"></span>visits</span>
+    <span><span class="sw" style="background:transparent;border-top:2px dashed var(--gold);height:0"></span>page views</span>
+  </div>
+  <div id="usechart"></div>
+  <div class="grid2" style="margin-top:1.2rem">
+    <div><h3 class="band" style="margin-bottom:.4rem">Top pages by visits</h3><div class="tablewrap"><table id="upages" style="min-width:0"><thead><tr><th>Page</th><th>Visits</th><th>Requests</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Countries</h3><div class="tablewrap"><table id="ucountries" style="min-width:0"><thead><tr><th>Country</th><th>Visits</th><th>Requests</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Referrers (where visitors came from)</h3><div class="tablewrap"><table id="ureferrers" style="min-width:0"><thead><tr><th>Site</th><th>Visits</th><th>Requests</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Devices · browsers · systems</h3><div class="tablewrap"><table id="utech" style="min-width:0"><thead><tr><th>Group</th><th>Name</th><th>Requests</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Response status · cache</h3><div class="tablewrap"><table id="ustatus" style="min-width:0"><thead><tr><th>Group</th><th>Value</th><th>Requests</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Refused probes (403)</h3><div class="tablewrap"><table id="uprobes" style="min-width:0"><thead><tr><th>Path</th><th>Refused</th></tr></thead><tbody></tbody></table></div></div>
+  </div>
+  <h3 class="band" style="margin:1.2rem 0 .4rem">Day by day</h3>
+  <div class="tablewrap"><table id="udays"><thead><tr><th>Date</th><th>Visits</th><th>Page views</th><th>Unique visitors</th><th>Requests</th><th>Data served</th><th>Placement (visits)</th></tr></thead><tbody></tbody></table></div>
+  <div class="note">How to read this. A visit is a person (or program) arriving at the site from somewhere else; a page view is a page loaded; unique visitors are distinct addresses in a day, so one household on one connection counts once. Cloudflare records no names, accounts or cookies. Refused probes are automated scanners asking for files such as /.env or /.git/config that hold passwords on badly configured servers; Cloudflare refuses them and these sites have no such files. Placement uses the same 7-day median reference and TL bands as the other tables, applied to visits. A table that stays empty is a field Cloudflare does not provide on this plan.</div>
+</section>
+
 <section id="ctxsec" hidden>
   <h2>Context</h2>
   <div class="grid2">
@@ -173,7 +201,7 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
 
 <footer>
   <div class="wrap">
-    <p><b>Built from:</b> GitHub REST API traffic endpoints (views, clones, popular referrers and paths) and Actions workflow runs · Cloudflare GraphQL Analytics API (HTTP requests by user agent, response status and path) · the daily collector workflow (traffic.yml, traffic_snapshot.py, cloudflare_snapshot.py) · Applied Identity Physics Economics reduction (ProofPress) · AIM Validation Series.</p>
+    <p><b>Built from:</b> GitHub REST API traffic endpoints (views, clones, popular referrers and paths) and Actions workflow runs · Cloudflare GraphQL Analytics API (HTTP requests by user agent, response status, path, country, referrer, device, browser, system and cache status; daily page views and unique visitors) · the daily collector workflow (traffic.yml, traffic_snapshot.py, cloudflare_snapshot.py) · Applied Identity Physics Economics reduction (ProofPress) · AIM Validation Series.</p>
     <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · Identity Physics Corpus DOI 10.17605/OSF.IO/KWTYD · Free to use under the NOHARM invariant, with citation.</p>
     <p class="mono">[9,9,9,9] :: {ANC} · The Manifold is Holding</p>
   </div>
@@ -318,6 +346,7 @@ async function loadRemote(){
     const res=await fetch(`https://raw.githubusercontent.com/${repo}/${encodeURIComponent(br)}/traffic.json?t=${Date.now()}`,{cache:'no-store'});
     if(!res.ok)throw new Error(res.status===404?`No traffic.json on the ${br} branch of ${repo} yet. Run the collector workflow once.`:'GitHub returned '+res.status);
     render(await res.json());
+    rememberRepo(repo);fillRepos(repo);
     try{history.replaceState(null,'',`?repo=${repo}&branch=${encodeURIComponent(br)}`);}catch(_){}
   }catch(e){$('msg').textContent=e.message||String(e);}
 }
@@ -327,7 +356,7 @@ let CF=null,CFSITE=(()=>{try{return localStorage.getItem('acq-site')||'all';}cat
 const KIND_COL={crawl:'var(--accent)',search:'var(--locked)',assistant:'var(--gold)',preview:'var(--border-2)',archive:'var(--border-2)'};
 const KIND_ORDER=['crawl','search','assistant','preview','archive'];
 const mb=b=>b>=1e6?(b/1e6).toFixed(2)+' MB':b>=1e3?(b/1e3).toFixed(1)+' kB':Math.round(b)+' B';
-function setRange(k){RANGE=k;try{localStorage.setItem('acq-range',RANGE);}catch(_){}if(DATA)render(DATA);if(CF)renderCF(CF);}
+function setRange(k){RANGE=k;try{localStorage.setItem('acq-range',RANGE);}catch(_){}if(DATA)render(DATA);if(CF){renderCF(CF);renderUse(CF);}}
 function cfRows(C){
   const names=Object.keys(C.zones||{}),sites=CFSITE==='all'?names:names.filter(n=>n===CFSITE);
   const ds=new Set();sites.forEach(n=>Object.keys(C.zones[n].days).forEach(d=>ds.add(d)));
@@ -362,7 +391,7 @@ function renderCF(C){
   $('cftitle').textContent='Site crawlers · '+names.join(' and ');
   $('cfsites').style.display=names.length<2?'none':'';
   $('cfsites').innerHTML=[['all','Both'],...names.map(n=>[n,n])].map(([k,l])=>`<button data-k="${esc(k)}" class="${k===CFSITE?'on':''}">${esc(l)}</button>`).join('');
-  $('cfsites').querySelectorAll('button').forEach(b=>b.onclick=()=>{CFSITE=b.dataset.k;try{localStorage.setItem('acq-site',CFSITE);}catch(_){}renderCF(CF);});
+  $('cfsites').querySelectorAll('button').forEach(b=>b.onclick=()=>{CFSITE=b.dataset.k;try{localStorage.setItem('acq-site',CFSITE);}catch(_){}renderCF(CF);renderUse(CF);});
   const {rows:full}=cfRows(C);if(!full.length){$('cfsec').hidden=true;return;}
   place(full);
   const sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2],span=full.length;
@@ -397,10 +426,95 @@ function renderCF(C){
   $('cfsec').hidden=false;
 }
 async function loadCF(repo,br){
+  CF=null;$('cfsec').hidden=true;$('usesec').hidden=true;
   try{const res=await fetch(`https://raw.githubusercontent.com/${repo}/${encodeURIComponent(br)}/cloudflare.json?t=${Date.now()}`,{cache:'no-store'});
-    if(res.ok)renderCF(await res.json());}catch(_){}
+    if(res.ok){const C=await res.json();renderCF(C);renderUse(C);rememberRepo(repo,Object.keys(C.zones||{}).join(', '));}}catch(_){}
 }
-$('cffile').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{renderCF(JSON.parse(t));}catch(err){$('msg').textContent='That file could not be read: '+err.message;}});e.target.value='';};
+$('cffile').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const C=JSON.parse(t);renderCF(C);renderUse(C);}catch(err){$('msg').textContent='That file could not be read: '+err.message;}});e.target.value='';};
+
+// ---------- Site usage ----------
+function useRows(C){
+  const names=Object.keys(C.zones||{}),sites=CFSITE==='all'?names:names.filter(n=>n===CFSITE);
+  const ds=new Set();sites.forEach(n=>Object.keys(C.zones[n].days).forEach(d=>ds.add(d)));
+  const sorted=[...ds].sort();if(!sorted.length)return[];
+  const days=[];for(let d=sorted[0];d<=sorted[sorted.length-1];d=addDays(d,1))days.push(d);
+  const LISTS=['pages','countries','referrers','browsers','os','devices','status','cache','probes'];
+  return days.map(d=>{const r={d,visits:0,pageviews:0,uniques:0,requests:0,bytes:0,cached:0,threats:0,hasPV:false};LISTS.forEach(k=>r[k]=[]);
+    sites.forEach(n=>{const x=C.zones[n].days[d];if(!x)return;
+      ['visits','requests','bytes'].forEach(k=>r[k]+=x[k]||0);
+      if('pageviews' in x){r.hasPV=true;r.pageviews+=x.pageviews;r.uniques+=x.uniques;r.cached+=x.cached;r.threats+=x.threats;}
+      LISTS.forEach(k=>(x[k]||[]).forEach(v=>r[k].push(sites.length>1&&(k==='pages'||k==='probes')?{...v,k:n+v.k}:v)));});
+    r.out=r.visits;return r;});
+}
+function useChart(rows){
+  const n=rows.length,W=n<=30?Math.max(900,n*56):Math.max(1100,n*11),H=280,L=56,R=24,T=20,B=46;
+  const max=Math.max(1,...rows.map(r=>Math.max(r.visits,r.pageviews))),bw=(W-L-R)/n,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-v/max);
+  const step=Math.pow(10,Math.floor(Math.log10(max/4)||0));const tick=[1,2,5].map(k=>k*step).find(k=>max/k<=5)||step*10;
+  let g='';for(let v=0;v<=max;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${v}</text>`;
+  rows.forEach((r,i)=>{g+=`<rect x="${X(i)+bw*.15}" y="${Y(r.visits)}" width="${bw*.7}" height="${Y(0)-Y(r.visits)}" fill="var(--accent)"><title>${r.d}: ${r.visits} visits</title></rect>`;
+    const every=n<=30?Math.max(1,Math.ceil(n/20)):7;
+    if(i%every===0||i===n-1){const dd=r.d.slice(8).replace(/^0/,''),newM=i===0||r.d.slice(5,7)!==rows[i-1].d.slice(5,7);
+      g+=`<text x="${X(i)+bw/2}" y="${H-24}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${dd}</text>`;
+      if(newM)g+=`<text x="${X(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="10.5" fill="var(--text)" font-family="Space Mono,monospace">${new Date(r.d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'})}</text>`;}});
+  if(rows.some(r=>r.hasPV)){g+=`<polyline points="${rows.map((r,i)=>`${(X(i)+bw/2).toFixed(1)},${Y(r.pageviews).toFixed(1)}`).join(' ')}" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="6 4"/>`;
+    rows.forEach((r,i)=>{g+=`<circle cx="${X(i)+bw/2}" cy="${Y(r.pageviews)}" r="3" fill="var(--gold)"><title>${r.d}: ${r.pageviews} page views</title></circle>`;});}
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${n<=30?Math.min(W,n*40+100):Math.min(W,n*7+100)}px;display:block" role="img" aria-label="Visits per day with page views as a dashed line">${g}</svg></div>`;
+}
+const tbl=(id,list,cols,empty)=>{$(id).tBodies[0].innerHTML=list.length?list.map(cols).join(''):`<tr><td colspan="3" class="band">${empty||'not provided on this plan'}</td></tr>`;};
+function renderUse(C){
+  const full=useRows(C);if(!full.length){$('usesec').hidden=true;return;}
+  place(full);
+  const names=Object.keys(C.zones),sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2];
+  const rows=sel[2]===Infinity?full:full.slice(-sel[2]),last=rows[rows.length-1];
+  const S=k=>rows.reduce((a,r)=>a+r[k],0),hasPV=rows.some(r=>r.hasPV);
+  const visits=S('visits'),pv=S('pageviews'),uq=S('uniques'),req=S('requests'),by=S('bytes'),cached=S('cached'),threats=S('threats');
+  $('usetitle').textContent='Site usage · '+(CFSITE==='all'?names.join(' and '):CFSITE);
+  $('usecards').innerHTML=[
+    ['Visits',fmt(visits),`${short(rows[0].d)} – ${short(last.d)}`],
+    ['Page views',hasPV?fmt(pv):'—',hasPV&&visits?`${(pv/visits).toFixed(2)} per visit`:'not yet recorded'],
+    ['Unique visitors',hasPV?fmt(uq):'—','distinct addresses, summed by day'],
+    ['Requests',fmt(req),`${mb(by)} served`],
+    ['Cache hits',hasPV&&req?(cached/req*100).toFixed(1)+'%':'—','served from Cloudflare without reaching GitHub'],
+    ['Threats stopped',hasPV?fmt(threats):'—','requests Cloudflare classed as threats']
+  ].map(([k,v,s])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+  const agg=k=>{const m={};rows.forEach(r=>r[k].forEach(x=>{const t=m[x.k]||(m[x.k]={k:x.k,n:0,visits:0});t.n+=x.n;t.visits+=x.visits||0;}));return Object.values(m);};
+  const pages=agg('pages').sort((a,b)=>b.visits-a.visits),countries=agg('countries').sort((a,b)=>b.n-a.n),refs=agg('referrers').sort((a,b)=>b.n-a.n);
+  const probes=agg('probes').sort((a,b)=>b.n-a.n);
+  const pl=[];
+  pl.push(`${fmt(visits)} visits over ${rows.length} days`+(hasPV?`, ${fmt(pv)} page views, ${fmt(uq)} unique visitors counted day by day`:'')+'.');
+  if(pages.length)pl.push('Most visited: '+pages.slice(0,5).map(p=>`${esc(p.k)} (${fmt(p.visits)})`).join(' · ')+'.');
+  if(countries.length)pl.push('Top countries by requests: '+countries.slice(0,5).map(c=>`${esc(c.k)} ${fmt(c.n)}`).join(' · ')+'.');
+  const realRefs=refs.filter(r=>r.k!=='(none)'&&!names.some(n=>r.k.endsWith(n)));
+  if(realRefs.length)pl.push('Arrivals from other sites: '+realRefs.slice(0,5).map(r=>`${esc(r.k)} ${fmt(r.n)}`).join(' · ')+'.');
+  if(probes.length)pl.push(`Cloudflare refused ${fmt(probes.reduce((a,p)=>a+p.n,0))} probe requests; the most asked-for path was ${esc(probes[0].k)}.`);
+  const pk=rows.reduce((m,r)=>r.visits>m.visits?r:m,rows[0]);pl.push(`Busiest day ${short(pk.d)}: ${fmt(pk.visits)} visits.`);
+  $('useplain').innerHTML=pl.map(x=>`<li>${x}</li>`).join('');
+  $('usechart').innerHTML=useChart(rows);
+  tbl('upages',pages.slice(0,25),p=>`<tr><td class="mono" style="word-break:break-all">${esc(p.k)}</td><td class="n"><b>${fmt(p.visits)}</b></td><td class="n">${fmt(p.n)}</td></tr>`);
+  tbl('ucountries',countries.slice(0,20),c=>`<tr><td>${esc(c.k)}</td><td class="n">${fmt(c.visits)}</td><td class="n">${fmt(c.n)}</td></tr>`);
+  tbl('ureferrers',refs.slice(0,20),r=>`<tr><td class="mono" style="word-break:break-all">${esc(r.k)}</td><td class="n">${fmt(r.visits)}</td><td class="n">${fmt(r.n)}</td></tr>`);
+  const grp=(label,k,n)=>agg(k).sort((a,b)=>b.n-a.n).slice(0,n).map(x=>({g:label,...x}));
+  tbl('utech',[...grp('Device','devices',6),...grp('Browser','browsers',8),...grp('System','os',8)],x=>`<tr><td class="band">${x.g}</td><td>${esc(x.k)}</td><td class="n">${fmt(x.n)}</td></tr>`);
+  tbl('ustatus',[...grp('Status','status',10),...grp('Cache','cache',8)],x=>`<tr><td class="band">${x.g}</td><td class="mono">${esc(x.k)}</td><td class="n">${fmt(x.n)}</td></tr>`);
+  tbl('uprobes',probes.slice(0,15),p=>`<tr><td class="mono" style="word-break:break-all">${esc(p.k)}</td><td class="n">${fmt(p.n)}</td></tr>`,'none refused');
+  $('udays').tBodies[0].innerHTML=rows.slice().reverse().map(r=>`<tr><td class="mono">${r.d}</td><td class="n"><b>${fmt(r.visits)}</b></td><td class="n">${r.hasPV?fmt(r.pageviews):'—'}</td><td class="n">${r.hasPV?fmt(r.uniques):'—'}</td><td class="n">${fmt(r.requests)}</td><td class="n">${mb(r.bytes)}</td><td>${chip(r)}</td></tr>`).join('');
+  $('usesec').hidden=false;
+}
+
+// ---------- Repository list ----------
+const PRESETS=[
+  {repo:'SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT',site:'uuia.app'},
+  {repo:'SNSFT/identityphysics',site:'proofpress.org'}];
+function savedRepos(){let a=[];try{a=JSON.parse(localStorage.getItem('acq-repos')||'[]');}catch(_){}
+  const m=new Map();[...PRESETS,...a].forEach(x=>{if(x&&x.repo){const o=m.get(x.repo)||{};m.set(x.repo,{repo:x.repo,site:x.site||o.site||''});}});return[...m.values()];}
+function rememberRepo(repo,site){const a=savedRepos().filter(x=>!PRESETS.some(p=>p.repo===x.repo));const i=a.findIndex(x=>x.repo===repo);
+  if(PRESETS.some(p=>p.repo===repo))return;if(i>=0){if(site)a[i].site=site;}else a.push({repo,site:site||''});
+  try{localStorage.setItem('acq-repos',JSON.stringify(a));}catch(_){}fillRepos(repo);}
+function fillRepos(current){const list=savedRepos();
+  $('reposel').innerHTML=list.map(x=>`<option value="${esc(x.repo)}" ${x.repo===current?'selected':''}>${esc(x.site?x.site+' · '+x.repo:x.repo)}</option>`).join('')+(list.some(x=>x.repo===current)||!current?'':`<option value="${esc(current)}" selected>${esc(current)}</option>`);
+  $('repolist').innerHTML=list.map(x=>`<option value="${esc(x.repo)}">${esc(x.site)}</option>`).join('');}
+$('reposel').onchange=()=>{$('repo').value=$('reposel').value;loadRemote();};
+$('repo').addEventListener('change',()=>{if(savedRepos().some(x=>x.repo===$('repo').value.trim()))loadRemote();});
 let LAST=null;
 $('logscale').onchange=()=>{if(LAST)$('chart').innerHTML=chart(LAST);};
 $('load').onclick=loadRemote;
@@ -408,6 +522,7 @@ $('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{
 const q=new URLSearchParams(location.search);
 if(q.get('repo'))$('repo').value=q.get('repo');
 if(q.get('branch'))$('branch').value=q.get('branch');
+fillRepos($('repo').value);
 loadRemote();
 </script>
 </body>
