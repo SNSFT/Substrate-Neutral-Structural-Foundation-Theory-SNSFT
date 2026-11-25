@@ -114,6 +114,15 @@ net load = ΔB − ΔP · 10+ SHATTER · 9 IVA PEAK · 1–8 LOCKED (FALSE LOCK 
 per-day measures are averaged over the days in each period that the source covers, so periods of different length, and sources with different start dates, compare directly</div>
 </section>
 
+<section id="iddaysec" hidden>
+  <h2>Identity day by day · every source</h2>
+  <p class="help">One interaction per contact, from every loaded source, added into the identity's day. Each source's column shows its share; a source counts from the first day it has data. Read against the established baseline the same way as every day table.</p>
+  <div class="legend" id="iddaylegend"></div>
+  <div id="iddaychart"></div>
+  <details style="margin-top:.8rem"><summary>Day by day</summary>
+  <div class="tablewrap" style="margin-top:.6rem"><table id="iddays"><thead></thead><tbody></tbody></table></div></details>
+</section>
+
 <section id="summary" hidden>
   <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem">
     <h2 style="margin:0">Outside acquisition</h2>
@@ -144,15 +153,16 @@ per-day measures are averaged over the days in each period that the source cover
 
 <section id="daysec" hidden>
   <h2>Day by day</h2>
-  <p class="help">Each day is placed by τ = B/P on the repository's acquisition identity. P is every outside clone acquired before the day, the reach already built; it only grows. B is the day's outside clones, which then join P. A quiet day sits near τ = 0 and reads Locked; Shatter is a day whose acquisition reaches TL of everything acquired before it. The lift against the 7-day median is shown beside the phase as a plain percentage.</p>
-  <div class="tablewrap"><table id="days"><thead><tr><th>Date</th><th>Clones</th><th>CI runs</th><th>Outside clones</th><th>Outside sources</th><th>Pushes</th><th>7-day median</th><th>Placement · τ = B/P</th></tr></thead><tbody></tbody></table></div>
+  <p class="help">Each day is read against the repository's established baseline. Normal operation at the baseline, quiet days included, is LOCKED; a day one rung or more up the energy ladder above it (b₀ = 1/√TL = 2.7027 times) is IVA PEAK; when the 28-day median holds TL or more away from it, the baseline is raised or settled there. Clones carry no failure signal, so this table never reads SHATTER.</p>
+  <div class="tablewrap"><table id="days"><thead><tr><th>Date</th><th>Clones</th><th>CI runs</th><th>Outside clones</th><th>Outside sources</th><th>Pushes</th><th>Baseline</th><th>Placement</th></tr></thead><tbody></tbody></table></div>
   <div class="formula">outside_t   = max(0, clones_t − ci_runs_t)
-P_t         = Σ outside over every day before t        (reach already built; only grows)
-B_t         = outside_t
-τ_t         = B_t / P_t        Noble (B = 0) · Locked (< TL_IVA) · IVA Peak (< TL) · Shatter (≥ TL)
-P_(t+1)     = P_t + B_t        the day's acquisition joins the pattern it was read against
-lift_t      = (outside_t − median of the 7 days before t) / that median        shown, not placed
-TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.120471207985934 · one notch = TL / 10</div>
+baseline_t  = median(outside over the 28 days before t)
+E           = established baseline: moves to baseline_t when it holds ≥ TL above E (raised) or ≥ TL below E (settled)
+NOBLE       outside_t = 0
+LOCKED      normal operation at E, quiet days included
+IVA PEAK    outside_t ≥ E × b₀,  b₀ = 1/√TL = 2.7027 (one rung up the energy ladder)
+SHATTER     only on capacity failure: server errors (5xx) ≥ TL of requests; not available for clones
+TL = 0.136899099984016</div>
 </section>
 
 <section id="cfsec" hidden>
@@ -179,7 +189,7 @@ TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.120471207985934 · one notch =
     <div><h3 class="band" style="margin-bottom:.4rem">Pages crawlers read most</h3><div class="tablewrap"><table id="cfpaths" style="min-width:0"><thead><tr><th>Path</th><th>Crawler</th><th>Requests</th></tr></thead><tbody></tbody></table></div></div>
     <div><h3 class="band" style="margin-bottom:.4rem">Day by day</h3><div class="tablewrap"><table id="cfdays" style="min-width:0"><thead><tr><th>Date</th><th>Crawler requests</th><th>Assistant</th><th>Visits</th><th>Placement</th></tr></thead><tbody></tbody></table></div></div>
   </div>
-  <div class="note">How to read this. Cloudflare sees every request to the two sites. Crawlers are matched by the name in their user agent and grouped by operator. A crawl request is bulk collection; an assistant request is a fetch the operator made live because a person in a chat asked for the page; search requests build a search index. Allowed means the page was served (status below 400); unsuccessful is mostly requests for pages that do not exist. Placement uses the same τ = B/P as the clone table: the day's allowed crawler requests against every allowed crawler request before it.</div>
+  <div class="note">How to read this. Cloudflare sees every request to the two sites. Crawlers are matched by the name in their user agent and grouped by operator. A crawl request is bulk collection; an assistant request is a fetch the operator made live because a person in a chat asked for the page; search requests build a search index. Allowed means the page was served (status below 400); unsuccessful is mostly requests for pages that do not exist. Placement reads allowed crawler requests against their established baseline, the same way as every day table.</div>
 </section>
 
 <section id="usesec" hidden>
@@ -205,7 +215,7 @@ TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.120471207985934 · one notch =
   </div>
   <h3 class="band" style="margin:1.2rem 0 .4rem">Day by day</h3>
   <div class="tablewrap"><table id="udays"><thead><tr><th>Date</th><th>Visits</th><th>Page views</th><th>Unique visitors</th><th>Requests</th><th>Data served</th><th>Placement (visits)</th></tr></thead><tbody></tbody></table></div>
-  <div class="note">How to read this. A visit is a person (or program) arriving at the site from somewhere else; a page view is a page loaded; unique visitors are distinct addresses in a day, so one household on one connection counts once. Cloudflare records no names, accounts or cookies. Refused probes are automated scanners asking for files such as /.env or /.git/config that hold passwords on badly configured servers; Cloudflare refuses them and these sites have no such files. Placement uses the same τ = B/P as the other tables: the day's visits against every visit before it. A table that stays empty is a field Cloudflare does not provide on this plan.</div>
+  <div class="note">How to read this. A visit is a person (or program) arriving at the site from somewhere else; a page view is a page loaded; unique visitors are distinct addresses in a day, so one household on one connection counts once. Cloudflare records no names, accounts or cookies. Refused probes are automated scanners asking for files such as /.env or /.git/config that hold passwords on badly configured servers; Cloudflare refuses them and these sites have no such files. Placement reads visits against their established baseline; a day reads SHATTER only when TL or more of its requests were answered with a server error (5xx). A table that stays empty is a field Cloudflare does not provide on this plan.</div>
 </section>
 
 <section id="fssec" hidden>
@@ -262,7 +272,7 @@ TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.120471207985934 · one notch =
   </div>
   <details style="margin-top:1.2rem"><summary>Day by day</summary>
   <div class="tablewrap" style="margin-top:.6rem"><table id="ppdays"><thead><tr><th>Date</th><th>Views</th><th>Bursts</th><th>Papers</th><th>Origins</th><th>Top paper</th><th>Placement (views)</th></tr></thead><tbody></tbody></table></div></details>
-  <div class="note">How to read this. PhilPeople logs each view of your profile and of your papers' pages on PhilPapers, with the visitor's city or institution and the page they came from. Times are as PhilPeople lists them. An export holds at most 10,000 rows, so each import is merged into the stored record, which keeps every row it already has; importing a newer export extends the record and never lowers it. "Unknown location" is a visitor whose place PhilPeople could not resolve. Placement uses the same τ = B/P as the other tables: the day's views against every view in the record before it.</div>
+  <div class="note">How to read this. PhilPeople logs each view of your profile and of your papers' pages on PhilPapers, with the visitor's city or institution and the page they came from. Times are as PhilPeople lists them. An export holds at most 10,000 rows, so each import is merged into the stored record, which keeps every row it already has; importing a newer export extends the record and never lowers it. "Unknown location" is a visitor whose place PhilPeople could not resolve. Placement reads views against their established baseline, the same way as every day table.</div>
 </section>
 
 <section id="ctxsec" hidden>
@@ -288,7 +298,7 @@ TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.120471207985934 · one notch =
 </footer>
 
 <script>
-const TL=0.136899099984016, TLIVA=0.88*TL;
+const TL=0.136899099984016, TLIVA=0.88*TL, B0=1/Math.sqrt(TL);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Math.round(n).toLocaleString();
@@ -307,29 +317,40 @@ function build(D){
     return {d,clones:c.count,src:c.uniques,ci:r,ciKnown:has,out:Math.max(0,c.count-(r||0)),p};
   });
 }
-// Placement is τ = B/P on the identity being read. P is everything it has acquired before
-// the day (reach already built; it only grows, so it carries a floor like IM). B is the
-// day's acquisition, which then joins P. A quiet day sits near τ = 0; Shatter is a day whose
-// acquisition reaches TL of everything built before it. Lift against the 7-day median is
-// reported beside the phase as a plain percentage and does not set the phase.
+// Placement reads each day against the identity's established baseline.
+// Baseline: the median of the 28 days before. The established baseline moves to a new level
+// when that monthly median holds at least TL above it (BASELINE RAISED) or TL below it (BASELINE SETTLED).
+// NOBLE: no contact. LOCKED: normal operation at the established baseline, quiet days included.
+// IVA PEAK: contact one rung up the energy ladder or more: b0 = 1/sqrt(TL) = 2.7027 times the baseline.
+// SHATTER: only when capacity fails under load: TL or more of requests answered with a
+// server error (5xx). Sources with no failure signal never read SHATTER.
 function place(rows){
-  let P=0;
+  let E=null;
   rows.forEach((r,i)=>{
-    const prev=rows.slice(Math.max(0,i-7),i);
-    if(prev.length>=3){const v=prev.map(x=>x.out).sort((a,b)=>a-b),m=v.length>>1;r.ref=v.length%2?v[m]:(v[m-1]+v[m])/2;}else r.ref=null;
-    r.lift=r.ref?(r.out-r.ref)/r.ref:null;r.P=P;
-    if(P===0)r.ph=r.out>0?{k:'genesis'}:{k:'quiet'};
-    else if(r.out===0)r.ph={k:'noble',t:0};
-    else{const t=r.out/P;r.ph={k:phase(t),t};}
-    P+=r.out;
+    const prev=rows.slice(Math.max(0,i-28),i);
+    r.ref=null;r.lift=null;r.event=null;
+    if(prev.length>=7){const v=prev.map(x=>x.out).sort((a,b)=>a-b),m=v.length>>1;r.ref=v.length%2?v[m]:(v[m-1]+v[m])/2;}
+    if(r.ref!==null){
+      if(E===null){E=r.ref;r.event='BASELINE SET';}
+      else if(E>0&&r.ref>=E*(1+TL)){E=r.ref;r.event='BASELINE RAISED';}
+      else if(E>0&&r.ref<=E*(1-TL)){E=r.ref;r.event='BASELINE SETTLED';}
+      else if(E===0&&r.ref>0){E=r.ref;r.event='BASELINE RAISED';}
+    }
+    r.E=E;r.lift=E?(r.out-E)/E:null;
+    if(i===0&&r.out>0)r.ph={k:'genesis'};
+    else if(r.fail!==undefined&&r.fail>=TL)r.ph={k:'shatter'};
+    else if(r.out===0)r.ph={k:'noble'};
+    else if(E!==null&&E>0&&r.out>=E*B0)r.ph={k:'iva'};
+    else r.ph={k:'locked'};
   });
 }
 function chip(r){
   if(!r.ph)return'—';
-  const lift=r.lift===null||r.lift===undefined?'':` <span class="band mono">${r.lift>=0?'+':''}${(r.lift*100).toFixed(0)}% vs 7-day</span>`;
-  if(r.ph.k==='quiet')return'<span class="ph quiet">QUIET</span>';
-  if(r.ph.k==='genesis')return'<span class="ph surge">GENESIS</span> <span class="band mono">first acquisition in the record</span>';
-  return`<span class="ph ${r.ph.k}">${PH[r.ph.k]}</span> <span class="band mono">τ ${r.ph.t<0.01?r.ph.t.toFixed(4):r.ph.t.toFixed(3)} · ${(r.ph.t/(TL/10)).toFixed(1)} notches</span>${lift}`;
+  const lift=r.lift===null||r.lift===undefined?'':` <span class="band mono">${r.lift>=0?'+':''}${(r.lift*100).toFixed(0)}% vs baseline</span>`;
+  const ev=r.event?` <span class="ph quiet">${r.event}</span>`:'';
+  if(r.ph.k==='genesis')return'<span class="ph surge">GENESIS</span> <span class="band mono">first contact in the record</span>'+ev;
+  if(r.ph.k==='shatter')return`<span class="ph shatter">SHATTER</span> <span class="band mono">${(r.fail*100).toFixed(1)}% server errors</span>`+ev;
+  return`<span class="ph ${r.ph.k}">${PH[r.ph.k]}</span>${lift}${ev}`;
 }
 
 function chart(rows){
@@ -532,6 +553,7 @@ function useRows(C){
       ['visits','requests','bytes'].forEach(k=>r[k]+=x[k]||0);
       if('pageviews' in x){r.hasPV=true;r.pageviews+=x.pageviews;r.uniques+=x.uniques;r.cached+=x.cached;r.threats+=x.threats;}
       LISTS.forEach(k=>(x[k]||[]).forEach(v=>r[k].push(sites.length>1&&(k==='pages'||k==='probes')?{...v,k:n+v.k}:v)));});
+    const req=r.requests||0,x5=r.status.filter(v=>/^5/.test(String(v.k))).reduce((a,v)=>a+v.n,0);if(req&&r.status.length)r.fail=x5/req;
     r.out=r.visits;return r;});
 }
 function useChart(rows){
@@ -786,6 +808,7 @@ function idMeasures(f,t){
   return out;
 }
 function renderID(){
+  renderIDDay();
   const r=idDefaults();if(!r){$('idsec').hidden=true;return;}
   if(!$('ato').value){idPreset('month');return;}
   const bf=$('bfrom').value,bt=$('bto').value,af=$('afrom').value,at=$('ato').value;
@@ -865,6 +888,48 @@ async function loadFS(repo,br){FS=null;$('fssec').hidden=true;
   try{const res=await fetch(`https://raw.githubusercontent.com/${repo}/${encodeURIComponent(br)}/figshare.json?t=${Date.now()}`,{cache:'no-store'});if(res.ok)renderFS(await res.json());}catch(_){}}
 $('fsfile').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{renderFS(JSON.parse(t));}catch(err){$('msg').textContent='That file could not be read: '+err.message;}});e.target.value='';};
 $('fsmore').onclick=()=>{FSALL=!FSALL;if(FS)renderFS(FS);};
+
+// ---------- the identity's day across every source ----------
+const SRC_COL=['var(--accent)','var(--locked)','var(--gold)','#a78bfa','#f472b6','var(--border-2)'];
+function idDaySources(){
+  const S=[];
+  if(DATA){const c=DATA.clones||{},ci=DATA.ci_runs||{},m={};Object.entries(c).forEach(([d,x])=>m[d]=Math.max(0,x.count-(ci[d]||0)));S.push({k:'GitHub clones',m});}
+  if(CF){const cr={},vi={},fail={},rq={};Object.values(CF.zones||{}).forEach(z=>Object.entries(z.days).forEach(([d,x])=>{
+      cr[d]=(cr[d]||0)+Object.values(x.crawlers||{}).reduce((a,v)=>a+(v.ok||0),0);vi[d]=(vi[d]||0)+(x.visits||0);
+      rq[d]=(rq[d]||0)+(x.requests||0);fail[d]=(fail[d]||0)+(x.status||[]).filter(v=>/^5/.test(String(v.k))).reduce((a,v)=>a+v.n,0);}));
+    S.push({k:'AI crawler requests',m:cr});S.push({k:'Site visits',m:vi,fail,rq});}
+  if(PP){const {V}=ppViews(PP),m={};V.forEach(v=>m[v.d]=(m[v.d]||0)+v.n);S.push({k:'PhilPapers views',m});}
+  if(FS){const m={};Object.entries(FS.days||{}).forEach(([d,x])=>m[d]=Object.values(x).reduce((a,c)=>a+(c.v||0)+(c.d||0),0));S.push({k:'figshare views + downloads',m});}
+  return S;
+}
+function renderIDDay(){
+  const S=idDaySources();if(!S.length){$('iddaysec').hidden=true;return;}
+  const all=[].concat(...S.map(x=>Object.keys(x.m))).sort();if(!all.length){$('iddaysec').hidden=true;return;}
+  const first=all[0],last=all[all.length-1],days=[];for(let d=first;d<=last;d=addDays(d,1))days.push(d);
+  const starts=S.map(x=>Object.keys(x.m).sort()[0]);
+  const full=days.map(d=>{const r={d,parts:S.map((x,i)=>d>=starts[i]?(x.m[d]||0):null)};r.out=r.parts.reduce((a,v)=>a+(v||0),0);
+    const site=S.find(x=>x.fail);if(site&&site.rq[d])r.fail=site.fail[d]/site.rq[d];return r;});
+  place(full);
+  const sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2],rows=sel[2]===Infinity?full:full.slice(-sel[2]);
+  $('iddaylegend').innerHTML=S.map((x,i)=>`<span><span class="sw" style="background:${SRC_COL[i%SRC_COL.length]}"></span>${esc(x.k)}</span>`).join('')+'<span><span class="sw" style="background:transparent;border-top:2px dashed var(--muted);height:0"></span>established baseline</span>';
+  const n=rows.length,W=n<=30?Math.max(900,n*56):Math.max(1100,n*6),H=300,L=56,R=24,T=20,B=46;
+  const max=Math.max(1,...rows.map(r=>Math.max(r.out,r.E||0))),bw=(W-L-R)/n,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-v/max);
+  const step=Math.pow(10,Math.floor(Math.log10(max/4)||0));const tick=[1,2,5].map(k=>k*step).find(k=>max/k<=5)||step*10;
+  let g='';for(let v=0;v<=max;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${fmt(v)}</text>`;
+  rows.forEach((r,i)=>{let acc=0;const x=X(i)+bw*.12,w=Math.max(1,bw*.76);
+    r.parts.forEach((v,j)=>{if(!v)return;g+=`<rect x="${x}" y="${Y(acc+v)}" width="${w}" height="${Y(acc)-Y(acc+v)}" fill="${SRC_COL[j%SRC_COL.length]}"><title>${r.d}: ${fmt(v)} ${esc(S[j].k)}</title></rect>`;acc+=v;});
+    if(r.ph&&r.ph.k==='iva')g+=`<circle cx="${X(i)+bw/2}" cy="${Y(r.out)-6}" r="3" fill="var(--iva)"><title>${r.d}: IVA PEAK</title></circle>`;
+    const every=n<=30?Math.max(1,Math.ceil(n/20)):7;
+    if(i%every===0||i===n-1){const dd=r.d.slice(8).replace(/^0/,''),newM=i===0||r.d.slice(5,7)!==rows[i-1].d.slice(5,7);
+      g+=`<text x="${X(i)+bw/2}" y="${H-24}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${dd}</text>`;
+      if(newM)g+=`<text x="${X(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="10.5" fill="var(--text)" font-family="Space Mono,monospace">${new Date(r.d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'})}</text>`;}});
+  const pts=rows.map((r,i)=>r.E===null?null:`${(X(i)+bw/2).toFixed(1)},${Y(r.E).toFixed(1)}`).filter(Boolean).join(' ');
+  if(pts)g+=`<polyline points="${pts}" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 4"/>`;
+  $('iddaychart').innerHTML=`<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${n<=30?Math.min(W,n*40+100):Math.min(W,n*5+100)}px;display:block" role="img" aria-label="Contact per day from every source, stacked, with the established baseline">${g}</svg></div>`;
+  $('iddays').tHead.innerHTML='<tr><th>Date</th>'+S.map(x=>`<th>${esc(x.k)}</th>`).join('')+'<th>Total</th><th>Baseline</th><th>Placement</th></tr>';
+  $('iddays').tBodies[0].innerHTML=rows.slice().reverse().map(r=>`<tr><td class="mono">${r.d}</td>${r.parts.map(v=>`<td class="n">${v===null?'—':fmt(v)}</td>`).join('')}<td class="n"><b>${fmt(r.out)}</b></td><td class="n">${r.E===null?'—':fmt(r.E)}</td><td>${chip(r)}</td></tr>`).join('');
+  $('iddaysec').hidden=false;
+}
 let LAST=null;
 $('logscale').onchange=()=>{if(LAST)$('chart').innerHTML=chart(LAST);};
 $('load').onclick=loadRemote;
