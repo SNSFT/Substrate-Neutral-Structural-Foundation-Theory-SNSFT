@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atlas AIM Timeline by AxiomForge · Identity Mass over time · Applied Identity Physics</title>
+<meta name="description" content="Atlas AIM Timeline by AxiomForge replays the growth of Identity Mass across every source, GitHub, Cloudflare, PhilPeople and figshare, day by day against each deposit, under the Torsion Limit TL = 0.136899099984016.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e17;--surface:#111827;--surface-2:#1a2332;--border:#1e2a3a;--border-2:#2a3a50;--text:#e2e8f0;--muted:#94a3b8;--dim:#64748b;
+  --accent:#22d3ee;--gold:#fbbf24;--human:#22d3ee;--ai:#fbbf24;--place:#34d399;--cloner:#a78bfa;--work:#e2e8f0;--dep:#f472b6}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.55}
+a{color:var(--accent)}
+.mono{font-family:'Space Mono',monospace}
+.wrap{max-width:1400px;margin:0 auto;padding:0 1.25rem}
+header{border-bottom:1px solid var(--border);padding:1.4rem 0 1rem}
+.eyebrow{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(1.5rem,3.2vw,2.2rem);font-weight:700;letter-spacing:-.02em;margin:.2rem 0 .3rem}
+h2{font-size:1rem;margin:1.2rem 0 .4rem}
+.tag{color:var(--muted);max-width:96ch}
+.tag b{color:var(--gold);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--border)}
+.btn{background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.42rem .75rem;font-family:'Space Mono',monospace;font-size:.72rem;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.on{background:var(--accent);color:#04121a;border-color:var(--accent);font-weight:700}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.play{font-size:.85rem;padding:.45rem 1rem}
+input[type=date],select{background:var(--surface);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.32rem .45rem;font:inherit;font-size:.82rem;color-scheme:dark}
+.band{font-size:.78rem;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:.7rem;margin:.9rem 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.7rem .9rem}
+.card .k{font-family:'Space Mono',monospace;font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card .v{font-size:1.5rem;font-weight:700;line-height:1.2;margin:.1rem 0;font-variant-numeric:tabular-nums}
+.card .s{font-size:.76rem;color:var(--muted)}
+.chip{display:inline-block;font-family:'Space Mono',monospace;font-size:.66rem;font-weight:700;padding:.12rem .45rem;border-radius:4px;letter-spacing:.04em}
+.c-LOCKED{background:#0e3a44;color:#67e8f9}.c-NOBLE{background:#1f2937;color:#cbd5e1}.c-IVA{background:#4a3509;color:#fde68a}.c-SHATTER{background:#4c0d0d;color:#fca5a5}.c-RAISED{background:#123d2a;color:#86efac}
+.tabs{display:flex;gap:.4rem;margin:.6rem 0 .7rem}
+.tab{background:none;border:1px solid var(--border-2);color:var(--muted);border-radius:8px;padding:.5rem 1rem;font:inherit;font-size:.88rem;font-weight:600;cursor:pointer}
+.tab.on{background:var(--surface-2);color:var(--text);border-color:var(--accent)}
+#stage3d{width:100%;height:min(74vh,780px);display:block;cursor:grab;touch-action:none;background:radial-gradient(ellipse at center,#0d1626 0%,#070a12 75%)}
+#stage3d:active{cursor:grabbing}
+#tip3d{position:absolute;pointer-events:none;background:#0b1220f2;border:1px solid var(--border-2);border-radius:6px;padding:.4rem .55rem;font-size:.78rem;max-width:320px;display:none}
+.side table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:.4rem}
+.side td{padding:.25rem .2rem;border-bottom:1px solid var(--border);vertical-align:top}
+.side td.n{font-family:'Space Mono',monospace;text-align:right;white-space:nowrap}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:1rem;align-items:start}
+@media(max-width:980px){.main{grid-template-columns:1fr}}
+.stage{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.4rem .4rem .2rem}
+svg text{font-family:'Space Mono',monospace}
+#tip{position:absolute;pointer-events:none;background:#0b1220f2;border:1px solid var(--border-2);border-radius:6px;padding:.45rem .6rem;font-size:.78rem;max-width:300px;display:none;z-index:2}
+#tip td{padding:0 .3rem}#tip td.n{text-align:right;font-family:'Space Mono',monospace}
+.side{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;max-height:640px;overflow:auto}
+.side h3{font-size:.92rem;margin-bottom:.4rem}
+.ev{display:flex;gap:.55rem;padding:.38rem 0;border-bottom:1px solid var(--border);font-size:.8rem}
+.ev .d{font-family:'Space Mono',monospace;color:var(--muted);white-space:nowrap;font-size:.72rem;padding-top:.1rem}
+.legend{display:flex;flex-wrap:wrap;gap:.5rem;font-size:.8rem;color:var(--muted);margin:.5rem 0;align-items:center}
+.lg{cursor:pointer;border:1px solid var(--border-2);border-radius:6px;padding:.22rem .55rem;background:var(--surface-2);user-select:none}
+.lg.off{opacity:.35}
+.sw{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:middle;margin-right:.35rem}
+.scrub{display:flex;gap:.5rem;align-items:center;margin:.6rem 0 .2rem;flex-wrap:wrap}
+.scrub input[type=range]{flex:1;min-width:200px;accent-color:var(--accent)}
+.note{font-size:.82rem;color:var(--muted);background:var(--surface);border-left:3px solid var(--gold);padding:.7rem .9rem;border-radius:4px;margin:1rem 0}
+.formula{font-family:'Space Mono',monospace;font-size:.78rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.7rem .9rem;margin:.6rem 0;white-space:pre-wrap}
+footer{padding:1.6rem 0 3rem;color:var(--muted);font-size:.8rem}
+footer p{margin-bottom:.45rem}
+#msg{min-height:1.1rem}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="eyebrow">Applied Identity Physics™ · SNSFT Foundation · AIM</div>
+  <h1>Atlas AIM Timeline by AxiomForge</h1>
+  <p class="tag"><b>Identity Mass across every source, replayed day by day against every deposit.</b> Each contact between the corpus and an outside identity, a reader, a download, a crawler fetch or a whole-repository clone, adds to Identity Mass. The stacked curve is IM to date by source; the bars beneath are what each day added; the markers are your deposits and the first day each work was reached. Pick a range and press play.</p>
+</div></header>
+
+<main class="wrap">
+  <div class="bar">
+    <button class="btn" id="load">Load the record</button>
+    <label class="btn" style="text-transform:none">Open data files<input type="file" id="files" accept=".json,application/json" multiple hidden></label>
+    <span class="band" id="msg"></span>
+  </div>
+
+  <div class="bar">
+    <span class="band">Range</span>
+    <input type="date" id="from" aria-label="From"><span class="band">to</span><input type="date" id="to" aria-label="To">
+    <span id="presets"></span>
+    <span class="band" style="margin-left:.4rem">Leave out</span>
+    <input id="own" value="Kenai" style="width:110px;background:var(--surface);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.32rem .45rem;font:inherit;font-size:.82rem" aria-label="Own locations, comma separated">
+  </div>
+
+  <div class="cards" id="cards"></div>
+
+  <div class="scrub">
+    <button class="btn play" id="play">▶ Play</button>
+    <button class="btn" id="back">◀ day</button>
+    <input type="range" id="day" min="0" max="0" value="0" aria-label="Playhead">
+    <button class="btn" id="fwd">day ▶</button>
+    <select id="speed" aria-label="Speed"><option value="600">0.5×</option><option value="300" selected>1×</option><option value="150">2×</option><option value="70">4×</option><option value="30">8×</option></select>
+    <span class="mono band" id="daylabel" style="min-width:16ch"></span>
+  </div>
+  <div class="legend" id="legend"></div>
+
+  <div class="tabs"><button class="tab on" data-v="tl">Timeline</button><button class="tab" data-v="nn">Neural growth · 3D</button></div>
+
+  <div class="main" id="viewNN" style="display:none">
+    <div class="stage" style="padding:0;overflow:hidden"><div id="stage3d"></div><div id="tip3d"></div>
+      <div class="band" style="position:absolute;left:.8rem;bottom:.5rem;pointer-events:none">drag to orbit · wheel or pinch to zoom · right-drag to pan · click a neuron for its record</div></div>
+    <aside class="side" id="side3d"><h3>Select a neuron</h3><p class="band">Click any work or identity to see its record to the playhead: every connection, its source and its first contact. Works (pink, matching the deposit markers) sit at the core; each kind of identity forms its own layer around them, and every line is a synapse, one L = (4)(2) contact pair. Lines that fire white carried contacts on the playhead day.</p></aside>
+  </div>
+
+  <div class="main" id="viewTL">
+    <div class="stage" id="stage"><div id="chart"></div><div id="tip"></div></div>
+    <aside class="side"><h3>Events to the playhead</h3><div class="band" style="margin-bottom:.3rem">Newest first · deposits, publications, first reach, level raised and IVA peaks</div><div id="events"></div></aside>
+  </div>
+
+  <div class="formula">contact     = one interaction between a work and an outside identity (an L = (4)(2) pair, B &gt; 0 on both)
+IM_t        = Σ contacts over every day up to t, all sources       (cumulative, only grows)
+added_t     = IM_t − IM_(t−1)
+level       = record-high 28-day median of added                    (only steps up · LEVEL RAISED)
+phase       = NOBLE (nothing added) · LOCKED (the day adds) · IVA PEAK (added ≥ level × b₀, b₀ = 1/√TL = 2.7027)
+sources     : GitHub outside clones (clones − CI) · PhilPeople readers · figshare views and downloads · Cloudflare AI crawler fetches</div>
+  <div class="note">How to read this. The range only frames the replay: IM at the start of a range is everything accumulated before it, so a range never restarts the count. Both axes are fixed to the whole range before play starts, so the curve draws in without rescaling, and the playhead moves only while play is on or you move it. Toggling a source in the legend takes it out of every figure on the page.</div>
+</main>
+
+<footer><div class="wrap">
+  <p><b>Built from:</b> the daily collector record on the traffic branch of SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT and SNSFT/identityphysics: GitHub traffic (traffic.json), Cloudflare GraphQL Analytics (cloudflare.json), PhilPeople Web Analytics (philpeople.json) and the figshare statistics service (figshare.json) · companion to Atlas AIM (uuia.app/atlasaim) and the Repository Acquisition Panel (uuia.app/acquisition) · Atlas by AxiomForge.</p>
+  <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · Identity Physics Corpus DOI 10.17605/OSF.IO/KWTYD · Free to use under the NOHARM invariant, with citation.</p>
+  <p class="mono">TL = 0.136899099984016 · 1/α = TL × 1001 = 137.035999084000016 · [9,9,9,9] :: {ANC} · The Manifold is Holding</p>
+</div></footer>
+
+<script>
+const TL=0.136899099984016,B0=1/Math.sqrt(TL);
+const REPOS=['SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT','SNSFT/identityphysics'];
+const FILES=['traffic.json','cloudflare.json','philpeople.json','figshare.json'];
+const SRC=[
+  {k:'cloner',label:'GitHub outside clones',col:'#a78bfa'},
+  {k:'human',label:'PhilPeople readers',col:'#22d3ee'},
+  {k:'place',label:'figshare views + downloads',col:'#34d399'},
+  {k:'ai',label:'Cloudflare AI crawler fetches',col:'#fbbf24'}];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dec=x=>String(x).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#0?39;/g,"'");
+const fmt=n=>Math.round(n).toLocaleString();
+const pct=x=>(100*x).toFixed(1)+'%';
+const iso=d=>d.toISOString().slice(0,10);
+const addD=(s,n)=>{const d=new Date(s+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return iso(d);};
+let RAW=[],D=null,ON={cloner:1,human:1,place:1,ai:1},R={a:0,b:0},T=0,timer=null;
+
+// ---------- data ----------
+function kindOfFile(d){if(d&&d.clones)return'traffic';if(d&&d.zones)return'cloudflare';if(d&&d.docs&&d.origins)return'philpeople';if(d&&d.items&&d.days&&d.author_id!==undefined)return'figshare';return null;}
+async function loadAll(){
+  $('msg').textContent='Loading…';RAW=[];
+  const jobs=[];REPOS.forEach(r=>FILES.forEach(f=>jobs.push(fetch(`https://raw.githubusercontent.com/${r}/traffic/${f}?t=${Date.now()}`,{cache:'no-store'}).then(x=>x.ok?x.json():null).then(d=>{if(d)RAW.push({repo:r,d});}).catch(()=>{}))));
+  await Promise.all(jobs);
+  if(!RAW.length){$('msg').textContent='No data files found on the traffic branches.';return;}
+  build(true);
+}
+function build(fresh){
+  stop();
+  const own=$('own').value.split(',').map(x=>x.trim().toLowerCase()).filter(Boolean);
+  const add=new Map(),firstWork=new Map(),deps=[],seen=new Set();
+  const put=(day,k,n,work,label)=>{if(!n||n<0)return;let r=add.get(day);if(!r){r={cloner:0,human:0,place:0,ai:0};add.set(day,r);}r[k]+=n;
+    if(work){const f=firstWork.get(work);if(!f||day<f.day)firstWork.set(work,{day,label:dec(label),k});}};
+  RAW.forEach(({repo,d})=>{
+    const kind=kindOfFile(d);if(!kind)return;
+    const sig=kind+(kind==='traffic'?':'+(d.repo||repo):kind==='cloudflare'?':'+Object.keys(d.zones).join(','):'');if(seen.has(sig))return;seen.add(sig);
+    if(kind==='traffic'){const name=(d.repo||repo).split('/')[1],ci=d.ci_runs||{};
+      Object.entries(d.clones||{}).forEach(([day,x])=>put(day,'cloner',Math.max(0,x.count-(ci[day]||0)),'repo:'+name,'Repository · '+name));
+      Object.entries(d.pushes||{}).forEach(([day,p])=>deps.push({day,type:'git',repo:name,commits:p.commits||0,files:p.files||0,lean:p.lean_files||0}));}
+    if(kind==='cloudflare')Object.entries(d.zones).forEach(([zone,z])=>Object.entries(z.days).forEach(([day,x])=>(x.paths||[]).forEach(p=>put(day,'ai',p.count,'page:'+zone+p.path,zone+p.path))));
+    if(kind==='philpeople')d.rows.forEach(([day,t,o,x,r,n])=>{if(own.includes(String(d.origins[o]).toLowerCase()))return;const doc=d.docs[x];put(day,'human',n,doc==='Profile'?'profile':'paper:'+doc,doc==='Profile'?'PhilPeople profile':doc);});
+    if(kind==='figshare'){
+      Object.entries(d.geo||{}).forEach(([day,places])=>Object.entries(places).forEach(([pl,cell])=>{const ci=(pl.split('|')[1]||'').toLowerCase();if(own.includes(ci))return;
+        Object.entries(cell._items||{}).forEach(([k,n])=>{const id=k.split(':')[0],it=(d.items||{})[id]||{};put(day,'place',n,'item:'+id,it.title||('figshare item '+id));});}));
+      Object.entries(d.items||{}).forEach(([id,it])=>{if(it.published)deps.push({day:it.published,type:'fig',id,title:dec(it.title||('figshare item '+id)),doi:it.doi||''});});}
+  });
+  const keys=[...add.keys(),...deps.map(x=>x.day)].sort();
+  if(!keys.length){$('msg').textContent='The loaded files hold no contacts yet.';return;}
+  // continuous calendar from the first contact or deposit to the last day on record
+  const days=[];for(let s=keys[0];s<=keys[keys.length-1];s=addD(s,1))days.push(s);
+  const dix=new Map(days.map((d,i)=>[d,i]));
+  const per=SRC.map(s=>days.map(d=>(add.get(d)||{})[s.k]||0));
+  const firsts=[...firstWork.values()].sort((a,b)=>a.day<b.day?-1:1);
+  D={days,dix,per,deps:deps.filter(x=>dix.has(x.day)).sort((a,b)=>a.day<b.day?-1:1),firsts};
+  derive();
+  $('msg').textContent=`${RAW.length} data file${RAW.length===1?'':'s'} · ${days[0]} – ${days[days.length-1]} · ${D.deps.length} deposits · ${firsts.length} works reached`;
+  $('from').min=$('to').min=days[0];$('from').max=$('to').max=days[days.length-1];
+  if(fresh||!R.b){R={a:0,b:days.length-1};}
+  if(window.NET)NET.rebuild();
+  buildPresets();setRange(R.a,R.b,false);
+}
+// cumulative IM, level and phase over the whole record for the sources switched on
+function derive(){
+  const n=D.days.length,act=SRC.map(s=>!!ON[s.k]);
+  const added=new Array(n).fill(0),cumS=SRC.map(()=>new Array(n).fill(0)),im=new Array(n).fill(0),level=new Array(n).fill(0),phase=new Array(n),raised=new Array(n).fill(false);
+  let c=SRC.map(()=>0),tot=0,best=0;
+  for(let i=0;i<n;i++){
+    SRC.forEach((s,j)=>{if(act[j]){c[j]+=D.per[j][i];added[i]+=D.per[j][i];}cumS[j][i]=c[j];});
+    tot+=added[i];im[i]=tot;
+    const w=added.slice(Math.max(0,i-27),i+1).slice().sort((a,b)=>a-b),med=w.length%2?w[(w.length-1)/2]:(w[w.length/2-1]+w[w.length/2])/2;
+    if(i>=6&&med>best){if(best>0)raised[i]=true;best=med;}
+    level[i]=best;
+    phase[i]=added[i]<=0?'NOBLE':(best>0&&added[i]>=best*B0?'IVA':'LOCKED');
+  }
+  Object.assign(D,{added,cumS,im,level,phase,raised});
+}
+
+// ---------- range and presets ----------
+const PRESETS=[['all','All'],['ytd','YTD'],['qtd','QTD'],['mtd','MTD'],['90','90d'],['30','30d'],['7','7d']];
+function presetRange(p){
+  const last=D.days[D.days.length-1],L=D.days.length-1;
+  const at=s=>{let i=D.dix.get(s);if(i===undefined)i=s<D.days[0]?0:L;return i;};
+  if(p==='all')return[0,L];
+  if(/^\d+$/.test(p))return[Math.max(0,L-(+p)+1),L];
+  const y=last.slice(0,4),m=+last.slice(5,7);
+  if(p==='ytd')return[at(y+'-01-01'),L];
+  if(p==='mtd')return[at(last.slice(0,8)+'01'),L];
+  if(p==='qtd'){const qm=String(Math.floor((m-1)/3)*3+1).padStart(2,'0');return[at(`${y}-${qm}-01`),L];}
+}
+function buildPresets(){
+  $('presets').innerHTML=PRESETS.map(([k,l])=>`<button class="btn" data-p="${k}">${l}</button>`).join(' ');
+  $('presets').querySelectorAll('button').forEach(b=>b.onclick=()=>{const [a,z]=presetRange(b.dataset.p);setRange(a,z,true);});
+}
+function setRange(a,b,fromPreset){
+  stop();if(b<a)[a,b]=[b,a];R={a,b};
+  $('from').value=D.days[a];$('to').value=D.days[b];
+  $('presets').querySelectorAll('button').forEach(x=>{const r=presetRange(x.dataset.p);x.classList.toggle('on',r[0]===a&&r[1]===b);});
+  $('day').min=String(a);$('day').max=String(b);
+  T=b;$('day').value=String(T);
+  drawStatic();frame();
+}
+
+// ---------- chart: drawn once per range, only the playhead layer changes ----------
+const W=1000,H1=330,H2=130,PADL=64,PADR=16,TOP=14,GAP=34,BOT=26,HT=TOP+H1+GAP+H2+BOT;
+let X=null;
+function drawStatic(){
+  const {a,b}=R,n=b-a+1,act=SRC.filter(s=>ON[s.k]);
+  const x=i=>PADL+(n===1?(W-PADL-PADR)/2:(i-a)*(W-PADL-PADR)/(n-1));
+  const ymax=Math.max(1,D.im[b])*1.04,ymin=0;
+  const y1=v=>TOP+H1-(v-ymin)/(ymax-ymin)*H1;
+  let dmax=1;for(let i=a;i<=b;i++)dmax=Math.max(dmax,D.added[i]);dmax*=1.08;
+  const y2=v=>TOP+H1+GAP+H2-v/dmax*H2,bw=Math.max(1,(W-PADL-PADR)/n*0.78);
+  X={x,y1,y2,a,b,n,bw};
+  let g='';
+  // gridlines and axes
+  const tick=(mx,cnt)=>{const raw=mx/cnt,p=Math.pow(10,Math.floor(Math.log10(raw))),s=[1,2,2.5,5,10].map(k=>k*p).find(k=>k>=raw);const out=[];for(let v=0;v<=mx;v+=s)out.push(v);return out;};
+  tick(ymax,5).forEach(v=>{g+=`<line x1="${PADL}" x2="${W-PADR}" y1="${y1(v)}" y2="${y1(v)}" stroke="#1e2a3a"/><text x="${PADL-8}" y="${y1(v)+4}" fill="#64748b" font-size="10" text-anchor="end">${fmt(v)}</text>`;});
+  tick(dmax,3).forEach(v=>{g+=`<line x1="${PADL}" x2="${W-PADR}" y1="${y2(v)}" y2="${y2(v)}" stroke="#1e2a3a"/><text x="${PADL-8}" y="${y2(v)+4}" fill="#64748b" font-size="10" text-anchor="end">${fmt(v)}</text>`;});
+  g+=`<text x="${PADL}" y="${TOP-3}" fill="#94a3b8" font-size="10">IDENTITY MASS TO DATE</text><text x="${PADL}" y="${TOP+H1+GAP-6}" fill="#94a3b8" font-size="10">ADDED EACH DAY</text>`;
+  const step=Math.max(1,Math.ceil(n/9));
+  for(let i=a;i<=b;i+=step)g+=`<text x="${x(i)}" y="${HT-8}" fill="#64748b" font-size="10" text-anchor="middle">${D.days[i].slice(5)}</text>`;
+  // stacked cumulative areas (ghost for the whole range, solid clipped to the playhead)
+  let areas='';let base=new Array(D.days.length).fill(0);
+  act.forEach(s=>{const j=SRC.indexOf(s);const top=[],bot=[];
+    for(let i=a;i<=b;i++){const lo=base[i],hi=lo+D.cumS[j][i];top.push(`${x(i).toFixed(1)},${y1(hi).toFixed(1)}`);bot.push(`${x(i).toFixed(1)},${y1(lo).toFixed(1)}`);base[i]=hi;}
+    if(n===1){top.push(`${x(a)+2},${top[0].split(',')[1]}`);bot.push(`${x(a)+2},${bot[0].split(',')[1]}`);}
+    areas+=`<polygon points="${top.join(' ')} ${bot.reverse().join(' ')}" fill="${s.col}" fill-opacity=".78" stroke="${s.col}" stroke-width="1"/>`;});
+  // level line in the bars panel
+  let lv=[];for(let i=a;i<=b;i++)lv.push(`${x(i).toFixed(1)},${y2(D.level[i]).toFixed(1)}`);
+  let bars='';
+  for(let i=a;i<=b;i++){let c=0;act.forEach(s=>{const j=SRC.indexOf(s),v=D.per[j][i];if(!v)return;bars+=`<rect x="${(x(i)-bw/2).toFixed(1)}" y="${y2(c+v).toFixed(1)}" width="${bw.toFixed(1)}" height="${(y2(c)-y2(c+v)).toFixed(1)}" fill="${s.col}"/>`;c+=v;});
+    if(D.phase[i]==='IVA')bars+=`<text x="${x(i)}" y="${y2(D.added[i])-4}" fill="#fde68a" font-size="9" text-anchor="middle">▴</text>`;}
+  bars+=`<polyline points="${lv.join(' ')}" fill="none" stroke="#e2e8f0" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+  // deposit and first-reach markers along the top chart's base
+  let mk='';const MY=TOP+H1;
+  D.firsts.forEach(f=>{const i=D.dix.get(f.day);if(i<a||i>b)return;mk+=`<circle cx="${x(i)}" cy="${MY-3}" r="2.2" fill="#e2e8f0" fill-opacity=".55"/>`;});
+  D.deps.forEach(d=>{const i=D.dix.get(d.day);if(i<a||i>b)return;
+    if(d.type==='git')mk+=`<path d="M${x(i)},${MY-16} l5,9 l-10,0 z" fill="${d.lean?'#f472b6':'none'}" stroke="#f472b6" stroke-width="1.2"/>`;
+    else mk+=`<path d="M${x(i)},${MY-21} l4,4 l-4,4 l-4,-4 z" fill="#34d399" stroke="#0a0e17" stroke-width=".8"/>`;});
+  const solidW=x(b)-PADL+bw;
+  $('chart').innerHTML=`<svg id="svg" viewBox="0 0 ${W} ${HT}" width="100%" style="display:block" role="img" aria-label="Identity Mass to date stacked by source, with daily additions and deposit markers">
+    <defs><clipPath id="clip"><rect id="cliprect" x="0" y="0" width="${solidW}" height="${HT}"/></clipPath></defs>
+    ${g}
+    <g opacity=".16">${areas}${bars}</g>
+    <g clip-path="url(#clip)">${areas}${bars}${mk}</g>
+    <g opacity=".3">${mk}</g>
+    <line id="ph" x1="0" x2="0" y1="${TOP}" y2="${TOP+H1+GAP+H2}" stroke="#e2e8f0" stroke-width="1"/>
+    <circle id="phdot" r="4" fill="#0a0e17" stroke="#e2e8f0" stroke-width="2"/>
+    <rect id="hover" x="${PADL}" y="0" width="${W-PADL-PADR}" height="${HT}" fill="transparent" style="cursor:crosshair"/>
+  </svg>`;
+  const svg=$('svg'),hov=$('hover');
+  const idxAt=ev=>{const r=svg.getBoundingClientRect(),px=(ev.clientX-r.left)/r.width*W;return Math.max(a,Math.min(b,Math.round(a+(px-PADL)/((W-PADL-PADR)/Math.max(1,n-1)))));};
+  hov.addEventListener('mousemove',ev=>tip(ev,idxAt(ev)));
+  hov.addEventListener('mouseleave',()=>{$('tip').style.display='none';});
+  hov.addEventListener('click',ev=>{stop();T=idxAt(ev);$('day').value=String(T);frame();});
+}
+function tip(ev,i){
+  const t=$('tip'),r=$('stage').getBoundingClientRect(),act=SRC.filter(s=>ON[s.k]);
+  const dp=D.deps.filter(d=>d.day===D.days[i]).map(d=>d.type==='git'?`▲ ${esc(d.repo)} · ${d.commits} commits · ${d.lean} .lean`:`◆ ${esc(d.title)}`);
+  const fr=D.firsts.filter(f=>f.day===D.days[i]).length;
+  t.innerHTML=`<b>${D.days[i]}</b> <span class="chip c-${D.phase[i]}">${D.phase[i]==='IVA'?'IVA PEAK':D.phase[i]}</span>
+    <table style="margin-top:.25rem">${act.map(s=>{const j=SRC.indexOf(s);return`<tr><td><span class="sw" style="background:${s.col}"></span>${s.label}</td><td class="n">+${fmt(D.per[j][i])}</td></tr>`;}).join('')}
+    <tr><td><b>Added</b></td><td class="n"><b>+${fmt(D.added[i])}</b></td></tr><tr><td><b>IM to date</b></td><td class="n"><b>${fmt(D.im[i])}</b></td></tr></table>
+    ${dp.length?'<div style="margin-top:.25rem">'+dp.join('<br>')+'</div>':''}${fr?`<div class="band">${fr} work${fr===1?'':'s'} reached for the first time</div>`:''}`;
+  t.style.display='block';
+  let lx=ev.clientX-r.left+14;if(lx+300>r.width)lx=ev.clientX-r.left-310;
+  t.style.left=lx+'px';t.style.top=Math.max(4,ev.clientY-r.top-20)+'px';
+}
+
+// ---------- playhead frame: moves only the clip, the line and the readouts ----------
+function frame(){
+  if(!X)return;if(window.NET)NET.frame();const i=T,{x,y1,bw}=X;
+  $('cliprect').setAttribute('width',String(x(i)+bw/2));
+  $('ph').setAttribute('x1',x(i));$('ph').setAttribute('x2',x(i));
+  $('phdot').setAttribute('cx',x(i));$('phdot').setAttribute('cy',y1(D.im[i]));
+  $('daylabel').textContent=`${D.days[i]} · day ${i-R.a+1} of ${R.b-R.a+1}`;
+  cards(i);events(i);
+}
+function cards(i){
+  const a=R.a,act=SRC.filter(s=>ON[s.k]);
+  const start=a>0?D.im[a-1]:0,inRange=D.im[i]-start;
+  const hum=(ON.human?D.cumS[1][i]:0)+(ON.place?D.cumS[2][i]:0),share=D.im[i]?hum/D.im[i]:0;
+  const deps=D.deps.filter(d=>D.dix.get(d.day)<=i),dr=deps.filter(d=>D.dix.get(d.day)>=a);
+  const reached=D.firsts.filter(f=>D.dix.get(f.day)<=i&&ON[f.k]).length;
+  const ph=D.phase[i],raisedIn=D.raised.slice(a,i+1).some(Boolean);
+  const C=[
+    ['IM to date',fmt(D.im[i]),D.days[i]],
+    ['Added that day','+'+fmt(D.added[i]),`<span class="chip c-${ph}">${ph==='IVA'?'IVA PEAK':ph}</span>`],
+    ['Added in range','+'+fmt(inRange),`from ${D.days[a]} · start ${fmt(start)}`],
+    ['Level','+'+fmt(D.level[i])+'/day',raisedIn?'<span class="chip c-RAISED">LEVEL RAISED</span> in range':'<span class="chip c-LOCKED">LOCKED · HOLDING</span>'],
+    ['Human share',pct(share),`AI and clones ${pct(1-share)}`],
+    ['Works reached',fmt(reached),'first contact to date'],
+    ['Deposits',fmt(deps.length),`${dr.length} in range`]];
+  $('cards').innerHTML=C.map(([k,v,s])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+}
+function events(i){
+  const a=R.a,out=[];
+  D.deps.forEach(d=>{const j=D.dix.get(d.day);if(j<a||j>i)return;
+    out.push([d.day,0,d.type==='git'?`<span style="color:#f472b6">${d.lean?'▲':'△'}</span> Deposit · ${esc(d.repo)} · ${d.commits} commit${d.commits===1?'':'s'}, ${d.files} files${d.lean?`, ${d.lean} .lean`:''}`:`<span style="color:#34d399">◆</span> Published on figshare · ${esc(d.title)}`]);});
+  for(let j=a;j<=i;j++){if(D.raised[j])out.push([D.days[j],1,`<span class="chip c-RAISED">LEVEL RAISED</span> typical day +${fmt(D.level[j])}`]);
+    if(D.phase[j]==='IVA')out.push([D.days[j],2,`<span class="chip c-IVA">IVA PEAK</span> +${fmt(D.added[j])} added`]);}
+  const fr=new Map();D.firsts.forEach(f=>{const j=D.dix.get(f.day);if(j<a||j>i||!ON[f.k])return;fr.set(f.day,(fr.get(f.day)||[]).concat(f));});
+  fr.forEach((l,day)=>out.push([day,3,`<span style="color:#e2e8f0">●</span> First reach · ${l.length===1?esc(l[0].label):l.length+' works'}`]));
+  out.sort((p,q)=>p[0]<q[0]?1:p[0]>q[0]?-1:p[1]-q[1]);
+  $('events').innerHTML=out.length?out.slice(0,250).map(([d,_,h])=>`<div class="ev"><span class="d">${d.slice(5)}</span><span>${h}</span></div>`).join(''):'<p class="band">Nothing yet in this range.</p>';
+}
+
+// ---------- play ----------
+function play(){
+  if(T>=R.b)T=R.a;
+  $('play').textContent='❚❚ Pause';$('play').classList.add('on');
+  const tickMs=()=>+$('speed').value;
+  const step=()=>{if(T>=R.b){stop();return;}T++;$('day').value=String(T);frame();timer=setTimeout(step,tickMs());};
+  frame();timer=setTimeout(step,tickMs());
+}
+function stop(){if(timer)clearTimeout(timer);timer=null;$('play').textContent='▶ Play';$('play').classList.remove('on');}
+
+// ---------- controls ----------
+function legend(){
+  $('legend').innerHTML=SRC.map(s=>`<span class="lg ${ON[s.k]?'':'off'}" data-k="${s.k}"><span class="sw" style="background:${s.col}"></span>${s.label}</span>`).join('')+
+    `<span style="margin-left:.4rem"><span style="color:#f472b6">▲</span> Lean deposit · <span style="color:#f472b6">△</span> other files · <span style="color:#34d399">◆</span> figshare publication · ● first reach · <span style="color:#fde68a">▴</span> IVA peak · ┄ level</span>`;
+  $('legend').querySelectorAll('.lg').forEach(el=>el.onclick=()=>{const k=el.dataset.k;ON[k]=ON[k]?0:1;if(!Object.values(ON).some(Boolean))ON[k]=1;legend();if(D){stop();derive();drawStatic();frame();}});
+}
+legend();
+$('load').onclick=loadAll;
+$('files').addEventListener('change',async ev=>{for(const f of ev.target.files){try{RAW.push({repo:'',d:JSON.parse(await f.text())});}catch(e){}}ev.target.value='';build(true);});
+$('own').addEventListener('change',()=>{if(RAW.length)build(false);});
+$('play').onclick=()=>{if(!D)return;timer?stop():play();};
+$('day').addEventListener('input',()=>{stop();T=+$('day').value;frame();});
+$('back').onclick=()=>{if(!D)return;stop();T=Math.max(R.a,T-1);$('day').value=String(T);frame();};
+$('fwd').onclick=()=>{if(!D)return;stop();T=Math.min(R.b,T+1);$('day').value=String(T);frame();};
+const fromInput=()=>{if(!D)return;const at=s=>{let i=D.dix.get(s);if(i===undefined)i=s<D.days[0]?0:D.days.length-1;return i;};setRange(at($('from').value),at($('to').value),false);};
+$('from').addEventListener('change',fromInput);$('to').addEventListener('change',fromInput);
+document.addEventListener('keydown',ev=>{if(!D||ev.target.tagName==='INPUT'||ev.target.tagName==='SELECT')return;if(ev.code==='Space'){ev.preventDefault();$('play').click();}});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));
+  const nn=b.dataset.v==='nn';$('viewNN').style.display=nn?'':'none';$('viewTL').style.display=nn?'none':'';if(nn&&window.NET)NET.show();});
+loadAll();
+</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+// Neural growth: the same record and playhead as the timeline, drawn as a network that wires itself day by day
+const KINDS=['human','place','ai','cloner'],COL={work:'#f472b6',human:'#22d3ee',place:'#34d399',ai:'#fbbf24',cloner:'#a78bfa'};
+let G=null,SEL=null;
+function cum(e,t){let lo=0,hi=e.pts.length-1,v=0;while(lo<=hi){const m=(lo+hi)>>1;if(e.pts[m][0]<=t){v=e.pts[m][1];lo=m+1;}else hi=m-1;}return v;}
+function rebuild(){
+  if(!D||!RAW.length)return;
+  const own=$('own').value.split(',').map(x=>x.trim().toLowerCase()).filter(Boolean);
+  const nodes=new Map(),edges=new Map(),seen=new Set();
+  const node=(key,label,kind,group)=>{let n=nodes.get(key);if(!n){n={key,label,kind,group,total:0};nodes.set(key,n);}return n;};
+  const add=(d,cKey,cLabel,cKind,wKey,wLabel,wGroup,n,src)=>{if(!n||n<0||!D.dix.has(d))return;
+    const c=node(cKey,dec(cLabel),cKind,null),w=node(wKey,dec(wLabel),'work',wGroup);c.total+=n;w.total+=n;
+    const k=cKey+'\u0001'+wKey;let e=edges.get(k);if(!e){e={a:cKey,b:wKey,days:new Map(),src};edges.set(k,e);}e.days.set(d,(e.days.get(d)||0)+n);};
+  RAW.forEach(({repo,d})=>{
+    const kind=kindOfFile(d);if(!kind)return;
+    const sig=kind+(kind==='traffic'?':'+(d.repo||repo):kind==='cloudflare'?':'+Object.keys(d.zones).join(','):'');if(seen.has(sig))return;seen.add(sig);
+    if(kind==='traffic'){const name=(d.repo||repo).split('/')[1],ci=d.ci_runs||{};
+      Object.entries(d.clones||{}).forEach(([day,x])=>add(day,'cloner:'+name,'Outside cloners · '+name,'cloner','repo:'+name,'Repository · '+name,'repository',Math.max(0,x.count-(ci[day]||0)),'GitHub'));}
+    if(kind==='cloudflare')Object.entries(d.zones).forEach(([zone,z])=>Object.entries(z.days).forEach(([day,x])=>(x.paths||[]).forEach(p=>{
+      const meta=(d.crawlers||{})[p.crawler]||{};add(day,'ai:'+p.crawler,(meta.operator?meta.operator+' · ':'')+p.crawler,'ai','page:'+zone+p.path,zone+p.path,'site page',p.count,'Cloudflare');})));
+    if(kind==='philpeople')d.rows.forEach(([day,t,o,x,r,n])=>{const org=d.origins[o];if(own.includes(String(org).toLowerCase()))return;
+      const doc=d.docs[x];add(day,'human:'+org,org,'human',doc==='Profile'?'profile':'paper:'+doc,doc==='Profile'?'PhilPeople profile':doc,'paper',n,'PhilPeople');});
+    if(kind==='figshare')Object.entries(d.geo||{}).forEach(([day,places])=>Object.entries(places).forEach(([pl,cell])=>{const [co,ci]=pl.split('|');
+      if(own.includes((ci||'').toLowerCase()))return;
+      Object.entries(cell._items||{}).forEach(([k,n])=>{const id=k.split(':')[0],it=(d.items||{})[id]||{};
+        add(day,'place:'+pl,(ci&&ci!=='Unknown'?ci+', ':'')+co,'place','item:'+id,it.title||('figshare item '+id),'figshare item',n,'figshare');});}));
+  });
+  // keep the strongest works and identities; gather the rest into one neuron per kind
+  const all=[...nodes.values()],works=all.filter(n=>n.kind==='work').sort((a,b)=>b.total-a.total),cons=all.filter(n=>n.kind!=='work').sort((a,b)=>b.total-a.total);
+  const keepW=new Set(works.slice(0,180).map(n=>n.key)),keepC=new Set(cons.slice(0,420).map(n=>n.key));
+  const other=k=>'other:'+k;
+  KINDS.forEach(k=>nodes.set(other(k),{key:other(k),label:'Other '+({human:'human readers',place:'download places',ai:'AI operators',cloner:'outside cloners'})[k],kind:k,group:null,total:0}));
+  nodes.set('other:work',{key:'other:work',label:'Other works',kind:'work',group:'other',total:0});
+  const E=new Map();
+  edges.forEach(e=>{const a=keepC.has(e.a)?e.a:other(nodes.get(e.a).kind),b=keepW.has(e.b)?e.b:'other:work';
+    const k=a+'\u0001'+b;let f=E.get(k);if(!f){f={a,b,days:new Map(),src:e.src};E.set(k,f);}e.days.forEach((n,d)=>f.days.set(d,(f.days.get(d)||0)+n));});
+  const EL=[...E.values()].map(e=>{const pts=[...e.days.entries()].map(([d,n])=>[D.dix.get(d),n]).sort((x,y)=>x[0]-y[0]);let c=0;pts.forEach(p=>{c+=p[1];p[1]=c;});return{a:e.a,b:e.b,src:e.src,pts,total:c,born:pts[0][0]};});
+  const used=new Set();EL.forEach(e=>{used.add(e.a);used.add(e.b);});
+  const N=[...nodes.values()].filter(n=>used.has(n.key)),byKey=new Map(N.map(n=>[n.key,n]));
+  N.forEach(n=>{n.total=0;n.born=1e9;});EL.forEach(e=>[e.a,e.b].forEach(k=>{const n=byKey.get(k);n.total+=e.total;n.born=Math.min(n.born,e.born);}));
+  layout(N,EL,byKey);
+  // edges as gently bowed synapses toward the core
+  EL.forEach(e=>{const a=byKey.get(e.a).p,b=byKey.get(e.b).p,m=a.clone().add(b).multiplyScalar(0.5);m.multiplyScalar(0.82);
+    const c=new THREE.QuadraticBezierCurve3(a,m,b);e.curve=c.getPoints(6);});
+  G={N,EL,byKey};SEL=null;sideRender();
+  if(inited){buildMeshes();frame();}
+}
+function layout(N,EL,byKey){
+  const order=['repository','site page','paper','figshare item','other'];
+  const W=N.filter(n=>n.kind==='work').sort((a,b)=>(order.indexOf(a.group)-order.indexOf(b.group))||(b.total-a.total));
+  const ga=Math.PI*(3-Math.sqrt(5)),L=W.length;
+  const hash=s=>{let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}return h;};
+  W.forEach((n,i)=>{const y=1-2*(i+0.5)/L,r=Math.sqrt(1-y*y),th=ga*i,h=hash(n.key),R=0.8+((h%1000)/1000)*0.45;n.u=[Math.cos(th)*r,y,Math.sin(th)*r];n.R=R;});
+  const R={cloner:1.6,human:2.1,place:2.55,ai:3.05};
+  KINDS.forEach(k=>N.filter(n=>n.kind===k).forEach((n,i)=>{let x=0,y=0,z=0;
+    EL.forEach(e=>{if(e.a===n.key){const w=byKey.get(e.b),m=Math.log(1+e.total);x+=w.u[0]*m;y+=w.u[1]*m;z+=w.u[2]*m;}});
+    const h=hash(n.key),j=((h%1000)/1000-0.5)*0.5,j2=(((h>>10)%1000)/1000-0.5)*0.5,jr=(((h>>20)%1000)/1000-0.5)*0.35;
+    let l=Math.hypot(x,y,z);if(l<1e-6){const th=ga*i;x=Math.cos(th);y=0;z=Math.sin(th);l=1;}
+    x=x/l+j;y=y/l+j2;z=z/l+(j-j2)/2;l=Math.hypot(x,y,z);n.u=[x/l,y/l,z/l];n.R=R[k]+jr;}));
+  N.forEach(n=>{n.p=new THREE.Vector3(n.u[0]*n.R,n.u[1]*n.R,n.u[2]*n.R);});
+}
+// ---------- scene: renders only on a playhead change or while the user moves the view ----------
+let inited=false,renderer,scene,camera,controls,core,halo,syn=null,fire=null,selL=null;
+const host=$('stage3d'),dummy=new THREE.Object3D(),tc=new THREE.Color();
+function init(){
+  if(inited)return;inited=true;
+  renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));host.appendChild(renderer.domElement);
+  scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(45,1,0.05,100);camera.position.set(0,1.4,8.2);
+  controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=false;controls.autoRotate=false;controls.minDistance=1.2;controls.maxDistance=20;
+  controls.addEventListener('change',render);
+  window.addEventListener('resize',()=>{if($('viewNN').style.display!=='none')resize();});
+  pick();
+}
+function resize(){const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);renderer.domElement.style.width=w+'px';renderer.domElement.style.height=h+'px';camera.aspect=w/h;camera.updateProjectionMatrix();render();}
+function render(){if(inited)renderer.render(scene,camera);}
+function buildMeshes(){
+  [core,halo].forEach(o=>{if(o){scene.remove(o);o.dispose();}});
+  const n=G.N.length;
+  core=new THREE.InstancedMesh(new THREE.SphereGeometry(1,16,12),new THREE.MeshBasicMaterial({}),n);
+  halo=new THREE.InstancedMesh(new THREE.SphereGeometry(1,16,12),new THREE.MeshBasicMaterial({transparent:true,opacity:0.16,blending:THREE.AdditiveBlending,depthWrite:false}),n);
+  [core,halo].forEach(m=>{m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);scene.add(m);});
+}
+const lineObj=(p,c,op)=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setAttribute('color',new THREE.Float32BufferAttribute(c,3));
+  return new THREE.LineSegments(g,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:op,depthWrite:false,blending:THREE.AdditiveBlending}));};
+function frame(){
+  if(!G||!inited||$('viewNN').style.display==='none')return;
+  const t=T,vis=n=>n.kind==='work'||ON[n.kind];
+  const val=new Map(),today=new Map();G.N.forEach(n=>{val.set(n.key,0);today.set(n.key,0);});
+  const live=[];G.EL.forEach(e=>{const a=G.byKey.get(e.a);if(!vis(a))return;const v=cum(e,t);if(!v)return;const p=t>0?cum(e,t-1):0,d=v-p;
+    val.set(e.a,val.get(e.a)+v);val.set(e.b,val.get(e.b)+v);if(d>0){today.set(e.a,today.get(e.a)+d);today.set(e.b,today.get(e.b)+d);}live.push([e,v,d]);});
+  const maxV=Math.max(1,...val.values());G.val=val;
+  const partners=new Set();if(SEL)G.EL.forEach(e=>{if(e.a===SEL)partners.add(e.b);if(e.b===SEL)partners.add(e.a);});
+  G.N.forEach((n,i)=>{const v=val.get(n.key),on=v>0&&vis(n),r=on?0.014+0.08*Math.log(1+v)/Math.log(1+maxV):0,act=today.get(n.key)>0,born=n.born===t;
+    dummy.position.copy(n.p);dummy.scale.setScalar(r);dummy.updateMatrix();core.setMatrixAt(i,dummy.matrix);
+    dummy.scale.setScalar(on?r*(act?3.4:2.2):0);dummy.updateMatrix();halo.setMatrixAt(i,dummy.matrix);
+    tc.set(COL[n.kind]);if(born)tc.set('#ffffff');if(SEL&&n.key!==SEL&&!partners.has(n.key))tc.multiplyScalar(0.18);if(SEL===n.key)tc.set('#ffffff');
+    core.setColorAt(i,tc);if(!act&&!born)tc.multiplyScalar(0.45);halo.setColorAt(i,tc);});
+  [core,halo].forEach(m=>{m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;});
+  [syn,fire,selL].forEach(o=>{if(o){scene.remove(o);o.geometry.dispose();o.material.dispose();}});
+  const P=[],C=[],FP=[],FC=[],SP=[],SC=[];
+  const seg=(pts,arrP,arrC,col,k)=>{for(let j=0;j<pts.length-1;j++){const a=pts[j],b=pts[j+1];arrP.push(a.x,a.y,a.z,b.x,b.y,b.z);for(let q=0;q<2;q++)arrC.push(col.r*k,col.g*k,col.b*k);}};
+  live.forEach(([e,v,d])=>{const a=G.byKey.get(e.a);tc.set(COL[a.kind]);const sel=SEL&&(SEL===e.a||SEL===e.b);
+    if(sel){seg(e.curve,SP,SC,tc,1);return;}
+    if(d>0){const w=new THREE.Color('#ffffff').lerp(tc,0.35);seg(e.curve,FP,FC,w,Math.min(1,0.45+Math.log(1+d)/6));}
+    else seg(e.curve,P,C,tc,Math.min(0.8,0.1+Math.log(1+v)/11));});
+  syn=lineObj(P,C,SEL?0.05:0.5);scene.add(syn);
+  fire=lineObj(FP,FC,SEL?0.12:0.95);scene.add(fire);
+  selL=lineObj(SP,SC,0.95);scene.add(selL);
+  render();if(SEL)sideRender();
+}
+// ---------- picking: hover labels, click selects; neither moves the view ----------
+function pick(){
+  const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();let down=null;
+  const hit=ev=>{if(!core)return null;const r=renderer.domElement.getBoundingClientRect();ptr.x=((ev.clientX-r.left)/r.width)*2-1;ptr.y=-((ev.clientY-r.top)/r.height)*2+1;
+    ray.setFromCamera(ptr,camera);for(const x of ray.intersectObject(core)){const n=G.N[x.instanceId];if(n&&G.val.get(n.key)>0)return n;}return null;};
+  const el=renderer.domElement;
+  el.addEventListener('pointerdown',ev=>{down={x:ev.clientX,y:ev.clientY};});
+  el.addEventListener('pointerup',ev=>{if(down&&Math.hypot(ev.clientX-down.x,ev.clientY-down.y)<4){const n=hit(ev);SEL=n?(SEL===n.key?null:n.key):null;frame();sideRender();}down=null;});
+  el.addEventListener('pointermove',ev=>{if(ev.buttons)return;const n=hit(ev),tp=$('tip3d');if(!n){tp.style.display='none';return;}const r=host.getBoundingClientRect();
+    tp.innerHTML=`<b>${esc(n.label)}</b><br><span class="band">${fmt(G.val.get(n.key))} contacts to ${D.days[T]} · first ${D.days[n.born]||'—'}</span>`;
+    tp.style.left=(ev.clientX-r.left+14)+'px';tp.style.top=(ev.clientY-r.top+14)+'px';tp.style.display='block';});
+  el.addEventListener('pointerleave',()=>{$('tip3d').style.display='none';});
+}
+function sideRender(){
+  const S=$('side3d');
+  if(!G||!SEL){S.innerHTML=`<h3>Select a neuron</h3><p class="band">Click any work or identity to see its record to the playhead: every connection, its source and its first contact. Works (pink, matching the deposit markers) sit at the core; each kind of identity forms its own layer around them, and every line is a synapse, one L = (4)(2) contact pair. Lines that fire white carried contacts on the playhead day; a white neuron made its first contact that day.</p>`+(G?`<p class="band" style="margin-top:.5rem">${fmt(G.N.length)} neurons · ${fmt(G.EL.length)} synapses across the record.</p>`:'');return;}
+  const n=G.byKey.get(SEL),t=T,part=[];let tot=0;
+  G.EL.forEach(e=>{if(e.a!==SEL&&e.b!==SEL)return;const v=cum(e,t);if(!v)return;tot+=v;part.push([G.byKey.get(e.a===SEL?e.b:e.a),v,e.src]);});
+  part.sort((a,b)=>b[1]-a[1]);
+  const kn={work:'Work · '+(n.group||''),human:'Human reader',place:'Download place',ai:'AI operator',cloner:'Outside cloners'}[n.kind];
+  S.innerHTML=`<h3>${esc(n.label)}</h3><p class="band">${esc(kn)} · first contact ${D.days[n.born]||'—'}</p>
+    <div class="cards" style="grid-template-columns:1fr 1fr;margin:.6rem 0"><div class="card"><div class="k">Contacts to date</div><div class="v">${fmt(tot)}</div><div class="s">${D.days[t]}</div></div><div class="card"><div class="k">Synapses</div><div class="v">${fmt(part.length)}</div><div class="s">${n.kind==='work'?'identities that reached it':'works it reached'}</div></div></div>
+    <table>${part.slice(0,60).map(([p,v,src])=>`<tr><td><span class="sw" style="background:${COL[p.kind]};border-radius:50%"></span>${esc(p.label)}<div class="band">${esc(src)}</div></td><td class="n">${fmt(v)}</td></tr>`).join('')}</table>`;
+}
+function show(){init();if(G&&!core)buildMeshes();resize();frame();}
+window.NET={rebuild,frame,show};
+if(D)rebuild();
+</script>
+</body>
+</html>
