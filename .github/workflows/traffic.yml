@@ -2,6 +2,7 @@ name: Traffic snapshot
 
 # Saves GitHub traffic (views, clones, referrers, paths, repo stats) once a day
 # to traffic.json on the `traffic` branch, so history outlasts GitHub's 14-day window.
+# Saves figshare views and downloads for author 26475337 (per item, per day, by place) to figshare.json.
 # Saves Cloudflare site analytics for uuia.app (requests, visits,
 # AI and search crawlers by name, their top paths) to cloudflare.json on the same branch.
 # The data branch keeps snapshot commits out of main and out of CI ([skip ci]).
@@ -35,6 +36,7 @@ jobs:
         run: |
           cp .github/scripts/traffic_snapshot.py "$RUNNER_TEMP/traffic_snapshot.py"
           cp .github/scripts/cloudflare_snapshot.py "$RUNNER_TEMP/cloudflare_snapshot.py"
+          cp .github/scripts/figshare_snapshot.py "$RUNNER_TEMP/figshare_snapshot.py"
           if git ls-remote --exit-code --heads origin traffic >/dev/null; then
             git fetch origin traffic
             git checkout traffic
@@ -56,12 +58,20 @@ jobs:
           CF_BACKFILL: ${{ inputs.cf_backfill || '2' }}
         run: python3 "$RUNNER_TEMP/cloudflare_snapshot.py"
 
+      - name: Collect figshare snapshot
+        env:
+          FIGSHARE_AUTHOR: "26475337"
+          FIGSHARE_ORCID: 0009-0005-5313-7443
+          FIGSHARE_ITEMS: "35054824,35081008,35083996,35111740,35111782,35111812,35111830,35111848,35111887,35111914,35111935,35111971,35111983,35112034,35112037,35112040,35112043,35112046,35112052,35112055,35112058,35112064,35112067,35112073,35112076,35112079,35112082,35112085,35112088,35112091,35112094,35112097,35112100,35112103,35112106,35112109,35112112,35112115,35112118,35112121"
+        run: python3 "$RUNNER_TEMP/figshare_snapshot.py"
+
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add traffic.json
           if [ -f cloudflare.json ]; then git add cloudflare.json; fi
+          if [ -f figshare.json ]; then git add figshare.json; fi
           if git diff --cached --quiet; then
             echo "No change."
           else
