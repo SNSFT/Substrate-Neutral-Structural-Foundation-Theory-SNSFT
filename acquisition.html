@@ -110,7 +110,8 @@ footer p{margin-bottom:.5rem}
   <div class="tablewrap"><table id="idtable"><thead><tr><th>Axis</th><th>Measure</th><th>Source</th><th>Baseline</th><th>Activated</th><th>Change</th><th>Notches</th></tr></thead><tbody></tbody></table></div>
   <div class="cards" id="idcards" style="margin-top:1rem"></div>
   <div class="formula">notch = TL / 10 = 1.36899099984016 % change against the axis's own baseline · 10 notches = 1 TL
-net load = ΔB − ΔP · 10+ SHATTER · 9 IVA PEAK · 1–8 LOCKED (FALSE LOCK when N falls 6+ notches) · 0 AT REST · below 0 UNLOADING
+reach = all interactions per day, every source with data in both periods · ≥ +TL BASELINE RAISED · within ±TL LOCKED · HOLDING · ≤ −TL BASELINE SETTLED
+SHATTER only on capacity failure: server errors (5xx) at TL or more of requests in the activated period
 per-day measures are averaged over the days in each period that the source covers, so periods of different length, and sources with different start dates, compare directly</div>
 </section>
 
@@ -779,13 +780,13 @@ function idMeasures(f,t){
     let ret=0,nw=0;orig.forEach(o=>prior.has(o)?ret++:nw++);let ni=0;instNow.forEach(o=>{if(!instPrior.has(o))ni++;});
     out.push({ax:'P',m:'works in the record',src:'PhilPeople',v:works.size,main:1});
     out.push({ax:'N',m:'returning origins per day',src:'PhilPeople',v:rate(ret,days),main:1});
-    out.push({ax:'B',m:'views per day',src:'PhilPeople',v:rate(W.reduce((a,x)=>a+x.n,0),days),main:1});
+    out.push({ax:'B',m:'views per day',src:'PhilPeople',v:rate(W.reduce((a,x)=>a+x.n,0),days)});
     out.push({ax:'A',m:'new origins per day',src:'PhilPeople',v:rate(nw,days),main:1});
     out.push({ax:'A',m:'new institutions per day',src:'PhilPeople',v:rate(ni,days)});}
   if(DATA){const c=DATA.clones||{},ci=DATA.ci_runs||{},pu=DATA.pushes||{};let cl=0,lean=0;
     Object.entries(c).forEach(([d,x])=>{if(inR(d))cl+=Math.max(0,x.count-(ci[d]||0));});
     Object.entries(pu).forEach(([d,x])=>{if(d<=t)lean+=x.lean_files||0;});
-    out.push({ax:'P',m:'.lean deposits in the record',src:'GitHub '+(DATA.repo||''),v:lean});
+    out.push({ax:'P',m:'.lean deposits in the record',src:'GitHub '+(DATA.repo||''),v:lean,first:Object.keys(pu).sort()[0]||null});
     out.push({ax:'B',m:'outside clones per day',src:'GitHub '+(DATA.repo||''),v:rate(cl,cover(Object.keys(c)))});}
   if(CF){const z=Object.keys(CF.zones||{});let ok=0,as=0,vi=0;const ops=new Set(),opsPrior=new Set();
     z.forEach(n=>Object.entries(CF.zones[n].days).forEach(([d,x])=>{Object.entries(x.crawlers||{}).forEach(([k,v])=>{if(!v.ok)return;const op=(CF.crawlers[k]||{}).operator||k;
@@ -807,28 +808,52 @@ function idMeasures(f,t){
     out.push({ax:'A',m:'new countries',src:'figshare',v:nc});}
   return out;
 }
+// every interaction from every source, counted only over sources with data in both periods
+function idCombined(bf,bt,af,at){
+  const S=idDaySources(),use=[];
+  S.forEach(x=>{const k=Object.keys(x.m).sort();if(k.length&&k[0]<=bt&&k[k.length-1]>=af)use.push(x);});
+  const per=(x,f,t)=>{const k=Object.keys(x.m).filter(d=>d>=f&&d<=t);return k.length?k.reduce((a,d)=>a+(x.m[d]||0),0)/k.length:0;};
+  const b=use.reduce((a,x)=>a+per(x,bf,bt),0),a=use.reduce((s2,x)=>s2+per(x,af,at),0);
+  let fail=null;const site=S.find(x=>x.fail);
+  if(site){let f5=0,rq=0;Object.keys(site.rq).forEach(d=>{if(d>=af&&d<=at){f5+=site.fail[d]||0;rq+=site.rq[d]||0;}});if(rq)fail=f5/rq;}
+  return{b:use.length?b:null,a:use.length?a:null,src:use.map(x=>x.k).join(' · ')||'no source covers both periods',fail};
+}
+function idFirst(src){
+  const k=src.split(' ')[0],first=a=>a.length?a.sort()[0]:null;
+  if(k==='PhilPeople'&&PP)return first(PP.rows.map(r=>r[0]));
+  if(k==='GitHub'&&DATA)return first(Object.keys(DATA.clones||{}));
+  if(k==='Cloudflare'&&CF)return first([].concat(...Object.values(CF.zones||{}).map(z=>Object.keys(z.days))));
+  if(k==='figshare'&&FS)return first(Object.keys(FS.days||{}));
+  return null;
+}
 function renderID(){
   renderIDDay();
   const r=idDefaults();if(!r){$('idsec').hidden=true;return;}
   if(!$('ato').value){idPreset('month');return;}
   const bf=$('bfrom').value,bt=$('bto').value,af=$('afrom').value,at=$('ato').value;
-  const B=idMeasures(bf,bt),A=idMeasures(af,at);
-  const rows=B.map((b,i)=>{const a=A[i],ch=b.v>0&&a.v!==null?(a.v-b.v)/b.v:null;return{...b,a:a.v,ch,n:ch===null?null:ch/NOTCH};});
+  const B=idMeasures(bf,bt),A=idMeasures(af,at),C=idCombined(bf,bt,af,at);
+  B.forEach(x=>{const f=x.first||idFirst(x.src);if(f&&f>bt)x.v=null;});
+  B.push({ax:'B',m:'all interactions per day',src:C.src,v:C.b,main:1});A.push({ax:'B',m:'all interactions per day',src:C.src,v:C.a,main:1});
+  const rows=B.map((b,i)=>{const a=A[i],ch=b.v!==null&&b.v>0&&a.v!==null?(a.v-b.v)/b.v:null;return{...b,a:a.v,ch,n:ch===null?null:ch/NOTCH};});
   const order={N:0,P:1,B:2,A:3};rows.sort((x,y)=>order[x.ax]-order[y.ax]||(y.main||0)-(x.main||0));
   const f2=v=>v===null||v===undefined?'—':v>=1000?fmt(v):v>=100?v.toFixed(1):v.toFixed(2);
   $('idtable').tBodies[0].innerHTML=rows.map(x=>`<tr${x.main?' style="font-weight:600"':''}><td class="mono">${x.ax}</td><td>${esc(x.m)}${x.main?' <span class="band">· axis</span>':''}</td><td class="band">${esc(x.src)}</td><td class="n">${f2(x.v)}</td><td class="n">${f2(x.a)}</td><td class="n">${x.ch===null?'—':(x.ch>=0?'+':'')+(x.ch*100).toFixed(1)+'%'}</td><td class="n">${x.n===null?'—':(x.n>=0?'+':'')+x.n.toFixed(1)}</td></tr>`).join('');
   const ax=k=>rows.find(x=>x.ax===k&&x.main);
   const P=ax('P'),N=ax('N'),Bx=ax('B'),Ax=ax('A');
-  if(P&&Bx&&P.n!==null&&Bx.n!==null){
-    const net=Math.round(Bx.n-P.n),nEro=N&&N.n!==null&&N.n<=-6;
-    const ph=net>=10?'SHATTER':net===9?(nEro?'DEPLETED IVA':'IVA PEAK'):net>0?(nEro?'FALSE LOCK':'LOCKED · LOADED'):net===0?'AT REST':'UNLOADING';
-    const cls=net>=10?'shatter':net===9?'iva':net>0?'locked':'noble';
+  if(Bx&&Bx.ch!==null){
+    // reach is read against the established baseline: growth raises it, a drop settles it,
+    // and only capacity failure (server errors at TL or more of requests) reads SHATTER
+    const g=Bx.ch;let ph,cls;
+    if(C.fail!==null&&C.fail>=TL){ph='SHATTER';cls='shatter';}
+    else if(g>=TL){ph='BASELINE RAISED';cls='locked';}
+    else if(g<=-TL){ph='BASELINE SETTLED';cls='noble';}
+    else{ph='LOCKED · HOLDING';cls='locked';}
     const nState=!N||N.n===null?'—':N.n<=-6?'N ERODING':N.n>=6?'N RISING':'N HOLDING';
-    const tl=x=>x===null?'—':((x>=0?'+':'')+(x/10).toFixed(2)+' TL');
+    const tl=x=>x===null||x===undefined?'—':((x>=0?'+':'')+(x/10).toFixed(2)+' TL');
     $('idcards').innerHTML=[
-      ['N channel · read first',nState,N?`${tl(N.n)} · ${(N.n>=0?'+':'')+N.n.toFixed(1)} notches`:''],
-      ['Net load ΔB − ΔP',`${net>=0?'+':''}${net} notches`,`<span class="ph ${cls}">${ph}</span> ${(net/10).toFixed(1)} TL`],
-      ['ΔP',P?tl(P.n):'—','what is built'],['ΔB',Bx?tl(Bx.n):'—','coupling'],['ΔA',Ax?tl(Ax.n):'—','response']
+      ['N channel · read first',nState,N&&N.n!==null?`${tl(N.n)} · ${(N.n>=0?'+':'')+N.n.toFixed(1)} notches`:''],
+      ['Reach · every source',`${g>=0?'+':''}${(g*100).toFixed(1)}%`,`<span class="ph ${cls}">${ph}</span> ${tl(Bx.n)}${C.fail!==null?` · ${(C.fail*100).toFixed(2)}% server errors`:''}`],
+      ['ΔP',P?tl(P.n):'—','what is built'],['ΔB',tl(Bx.n),'all interactions'],['ΔA',Ax?tl(Ax.n):'—','response']
     ].map(([k,v,s2])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s2}</div></div>`).join('');
   } else $('idcards').innerHTML='';
   $('idnote').textContent=`Baseline ${bf} – ${bt} (${dspan(bf,bt)} days) · activated ${af} – ${at} (${dspan(af,at)} days) · record runs ${r.first} – ${r.last}. Every stored row is kept; the dates only choose which rows each period reads. Bold rows are the axis measures; the rest are the same axis read from other sources.`;
