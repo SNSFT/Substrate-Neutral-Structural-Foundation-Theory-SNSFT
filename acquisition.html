@@ -90,6 +90,7 @@ footer p{margin-bottom:.5rem}
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a traffic.json<input type="file" id="file" accept=".json,application/json" hidden></label>
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a cloudflare.json<input type="file" id="cffile" accept=".json,application/json" hidden></label>
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a philpeople.json<input type="file" id="ppfile" accept=".json,application/json" hidden></label>
+    <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a figshare.json<input type="file" id="fsfile" accept=".json,application/json" hidden></label>
   </div>
   <p class="help" id="msg"></p>
 </section>
@@ -110,7 +111,7 @@ footer p{margin-bottom:.5rem}
   <div class="cards" id="idcards" style="margin-top:1rem"></div>
   <div class="formula">notch = TL / 10 = 1.36899099984016 % change against the axis's own baseline · 10 notches = 1 TL
 net load = ΔB − ΔP · 10+ SHATTER · 9 IVA PEAK · 1–8 LOCKED (FALSE LOCK when N falls 6+ notches) · 0 AT REST · below 0 UNLOADING
-per-day measures are averaged over the days in each period, so periods of different length compare directly</div>
+per-day measures are averaged over the days in each period that the source covers, so periods of different length, and sources with different start dates, compare directly</div>
 </section>
 
 <section id="summary" hidden>
@@ -205,6 +206,28 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
   <div class="note">How to read this. A visit is a person (or program) arriving at the site from somewhere else; a page view is a page loaded; unique visitors are distinct addresses in a day, so one household on one connection counts once. Cloudflare records no names, accounts or cookies. Refused probes are automated scanners asking for files such as /.env or /.git/config that hold passwords on badly configured servers; Cloudflare refuses them and these sites have no such files. Placement uses the same 7-day median reference and TL bands as the other tables, applied to visits. A table that stays empty is a field Cloudflare does not provide on this plan.</div>
 </section>
 
+<section id="fssec" hidden>
+  <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem">
+    <h2 style="margin:0">figshare usage</h2>
+    <div class="ranges" id="fsranges" role="group" aria-label="Date range"></div>
+  </div>
+  <div class="cards" id="fscards"></div>
+  <ul class="plain" id="fsplain" style="margin-top:1rem"></ul>
+  <h3 class="band" style="margin:1rem 0 .3rem">Views and downloads per day</h3>
+  <div class="legend">
+    <span><span class="sw" style="background:var(--accent)"></span>downloads</span>
+    <span><span class="sw" style="background:transparent;border-top:2px dashed var(--gold);height:0"></span>views</span>
+  </div>
+  <div id="fschart"></div>
+  <h3 class="band" style="margin:1.2rem 0 .4rem">Items <button class="btn" id="fsmore" style="margin-left:.6rem;padding:.2rem .5rem">Show all items</button></h3>
+  <div class="tablewrap"><table id="fsitems"><thead><tr><th>Item</th><th>DOI</th><th>Published</th><th>Views</th><th>Downloads</th><th>Downloads per view</th></tr></thead><tbody></tbody></table></div>
+  <div class="grid2" style="margin-top:1.2rem">
+    <div><h3 class="band" style="margin-bottom:.4rem">Countries</h3><div class="tablewrap"><table id="fscountries" style="min-width:0"><thead><tr><th>Country</th><th>Views</th><th>Downloads</th></tr></thead><tbody></tbody></table></div></div>
+    <div><h3 class="band" style="margin-bottom:.4rem">Cities</h3><div class="tablewrap"><table id="fscities" style="min-width:0"><thead><tr><th>City</th><th>Views</th><th>Downloads</th></tr></thead><tbody></tbody></table></div></div>
+  </div>
+  <div class="note">How to read this. figshare counts a view each time an item page is opened and a download each time a file is fetched, including fetches that never open the page: direct file links, the API, and indexers. Downloads above views therefore mean files are being pulled directly. Counts come from figshare's public statistics service and are kept day by day, so the record continues past any window figshare shows.</div>
+</section>
+
 <section id="ppsec" hidden>
   <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem">
     <h2 style="margin:0">PhilPapers readership</h2>
@@ -256,7 +279,7 @@ SURGE when s_t ≥ TL       TL = 0.136899099984016 · TL_IVA = 0.88 × TL = 0.12
 
 <footer>
   <div class="wrap">
-    <p><b>Built from:</b> GitHub REST API traffic endpoints (views, clones, popular referrers and paths) and Actions workflow runs · PhilPeople Web Analytics exports (views of the profile and of each paper's PhilPapers page, by origin and referrer) · Cloudflare GraphQL Analytics API (HTTP requests by user agent, response status, path, country, referrer, device, browser, system and cache status; daily page views and unique visitors) · the daily collector workflow (traffic.yml, traffic_snapshot.py, cloudflare_snapshot.py) · Applied Identity Physics Economics reduction (ProofPress) · AIM Validation Series.</p>
+    <p><b>Built from:</b> GitHub REST API traffic endpoints (views, clones, popular referrers and paths) and Actions workflow runs · PhilPeople Web Analytics exports (views of the profile and of each paper's PhilPapers page, by origin and referrer) · figshare statistics service (views and downloads per item, per day and by country and city) · Cloudflare GraphQL Analytics API (HTTP requests by user agent, response status, path, country, referrer, device, browser, system and cache status; daily page views and unique visitors) · the daily collector workflow (traffic.yml, traffic_snapshot.py, cloudflare_snapshot.py, figshare_snapshot.py) · Applied Identity Physics Economics reduction (ProofPress) · AIM Validation Series.</p>
     <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · Identity Physics Corpus DOI 10.17605/OSF.IO/KWTYD · Free to use under the NOHARM invariant, with citation.</p>
     <p class="mono">[9,9,9,9] :: {ANC} · The Manifold is Holding</p>
   </div>
@@ -411,7 +434,7 @@ let CF=null,CFSITE=(()=>{try{return localStorage.getItem('acq-site')||'all';}cat
 const KIND_COL={crawl:'var(--accent)',search:'var(--locked)',assistant:'var(--gold)',preview:'var(--border-2)',archive:'var(--border-2)'};
 const KIND_ORDER=['crawl','search','assistant','preview','archive'];
 const mb=b=>b>=1e6?(b/1e6).toFixed(2)+' MB':b>=1e3?(b/1e3).toFixed(1)+' kB':Math.round(b)+' B';
-function setRange(k){RANGE=k;try{localStorage.setItem('acq-range',RANGE);}catch(_){}if(DATA)render(DATA);if(CF){renderCF(CF);renderUse(CF);}if(PP)renderPP(PP);}
+function setRange(k){RANGE=k;try{localStorage.setItem('acq-range',RANGE);}catch(_){}if(DATA)render(DATA);if(CF){renderCF(CF);renderUse(CF);}if(PP)renderPP(PP);if(FS)renderFS(FS);}
 function cfRows(C){
   const names=Object.keys(C.zones||{}),sites=CFSITE==='all'?names:names.filter(n=>n===CFSITE);
   const ds=new Set();sites.forEach(n=>Object.keys(C.zones[n].days).forEach(d=>ds.add(d)));
@@ -481,7 +504,7 @@ function renderCF(C){
   $('cfsec').hidden=false;
 }
 async function loadCF(repo,br){
-  CF=null;$('cfsec').hidden=true;$('usesec').hidden=true;loadPP(repo,br);
+  CF=null;$('cfsec').hidden=true;$('usesec').hidden=true;loadPP(repo,br);loadFS(repo,br);
   try{const res=await fetch(`https://raw.githubusercontent.com/${repo}/${encodeURIComponent(br)}/cloudflare.json?t=${Date.now()}`,{cache:'no-store'});
     if(res.ok){const C=await res.json();renderCF(C);renderUse(C);rememberRepo(repo,Object.keys(C.zones||{}).join(', '));}}catch(_){}
 }
@@ -702,7 +725,7 @@ $('ppownlist').addEventListener('change',()=>{if(PP)renderPP(PP);});
 const NOTCH=TL/10;
 function dspan(a,b){return Math.round((Date.parse(b)-Date.parse(a))/864e5)+1;}
 function idDefaults(){
-  const days=[];if(PP)PP.rows.forEach(r=>days.push(r[0]));if(DATA)Object.keys(DATA.clones||{}).forEach(d=>days.push(d));
+  const days=[];if(PP)PP.rows.forEach(r=>days.push(r[0]));if(FS)Object.keys(FS.days||{}).forEach(d=>days.push(d));if(DATA)Object.keys(DATA.clones||{}).forEach(d=>days.push(d));
   if(CF)Object.values(CF.zones||{}).forEach(z=>Object.keys(z.days).forEach(d=>days.push(d)));
   days.sort();return days.length?{first:days[0],last:days[days.length-1]}:null;
 }
@@ -711,31 +734,45 @@ function idPreset(p){const r=idDefaults();if(!r)return;const L=r.last;let bf,bt,
   else{const n=+p;af=addDays(L,-(n-1));bt=addDays(af,-1);bf=addDays(bt,-(n-1));}
   $('bfrom').value=bf;$('bto').value=bt;$('afrom').value=af;$('ato').value=at;renderID();}
 function idMeasures(f,t){
-  const out=[],days=dspan(f,t),inR=d=>d>=f&&d<=t;
+  const out=[],inR=d=>d>=f&&d<=t;
+  // a source's per-day rate counts only the days that source covers inside the period
+  const cover=keys=>{const k=keys.filter(Boolean).sort();if(!k.length)return 0;const a=k[0]>f?k[0]:f,b=k[k.length-1]<t?k[k.length-1]:t;return a>b?0:dspan(a,b);};
+  const rate=(x,n)=>n?x/n:null;
   if(PP){const {V}=ppViews(PP);
     const W=V.filter(v=>inR(v.d)),prior=new Set(V.filter(v=>v.d<f&&v.o!=='Unknown location').map(v=>v.o));
     const orig=new Set(W.filter(v=>v.o!=='Unknown location').map(v=>v.o));
     const instNow=new Set(W.filter(v=>INST.test(v.o)).map(v=>v.o)),instPrior=new Set(V.filter(v=>v.d<f&&INST.test(v.o)).map(v=>v.o));
     const works=new Set(V.filter(v=>v.d<=t&&v.doc!=='Profile').map(v=>v.doc));
+    const days=cover(PP.rows.map(r=>r[0]));
     let ret=0,nw=0;orig.forEach(o=>prior.has(o)?ret++:nw++);let ni=0;instNow.forEach(o=>{if(!instPrior.has(o))ni++;});
     out.push({ax:'P',m:'works in the record',src:'PhilPeople',v:works.size,main:1});
-    out.push({ax:'N',m:'returning origins per day',src:'PhilPeople',v:ret/days,main:1});
-    out.push({ax:'B',m:'views per day',src:'PhilPeople',v:W.reduce((a,x)=>a+x.n,0)/days,main:1});
-    out.push({ax:'A',m:'new origins per day',src:'PhilPeople',v:nw/days,main:1});
-    out.push({ax:'A',m:'new institutions per day',src:'PhilPeople',v:ni/days});}
+    out.push({ax:'N',m:'returning origins per day',src:'PhilPeople',v:rate(ret,days),main:1});
+    out.push({ax:'B',m:'views per day',src:'PhilPeople',v:rate(W.reduce((a,x)=>a+x.n,0),days),main:1});
+    out.push({ax:'A',m:'new origins per day',src:'PhilPeople',v:rate(nw,days),main:1});
+    out.push({ax:'A',m:'new institutions per day',src:'PhilPeople',v:rate(ni,days)});}
   if(DATA){const c=DATA.clones||{},ci=DATA.ci_runs||{},pu=DATA.pushes||{};let cl=0,lean=0;
     Object.entries(c).forEach(([d,x])=>{if(inR(d))cl+=Math.max(0,x.count-(ci[d]||0));});
     Object.entries(pu).forEach(([d,x])=>{if(d<=t)lean+=x.lean_files||0;});
     out.push({ax:'P',m:'.lean deposits in the record',src:'GitHub '+(DATA.repo||''),v:lean});
-    out.push({ax:'B',m:'outside clones per day',src:'GitHub '+(DATA.repo||''),v:cl/days});}
+    out.push({ax:'B',m:'outside clones per day',src:'GitHub '+(DATA.repo||''),v:rate(cl,cover(Object.keys(c)))});}
   if(CF){const z=Object.keys(CF.zones||{});let ok=0,as=0,vi=0;const ops=new Set(),opsPrior=new Set();
     z.forEach(n=>Object.entries(CF.zones[n].days).forEach(([d,x])=>{Object.entries(x.crawlers||{}).forEach(([k,v])=>{if(!v.ok)return;const op=(CF.crawlers[k]||{}).operator||k;
       if(inR(d)){ok+=v.ok;ops.add(op);if((CF.crawlers[k]||{}).kind==='assistant')as+=v.ok;}else if(d<f)opsPrior.add(op);});if(inR(d))vi+=x.visits||0;}));
+    const days=cover([].concat(...z.map(n=>Object.keys(CF.zones[n].days))));
     let back=0;ops.forEach(o=>{if(opsPrior.has(o))back++;});
     out.push({ax:'N',m:'AI operators returning',src:'Cloudflare '+z.join(', '),v:back});
-    out.push({ax:'B',m:'crawler requests per day',src:'Cloudflare '+z.join(', '),v:ok/days});
-    out.push({ax:'B',m:'assistant fetches per day',src:'Cloudflare '+z.join(', '),v:as/days});
-    out.push({ax:'B',m:'visits per day',src:'Cloudflare '+z.join(', '),v:vi/days});}
+    out.push({ax:'B',m:'crawler requests per day',src:'Cloudflare '+z.join(', '),v:rate(ok,days)});
+    out.push({ax:'B',m:'assistant fetches per day',src:'Cloudflare '+z.join(', '),v:rate(as,days)});
+    out.push({ax:'B',m:'visits per day',src:'Cloudflare '+z.join(', '),v:rate(vi,days)});}
+  if(FS){let v=0,dl=0;Object.entries(FS.days||{}).forEach(([d,x])=>{if(!inR(d))return;Object.values(x).forEach(c=>{v+=c.v||0;dl+=c.d||0;});});
+    const items=Object.values(FS.items||{}).filter(it=>it.published&&it.published<=t).length;
+    const ctry=new Set(),prior=new Set();Object.entries(FS.geo||{}).forEach(([d,x])=>Object.keys(x).forEach(pl=>{const c=pl.split('|')[0];if(inR(d))ctry.add(c);else if(d<f)prior.add(c);}));
+    let nc=0;ctry.forEach(c=>{if(!prior.has(c))nc++;});
+    const days=cover(Object.keys(FS.days||{}));
+    out.push({ax:'P',m:'items published',src:'figshare',v:items});
+    out.push({ax:'B',m:'views per day',src:'figshare',v:rate(v,days)});
+    out.push({ax:'B',m:'downloads per day',src:'figshare',v:rate(dl,days)});
+    out.push({ax:'A',m:'new countries',src:'figshare',v:nc});}
   return out;
 }
 function renderID(){
@@ -743,9 +780,9 @@ function renderID(){
   if(!$('ato').value){idPreset('month');return;}
   const bf=$('bfrom').value,bt=$('bto').value,af=$('afrom').value,at=$('ato').value;
   const B=idMeasures(bf,bt),A=idMeasures(af,at);
-  const rows=B.map((b,i)=>{const a=A[i],ch=b.v>0?(a.v-b.v)/b.v:null;return{...b,a:a.v,ch,n:ch===null?null:ch/NOTCH};});
+  const rows=B.map((b,i)=>{const a=A[i],ch=b.v>0&&a.v!==null?(a.v-b.v)/b.v:null;return{...b,a:a.v,ch,n:ch===null?null:ch/NOTCH};});
   const order={N:0,P:1,B:2,A:3};rows.sort((x,y)=>order[x.ax]-order[y.ax]||(y.main||0)-(x.main||0));
-  const f2=v=>v>=1000?fmt(v):v>=100?v.toFixed(1):v.toFixed(2);
+  const f2=v=>v===null||v===undefined?'—':v>=1000?fmt(v):v>=100?v.toFixed(1):v.toFixed(2);
   $('idtable').tBodies[0].innerHTML=rows.map(x=>`<tr${x.main?' style="font-weight:600"':''}><td class="mono">${x.ax}</td><td>${esc(x.m)}${x.main?' <span class="band">· axis</span>':''}</td><td class="band">${esc(x.src)}</td><td class="n">${f2(x.v)}</td><td class="n">${f2(x.a)}</td><td class="n">${x.ch===null?'—':(x.ch>=0?'+':'')+(x.ch*100).toFixed(1)+'%'}</td><td class="n">${x.n===null?'—':(x.n>=0?'+':'')+x.n.toFixed(1)}</td></tr>`).join('');
   const ax=k=>rows.find(x=>x.ax===k&&x.main);
   const P=ax('P'),N=ax('N'),Bx=ax('B'),Ax=ax('A');
@@ -766,6 +803,58 @@ function renderID(){
 }
 ['bfrom','bto','afrom','ato'].forEach(id=>$(id).addEventListener('change',renderID));
 $('idpresets').querySelectorAll('button').forEach(b=>b.onclick=()=>idPreset(b.dataset.p));
+
+// ---------- figshare usage ----------
+let FS=null,FSALL=false;
+function fsRows(F){const ds=Object.keys(F.days||{}).sort();if(!ds.length)return[];const days=[];for(let d=ds[0];d<=ds[ds.length-1];d=addDays(d,1))days.push(d);
+  return days.map(d=>{const x=F.days[d]||{};let v=0,dl=0;Object.values(x).forEach(c=>{v+=c.v||0;dl+=c.d||0;});return{d,v,dl,out:dl};});}
+function fsChart(rows){
+  const n=rows.length,W=n<=30?Math.max(900,n*56):Math.max(1100,n*8),H=260,L=56,R=24,T=20,B=46;
+  const max=Math.max(1,...rows.map(r=>Math.max(r.v,r.dl))),bw=(W-L-R)/n,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-v/max);
+  const step=Math.pow(10,Math.floor(Math.log10(max/4)||0));const tick=[1,2,5].map(k=>k*step).find(k=>max/k<=5)||step*10;
+  let g='';for(let v=0;v<=max;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${v}</text>`;
+  rows.forEach((r,i)=>{g+=`<rect x="${X(i)+bw*.15}" y="${Y(r.dl)}" width="${bw*.7}" height="${Y(0)-Y(r.dl)}" fill="var(--accent)"><title>${r.d}: ${r.dl} downloads</title></rect>`;
+    const every=n<=30?Math.max(1,Math.ceil(n/20)):7;
+    if(i%every===0||i===n-1){const dd=r.d.slice(8).replace(/^0/,''),newM=i===0||r.d.slice(5,7)!==rows[i-1].d.slice(5,7);
+      g+=`<text x="${X(i)+bw/2}" y="${H-24}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${dd}</text>`;
+      if(newM)g+=`<text x="${X(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="10.5" fill="var(--text)" font-family="Space Mono,monospace">${new Date(r.d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'})}</text>`;}});
+  g+=`<polyline points="${rows.map((r,i)=>`${(X(i)+bw/2).toFixed(1)},${Y(r.v).toFixed(1)}`).join(' ')}" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="6 4"/>`;
+  rows.forEach((r,i)=>{g+=`<circle cx="${X(i)+bw/2}" cy="${Y(r.v)}" r="3" fill="var(--gold)"><title>${r.d}: ${r.v} views</title></circle>`;});
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${n<=30?Math.min(W,n*40+100):Math.min(W,n*6+100)}px;display:block" role="img" aria-label="figshare downloads per day as bars, views as a dashed line">${g}</svg></div>`;}
+function renderFS(F){
+  FS=F;setTimeout(renderID,0);const full=fsRows(F);if(!full.length){$('fssec').hidden=true;return;}
+  place(full);const sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2],span=full.length;
+  $('fsranges').innerHTML=RANGES.map(([k,l,nd])=>`<button data-k="${k}" class="${k===sel[0]?'on':''}" ${nd!==Infinity&&nd>span*2&&k!==sel[0]?'disabled title="Not enough history yet"':''}>${l}</button>`).join('');
+  $('fsranges').querySelectorAll('button').forEach(b=>b.onclick=()=>setRange(b.dataset.k));
+  const rows=sel[2]===Infinity?full:full.slice(-sel[2]),from=rows[0].d,to=rows[rows.length-1].d;
+  const per={};Object.entries(F.days).forEach(([d,x])=>{if(d<from||d>to)return;Object.entries(x).forEach(([i,c])=>{const p=per[i]||(per[i]={v:0,d:0});p.v+=c.v||0;p.d+=c.d||0;});});
+  const geoC={},geoT={};Object.entries(F.geo||{}).forEach(([d,x])=>{if(d<from||d>to)return;Object.entries(x).forEach(([pl,c])=>{const [co,ci]=pl.split('|');
+    const a=geoC[co]||(geoC[co]={k:co,v:0,d:0});a.v+=c.v||0;a.d+=c.d||0;const b=geoT[pl]||(geoT[pl]={k:ci+', '+co,v:0,d:0});b.v+=c.v||0;b.d+=c.d||0;});});
+  const V=rows.reduce((a,r)=>a+r.v,0),D=rows.reduce((a,r)=>a+r.dl,0),items=Object.keys(F.items||{}).length;
+  const tk=Object.keys(F.totals||{}).sort().pop(),tot=tk?F.totals[tk]:null;
+  $('fscards').innerHTML=[
+    ['Views',fmt(V),`${short(from)} – ${short(to)}`],['Downloads',fmt(D),'files fetched'],
+    ['Downloads per view',V?(D/V).toFixed(2):'—','above 1 = direct file pulls'],
+    ['Items',fmt(items),'published under your author record'],
+    ['Countries',fmt(Object.keys(geoC).length),`${fmt(Object.keys(geoT).length)} cities`],
+    ['figshare totals',tot?`${fmt(tot.views)} · ${fmt(tot.downloads)}`:'—',tot?`views · downloads as figshare shows them, ${tk}`:'']
+  ].map(([k,v,s2])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s2}</div></div>`).join('');
+  const IT=Object.entries(per).map(([i,p])=>({i,...p,...(F.items[i]||{})})).sort((a,b)=>(b.d+b.v)-(a.d+a.v));
+  const C=Object.values(geoC).sort((a,b)=>(b.v+b.d)-(a.v+a.d)),T2=Object.values(geoT).sort((a,b)=>(b.v+b.d)-(a.v+a.d));
+  const pl=[];pl.push(`${fmt(V)} views and ${fmt(D)} downloads across ${fmt(IT.length)} items over ${rows.length} days${V?`, ${(D/V).toFixed(2)} downloads for every view`:''}.`);
+  if(IT.length)pl.push('Most used: '+IT.slice(0,5).map(x=>{const t=x.title||x.i;return `${esc(t.length>64?t.slice(0,62)+'…':t)} (${fmt(x.v)} views, ${fmt(x.d)} downloads)`;}).join(' · ')+'.');
+  if(C.length)pl.push('Top countries: '+C.slice(0,6).map(c=>`${esc(c.k)} ${fmt(c.v+c.d)}`).join(' · ')+'.');
+  $('fsplain').innerHTML=pl.map(x=>`<li>${x}</li>`).join('');
+  $('fschart').innerHTML=fsChart(rows);
+  $('fsmore').textContent=FSALL?'Show top 15':`Show all ${IT.length} items`;
+  $('fsitems').tBodies[0].innerHTML=IT.slice(0,FSALL?IT.length:15).map(x=>`<tr><td>${x.url?`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title||x.i)}</a>`:esc(x.title||x.i)}</td><td class="mono">${esc(x.doi||'')}</td><td class="mono">${esc(x.published||'')}</td><td class="n">${fmt(x.v)}</td><td class="n"><b>${fmt(x.d)}</b></td><td class="n">${x.v?(x.d/x.v).toFixed(2):'—'}</td></tr>`).join('')||'<tr><td colspan="6" class="band">none in this range</td></tr>';
+  $('fscountries').tBodies[0].innerHTML=C.slice(0,25).map(c=>`<tr><td>${esc(c.k)}</td><td class="n">${fmt(c.v)}</td><td class="n">${fmt(c.d)}</td></tr>`).join('')||'<tr><td colspan="3" class="band">none</td></tr>';
+  $('fscities').tBodies[0].innerHTML=T2.slice(0,25).map(c=>`<tr><td>${esc(c.k)}</td><td class="n">${fmt(c.v)}</td><td class="n">${fmt(c.d)}</td></tr>`).join('')||'<tr><td colspan="3" class="band">none</td></tr>';
+  $('fssec').hidden=false;}
+async function loadFS(repo,br){FS=null;$('fssec').hidden=true;
+  try{const res=await fetch(`https://raw.githubusercontent.com/${repo}/${encodeURIComponent(br)}/figshare.json?t=${Date.now()}`,{cache:'no-store'});if(res.ok)renderFS(await res.json());}catch(_){}}
+$('fsfile').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{renderFS(JSON.parse(t));}catch(err){$('msg').textContent='That file could not be read: '+err.message;}});e.target.value='';};
+$('fsmore').onclick=()=>{FSALL=!FSALL;if(FS)renderFS(FS);};
 let LAST=null;
 $('logscale').onchange=()=>{if(LAST)$('chart').innerHTML=chart(LAST);};
 $('load').onclick=loadRemote;
