@@ -93,6 +93,12 @@ footer p{margin-bottom:.5rem}
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a figshare.json<input type="file" id="fsfile" accept=".json,application/json" hidden></label>
   </div>
   <p class="help" id="msg"></p>
+  <div class="row" style="align-items:center;gap:.8rem;margin-top:.2rem">
+    <span class="band">Day tables</span>
+    <div class="ranges" id="dtorder" role="group" aria-label="Order"><button data-v="new">Newest first</button><button data-v="old">Oldest first</button></div>
+    <div class="ranges" id="dtlimit" role="group" aria-label="Rows"><button data-v="14">14 days</button><button data-v="30">30 days</button><button data-v="all">All days</button></div>
+    <div class="ranges" id="dtfilter" role="group" aria-label="Show"><button data-v="all">Every day</button><button data-v="key">Peaks and level changes</button></div>
+  </div>
 </section>
 
 <section id="idsec" hidden>
@@ -427,7 +433,7 @@ function render(D){
   $('chart').innerHTML=chart(rows);LAST=rows;
   $('rangeinfo').textContent=`${short(rows[0].d)} – ${short(rows[rows.length-1].d)} · ${rows.length} days`+(D.sources&&D.sources.repohistory?` · earlier days imported from RepoHistory`:'');
   $('deps').tBodies[0].innerHTML=resp.length?resp.map(x=>`<tr><td class="mono">${x.r.d}</td><td class="n">${x.r.p.commits}</td><td class="n">${x.r.p.files}</td><td class="n">${x.r.p.lean_files?'<b style="color:var(--gold)">'+x.r.p.lean_files+'</b>':'0'}</td><td class="n">${x.base===null?'—':fmt(x.base)}</td>${x.after.map(v=>`<td class="n">${v===null?'—':fmt(v)}</td>`).join('')}<td class="n">${x.maxSrc}</td></tr>`).join(''):(hasPush?'<tr><td colspan="10" class="band">No pushes recorded yet.</td></tr>':'<tr><td colspan="10" class="band">No push data in this file yet. Update the collector script.</td></tr>');
-  $('days').tBodies[0].innerHTML=rows.map(r=>`<tr><td class="mono">${r.d}</td><td class="n">${fmt(r.clones)}</td><td class="n">${r.ciKnown?fmt(r.ci):'—'}</td><td class="n"><b>${fmt(r.out)}</b>${r.ciKnown?'':' <span class="band">upper bound</span>'}</td><td class="n">${r.src}</td><td>${r.p&&r.p.commits?`${r.p.commits} commits · ${r.p.files} files${r.p.lean_files?` · <b style="color:var(--gold)">${r.p.lean_files} .lean</b>`:''}`:'<span class="band">none</span>'}</td><td class="n"><b>${fmt(r.IM)}</b></td><td class="n">${r.E===null?'—':fmt(r.E)}</td><td>${chip(r)}</td></tr>`).join('');
+  $('days').tBodies[0].innerHTML=dtApply(rows).map(r=>`<tr><td class="mono">${r.d}</td><td class="n">${fmt(r.clones)}</td><td class="n">${r.ciKnown?fmt(r.ci):'—'}</td><td class="n"><b>${fmt(r.out)}</b>${r.ciKnown?'':' <span class="band">upper bound</span>'}</td><td class="n">${r.src}</td><td>${r.p&&r.p.commits?`${r.p.commits} commits · ${r.p.files} files${r.p.lean_files?` · <b style="color:var(--gold)">${r.p.lean_files} .lean</b>`:''}`:'<span class="band">none</span>'}</td><td class="n"><b>${fmt(r.IM)}</b></td><td class="n">${r.E===null?'—':fmt(r.E)}</td><td>${chip(r)}</td></tr>`).join('');
   const rk=Object.keys(D.referrers||{}).sort().pop(),refs=rk?D.referrers[rk]:[];
   $('refs').tBodies[0].innerHTML=refs.length?refs.map(x=>`<tr><td>${esc(x.referrer)}</td><td class="n">${x.count}</td><td class="n">${x.uniques}</td></tr>`).join(''):'<tr><td colspan="3" class="band">none</td></tr>';
   const sk=Object.keys(D.repo_stats||{}).sort().pop(),st=sk?D.repo_stats[sk]:{};
@@ -534,7 +540,7 @@ function renderCF(C){
     return`<tr><td>${esc(m.operator||'Other')}</td><td class="mono">${esc(k)}</td><td><span class="band">${esc(m.kind||'')}</span></td><td class="n"><b>${fmt(v.ok)}</b></td><td class="n">${fmt(v.fail)}</td><td class="n">${mb(v.bytes)}</td><td class="n">${allOk?(v.ok/allOk*100).toFixed(1)+'%':'—'}</td></tr>`;}).join('')||'<tr><td colspan="7" class="band">No crawler requests in this range.</td></tr>';
   const pathTot={};rows.forEach(r=>r.paths.forEach(p=>{const key=(CFSITE==='all'?p.site:'')+p.path+'\u0000'+p.crawler;const x=pathTot[key]||(pathTot[key]={path:(CFSITE==='all'?p.site:'')+p.path,crawler:p.crawler,count:0});x.count+=p.count;}));
   $('cfpaths').tBodies[0].innerHTML=Object.values(pathTot).sort((a,b)=>b.count-a.count).slice(0,25).map(p=>`<tr><td class="mono" style="word-break:break-all">${esc(p.path)}</td><td class="mono">${esc(p.crawler)}</td><td class="n">${fmt(p.count)}</td></tr>`).join('')||'<tr><td colspan="3" class="band">none</td></tr>';
-  $('cfdays').tBodies[0].innerHTML=rows.map(r=>`<tr><td class="mono">${r.d}</td><td class="n"><b>${fmt(r.out)}</b></td><td class="n">${fmt(r.assist)}</td><td class="n">${fmt(r.visits)}</td><td>${chip(r)}</td></tr>`).join('');
+  $('cfdays').tBodies[0].innerHTML=dtApply(rows).map(r=>`<tr><td class="mono">${r.d}</td><td class="n"><b>${fmt(r.out)}</b></td><td class="n">${fmt(r.assist)}</td><td class="n">${fmt(r.visits)}</td><td>${chip(r)}</td></tr>`).join('');
   $('cfsec').hidden=false;
 }
 async function loadCF(repo,br){
@@ -610,7 +616,7 @@ function renderUse(C){
   tbl('utech',[...grp('Device','devices',6),...grp('Browser','browsers',8),...grp('System','os',8)],x=>`<tr><td class="band">${x.g}</td><td>${esc(x.k)}</td><td class="n">${fmt(x.n)}</td></tr>`);
   tbl('ustatus',[...grp('Status','status',10),...grp('Cache','cache',8)],x=>`<tr><td class="band">${x.g}</td><td class="mono">${esc(x.k)}</td><td class="n">${fmt(x.n)}</td></tr>`);
   tbl('uprobes',probes.slice(0,15),p=>`<tr><td class="mono" style="word-break:break-all">${esc(p.k)}</td><td class="n">${fmt(p.n)}</td></tr>`,'none refused');
-  $('udays').tBodies[0].innerHTML=rows.map(r=>`<tr><td class="mono">${r.d}</td><td class="n"><b>${fmt(r.visits)}</b></td><td class="n">${r.hasPV?fmt(r.pageviews):'—'}</td><td class="n">${r.hasPV?fmt(r.uniques):'—'}</td><td class="n">${fmt(r.requests)}</td><td class="n">${mb(r.bytes)}</td><td>${chip(r)}</td></tr>`).join('');
+  $('udays').tBodies[0].innerHTML=dtApply(rows).map(r=>`<tr><td class="mono">${r.d}</td><td class="n"><b>${fmt(r.visits)}</b></td><td class="n">${r.hasPV?fmt(r.pageviews):'—'}</td><td class="n">${r.hasPV?fmt(r.uniques):'—'}</td><td class="n">${fmt(r.requests)}</td><td class="n">${mb(r.bytes)}</td><td>${chip(r)}</td></tr>`).join('');
   $('usesec').hidden=false;
 }
 
@@ -732,8 +738,8 @@ function renderPP(D){
   $('ppref').tBodies[0].innerHTML=RG.map(([g,n])=>`<tr><td>${esc(g)}</td><td class="n">${fmt(n)}</td><td class="n">${views?(n/views*100).toFixed(1)+'%':'—'}</td></tr>`).join('');
   $('ppinst').tBodies[0].innerHTML=I.slice(0,30).map(i=>`<tr><td>${esc(i.k)}</td><td class="n">${fmt(i.n)}</td><td class="n">${i.docs.size}</td></tr>`).join('')||'<tr><td colspan="3" class="band">none</td></tr>';
   $('pporig').tBodies[0].innerHTML=O.slice(0,30).map(o=>`<tr><td>${esc(o.k)}</td><td class="n">${fmt(o.n)}</td><td class="n">${o.docs.size}</td></tr>`).join('');
-  $('ppmon').tBodies[0].innerHTML=ML.map(([m,x])=>`<tr><td class="mono">${m}</td><td class="n"><b>${fmt(x.n)}</b></td><td class="n">${x.docs.size}</td><td class="n">${x.orig.size}</td></tr>`).join('');
-  $('ppdays').tBodies[0].innerHTML=rows.map(r=>{const top=[...r.docs.entries()].sort((a,b)=>b[1]-a[1])[0];
+  $('ppmon').tBodies[0].innerHTML=(DT.order==='new'?ML.slice().reverse():ML).map(([m,x])=>`<tr><td class="mono">${m}</td><td class="n"><b>${fmt(x.n)}</b></td><td class="n">${x.docs.size}</td><td class="n">${x.orig.size}</td></tr>`).join('');
+  $('ppdays').tBodies[0].innerHTML=dtApply(rows).map(r=>{const top=[...r.docs.entries()].sort((a,b)=>b[1]-a[1])[0];
     return`<tr><td class="mono">${r.d}</td><td class="n"><b>${fmt(r.out)}</b></td><td class="n">${fmt(r.burst)}</td><td class="n">${r.docs.size}</td><td class="n">${r.orig.size}</td><td>${top?esc(top[0].length>60?top[0].slice(0,58)+'…':top[0]):'—'}</td><td>${chip(r)}</td></tr>`;}).join('');
   $('ppdl').hidden=!PPDIRTY;
   $('ppsec').hidden=false;
@@ -976,9 +982,21 @@ function renderIDDay(){
   if(pts)g+=`<polyline points="${pts}" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 4"/>`;
   $('iddaychart').innerHTML=`<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${n<=30?Math.min(W,n*40+100):Math.min(W,n*5+100)}px;display:block" role="img" aria-label="Contact per day from every source, stacked, with the established baseline">${g}</svg></div>`;
   $('iddays').tHead.innerHTML='<tr><th>Date</th>'+S.map(x=>`<th>${esc(x.k)}</th>`).join('')+'<th>Added</th><th>IM to date</th><th>Level</th><th>Placement</th></tr>';
-  $('iddays').tBodies[0].innerHTML=rows.map(r=>`<tr><td class="mono">${r.d}</td>${r.parts.map(v=>`<td class="n">${v===null?'—':fmt(v)}</td>`).join('')}<td class="n">${fmt(r.out)}</td><td class="n"><b>${fmt(r.IM)}</b></td><td class="n">${r.E===null?'—':fmt(r.E)}</td><td>${chip(r)}</td></tr>`).join('');
+  $('iddays').tBodies[0].innerHTML=dtApply(rows).map(r=>`<tr><td class="mono">${r.d}</td>${r.parts.map(v=>`<td class="n">${v===null?'—':fmt(v)}</td>`).join('')}<td class="n">${fmt(r.out)}</td><td class="n"><b>${fmt(r.IM)}</b></td><td class="n">${r.E===null?'—':fmt(r.E)}</td><td>${chip(r)}</td></tr>`).join('')||`<tr><td colspan="9" class="band">No peaks or level changes in this range.</td></tr>`;
   $('iddaysec').hidden=false;
 }
+
+// ---------- day-table controls: order, rows shown, which days ----------
+const DT=(()=>{try{return Object.assign({order:'new',limit:'14',filter:'all'},JSON.parse(localStorage.getItem('acq-dt')||'{}'));}catch(_){return{order:'new',limit:'14',filter:'all'};}})();
+function dtApply(rows){
+  let r=DT.filter==='key'?rows.filter(x=>x.event||(x.ph&&['iva','noble','shatter','genesis'].includes(x.ph.k))):rows.slice();
+  if(DT.limit!=='all')r=r.slice(-(+DT.limit));
+  return DT.order==='new'?r.reverse():r;
+}
+function dtPaint(){[['dtorder','order'],['dtlimit','limit'],['dtfilter','filter']].forEach(([id,k])=>$(id).querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===DT[k])));}
+function rerenderAll(){if(DATA)render(DATA);if(CF){renderCF(CF);renderUse(CF);}if(PP)renderPP(PP);if(FS)renderFS(FS);renderID();}
+[['dtorder','order'],['dtlimit','limit'],['dtfilter','filter']].forEach(([id,k])=>$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{DT[k]=b.dataset.v;try{localStorage.setItem('acq-dt',JSON.stringify(DT));}catch(_){}dtPaint();rerenderAll();}));
+dtPaint();
 let LAST=null;
 $('logscale').onchange=()=>{if(LAST)$('chart').innerHTML=chart(LAST);};
 $('load').onclick=loadRemote;
