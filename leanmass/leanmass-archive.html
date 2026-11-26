@@ -17,12 +17,13 @@ h1{font-size:clamp(1.6rem,3.6vw,2.3rem);font-weight:700;letter-spacing:-.02em;ma
 .tag,.help{color:var(--muted)}
 main{padding:1.3rem 0}
 .tablewrap{overflow:auto;border:1px solid var(--border);border-radius:8px;margin:1rem 0}
-table{border-collapse:collapse;width:100%;min-width:640px}
+table{border-collapse:collapse;width:100%;min-width:1100px}
 th,td{padding:.45rem .6rem;border-bottom:1px solid var(--border);text-align:left;font-size:.88rem}
 th{font-family:'Space Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--surface)}
 td.n{font-family:'Space Mono',monospace;text-align:right}
 td.p{font-family:'Space Mono',monospace;font-size:.8rem;word-break:break-all}
 footer{padding:1rem 0 3rem;color:var(--muted);font-size:.82rem}
+th{cursor:pointer;user-select:none;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -34,19 +35,25 @@ footer{padding:1rem 0 3rem;color:var(--muted);font-size:.82rem}
 <main class="wrap">
   <p class="help" id="status">Loading…</p>
   <input id="f" placeholder="filter by repository" style="width:100%;max-width:320px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.5rem .6rem;font:inherit;margin-top:.4rem">
-  <div class="tablewrap"><table id="t"><thead><tr><th>Repository</th><th>Branch</th><th>Path</th><th>Theorem mass</th><th>Files</th><th>Read</th></tr></thead><tbody></tbody></table></div>
+  <div class="tablewrap"><table id="t"><thead><tr id="hr"></tr></thead><tbody></tbody></table></div>
   <p class="help"><button id="more" hidden style="background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.45rem .8rem;cursor:pointer;margin-right:.8rem">Load more</button><a id="rd" href="#">Read a repository</a></p>
 </main>
 <footer><div class="wrap"><p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · Free to use under the NOHARM invariant, with citation.</p></div></footer>
 <script>
 const FN='https://rsadsojivuagxptdlwak.supabase.co/functions/v1/leanmass',MAIN='https://uuia.app/leanmass/';
-const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let ROWS=[],TOTAL=0;$('rd').href=MAIN;
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),nf=n=>n==null?'\u2014':Number(n).toLocaleString();
+const COLS=[['repo','Repository'],['branch','Branch'],['prefix','Path'],['theorem_mass','Theorem mass'],['theorems','Theorems'],['lemmas','Lemmas'],['files_count','Files'],['total_lines','Lines'],['proof_sorry','Proof sorry'],['zero_sorry_mass','0-sorry mass'],['coord_files','Coordinates'],['created_at','Read']];
+let ROWS=[],TOTAL=0,SORT=['created_at',-1];$('rd').href=MAIN;
 function paint(){
-  const q=$('f').value.trim().toLowerCase(),R=ROWS.filter(x=>!q||x.repo.toLowerCase().includes(q));
+  $('hr').innerHTML=COLS.map(([k,l])=>`<th data-k="${k}">${l}${SORT[0]===k?(SORT[1]>0?' \u25B2':' \u25BC'):''}</th>`).join('');
+  document.querySelectorAll('#hr th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;SORT=[k,SORT[0]===k?-SORT[1]:(['repo','branch','prefix'].includes(k)?1:-1)];paint();});
+  const q=$('f').value.trim().toLowerCase(),[sk,sd]=SORT;
+  const R=ROWS.filter(x=>!q||x.repo.toLowerCase().includes(q)).sort((a,b)=>{const x=a[sk]??-1,y=b[sk]??-1;return (typeof x==='number'&&typeof y==='number'?x-y:String(x).localeCompare(String(y)))*sd;});
   $('status').textContent=ROWS.length?`${ROWS.length.toLocaleString()} of ${TOTAL.toLocaleString()} reads loaded.`:'Nothing archived yet. Read a repository and it will appear here.';
   $('t').tBodies[0].innerHTML=R.map(x=>{const p=new URLSearchParams({repo:x.repo});if(x.branch&&x.branch!=='HEAD')p.set('branch',x.branch);if(x.prefix)p.set('path',x.prefix);
-    return `<tr><td class="p"><a href="${MAIN}?${esc(p)}">${esc(x.repo)}</a></td><td>${esc(x.branch==='HEAD'?'default':x.branch)}</td><td class="p">${esc(x.prefix||'\u2014')}</td><td class="n">${Number(x.theorem_mass).toLocaleString()}</td><td class="n">${Number(x.files_count).toLocaleString()}</td><td>${new Date(x.created_at).toLocaleString()}</td></tr>`;}).join('');
+    return `<tr><td class="p"><a href="${MAIN}?${esc(p)}">${esc(x.repo)}</a></td><td>${esc(x.branch==='HEAD'?'default':x.branch)}</td><td class="p">${esc(x.prefix||'\u2014')}</td>`
+     +['theorem_mass','theorems','lemmas','files_count','total_lines'].map(k=>`<td class="n">${nf(x[k])}</td>`).join('')
+     +`<td class="n"${x.proof_sorry>0?' style="color:#fbbf24"':''}>${nf(x.proof_sorry)}</td><td class="n">${nf(x.zero_sorry_mass)}</td><td class="n">${nf(x.coord_files)}</td><td>${new Date(x.created_at).toLocaleString()}</td></tr>`;}).join('');
   $('more').hidden=ROWS.length>=TOTAL;
 }
 async function load(){try{const r=await fetch(`${FN}?list=1&offset=${ROWS.length}&limit=200`,{cache:'no-store'}).then(x=>x.json());if(!Array.isArray(r.rows))throw 0;ROWS=ROWS.concat(r.rows);TOTAL=r.total;paint();}catch(_){$('status').textContent='The archive could not be loaded right now. Try again shortly.';}}
