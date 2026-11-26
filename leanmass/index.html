@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LeanMass™ · theorem mass of any Lean repository · Applied Identity Physics™</title>
+<meta name="description" content="LeanMass™ reads every .lean file in a GitHub repository, folder or file, or in a folder on your own computer, and returns its theorem mass: theorems and lemmas, files, lines and coordinates, by file and by folder, with CSV and JSON export.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e17;--surface:#111827;--surface-2:#1a2332;--border:#1e2a3a;--border-2:#2a3a50;--text:#e2e8f0;--muted:#94a3b8;--accent:#22d3ee;--gold:#fbbf24;--locked:#34d399;--rose:#f87171}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+a{color:var(--accent)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 1.25rem}
+header{border-bottom:1px solid var(--border);padding:1.6rem 0 1.2rem}
+.eyebrow{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(1.6rem,3.6vw,2.3rem);font-weight:700;letter-spacing:-.02em;margin:.2rem 0 .3rem}
+h1 sup{font-size:.4em;font-weight:500;color:var(--muted)}
+.tag{color:var(--muted);max-width:90ch}
+section{padding:1.3rem 0;border-bottom:1px solid var(--border)}
+h2{font-size:1.1rem;font-weight:700;margin-bottom:.7rem}
+label{display:block;font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+input{width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.5rem .6rem;font:inherit;font-size:.92rem}
+.btn{background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);border-radius:6px;padding:.5rem .85rem;font-family:'Space Mono',monospace;font-size:.74rem;letter-spacing:.04em;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#04121a;border-color:var(--accent);font-weight:700}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end}
+.help{font-size:.85rem;color:var(--muted);margin:.4rem 0 .6rem;max-width:95ch}
+.mono{font-family:'Space Mono',monospace}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.8rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem}
+.card .k{font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card .v{font-size:1.7rem;font-weight:700;line-height:1.2;margin:.15rem 0}
+.card .s{font-size:.78rem;color:var(--muted)}
+.tablewrap{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:560px}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th,td{padding:.4rem .55rem;border-bottom:1px solid var(--border);text-align:left;font-size:.86rem;vertical-align:middle}
+th{font-family:'Space Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--surface);position:sticky;top:0;cursor:pointer;user-select:none}
+td.n{font-family:'Space Mono',monospace;text-align:right}
+td.p{font-family:'Space Mono',monospace;font-size:.78rem;word-break:break-all}
+.formula{font-family:'Space Mono',monospace;font-size:.78rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.7rem .9rem;margin:.6rem 0;overflow-x:auto;white-space:pre}
+.bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:.5rem;max-width:520px}
+.bar>i{display:block;height:100%;background:var(--accent);width:0}
+#status{min-height:1.3rem}
+.grid2{display:grid;grid-template-columns:1fr 2fr;gap:1rem}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+footer{padding:2rem 0 3rem;color:var(--muted);font-size:.82rem}
+footer p{margin-bottom:.5rem}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="eyebrow">Applied Identity Physics™ · SNSFT Foundation</div>
+  <h1>LeanMass<sup>™</sup> <span style="color:var(--muted);font-weight:500;font-size:.55em">theorem mass of any Lean repository</span></h1>
+  <p class="tag">Paste a GitHub repository, folder or file, or open a folder on your own computer. LeanMass reads every .lean file and returns its theorem mass: the theorems and lemmas it declares, by file and by folder, with lines, corpus coordinates and proof-level sorry counts. The count is the same rule the RAP collector uses on the full repository history at uuia.app/rap, so a snapshot here and a record there read the same.</p>
+</div></header>
+
+<main class="wrap">
+<section>
+  <h2>Read a repository</h2>
+  <div class="row">
+    <div style="flex:3;min-width:280px"><label for="src">GitHub repository, folder or file</label><input id="src" placeholder="owner/name · github.com/owner/name · …/tree/main/folder · …/blob/main/File.lean" autocomplete="off"></div>
+    <div style="flex:1;min-width:130px"><label for="branch">Branch</label><input id="branch" placeholder="default"></div>
+    <div style="flex:1;min-width:150px"><label for="prefix">Only paths starting with</label><input id="prefix" placeholder="e.g. SNSFL/"></div>
+    <button class="btn primary" id="run">Read theorem mass</button>
+  </div>
+  <div class="row" style="margin-top:.6rem">
+    <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a folder on this computer<input type="file" id="dir" webkitdirectory multiple hidden></label>
+    <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open .lean files<input type="file" id="files" accept=".lean" multiple hidden></label>
+    <details style="flex:1;min-width:260px"><summary class="help" style="cursor:pointer;margin:0">GitHub token (optional, for large repositories or many reads in an hour)</summary>
+      <input id="token" type="password" placeholder="a fine-grained token with public read access" autocomplete="off" style="margin-top:.4rem">
+      <p class="help">Without a token GitHub allows 60 repository listings an hour from one address; each read here uses two. The token stays in this tab only and goes to api.github.com and nowhere else.</p></details>
+  </div>
+  <p class="help" id="status"></p>
+  <div class="bar" id="barw" hidden><i id="bar"></i></div>
+</section>
+
+<section id="out" hidden>
+  <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem">
+    <h2 style="margin:0" id="outtitle">Theorem mass</h2>
+    <div class="row"><button class="btn" id="exfiles">Files (.csv)</button><button class="btn" id="exfolders">Folders (.csv)</button><button class="btn" id="exjson">Snapshot (.json)</button><button class="btn" id="share">Copy link</button></div>
+  </div>
+  <div class="cards" id="cards"></div>
+  <div class="formula" id="work"></div>
+  <div class="grid2" style="margin-top:1rem">
+    <div><h2>By folder</h2><div class="tablewrap"><table id="folders" style="min-width:0"><thead><tr><th data-k="0">Folder</th><th data-k="1">Theorems</th><th data-k="2">Files</th><th data-k="3">Lines</th></tr></thead><tbody></tbody></table></div></div>
+    <div><div class="row" style="justify-content:space-between;align-items:flex-end;margin-bottom:.7rem"><h2 style="margin:0">By file</h2><input id="filter" placeholder="filter by path or coordinate" style="max-width:300px"></div>
+      <div class="tablewrap"><table id="filestab"><thead><tr><th data-k="0">Path</th><th data-k="1">Coordinate</th><th data-k="2">Theorems</th><th data-k="3">Lemmas</th><th data-k="4">Lines</th><th data-k="5">Proof sorry</th></tr></thead><tbody></tbody></table></div>
+      <p class="help" id="filesnote"></p></div>
+  </div>
+  <p class="help" style="margin-top:1rem" id="track"></p>
+</section>
+
+<section>
+  <h2>How theorem mass is counted</h2>
+  <div class="formula">declaration  = a line that opens with theorem or lemma, after any attribute @[…] and any of
+               private · protected · noncomputable · nonrec
+               ^\s*(?:@\[[^\]]*\]\s*)?(?:(?:private|protected|noncomputable|nonrec)\s+)*(?:theorem|lemma)\s
+block text   = /- … -/ comments (doc comments included) are removed before counting, so a theorem
+               written inside a comment is not counted
+lines        = newlines + 1, on the file as written
+coordinate   = the first "Coordinate: [a,b,c,d]" in the file
+proof sorry  = sorry in proof code: block comments, -- line comments and strings removed first
+theorem mass = Σ declarations over every .lean file read (lakefile.lean excluded)</div>
+  <p class="help">A snapshot reads the repository as it stands on the chosen branch. To keep a permanent day-by-day record of a repository's theorem mass, with the mass to date that only rises, add it to the scan list at <a href="https://uuia.app/rap">uuia.app/rap</a>; the collector reads its whole commit history.</p>
+</section>
+</main>
+
+<footer><div class="wrap">
+  <p><b>Built from:</b> GitHub REST API (repository and git tree endpoints) and raw.githubusercontent.com for file contents · the browser File API for folders on your own computer · the RAP formal-record collector rule (lean_mass.py) · Lean 4 declaration syntax.</p>
+  <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · Identity Physics Corpus DOI 10.17605/OSF.IO/KWTYD · Free to use under the NOHARM invariant, with citation.</p>
+  <p>LeanMass™, Applied Identity Physics™ and HIGHTISTIC™ are trademarks of HIGHTISTIC™ / SNSFT Foundation. Lean is a project of the Lean FRO; LeanMass is an independent tool.</p>
+  <p class="mono">[9,9,9,9] :: {ANC} · The Manifold is Holding</p>
+</div></footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Math.round(n).toLocaleString();
+const DECL=/^\s*(?:@\[[^\]]*\]\s*)?(?:(?:private|protected|noncomputable|nonrec)\s+)*(theorem|lemma)\s/gm;
+const BLOCK=/\/-[\s\S]*?-\//g, COORD=/Coordinate:\s*(\[[0-9A-Za-z, ]+\](?:\([A-Z]+\))?)/;
+function measure(src){
+  const body=src.replace(BLOCK,'');let th=0,le=0,m;DECL.lastIndex=0;
+  while((m=DECL.exec(body)))m[1]==='theorem'?th++:le++;
+  const c=src.match(COORD),lines=(src.match(/\n/g)||[]).length+1;
+  const code=body.split('\n').map(l=>{const i=l.indexOf('--');return i<0?l:l.slice(0,i);}).join('\n').replace(/"(?:\\.|[^"\\])*"/g,'');
+  const sorry=(code.match(/\bsorry\b/g)||[]).length;
+  return{theorems:th,lemmas:le,decl:th+le,lines,coord:c?c[1].replace(/ /g,''):'',sorry};
+}
+let RES=null,SORT={files:[2,-1],folders:[1,-1]};
+const tok=()=>{const t=$('token').value.trim();return t?{Authorization:'Bearer '+t}:{};};
+async function gh(path){const r=await fetch('https://api.github.com'+path,{headers:{Accept:'application/vnd.github+json',...tok()}});
+  if(r.status===403||r.status===429){const reset=r.headers.get('x-ratelimit-reset');throw new Error('GitHub\u2019s hourly limit for this address is used up'+(reset?`; it resets at ${new Date(reset*1000).toLocaleTimeString()}`:'')+'. Add a token below to keep reading.');}
+  if(r.status===404)throw new Error('GitHub found no public repository, branch or path by that name.');
+  if(!r.ok)throw new Error('GitHub answered '+r.status+'.');return r.json();}
+function parse(s){s=s.trim().replace(/\.git$/,'').replace(/\/$/,'');
+  let m=s.match(/github\.com\/([^/]+)\/([^/#?]+)(?:\/(tree|blob)\/([^/]+)(?:\/(.*))?)?/i);
+  if(m)return{owner:m[1],repo:m[2],kind:m[3]||'',branch:m[4]||'',path:m[5]||''};
+  m=s.match(/^([A-Za-z0-9-]+)\/([A-Za-z0-9._-]+)(?:\/(.*))?$/);if(m)return{owner:m[1],repo:m[2],kind:m[3]?'tree':'',branch:'',path:m[3]||''};
+  return null;}
+const status=(t,p)=>{$('status').textContent=t;if(p===undefined){$('barw').hidden=true;}else{$('barw').hidden=false;$('bar').style.width=(p*100).toFixed(1)+'%';}};
+async function pool(items,n,fn){let i=0,done=0;const run=async()=>{while(i<items.length){const k=i++;await fn(items[k],k);done++;status(`Reading ${fmt(done)} of ${fmt(items.length)} .lean files…`,done/items.length);}};await Promise.all(Array.from({length:Math.min(n,items.length)},run));}
+async function readRemote(){
+  const P=parse($('src').value);if(!P){status('Enter a repository as owner/name, or paste its GitHub link.');return;}
+  $('run').disabled=true;
+  try{
+    status('Reading the repository…',0);
+    const meta=await gh(`/repos/${P.owner}/${P.repo}`);
+    const branch=$('branch').value.trim()||P.branch||meta.default_branch;
+    let prefix=($('prefix').value.trim()||'').replace(/^\//,'');
+    const enc=p=>p.split('/').map(encodeURIComponent).join('/');
+    const raw=p=>`https://raw.githubusercontent.com/${P.owner}/${P.repo}/${encodeURIComponent(branch)}/${enc(p)}`;
+    let paths=[],truncated=false;
+    if(P.kind==='blob'&&P.path.endsWith('.lean'))paths=[P.path];
+    else{
+      const base=(P.kind==='tree'&&P.path)?P.path.replace(/\/$/,'')+'/':'';
+      if(!prefix&&base)prefix=base;
+      const tree=await gh(`/repos/${P.owner}/${P.repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`);truncated=!!tree.truncated;
+      paths=tree.tree.filter(t=>t.type==='blob'&&t.path.endsWith('.lean')&&!t.path.endsWith('lakefile.lean')&&(!prefix||t.path.startsWith(prefix))).map(t=>t.path);
+    }
+    if(!paths.length){status(`No .lean files on ${P.owner}/${P.repo} @ ${branch}${prefix?' under '+prefix:''}.`);return;}
+    const files=new Array(paths.length);let failed=0;
+    await pool(paths,12,async(p,k)=>{try{const r=await fetch(raw(p));if(!r.ok)throw 0;files[k]={path:p,...measure(await r.text())};}catch(_){failed++;files[k]=null;}});
+    show({source:`${P.owner}/${P.repo}`,branch,prefix,url:`https://github.com/${P.owner}/${P.repo}`,files:files.filter(Boolean),failed,truncated,remote:true,commit:null});
+    try{const q=new URLSearchParams({repo:`${P.owner}/${P.repo}`});if($('branch').value.trim()||P.branch)q.set('branch',branch);if(prefix)q.set('path',prefix);if(P.kind==='blob')q.set('file',P.path);history.replaceState(null,'','?'+q);}catch(_){}
+  }catch(e){status(e.message||String(e));}
+  finally{$('run').disabled=false;}
+}
+async function readLocal(list,label){
+  const L=[...list].filter(f=>f.name.endsWith('.lean')&&f.name!=='lakefile.lean');
+  const prefix=($('prefix').value.trim()||'').replace(/^\//,'');
+  const rel=f=>(f.webkitRelativePath||f.name).replace(/^[^/]+\//,m=>L.length>1&&f.webkitRelativePath?'':m);
+  const sel=L.filter(f=>!prefix||rel(f).startsWith(prefix));
+  if(!sel.length){status('No .lean files in that selection'+(prefix?' under '+prefix:'')+'.');return;}
+  const files=[];let done=0;
+  for(const f of sel){files.push({path:rel(f)||f.name,...measure(await f.text())});if(++done%50===0||done===sel.length)status(`Reading ${fmt(done)} of ${fmt(sel.length)} .lean files…`,done/sel.length);}
+  show({source:label,branch:'',prefix,url:'',files,failed:0,truncated:false,remote:false});
+}
+function show(R){
+  RES=R;const F=R.files,T=F.reduce((a,f)=>a+f.decl,0),th=F.reduce((a,f)=>a+f.theorems,0),le=F.reduce((a,f)=>a+f.lemmas,0),Ln=F.reduce((a,f)=>a+f.lines,0),S=F.filter(f=>f.sorry>0),co=F.filter(f=>f.coord).length;
+  status(`${fmt(F.length)} .lean files read from ${R.source}${R.branch?' @ '+R.branch:''}${R.prefix?' under '+R.prefix:''}.`+(R.failed?` ${fmt(R.failed)} could not be fetched; read again to include them.`:'')+(R.truncated?' GitHub returned a partial file list for a repository this size; narrow it with a path to read each part in full.':''));
+  $('outtitle').textContent=`Theorem mass · ${R.source}${R.prefix?' · '+R.prefix:''}`;
+  $('cards').innerHTML=[['Theorem mass',fmt(T),`${fmt(th)} theorems + ${fmt(le)} lemmas`],['Files',fmt(F.length),`${fmt(co)} carry a corpus coordinate`],['Lines',fmt(Ln),`${F.length?(Ln/F.length).toFixed(0):0} per file`],['Per file',F.length?(T/F.length).toFixed(1):'0','declarations per .lean file'],['Proof sorry',fmt(S.reduce((a,f)=>a+f.sorry,0)),S.length?`in ${fmt(S.length)} file${S.length===1?'':'s'}`:'none in proof code']]
+    .map(([k,v,s])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+  $('work').textContent=`theorem mass = Σ declarations = ${fmt(th)} theorem + ${fmt(le)} lemma = ${fmt(T)}  over ${fmt(F.length)} .lean files, ${fmt(Ln)} lines`;
+  const fo=new Map();F.forEach(f=>{const k=f.path.includes('/')?f.path.split('/').slice(0,-1).join('/'):'(root)';const x=fo.get(k)||[k,0,0,0];x[1]+=f.decl;x[2]++;x[3]+=f.lines;fo.set(k,x);});
+  R.folders=[...fo.values()];paint();
+  $('track').innerHTML=R.remote?`To keep this repository's theorem mass as a permanent day-by-day record from its full commit history, add <span class="mono">${esc(R.source)}</span> as a GitHub repository in the scan list at <a href="https://uuia.app/rap">uuia.app/rap</a>.`:'Read from your own computer; nothing left this browser.';
+  $('out').hidden=false;
+}
+function srt(rows,[k,d]){return rows.slice().sort((a,b)=>(typeof a[k]==='number'?a[k]-b[k]:String(a[k]).localeCompare(String(b[k])))*d);}
+function paint(){
+  if(!RES)return;
+  $('folders').tBodies[0].innerHTML=srt(RES.folders,SORT.folders).map(x=>`<tr><td class="p">${esc(x[0])}</td><td class="n">${fmt(x[1])}</td><td class="n">${fmt(x[2])}</td><td class="n">${fmt(x[3])}</td></tr>`).join('');
+  const q=$('filter').value.trim().toLowerCase(),rows=RES.files.map(f=>[f.path,f.coord,f.theorems,f.lemmas,f.lines,f.sorry]).filter(r=>!q||(r[0]+' '+r[1]).toLowerCase().includes(q));
+  const S=srt(rows,SORT.files),cap=RES.all?S.length:500;
+  $('filestab').tBodies[0].innerHTML=S.slice(0,cap).map(r=>`<tr><td class="p">${RES.url?`<a href="${esc(RES.url)}/blob/${encodeURIComponent(RES.branch)}/${r[0].split('/').map(encodeURIComponent).join('/')}" target="_blank" rel="noopener">${esc(r[0])}</a>`:esc(r[0])}</td><td class="mono">${esc(r[1]||'—')}</td><td class="n">${fmt(r[2])}</td><td class="n">${fmt(r[3])}</td><td class="n">${fmt(r[4])}</td><td class="n"${r[5]?' style="color:var(--gold)"':''}>${fmt(r[5])}</td></tr>`).join('');
+  $('filesnote').innerHTML=S.length>cap?`${fmt(cap)} of ${fmt(S.length)} files shown. <button class="btn" id="all">Show all</button> Every file is in the CSV.`:`${fmt(S.length)} file${S.length===1?'':'s'} shown.`;
+  const a=$('all');if(a)a.onclick=()=>{RES.all=true;paint();};
+}
+document.querySelectorAll('#filestab th,#folders th').forEach(th=>th.onclick=()=>{const t=th.closest('table').id==='folders'?'folders':'files',k=+th.dataset.k;SORT[t]=[k,SORT[t][0]===k?-SORT[t][1]:(k<2&&t==='files'||k===0?1:-1)];paint();});
+$('filter').oninput=paint;
+const csvCell=v=>v===null||v===undefined?'':typeof v==='number'?String(v):/[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;
+const csv=(cols,rows)=>'\ufeff'+[cols,...rows].map(r=>r.map(csvCell).join(',')).join('\r\n')+'\r\n';
+const stamp=()=>'leanmass_'+(RES.source||'local').replace(/[^A-Za-z0-9._-]+/g,'_')+(RES.prefix?'_'+RES.prefix.replace(/[^A-Za-z0-9._-]+/g,'_'):'')+'_'+new Date().toISOString().slice(0,10);
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);}
+$('exfiles').onclick=()=>RES&&dl(stamp()+'_files.csv',csv(['Path','Coordinate','Theorems','Lemmas','Declarations','Lines','Proof sorry'],RES.files.map(f=>[f.path,f.coord,f.theorems,f.lemmas,f.decl,f.lines,f.sorry])),'text/csv;charset=utf-8');
+$('exfolders').onclick=()=>RES&&dl(stamp()+'_folders.csv',csv(['Folder','Declarations','Files','Lines'],RES.folders),'text/csv;charset=utf-8');
+$('exjson').onclick=()=>{if(!RES)return;const files={};RES.files.forEach(f=>files[f.path]={theorems:f.decl,lines:f.lines,coord:f.coord,sorry:f.sorry});
+  dl(stamp()+'.json',JSON.stringify({tool:'LeanMass',read:new Date().toISOString(),source:RES.source,branch:RES.branch,prefix:RES.prefix,theorems:RES.files.reduce((a,f)=>a+f.decl,0),files_count:RES.files.length,lines:RES.files.reduce((a,f)=>a+f.lines,0),files},null,1),'application/json');};
+$('share').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(location.href);$('share').textContent='Link copied';setTimeout(()=>$('share').textContent='Copy link',1500);};
+$('run').onclick=readRemote;$('src').addEventListener('keydown',e=>{if(e.key==='Enter')readRemote();});
+$('dir').onchange=e=>{const f=e.target.files;if(f.length)readLocal(f,(f[0].webkitRelativePath||'').split('/')[0]||'local folder');e.target.value='';};
+$('files').onchange=e=>{const f=e.target.files;if(f.length)readLocal(f,f.length===1?f[0].name:'selected files');e.target.value='';};
+const q=new URLSearchParams(location.search);
+if(q.get('repo')){$('src').value=q.get('file')?`https://github.com/${q.get('repo')}/blob/${q.get('branch')||'main'}/${q.get('file')}`:q.get('repo');if(q.get('branch'))$('branch').value=q.get('branch');if(q.get('path'))$('prefix').value=q.get('path');readRemote();}
+</script>
+</body>
+</html>
