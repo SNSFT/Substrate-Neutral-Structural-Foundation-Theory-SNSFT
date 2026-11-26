@@ -146,6 +146,7 @@ per-day measures are averaged over the days in each period that the source cover
   <p class="help">Each source is an identity with its own P, N, B and A, read over the identity-read periods above, and every source is collided with the PSY fusion logic of SNSFL_PSY_8Beam_Fusion_Theorem.lean [9,9,6,28]: P harmonic mean, N narrative bottleneck (minimum), B = ΣB − 2k with k the sum of the minimum B over every pair, A adaptation ceiling (maximum), phase by the engine's phaseOf. Every step is shown. Each source's axes are ratios inside that source, so every beam reads on the same scale: P is the share of its reach already established when the period opens, N the share of its identities in the period that are returning, A the share that are new, and B is solved from the source's place on the TL ruler with the IMCollider exemplar step B = τ × P. Growth places a source Locked or IVA Peak; only server errors at TL or more of requests place it Shatter.</p>
   <div id="fusetables"></div>
   <div class="formula">P = reach carried / reach held · N = returning / (returning + new) · A = new / (returning + new) (a source with no identity activity in the period holds as it stood: N = 1, A = 0) · B = τ × P
+typical day = median of the period's days · for deposit sources (formal record, ORCID record), which add in batches, the average day = added ÷ days covered
 τ on the TL ruler: r = typical day / (b₀ × level) · r &lt; 1 → τ = r × TL_IVA · r ≥ 1 → τ = TL_IVA + (TL − TL_IVA)(1 − 1/r) · 5xx ≥ TL → τ = 5xx share · nothing added → τ = 0
 P_out = n / Σ(1/P_i) · N_out = min N_i · k = Σ_{i&lt;j} min(B_i, B_j) over C(n,2) pairs · B_out = max(0, ΣB_i − 2k) · A_out = max A_i
 τ = B / P · IM = (P + N + B + A) × Ω₀ · Ω₀ = 1.36899099984016
@@ -1137,6 +1138,7 @@ function fuseIdent(k,f,t){
 //   B = τ × P, the IMCollider exemplar step, with τ set on the TL ruler by RAP's placement of the period:
 //       r = typical day / (b₀ × level);  r < 1 → τ = r × TL_IVA (Locked);  r ≥ 1 → τ = TL_IVA + (TL − TL_IVA)(1 − 1/r) (IVA Peak);
 //       server errors at TL or more of requests → τ = that share (Shatter, capacity failure only); nothing added → τ = 0 (Noble)
+const FUSE_BATCH=new Set(['Formal record · theorems','ORCID record']);
 function fuseRead(f,t){
   const S=idDaySources();if(!S.length)return null;const prev=addDays(f,-1);
   const med=a=>{if(!a.length)return 0;const v=a.slice().sort((x,y)=>x-y),m=v.length>>1;return v.length%2?v[m]:(v[m-1]+v[m])/2;};
@@ -1144,7 +1146,9 @@ function fuseRead(f,t){
   S.forEach(src=>{const ks=Object.keys(src.m).sort();if(!ks.length||ks[0]>t)return;
     let held=0,carried=0;ks.forEach(d=>{const v=src.m[d]||0;if(d<=t)held+=v;if(d<=prev)carried+=v;});
     const per=[];for(let d=f;d<=t;d=addDays(d,1))if(d>=ks[0])per.push(src.m[d]||0);
-    const typ=med(per),added=held-carried;
+    const added=held-carried,batch=FUSE_BATCH.has(src.k),avg=per.length?added/per.length:0;
+    // deposit sources add in batches: the typical day is the period's average day (added ÷ days covered); continuous sources read on the median day
+    const typ=batch?avg:med(per);
     // level: record-high 28-day median of added, read to the end of the period
     let level=0;const all=[];for(let d=ks[0];d<=t;d=addDays(d,1)){if(all.length>=7)level=Math.max(level,med(all.slice(-28)));all.push(src.m[d]||0);}
     let fail=null;if(src.fail){let f5=0,rq=0;Object.keys(src.rq).forEach(d=>{if(d>=f&&d<=t){f5+=src.fail[d]||0;rq+=src.rq[d]||0;}});if(rq)fail=f5/rq;}
@@ -1153,7 +1157,7 @@ function fuseRead(f,t){
     let tau,how;
     if(fail!==null&&fail>=TL){tau=fail;how=`server errors ${(fail*100).toFixed(2)}% ≥ TL`;}
     else if(added<=0){tau=0;how='nothing added';}
-    else{const r=level>0?typ/(B0*level):0;tau=r<1?r*TL_IVA_F:TL_IVA_F+(TL-TL_IVA_F)*(1-1/r);how=level>0?`r = ${typ.toFixed(1)} / (b₀ × ${level.toFixed(1)}) = ${r.toFixed(3)}`:'no level yet · r = 0';}
+    else{const r=level>0?typ/(B0*level):0;tau=r<1?r*TL_IVA_F:TL_IVA_F+(TL-TL_IVA_F)*(1-1/r);how=(batch?`average day ${fmt(added)} ÷ ${per.length} days = ${typ.toFixed(1)} · `:`median day ${typ.toFixed(1)} · `)+(level>0?`r = ${typ.toFixed(1)} / (b₀ × ${level.toFixed(1)}) = ${r.toFixed(3)}`:'no level yet · r = 0');}
     raw.push({k:src.k,held,carried,added,typ,level,fail,ret,nw,rl,nl,P,N,A,tau,how,B:tau*P});});
   raw.forEach(b=>{b.phase=b.P>0?fusePhase(b.P,b.N,b.B):null;b.IM=(b.P+b.N+b.B+b.A)*OMEGA0;});
   const use=raw.filter(b=>b.P>0),n=use.length;
