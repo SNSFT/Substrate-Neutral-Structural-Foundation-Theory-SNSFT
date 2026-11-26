@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LeanMass™ archive · recent reads · Applied Identity Physics™</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e17;--surface:#111827;--border:#1e2a3a;--text:#e2e8f0;--muted:#94a3b8;--accent:#22d3ee}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+a{color:var(--accent)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 1.25rem}
+header{border-bottom:1px solid var(--border);padding:1.6rem 0 1.2rem}
+.eyebrow{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(1.6rem,3.6vw,2.3rem);font-weight:700;letter-spacing:-.02em;margin:.2rem 0 .3rem}
+.tag,.help{color:var(--muted)}
+main{padding:1.3rem 0}
+.tablewrap{overflow:auto;border:1px solid var(--border);border-radius:8px;margin:1rem 0}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{padding:.45rem .6rem;border-bottom:1px solid var(--border);text-align:left;font-size:.88rem}
+th{font-family:'Space Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--surface)}
+td.n{font-family:'Space Mono',monospace;text-align:right}
+td.p{font-family:'Space Mono',monospace;font-size:.8rem;word-break:break-all}
+footer{padding:1rem 0 3rem;color:var(--muted);font-size:.82rem}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="eyebrow">Applied Identity Physics™ · SNSFT Foundation</div>
+  <h1>LeanMass<sup style="font-size:.4em;color:var(--muted)">™</sup> archive</h1>
+  <p class="tag">The last ten repositories read with LeanMass. Each row is a saved snapshot of a repository at one exact state, so opening it again is instant.</p>
+</div></header>
+<main class="wrap">
+  <p class="help" id="status">Loading…</p>
+  <div class="tablewrap"><table id="t"><thead><tr><th>Repository</th><th>Branch</th><th>Path</th><th>Theorem mass</th><th>Files</th><th>Read</th></tr></thead><tbody></tbody></table></div>
+  <p class="help"><a href="leanmass.html">Read a repository</a></p>
+</main>
+<footer><div class="wrap"><p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · Free to use under the NOHARM invariant, with citation.</p></div></footer>
+<script>
+const FN='https://rsadsojivuagxptdlwak.supabase.co/functions/v1/leanmass',MAIN='leanmass.html';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+fetch(FN+'?list=1',{cache:'no-store'}).then(r=>r.json()).then(rows=>{
+  if(!Array.isArray(rows))throw 0;
+  document.getElementById('status').textContent=rows.length?'':'Nothing archived yet. Read a repository and it will appear here.';
+  document.querySelector('#t tbody').innerHTML=rows.map(x=>{
+    const q=new URLSearchParams({repo:x.repo});if(x.branch&&x.branch!=='HEAD')q.set('branch',x.branch);if(x.prefix)q.set('path',x.prefix);
+    return `<tr><td class="p"><a href="${MAIN}?${esc(q)}">${esc(x.repo)}</a></td><td>${esc(x.branch==='HEAD'?'default':x.branch)}</td><td class="p">${esc(x.prefix||'—')}</td><td class="n">${Number(x.theorem_mass).toLocaleString()}</td><td class="n">${Number(x.files_count).toLocaleString()}</td><td>${new Date(x.created_at).toLocaleString()}</td></tr>`;}).join('');
+}).catch(()=>{document.getElementById('status').textContent='The archive could not be loaded right now. Try again shortly.';});
+</script>
+</body>
+</html>
