@@ -7,10 +7,15 @@ for that entry and run, and every other entry and source carries on. Results are
 registry/<kind>/<value>/ on the rap-registry branch, and registry/index.json lists every profile.
 
 Sources, all public, no account needed from the person being scanned:
-  orcid     pub.orcid.org/v3.0 (anonymous public API): name and works, with dates and DOIs
+  orcid     pub.orcid.org/v3.0 (anonymous public API): name, works with dates, DOIs and identifier
+            counts, and every other item on the record (peer reviews, fundings, employments,
+            educations, distinctions, invited positions, memberships, qualifications, services,
+            research resources), each with the date it entered the record
   openalex  api.openalex.org: citation total and works count, read daily; the record keeps
             each day's total, so the day-over-day rise is the citations added that day
   figshare  figshare_snapshot.py: views and downloads per item per day, by country and city
+  github    lean_mass.py on a clone of the repository: theorem and lemma counts for every .lean
+            file across the full history, the repository's theorem mass by day
 
 Nothing recorded is ever removed: works stay listed once seen, and a stored day total is
 replaced only by a read that is at least as large. Standard library only.
@@ -20,6 +25,7 @@ Environment:
   OPENALEX_API_KEY                  free key from openalex.org/settings/api
   RAP_MODE                          "new" scans only entries without a profile yet; "all" scans every entry
   FIGSHARE_SCRIPT                   path to figshare_snapshot.py
+  LEAN_SCRIPT                       path to lean_mass.py
 """
 import json, os, re, subprocess, sys, time, datetime, urllib.request, urllib.error, urllib.parse
 
@@ -28,6 +34,7 @@ SB_KEY = os.environ.get("SUPABASE_PUBLISHABLE_KEY", "")
 OA_KEY = os.environ.get("OPENALEX_API_KEY", "")
 MODE = os.environ.get("RAP_MODE", "new")
 FIG = os.environ.get("FIGSHARE_SCRIPT", "figshare_snapshot.py")
+LEAN = os.environ.get("LEAN_SCRIPT", "lean_mass.py")
 ROOT = "registry"
 TODAY = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
 NOW = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -89,7 +96,32 @@ def scan_orcid(oid, folder):
         family = ((n.get("family-name") or {}).get("value") or "").strip()
         credit = ((n.get("credit-name") or {}).get("value") or "").strip()
         rec["name"] = credit or " ".join(x for x in (given, family) if x) or rec.get("name", "")
-    works = get(f"https://pub.orcid.org/v3.0/{oid}/works")
+    acts = get(f"https://pub.orcid.org/v3.0/{oid}/activities") or {}
+    rec.setdefault("activities", {})
+    def walk(section, node):
+        if isinstance(node, dict):
+            if "put-code" in node and "created-date" in node:
+                pc = str(node.get("put-code"))
+                cd = (node.get("created-date") or {}).get("value")
+                cd = datetime.datetime.fromtimestamp(cd / 1000, datetime.timezone.utc).date().isoformat() if cd else ""
+                title = node.get("title")
+                if isinstance(title, dict):
+                    title = ((title.get("title") or {}).get("value")) if isinstance(title.get("title"), dict) else title.get("value")
+                org = ((node.get("organization") or {}).get("name")) or ""
+                a = rec["activities"].setdefault(section, {}).setdefault(pc, {})
+                a.update({"added": cd, "title": title or org or a.get("title", ""), "last_seen": TODAY})
+                a.setdefault("first_seen", TODAY)
+                return
+            for v in node.values():
+                walk(section, v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(section, v)
+    for section, node in acts.items():
+        if section in ("works", "path", "last-modified-date"):
+            continue
+        walk(section, node)
+    works = acts.get("works") or get(f"https://pub.orcid.org/v3.0/{oid}/works")
     for g in (works or {}).get("group", []):
         for s in g.get("work-summary", [])[:1]:
             pc = str(s.get("put-code"))
@@ -100,7 +132,8 @@ def scan_orcid(oid, folder):
             created = (s.get("created-date") or {}).get("value")
             created = datetime.datetime.fromtimestamp(created / 1000, datetime.timezone.utc).date().isoformat() if created else ""
             doi = ""
-            for x in ((s.get("external-ids") or {}).get("external-id") or []):
+            ids = ((s.get("external-ids") or {}).get("external-id") or [])
+            for x in ids:
                 if (x.get("external-id-type") or "").lower() == "doi":
                     doi = (x.get("external-id-value") or "").lower()
                     break
@@ -108,7 +141,7 @@ def scan_orcid(oid, folder):
             w.update({"title": (((s.get("title") or {}).get("title") or {}).get("value") or ""),
                       "type": s.get("type") or "", "doi": doi,
                       "published": "-".join(x for x in (y, m.zfill(2) if m else "", d.zfill(2) if d else "") if x),
-                      "added": created, "last_seen": TODAY})
+                      "ids": len(ids), "added": created, "last_seen": TODAY})
             w.setdefault("first_seen", TODAY)
     rec["updated"] = NOW
     save(f"{folder}/orcid.json", rec)
@@ -149,6 +182,26 @@ def scan_figshare(author, oid, folder):
     return load(f"{folder}/figshare.json", None)
 
 
+def scan_github(repo, folder):
+    import tempfile, shutil
+    if not os.path.exists(LEAN):
+        print("  lean_mass.py not found; GitHub skipped.")
+        return None
+    tmp = tempfile.mkdtemp()
+    try:
+        r = subprocess.run(["git", "clone", "--bare", "--quiet", f"https://github.com/{repo}.git", tmp],
+                           capture_output=True, text=True)
+        if r.returncode != 0:
+            print(f"  clone of {repo} skipped: {r.stderr.strip()[:200]}")
+            return None
+        os.makedirs(folder, exist_ok=True)
+        env = dict(os.environ, GIT_DIR_PATH=tmp, REF="HEAD", REPO=repo, OUT=f"{folder}/leanmass.json")
+        subprocess.run([sys.executable, LEAN], env=env, check=False)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    return load(f"{folder}/leanmass.json", None)
+
+
 def main():
     if not (SB_URL and SB_KEY):
         sys.exit("SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY are required.")
@@ -157,7 +210,9 @@ def main():
     index = load(f"{ROOT}/index.json", {"profiles": {}})
     index.setdefault("profiles", {})
     for r in rows:
-        kind, value = r.get("kind"), (r.get("value") or "").strip().upper()
+        kind, value = r.get("kind"), (r.get("value") or "").strip()
+        if kind == "orcid":
+            value = value.upper()
         key = f"{kind}:{value}"
         if MODE == "new" and key in index["profiles"]:
             continue
@@ -175,6 +230,7 @@ def main():
                 files.add("orcid.json")
                 p["name"] = o.get("name", "") or p.get("name", "")
                 p["works"] = len(o.get("works", {}))
+                p["record_items"] = len(o.get("works", {})) + sum(len(v) for v in o.get("activities", {}).values())
             a = scan_openalex(value, folder)
             if a and a.get("days"):
                 files.add("openalex.json")
@@ -191,6 +247,15 @@ def main():
                 if tot:
                     t = tot[max(tot)]
                     p["views"], p["downloads"] = t.get("views", 0), t.get("downloads", 0)
+        elif kind == "github":
+            if not re.fullmatch(r"[A-Za-z0-9-]+/[A-Za-z0-9._-]+", value):
+                continue
+            g = scan_github(value, folder)
+            if g and g.get("days"):
+                files.add("leanmass.json")
+                last = g["days"][max(g["days"])]
+                p["name"] = p.get("name") or value
+                p["theorems"], p["mass"] = last.get("theorems", 0), last.get("mass", 0)
         else:
             continue
         p["files"] = sorted(files)
