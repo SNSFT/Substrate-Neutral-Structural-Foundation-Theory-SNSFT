@@ -24,6 +24,7 @@ td.n{font-family:'Space Mono',monospace;text-align:right}
 td.p{font-family:'Space Mono',monospace;font-size:.8rem;word-break:break-all}
 footer{padding:1rem 0 3rem;color:var(--muted);font-size:.82rem}
 th{cursor:pointer;user-select:none;white-space:nowrap}
+td{white-space:nowrap}td.p{white-space:normal}
 </style>
 </head>
 <body>
@@ -42,7 +43,7 @@ th{cursor:pointer;user-select:none;white-space:nowrap}
 <script>
 const FN='https://rsadsojivuagxptdlwak.supabase.co/functions/v1/leanmass',MAIN='https://uuia.app/leanmass/';
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),nf=n=>n==null?'\u2014':Number(n).toLocaleString();
-const COLS=[['repo','Repository'],['branch','Branch'],['prefix','Path'],['theorem_mass','Theorem mass'],['theorems','Theorems'],['lemmas','Lemmas'],['files_count','Files'],['total_lines','Lines'],['proof_sorry','Proof sorry'],['zero_sorry_mass','0-sorry mass'],['coord_files','Coordinates'],['created_at','Read']];
+const COLS=[['repo','Repository'],['branch','Branch'],['prefix','Path'],['theorem_mass','Theorem mass'],['theorems','Declared theorems'],['lemmas','Declared lemmas'],['files_count','Files'],['total_lines','Lines'],['proof_sorry','Proof sorry'],['held','Held back by sorry'],['coord_files','Coordinates'],['created_at','Read']];
 let ROWS=[],TOTAL=0,SORT=['created_at',-1];$('rd').href=MAIN;
 function paint(){
   $('hr').innerHTML=COLS.map(([k,l])=>`<th data-k="${k}">${l}${SORT[0]===k?(SORT[1]>0?' \u25B2':' \u25BC'):''}</th>`).join('');
@@ -53,10 +54,10 @@ function paint(){
   $('t').tBodies[0].innerHTML=R.map(x=>{const p=new URLSearchParams({repo:x.repo});if(x.branch&&x.branch!=='HEAD')p.set('branch',x.branch);if(x.prefix)p.set('path',x.prefix);
     return `<tr><td class="p"><a href="${MAIN}?${esc(p)}">${esc(x.repo)}</a></td><td>${esc(x.branch==='HEAD'?'default':x.branch)}</td><td class="p">${esc(x.prefix||'\u2014')}</td>`
      +['theorem_mass','theorems','lemmas','files_count','total_lines'].map(k=>`<td class="n">${nf(x[k])}</td>`).join('')
-     +`<td class="n"${x.proof_sorry>0?' style="color:#fbbf24"':''}>${nf(x.proof_sorry)}</td><td class="n">${nf(x.zero_sorry_mass)}</td><td class="n">${nf(x.coord_files)}</td><td>${new Date(x.created_at).toLocaleString()}</td></tr>`;}).join('');
+     +`<td class="n"${x.proof_sorry>0?' style="color:#fbbf24"':''}>${nf(x.proof_sorry)}</td><td class="n">${nf(x.held)}</td><td class="n">${nf(x.coord_files)}</td><td>${new Date(x.created_at).toLocaleString()}</td></tr>`;}).join('');
   $('more').hidden=ROWS.length>=TOTAL;
 }
-async function load(){try{const r=await fetch(`${FN}?list=1&offset=${ROWS.length}&limit=200`,{cache:'no-store'}).then(x=>x.json());if(!Array.isArray(r.rows))throw 0;ROWS=ROWS.concat(r.rows);TOTAL=r.total;paint();}catch(_){$('status').textContent='The archive could not be loaded right now. Try again shortly.';}}
+async function load(){try{const r=await fetch(`${FN}?list=1&offset=${ROWS.length}&limit=200`,{cache:'no-store'}).then(x=>x.json());if(!Array.isArray(r.rows))throw 0;ROWS=ROWS.concat(r.rows.map(x=>({...x,held:x.theorems==null?null:x.theorems+x.lemmas-x.theorem_mass})));TOTAL=r.total;paint();}catch(_){$('status').textContent='The archive could not be loaded right now. Try again shortly.';}}
 $('more').onclick=load;$('f').oninput=paint;load();
 </script>
 </body>
