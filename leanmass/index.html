@@ -68,9 +68,6 @@ footer p{margin-bottom:.5rem}
   <div class="row" style="margin-top:.6rem">
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a folder on this computer<input type="file" id="dir" webkitdirectory multiple hidden></label>
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open .lean files<input type="file" id="files" accept=".lean" multiple hidden></label>
-    <details style="flex:1;min-width:260px"><summary class="help" style="cursor:pointer;margin:0">GitHub token (optional, for large repositories or many reads in an hour)</summary>
-      <input id="token" type="password" placeholder="a fine-grained token with public read access" autocomplete="off" style="margin-top:.4rem">
-      <p class="help">Without a token GitHub allows 60 repository listings an hour from one address; each read here uses two. The token stays in this tab only and goes to api.github.com and nowhere else.</p></details>
   </div>
   <p class="help" id="status"></p>
   <div class="bar" id="barw" hidden><i id="bar"></i></div>
@@ -101,14 +98,16 @@ block text   = /- … -/ comments (doc comments included) are removed before cou
                written inside a comment is not counted
 lines        = newlines + 1, on the file as written
 coordinate   = the first "Coordinate: [a,b,c,d]" in the file
-proof sorry  = sorry in proof code: block comments, -- line comments and strings removed first
-theorem mass = Σ declarations over every .lean file read (lakefile.lean excluded)</div>
-  <p class="help">A snapshot reads the repository as it stands on the chosen branch. To keep a permanent day-by-day record of a repository's theorem mass, with the mass to date that only rises, add it to the scan list at <a href="https://uuia.app/rap">uuia.app/rap</a>; the collector reads its whole commit history.</p>
+proof sorry  = sorry used as a tactic in proof code: nested /- -/ comments, -- comments and strings
+               removed as Lean reads them; statements of closure ("0 sorry", "zero `sorry`") are not holes
+theorem mass = Σ declarations over every .lean file read (lakefile.lean excluded)
+0-sorry mass = Σ declarations over the files with no sorry in proof code</div>
+  <p class="help">Any public repository reads with no account and no key: LeanMass makes one listing request to GitHub per read and fetches each file from raw.githubusercontent.com. A folder on your own computer reads without any network request at all. A snapshot reads the repository as it stands on the chosen branch. To keep a permanent day-by-day record of a repository's theorem mass, with the mass to date that only rises, add it to the scan list at <a href="https://uuia.app/rap">uuia.app/rap</a>; the collector reads its whole commit history.</p>
 </section>
 </main>
 
 <footer><div class="wrap">
-  <p><b>Built from:</b> GitHub REST API (repository and git tree endpoints) and raw.githubusercontent.com for file contents · the browser File API for folders on your own computer · the RAP formal-record collector rule (lean_mass.py) · Lean 4 declaration syntax.</p>
+  <p><b>Built from:</b> GitHub REST API (git tree endpoint) with the jsDelivr GitHub mirror as a second listing route, and raw.githubusercontent.com for file contents · the browser File API for folders on your own computer · the RAP formal-record collector rule (lean_mass.py) · Lean 4 declaration syntax.</p>
   <p>Architect: HIGHTISTIC (Russell Vernon Trent III) · SNSFT Foundation · Kenai, Alaska · Identity Physics Corpus DOI 10.17605/OSF.IO/KWTYD · Free to use under the NOHARM invariant, with citation.</p>
   <p>LeanMass™, Applied Identity Physics™ and HIGHTISTIC™ are trademarks of HIGHTISTIC™ / SNSFT Foundation. Lean is a project of the Lean FRO; LeanMass is an independent tool.</p>
   <p class="mono">[9,9,9,9] :: {ANC} · The Manifold is Holding</p>
@@ -120,20 +119,33 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const fmt=n=>Math.round(n).toLocaleString();
 const DECL=/^\s*(?:@\[[^\]]*\]\s*)?(?:(?:private|protected|noncomputable|nonrec)\s+)*(theorem|lemma)\s/gm;
 const BLOCK=/\/-[\s\S]*?-\//g, COORD=/Coordinate:\s*(\[[0-9A-Za-z, ]+\](?:\([A-Z]+\))?)/;
+// proof code only: nested /- -/ block comments, -- line comments and "strings" removed, as Lean reads them
+function leanCode(src){let o='',i=0,d=0;const n=src.length;
+  while(i<n){const c=src[i],c2=src[i+1];
+    if(d>0){if(c==='/'&&c2==='-'){d++;i+=2;continue;}if(c==='-'&&c2==='/'){d--;i+=2;continue;}if(c==='\n')o+='\n';i++;continue;}
+    if(c==='/'&&c2==='-'){d=1;i+=2;continue;}
+    if(c==='-'&&c2==='-'){while(i<n&&src[i]!=='\n')i++;continue;}
+    if(c==='"'){i++;while(i<n&&src[i]!=='"'){if(src[i]==='\\')i++;if(src[i]==='\n')o+='\n';i++;}i++;continue;}
+    o+=c;i++;}
+  return o;}
+// statements of closure ("0 sorry", "zero `sorry`", "sorry: 0") document a proof; they are not holes
+const SLOGAN=/\b0[\s\-\u2011]*`?sorry`?\b|\bzero\s+`?sorrys?`?|\bno\s+`?sorrys?`?|`?sorry`?\s*(?:count\s*)?[:=]\s*0\b|\bsorry[- ]free\b|`sorry`/gi;
 function measure(src){
   const body=src.replace(BLOCK,'');let th=0,le=0,m;DECL.lastIndex=0;
   while((m=DECL.exec(body)))m[1]==='theorem'?th++:le++;
   const c=src.match(COORD),lines=(src.match(/\n/g)||[]).length+1;
-  const code=body.split('\n').map(l=>{const i=l.indexOf('--');return i<0?l:l.slice(0,i);}).join('\n').replace(/"(?:\\.|[^"\\])*"/g,'');
-  const sorry=(code.match(/\bsorry\b/g)||[]).length;
+  const sorry=(leanCode(src).replace(SLOGAN,' ').match(/\bsorry\b/g)||[]).length;
   return{theorems:th,lemmas:le,decl:th+le,lines,coord:c?c[1].replace(/ /g,''):'',sorry};
 }
 let RES=null,SORT={files:[2,-1],folders:[1,-1]};
-const tok=()=>{const t=$('token').value.trim();return t?{Authorization:'Bearer '+t}:{};};
-async function gh(path){const r=await fetch('https://api.github.com'+path,{headers:{Accept:'application/vnd.github+json',...tok()}});
-  if(r.status===403||r.status===429){const reset=r.headers.get('x-ratelimit-reset');throw new Error('GitHub\u2019s hourly limit for this address is used up'+(reset?`; it resets at ${new Date(reset*1000).toLocaleTimeString()}`:'')+'. Add a token below to keep reading.');}
-  if(r.status===404)throw new Error('GitHub found no public repository, branch or path by that name.');
+// public reads only: no credentials are ever sent, so a public repository always reads
+async function gh(path){const r=await fetch('https://api.github.com'+path,{headers:{Accept:'application/vnd.github+json'},credentials:'omit'});
+  if(r.status===403||r.status===429){const e=new Error('limit');e.limit=true;e.reset=r.headers.get('x-ratelimit-reset');throw e;}
+  if(r.status===404||r.status===422)throw new Error('GitHub found no public repository, branch or path by that name.');
   if(!r.ok)throw new Error('GitHub answered '+r.status+'.');return r.json();}
+// second listing route when GitHub's hourly listing allowance for this address is used: the jsDelivr mirror of GitHub
+async function jsd(owner,repo,ref){const r=await fetch(`https://data.jsdelivr.com/v1/packages/gh/${owner}/${repo}@${encodeURIComponent(ref)}?structure=flat`);
+  if(!r.ok)throw new Error('mirror '+r.status);const d=await r.json();return (d.files||[]).map(f=>f.name.replace(/^\//,''));}
 function parse(s){s=s.trim().replace(/\.git$/,'').replace(/\/$/,'');
   let m=s.match(/github\.com\/([^/]+)\/([^/#?]+)(?:\/(tree|blob)\/([^/]+)(?:\/(.*))?)?/i);
   if(m)return{owner:m[1],repo:m[2],kind:m[3]||'',branch:m[4]||'',path:m[5]||''};
@@ -146,8 +158,7 @@ async function readRemote(){
   $('run').disabled=true;
   try{
     status('Reading the repository…',0);
-    const meta=await gh(`/repos/${P.owner}/${P.repo}`);
-    const branch=$('branch').value.trim()||P.branch||meta.default_branch;
+    const branch=$('branch').value.trim()||P.branch||'HEAD';  // HEAD = the repository's default branch
     let prefix=($('prefix').value.trim()||'').replace(/^\//,'');
     const enc=p=>p.split('/').map(encodeURIComponent).join('/');
     const raw=p=>`https://raw.githubusercontent.com/${P.owner}/${P.repo}/${encodeURIComponent(branch)}/${enc(p)}`;
@@ -156,8 +167,13 @@ async function readRemote(){
     else{
       const base=(P.kind==='tree'&&P.path)?P.path.replace(/\/$/,'')+'/':'';
       if(!prefix&&base)prefix=base;
-      const tree=await gh(`/repos/${P.owner}/${P.repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`);truncated=!!tree.truncated;
-      paths=tree.tree.filter(t=>t.type==='blob'&&t.path.endsWith('.lean')&&!t.path.endsWith('lakefile.lean')&&(!prefix||t.path.startsWith(prefix))).map(t=>t.path);
+      let all;
+      try{const tree=await gh(`/repos/${P.owner}/${P.repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`);truncated=!!tree.truncated;all=tree.tree.filter(t=>t.type==='blob').map(t=>t.path);}
+      catch(e){if(!e.limit)throw e;
+        status('GitHub\u2019s hourly listing allowance for this address is used; listing through the jsDelivr mirror…',0);
+        try{all=await jsd(P.owner,P.repo,branch==='HEAD'?'main':branch);}
+        catch(_){throw new Error('GitHub\u2019s hourly listing allowance for this address is used'+(e.reset?` until ${new Date(e.reset*1000).toLocaleTimeString()}`:'')+', and the mirror could not list this repository. Read again after that time.');}}
+      paths=all.filter(p=>p.endsWith('.lean')&&!p.endsWith('lakefile.lean')&&(!prefix||p.startsWith(prefix)));
     }
     if(!paths.length){status(`No .lean files on ${P.owner}/${P.repo} @ ${branch}${prefix?' under '+prefix:''}.`);return;}
     const files=new Array(paths.length);let failed=0;
@@ -179,11 +195,11 @@ async function readLocal(list,label){
 }
 function show(R){
   RES=R;const F=R.files,T=F.reduce((a,f)=>a+f.decl,0),th=F.reduce((a,f)=>a+f.theorems,0),le=F.reduce((a,f)=>a+f.lemmas,0),Ln=F.reduce((a,f)=>a+f.lines,0),S=F.filter(f=>f.sorry>0),co=F.filter(f=>f.coord).length;
-  status(`${fmt(F.length)} .lean files read from ${R.source}${R.branch?' @ '+R.branch:''}${R.prefix?' under '+R.prefix:''}.`+(R.failed?` ${fmt(R.failed)} could not be fetched; read again to include them.`:'')+(R.truncated?' GitHub returned a partial file list for a repository this size; narrow it with a path to read each part in full.':''));
+  status(`${fmt(F.length)} .lean files read from ${R.source}${R.branch?' @ '+(R.branch==='HEAD'?'default branch':R.branch):''}${R.prefix?' under '+R.prefix:''}.`+(R.failed?` ${fmt(R.failed)} could not be fetched; read again to include them.`:'')+(R.truncated?' GitHub returned a partial file list for a repository this size; narrow it with a path to read each part in full.':''));
   $('outtitle').textContent=`Theorem mass · ${R.source}${R.prefix?' · '+R.prefix:''}`;
-  $('cards').innerHTML=[['Theorem mass',fmt(T),`${fmt(th)} theorems + ${fmt(le)} lemmas`],['Files',fmt(F.length),`${fmt(co)} carry a corpus coordinate`],['Lines',fmt(Ln),`${F.length?(Ln/F.length).toFixed(0):0} per file`],['Per file',F.length?(T/F.length).toFixed(1):'0','declarations per .lean file'],['Proof sorry',fmt(S.reduce((a,f)=>a+f.sorry,0)),S.length?`in ${fmt(S.length)} file${S.length===1?'':'s'}`:'none in proof code']]
+  $('cards').innerHTML=[['Theorem mass',fmt(T),`${fmt(th)} theorems + ${fmt(le)} lemmas`],['Files',fmt(F.length),`${fmt(co)} carry a corpus coordinate`],['Lines',fmt(Ln),`${F.length?(Ln/F.length).toFixed(0):0} per file`],['Per file',F.length?(T/F.length).toFixed(1):'0','declarations per .lean file'],['0-sorry theorem mass',fmt(F.filter(f=>!f.sorry).reduce((a,f)=>a+f.decl,0)),`declarations in the ${fmt(F.length-S.length)} files with no sorry in proof code`],['Proof sorry',fmt(S.reduce((a,f)=>a+f.sorry,0)),S.length?`in ${fmt(S.length)} file${S.length===1?'':'s'}`:'none in proof code']]
     .map(([k,v,s])=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
-  $('work').textContent=`theorem mass = Σ declarations = ${fmt(th)} theorem + ${fmt(le)} lemma = ${fmt(T)}  over ${fmt(F.length)} .lean files, ${fmt(Ln)} lines`;
+  $('work').textContent=`theorem mass        = Σ declarations = ${fmt(th)} theorem + ${fmt(le)} lemma = ${fmt(T)}  over ${fmt(F.length)} .lean files, ${fmt(Ln)} lines\n0-sorry theorem mass = Σ declarations in files with no sorry in proof code = ${fmt(F.filter(f=>!f.sorry).reduce((a,f)=>a+f.decl,0))}`;
   const fo=new Map();F.forEach(f=>{const k=f.path.includes('/')?f.path.split('/').slice(0,-1).join('/'):'(root)';const x=fo.get(k)||[k,0,0,0];x[1]+=f.decl;x[2]++;x[3]+=f.lines;fo.set(k,x);});
   R.folders=[...fo.values()];paint();
   $('track').innerHTML=R.remote?`To keep this repository's theorem mass as a permanent day-by-day record from its full commit history, add <span class="mono">${esc(R.source)}</span> as a GitHub repository in the scan list at <a href="https://uuia.app/rap">uuia.app/rap</a>.`:'Read from your own computer; nothing left this browser.';
