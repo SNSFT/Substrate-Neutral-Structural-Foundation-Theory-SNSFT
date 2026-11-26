@@ -64,6 +64,11 @@ td.n{font-family:'Space Mono',monospace;text-align:right}
 @media(max-width:760px){.grid2{grid-template-columns:1fr}}
 details summary{cursor:pointer;color:var(--muted);font-size:.9rem}
 #msg{min-height:1.2rem}
+.pnav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--border)}
+.pnav .wrap{display:flex;flex-wrap:wrap;gap:.2rem .9rem;align-items:center;padding-top:.5rem;padding-bottom:.5rem}
+.pnav a{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap}
+.pnav a:hover{color:var(--accent)}
+section{scroll-margin-top:3.2rem}
 footer{padding:2rem 0 3rem;color:var(--muted);font-size:.82rem}
 footer p{margin-bottom:.5rem}
 .formula{font-family:'Space Mono',monospace;font-size:.8rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.7rem .9rem;margin:.6rem 0;overflow-x:auto;white-space:pre}
@@ -77,11 +82,32 @@ footer p{margin-bottom:.5rem}
     <p class="tag"><b>Whole-repository acquisition, day by day.</b> Outside systems that pull an entire repository register as clones. This panel separates those pulls from the repository's own CI, lines them up against each deposit, and places each day against the Torsion Limit TL = 0.136899099984016. The site section does the same for uuia.app and proofpress.org: every AI and search crawler by name and operator, the live assistant fetches made for people in a chat, and the pages they read. PhilPapers readership and figshare views and downloads join them, and every source adds into one Identity Mass that only grows: the identity's full record, day by day, its rap sheet. It reads the traffic.json, cloudflare.json, philpeople.json and figshare.json saved daily by the collector workflow; nothing you load leaves your browser.</p>
   </div>
 </header>
+<nav class="pnav"><div class="wrap">
+  <a href="#scansec">Scan a profile</a><a href="#getdata">Get data</a><a href="#lineagesec">Lineage</a><a href="#modelsec">Data model · export</a><a href="#idsec">Identity read</a><a href="#fusesec">Source collision</a><a href="#iddaysec">Day by day</a><a href="#summary">Repository</a><a href="#cfsec">Site</a><a href="#lmsec">Formal record</a><a href="#fssec">figshare</a><a href="#ppsec">PhilPapers</a>
+  <button class="btn primary" id="navexport" style="margin-left:auto">Export all</button>
+</div></nav>
 
 <main class="wrap">
 
-<section>
-  <h2>Data</h2>
+<section id="scansec">
+  <h2>Scan a profile</h2>
+  <p class="help">Add an ORCID iD or a figshare author id to the RAP scan list. The first scan runs within the hour and every day after that, and the profile builds its own permanent record here, kept under the same never-lower rule as every other source. Everything read is public: the theorem mass of a GitHub Lean repository, read from its full history; the whole ORCID record — works, peer reviews, fundings, employments, educations, distinctions, memberships, services — each item entering Identity Mass on the day it entered the record; views and downloads by item, day and place from figshare; and citations from OpenAlex as one source among them. Nothing is needed from the person being scanned, and no account is needed to add one.</p>
+  <div class="row">
+    <div style="min-width:170px"><label for="scankind">Profile</label><select id="scankind"><option value="orcid">ORCID iD</option><option value="figshare">figshare author id</option><option value="github">GitHub repository</option></select></div>
+    <div style="flex:1;min-width:220px"><label for="scanval">Identifier</label><input id="scanval" placeholder="0000-0000-0000-0000" autocomplete="off"></div>
+    <button class="btn primary" id="scanadd">Add to the scan list</button>
+  </div>
+  <p class="help" id="scanmsg"></p>
+  <div class="row" style="margin-top:.4rem">
+    <div style="flex:1;min-width:260px"><label for="profsel">Scanned profiles</label><select id="profsel"><option value="">Loading the scan list…</option></select></div>
+    <button class="btn" id="profload">Load profile</button>
+    <button class="btn" id="profadd">Add to the view</button>
+  </div>
+  <div class="cards" id="profsum" style="margin-top:.8rem"></div>
+</section>
+
+<section id="getdata">
+  <h2>Get data · repository sources</h2>
   <div class="row">
     <div style="flex:1;min-width:260px"><label for="reposel">Repository</label><select id="reposel"></select></div>
     <div style="flex:1;min-width:220px"><label for="repo">Search or add (owner/name)</label><input id="repo" list="repolist" placeholder="owner/name" value="SNSFT/Substrate-Neutral-Structural-Foundation-Theory-SNSFT"><datalist id="repolist"></datalist></div>
@@ -101,22 +127,23 @@ footer p{margin-bottom:.5rem}
   </div>
 </section>
 
-<section id="scansec">
-  <h2>Scan a profile</h2>
-  <p class="help">Add an ORCID iD or a figshare author id to the RAP scan list. The first scan runs within the hour and every day after that, and the profile builds its own permanent record here, kept under the same never-lower rule as every other source. Everything read is public: the theorem mass of a GitHub Lean repository, read from its full history; the whole ORCID record — works, peer reviews, fundings, employments, educations, distinctions, memberships, services — each item entering Identity Mass on the day it entered the record; views and downloads by item, day and place from figshare; and citations from OpenAlex as one source among them. Nothing is needed from the person being scanned, and no account is needed to add one.</p>
-  <div class="row">
-    <div style="min-width:170px"><label for="scankind">Profile</label><select id="scankind"><option value="orcid">ORCID iD</option><option value="figshare">figshare author id</option><option value="github">GitHub repository</option></select></div>
-    <div style="flex:1;min-width:220px"><label for="scanval">Identifier</label><input id="scanval" placeholder="0000-0000-0000-0000" autocomplete="off"></div>
-    <button class="btn primary" id="scanadd">Add to the scan list</button>
-  </div>
-  <p class="help" id="scanmsg"></p>
-  <div class="row" style="margin-top:.4rem">
-    <div style="flex:1;min-width:260px"><label for="profsel">Scanned profiles</label><select id="profsel"><option value="">Loading the scan list…</option></select></div>
-    <button class="btn" id="profload">Load profile</button>
-    <button class="btn" id="profadd">Add to the view</button>
-  </div>
-  <div class="cards" id="profsum" style="margin-top:.8rem"></div>
+<section id="lineagesec">
+  <h2>Lineage · where every number comes from</h2>
+  <p class="help">Each source system on the left is read by a collector, saved as a data file, and added into one fact table, Date · Source · Added. Every measure is computed from that table: Identity Mass, level and placement by day, and each source as a P · N · B · A beam collided by the PSY n-beam fusion. A solid outline is loaded now; a dashed one is not loaded in this view. Click a data file, table or measure to open that table in the data model below.</p>
+  <div id="lineage"></div>
 </section>
+
+<section id="modelsec">
+  <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.6rem">
+    <h2 style="margin:0">Data model · export</h2>
+    <div class="row"><button class="btn primary" id="exall">Export all tables (.zip of CSV)</button><button class="btn" id="exjson">Export model (.json)</button></div>
+  </div>
+  <p class="help">Every table behind this panel, laid out as a star schema: the fact tables join the <span class="mono">dates</span> dimension on Date and the <span class="mono">sources</span> dimension on Source, and <span class="mono">measures</span> and <span class="mono">constants</span> hold every definition. Each table exports as UTF-8 CSV with a header row, ready for Power BI (Get data → Folder, or Text/CSV for one table) and Excel (Data → From Text/CSV). The zip carries a README with the relationships. Exports always carry every row, whatever the day tables above are set to show.</p>
+  <div class="tablewrap"><table id="modeltables"><thead><tr><th>Table</th><th>What it holds</th><th>Rows</th><th>Columns</th><th>Export</th></tr></thead><tbody></tbody></table></div>
+  <div class="row" style="justify-content:space-between;align-items:center;margin:1rem 0 .4rem"><h3 style="font-size:.95rem" class="mono" id="modelpvh"></h3><button class="btn" id="modelpvex">Export this table (.csv)</button></div>
+  <div class="tablewrap" style="max-height:420px;overflow:auto"><table id="modelpv"></table></div>
+</section>
+
 
 <section id="idsec" hidden>
   <h2>Identity read · baseline → activated</h2>
@@ -142,7 +169,7 @@ per-day measures are averaged over the days in each period that the source cover
 </section>
 
 <section id="fusesec" hidden>
-  <h2>Source collision · PSY n-beam fusion</h2>
+  <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem"><h2 style="margin:0">Source collision · PSY n-beam fusion</h2><div class="row"><button class="btn" data-export="source_beams">Export beams (.csv)</button><button class="btn" data-export="source_fusion">Export fusion (.csv)</button></div></div>
   <p class="help">Each source is an identity with its own P, N, B and A, read over the identity-read periods above, and every source is collided with the PSY fusion logic of SNSFL_PSY_8Beam_Fusion_Theorem.lean [9,9,6,28]: P harmonic mean, N narrative bottleneck (minimum), B = ΣB − 2k with k the sum of the minimum B over every pair, A adaptation ceiling (maximum), phase by the engine's phaseOf. Every step is shown. Each source's axes are ratios inside that source, so every beam reads on the same scale: P is the share of its reach already established when the period opens, N the share of its identities in the period that are returning, A the share that are new, and B is solved from the source's place on the TL ruler with the IMCollider exemplar step B = τ × P. Growth places a source Locked or IVA Peak; only server errors at TL or more of requests place it Shatter.</p>
   <div id="fusetables"></div>
   <div class="formula">P = reach carried / reach held · N = returning / (returning + new) · A = new / (returning + new) (a source with no identity activity in the period holds as it stood: N = 1, A = 0) · B = τ × P
@@ -155,7 +182,7 @@ spread law [9,9,6,28]: the beams close Noble whenever every B_i lies within a fa
 </section>
 
 <section id="iddaysec" hidden>
-  <h2>Identity day by day · every source</h2>
+  <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem"><h2 style="margin:0">Identity day by day · every source</h2><div class="row"><button class="btn" data-export="identity_days">Export days (.csv)</button><button class="btn" data-export="source_days">Export Date · Source · Added (.csv)</button></div></div>
   <p class="help">One interaction per contact, from every loaded source, added into the identity's day. Each source's column shows its share; a source counts from the first day it has data. Each day shows what it added and the identity's IM to date, the same way as every day table.</p>
   <h3 style="margin:.6rem 0 .3rem;font-size:.95rem">IM growth · replay</h3>
   <p class="help">Identity Mass to date across every loaded source, stacked by source, over the range selected above, with ▲ deposits (filled when the push carried .lean files), ◆ figshare publications and ■ ORCID works on the curve. IM at the start of the range is everything accumulated before it, so the range never restarts the count. Press play to replay the range day by day; the axes are fixed to the whole range first, so nothing rescales while it plays. The neural 3D view of the same growth is at <a href="/aimtimeline">uuia.app/aimtimeline</a>.</p>
@@ -1018,15 +1045,8 @@ function idDaySources(){
   return S;
 }
 function renderIDDay(){
-  const S=idDaySources();if(!S.length){$('iddaysec').hidden=true;return;}
-  const all=[].concat(...S.map(x=>Object.keys(x.m)));if(!all.length){$('iddaysec').hidden=true;return;}
-  if(ORC)Object.values(ORC.works||{}).forEach(w=>{const d=/^\d{4}-\d{2}-\d{2}$/.test(w.published||'')?w.published:w.added;if(d&&d<=all.reduce((a,b)=>a>b?a:b))all.push(d);});
-  all.sort();
-  const first=all[0],last=all[all.length-1],days=[];for(let d=first;d<=last;d=addDays(d,1))days.push(d);
-  const starts=S.map(x=>Object.keys(x.m).sort()[0]);
-  const full=days.map(d=>{const r={d,parts:S.map((x,i)=>d>=starts[i]?(x.m[d]||0):null)};r.out=r.parts.reduce((a,v)=>a+(v||0),0);
-    const site=S.find(x=>x.fail);if(site&&site.rq[d])r.fail=site.fail[d]/site.rq[d];return r;});
-  place(full);
+  const IDX=idFull();if(!IDX){$('iddaysec').hidden=true;return;}
+  const {S,full}=IDX;
   const sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2],rows=sel[2]===Infinity?full:full.slice(-sel[2]);
   imReplay(full,rows,S);
   $('iddaylegend').innerHTML=S.map((x,i)=>`<span><span class="sw" style="background:${SRC_COL[i%SRC_COL.length]}"></span>${esc(x.k)}</span>`).join('')+'<span><span class="sw" style="background:transparent;border-top:2px dashed var(--muted);height:0"></span>established level (record high of the typical day)</span>';
@@ -1074,7 +1094,7 @@ function imReplay(full,rows,S){
   let g='';for(let v=0;v<=top;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${fmt(v)}</text>`;
   const every=Math.max(1,Math.ceil(n/10)),long=n>366,lab=d=>long?new Date(d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',year:'numeric',timeZone:'UTC'}):d.slice(5);
   // ranges longer than a year carry the year on every label
-  rows.forEach((r,k)=>{if((k%every===0&&n-1-k>=every*.6)||k===n-1)g+=`<text x="${X(a+k)}" y="${H-14}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${lab(r.d)}</text>`;});
+  rows.forEach((r,k)=>{if((k%every===0&&n-1-k>=every*.6)||k===n-1)g+=`<text x="${X(a+k)}" y="${H-14}" text-anchor="${k===n-1?'end':k===0?'start':'middle'}" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${lab(r.d)}</text>`;});
   let areas='';const base=new Array(full.length).fill(0);
   S.forEach((s,j)=>{const up=[],dn=[];for(let i=a;i<full.length;i++){const lo=base[i],hi=lo+cum[j][i];up.push(`${X(i).toFixed(1)},${Y(hi).toFixed(1)}`);dn.push(`${X(i).toFixed(1)},${Y(lo).toFixed(1)}`);base[i]=hi;}
     if(n===1){up.push(`${X(a)+3},${up[0].split(',')[1]}`);dn.push(`${X(a)+3},${dn[0].split(',')[1]}`);}
@@ -1178,6 +1198,7 @@ function fuseRead(f,t){
   return{raw,use,n,P,N,A,k,sumB,Bo,tau,phase,IM,pairs:n*(n-1)/2,spread:isFinite(lo)&&lo>0?hi/lo:null};
 }
 function renderFuse(bf,bt,af,at){
+  FUSELAST=[bf,bt,af,at];
   const R=[['Activated',af,at,fuseRead(af,at)],['Baseline',bf,bt,fuseRead(bf,bt)]];
   if(!R[0][3]){$('fusesec').hidden=true;return;}
   const f3=v=>v===null||v===undefined||!isFinite(v)?'—':(+v).toFixed(3),f4=v=>v===null||!isFinite(v)?'—':(+v).toFixed(4);
@@ -1305,6 +1326,185 @@ let LAST=null;
 $('logscale').onchange=()=>{if(LAST)$('chart').innerHTML=chart(LAST);};
 $('load').onclick=loadRemote;
 $('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{render(JSON.parse(t));}catch(err){$('msg').textContent='That file could not be read: '+err.message;}});e.target.value='';};
+
+// ---------- data model, lineage and export: the panel's tables as a star schema ----------
+// Fact tables join the dates dimension on Date and the sources dimension on Source, the layout
+// Power BI and Excel read directly (Get data → Folder, or Text/CSV for one table).
+const LINEAGE=[
+  {k:'GitHub clones',sys:'GitHub REST API',sub:'traffic endpoints · Actions runs',col:'traffic.yml',col2:'traffic_snapshot.py',file:'traffic.json',ok:()=>!!DATA,tables:['github_days']},
+  {k:'AI crawler requests · Site visits',sys:'Cloudflare GraphQL Analytics API',sub:'requests · crawlers · visits',col:'traffic.yml',col2:'cloudflare_snapshot.py',file:'cloudflare.json',ok:()=>!!CF,tables:['cloudflare_days','cloudflare_crawlers']},
+  {k:'PhilPapers views',sys:'PhilPeople Web Analytics',sub:'export of each paper’s views',col:'panel import',col2:'CSV → philpeople.json',file:'philpeople.json',ok:()=>!!PP,tables:['philpapers_views']},
+  {k:'figshare views + downloads',sys:'figshare statistics service',sub:'views · downloads · places',col:'traffic.yml',col2:'figshare_snapshot.py',file:'figshare.json',ok:()=>!!FS,tables:['figshare_items','figshare_days','figshare_places']},
+  {k:'Formal record · theorems',sys:'Git history of .lean files',sub:'every commit, first parent',col:'traffic.yml + registry',col2:'lean_mass.py',file:'leanmass.json',ok:()=>!!LM,tables:['theorem_mass_days','theorem_files']},
+  {k:'ORCID record',sys:'ORCID public API v3.0',sub:'works · activities',col:'rap_registry.yml',col2:'rap_registry_scan.py',file:'orcid.json',ok:()=>!!ORC,tables:['orcid_items']},
+  {k:'OpenAlex citations',sys:'OpenAlex API',sub:'cited-by counts',col:'rap_registry.yml',col2:'rap_registry_scan.py',file:'openalex.json',ok:()=>!!OA,tables:['openalex_days','openalex_years']}
+];
+const MEASURES=[
+  ['Added','source_days','Interactions a source added on the day (clones outside CI, crawler requests answered, visits, views, downloads, theorems, record items, citations).'],
+  ['IM to date','identity_days','Running sum of Added across every source and every day to date. It never decreases.'],
+  ['Typical day (28)','identity_days','Median of Added over the 28 days before the day, read once 7 or more days are in the record.'],
+  ['Level','identity_days','Record high of Typical day (28). It only steps up: LEVEL SET, then LEVEL RAISED.'],
+  ['Placement','identity_days','GENESIS on the first day with contact · SHATTER when server errors reach TL or more of requests · NOBLE when Added = 0 · IVA PEAK when Added ≥ b₀ × Level · LOCKED otherwise.'],
+  ['Lift','identity_days','Added ÷ Level on an IVA PEAK day.'],
+  ['P','source_beams','Reach carried into the period ÷ reach held at its end.'],
+  ['N','source_beams','Returning ÷ (returning + new) identities in the period; 1 when the source has no identity activity in the period.'],
+  ['A','source_beams','New ÷ (returning + new) identities in the period; 0 when the source has no identity activity in the period.'],
+  ['Typical day (period)','source_beams','Median day of the period; for deposit sources (formal record, ORCID record) the average day = Added in period ÷ days covered.'],
+  ['r','source_beams','Typical day (period) ÷ (b₀ × Level).'],
+  ['τ','source_beams','r < 1 → r × TL_IVA · r ≥ 1 → TL_IVA + (TL − TL_IVA)(1 − 1/r) · server errors ≥ TL → that share · nothing added → 0.'],
+  ['B','source_beams','τ × P (IMCollider exemplar step).'],
+  ['Beam IM','source_beams','(P + N + B + A) × Ω₀.'],
+  ['Beam phase','source_beams','B = 0 NOBLE · τ ≥ TL SHATTER · N < 0.15 FALSE LOCK · τ ≥ TL_IVA IVA PEAK · otherwise TRUE LOCK.'],
+  ['P_out','source_fusion','n ÷ Σ(1/Pᵢ), the harmonic mean over the beams carrying reach.'],
+  ['N_out','source_fusion','min Nᵢ.'],
+  ['k','source_fusion','Σ over every pair i < j of min(Bᵢ, Bⱼ).'],
+  ['B_out','source_fusion','max(0, ΣBᵢ − 2k).'],
+  ['A_out','source_fusion','max Aᵢ.'],
+  ['τ_out','source_fusion','B_out ÷ P_out.'],
+  ['Fused IM','source_fusion','(P_out + N_out + B_out + A_out) × Ω₀, phase by the same rule as Beam phase.']
+];
+const CONSTANTS=[['TL',TL,'Torsion Limit'],['TL_IVA',0.88*TL,'0.88 × TL'],['b0',B0,'1/√TL'],['Omega0',OMEGA0,'Ω₀ = 10 × TL'],['N floor',N_FLOOR,'FALSE LOCK below this N']];
+let FUSELAST=null,MODELSEL='identity_days';
+const r6=v=>v===null||v===undefined||!isFinite(v)?null:Math.round(v*1e6)/1e6;
+const flat=(o,pre,out)=>{Object.entries(o||{}).forEach(([k,v])=>{const key=pre?pre+'_'+k:k;if(v!==null&&typeof v==='object'&&!Array.isArray(v))flat(v,key,out);else if(!Array.isArray(v))out[key]=v;});return out;};
+const looseTable=(list,lead)=>{const cols=[...lead];list.forEach(o=>Object.keys(o).forEach(k=>{if(!cols.includes(k))cols.push(k);}));return{cols,rows:list.map(o=>cols.map(c=>o[c]===undefined?null:o[c]))};};
+// identity days, shared with the day-by-day view
+function idFull(){
+  const S=idDaySources();if(!S.length)return null;
+  const all=[].concat(...S.map(x=>Object.keys(x.m)));if(!all.length)return null;
+  if(ORC)Object.values(ORC.works||{}).forEach(w=>{const d=/^\d{4}-\d{2}-\d{2}$/.test(w.published||'')?w.published:w.added;if(d&&d<=all.reduce((a,b)=>a>b?a:b))all.push(d);});
+  all.sort();
+  const first=all[0],last=all[all.length-1],days=[];for(let d=first;d<=last;d=addDays(d,1))days.push(d);
+  const starts=S.map(x=>Object.keys(x.m).sort()[0]);
+  const full=days.map(d=>{const r={d,parts:S.map((x,i)=>d>=starts[i]?(x.m[d]||0):null)};r.out=r.parts.reduce((a,v)=>a+(v||0),0);
+    const site=S.find(x=>x.fail);if(site&&site.rq[d])r.fail=site.fail[d]/site.rq[d];return r;});
+  place(full);return{S,full};
+}
+const PLACE_TXT={genesis:'GENESIS',shatter:'SHATTER',noble:'NOBLE',iva:'IVA PEAK',locked:'LOCKED'};
+const MODEL={
+  identity_days:{d:'One row per day: what each source added, the total added, IM to date, level and placement.',f:()=>{const X=idFull();if(!X)return null;
+    return{cols:['Date',...X.S.map(s=>s.k),'Added','IM to date','Typical day (28)','Level','Level event','Placement','Lift'],
+      rows:X.full.map(r=>[r.d,...r.parts,r.out,r.IM,r6(r.ref),r6(r.E),r.event||null,r.ph?PLACE_TXT[r.ph.k]:null,r6(r.lift)])};}},
+  source_days:{d:'Fact table, long form: Date · Source · Added, one row per source per day it has data.',f:()=>{const X=idFull();if(!X)return null;const rows=[];
+    X.full.forEach(r=>r.parts.forEach((v,j)=>{if(v!==null)rows.push([r.d,X.S[j].k,v]);}));return{cols:['Date','Source','Added'],rows};}},
+  source_beams:{d:'Each source read as a beam (P, N, B, A) over the baseline and activated periods, with every input to the reduction.',f:()=>{if(!FUSELAST)return null;const rows=[];
+    [['Activated',FUSELAST[2],FUSELAST[3]],['Baseline',FUSELAST[0],FUSELAST[1]]].forEach(([lab,f,t])=>{const X=fuseRead(f,t);if(!X)return;
+      X.raw.forEach(b=>rows.push([lab,f,t,b.k,b.held,b.carried,b.added,r6(b.typ),FUSE_BATCH.has(b.k)?'average day':'median day',r6(b.level),b.ret,b.rl,b.nw,b.nl,r6(b.P),r6(b.N),r6(b.tau),r6(b.B),r6(b.A),b.phase,r6(b.IM),b.how,b.P>0?'yes':'no reach carried yet']));});
+    return{cols:['Period','From','To','Source','Reach held','Reach carried','Added in period','Typical day','Typical day reading','Level','Returning','Returning are','New','New are','P','N','tau','B','A','Phase','Beam IM','tau reading','In the collision'],rows};}},
+  source_fusion:{d:'The PSY n-beam fusion of every beam carrying reach, per period, with each step of the reduction.',f:()=>{if(!FUSELAST)return null;const rows=[];
+    [['Activated',FUSELAST[2],FUSELAST[3]],['Baseline',FUSELAST[0],FUSELAST[1]]].forEach(([lab,f,t])=>{const X=fuseRead(f,t);if(!X||X.n<2)return;
+      rows.push([lab,f,t,X.n,X.pairs,X.use.map(b=>b.k).join(' | '),r6(X.P),r6(X.N),r6(X.k),r6(X.sumB),r6(X.Bo),r6(X.A),r6(X.tau),X.phase,r6(X.IM)]);});
+    return{cols:['Period','From','To','Beams','Pairs','Sources','P_out','N_out','k','Sum B','B_out','A_out','tau_out','Phase','Fused IM'],rows};}},
+  github_days:{d:'GitHub clones by day with the repository’s own CI runs separated, and each day’s pushes.',f:()=>{if(!DATA)return null;const c=DATA.clones||{},ci=DATA.ci_runs||{},p=DATA.pushes||{};
+    const ds=[...new Set([...Object.keys(c),...Object.keys(p)])].sort();
+    return{cols:['Date','Clones','Unique cloners','CI runs','Outside clones','Commits','Files','Lean files'],rows:ds.map(d=>{const x=c[d]||{},q=p[d]||{};return[d,x.count??null,x.uniques??null,d in ci?ci[d]:null,x.count!==undefined?Math.max(0,x.count-(ci[d]||0)):null,q.commits??null,q.files??null,q.lean_files??null];})};}},
+  cloudflare_days:{d:'Each site, each day: requests, visits, page views, unique visitors, data served and server errors.',f:()=>{if(!CF)return null;const L=[];
+    Object.entries(CF.zones||{}).forEach(([z,Z])=>Object.entries(Z.days||{}).forEach(([d,x])=>{const o={Site:z,Date:d};Object.entries(x).forEach(([k,v])=>{if(typeof v==='number')o[k]=v;});
+      o['crawler requests allowed']=Object.values(x.crawlers||{}).reduce((a,v)=>a+(v.ok||0),0);o['server errors (5xx)']=(x.status||[]).filter(v=>/^5/.test(String(v.k))).reduce((a,v)=>a+v.n,0);L.push(o);}));
+    L.sort((a,b)=>a.Date<b.Date?-1:a.Date>b.Date?1:a.Site<b.Site?-1:1);return looseTable(L,['Site','Date']);}},
+  cloudflare_crawlers:{d:'Each site, each day, each crawler: operator, kind, requests allowed and unsuccessful, data served.',f:()=>{if(!CF)return null;const L=[];
+    Object.entries(CF.zones||{}).forEach(([z,Z])=>Object.entries(Z.days||{}).forEach(([d,x])=>Object.entries(x.crawlers||{}).forEach(([c,v])=>{const m=CF.crawlers?.[c]||{};L.push({Site:z,Date:d,Crawler:c,Operator:m.operator||null,Kind:m.kind||null,...flat(v,'',{})});})));
+    L.sort((a,b)=>a.Date<b.Date?-1:a.Date>b.Date?1:0);return looseTable(L,['Site','Date','Crawler','Operator','Kind']);}},
+  philpapers_views:{d:'Every PhilPapers view: date, time, origin, paper and way in, with multi-paper bursts marked.',f:()=>{if(!PP)return null;const {V}=ppViews(PP);
+    return{cols:['Date','Time','Origin','Paper','Way in','Views','Multi-paper burst'],rows:V.map(v=>[v.d,v.t,v.o,v.doc,v.ref,v.n,v.burst?'yes':'no'])};}},
+  figshare_items:{d:'Each figshare item with its DOI and publication date.',f:()=>{if(!FS)return null;return looseTable(Object.entries(FS.items||{}).map(([id,it])=>({'Item id':id,...flat(it,'',{})})),['Item id']);}},
+  figshare_days:{d:'Views and downloads per item per day.',f:()=>{if(!FS)return null;const rows=[];Object.entries(FS.days||{}).sort().forEach(([d,x])=>Object.entries(x).forEach(([id,c])=>rows.push([d,id,(FS.items?.[id]?.title)||null,c.v||0,c.d||0])));
+    return{cols:['Date','Item id','Title','Views','Downloads'],rows};}},
+  figshare_places:{d:'Views and downloads per place per day (country | city).',f:()=>{if(!FS)return null;const rows=[];Object.entries(FS.geo||{}).sort().forEach(([d,x])=>Object.entries(x).forEach(([pl,c])=>{const [co,ci]=pl.split('|');rows.push([d,co||null,ci||null,c.v||0,c.d||0]);}));
+    return{cols:['Date','Country','City','Views','Downloads'],rows};}},
+  theorem_mass_days:{d:'The formal record by day: theorems on the repository, files, lines, theorem mass and theorems added.',f:()=>{if(!LM)return null;
+    return{cols:['Date','Theorems','Files','Lines','Theorem mass','Added'],rows:Object.entries(LM.days||{}).sort().map(([d,x])=>[d,x.theorems,x.files,x.lines,x.mass,x.added])};}},
+  theorem_files:{d:'Every .lean file: coordinate, theorems, lines, its peak, and the days it first and last changed.',f:()=>{if(!LM)return null;
+    return{cols:['Path','Coordinate','Theorems','Lines','Peak theorems','First','Last'],rows:Object.entries(LM.files||{}).sort().map(([p,f])=>[p,f.coord||null,f.theorems,f.lines??null,f.peak??null,f.first||null,f.last||null])};}},
+  orcid_items:{d:'Every item on the ORCID record: section, put code, title and the day it entered the record.',f:()=>{if(!ORC)return null;const L=[];
+    Object.entries(ORC.works||{}).forEach(([pc,w])=>L.push({Section:'works','Put code':pc,...flat(w,'',{})}));
+    Object.entries(ORC.activities||{}).forEach(([s,x])=>Object.entries(x).forEach(([pc,a])=>L.push({Section:s,'Put code':pc,...flat(a,'',{})})));
+    return looseTable(L,['Section','Put code','title','published','added']);}},
+  openalex_days:{d:'OpenAlex cited-by total on each scan day and the rise from the day before.',f:()=>{if(!OA)return null;let hi=null;
+    return{cols:['Date','Cited by (total)','Rise'],rows:Object.entries(OA.days||{}).sort().map(([d,x])=>{const c=x.cited||0,r=hi===null?null:Math.max(0,c-hi);hi=Math.max(hi||0,c);return[d,c,r];})};}},
+  openalex_years:{d:'OpenAlex citations by year, as carried into the record before the first scan.',f:()=>{if(!OA)return null;return{cols:['Year','Cited by','Works'],rows:(OA.counts_by_year||[]).slice().sort((a,b)=>a.year-b.year).map(c=>[c.year,c.cited_by_count??null,c.works_count??null])};}},
+  sources:{d:'Dimension: every source, the system it is read from, its collector and its data file.',f:()=>({cols:['Source','System','Collector','Script','Data file','Loaded'],rows:LINEAGE.flatMap(l=>l.k.split(' · ').map(k=>[k,l.sys,l.col,l.col2,l.file,l.ok()?'yes':'no']))})},
+  dates:{d:'Dimension: every date in the identity record, with year, quarter, month and ISO week.',f:()=>{const X=idFull();if(!X)return null;
+    return{cols:['Date','Year','Quarter','Month','Month name','Week','Weekday'],rows:X.full.map(r=>{const t=new Date(r.d+'T00:00:00Z'),y=t.getUTCFullYear(),m=t.getUTCMonth()+1;
+      const th=new Date(Date.UTC(y,m-1,t.getUTCDate()+4-(t.getUTCDay()||7))),wk=Math.ceil(((th-Date.UTC(th.getUTCFullYear(),0,1))/864e5+1)/7);
+      return[r.d,y,'Q'+Math.ceil(m/3),m,t.toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}),wk,t.toLocaleDateString('en-US',{weekday:'short',timeZone:'UTC'})];})};}},
+  measures:{d:'Every measure the panel computes, the table it lives on, and its definition.',f:()=>({cols:['Measure','Table','Definition'],rows:MEASURES})},
+  constants:{d:'The corpus constants every measure reads.',f:()=>({cols:['Constant','Value','Definition'],rows:CONSTANTS.map(([a,b,c])=>[a,b,c])})}
+};
+const MODEL_ORDER=['identity_days','source_days','dates','sources','source_beams','source_fusion','github_days','cloudflare_days','cloudflare_crawlers','philpapers_views','figshare_items','figshare_days','figshare_places','theorem_mass_days','theorem_files','orcid_items','openalex_days','openalex_years','measures','constants'];
+function modelGet(k){try{return MODEL[k].f();}catch(_){return null;}}
+// ---------- export: CSV per table; every table in one .zip ----------
+const csvCell=v=>v===null||v===undefined?'':typeof v==='number'?String(v):/[",\r\n]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':String(v);
+const toCSV=t=>'﻿'+[t.cols,...t.rows].map(r=>r.map(csvCell).join(',')).join('\r\n')+'\r\n';
+function dl(name,blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);}
+function stamp(){const P=(typeof LOADED!=='undefined'&&LOADED.length)?LOADED.map(k=>(PROFILES[k]?.value||k)).join('+'):($('repo').value||'rap').split('/').pop();return'rap_'+P.replace(/[^A-Za-z0-9._+-]/g,'_')+'_'+new Date().toISOString().slice(0,10);}
+function exportTable(k){const t=modelGet(k);if(!t)return;dl(`${stamp()}_${k}.csv`,new Blob([toCSV(t)],{type:'text/csv;charset=utf-8'}));}
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+const crc32=b=>{let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=CRC[(c^b[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0;};
+function zip(files){// stored (uncompressed) zip: opens in every system and in Power BI Get data → Folder once extracted
+  const enc=new TextEncoder(),parts=[],cen=[];let off=0;const now=new Date(),dt=((now.getFullYear()-1980)<<9|(now.getMonth()+1)<<5|now.getDate())&0xFFFF,tm=(now.getHours()<<11|now.getMinutes()<<5|(now.getSeconds()>>1))&0xFFFF;
+  files.forEach(([name,text])=>{const nb=enc.encode(name),db=enc.encode(text),c=crc32(db),h=new DataView(new ArrayBuffer(30));
+    [[0,0x04034b50,4],[4,20,2],[6,0x0800,2],[8,0,2],[10,tm,2],[12,dt,2],[14,c,4],[18,db.length,4],[22,db.length,4],[26,nb.length,2],[28,0,2]].forEach(([o,v,s])=>s===4?h.setUint32(o,v,true):h.setUint16(o,v,true));
+    const ce=new DataView(new ArrayBuffer(46));
+    [[0,0x02014b50,4],[4,20,2],[6,20,2],[8,0x0800,2],[10,0,2],[12,tm,2],[14,dt,2],[16,c,4],[20,db.length,4],[24,db.length,4],[28,nb.length,2],[30,0,2],[32,0,2],[34,0,2],[36,0,2],[38,0,4],[42,off,4]].forEach(([o,v,s])=>s===4?ce.setUint32(o,v,true):ce.setUint16(o,v,true));
+    parts.push(new Uint8Array(h.buffer),nb,db);cen.push(new Uint8Array(ce.buffer),nb);off+=30+nb.length+db.length;});
+  const csize=cen.reduce((a,b)=>a+b.length,0),end=new DataView(new ArrayBuffer(22));
+  [[0,0x06054b50,4],[4,0,2],[6,0,2],[8,files.length,2],[10,files.length,2],[12,csize,4],[16,off,4],[20,0,2]].forEach(([o,v,s])=>s===4?end.setUint32(o,v,true):end.setUint16(o,v,true));
+  return new Blob([...parts,...cen,new Uint8Array(end.buffer)],{type:'application/zip'});}
+function exportAll(){const files=[],have=[];
+  MODEL_ORDER.forEach(k=>{const t=modelGet(k);if(t&&t.rows.length){files.push([k+'.csv',toCSV(t)]);have.push(`${k}.csv · ${t.rows.length} rows · ${MODEL[k].d}`);}});
+  const readme=['RAP · Autocatalytic Ingestion Mechanism (AIM) Repository Acquisition Panel · data export','Exported '+new Date().toISOString()+' from uuia.app/rap','',
+    'Tables',...have.map(x=>'  '+x),'',
+    'Model (star schema)','  dates[Date] 1 → many identity_days[Date], source_days[Date] and every per-day source table','  sources[Source] 1 → many source_days[Source], source_beams[Source]','  measures.csv and constants.csv hold every definition the panel computes',
+    '','Open in Power BI Desktop','  1. Extract this zip to a folder.','  2. Get data → Folder → choose the folder → Combine & Transform, or Get data → Text/CSV for one table.','  3. In Model view, relate dates[Date] and sources[Source] to the fact tables as listed above.',
+    '','Open in Excel','  Data → From Text/CSV, one table at a time. Every file is UTF-8 with a header row.',
+    '','Placement follows Identity Mass: IM only grows; growth reads LOCKED or IVA PEAK; SHATTER only on capacity failure (server errors at TL or more of requests). TL = 0.136899099984016.'].join('\r\n');
+  files.unshift(['README.txt',readme]);dl(stamp()+'.zip',zip(files));}
+function exportJSON(){const o={exported:new Date().toISOString(),source:'uuia.app/rap',tables:{}};MODEL_ORDER.forEach(k=>{const t=modelGet(k);if(t)o.tables[k]={description:MODEL[k].d,columns:t.cols,rows:t.rows};});
+  dl(stamp()+'_model.json',new Blob([JSON.stringify(o)],{type:'application/json'}));}
+// ---------- lineage view ----------
+function renderLineage(){
+  const W=1200,LH=46,G=10,T=34,n=LINEAGE.length,H=T+n*(LH+G)+10,cx=[10,280,480,660,860,1040],cw=[250,180,160,170,165,150];
+  const mid=T+(n*(LH+G)-G)/2,lane=i=>T+i*(LH+G);
+  const node=(x,y,w,h,t1,t2,on,key)=>`<g${key?` data-t="${key}" style="cursor:pointer"`:''}><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="var(--surface)" stroke="${on?'var(--accent)':'var(--border-2)'}" stroke-width="${on?1.6:1}"${on?'':' stroke-dasharray="4 3"'}/>
+    <text x="${x+10}" y="${y+18}" font-size="12" font-weight="600" fill="${on?'var(--text)':'var(--muted)'}" font-family="Inter,system-ui,sans-serif">${esc(t1)}</text>
+    <text x="${x+10}" y="${y+34}" font-size="10.5" fill="var(--muted)" font-family="Space Mono,monospace">${esc(t2)}</text></g>`;
+  const edge=(x1,y1,x2,y2,on)=>{const m=(x1+x2)/2;return`<path d="M${x1},${y1} C${m},${y1} ${m},${y2} ${x2},${y2}" fill="none" stroke="${on?'var(--accent)':'var(--border-2)'}" stroke-width="${on?1.5:1}" opacity="${on?.85:.6}"/>`;};
+  let g='';['Source system','Collector','Data file','Fact table','Measures','Fusion'].forEach((h,i)=>g+=`<text x="${cx[i]}" y="16" font-size="10.5" letter-spacing=".08em" fill="var(--muted)" font-family="Space Mono,monospace">${h.toUpperCase()}</text>`);
+  const anyOn=LINEAGE.some(l=>l.ok()),beam=!!FUSELAST&&anyOn;
+  LINEAGE.forEach((l,i)=>{const y=lane(i),on=l.ok(),cy=y+LH/2;
+    g+=edge(cx[0]+cw[0],cy,cx[1],cy,on)+edge(cx[1]+cw[1],cy,cx[2],cy,on)+edge(cx[2]+cw[2],cy,cx[3],mid,on);
+    g+=node(cx[0],y,cw[0],LH,l.sys,l.sub,on)+node(cx[1],y,cw[1],LH,l.col2,l.col,on)+node(cx[2],y,cw[2],LH,l.file,on?'loaded':'not loaded',on,l.tables[0]);});
+  const yA=mid-LH*1.6,yB=mid+LH*.6;
+  g+=edge(cx[3]+cw[3],mid,cx[4],yA+LH/2,anyOn)+edge(cx[3]+cw[3],mid,cx[4],yB+LH/2,anyOn)+edge(cx[4]+cw[4],yB+LH/2,cx[5],yB+LH/2,beam);
+  g+=node(cx[3],mid-LH/2,cw[3],LH,'source_days','Date · Source · Added',anyOn,'source_days');
+  g+=node(cx[4],yA,cw[4],LH,'identity_days','IM · Level · Placement',anyOn,'identity_days');
+  g+=node(cx[4],yB,cw[4],LH,'source_beams','P · N · B · A',beam,'source_beams');
+  g+=node(cx[5],yB,cw[5],LH,'source_fusion','PSY n-beam · IM',beam,'source_fusion');
+  g+=node(cx[3],H-LH-6,cw[3],LH,'dates · sources','dimensions',anyOn,'dates');
+  $('lineage').innerHTML=`<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:900px;display:block" role="img" aria-label="Lineage: each source system, its collector, its data file, the fact table, the measures and the fusion">${g}</svg></div>`;
+  $('lineage').querySelectorAll('[data-t]').forEach(el=>el.addEventListener('click',()=>{MODELSEL=el.dataset.t;renderModelTables();}));
+}
+// ---------- data view: the tables, a preview of the selected one, export ----------
+function renderModelTables(){
+  const info=MODEL_ORDER.map(k=>({k,t:modelGet(k)}));
+  $('modeltables').tBodies[0].innerHTML=info.map(({k,t})=>`<tr${k===MODELSEL?' style="background:var(--surface-2)"':''}><td class="mono"><button class="btn" data-pv="${k}" style="padding:.2rem .5rem">${k}</button></td><td>${esc(MODEL[k].d)}</td><td class="n">${t?fmt(t.rows.length):'—'}</td><td class="n">${t?t.cols.length:'—'}</td><td>${t&&t.rows.length?`<button class="btn" data-ex="${k}" style="padding:.2rem .5rem">CSV</button>`:'<span class="band">no data loaded</span>'}</td></tr>`).join('');
+  $('modeltables').querySelectorAll('[data-pv]').forEach(b=>b.onclick=()=>{MODELSEL=b.dataset.pv;renderModelTables();});
+  $('modeltables').querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>exportTable(b.dataset.ex));
+  const t=modelGet(MODELSEL),cap=200;
+  $('modelpvh').textContent=MODELSEL+(t?` · ${fmt(t.rows.length)} rows · ${t.cols.length} columns${t.rows.length>cap?` · first ${cap} shown, every row exports`:''}`:' · no data loaded');
+  const v=x=>x===null||x===undefined?'':typeof x==='number'?(Number.isInteger(x)?x.toLocaleString():String(x)):esc(x);
+  $('modelpv').innerHTML=t?`<thead><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${t.rows.slice(0,cap).map(r=>`<tr>${r.map(x=>`<td${typeof x==='number'?' class="n"':''}>${v(x)}</td>`).join('')}</tr>`).join('')}</tbody>`:'<tbody><tr><td class="band">Load a repository or a scanned profile to fill this table.</td></tr></tbody>';
+  $('modelpvex').onclick=()=>exportTable(MODELSEL);
+}
+let MODELT=null;
+function renderModel(){clearTimeout(MODELT);MODELT=setTimeout(()=>{renderLineage();renderModelTables();},60);}
+$('exall').onclick=exportAll;$('exjson').onclick=exportJSON;
+document.querySelectorAll('[data-export]').forEach(b=>b.onclick=()=>exportTable(b.dataset.export));
+['render','renderCF','renderPP','renderFS','renderLM','renderID','renderFuse'].forEach(n=>{const f=window[n];if(typeof f==='function')window[n]=function(...a){const r=f.apply(this,a);renderModel();return r;};});
+renderModel();
+
+$('navexport').onclick=exportAll;
 const q=new URLSearchParams(location.search);
 if(q.get('repo'))$('repo').value=q.get('repo');
 if(q.get('branch'))$('branch').value=q.get('branch');
