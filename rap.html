@@ -141,6 +141,18 @@ SHATTER only on capacity failure: server errors (5xx) at TL or more of requests 
 per-day measures are averaged over the days in each period that the source covers, so periods of different length, and sources with different start dates, compare directly</div>
 </section>
 
+<section id="fusesec" hidden>
+  <h2>Source collision · PSY n-beam fusion</h2>
+  <p class="help">Each source is an identity with its own P, N, B and A, read over the identity-read periods above, and every source is collided with the PSY fusion logic of SNSFL_PSY_8Beam_Fusion_Theorem.lean [9,9,6,28]: P harmonic mean, N narrative bottleneck (minimum), B = ΣB − 2k with k the sum of the minimum B over every pair, A adaptation ceiling (maximum), phase by the engine's phaseOf. Every step is shown. Each source's axes are ratios inside that source, so every beam reads on the same scale: P is the share of its reach already established when the period opens, N the share of its identities in the period that are returning, A the share that are new, and B is solved from the source's place on the TL ruler with the IMCollider exemplar step B = τ × P. Growth places a source Locked or IVA Peak; only server errors at TL or more of requests place it Shatter.</p>
+  <div id="fusetables"></div>
+  <div class="formula">P = reach carried / reach held · N = returning / (returning + new) · A = new / (returning + new) (a source with no identity activity in the period holds as it stood: N = 1, A = 0) · B = τ × P
+τ on the TL ruler: r = typical day / (b₀ × level) · r &lt; 1 → τ = r × TL_IVA · r ≥ 1 → τ = TL_IVA + (TL − TL_IVA)(1 − 1/r) · 5xx ≥ TL → τ = 5xx share · nothing added → τ = 0
+P_out = n / Σ(1/P_i) · N_out = min N_i · k = Σ_{i&lt;j} min(B_i, B_j) over C(n,2) pairs · B_out = max(0, ΣB_i − 2k) · A_out = max A_i
+τ = B / P · IM = (P + N + B + A) × Ω₀ · Ω₀ = 1.36899099984016
+phaseOf: B = 0 NOBLE · τ ≥ TL SHATTER · N &lt; 0.15 FALSE LOCK · τ ≥ TL_IVA IVA PEAK · otherwise TRUE LOCK   (TL = 0.136899099984016, TL_IVA = 0.88 × TL)
+spread law [9,9,6,28]: the beams close Noble whenever every B_i lies within a factor of (n − 1) of the smallest</div>
+</section>
+
 <section id="iddaysec" hidden>
   <h2>Identity day by day · every source</h2>
   <p class="help">One interaction per contact, from every loaded source, added into the identity's day. Each source's column shows its share; a source counts from the first day it has data. Each day shows what it added and the identity's IM to date, the same way as every day table.</p>
@@ -923,6 +935,7 @@ function renderID(){
   } else $('idcards').innerHTML='';
   $('idnote').textContent=`Baseline ${bf} – ${bt} (${dspan(bf,bt)} days) · activated ${af} – ${at} (${dspan(af,at)} days) · record runs ${r.first} – ${r.last}. Every stored row is kept; the dates only choose which rows each period reads. Bold rows are the axis measures; the rest are the same axis read from other sources.`;
   $('idsec').hidden=false;
+  renderFuse(bf,bt,af,at);
 }
 ['bfrom','bto','afrom','ato'].forEach(id=>$(id).addEventListener('change',renderID));
 document.querySelectorAll('#idpresets button,#idrolling button').forEach(b=>b.onclick=()=>idPreset(b.dataset.p));
@@ -1095,6 +1108,87 @@ $('implay').onclick=()=>{if(!IMR.full)return;if(IMR.timer){imStop();return;}
 $('imday').addEventListener('input',()=>{imStop();IMR.T=+$('imday').value;imFrame();});
 $('imback').onclick=()=>{if(!IMR.full)return;imStop();IMR.T=Math.max(IMR.a,IMR.T-1);$('imday').value=String(IMR.T);imFrame();};
 $('imfwd').onclick=()=>{if(!IMR.full)return;imStop();IMR.T=Math.min(IMR.full.length-1,IMR.T+1);$('imday').value=String(IMR.T);imFrame();};
+
+// ---------- source collision: every source a PNBA beam, fused with the PSY n-beam rules [9,9,6,28] ----------
+const OMEGA0=1.36899099984016,TL_IVA_F=0.88*TL,N_FLOOR=0.15;
+function fusePhase(P,N,B){if(B===0)return'NOBLE';if(B/P>=TL)return'SHATTER';if(N<N_FLOOR)return'FALSE LOCK';if(B/P>=TL_IVA_F)return'IVA PEAK';return'TRUE LOCK';}
+function phChip(p){const c={NOBLE:'noble',SHATTER:'shatter','FALSE LOCK':'quiet','IVA PEAK':'iva','TRUE LOCK':'locked'}[p];return`<span class="ph ${c}">${p}</span>`;}
+// each source's returning and new identities over a period: the N and A of its beam
+function fuseIdent(k,f,t){
+  const inR=d=>d>=f&&d<=t,prev=addDays(f,-1);
+  if(k==='GitHub clones'&&DATA){let rep=0,un=0;Object.entries(DATA.clones||{}).forEach(([d,x])=>{if(inR(d)){rep+=Math.max(0,x.count-x.uniques);un+=x.uniques||0;}});return[rep,un,'repeat pulls','unique cloners'];}
+  if(k==='AI crawler requests'&&CF){const a=new Set(),bf=new Set();Object.values(CF.zones||{}).forEach(z=>Object.entries(z.days).forEach(([d,x])=>Object.entries(x.crawlers||{}).forEach(([c,v])=>{if(!v.ok)return;const op=(CF.crawlers[c]||{}).operator||c;if(inR(d))a.add(op);else if(d<f)bf.add(op);})));
+    let r=0,n=0;a.forEach(o=>bf.has(o)?r++:n++);return[r,n,'operators returning','new operators'];}
+  if(k==='Site visits'&&CF){let r=0,u=0;Object.values(CF.zones||{}).forEach(z=>Object.entries(z.days).forEach(([d,x])=>{if(inR(d)){r+=Math.max(0,(x.visits||0)-(x.uniques||0));u+=x.uniques||0;}}));return[r,u,'returning visits','unique visitors'];}
+  if(k==='PhilPapers views'&&PP){const {V}=ppViews(PP);const pr=new Set(V.filter(v=>v.d<f&&v.o!=='Unknown location').map(v=>v.o));const o=new Set(V.filter(v=>inR(v.d)&&v.o!=='Unknown location').map(v=>v.o));
+    let r=0,n=0;o.forEach(x=>pr.has(x)?r++:n++);return[r,n,'returning origins','new origins'];}
+  if(k==='figshare views + downloads'&&FS){const a=new Set(),bf=new Set();Object.entries(FS.geo||{}).forEach(([d,x])=>Object.keys(x).forEach(p=>{if(inR(d))a.add(p);else if(d<f)bf.add(p);}));
+    let r=0,n=0;a.forEach(p=>bf.has(p)?r++:n++);return[r,n,'returning places','new places'];}
+  if(k==='Formal record · theorems'&&LM){let r=0,n=0;Object.values(LM.files||{}).forEach(x=>{if(!x.first||x.first>t)return;if(x.first<f)r++;else n++;});return[r,n,'.lean files carried in','new .lean files'];}
+  if(k==='ORCID record'&&ORC){let r=0,n=0;const put=d=>{if(!d||d>t)return;if(d<f)r++;else n++;};
+    Object.values(ORC.works||{}).forEach(w=>put(/^\d{4}-\d{2}-\d{2}$/.test(w.published||'')?w.published:w.added));Object.values(ORC.activities||{}).forEach(o=>Object.values(o).forEach(a=>put(a.added)));return[r,n,'items carried in','items added'];}
+  if(k==='OpenAlex citations'&&OA&&OA.days){const ds=Object.keys(OA.days).sort();let cp=0,ct=0;ds.forEach(d=>{if(d<=prev)cp=OA.days[d].cited||0;if(d<=t)ct=OA.days[d].cited||0;});return[cp,Math.max(0,ct-cp),'citations carried in','citations added'];}
+  return[0,0,'returning','new'];
+}
+// one beam per source, every axis a ratio inside that source:
+//   P = reach carried into the period / reach held at its end          (the share of the source's mass already established)
+//   N = returning / (returning + new) identities in the period          (continuity)
+//   A = new / (returning + new) identities in the period                (new reach)
+//   B = τ × P, the IMCollider exemplar step, with τ set on the TL ruler by RAP's placement of the period:
+//       r = typical day / (b₀ × level);  r < 1 → τ = r × TL_IVA (Locked);  r ≥ 1 → τ = TL_IVA + (TL − TL_IVA)(1 − 1/r) (IVA Peak);
+//       server errors at TL or more of requests → τ = that share (Shatter, capacity failure only); nothing added → τ = 0 (Noble)
+function fuseRead(f,t){
+  const S=idDaySources();if(!S.length)return null;const prev=addDays(f,-1);
+  const med=a=>{if(!a.length)return 0;const v=a.slice().sort((x,y)=>x-y),m=v.length>>1;return v.length%2?v[m]:(v[m-1]+v[m])/2;};
+  const raw=[];
+  S.forEach(src=>{const ks=Object.keys(src.m).sort();if(!ks.length||ks[0]>t)return;
+    let held=0,carried=0;ks.forEach(d=>{const v=src.m[d]||0;if(d<=t)held+=v;if(d<=prev)carried+=v;});
+    const per=[];for(let d=f;d<=t;d=addDays(d,1))if(d>=ks[0])per.push(src.m[d]||0);
+    const typ=med(per),added=held-carried;
+    // level: record-high 28-day median of added, read to the end of the period
+    let level=0;const all=[];for(let d=ks[0];d<=t;d=addDays(d,1)){if(all.length>=7)level=Math.max(level,med(all.slice(-28)));all.push(src.m[d]||0);}
+    let fail=null;if(src.fail){let f5=0,rq=0;Object.keys(src.rq).forEach(d=>{if(d>=f&&d<=t){f5+=src.fail[d]||0;rq+=src.rq[d]||0;}});if(rq)fail=f5/rq;}
+    const [ret,nw,rl,nl]=fuseIdent(src.k,f,t),tot=ret+nw;
+    const P=held>0?carried/held:0,N=tot?ret/tot:1,A=tot?nw/tot:0;  // no identity activity in the period: the source holds as it stood, full continuity
+    let tau,how;
+    if(fail!==null&&fail>=TL){tau=fail;how=`server errors ${(fail*100).toFixed(2)}% ≥ TL`;}
+    else if(added<=0){tau=0;how='nothing added';}
+    else{const r=level>0?typ/(B0*level):0;tau=r<1?r*TL_IVA_F:TL_IVA_F+(TL-TL_IVA_F)*(1-1/r);how=level>0?`r = ${typ.toFixed(1)} / (b₀ × ${level.toFixed(1)}) = ${r.toFixed(3)}`:'no level yet · r = 0';}
+    raw.push({k:src.k,held,carried,added,typ,level,fail,ret,nw,rl,nl,P,N,A,tau,how,B:tau*P});});
+  raw.forEach(b=>{b.phase=b.P>0?fusePhase(b.P,b.N,b.B):null;b.IM=(b.P+b.N+b.B+b.A)*OMEGA0;});
+  const use=raw.filter(b=>b.P>0),n=use.length;
+  if(n<2)return{raw,use,n};
+  const P=n/use.reduce((x,b)=>x+1/b.P,0),N=Math.min(...use.map(b=>b.N)),A=Math.max(...use.map(b=>b.A)),Bs=use.map(b=>b.B);
+  let k=0;for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)k+=Math.min(Bs[i],Bs[j]);
+  const sumB=Bs.reduce((x,y)=>x+y,0),Bo=Math.max(0,sumB-2*k),tau=P>0?Bo/P:0,phase=fusePhase(P,N,Bo),IM=(P+N+Bo+A)*OMEGA0;
+  const lo=Math.min(...Bs.filter(x=>x>0)),hi=Math.max(...Bs);
+  return{raw,use,n,P,N,A,k,sumB,Bo,tau,phase,IM,pairs:n*(n-1)/2,spread:isFinite(lo)&&lo>0?hi/lo:null};
+}
+function renderFuse(bf,bt,af,at){
+  const R=[['Activated',af,at,fuseRead(af,at)],['Baseline',bf,bt,fuseRead(bf,bt)]];
+  if(!R[0][3]){$('fusesec').hidden=true;return;}
+  const f3=v=>v===null||v===undefined||!isFinite(v)?'—':(+v).toFixed(3),f4=v=>v===null||!isFinite(v)?'—':(+v).toFixed(4);
+  $('fusetables').innerHTML=R.map(([lab,f,t,X])=>{if(!X)return'';
+    const rows=X.raw.map(b=>`<tr${b.P>0?'':' style="opacity:.55"'}><td>${esc(b.k)}</td>
+      <td class="n"><b>${f3(b.P)}</b><div class="band">${fmt(b.carried)} carried / ${fmt(b.held)} held</div></td>
+      <td class="n"><b>${f3(b.N)}</b><div class="band">${fmt(b.ret)} ${esc(b.rl)}</div></td>
+      <td class="n"><b>${f4(b.B)}</b><div class="band">τ ${f4(b.tau)} × P · ${esc(b.how)}</div></td>
+      <td class="n"><b>${f3(b.A)}</b><div class="band">${fmt(b.nw)} ${esc(b.nl)}</div></td>
+      <td class="n">${b.P>0?f4(b.B/b.P):'—'}</td><td>${b.phase?phChip(b.phase):'<span class="band">nothing carried in yet · joins the collision once it holds reach</span>'}</td><td class="n">${f3(b.IM)}</td></tr>`).join('');
+    const fuse=X.n<2?'<p class="help">Fewer than two sources carry reach into this period, so there is nothing to collide.</p>':
+      `<div class="formula">${lab} ${f} – ${t} · ${X.n} beams · C(${X.n},2) = ${X.pairs} pairs
+P_out = ${X.n} / (${X.use.map(b=>'1/'+f3(b.P)).join(' + ')}) = <b>${f4(X.P)}</b>
+N_out = min(${X.use.map(b=>f3(b.N)).join(', ')}) = <b>${f4(X.N)}</b>
+k     = Σ min(B_i, B_j) over ${X.pairs} pairs = ${f4(X.k)} · ΣB = ${f4(X.sumB)}
+B_out = max(0, ${f4(X.sumB)} − 2 × ${f4(X.k)}) = <b>${f4(X.Bo)}</b>${X.spread!==null?` · B spread max/min = ${f3(X.spread)} against the spread-law bound n − 1 = ${X.n-1}`:''}
+A_out = max(${X.use.map(b=>f3(b.A)).join(', ')}) = <b>${f4(X.A)}</b>
+τ_out = B_out / P_out = <b>${f4(X.tau)}</b> · IM_out = (${f4(X.P)} + ${f4(X.N)} + ${f4(X.Bo)} + ${f4(X.A)}) × Ω₀ = <b>${f4(X.IM)}</b> · ${X.phase}</div>
+<p style="margin:.3rem 0 1rem">${phChip(X.phase)} <span class="band mono">fused IM ${f4(X.IM)} · τ ${f4(X.tau)}</span></p>`;
+    return`<h3 style="margin:1rem 0 .3rem;font-size:.95rem">${lab} · ${f} – ${t}</h3>
+<div class="tablewrap"><table><thead><tr><th>Source beam</th><th>P · reach carried</th><th>N · continuity</th><th>B · τ × P on the TL ruler</th><th>A · new reach</th><th>τ = B/P</th><th>Phase</th><th>IM</th></tr></thead><tbody>${rows}</tbody></table></div>${fuse}`;}).join('')+
+    (R[1][3]&&R[0][3].IM!==undefined&&R[1][3].IM!==undefined?`<p class="help">Fused IM ${f4(R[1][3].IM)} → ${f4(R[0][3].IM)} · τ ${f4(R[1][3].tau)} → ${f4(R[0][3].tau)} · ${R[1][3].phase} → ${R[0][3].phase}</p>`:'');
+  $('fusesec').hidden=false;
+}
 
 // ---------- formal record: theorem mass from the repository's history ----------
 function renderLM(L){
