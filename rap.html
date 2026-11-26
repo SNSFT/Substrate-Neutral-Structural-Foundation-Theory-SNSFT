@@ -1111,8 +1111,10 @@ function renderLM(L){
   const t0=Date.parse(ds[0]),span=Math.max(1,Date.parse(ds[n-1])-t0),X=i=>Lp+(n===1?(W-Lp-R)/2:(Date.parse(ds[i])-t0)/span*(W-Lp-R)),Y=v=>T+(H-T-B)*(1-v/top);
   const step=Math.pow(10,Math.floor(Math.log10(top/4)||0)),tick=[1,2,2.5,5].map(k=>k*step).find(k=>top/k<=5)||step*10;
   let g='';for(let v=0;v<=top;v+=tick)g+=`<line x1="${Lp}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${Lp-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${fmt(v)}</text>`;
-  const ev=Math.max(1,Math.ceil(n/8));ds.forEach((d,i)=>{if(i%ev===0||i===n-1)g+=`<text x="${X(i)}" y="${H-12}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${d}</text>`;});
-  const pts=ds.map((d,i)=>`${X(i).toFixed(1)},${Y(L.days[d].mass).toFixed(1)}`);
+  const XD=t=>Lp+(n===1?(W-Lp-R)/2:(t-t0)/span*(W-Lp-R));const mstep=Math.max(1,Math.ceil(span/864e5/30/9));
+  for(let dt=new Date(Date.UTC(new Date(t0).getUTCFullYear(),new Date(t0).getUTCMonth()+1,1));dt.getTime()<=t0+span;dt.setUTCMonth(dt.getUTCMonth()+mstep)){
+    g+=`<line x1="${XD(dt.getTime())}" x2="${XD(dt.getTime())}" y1="${H-B}" y2="${H-B+4}" stroke="var(--muted)"/><text x="${XD(dt.getTime())}" y="${H-12}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${dt.toLocaleDateString('en-US',{month:'short',year:'2-digit',timeZone:'UTC'})}</text>`;}
+  const pts=[];let pm=0;ds.forEach((d,i)=>{const m=L.days[d].mass;pts.push(`${X(i).toFixed(1)},${Y(pm).toFixed(1)}`);pts.push(`${X(i).toFixed(1)},${Y(m).toFixed(1)}`);pm=m;});
   g+=`<polygon points="${X(0)},${Y(0)} ${pts.join(' ')} ${X(n-1)},${Y(0)}" fill="var(--accent)" fill-opacity=".25"/><polyline points="${pts.join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2"/>`;
   ds.forEach((d,i)=>{const a=L.days[d].added;if(a>0)g+=`<circle cx="${X(i)}" cy="${Y(L.days[d].mass)}" r="3" fill="var(--accent)"><title>${d}: +${fmt(a)} theorems · mass ${fmt(L.days[d].mass)}</title></circle>`;});
   $('lmchart').innerHTML=`<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:560px;display:block" role="img" aria-label="Theorem mass over the repository history">${g}</svg></div>`;
