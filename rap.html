@@ -113,6 +113,7 @@ footer p{margin-bottom:.5rem}
   <div class="row" style="margin-top:.4rem">
     <div style="flex:1;min-width:260px"><label for="profsel">Scanned profiles</label><select id="profsel"><option value="">Loading the scan list…</option></select></div>
     <button class="btn" id="profload">Load profile</button>
+    <button class="btn" id="profadd">Add to the view</button>
   </div>
   <div class="cards" id="profsum" style="margin-top:.8rem"></div>
 </section>
@@ -981,12 +982,18 @@ function idDaySources(){
     S.push({k:'AI crawler requests',m:cr});S.push({k:'Site visits',m:vi,fail,rq});}
   if(PP){const {V}=ppViews(PP),m={};V.forEach(v=>m[v.d]=(m[v.d]||0)+v.n);S.push({k:'PhilPapers views',m});}
   if(FS){const m={};Object.entries(FS.days||{}).forEach(([d,x])=>m[d]=Object.values(x).reduce((a,c)=>a+(c.v||0)+(c.d||0),0));S.push({k:'figshare views + downloads',m});}
-  if(OA){const m={};let hi=null;Object.keys(OA.days||{}).sort().forEach(d=>{const c=OA.days[d].cited||0;m[d]=hi===null?0:Math.max(0,c-hi);hi=Math.max(hi===null?c:hi,c);});S.push({k:'OpenAlex citations',m});}
+  if(OA){const m={},ds=Object.keys(OA.days||{}).sort();if(ds.length){const open=ds[0],cy=+open.slice(0,4);let pre=0;
+    (OA.counts_by_year||[]).forEach(c=>{if(c.year<cy&&c.cited_by_count>0){const d=c.year+'-12-31';m[d]=(m[d]||0)+c.cited_by_count;pre+=c.cited_by_count;}});
+    let hi=OA.days[open].cited||0;m[open]=(m[open]||0)+Math.max(0,hi-pre);
+    ds.slice(1).forEach(d=>{const c=OA.days[d].cited||0;m[d]=Math.max(0,c-hi);hi=Math.max(hi,c);});}
+    S.push({k:'OpenAlex citations',m});}
   return S;
 }
 function renderIDDay(){
   const S=idDaySources();if(!S.length){$('iddaysec').hidden=true;return;}
-  const all=[].concat(...S.map(x=>Object.keys(x.m))).sort();if(!all.length){$('iddaysec').hidden=true;return;}
+  const all=[].concat(...S.map(x=>Object.keys(x.m)));if(!all.length){$('iddaysec').hidden=true;return;}
+  if(ORC)Object.values(ORC.works||{}).forEach(w=>{const d=/^\d{4}-\d{2}-\d{2}$/.test(w.published||'')?w.published:w.added;if(d&&d<=all.reduce((a,b)=>a>b?a:b))all.push(d);});
+  all.sort();
   const first=all[0],last=all[all.length-1],days=[];for(let d=first;d<=last;d=addDays(d,1))days.push(d);
   const starts=S.map(x=>Object.keys(x.m).sort()[0]);
   const full=days.map(d=>{const r={d,parts:S.map((x,i)=>d>=starts[i]?(x.m[d]||0):null)};r.out=r.parts.reduce((a,v)=>a+(v||0),0);
@@ -1101,28 +1108,32 @@ async function loadProfiles(){
   const list=Object.entries(PROFILES).sort((a,b)=>(a[1].name||a[1].value).localeCompare(b[1].name||b[1].value));
   $('profsel').innerHTML=list.length?list.map(([k,p])=>`<option value="${esc(k)}">${esc((p.name?p.name+' · ':'')+(p.kind==='orcid'?'ORCID ':'figshare ')+p.value)}</option>`).join(''):'<option value="">No profiles scanned yet</option>';
 }
-async function loadProfile(key){
+let LOADED=[];
+async function loadProfile(key,keep){
   const p=PROFILES[key];if(!p)return;
-  DATA=null;CF=null;PP=null;FS=null;OA=null;ORC=null;
+  if(!keep||!LOADED.length){DATA=null;CF=null;PP=null;FS=null;OA=null;ORC=null;LOADED=[];}
+  if(!LOADED.includes(key))LOADED.push(key);
   ['summary','chartsec','depsec','daysec','cfsec','usesec','ppsec','fssec','idsec','iddaysec'].forEach(id=>{const el=$(id);if(el)el.hidden=true;});
   $('scanmsg').textContent='Loading '+(p.name||p.value)+'…';
   const base=`https://raw.githubusercontent.com/${RAP_REG}/${RAP_REG_BRANCH}/registry/${p.kind}/${p.value}/`;
   const got={};await Promise.all((p.files||[]).map(f=>fetch(base+f+'?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(d)got[f]=d;}).catch(()=>{})));
-  ORC=got['orcid.json']||null;OA=got['openalex.json']||null;
+  if(got['orcid.json'])ORC=got['orcid.json'];if(got['openalex.json'])OA=got['openalex.json'];
   if(got['figshare.json'])renderFS(got['figshare.json']);
+  const P=LOADED.map(k=>PROFILES[k]);
   const op=OA&&OA.opening,last=OA&&OA.days?OA.days[Object.keys(OA.days).sort().pop()]:null;
   $('profsum').innerHTML=[
-    ['Profile',esc(p.name||p.value),`${p.kind==='orcid'?'ORCID iD':'figshare author'} ${esc(p.value)}`],
+    ['Profile',esc(P.map(x=>x.name||x.value).filter((v,i,a)=>a.indexOf(v)===i).join(' + ')),P.map(x=>`${x.kind==='orcid'?'ORCID iD':'figshare author'} ${esc(x.value)}`).join('<br>')],
     ORC?['Works on ORCID',fmt(Object.keys(ORC.works||{}).length),'each one a deposit marker on the replay']:null,
-    last?['Citations, OpenAlex',fmt(last.cited||0),op?`${fmt(op.cited||0)} when scanning began on ${op.day}; every rise since adds to IM`:'']:null,
+    last?['Citations, OpenAlex',fmt(last.cited||0),'carried in by year from OpenAlex, then every daily rise adds to IM']:null,
     FS?['figshare items',fmt(Object.keys(FS.items||{}).length),'views and downloads by day and place']:null,
     ['Scanned since',esc(p.first_scanned||'—'),'last scan '+esc((p.last_scanned||'').replace('T',' ').replace('Z',' UTC'))]
   ].filter(Boolean).map(([k,v,s2])=>`<div class="card"><div class="k">${k}</div><div class="v" style="font-size:1.15rem">${v}</div><div class="s">${s2}</div></div>`).join('');
   $('scanmsg').textContent='';renderID();
-  try{history.replaceState(null,'',`?profile=${encodeURIComponent(key)}`);}catch(_){}
+  try{history.replaceState(null,'',`?profile=${LOADED.map(encodeURIComponent).join(',')}`);}catch(_){}
 }
-$('profload').onclick=()=>{if($('profsel').value)loadProfile($('profsel').value);};
-loadProfiles().then(()=>{const k=new URLSearchParams(location.search).get('profile');if(k&&PROFILES[k]){$('profsel').value=k;loadProfile(k);}});
+$('profload').onclick=()=>{if($('profsel').value)loadProfile($('profsel').value,false);};
+$('profadd').onclick=()=>{if($('profsel').value)loadProfile($('profsel').value,true);};
+loadProfiles().then(async()=>{const ks=(new URLSearchParams(location.search).get('profile')||'').split(',').filter(k=>PROFILES[k]);for(let i=0;i<ks.length;i++){$('profsel').value=ks[i];await loadProfile(ks[i],i>0);}});
 
 // ---------- day-table controls: order, rows shown, which days ----------
 const DT=(()=>{try{return Object.assign({order:'new',limit:'14',filter:'all'},JSON.parse(localStorage.getItem('acq-dt')||'{}'));}catch(_){return{order:'new',limit:'14',filter:'all'};}})();
