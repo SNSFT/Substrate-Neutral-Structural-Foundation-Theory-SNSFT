@@ -1,0 +1,65 @@
+name: RAP registry scan
+
+# Scans every ORCID iD and figshare author added to the RAP scan list at uuia.app/rap.
+# Each hour it scans profiles added since the last run, so a new profile shows within the hour.
+# Once a day it rescans every profile, so each one builds its own permanent daily record.
+# Results go to the rap-registry branch, which holds data only and is never merged into main.
+
+on:
+  schedule:
+    - cron: "23 * * * *"    # hourly: new profiles only
+    - cron: "41 10 * * *"   # daily, 10:41 UTC (01:41 Alaska time): every profile
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "new = only profiles not yet scanned · all = every profile"
+        required: false
+        default: "all"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rap-registry
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Switch to the rap-registry data branch
+        run: |
+          cp .github/scripts/rap_registry_scan.py "$RUNNER_TEMP/rap_registry_scan.py"
+          cp .github/scripts/figshare_snapshot.py "$RUNNER_TEMP/figshare_snapshot.py"
+          if git ls-remote --exit-code --heads origin rap-registry >/dev/null; then
+            git fetch origin rap-registry
+            git checkout rap-registry
+          else
+            git checkout --orphan rap-registry
+            git rm -rf --quiet .
+          fi
+
+      - name: Scan the registry
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+          OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
+          FIGSHARE_SCRIPT: ${{ runner.temp }}/figshare_snapshot.py
+          RAP_MODE: ${{ inputs.mode || (github.event.schedule == '41 10 * * *' && 'all') || 'new' }}
+        run: python3 "$RUNNER_TEMP/rap_registry_scan.py"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -d registry ]; then git add registry; fi
+          if git diff --cached --quiet; then
+            echo "No change."
+          else
+            git commit --quiet -m "rap registry scan $(date -u +%FT%H:%MZ) [skip ci]"
+            git push origin rap-registry
+          fi
