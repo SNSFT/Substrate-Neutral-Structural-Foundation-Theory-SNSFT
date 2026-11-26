@@ -64,6 +64,7 @@ footer p{margin-bottom:.5rem}
     <div style="flex:1;min-width:130px"><label for="branch">Branch</label><input id="branch" placeholder="default"></div>
     <div style="flex:1;min-width:150px"><label for="prefix">Only paths starting with</label><input id="prefix" placeholder="e.g. SNSFL/"></div>
     <button class="btn primary" id="run">Read theorem mass</button>
+    <button class="btn" id="fresh" title="Skip the archive and re-read from GitHub">Re-read fresh</button>
   </div>
   <div class="row" style="margin-top:.6rem">
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a folder on this computer<input type="file" id="dir" webkitdirectory multiple hidden></label>
@@ -138,6 +139,11 @@ function measure(src){
   return{theorems:th,lemmas:le,decl:th+le,lines,coord:c?c[1].replace(/ /g,''):'',sorry};
 }
 let RES=null,SORT={files:[2,-1],folders:[1,-1]};
+// Supabase run archive (anon key + RLS: insert/select only). Failures are silent; the tool works without it.
+const SB_URL='https://YOUR-PROJECT.supabase.co',SB_KEY='YOUR_ANON_KEY';
+const sb=(p,o={})=>fetch(SB_URL+'/rest/v1/'+p,{...o,headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json',...(o.headers||{})}});
+async function archGet(k){try{const r=await sb('leanmass_runs?select=result,created_at&key=eq.'+encodeURIComponent(k)+'&limit=1');if(!r.ok)return null;return (await r.json())[0]||null;}catch(_){return null;}}
+function archPut(row){sb('leanmass_runs',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify(row)}).catch(()=>{});}
 // public reads only: no credentials are ever sent, so a public repository always reads
 async function gh(path){const r=await fetch('https://api.github.com'+path,{headers:{Accept:'application/vnd.github+json'},credentials:'omit'});
   if(r.status===403||r.status===429){const e=new Error('limit');e.limit=true;e.reset=r.headers.get('x-ratelimit-reset');throw e;}
@@ -153,7 +159,7 @@ function parse(s){s=s.trim().replace(/\.git$/,'').replace(/\/$/,'');
   return null;}
 const status=(t,p)=>{$('status').textContent=t;if(p===undefined){$('barw').hidden=true;}else{$('barw').hidden=false;$('bar').style.width=(p*100).toFixed(1)+'%';}};
 async function pool(items,n,fn){let i=0,done=0;const run=async()=>{while(i<items.length){const k=i++;await fn(items[k],k);done++;status(`Reading ${fmt(done)} of ${fmt(items.length)} .lean files…`,done/items.length);}};await Promise.all(Array.from({length:Math.min(n,items.length)},run));}
-async function readRemote(){
+async function readRemote(force){
   const P=parse($('src').value);if(!P){status('Enter a repository as owner/name, or paste its GitHub link.');return;}
   $('run').disabled=true;
   try{
@@ -162,13 +168,13 @@ async function readRemote(){
     let prefix=($('prefix').value.trim()||'').replace(/^\//,'');
     const enc=p=>p.split('/').map(encodeURIComponent).join('/');
     const raw=p=>`https://raw.githubusercontent.com/${P.owner}/${P.repo}/${encodeURIComponent(branch)}/${enc(p)}`;
-    let paths=[],truncated=false;
+    let paths=[],truncated=false,treeSha='';
     if(P.kind==='blob'&&P.path.endsWith('.lean'))paths=[P.path];
     else{
       const base=(P.kind==='tree'&&P.path)?P.path.replace(/\/$/,'')+'/':'';
       if(!prefix&&base)prefix=base;
       let all;
-      try{const tree=await gh(`/repos/${P.owner}/${P.repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`);truncated=!!tree.truncated;all=tree.tree.filter(t=>t.type==='blob').map(t=>t.path);}
+      try{const tree=await gh(`/repos/${P.owner}/${P.repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`);truncated=!!tree.truncated;treeSha=tree.sha||'';all=tree.tree.filter(t=>t.type==='blob').map(t=>t.path);}
       catch(e){if(!e.limit)throw e;
         status('GitHub\u2019s hourly listing allowance for this address is used; listing through the jsDelivr mirror…',0);
         try{all=await jsd(P.owner,P.repo,branch==='HEAD'?'main':branch);}
@@ -176,9 +182,16 @@ async function readRemote(){
       paths=all.filter(p=>p.endsWith('.lean')&&!p.endsWith('lakefile.lean')&&(!prefix||p.startsWith(prefix)));
     }
     if(!paths.length){status(`No .lean files on ${P.owner}/${P.repo} @ ${branch}${prefix?' under '+prefix:''}.`);return;}
-    const files=new Array(paths.length);let failed=0;
+    const key=treeSha?`${P.owner}/${P.repo}|${branch}|${prefix}|${treeSha}`.toLowerCase():'';
+    let R,hit=null,failed=0;
+    if(key&&!force)hit=await archGet(key);
+    if(hit)R=hit.result;
+    else{const files=new Array(paths.length);
     await pool(paths,12,async(p,k)=>{try{const r=await fetch(raw(p));if(!r.ok)throw 0;files[k]={path:p,...measure(await r.text())};}catch(_){failed++;files[k]=null;}});
-    show({source:`${P.owner}/${P.repo}`,branch,prefix,url:`https://github.com/${P.owner}/${P.repo}`,files:files.filter(Boolean),failed,truncated,remote:true,commit:null});
+    R={source:`${P.owner}/${P.repo}`,branch,prefix,url:`https://github.com/${P.owner}/${P.repo}`,files:files.filter(Boolean),failed,truncated,remote:true,commit:null};}
+    show(R);
+    if(hit)$('status').textContent+=` Loaded from the archive (first read ${new Date(hit.created_at).toLocaleDateString()}); the repository has not changed since. Use Re-read fresh to bypass.`;
+    else if(key&&!failed&&!truncated)archPut({key,repo:`${P.owner}/${P.repo}`,branch,prefix,tree_sha:treeSha,theorem_mass:R.files.reduce((a,f)=>a+f.decl,0),files_count:R.files.length,result:R});
     try{const q=new URLSearchParams({repo:`${P.owner}/${P.repo}`});if($('branch').value.trim()||P.branch)q.set('branch',branch);if(prefix)q.set('path',prefix);if(P.kind==='blob')q.set('file',P.path);history.replaceState(null,'','?'+q);}catch(_){}
   }catch(e){status(e.message||String(e));}
   finally{$('run').disabled=false;}
@@ -226,7 +239,7 @@ $('exfolders').onclick=()=>RES&&dl(stamp()+'_folders.csv',csv(['Folder','Declara
 $('exjson').onclick=()=>{if(!RES)return;const files={};RES.files.forEach(f=>files[f.path]={theorems:f.decl,lines:f.lines,coord:f.coord,sorry:f.sorry});
   dl(stamp()+'.json',JSON.stringify({tool:'LeanMass',read:new Date().toISOString(),source:RES.source,branch:RES.branch,prefix:RES.prefix,theorems:RES.files.reduce((a,f)=>a+f.decl,0),files_count:RES.files.length,lines:RES.files.reduce((a,f)=>a+f.lines,0),files},null,1),'application/json');};
 $('share').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(location.href);$('share').textContent='Link copied';setTimeout(()=>$('share').textContent='Copy link',1500);};
-$('run').onclick=readRemote;$('src').addEventListener('keydown',e=>{if(e.key==='Enter')readRemote();});
+$('run').onclick=()=>readRemote();$('fresh').onclick=()=>readRemote(true);$('src').addEventListener('keydown',e=>{if(e.key==='Enter')readRemote();});
 $('dir').onchange=e=>{const f=e.target.files;if(f.length)readLocal(f,(f[0].webkitRelativePath||'').split('/')[0]||'local folder');e.target.value='';};
 $('files').onchange=e=>{const f=e.target.files;if(f.length)readLocal(f,f.length===1?f[0].name:'selected files');e.target.value='';};
 const q=new URLSearchParams(location.search);
