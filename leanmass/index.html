@@ -64,7 +64,6 @@ footer p{margin-bottom:.5rem}
     <div style="flex:1;min-width:130px"><label for="branch">Branch</label><input id="branch" placeholder="default"></div>
     <div style="flex:1;min-width:150px"><label for="prefix">Only paths starting with</label><input id="prefix" placeholder="e.g. SNSFL/"></div>
     <button class="btn primary" id="run">Read theorem mass</button>
-    <button class="btn" id="fresh" title="Skip the archive and re-read from GitHub">Re-read fresh</button>
   </div>
   <div class="row" style="margin-top:.6rem">
     <label class="btn" style="margin:0;text-transform:none;letter-spacing:.04em">Open a folder on this computer<input type="file" id="dir" webkitdirectory multiple hidden></label>
@@ -77,7 +76,7 @@ footer p{margin-bottom:.5rem}
 <section id="out" hidden>
   <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.8rem">
     <h2 style="margin:0" id="outtitle">Theorem mass</h2>
-    <div class="row"><button class="btn" id="exfiles">Files (.csv)</button><button class="btn" id="exfolders">Folders (.csv)</button><button class="btn" id="exjson">Snapshot (.json)</button><button class="btn" id="share">Copy link</button></div>
+    <div class="row"><button class="btn" id="exfiles">Files (.csv)</button><button class="btn" id="exfolders">Folders (.csv)</button><button class="btn" id="exjson">Snapshot (.json)</button><button class="btn" id="share">Copy link</button><button class="btn" id="badge">Copy badge</button></div>
   </div>
   <div class="cards" id="cards"></div>
   <div class="formula" id="work"></div>
@@ -103,7 +102,7 @@ proof sorry  = sorry used as a tactic in proof code: nested /- -/ comments, -- c
                removed as Lean reads them; statements of closure ("0 sorry", "zero `sorry`") are not holes
 theorem mass = Σ declarations over every .lean file read (lakefile.lean excluded)
 0-sorry mass = Σ declarations over the files with no sorry in proof code</div>
-  <p class="help">Any public repository reads with no account and no key: LeanMass makes one listing request to GitHub per read and fetches each file from raw.githubusercontent.com. A folder on your own computer reads without any network request at all. A snapshot reads the repository as it stands on the chosen branch. To keep a permanent day-by-day record of a repository's theorem mass, with the mass to date that only rises, add it to the scan list at <a href="https://uuia.app/rap">uuia.app/rap</a>; the collector reads its whole commit history.</p>
+  <p class="help">Any public repository reads with no account and no key: LeanMass reads the repository from GitHub on its server and archives the result against the repository\u2019s current tree, so a repository that has not changed is served instantly. A folder on your own computer reads without any network request at all. A snapshot reads the repository as it stands on the chosen branch. To keep a permanent day-by-day record of a repository's theorem mass, with the mass to date that only rises, add it to the scan list at <a href="https://uuia.app/rap">uuia.app/rap</a>; the collector reads its whole commit history.</p>
 </section>
 </main>
 
@@ -139,19 +138,7 @@ function measure(src){
   return{theorems:th,lemmas:le,decl:th+le,lines,coord:c?c[1].replace(/ /g,''):'',sorry};
 }
 let RES=null,SORT={files:[2,-1],folders:[1,-1]};
-// Supabase run archive (anon key + RLS: insert/select only). Failures are silent; the tool works without it.
-const SB_URL='https://YOUR-PROJECT.supabase.co',SB_KEY='YOUR_ANON_KEY';
-const sb=(p,o={})=>fetch(SB_URL+'/rest/v1/'+p,{...o,headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json',...(o.headers||{})}});
-async function archGet(k){try{const r=await sb('leanmass_runs?select=result,created_at&key=eq.'+encodeURIComponent(k)+'&limit=1');if(!r.ok)return null;return (await r.json())[0]||null;}catch(_){return null;}}
-function archPut(row){sb('leanmass_runs',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify(row)}).catch(()=>{});}
-// public reads only: no credentials are ever sent, so a public repository always reads
-async function gh(path){const r=await fetch('https://api.github.com'+path,{headers:{Accept:'application/vnd.github+json'},credentials:'omit'});
-  if(r.status===403||r.status===429){const e=new Error('limit');e.limit=true;e.reset=r.headers.get('x-ratelimit-reset');throw e;}
-  if(r.status===404||r.status===422)throw new Error('GitHub found no public repository, branch or path by that name.');
-  if(!r.ok)throw new Error('GitHub answered '+r.status+'.');return r.json();}
-// second listing route when GitHub's hourly listing allowance for this address is used: the jsDelivr mirror of GitHub
-async function jsd(owner,repo,ref){const r=await fetch(`https://data.jsdelivr.com/v1/packages/gh/${owner}/${repo}@${encodeURIComponent(ref)}?structure=flat`);
-  if(!r.ok)throw new Error('mirror '+r.status);const d=await r.json();return (d.files||[]).map(f=>f.name.replace(/^\//,''));}
+const FN='https://rsadsojivuagxptdlwak.supabase.co/functions/v1/leanmass'; // server-side reader + archive; no key in the page
 function parse(s){s=s.trim().replace(/\.git$/,'').replace(/\/$/,'');
   let m=s.match(/github\.com\/([^/]+)\/([^/#?]+)(?:\/(tree|blob)\/([^/]+)(?:\/(.*))?)?/i);
   if(m)return{owner:m[1],repo:m[2],kind:m[3]||'',branch:m[4]||'',path:m[5]||''};
@@ -159,39 +146,19 @@ function parse(s){s=s.trim().replace(/\.git$/,'').replace(/\/$/,'');
   return null;}
 const status=(t,p)=>{$('status').textContent=t;if(p===undefined){$('barw').hidden=true;}else{$('barw').hidden=false;$('bar').style.width=(p*100).toFixed(1)+'%';}};
 async function pool(items,n,fn){let i=0,done=0;const run=async()=>{while(i<items.length){const k=i++;await fn(items[k],k);done++;status(`Reading ${fmt(done)} of ${fmt(items.length)} .lean files…`,done/items.length);}};await Promise.all(Array.from({length:Math.min(n,items.length)},run));}
-async function readRemote(force){
+async function readRemote(){
   const P=parse($('src').value);if(!P){status('Enter a repository as owner/name, or paste its GitHub link.');return;}
   $('run').disabled=true;
   try{
     status('Reading the repository…',0);
     const branch=$('branch').value.trim()||P.branch||'HEAD';  // HEAD = the repository's default branch
     let prefix=($('prefix').value.trim()||'').replace(/^\//,'');
-    const enc=p=>p.split('/').map(encodeURIComponent).join('/');
-    const raw=p=>`https://raw.githubusercontent.com/${P.owner}/${P.repo}/${encodeURIComponent(branch)}/${enc(p)}`;
-    let paths=[],truncated=false,treeSha='';
-    if(P.kind==='blob'&&P.path.endsWith('.lean'))paths=[P.path];
-    else{
-      const base=(P.kind==='tree'&&P.path)?P.path.replace(/\/$/,'')+'/':'';
-      if(!prefix&&base)prefix=base;
-      let all;
-      try{const tree=await gh(`/repos/${P.owner}/${P.repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`);truncated=!!tree.truncated;treeSha=tree.sha||'';all=tree.tree.filter(t=>t.type==='blob').map(t=>t.path);}
-      catch(e){if(!e.limit)throw e;
-        status('GitHub\u2019s hourly listing allowance for this address is used; listing through the jsDelivr mirror…',0);
-        try{all=await jsd(P.owner,P.repo,branch==='HEAD'?'main':branch);}
-        catch(_){throw new Error('GitHub\u2019s hourly listing allowance for this address is used'+(e.reset?` until ${new Date(e.reset*1000).toLocaleTimeString()}`:'')+', and the mirror could not list this repository. Read again after that time.');}}
-      paths=all.filter(p=>p.endsWith('.lean')&&!p.endsWith('lakefile.lean')&&(!prefix||p.startsWith(prefix)));
-    }
-    if(!paths.length){status(`No .lean files on ${P.owner}/${P.repo} @ ${branch}${prefix?' under '+prefix:''}.`);return;}
-    const key=treeSha?`${P.owner}/${P.repo}|${branch}|${prefix}|${treeSha}`.toLowerCase():'';
-    let R,hit=null,failed=0;
-    if(key&&!force)hit=await archGet(key);
-    if(hit)R=hit.result;
-    else{const files=new Array(paths.length);
-    await pool(paths,12,async(p,k)=>{try{const r=await fetch(raw(p));if(!r.ok)throw 0;files[k]={path:p,...measure(await r.text())};}catch(_){failed++;files[k]=null;}});
-    R={source:`${P.owner}/${P.repo}`,branch,prefix,url:`https://github.com/${P.owner}/${P.repo}`,files:files.filter(Boolean),failed,truncated,remote:true,commit:null};}
+    if(!prefix&&P.kind==='tree'&&P.path)prefix=P.path.replace(/\/$/,'')+'/';
+    const u=new URLSearchParams({repo:`${P.owner}/${P.repo}`,branch});if(prefix)u.set('prefix',prefix);if(P.kind==='blob'&&P.path.endsWith('.lean'))u.set('file',P.path);
+    const R=await fetch(FN+'?'+u).then(x=>x.json()).catch(()=>({error:'The reader did not answer; try again shortly.'}));
+    if(R.error)throw new Error(R.error);
     show(R);
-    if(hit)$('status').textContent+=` Loaded from the archive (first read ${new Date(hit.created_at).toLocaleDateString()}); the repository has not changed since. Use Re-read fresh to bypass.`;
-    else if(key&&!failed&&!truncated)archPut({key,repo:`${P.owner}/${P.repo}`,branch,prefix,tree_sha:treeSha,theorem_mass:R.files.reduce((a,f)=>a+f.decl,0),files_count:R.files.length,result:R});
+    if(R.archived)$('status').textContent+=` Served from the archive (first read ${new Date(R.archived).toLocaleDateString()}); the repository has not changed since.`;
     try{const q=new URLSearchParams({repo:`${P.owner}/${P.repo}`});if($('branch').value.trim()||P.branch)q.set('branch',branch);if(prefix)q.set('path',prefix);if(P.kind==='blob')q.set('file',P.path);history.replaceState(null,'','?'+q);}catch(_){}
   }catch(e){status(e.message||String(e));}
   finally{$('run').disabled=false;}
@@ -239,7 +206,8 @@ $('exfolders').onclick=()=>RES&&dl(stamp()+'_folders.csv',csv(['Folder','Declara
 $('exjson').onclick=()=>{if(!RES)return;const files={};RES.files.forEach(f=>files[f.path]={theorems:f.decl,lines:f.lines,coord:f.coord,sorry:f.sorry});
   dl(stamp()+'.json',JSON.stringify({tool:'LeanMass',read:new Date().toISOString(),source:RES.source,branch:RES.branch,prefix:RES.prefix,theorems:RES.files.reduce((a,f)=>a+f.decl,0),files_count:RES.files.length,lines:RES.files.reduce((a,f)=>a+f.lines,0),files},null,1),'application/json');};
 $('share').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(location.href);$('share').textContent='Link copied';setTimeout(()=>$('share').textContent='Copy link',1500);};
-$('run').onclick=()=>readRemote();$('fresh').onclick=()=>readRemote(true);$('src').addEventListener('keydown',e=>{if(e.key==='Enter')readRemote();});
+$('badge').onclick=()=>{if(!RES||!RES.remote)return;const b=encodeURIComponent(`${FN}?repo=${RES.source}&badge=1`);navigator.clipboard&&navigator.clipboard.writeText(`[![LeanMass](https://img.shields.io/endpoint?url=${b})](${location.origin+location.pathname}?repo=${RES.source})`);$('badge').textContent='Badge copied';setTimeout(()=>$('badge').textContent='Copy badge',1500);};
+$('run').onclick=()=>readRemote();$('src').addEventListener('keydown',e=>{if(e.key==='Enter')readRemote();});
 $('dir').onchange=e=>{const f=e.target.files;if(f.length)readLocal(f,(f[0].webkitRelativePath||'').split('/')[0]||'local folder');e.target.value='';};
 $('files').onchange=e=>{const f=e.target.files;if(f.length)readLocal(f,f.length===1?f[0].name:'selected files');e.target.value='';};
 const q=new URLSearchParams(location.search);
