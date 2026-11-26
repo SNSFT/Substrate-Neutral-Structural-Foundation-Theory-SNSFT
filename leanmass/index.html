@@ -156,8 +156,19 @@ async function readRemote(){
     let prefix=($('prefix').value.trim()||'').replace(/^\//,'');
     if(!prefix&&P.kind==='tree'&&P.path)prefix=P.path.replace(/\/$/,'')+'/';
     const u=new URLSearchParams({repo:`${P.owner}/${P.repo}`,branch});if(prefix)u.set('prefix',prefix);if(P.kind==='blob'&&P.path.endsWith('.lean'))u.set('file',P.path);
-    const R=await fetch(FN+'?'+u).then(x=>x.json()).catch(()=>({error:'The reader did not answer; try again shortly.'}));
+    let R=await fetch(FN+'?'+u).then(x=>x.json()).catch(()=>({error:'The reader did not answer; try again shortly.'}));
     if(R.error)throw new Error(R.error);
+    if(R.plan){
+      const T=R.parts,k=encodeURIComponent(R.key),tot=R.total;let next=0,done=0;
+      const step=async()=>{while(next<T){const i=next++;let ok=false,msg='';
+        for(let a=0;a<3&&!ok;a++){const x=await fetch(`${FN}?part=1&key=${k}&idx=${i}`).then(r=>r.json()).catch(()=>({error:'no answer'}));if(x.ok)ok=true;else msg=x.error||x.message||'';}
+        if(!ok)throw new Error('A batch could not be read'+(msg?': '+msg:'')+'. Read again to resume where it stopped.');
+        done++;status(`Reading ${fmt(tot)} .lean files in ${fmt(T)} batches: ${fmt(done)} done\u2026`,done/T);}};
+      await Promise.all([step(),step(),step()]);
+      R=await fetch(`${FN}?finalize=1&key=${k}`).then(x=>x.json()).catch(()=>({error:'The reader did not answer; read again to resume.'}));
+      if(R.error)throw new Error(R.error);
+    }
+    if(!Array.isArray(R.files))throw new Error('The reader returned an unexpected answer'+(R.message||R.msg?': '+(R.message||R.msg):'')+'. The repository may be too large for one read.');
     show(R);
     if(R.archived)$('status').textContent+=` Served from the archive (first read ${new Date(R.archived).toLocaleDateString()}); the repository has not changed since.`;
     try{const q=new URLSearchParams({repo:`${P.owner}/${P.repo}`});if($('branch').value.trim()||P.branch)q.set('branch',branch);if(prefix)q.set('path',prefix);if(P.kind==='blob')q.set('file',P.path);history.replaceState(null,'','?'+q);}catch(_){}
