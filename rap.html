@@ -166,7 +166,7 @@ spread law [9,9,6,28]: the beams close Noble whenever every B_i lies within a fa
   </div>
   <div class="cards" id="imcards" style="margin:.5rem 0"></div>
   <div id="imreplay"></div>
-  <h3 style="margin:1rem 0 .3rem;font-size:.95rem">Added each day</h3>
+  <h3 id="iddayhead" style="margin:1rem 0 .3rem;font-size:.95rem">Added each day</h3>
   <div class="legend" id="iddaylegend"></div>
   <div id="iddaychart"></div>
   <details style="margin-top:.8rem"><summary>Day by day</summary>
@@ -1030,20 +1030,28 @@ function renderIDDay(){
   const sel=RANGES.find(r=>r[0]===RANGE)||RANGES[2],rows=sel[2]===Infinity?full:full.slice(-sel[2]);
   imReplay(full,rows,S);
   $('iddaylegend').innerHTML=S.map((x,i)=>`<span><span class="sw" style="background:${SRC_COL[i%SRC_COL.length]}"></span>${esc(x.k)}</span>`).join('')+'<span><span class="sw" style="background:transparent;border-top:2px dashed var(--muted);height:0"></span>established level (record high of the typical day)</span>';
-  const n=rows.length,W=n<=30?Math.max(900,n*56):Math.max(1100,n*6),H=300,L=56,R=24,T=20,B=46;
-  const max=Math.max(1,...rows.map(r=>Math.max(r.out,r.E||0))),bw=(W-L-R)/n,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-v/max);
+  // ranges longer than a year: one bar per month (each source's month total; IVA mark when any day of the month placed IVA Peak)
+  const monthly=rows.length>366;let bars=rows;
+  if(monthly){const mm=new Map();rows.forEach(r=>{const k=r.d.slice(0,7);let b=mm.get(k);if(!b){b={d:k+'-01',m:k,parts:r.parts.map(()=>null),out:0,E:null,ph:null};mm.set(k,b);}
+      r.parts.forEach((v,j)=>{if(v!==null)b.parts[j]=(b.parts[j]||0)+v;});b.out+=r.out;if(r.ph&&r.ph.k==='iva')b.ph=r.ph;});bars=[...mm.values()];}
+  $('iddayhead').textContent=monthly?'Added each month':'Added each day';
+  const n=bars.length,W=monthly?1100:n<=30?Math.max(900,n*56):Math.max(1100,n*6),H=300,L=56,R=24,T=20,B=46;
+  const max=Math.max(1,...bars.map(r=>Math.max(r.out,r.E||0))),bw=(W-L-R)/n,X=i=>L+i*bw,Y=v=>T+(H-T-B)*(1-v/max);
   const step=Math.pow(10,Math.floor(Math.log10(max/4)||0));const tick=[1,2,5].map(k=>k*step).find(k=>max/k<=5)||step*10;
   let g='';for(let v=0;v<=max;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${fmt(v)}</text>`;
-  rows.forEach((r,i)=>{let acc=0;const x=X(i)+bw*.12,w=Math.max(1,bw*.76);
-    r.parts.forEach((v,j)=>{if(!v)return;g+=`<rect x="${x}" y="${Y(acc+v)}" width="${w}" height="${Y(acc)-Y(acc+v)}" fill="${SRC_COL[j%SRC_COL.length]}"><title>${r.d}: ${fmt(v)} ${esc(S[j].k)}</title></rect>`;acc+=v;});
-    if(r.ph&&r.ph.k==='iva')g+=`<circle cx="${X(i)+bw/2}" cy="${Y(r.out)-6}" r="3" fill="var(--iva)"><title>${r.d}: IVA PEAK</title></circle>`;
+  bars.forEach((r,i)=>{let acc=0;const x=X(i)+bw*.12,w=Math.max(1,bw*.76),when=monthly?r.m:r.d;
+    r.parts.forEach((v,j)=>{if(!v)return;g+=`<rect x="${x}" y="${Y(acc+v)}" width="${w}" height="${Y(acc)-Y(acc+v)}" fill="${SRC_COL[j%SRC_COL.length]}"><title>${when}: ${fmt(v)} ${esc(S[j].k)}</title></rect>`;acc+=v;});
+    if(r.ph&&r.ph.k==='iva')g+=`<circle cx="${X(i)+bw/2}" cy="${Y(r.out)-6}" r="3" fill="var(--iva)"><title>${when}: IVA PEAK</title></circle>`;
+    if(monthly){const yr=r.m.slice(0,4),yEvery=n>240?5:1;
+      if((r.m.slice(5)==='01'&&(+yr)%yEvery===0)||i===0)g+=`<line x1="${X(i)}" x2="${X(i)}" y1="${H-B}" y2="${H-B+5}" stroke="var(--muted)"/><text x="${X(i)+bw/2}" y="${H-16}" text-anchor="middle" font-size="11" fill="var(--text)" font-family="Space Mono,monospace">${yr}</text>`;
+      return;}
     const every=n<=30?Math.max(1,Math.ceil(n/20)):7;
     if(i%every===0||i===n-1){const dd=r.d.slice(8).replace(/^0/,''),newM=i===0||r.d.slice(5,7)!==rows[i-1].d.slice(5,7);
       g+=`<text x="${X(i)+bw/2}" y="${H-24}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${dd}</text>`;
       if(newM)g+=`<text x="${X(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="10.5" fill="var(--text)" font-family="Space Mono,monospace">${new Date(r.d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'})}</text>`;}});
-  const pts=rows.map((r,i)=>r.E===null?null:`${(X(i)+bw/2).toFixed(1)},${Y(r.E).toFixed(1)}`).filter(Boolean).join(' ');
+  const pts=monthly?'':bars.map((r,i)=>r.E===null?null:`${(X(i)+bw/2).toFixed(1)},${Y(r.E).toFixed(1)}`).filter(Boolean).join(' ');
   if(pts)g+=`<polyline points="${pts}" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 4"/>`;
-  $('iddaychart').innerHTML=`<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${n<=30?Math.min(W,n*40+100):Math.min(W,n*5+100)}px;display:block" role="img" aria-label="Contact per day from every source, stacked, with the established baseline">${g}</svg></div>`;
+  $('iddaychart').innerHTML=`<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${monthly?620:n<=30?Math.min(W,n*40+100):Math.min(W,n*5+100)}px;display:block" role="img" aria-label="Contact per day from every source, stacked, with the established baseline">${g}</svg></div>`;
   $('iddays').tHead.innerHTML='<tr><th>Date</th>'+S.map(x=>`<th>${esc(x.k)}</th>`).join('')+'<th>Added</th><th>IM to date</th><th>Level</th><th>Placement</th></tr>';
   $('iddays').tBodies[0].innerHTML=dtApply(rows).map(r=>`<tr><td class="mono">${r.d}</td>${r.parts.map(v=>`<td class="n">${v===null?'—':fmt(v)}</td>`).join('')}<td class="n">${fmt(r.out)}</td><td class="n"><b>${fmt(r.IM)}</b></td><td class="n">${r.E===null?'—':fmt(r.E)}</td><td>${chip(r)}</td></tr>`).join('')||`<tr><td colspan="9" class="band">No peaks or level changes in this range.</td></tr>`;
   $('iddaysec').hidden=false;
@@ -1064,8 +1072,9 @@ function imReplay(full,rows,S){
   const X=i=>L+(n===1?(W-L-R)/2:(i-a)*(W-L-R)/(n-1)),Y=v=>T+(H-T-B)*(1-v/top);
   const step=Math.pow(10,Math.floor(Math.log10(top/4)||0)),tick=[1,2,2.5,5].map(k=>k*step).find(k=>top/k<=5)||step*10;
   let g='';for(let v=0;v<=top;v+=tick)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${fmt(v)}</text>`;
-  const every=Math.max(1,Math.ceil(n/10));
-  rows.forEach((r,k)=>{if(k%every===0||k===n-1)g+=`<text x="${X(a+k)}" y="${H-14}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${r.d.slice(5)}</text>`;});
+  const every=Math.max(1,Math.ceil(n/10)),long=n>366,lab=d=>long?new Date(d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',year:'numeric',timeZone:'UTC'}):d.slice(5);
+  // ranges longer than a year carry the year on every label
+  rows.forEach((r,k)=>{if((k%every===0&&n-1-k>=every*.6)||k===n-1)g+=`<text x="${X(a+k)}" y="${H-14}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Space Mono,monospace">${lab(r.d)}</text>`;});
   let areas='';const base=new Array(full.length).fill(0);
   S.forEach((s,j)=>{const up=[],dn=[];for(let i=a;i<full.length;i++){const lo=base[i],hi=lo+cum[j][i];up.push(`${X(i).toFixed(1)},${Y(hi).toFixed(1)}`);dn.push(`${X(i).toFixed(1)},${Y(lo).toFixed(1)}`);base[i]=hi;}
     if(n===1){up.push(`${X(a)+3},${up[0].split(',')[1]}`);dn.push(`${X(a)+3},${dn[0].split(',')[1]}`);}
