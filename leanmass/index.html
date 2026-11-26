@@ -89,6 +89,12 @@ footer p{margin-bottom:.5rem}
   <p class="help" style="margin-top:1rem" id="track"></p>
 </section>
 
+<section id="recentsec" hidden>
+  <h2>Recently read</h2>
+  <p class="help">The latest repositories read with LeanMass, newest first. Click one to open its theorem mass. <a href="https://uuia.app/leanmass/leanmass-archive">See the full archive</a>.</p>
+  <div class="tablewrap"><table id="recent" style="min-width:0"><thead><tr><th>Repository</th><th>Theorem mass</th><th>Files</th><th>Proof sorry</th><th>Read</th></tr></thead><tbody></tbody></table></div>
+</section>
+
 <section>
   <h2>How theorem mass is counted</h2>
   <div class="formula">declaration  = a line that opens with theorem or lemma, after any attribute @[…] and any of
@@ -224,6 +230,13 @@ $('dir').onchange=e=>{const f=e.target.files;if(f.length)readLocal(f,(f[0].webki
 $('files').onchange=e=>{const f=e.target.files;if(f.length)readLocal(f,f.length===1?f[0].name:'selected files');e.target.value='';};
 const q=new URLSearchParams(location.search);
 if(q.get('repo')){$('src').value=q.get('file')?`https://github.com/${q.get('repo')}/blob/${q.get('branch')||'main'}/${q.get('file')}`:q.get('repo');if(q.get('branch'))$('branch').value=q.get('branch');if(q.get('path'))$('prefix').value=q.get('path');readRemote();}
+(async()=>{try{
+  const r=await fetch(FN+'?list=1&limit=200',{cache:'no-store'}).then(x=>x.json());if(!Array.isArray(r.rows)||!r.rows.length)return;
+  const seen=new Set(),rows=[];for(const x of r.rows){const k=x.repo+'|'+x.branch+'|'+x.prefix;if(seen.has(k))continue;seen.add(k);rows.push(x);if(rows.length===100)break;}
+  $('recent').tBodies[0].innerHTML=rows.map(x=>{const p=new URLSearchParams({repo:x.repo});if(x.branch&&x.branch!=='HEAD')p.set('branch',x.branch);if(x.prefix)p.set('path',x.prefix);
+    return `<tr><td class="p"><a href="?${esc(p)}">${esc(x.repo)}${x.prefix?' \u00B7 '+esc(x.prefix):''}</a></td><td class="n">${fmt(x.theorem_mass)}</td><td class="n">${fmt(x.files_count)}</td><td class="n"${x.proof_sorry>0?' style="color:var(--gold)"':''}>${x.proof_sorry==null?'\u2014':fmt(x.proof_sorry)}</td><td>${new Date(x.created_at).toLocaleString()}</td></tr>`;}).join('');
+  $('recentsec').hidden=false;
+}catch(_){}})();
 </script>
 </body>
 </html>
